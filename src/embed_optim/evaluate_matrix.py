@@ -238,12 +238,21 @@ def checkpoint_paths(config: RunConfig, stages: list[int] | None = None) -> list
 
 
 def _selected_configs(args: argparse.Namespace) -> list[RunConfig]:
-    return [
+    matrix = load_matrix(args.matrix)
+    available_run_ids = {config.run_id for config in matrix if config.model_family in args.families}
+    requested_run_ids = set(args.run_ids)
+    unknown_run_ids = requested_run_ids - available_run_ids
+    if unknown_run_ids:
+        raise ValueError(f"Unknown run ids for selected families: {sorted(unknown_run_ids)}")
+    selected = [
         config
-        for config in load_matrix(args.matrix)
+        for config in matrix
         if config.model_family in args.families
-        and (not args.run_ids or config.run_id in args.run_ids)
+        and (not requested_run_ids or config.run_id in requested_run_ids)
     ]
+    if not selected:
+        raise ValueError("Evaluation selection contains no training runs")
+    return selected
 
 
 def _selected_models(args: argparse.Namespace) -> dict[str, list[Path]]:
