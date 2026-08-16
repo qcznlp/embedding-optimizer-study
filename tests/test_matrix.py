@@ -6,6 +6,7 @@ from embed_optim.matrix import (
     _checkpoint_is_resumable,
     _latest_resumable_checkpoint,
     _pop_next,
+    _run_is_complete,
 )
 
 
@@ -66,3 +67,27 @@ def test_checkpoint_resume_selection_requires_matching_state_step(tmp_path):
     checkpoint = _write_checkpoint(tmp_path, 10)
     (checkpoint / "trainer_state.json").write_text(json.dumps({"global_step": 9}))
     assert not _checkpoint_is_resumable(checkpoint)
+
+
+def test_run_completion_requires_consistent_terminal_artifacts(tmp_path):
+    output = tmp_path / "dense" / "run"
+    steps = [2, 4, 6, 8, 10]
+    for step in steps:
+        _write_checkpoint(output, step)
+    final = output / "final"
+    final.mkdir()
+    (final / "model.safetensors").write_bytes(b"model")
+    (output / "checkpoint_schedule.json").write_text(json.dumps({"steps": steps}))
+    (output / "trainer_state_final.json").write_text(json.dumps({"global_step": 10}))
+    completed = {
+        "run_id": "run",
+        "model_family": "dense",
+        "global_step": 10,
+        "checkpoints": steps,
+    }
+    (output / "completed.json").write_text(json.dumps(completed))
+    config = SimpleNamespace(output_dir=output, run_id="run", model_family="dense")
+
+    assert _run_is_complete(config)
+    (output / "completed.json").write_text("{")
+    assert not _run_is_complete(config)
