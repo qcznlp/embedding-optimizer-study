@@ -7,6 +7,7 @@ from torch import nn
 
 from embed_optim.config import OptimizerConfig
 from embed_optim.optimizers import (
+    EmbeddingOptimizer,
     _normuon_update,
     build_optimizer,
     parameter_partition,
@@ -90,6 +91,93 @@ def test_normuon_update_matches_pinned_official_reference():
     torch.testing.assert_close(local, reference)
     torch.testing.assert_close(local_momentum, reference_momentum)
     torch.testing.assert_close(local_second_moment, reference_second_moment)
+
+
+def test_wrapped_muon_matches_pytorch_reference_for_multiple_steps():
+    torch.manual_seed(23)
+    local_parameter = nn.Parameter(torch.randn(8, 4))
+    reference_parameter = nn.Parameter(local_parameter.detach().clone())
+    local = EmbeddingOptimizer(
+        [
+            {
+                "params": [local_parameter],
+                "algorithm": "muon",
+                "lr": 3e-4,
+                "weight_decay": 0.01,
+                "momentum": 0.95,
+                "ns_steps": 5,
+                "adjust_lr_fn": "original",
+            }
+        ]
+    )
+    reference = torch.optim.Muon(
+        [reference_parameter],
+        lr=3e-4,
+        weight_decay=0.01,
+        momentum=0.95,
+        nesterov=True,
+        ns_coefficients=(3.4445, -4.7750, 2.0315),
+        ns_steps=5,
+        eps=1e-7,
+        adjust_lr_fn="original",
+    )
+
+    for _ in range(3):
+        gradient = torch.randn_like(local_parameter)
+        local_parameter.grad = gradient.clone()
+        reference_parameter.grad = gradient.clone()
+        local.step()
+        reference.step()
+
+    torch.testing.assert_close(local_parameter, reference_parameter, rtol=0, atol=0)
+    torch.testing.assert_close(
+        local.state[local_parameter]["momentum_buffer"],
+        reference.state[reference_parameter]["momentum_buffer"],
+        rtol=0,
+        atol=0,
+    )
+
+
+def test_wrapped_adamw_matches_pytorch_reference_for_multiple_steps():
+    torch.manual_seed(29)
+    local_parameter = nn.Parameter(torch.randn(8, 4))
+    reference_parameter = nn.Parameter(local_parameter.detach().clone())
+    local = EmbeddingOptimizer(
+        [
+            {
+                "params": [local_parameter],
+                "algorithm": "adamw",
+                "lr": 3e-6,
+                "weight_decay": 0.01,
+                "betas": (0.9, 0.999),
+                "eps": 1e-8,
+            }
+        ]
+    )
+    reference = torch.optim.AdamW(
+        [reference_parameter],
+        lr=3e-6,
+        weight_decay=0.01,
+        betas=(0.9, 0.999),
+        eps=1e-8,
+        foreach=True,
+    )
+
+    for _ in range(3):
+        gradient = torch.randn_like(local_parameter)
+        local_parameter.grad = gradient.clone()
+        reference_parameter.grad = gradient.clone()
+        local.step()
+        reference.step()
+
+    torch.testing.assert_close(local_parameter, reference_parameter, rtol=0, atol=0)
+    for state_name in ("step", "exp_avg", "exp_avg_sq"):
+        torch.testing.assert_close(
+            local.state[local_parameter][state_name],
+            reference.state[reference_parameter][state_name],
+            rtol=0,
+            atol=0,
+        )
 
 
 @pytest.mark.parametrize("name,lr", [("adamw", 1e-3), ("muon", 1e-3), ("normuon", 1e-3)])

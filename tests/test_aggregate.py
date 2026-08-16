@@ -1,3 +1,4 @@
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -7,12 +8,14 @@ import pytest
 
 from embed_optim.aggregate import (
     _contains_run_id,
+    _dataset_rows_audit,
     _optimizer_summaries,
     _render_results,
     _render_systems,
     _replace_marked,
     _system_summaries,
     _trajectory_auc,
+    audit_dataset_artifacts,
     audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
@@ -33,6 +36,44 @@ def test_replace_marked_preserves_the_markers():
     text = "before\n<!-- A -->\nold\n<!-- B -->\nafter\n"
     result = _replace_marked(text, ("<!-- A -->", "<!-- B -->"), "new")
     assert result == "before\n<!-- A -->\n\nnew\n\n<!-- B -->\nafter\n"
+
+
+def test_dataset_row_audit_proves_identity_negatives_and_checksum(tmp_path):
+    row = {
+        "sample_id": 0,
+        "source": "fiqa",
+        "query_id": 10,
+        "positive_id": 20,
+        "negative_ids": [21, 22, 23, 24, 25, 26, 27],
+        "negative_pool_indices": [0, 1, 2, 4, 5, 7, 9],
+    }
+    canonical = json.dumps(row, sort_keys=True, separators=(",", ":")) + "\n"
+    rows_path = tmp_path / "rows.jsonl"
+    rows_path.write_text(json.dumps(row) + "\n")
+    manifest = {
+        "total_queries": 1,
+        "quotas": {"fiqa": 1},
+        "row_manifest_sha256": hashlib.sha256(canonical.encode()).hexdigest(),
+    }
+    audit = _dataset_rows_audit(rows_path, manifest)
+    assert audit["errors"] == []
+    assert audit["rows"] == 1
+    assert audit["unique_source_queries"] == 1
+
+    row["negative_ids"][-1] = row["negative_ids"][0]
+    rows_path.write_text(json.dumps(row) + "\n")
+    invalid = _dataset_rows_audit(rows_path, manifest)
+    assert any("seven distinct negatives" in error for error in invalid["errors"])
+
+
+def test_dataset_audit_rejects_more_than_one_training_dataset(tmp_path):
+    configs = [
+        SimpleNamespace(dataset_path=str(tmp_path / "one")),
+        SimpleNamespace(dataset_path=str(tmp_path / "two")),
+    ]
+    audit = audit_dataset_artifacts(configs)
+    assert not audit["complete"]
+    assert "expected one shared dataset path" in audit["errors"][0]
 
 
 def test_optimizer_summary_reports_observed_auc_and_lr_robustness():

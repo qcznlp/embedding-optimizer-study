@@ -4,14 +4,16 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import re
 import statistics
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 
 from .config import RunConfig, load_matrix
+from .data import SOURCE_REPO, SOURCE_REVISION, SPLITS
 from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
 
 CHECKPOINT_PATTERN = re.compile(r"checkpoint-(\d+)")
@@ -27,6 +29,201 @@ EVALUATION_PACKAGES = {
     "fast-plaid",
     "late-interaction-kernels",
 }
+
+
+def _dataset_rows_audit(path: Path, manifest: dict) -> dict:
+    """Stream and validate the canonical 500k row manifest without loading texts."""
+
+    errors: list[str] = []
+    checksum = hashlib.sha256()
+    source_counts: Counter[str] = Counter()
+    seen_queries: set[tuple[str, int]] = set()
+    row_count = 0
+
+    def record(message: str) -> None:
+        if len(errors) < 25:
+            errors.append(message)
+
+    try:
+        handle = path.open()
+    except OSError as error:
+        return {"errors": [f"missing/unreadable rows.jsonl ({error})"], "rows": 0}
+    with handle:
+        for index, line in enumerate(handle):
+            row_count = index + 1
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError as error:
+                record(f"row {index}: invalid JSON ({error})")
+                continue
+            checksum.update(json.dumps(row, sort_keys=True, separators=(",", ":")).encode())
+            checksum.update(b"\n")
+            expected_keys = {
+                "sample_id",
+                "source",
+                "query_id",
+                "positive_id",
+                "negative_ids",
+                "negative_pool_indices",
+            }
+            if not isinstance(row, dict) or set(row) != expected_keys:
+                record(f"row {index}: unexpected fields")
+                continue
+            source = row["source"]
+            query_id = row["query_id"]
+            if (
+                isinstance(row["sample_id"], bool)
+                or not isinstance(row["sample_id"], int)
+                or row["sample_id"] != index
+            ):
+                record(f"row {index}: sample_id is not its canonical position")
+            if source not in SPLITS or isinstance(query_id, bool) or not isinstance(query_id, int):
+                record(f"row {index}: invalid source/query identity")
+            else:
+                identity = (source, query_id)
+                if identity in seen_queries:
+                    record(f"row {index}: duplicate source/query identity")
+                seen_queries.add(identity)
+                source_counts[source] += 1
+            negatives = row["negative_ids"]
+            pool_indices = row["negative_pool_indices"]
+            if (
+                not isinstance(negatives, list)
+                or len(negatives) != 7
+                or any(isinstance(value, bool) or not isinstance(value, int) for value in negatives)
+                or len(set(negatives)) != 7
+                or isinstance(row["positive_id"], bool)
+                or not isinstance(row["positive_id"], int)
+                or row["positive_id"] in negatives
+            ):
+                record(f"row {index}: expected seven distinct negatives excluding the positive")
+            if (
+                not isinstance(pool_indices, list)
+                or len(pool_indices) != 7
+                or any(
+                    isinstance(value, bool) or not isinstance(value, int) or not 0 <= value < 10
+                    for value in pool_indices
+                )
+                or pool_indices != sorted(set(pool_indices))
+            ):
+                record(f"row {index}: invalid seven-of-ten negative sample indices")
+    digest = checksum.hexdigest()
+    if row_count != manifest.get("total_queries"):
+        record(f"row count is {row_count}, expected {manifest.get('total_queries')}")
+    if dict(source_counts) != manifest.get("quotas"):
+        record("observed source counts differ from quotas")
+    if digest != manifest.get("row_manifest_sha256"):
+        record("canonical row-manifest SHA-256 differs")
+    return {
+        "errors": errors,
+        "rows": row_count,
+        "unique_source_queries": len(seen_queries),
+        "source_counts": dict(source_counts),
+        "row_manifest_sha256": digest,
+    }
+
+
+def audit_dataset_artifacts(configs: list[RunConfig]) -> dict:
+    """Prove that every run points at one valid, pinned 500k training dataset."""
+
+    roots = sorted({Path(config.dataset_path).resolve() for config in configs})
+    errors: list[str] = []
+    if len(roots) != 1:
+        errors.append(f"expected one shared dataset path, found {len(roots)}")
+        return {"complete": False, "verified_rows": 0, "errors": errors}
+    root = roots[0]
+    manifest_path = root / "manifest.json"
+    try:
+        manifest = json.loads(manifest_path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        return {
+            "complete": False,
+            "dataset_path": str(root),
+            "verified_rows": 0,
+            "errors": [f"missing/invalid source manifest ({error})"],
+        }
+
+    expected_scalars = {
+        "source_repo": SOURCE_REPO,
+        "source_revision": SOURCE_REVISION,
+        "seed": 42,
+        "total_queries": 500_000,
+        "nv_threshold": 0.95,
+        "negative_pool_size": 10,
+        "sampled_negatives": 7,
+    }
+    for key, expected in expected_scalars.items():
+        if manifest.get(key) != expected:
+            errors.append(f"manifest {key} is {manifest.get(key)!r}, expected {expected!r}")
+    quotas = manifest.get("quotas")
+    scorable_counts = manifest.get("scorable_query_counts")
+    if (
+        not isinstance(quotas, dict)
+        or set(quotas) != set(SPLITS)
+        or any(isinstance(value, bool) or not isinstance(value, int) for value in quotas.values())
+        or sum(quotas.values()) != 500_000
+    ):
+        errors.append("manifest quotas do not cover exactly 500,000 rows across seven sources")
+    if (
+        not isinstance(scorable_counts, dict)
+        or set(scorable_counts) != set(SPLITS)
+        or any(
+            isinstance(value, bool) or not isinstance(value, int)
+            for value in scorable_counts.values()
+        )
+    ):
+        errors.append("manifest scorable query counts do not cover the seven sources")
+    elif (
+        isinstance(quotas, dict)
+        and set(quotas) == set(SPLITS)
+        and any(
+            isinstance(quotas[source], int) and quotas[source] > scorable_counts[source]
+            for source in SPLITS
+        )
+    ):
+        errors.append("a source quota exceeds its scorable query count")
+    for key in (
+        "row_manifest_sha256",
+        "materialized_dataset_fingerprint",
+        "dataset_fingerprint",
+    ):
+        if not isinstance(manifest.get(key), str) or not manifest[key]:
+            errors.append(f"manifest {key} is missing/invalid")
+
+    row_audit = _dataset_rows_audit(root / "rows.jsonl", manifest)
+    errors.extend(row_audit["errors"])
+    dataset_path = root / "dataset"
+    try:
+        from datasets import Dataset
+
+        dataset = Dataset.load_from_disk(str(dataset_path))
+    except Exception as error:  # noqa: BLE001
+        errors.append(f"missing/invalid materialized Dataset ({error})")
+    else:
+        expected_columns = {
+            "sample_id",
+            "source",
+            "query_id",
+            "positive_id",
+            "query",
+            "positive",
+            "length",
+            *(f"negative_{index}" for index in range(7)),
+            *(f"negative_{index}_id" for index in range(7)),
+        }
+        if len(dataset) != 500_000:
+            errors.append(f"materialized Dataset has {len(dataset)} rows, expected 500000")
+        if set(dataset.column_names) != expected_columns:
+            errors.append("materialized Dataset has unexpected columns")
+        if dataset._fingerprint != manifest.get("dataset_fingerprint"):
+            errors.append("materialized Dataset fingerprint differs from manifest")
+    return {
+        "complete": not errors,
+        "dataset_path": str(root),
+        "verified_rows": row_audit["rows"] if not row_audit["errors"] else 0,
+        "row_manifest_sha256": row_audit.get("row_manifest_sha256"),
+        "errors": errors,
+    }
 
 
 def _trainer_state_problem(path: Path, expected_step: int) -> str | None:
@@ -1040,7 +1237,11 @@ def render_blog(
 
 
 def _coverage(
-    rows: list[dict], summary: list[dict], configs: list[RunConfig], training_audit: dict
+    rows: list[dict],
+    summary: list[dict],
+    configs: list[RunConfig],
+    dataset_audit: dict,
+    training_audit: dict,
 ) -> dict:
     observed = {(row["model_family"], row["run_id"], row["stage"], row["task"]) for row in rows}
     expected = {
@@ -1053,9 +1254,15 @@ def _coverage(
     unexpected = sorted(observed - expected)
     evaluation_complete = not missing and not unexpected
     return {
-        "complete": evaluation_complete and training_audit["complete"],
+        "complete": evaluation_complete
+        and dataset_audit["complete"]
+        and training_audit["complete"],
+        "dataset_complete": dataset_audit["complete"],
         "training_complete": training_audit["complete"],
         "evaluation_complete": evaluation_complete,
+        "verified_training_examples": dataset_audit["verified_rows"],
+        "expected_training_examples": 500_000,
+        "training_row_manifest_sha256": dataset_audit.get("row_manifest_sha256"),
         "verified_training_runs": training_audit["verified_runs"],
         "expected_training_runs": training_audit["expected_runs"],
         "verified_training_checkpoints": training_audit["verified_checkpoints"],
@@ -1066,6 +1273,7 @@ def _coverage(
         "expected_checkpoint_summaries": len(configs) * 5,
         "missing": ["/".join(map(str, item)) for item in missing],
         "unexpected": ["/".join(map(str, item)) for item in unexpected],
+        "dataset_errors": dataset_audit["errors"],
         "training_errors": training_audit["errors"],
     }
 
@@ -1077,8 +1285,9 @@ def aggregate(args: argparse.Namespace) -> None:
     optimizer_rows, best_dynamics = _optimizer_summaries(summary)
     system_metrics = collect_system_metrics(configs)
     system_rows = _system_summaries(system_metrics)
+    dataset_audit = audit_dataset_artifacts(configs)
     training_audit = audit_training_artifacts(configs)
-    coverage = _coverage(rows, summary, configs, training_audit)
+    coverage = _coverage(rows, summary, configs, dataset_audit, training_audit)
     task_rows = _task_comparison(rows, optimizer_rows) if coverage["complete"] else []
 
     output = Path(args.output_dir)
