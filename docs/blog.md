@@ -134,6 +134,10 @@ all eight evaluation/aggregation source files and verifies that the worker inter
 same package sources. Final aggregation recomputes the hashes and rejects results with a different
 checkpoint identity, dataset revision, split/subset, scoring field, MTEB version, or runtime
 provenance.
+Each task result and its model metadata are atomically replaced, concurrent DenseOn workers merge the
+shared MTEB run-settings sidecar under a cross-process lock, and only the main LateOn rank writes cache
+metadata. The final audit also checks the run-settings field layout against the recorded MTEB version,
+covering the singular 2.18 and plural 2.19+ schemas without accepting a hybrid artifact.
 
 ## Results
 
