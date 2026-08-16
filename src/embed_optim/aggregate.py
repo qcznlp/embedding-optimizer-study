@@ -644,6 +644,21 @@ def _checkpoint_summaries(rows: list[dict]) -> list[dict]:
     return output
 
 
+def _trajectory_auc(curve: list[dict]) -> float | None:
+    """Normalized trapezoidal mean score over the observed 20%–100% window."""
+
+    points = sorted((float(row["fraction"]), float(row["mean_ndcg_at_10"])) for row in curve)
+    if len(points) != 5 or len({fraction for fraction, _ in points}) != 5:
+        return None
+    span = points[-1][0] - points[0][0]
+    if span <= 0:
+        return None
+    area = sum(
+        (right[0] - left[0]) * (left[1] + right[1]) / 2 for left, right in zip(points, points[1:])
+    )
+    return area / span
+
+
 def _optimizer_summaries(summary: list[dict]) -> tuple[list[dict], list[dict]]:
     final = [row for row in summary if row["stage"] == 5]
     grouped: dict[tuple[str, str], list[dict]] = defaultdict(list)
@@ -655,9 +670,21 @@ def _optimizer_summaries(summary: list[dict]) -> tuple[list[dict], list[dict]]:
         values = sorted(values, key=lambda row: row["learning_rate"])
         scores = [row["mean_ndcg_at_10"] for row in values]
         best = max(values, key=lambda row: row["mean_ndcg_at_10"])
-        curves = [row for row in summary if row["run_id"] == best["run_id"]]
+        curves = [
+            row
+            for row in summary
+            if row["model_family"] == family and row["run_id"] == best["run_id"]
+        ]
         curves = sorted(curves, key=lambda row: row["stage"])
         best_dynamics.extend(curves)
+        all_curves: dict[str, list[dict]] = defaultdict(list)
+        for row in summary:
+            if row["model_family"] == family and row["optimizer"] == optimizer:
+                all_curves[row["run_id"]].append(row)
+        trajectory_aucs = [
+            auc for curve in all_curves.values() if (auc := _trajectory_auc(curve)) is not None
+        ]
+        best_auc = _trajectory_auc(curves)
         optimizer_rows.append(
             {
                 "model_family": family,
@@ -671,6 +698,13 @@ def _optimizer_summaries(summary: list[dict]) -> tuple[list[dict], list[dict]]:
                 "final_population_std_across_lrs": statistics.pstdev(scores),
                 "final_min_across_lrs": min(scores),
                 "final_max_across_lrs": max(scores),
+                "best_config_observed_auc_ndcg_at_10": best_auc,
+                "observed_auc_mean_across_lrs": (
+                    statistics.mean(trajectory_aucs) if trajectory_aucs else None
+                ),
+                "observed_auc_population_std_across_lrs": (
+                    statistics.pstdev(trajectory_aucs) if trajectory_aucs else None
+                ),
                 "best_config_mean_five_stage_ndcg_at_10": statistics.mean(
                     row["mean_ndcg_at_10"] for row in curves
                 ),
@@ -735,6 +769,19 @@ def _system_summaries(rows: list[dict]) -> list[dict]:
                 "gpu_name": values[0]["gpu_name"],
                 "world_size": values[0]["world_size"],
             }
+        )
+    adamw_by_family = {row["model_family"]: row for row in output if row["optimizer"] == "adamw"}
+    for row in output:
+        baseline = adamw_by_family.get(row["model_family"])
+        row["throughput_vs_adamw"] = (
+            row["median_samples_per_second"] / baseline["median_samples_per_second"]
+            if baseline and baseline["median_samples_per_second"] > 0
+            else None
+        )
+        row["wall_time_speedup_vs_adamw"] = (
+            baseline["median_wall_time_hours"] / row["median_wall_time_hours"]
+            if baseline and row["median_wall_time_hours"] > 0
+            else None
         )
     return output
 
@@ -804,7 +851,16 @@ def _render_results(
     optimizer_rows: list[dict], best_dynamics: list[dict], task_rows: list[dict]
 ) -> str:
     final_table = _markdown_table(
-        ["Family", "Optimizer", "Best LR", "Best final", "4-LR mean", "SD", "Range"],
+        [
+            "Family",
+            "Optimizer",
+            "Best LR",
+            "Best final",
+            "4-LR mean",
+            "SD",
+            "Range",
+            "4-LR trajectory AUC",
+        ],
         [
             [
                 row["model_family"],
@@ -814,6 +870,7 @@ def _render_results(
                 f"{row['final_mean_across_lrs']:.4f}",
                 f"{row['final_population_std_across_lrs']:.4f}",
                 f"{row['final_min_across_lrs']:.4f}–{row['final_max_across_lrs']:.4f}",
+                f"{row['observed_auc_mean_across_lrs']:.4f}",
             ]
             for row in optimizer_rows
         ],
@@ -825,9 +882,14 @@ def _render_results(
             "mean_ndcg_at_10"
         ]
     dynamics_table = _markdown_table(
-        ["Family", "Optimizer", "20%", "40%", "60%", "80%", "100%"],
+        ["Family", "Optimizer", "20%", "40%", "60%", "80%", "100%", "AUC"],
         [
-            [family, optimizer, *[f"{stages[stage]:.4f}" for stage in range(1, 6)]]
+            [
+                family,
+                optimizer,
+                *[f"{stages[stage]:.4f}" for stage in range(1, 6)],
+                f"{next(row for row in optimizer_rows if row['model_family'] == family and row['optimizer'] == optimizer)['best_config_observed_auc_ndcg_at_10']:.4f}",
+            ]
             for (family, optimizer), stages in sorted(dynamics_lookup.items())
         ],
     )
@@ -837,11 +899,27 @@ def _render_results(
         candidates = [row for row in optimizer_rows if row["model_family"] == family]
         best_tuned = max(candidates, key=lambda row: row["best_final_ndcg_at_10"])
         robust = max(candidates, key=lambda row: row["final_mean_across_lrs"])
+        fastest_convergence = max(candidates, key=lambda row: row["observed_auc_mean_across_lrs"])
+        family_tasks = [row for row in task_rows if row["model_family"] == family]
+        paired = []
+        for optimizer in ("muon", "normuon"):
+            deltas = [row[f"{optimizer}_minus_adamw"] for row in family_tasks]
+            wins = sum(delta > 0 for delta in deltas)
+            ties = sum(math.isclose(delta, 0, rel_tol=0, abs_tol=1e-12) for delta in deltas)
+            paired.append(
+                f"{optimizer} beats AdamW on {wins}/{len(deltas)} tasks"
+                + (f" ({ties} ties)" if ties else "")
+                + f", median Δ={statistics.median(deltas):+.4f}"
+            )
         winners.append(
             f"- **{family.capitalize()}:** best tuned final score is "
             f"{best_tuned['optimizer']} at {_format_lr(best_tuned['best_learning_rate'])} "
             f"({best_tuned['best_final_ndcg_at_10']:.4f}); the highest four-LR mean is "
-            f"{robust['optimizer']} ({robust['final_mean_across_lrs']:.4f})."
+            f"{robust['optimizer']} ({robust['final_mean_across_lrs']:.4f}); the highest mean "
+            f"observed-window AUC is {fastest_convergence['optimizer']} "
+            f"({fastest_convergence['observed_auc_mean_across_lrs']:.4f}). Best-config paired "
+            + "; ".join(paired)
+            + "."
         )
 
     per_task_sections = []
@@ -881,7 +959,9 @@ def _render_results(
             "The best-LR comparisons are selected on this same benchmark suite and should therefore "
             "be read as controlled exploratory results, not as an unbiased model-selection estimate. "
             "The four-LR mean, spread, and complete per-task rows are included to expose sensitivity "
-            "rather than reporting only the winning point.",
+            "rather than reporting only the winning point. Trajectory AUC is the normalized "
+            "trapezoidal mean nDCG@10 over the observed 20%–100% checkpoint window; it measures "
+            "early-to-late quality, not time before the first checkpoint.",
         ]
     )
 
@@ -893,6 +973,7 @@ def _render_systems(rows: list[dict]) -> str:
             "Optimizer",
             "Median hours",
             "Samples/s",
+            "Throughput vs AdamW",
             "Peak allocated GiB",
             "Optimizer state GiB",
             "Checkpoint GiB",
@@ -903,6 +984,7 @@ def _render_systems(rows: list[dict]) -> str:
                 row["optimizer"],
                 f"{row['median_wall_time_hours']:.2f}",
                 f"{row['median_samples_per_second']:.2f}",
+                f"{row['throughput_vs_adamw']:.2f}×",
                 f"{row['median_peak_allocated_gib']:.2f}",
                 f"{row['median_optimizer_state_gib']:.2f}",
                 f"{row['median_checkpoint_gib']:.2f}",

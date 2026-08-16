@@ -112,7 +112,10 @@ Every checkpoint is evaluated on the 14 decontaminated BEIR datasets released wi
 [DenseOn/LateOn blog](https://huggingface.co/blog/lightonai/denseon-lateon): ArguAna,
 ClimateFEVER, DBPedia, FEVER, FiQA, HotpotQA, MS MARCO, NFCorpus, NQ, Quora, SCIDOCS, SciFact,
 TREC-COVID, and Touche2020. Dataset commits are pinned in source. The primary aggregate is the
-unweighted mean of each task's main nDCG@10 score.
+unweighted mean of each task's main nDCG@10 score. Final reporting also includes the normalized
+trapezoidal area under the five-checkpoint quality curve over the observed 20%–100% window,
+four-learning-rate dispersion, best-configuration paired task wins, and measured training throughput
+relative to AdamW.
 
 Dense retrieval is evaluated with MTEB exact retrieval. Late interaction is encoded with PyLate and
 searched with FastPLAID using 4-bit residuals, 8 IVF probes, 8,192 full scores, and index seed 42.
