@@ -202,7 +202,8 @@ internally self-consistent matrix cannot satisfy the final completion gate.
 The dataset gate independently streams all 500,000 canonical rows, recomputes their SHA-256, verifies
 the exact seven-source quotas, rejects duplicate queries or positive/negative overlap, and requires
 seven distinct seeded choices from each ten-negative candidate pool. It also reloads the materialized
-Hugging Face Dataset and checks its row count, columns, and fingerprint.
+Hugging Face Dataset, checks its row count, columns, and fingerprint, then reconstructs the fixed
+ten-column training view and requires every completion record to match that exact view fingerprint.
 Wall time, Trainer throughput, CUDA memory peaks, checkpoint/optimizer-state sizes, GPU identity, and
 the five key package versions are required and checked for finite values and cross-run consistency.
 

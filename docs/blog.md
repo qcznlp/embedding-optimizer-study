@@ -69,7 +69,10 @@ proportionally over the 1,046,024 query IDs present in both tables:
 The materialized dataset records source revisions, quotas, every selected document ID, the Hugging Face
 Dataset fingerprint, and a canonical row-manifest SHA-256. The dataset used for this study has on-disk
 fingerprint `8a489098f9729d86` and row-manifest SHA-256
-`735ef35b7195f3dae3172496b5bc534d39f2b7594d216c685eaebb37134fc347`.
+`735ef35b7195f3dae3172496b5bc534d39f2b7594d216c685eaebb37134fc347`. Loading that artifact and
+selecting the fixed nine text fields plus the length field produces training-view fingerprint
+`cc0598ffd4f5454f`; every run records this second fingerprint so the final audit can prove that both
+model families saw the identical view.
 
 ### Optimizer sweep
 

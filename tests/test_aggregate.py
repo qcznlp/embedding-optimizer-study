@@ -547,6 +547,18 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         "errors": [],
     }
 
+    exact_dataset_view = audit_training_artifacts(
+        [config], expected_dataset_fingerprint="dataset-fingerprint"
+    )
+    assert exact_dataset_view["complete"] is True
+    wrong_dataset_view = audit_training_artifacts(
+        [config], expected_dataset_fingerprint="different-fingerprint"
+    )
+    assert wrong_dataset_view["complete"] is False
+    assert wrong_dataset_view["errors"] == [
+        "dense/adamw-test: training dataset view fingerprint differs from audited dataset"
+    ]
+
     import torch
     from safetensors.torch import save_file
 
