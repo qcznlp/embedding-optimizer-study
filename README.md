@@ -169,8 +169,8 @@ final model and Trainer state.
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.
-- PyTorch's fused Muon functional kernel and an in-repository NorMuon update matched to the official
-  implementation at commit `c6989a8354730695d9f5a9faa6c55eeb24865209`.
+- PyTorch's native Muon functional implementation and an in-repository NorMuon update matched to the
+  official implementation at commit `c6989a8354730695d9f5a9faa6c55eeb24865209`.
 - Dynamic per-column padding for the nine explicit contrastive fields; no global padding to 8,192.
 - Fused Late Interaction Kernels MaxSim scoring during training.
 - Length-grouped training and token-budget-packed evaluation with automatic OOM backoff.
