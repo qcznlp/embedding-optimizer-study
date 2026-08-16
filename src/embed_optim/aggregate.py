@@ -7,6 +7,7 @@ import csv
 import hashlib
 import json
 import math
+import random
 import re
 import statistics
 from collections import Counter, defaultdict
@@ -1061,6 +1062,73 @@ def _task_comparison(rows: list[dict], optimizer_rows: list[dict]) -> list[dict]
     return output
 
 
+def _percentile(sorted_values: list[float], probability: float) -> float:
+    if not sorted_values:
+        raise ValueError("Cannot calculate a percentile of an empty sample")
+    position = (len(sorted_values) - 1) * probability
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return sorted_values[lower]
+    weight = position - lower
+    return sorted_values[lower] * (1 - weight) + sorted_values[upper] * weight
+
+
+def _paired_comparisons(
+    task_rows: list[dict], bootstrap_samples: int = 20_000, seed: int = 42
+) -> list[dict]:
+    """Summarize best-config task deltas with deterministic paired uncertainty."""
+
+    if bootstrap_samples < 1:
+        raise ValueError("bootstrap_samples must be positive")
+    output = []
+    for family in ("dense", "late"):
+        family_rows = [row for row in task_rows if row["model_family"] == family]
+        if not family_rows:
+            raise ValueError(f"No paired task rows for {family}")
+        for optimizer in ("muon", "normuon"):
+            deltas = [float(row[f"{optimizer}_minus_adamw"]) for row in family_rows]
+            wins = sum(delta > 1e-12 for delta in deltas)
+            losses = sum(delta < -1e-12 for delta in deltas)
+            ties = len(deltas) - wins - losses
+            nonties = wins + losses
+            if nonties:
+                tail = (
+                    sum(math.comb(nonties, count) for count in range(min(wins, losses) + 1))
+                    / 2**nonties
+                )
+                sign_p = min(1.0, 2 * tail)
+            else:
+                sign_p = 1.0
+
+            identity = f"{seed}/{family}/{optimizer}".encode()
+            stable_seed = int.from_bytes(hashlib.blake2b(identity, digest_size=8).digest(), "big")
+            generator = random.Random(stable_seed)
+            means = sorted(
+                sum(deltas[generator.randrange(len(deltas))] for _ in deltas) / len(deltas)
+                for _ in range(bootstrap_samples)
+            )
+            output.append(
+                {
+                    "model_family": family,
+                    "optimizer": optimizer,
+                    "baseline": "adamw",
+                    "tasks": len(deltas),
+                    "wins": wins,
+                    "ties": ties,
+                    "losses": losses,
+                    "mean_delta": statistics.mean(deltas),
+                    "median_delta": statistics.median(deltas),
+                    "bootstrap_ci_95_lower": _percentile(means, 0.025),
+                    "bootstrap_ci_95_upper": _percentile(means, 0.975),
+                    "bootstrap_samples": bootstrap_samples,
+                    "bootstrap_seed": seed,
+                    "exact_sign_test_p_value": sign_p,
+                }
+            )
+    return output
+
+
 def _system_summaries(rows: list[dict]) -> list[dict]:
     grouped: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for row in rows:
@@ -1169,7 +1237,10 @@ def _format_lr(value: float) -> str:
 
 
 def _render_results(
-    optimizer_rows: list[dict], best_dynamics: list[dict], task_rows: list[dict]
+    optimizer_rows: list[dict],
+    best_dynamics: list[dict],
+    task_rows: list[dict],
+    paired_rows: list[dict],
 ) -> str:
     final_table = _markdown_table(
         [
@@ -1215,6 +1286,21 @@ def _render_results(
         ],
     )
 
+    paired_table = _markdown_table(
+        ["Family", "Comparison", "W/T/L", "Mean Δ", "Paired bootstrap 95% CI", "Sign p"],
+        [
+            [
+                row["model_family"],
+                f"{row['optimizer']} − AdamW",
+                f"{row['wins']}/{row['ties']}/{row['losses']}",
+                f"{row['mean_delta']:+.4f}",
+                f"[{row['bootstrap_ci_95_lower']:+.4f}, {row['bootstrap_ci_95_upper']:+.4f}]",
+                f"{row['exact_sign_test_p_value']:.4g}",
+            ]
+            for row in paired_rows
+        ],
+    )
+
     winners = []
     for family in ("dense", "late"):
         candidates = [row for row in optimizer_rows if row["model_family"] == family]
@@ -1224,13 +1310,17 @@ def _render_results(
         family_tasks = [row for row in task_rows if row["model_family"] == family]
         paired = []
         for optimizer in ("muon", "normuon"):
-            deltas = [row[f"{optimizer}_minus_adamw"] for row in family_tasks]
-            wins = sum(delta > 0 for delta in deltas)
-            ties = sum(math.isclose(delta, 0, rel_tol=0, abs_tol=1e-12) for delta in deltas)
+            comparison = next(
+                row
+                for row in paired_rows
+                if row["model_family"] == family and row["optimizer"] == optimizer
+            )
             paired.append(
-                f"{optimizer} beats AdamW on {wins}/{len(deltas)} tasks"
-                + (f" ({ties} ties)" if ties else "")
-                + f", median Δ={statistics.median(deltas):+.4f}"
+                f"{optimizer} beats AdamW on {comparison['wins']}/{len(family_tasks)} tasks"
+                + (f" ({comparison['ties']} ties)" if comparison["ties"] else "")
+                + f", mean Δ={comparison['mean_delta']:+.4f} "
+                f"(95% CI [{comparison['bootstrap_ci_95_lower']:+.4f}, "
+                f"{comparison['bootstrap_ci_95_upper']:+.4f}])"
             )
         winners.append(
             f"- **{family.capitalize()}:** best tuned final score is "
@@ -1273,12 +1363,16 @@ def _render_results(
             "![Dense training dynamics](../reports/figures/dense-training-dynamics.png)\n\n"
             "![Late-interaction training dynamics](../reports/figures/late-training-dynamics.png)",
             "### Dynamics of each optimizer's best final configuration\n\n" + dynamics_table,
+            "### Paired best-config task effects\n\n" + paired_table,
             "![Dense learning-rate sensitivity](../reports/figures/dense-lr-sensitivity.png)\n\n"
             "![Late-interaction learning-rate sensitivity](../reports/figures/late-lr-sensitivity.png)",
             "### Per-task final scores for the best configuration of each optimizer",
             *per_task_sections,
             "The best-LR comparisons are selected on this same benchmark suite and should therefore "
             "be read as controlled exploratory results, not as an unbiased model-selection estimate. "
+            "Paired intervals use 20,000 deterministic task-level bootstrap resamples; the sign-test "
+            "p-value is exact after excluding ties. BEIR tasks are heterogeneous and not independent "
+            "draws, so these are descriptive uncertainty summaries rather than population inference. "
             "The four-LR mean, spread, and complete per-task rows are included to expose sensitivity "
             "rather than reporting only the winning point. Trajectory AUC is the normalized "
             "trapezoidal mean nDCG@10 over the observed 20%–100% checkpoint window; it measures "
@@ -1344,11 +1438,14 @@ def render_blog(
     optimizer_rows: list[dict],
     best_dynamics: list[dict],
     task_rows: list[dict],
+    paired_rows: list[dict],
     system_rows: list[dict],
 ) -> None:
     text = blog_path.read_text()
     text = _replace_marked(
-        text, RESULTS_MARKERS, _render_results(optimizer_rows, best_dynamics, task_rows)
+        text,
+        RESULTS_MARKERS,
+        _render_results(optimizer_rows, best_dynamics, task_rows, paired_rows),
     )
     text = _replace_marked(text, SYSTEMS_MARKERS, _render_systems(system_rows))
     text = text.replace(
@@ -1420,6 +1517,7 @@ def aggregate(args: argparse.Namespace) -> None:
     training_audit = audit_training_artifacts(configs)
     coverage = _coverage(rows, summary, configs, contract_audit, dataset_audit, training_audit)
     task_rows = _task_comparison(rows, optimizer_rows) if coverage["complete"] else []
+    paired_rows = _paired_comparisons(task_rows) if coverage["complete"] else []
 
     output = Path(args.output_dir)
     _write_csv(output / "evaluation_long.csv", rows)
@@ -1427,6 +1525,7 @@ def aggregate(args: argparse.Namespace) -> None:
     _write_csv(output / "optimizer_summary.csv", optimizer_rows)
     _write_csv(output / "best_config_dynamics.csv", best_dynamics)
     _write_csv(output / "best_config_task_comparison.csv", task_rows)
+    _write_csv(output / "paired_comparison.csv", paired_rows)
     _write_csv(output / "training_history.csv", collect_training_history(configs))
     _write_csv(output / "system_metrics.csv", system_metrics)
     _write_csv(output / "system_summary.csv", system_rows)
@@ -1435,7 +1534,9 @@ def aggregate(args: argparse.Namespace) -> None:
     print(json.dumps({key: value for key, value in coverage.items() if key != "missing"}, indent=2))
 
     if coverage["complete"] and not args.no_render_blog:
-        render_blog(Path(args.blog), optimizer_rows, best_dynamics, task_rows, system_rows)
+        render_blog(
+            Path(args.blog), optimizer_rows, best_dynamics, task_rows, paired_rows, system_rows
+        )
     if args.strict and not coverage["complete"]:
         raise RuntimeError("Evaluation matrix is incomplete; see coverage.json")
 

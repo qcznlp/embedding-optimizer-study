@@ -11,6 +11,7 @@ from embed_optim.aggregate import (
     _contains_run_id,
     _dataset_rows_audit,
     _optimizer_summaries,
+    _paired_comparisons,
     _render_results,
     _render_systems,
     _replace_marked,
@@ -207,10 +208,23 @@ def test_result_render_reports_auc_and_paired_task_counts():
                 }
             )
 
-    rendered = _render_results(optimizer_rows, dynamics, task_rows)
+    paired_rows = _paired_comparisons(task_rows, bootstrap_samples=1_000)
+    rendered = _render_results(optimizer_rows, dynamics, task_rows, paired_rows)
     assert "4-LR trajectory AUC" in rendered
     assert "muon beats AdamW on 14/14 tasks" in rendered
     assert "normuon beats AdamW on 0/14 tasks" in rendered
+    assert "Paired bootstrap 95% CI" in rendered
+    muon = next(
+        row for row in paired_rows if row["model_family"] == "dense" and row["optimizer"] == "muon"
+    )
+    assert muon["wins"] == 14
+    assert muon["ties"] == 0
+    assert muon["losses"] == 0
+    assert muon["mean_delta"] == pytest.approx(0.01)
+    assert muon["bootstrap_ci_95_lower"] == pytest.approx(0.01)
+    assert muon["bootstrap_ci_95_upper"] == pytest.approx(0.01)
+    assert muon["exact_sign_test_p_value"] == pytest.approx(2 / 2**14)
+    assert paired_rows == _paired_comparisons(task_rows, bootstrap_samples=1_000)
 
 
 def test_system_metrics_add_audited_prior_training_segment(tmp_path):

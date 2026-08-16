@@ -115,7 +115,10 @@ TREC-COVID, and Touche2020. Dataset commits are pinned in source. The primary ag
 unweighted mean of each task's main nDCG@10 score. Final reporting also includes the normalized
 trapezoidal area under the five-checkpoint quality curve over the observed 20%–100% window,
 four-learning-rate dispersion, best-configuration paired task wins, and measured training throughput
-relative to AdamW.
+relative to AdamW. For each best-config Muon/AdamW and NorMuon/AdamW comparison, we report the mean
+task delta with a deterministic seed-42, 20,000-resample paired task bootstrap 95% interval and an
+exact two-sided sign-test p-value after excluding ties. These are descriptive summaries: the optimizer LR
+is selected on the same suite, and the 14 heterogeneous BEIR tasks are not independent draws.
 
 Dense retrieval is evaluated with MTEB exact retrieval. Late interaction is encoded with PyLate and
 searched with FastPLAID using 4-bit residuals, 8 IVF probes, 8,192 full scores, and index seed 42.
