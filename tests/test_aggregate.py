@@ -68,11 +68,21 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         model_family="dense",
         optimizer=OptimizerConfig(name="adamw", lr=1e-6),
         model_name="model",
-        dataset_path="data",
+        dataset_path=str(tmp_path / "shared-data"),
         output_root=str(tmp_path),
     )
     output = config.output_dir
     output.mkdir(parents=True)
+    dataset = Path(config.dataset_path)
+    dataset.mkdir()
+    manifest = {
+        "total_queries": 10,
+        "dataset_fingerprint": "dataset-fingerprint",
+        "row_manifest_sha256": "row-sha256",
+    }
+    (dataset / "manifest.json").write_text(json.dumps(manifest))
+    (output / "dataset_manifest.json").write_text(json.dumps(manifest))
+    (output / "run_config.json").write_text(json.dumps(config.as_dict()))
     steps = [2, 4, 6, 8, 10]
     (output / "checkpoint_schedule.json").write_text(json.dumps({"steps": steps}))
     (output / "completed.json").write_text(
@@ -80,7 +90,16 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
             {
                 "global_step": 10,
                 "checkpoints": steps,
-                "system_metrics": {"world_size": 2},
+                "run_id": config.run_id,
+                "model_family": config.model_family,
+                "dataset_rows": 10,
+                "dataset_fingerprint": "dataset-fingerprint",
+                "optimizer_partition": {
+                    "hidden": {"tensors": 1, "parameters": 4},
+                    "aux_decay": {"tensors": 1, "parameters": 2},
+                    "aux_no_decay": {"tensors": 1, "parameters": 1},
+                },
+                "system_metrics": {"world_size": 4},
             }
         )
     )
@@ -116,6 +135,8 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         (checkpoint / "model.safetensors").write_bytes(b"model")
         (checkpoint / "rng_state_0.pth").write_bytes(b"rng")
         (checkpoint / "rng_state_1.pth").write_bytes(b"rng")
+        (checkpoint / "rng_state_2.pth").write_bytes(b"rng")
+        (checkpoint / "rng_state_3.pth").write_bytes(b"rng")
 
     complete = audit_training_artifacts([config])
     assert complete == {
@@ -159,4 +180,16 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     assert non_finite["verified_checkpoints"] == 4
     assert non_finite["errors"] == [
         "dense/adamw-test/checkpoint-8: loss-history loss is non-finite at step 8"
+    ]
+
+    (output / "checkpoint-8" / "trainer_state.json").write_text(
+        json.dumps({"global_step": 8, "log_history": [{"step": 8, "loss": 0.5}]})
+    )
+    completed = json.loads((output / "completed.json").read_text())
+    completed["dataset_fingerprint"] = "different-fingerprint"
+    (output / "completed.json").write_text(json.dumps(completed))
+    wrong_dataset = audit_training_artifacts([config])
+    assert wrong_dataset["verified_checkpoints"] == 5
+    assert wrong_dataset["errors"] == [
+        "dense/adamw-test: completion dataset fingerprint does not match manifest"
     ]

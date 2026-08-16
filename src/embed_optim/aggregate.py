@@ -58,6 +58,7 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
     errors: list[str] = []
     verified_runs = 0
     verified_checkpoints = 0
+    partition_by_family: dict[str, dict] = {}
     for config in configs:
         label = f"{config.model_family}/{config.run_id}"
         output = config.output_dir
@@ -65,6 +66,9 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
         completed_path = output / "completed.json"
         final_state_path = output / "trainer_state_final.json"
         final_model_path = output / "final"
+        run_config_path = output / "run_config.json"
+        source_manifest_path = Path(config.dataset_path) / "manifest.json"
+        run_manifest_path = output / "dataset_manifest.json"
         if not schedule_path.is_file():
             errors.append(f"{label}: missing checkpoint_schedule.json")
             continue
@@ -79,6 +83,37 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
                 f"{label}: expected five strictly increasing checkpoint steps, got {steps}"
             )
             continue
+        if not run_config_path.is_file():
+            errors.append(f"{label}: missing run_config.json")
+        else:
+            try:
+                run_config = json.loads(run_config_path.read_text())
+            except json.JSONDecodeError as error:
+                errors.append(f"{label}: invalid run_config.json ({error})")
+            else:
+                expected_config = json.loads(json.dumps(config.as_dict()))
+                if run_config != expected_config:
+                    errors.append(f"{label}: resolved run config differs from matrix")
+
+        source_manifest: dict = {}
+        if not source_manifest_path.is_file():
+            errors.append(f"{label}: missing source dataset manifest")
+        else:
+            try:
+                source_manifest = json.loads(source_manifest_path.read_text())
+            except json.JSONDecodeError as error:
+                errors.append(f"{label}: invalid source dataset manifest ({error})")
+        if not run_manifest_path.is_file():
+            errors.append(f"{label}: missing copied dataset manifest")
+        else:
+            try:
+                run_manifest = json.loads(run_manifest_path.read_text())
+            except json.JSONDecodeError as error:
+                errors.append(f"{label}: invalid copied dataset manifest ({error})")
+            else:
+                if source_manifest and run_manifest != source_manifest:
+                    errors.append(f"{label}: copied dataset manifest differs from source")
+
         completed: dict = {}
         if not completed_path.is_file():
             errors.append(f"{label}: missing completed.json")
@@ -94,6 +129,31 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
                 and sorted(int(step) for step in completed.get("checkpoints", [])) != steps
             ):
                 errors.append(f"{label}: completion checkpoint list does not match schedule")
+            if completed and completed.get("run_id") != config.run_id:
+                errors.append(f"{label}: completion run_id does not match matrix")
+            if completed and completed.get("model_family") != config.model_family:
+                errors.append(f"{label}: completion model family does not match matrix")
+            if completed and source_manifest:
+                if completed.get("dataset_rows") != source_manifest.get("total_queries"):
+                    errors.append(f"{label}: completion dataset row count does not match manifest")
+                if completed.get("dataset_fingerprint") != source_manifest.get(
+                    "dataset_fingerprint"
+                ):
+                    errors.append(
+                        f"{label}: completion dataset fingerprint does not match manifest"
+                    )
+            if completed:
+                partition = completed.get("optimizer_partition")
+                if not isinstance(partition, dict) or set(partition) != {
+                    "hidden",
+                    "aux_decay",
+                    "aux_no_decay",
+                }:
+                    errors.append(f"{label}: missing/invalid optimizer parameter partition")
+                elif config.model_family not in partition_by_family:
+                    partition_by_family[config.model_family] = partition
+                elif partition != partition_by_family[config.model_family]:
+                    errors.append(f"{label}: optimizer parameter partition differs within family")
         if not final_state_path.is_file():
             errors.append(f"{label}: missing trainer_state_final.json")
         else:
@@ -104,7 +164,10 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
         ):
             errors.append(f"{label}: missing final safetensors model")
 
-        world_size = int(completed.get("system_metrics", {}).get("world_size", 4))
+        recorded_world_size = completed.get("system_metrics", {}).get("world_size")
+        if completed and recorded_world_size != 4:
+            errors.append(f"{label}: expected completion world_size 4, got {recorded_world_size}")
+        world_size = 4
         run_checkpoint_errors = 0
         for step in steps:
             checkpoint = output / f"checkpoint-{step}"
