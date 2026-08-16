@@ -184,8 +184,8 @@ the five key package versions are required and checked for finite values and cro
 - Dynamic per-column padding for the nine explicit contrastive fields; no global padding to 8,192.
 - Fused Late Interaction Kernels MaxSim scoring during training.
 - Length-grouped training and token-budget-packed evaluation with automatic OOM backoff.
-- Concurrent four-GPU pools with work-stealing for both training and evaluation, plus resumable
-  per-task evaluation caches.
+- Concurrent four-GPU pools with work-stealing for both training and evaluation, corpus-size-aware
+  longest-processing-time-first task scheduling, and resumable split/subset-aware evaluation caches.
 
 The narrow compatibility shims in [`pylate_compat.py`](src/embed_optim/pylate_compat.py) make PyLate
 1.6 work with SentenceTransformers 5.7 without changing scoring semantics. A checkpoint smoke test

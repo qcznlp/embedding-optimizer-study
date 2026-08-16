@@ -39,7 +39,35 @@ DECONTAMINATED_BEIR: dict[str, tuple[str, str]] = {
     ),
 }
 
+# Exact eval-corpus row counts at the pinned revisions above. Evaluation workers
+# use these only for longest-processing-time-first scheduling; scoring semantics
+# and dataset contents still come from the pinned Hub snapshots.
+DECONTAMINATED_CORPUS_SIZES: dict[str, int] = {
+    "ArguAna": 8_546,
+    "ClimateFEVER": 5_117_453,
+    "DBPedia": 1_678_309,
+    "FEVER": 5_117_452,
+    "FiQA2018": 47_617,
+    "HotpotQA": 2_314_813,
+    "MSMARCO": 4_036_967,
+    "NFCorpus": 912,
+    "NQ": 305_674,
+    "QuoraRetrieval": 413_157,
+    "SCIDOCS": 5_833,
+    "SciFact": 858,
+    "TRECCOVID": 99_522,
+    "Touche2020": 378_223,
+}
+
 DECONTAMINATED_TASK_NAMES = tuple(DECONTAMINATED_BEIR)
+
+
+def decontaminated_corpus_size(task_name: str) -> int:
+    """Return the pinned eval-corpus row count for a base or suffixed task name."""
+
+    suffix = "Decontaminated"
+    base_name = task_name[: -len(suffix)] if task_name.endswith(suffix) else task_name
+    return DECONTAMINATED_CORPUS_SIZES[base_name]
 
 
 def _configure_legacy_beir_layout() -> None:
