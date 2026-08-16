@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 
 from embed_optim.decontamination import (
@@ -17,6 +19,17 @@ def test_pinned_corpus_sizes_cover_the_suite():
     assert set(DECONTAMINATED_CORPUS_SIZES) == set(DECONTAMINATED_BEIR)
     assert sum(DECONTAMINATED_CORPUS_SIZES.values()) == 19_525_336
     assert decontaminated_corpus_size("SciFactDecontaminated") == 858
+
+
+def test_blog_records_exact_pinned_evaluation_inputs():
+    blog = (Path(__file__).parents[1] / "docs" / "blog.md").read_text()
+    for task_name, (dataset_path, revision) in DECONTAMINATED_BEIR.items():
+        split = "dev" if task_name == "MSMARCO" else "test"
+        expected_row = (
+            f"| {task_name} | `{dataset_path}` | `{revision}` | {split} | "
+            f"{DECONTAMINATED_CORPUS_SIZES[task_name]:,} |"
+        )
+        assert expected_row in blog
 
 
 def test_decontaminated_task_preserves_protocol_and_replaces_dataset():
