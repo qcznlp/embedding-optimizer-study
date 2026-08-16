@@ -183,6 +183,10 @@ evaluation time, and nDCG@10 main score. Its recorded evaluation runtime must ma
 result and the corresponding training runtime. Model metadata must independently record the 8,192
 token limit and the expected representation/scorer pair (768-dimensional cosine for DenseOn;
 128-dimensional PyLate MaxSim for LateOn).
+It also verifies the matrix itself against the frozen 24-run experimental contract: exact base models
+and revisions, both model families, all optimizer/LR combinations, the shared data and seed, batch and
+8,192-token settings, optimizer hyperparameters, and five checkpoint fractions. Thus a modified but
+internally self-consistent matrix cannot satisfy the final completion gate.
 The dataset gate independently streams all 500,000 canonical rows, recomputes their SHA-256, verifies
 the exact seven-source quotas, rejects duplicate queries or positive/negative overlap, and requires
 seven distinct seeded choices from each ten-negative candidate pool. It also reloads the materialized

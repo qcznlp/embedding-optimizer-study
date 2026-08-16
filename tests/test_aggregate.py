@@ -1,6 +1,7 @@
 import hashlib
 import json
 import shutil
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -16,11 +17,12 @@ from embed_optim.aggregate import (
     _system_summaries,
     _trajectory_auc,
     audit_dataset_artifacts,
+    audit_experiment_contract,
     audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
 )
-from embed_optim.config import OptimizerConfig, RunConfig
+from embed_optim.config import OptimizerConfig, RunConfig, load_matrix
 from embed_optim.decontamination import DECONTAMINATED_BEIR
 
 
@@ -74,6 +76,18 @@ def test_dataset_audit_rejects_more_than_one_training_dataset(tmp_path):
     audit = audit_dataset_artifacts(configs)
     assert not audit["complete"]
     assert "expected one shared dataset path" in audit["errors"][0]
+
+
+def test_experiment_contract_accepts_matrix_and_rejects_semantic_drift():
+    configs = load_matrix("configs/experiment.yaml")
+    audit = audit_experiment_contract(configs)
+    assert audit["complete"]
+    assert audit["observed_runs"] == audit["expected_runs"] == 24
+
+    changed = [replace(configs[0], max_length=512), *configs[1:]]
+    invalid = audit_experiment_contract(changed)
+    assert not invalid["complete"]
+    assert any("max_length" in error for error in invalid["errors"])
 
 
 def test_optimizer_summary_reports_observed_auc_and_lr_robustness():
