@@ -122,8 +122,9 @@ Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
 across four GPUs. Late-interaction evaluation uses PyLate for multivector encoding, the fused
 Late Interaction Kernels scorer during training, and FastPLAID retrieval during evaluation.
-Evaluation caches are resumable, so an interrupted command computes only missing task/checkpoint
-pairs.
+GPU 4–7 begin the LateOn checkpoint queue while GPU 0–3 run dense evaluation; when dense evaluation
+finishes, GPU 0–3 automatically join the remaining LateOn queue. Evaluation caches are resumable, so
+an interrupted command computes only missing task/checkpoint pairs.
 
 For a targeted evaluation:
 
@@ -154,7 +155,8 @@ systems sections in `docs/blog.md`. `--strict` fails unless the entire matrix is
 - Dynamic per-column padding for the nine explicit contrastive fields; no global padding to 8,192.
 - Fused Late Interaction Kernels MaxSim scoring during training.
 - Length-grouped training and token-budget-packed evaluation with automatic OOM backoff.
-- Concurrent four-GPU pools and resumable per-task evaluation caches.
+- Concurrent four-GPU pools with work-stealing for both training and evaluation, plus resumable
+  per-task evaluation caches.
 
 The narrow compatibility shims in [`pylate_compat.py`](src/embed_optim/pylate_compat.py) make PyLate
 1.6 work with SentenceTransformers 5.7 without changing scoring semantics. A checkpoint smoke test

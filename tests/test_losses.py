@@ -15,8 +15,7 @@ def test_dense_loss_uses_only_each_queries_own_group():
     queries = {"values": torch.tensor([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])}
     positive = {"values": torch.tensor([[1.0, 0.0, 0.0], [0.6, 0.8, 0.0]])}
     negatives = [
-        {"values": torch.tensor([[0.0, 1.0, 0.0], [0.8, 0.2, 0.565685]])}
-        for _ in range(7)
+        {"values": torch.tensor([[0.0, 1.0, 0.0], [0.8, 0.2, 0.565685]])} for _ in range(7)
     ]
     baseline = loss([queries, positive, *negatives])
 
