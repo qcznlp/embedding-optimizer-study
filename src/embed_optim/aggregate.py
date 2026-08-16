@@ -125,6 +125,7 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
     partition_by_family: dict[str, dict] = {}
     versions_reference: dict | None = None
     gpu_name_reference: str | None = None
+    dataset_fingerprint_reference: str | None = None
     for config in configs:
         label = f"{config.model_family}/{config.run_id}"
         output = config.output_dir
@@ -203,13 +204,14 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
             if completed and source_manifest:
                 if completed.get("dataset_rows") != source_manifest.get("total_queries"):
                     errors.append(f"{label}: completion dataset row count does not match manifest")
-                if completed.get("dataset_fingerprint") != source_manifest.get(
-                    "dataset_fingerprint"
-                ):
-                    errors.append(
-                        f"{label}: completion dataset fingerprint does not match manifest"
-                    )
             if completed:
+                dataset_fingerprint = completed.get("dataset_fingerprint")
+                if not isinstance(dataset_fingerprint, str) or not dataset_fingerprint:
+                    errors.append(f"{label}: missing/invalid training dataset view fingerprint")
+                elif dataset_fingerprint_reference is None:
+                    dataset_fingerprint_reference = dataset_fingerprint
+                elif dataset_fingerprint != dataset_fingerprint_reference:
+                    errors.append(f"{label}: training dataset view fingerprint differs across runs")
                 raw_system_metrics = completed.get("system_metrics")
                 if isinstance(raw_system_metrics, dict):
                     completion_system_metrics = raw_system_metrics
