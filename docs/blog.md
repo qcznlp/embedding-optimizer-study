@@ -150,6 +150,11 @@ private at the user's request and is structured for a later public release. The
 resolved run configurations. Local evaluation artifacts are reduced by `embed-optim-aggregate`, which
 also checks expected matrix coverage before the results section is generated.
 
+Checkpoint resumes can make an SDK run contain repeated optimizer steps even when the local Trainer
+state is correct. For the final dashboard, `embed-optim-sync-wandb` therefore publishes one immutable,
+content-addressed canonical history from every completed Trainer state. Raw resume segments are kept
+for system telemetry; no source run is deleted.
+
 ## References
 
 - Sourty et al., [DenseOn with the LateOn](https://arxiv.org/abs/2607.27178), 2026.

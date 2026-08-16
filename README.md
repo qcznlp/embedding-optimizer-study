@@ -113,6 +113,18 @@ logit matrix. Four-GPU microbatches contain 32 examples and accumulate four time
 microbatches is not divisible by four, the last of 3,907 optimizer steps contains one microbatch and
 all 500,000 examples are consumed exactly once.
 
+After all runs finish, publish deterministic canonical W&B curves reconstructed from each final
+Trainer state:
+
+```bash
+embed-optim-sync-wandb --matrix configs/experiment.yaml
+```
+
+The canonical run ID is content-addressed by the normalized history. Re-running the command verifies
+and skips an identical remote run, while checkpoint-resume segments remain available as raw system
+telemetry. This avoids backward or duplicated optimizer steps in the comparison dashboard without
+deleting source runs.
+
 ### 3. Evaluate every checkpoint
 
 ```bash
