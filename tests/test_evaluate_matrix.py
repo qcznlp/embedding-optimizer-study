@@ -1,7 +1,10 @@
+import importlib
 import json
 from argparse import Namespace
 from pathlib import Path
 from types import SimpleNamespace
+
+import pytest
 
 from embed_optim import evaluate_matrix
 from embed_optim.evaluation_utils import (
@@ -206,7 +209,6 @@ def test_task_result_remaining_requires_every_split_and_subset(tmp_path):
 
 
 def test_dense_decontaminated_cache_uses_result_task_name(monkeypatch):
-    import importlib
     import sys
 
     eval_dir = Path(__file__).resolve().parents[1] / "scripts" / "eval"
@@ -243,3 +245,41 @@ def test_dense_decontaminated_cache_uses_result_task_name(monkeypatch):
     assert model.model_card_data.model_name == "adamw-lr1e-6/checkpoint-782"
     assert model.model_card_data.base_model_revision == "local"
     sys.modules.pop("dense_parallel", None)
+
+
+def _late_evaluation_module(monkeypatch):
+    eval_dir = Path(__file__).resolve().parents[1] / "scripts" / "eval"
+    monkeypatch.syspath_prepend(str(eval_dir))
+    return importlib.import_module("late_interaction")
+
+
+def test_late_temporary_file_cleanup_is_idempotent(tmp_path, monkeypatch):
+    late = _late_evaluation_module(monkeypatch)
+    files = [tmp_path / "result.pkl", tmp_path / "result.pkl.ready"]
+    for path in files:
+        path.write_text("temporary")
+
+    late.remove_temporary_files([*files, tmp_path / "already-missing"])
+    late.remove_temporary_files(files)
+    assert not any(path.exists() for path in files)
+
+
+def test_late_auto_index_cleanup_runs_when_retrieval_fails(tmp_path, monkeypatch):
+    late = _late_evaluation_module(monkeypatch)
+    model = object.__new__(late.AccelerateMultiVectorModel)
+    model._index_autodelete = True
+    model._index_dir = tmp_path / "mteb-index-failed"
+    model._index_name = "index"
+    model._index_dir.mkdir()
+    (model._index_dir / "partial-index").write_bytes(b"partial")
+
+    def fail(*args, **kwargs):
+        raise RuntimeError("injected retrieval failure")
+
+    monkeypatch.setattr(model, "_index_and_retrieve_impl", fail)
+    with pytest.raises(RuntimeError, match="injected retrieval failure"):
+        model._index_and_retrieve({}, [], [], 10)
+
+    assert not (tmp_path / "mteb-index-failed").exists()
+    assert model._index_dir is None
+    assert model._index_name is None
