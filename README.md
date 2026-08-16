@@ -169,6 +169,9 @@ systems sections in `docs/blog.md`. `--strict` fails unless the entire evaluatio
 and all 24 runs have five non-empty, step-consistent model/optimizer/scheduler/RNG checkpoints plus a
 final model and Trainer state. Checkpoint loss histories must also have unique increasing steps and
 finite loss, gradient-norm, learning-rate, and epoch values.
+The same gate verifies each resolved run config against the matrix, checks the copied dataset manifest,
+row count and fingerprint against the shared source, requires four recorded ranks, and enforces an
+identical parameter partition across learning rates and optimizers within each model family.
 
 ## Performance engineering
 
