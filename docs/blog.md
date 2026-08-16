@@ -196,13 +196,20 @@ from the completed W&B runs and local Trainer states.
 Infrastructure note: the first DenseOn Muon run encountered two pre-checkpoint
 `CUBLAS_STATUS_EXECUTION_FAILED` errors in PyTorch's native bfloat16 Newton–Schulz `addmm`, both on
 physical GPU 3 (at optimizer steps 52 and 388). ECC counters remained zero, but moving that device
-from the DenseOn pool to the concurrent AdamW LateOn pool eliminated the failure past both observed
+from the DenseOn pool to the concurrent AdamW LateOn pool let the replacement run pass both observed
 positions without changing the Muon implementation, precision, hyperparameters, model state, or data
-order. The failed DenseOn attempts occurred before checkpoint 782 and were discarded; the accepted
-run starts from the original base model and seed. LateOn resumed from its last complete checkpoint at
-step 2,345. Its reported throughput combines only the non-overlapping useful segments through that
-checkpoint and after resume, while duplicated work after step 2,345 is treated as infrastructure
-overhead rather than optimizer throughput.
+order. Those failed attempts occurred before checkpoint 782 and were discarded; the accepted run
+starts from the original base model and seed.
+
+The replacement run later encountered a third transient failure at step 2,354, nine steps after its
+validated checkpoint at step 2,345. This time rank 2 (physical GPU 2 in the swapped pool) reported an
+asynchronous CUDA launch failure through the NCCL watchdog, without an application traceback that
+identified the originating kernel. The recovery supervisor resumed DenseOn from checkpoint 2,345 and
+the concurrent LateOn run from checkpoint 3,126; both passed their interruption points. DenseOn's
+reported throughput sums the accepted segment through step 2,345 and the final segment after that
+checkpoint. LateOn analogously sums its non-overlapping segments through step 3,126 and the final
+segment. Repeated post-checkpoint steps, failed pre-checkpoint attempts, restart initialization, and
+downtime are retained as infrastructure evidence but excluded from optimizer-throughput comparisons.
 
 ## Limitations
 
