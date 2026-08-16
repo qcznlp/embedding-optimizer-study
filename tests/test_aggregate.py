@@ -84,7 +84,9 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
             }
         )
     )
-    (output / "trainer_state_final.json").write_text(json.dumps({"global_step": 10}))
+    (output / "trainer_state_final.json").write_text(
+        json.dumps({"global_step": 10, "log_history": [{"step": 10, "loss": 0.5}]})
+    )
     final = output / "final"
     final.mkdir()
     (final / "model.safetensors").write_bytes(b"model")
@@ -94,7 +96,22 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         (checkpoint / "config.json").write_text("{}")
         (checkpoint / "optimizer.pt").write_bytes(b"optimizer")
         (checkpoint / "scheduler.pt").write_bytes(b"scheduler")
-        (checkpoint / "trainer_state.json").write_text(json.dumps({"global_step": step}))
+        (checkpoint / "trainer_state.json").write_text(
+            json.dumps(
+                {
+                    "global_step": step,
+                    "log_history": [
+                        {
+                            "step": step,
+                            "loss": 0.5,
+                            "grad_norm": 1.0,
+                            "learning_rate": 1e-5,
+                            "epoch": step / 10,
+                        }
+                    ],
+                }
+            )
+        )
         (checkpoint / "training_args.bin").write_bytes(b"args")
         (checkpoint / "model.safetensors").write_bytes(b"model")
         (checkpoint / "rng_state_0.pth").write_bytes(b"rng")
@@ -116,3 +133,30 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     assert incomplete["verified_runs"] == 0
     assert incomplete["verified_checkpoints"] == 4
     assert incomplete["errors"] == ["dense/adamw-test/checkpoint-6: missing/empty scheduler.pt"]
+
+    (output / "checkpoint-6" / "scheduler.pt").write_bytes(b"scheduler")
+    (output / "checkpoint-8" / "trainer_state.json").write_text(
+        json.dumps(
+            {
+                "global_step": 8,
+                "log_history": [
+                    {"step": 4, "loss": 0.8},
+                    {"step": 4, "loss": 0.7},
+                ],
+            }
+        )
+    )
+    duplicate = audit_training_artifacts([config])
+    assert duplicate["verified_checkpoints"] == 4
+    assert duplicate["errors"] == [
+        "dense/adamw-test/checkpoint-8: loss-history steps are duplicated or non-monotonic"
+    ]
+
+    (output / "checkpoint-8" / "trainer_state.json").write_text(
+        json.dumps({"global_step": 8, "log_history": [{"step": 8, "loss": float("nan")}]})
+    )
+    non_finite = audit_training_artifacts([config])
+    assert non_finite["verified_checkpoints"] == 4
+    assert non_finite["errors"] == [
+        "dense/adamw-test/checkpoint-8: loss-history loss is non-finite at step 8"
+    ]
