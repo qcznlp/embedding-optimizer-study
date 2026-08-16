@@ -2,6 +2,8 @@ import pytest
 
 from embed_optim.decontamination import (
     DECONTAMINATED_BEIR,
+    DECONTAMINATED_CORPUS_SIZES,
+    decontaminated_corpus_size,
     get_decontaminated_task,
 )
 
@@ -9,6 +11,12 @@ from embed_optim.decontamination import (
 def test_decontaminated_suite_has_all_14_pinned_beir_tasks():
     assert len(DECONTAMINATED_BEIR) == 14
     assert all(len(revision) == 40 for _, revision in DECONTAMINATED_BEIR.values())
+
+
+def test_pinned_corpus_sizes_cover_the_suite():
+    assert set(DECONTAMINATED_CORPUS_SIZES) == set(DECONTAMINATED_BEIR)
+    assert sum(DECONTAMINATED_CORPUS_SIZES.values()) == 19_525_336
+    assert decontaminated_corpus_size("SciFactDecontaminated") == 858
 
 
 def test_decontaminated_task_preserves_protocol_and_replaces_dataset():

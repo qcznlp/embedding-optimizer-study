@@ -1,8 +1,13 @@
 from argparse import Namespace
 from pathlib import Path
+from types import SimpleNamespace
 
 from embed_optim import evaluate_matrix
-from embed_optim.evaluation_utils import FAST_PLAID_INDEX_KWARGS, late_ipc_result_path
+from embed_optim.evaluation_utils import (
+    FAST_PLAID_INDEX_KWARGS,
+    late_ipc_result_path,
+    task_result_remaining,
+)
 
 
 class _FakeProcess:
@@ -75,7 +80,10 @@ def test_late_command_keeps_checkpoint_scoped_to_one_worker(tmp_path):
     model_index = command.index("--models")
     tasks_index = command.index("--tasks")
     assert command[model_index + 1 : tasks_index] == [str(model)]
-    assert command[tasks_index + 1 : command.index("--results_folder")] == args.tasks
+    assert command[tasks_index + 1 : command.index("--results_folder")] == [
+        "FiQA2018",
+        "SciFact",
+    ]
 
 
 def test_evaluation_worker_falls_back_to_wheel_data_files(tmp_path):
@@ -112,3 +120,47 @@ def test_fast_plaid_settings_match_the_pinned_paper_protocol():
         "n_full_scores": 8192,
         "seed": 42,
     }
+
+
+def test_task_result_remaining_requires_every_split_and_subset(tmp_path):
+    result = tmp_path / "revision" / "SciFactDecontaminated.json"
+    result.parent.mkdir()
+    result.write_text('{"scores":{"test":[{"hf_subset":"default"}]}}')
+
+    assert not task_result_remaining(tmp_path, "SciFactDecontaminated", ["default"], ["test"])
+    assert task_result_remaining(tmp_path, "SciFactDecontaminated", ["default"], ["dev"])
+    assert task_result_remaining(tmp_path, "SciFactDecontaminated", ["default", "other"], ["test"])
+
+    result.write_text("not-json")
+    assert task_result_remaining(tmp_path, "SciFactDecontaminated", ["default"], ["test"])
+
+
+def test_dense_decontaminated_cache_uses_result_task_name(monkeypatch):
+    import importlib
+    import sys
+
+    eval_dir = Path(__file__).resolve().parents[1] / "scripts" / "eval"
+    monkeypatch.syspath_prepend(str(eval_dir))
+    dense_parallel = importlib.import_module("dense_parallel")
+    task = SimpleNamespace(
+        metadata=SimpleNamespace(name="SciFactDecontaminated", eval_splits=["test"]),
+        hf_subsets=["default"],
+    )
+    monkeypatch.setattr(dense_parallel, "get_decontaminated_task", lambda name: task)
+
+    assert dense_parallel.task_cache_requirements("SciFact", True) == (
+        "SciFactDecontaminated",
+        ["default"],
+        ["test"],
+    )
+    jobs = [
+        ("model-a", "SciFact", "results-a"),
+        ("model-b", "ClimateFEVER", "results-b"),
+        ("model-c", "MSMARCO", "results-c"),
+    ]
+    assert [job[1] for job in dense_parallel.order_jobs(jobs, True)] == [
+        "ClimateFEVER",
+        "MSMARCO",
+        "SciFact",
+    ]
+    sys.modules.pop("dense_parallel", None)

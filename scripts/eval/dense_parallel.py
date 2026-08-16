@@ -35,11 +35,11 @@ from dense_sequential import (
     progress,
     setup_st_forward_compat,
     task_meta_subsets,
-    task_remaining,
     token_budget_batches,
 )
 
-from embed_optim.decontamination import get_decontaminated_task
+from embed_optim.decontamination import decontaminated_corpus_size, get_decontaminated_task
+from embed_optim.evaluation_utils import task_result_remaining
 
 
 def setup_budget_encode(st_model, char_budget: int) -> None:
@@ -122,6 +122,28 @@ def run_worker(args: argparse.Namespace) -> None:
             )
 
 
+def task_cache_requirements(
+    task_name: str, decontaminated: bool
+) -> tuple[str, list[str], list[str]]:
+    """Return the actual result filename identity and expected cache coverage."""
+
+    if decontaminated:
+        task = get_decontaminated_task(task_name)
+        return task.metadata.name, list(task.hf_subsets), list(task.metadata.eval_splits)
+    subsets, splits = task_meta_subsets(task_name)
+    return task_name, subsets, splits
+
+
+def order_jobs(
+    jobs: list[tuple[str, str, str]], decontaminated: bool
+) -> list[tuple[str, str, str]]:
+    """Use global longest-processing-time-first order for the pinned suite."""
+
+    if not decontaminated:
+        return jobs
+    return sorted(jobs, key=lambda job: decontaminated_corpus_size(job[1]), reverse=True)
+
+
 def schedule(args: argparse.Namespace, gpus: list[str]) -> int:
     """Dispatch (model, task) jobs across GPUs, one subprocess per free GPU."""
 
@@ -133,17 +155,19 @@ def schedule(args: argparse.Namespace, gpus: list[str]) -> int:
     for model_path in args.models:
         model_results_dir = os.path.join(args.results_folder, path_to_folder_name(model_path))
         for task_name in args.tasks:
-            if args.decontaminated:
-                task = get_decontaminated_task(task_name)
-                subsets, splits = list(task.hf_subsets), list(task.metadata.eval_splits)
-            else:
-                subsets, splits = task_meta_subsets(task_name)
+            result_task_name, subsets, splits = task_cache_requirements(
+                task_name, args.decontaminated
+            )
             if "test" in splits and len(splits) > 1:
                 splits = ["test"]
-            if task_remaining(model_results_dir, task_name, subsets, splits):
+            if task_result_remaining(model_results_dir, result_task_name, subsets, splits):
                 jobs.append((model_path, task_name, model_results_dir))
             else:
                 skipped += 1
+
+    # Global longest-processing-time-first order balances the four workers
+    # across checkpoints and prevents a large corpus from becoming the tail.
+    jobs = order_jobs(jobs, args.decontaminated)
 
     print("=" * 60)
     print("MTEB Dense Evaluation - TASK-PARALLEL (one task per GPU)")

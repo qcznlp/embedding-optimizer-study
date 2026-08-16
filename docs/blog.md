@@ -116,7 +116,9 @@ unweighted mean of each task's main nDCG@10 score.
 
 Dense retrieval is evaluated with MTEB exact retrieval. Late interaction is encoded with PyLate and
 searched with FastPLAID using 4-bit residuals, 8 IVF probes, 8,192 full scores, and index seed 42.
-The training scorer uses the fused Late Interaction Kernels implementation.
+The training scorer uses the fused Late Interaction Kernels implementation. The pinned corpus counts
+sum to 19,525,336 documents; evaluation schedules larger corpora first across the available workers
+and resumes only the missing split/subset pairs from validated MTEB result files.
 
 ## Results
 

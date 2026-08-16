@@ -34,6 +34,8 @@ from typing import Any
 
 from sentence_transformers import SentenceTransformer
 
+from embed_optim.evaluation_utils import find_result_json, task_result_remaining
+
 Pool = dict[str, Any]
 ModelWrapper = Any
 
@@ -141,18 +143,6 @@ def token_budget_batches(
     return batches
 
 
-def find_result_json(search_root: str, task_name: str) -> Path | None:
-    """Path to `{task_name}.json` under `search_root`, or None if not found.
-
-    Results may be fragmented across revision subfolders; on multiple matches the
-    last one in sorted-path order is returned (callers only need any one result).
-    """
-
-    root = Path(search_root)
-    matches = sorted(root.rglob(f"{task_name}.json")) if root.is_dir() else []
-    return matches[-1] if matches else None
-
-
 def task_meta_subsets(task_name: str) -> tuple[list[str], list[str]]:
     """(hf_subsets, eval_splits) from task metadata (no data load)."""
 
@@ -163,23 +153,9 @@ def task_meta_subsets(task_name: str) -> tuple[list[str], list[str]]:
 
 
 def task_remaining(search_root: str, task_name: str, subsets: list[str], splits: list[str]) -> bool:
-    """True if any (split, subset) of this task is still missing on disk.
+    """Backward-compatible wrapper for the shared cache-completeness check."""
 
-    Single-subset tasks: an existing json means done. Multi-subset (multilingual)
-    tasks resume per language — MTEB writes the json after each subset, so a
-    crash/OOM mid-bench only re-runs the missing ones.
-    """
-
-    match = find_result_json(search_root, task_name)
-    if match is None:
-        return True
-    if len(subsets) <= 1:
-        return False
-    scores = json.loads(match.read_text()).get("scores", {})
-    needed = set(subsets)
-    return any(
-        not needed.issubset({r.get("hf_subset") for r in scores.get(sp, [])}) for sp in splits
-    )
+    return task_result_remaining(search_root, task_name, subsets, splits)
 
 
 def load_model(

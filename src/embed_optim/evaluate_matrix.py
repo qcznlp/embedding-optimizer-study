@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .config import RunConfig, load_matrix
-from .decontamination import DECONTAMINATED_TASK_NAMES
+from .decontamination import DECONTAMINATED_TASK_NAMES, decontaminated_corpus_size
 
 
 @dataclass
@@ -78,6 +78,7 @@ def _late_command(
     port: int,
     num_processes: int,
 ) -> list[str]:
+    ordered_tasks = sorted(args.tasks, key=decontaminated_corpus_size, reverse=True)
     return [
         "accelerate",
         "launch",
@@ -89,7 +90,7 @@ def _late_command(
         "--models",
         str(model),
         "--tasks",
-        *args.tasks,
+        *ordered_tasks,
         "--results_folder",
         str(results / "late"),
         "--fa2",
@@ -137,6 +138,7 @@ def run_evaluation(args: argparse.Namespace) -> int:
     dense_job: EvaluationProcess | None = None
 
     if dense_models := models.get("dense"):
+        ordered_tasks = sorted(args.tasks, key=decontaminated_corpus_size, reverse=True)
         command = [
             sys.executable,
             str(_evaluation_script(repo, "dense_parallel.py")),
@@ -147,7 +149,7 @@ def run_evaluation(args: argparse.Namespace) -> int:
             "--models",
             *(str(path) for path in dense_models),
             "--tasks",
-            *args.tasks,
+            *ordered_tasks,
             "--log_dir",
             str(log_dir / "dense-tasks"),
             "--bf16",
