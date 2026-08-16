@@ -173,8 +173,18 @@ def load_model(
 
     progress(f"Loading model: {model_path}" + (" (FA2+BF16)" if fa2 else " (BF16)" if bf16 else ""))
     if local or model_path.startswith("/"):
-        return SentenceTransformer(model_path, trust_remote_code=True, model_kwargs=model_kwargs)
+        model = SentenceTransformer(model_path, trust_remote_code=True, model_kwargs=model_kwargs)
+        set_local_model_identity(model, model_path)
+        return model
     return mteb.get_model(model_path, trust_remote_code=True, model_kwargs=model_kwargs)
+
+
+def set_local_model_identity(model: SentenceTransformer, model_path: str) -> None:
+    """Give MTEB a checkpoint-specific local identity for cache provenance."""
+
+    path = Path(model_path).resolve()
+    model.model_card_data.model_name = f"{path.parent.name}/{path.name}"
+    model.model_card_data.base_model_revision = "local"
 
 
 def get_st_model(wrapper: ModelWrapper) -> SentenceTransformer | None:

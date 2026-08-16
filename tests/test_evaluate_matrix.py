@@ -1,3 +1,4 @@
+import json
 from argparse import Namespace
 from pathlib import Path
 from types import SimpleNamespace
@@ -32,6 +33,8 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
         lambda args: {"dense": [dense], "late": [late_one, late_two]},
     )
     monkeypatch.setattr(evaluate_matrix.time, "sleep", lambda seconds: None)
+    monkeypatch.setattr(evaluate_matrix, "_worker_python", lambda executable=None: "/system/python")
+    monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
 
     launches = []
 
@@ -56,10 +59,15 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
         late_port=29620,
         results_root=str(tmp_path / "results"),
         log_dir=str(tmp_path / "logs"),
+        worker_python="/system/python",
     )
 
     assert evaluate_matrix.run_evaluation(args) == 0
-    late_launches = [(command, gpus) for command, gpus in launches if command[0] == "accelerate"]
+    late_launches = [
+        (command, gpus) for command, gpus in launches if "accelerate.commands.launch" in command
+    ]
+    dense_launch = next(command for command, _ in launches if "dense_parallel.py" in command[1])
+    assert dense_launch[0] == "/system/python"
     assert [gpus for _, gpus in late_launches] == ["4,5,6,7", "0,1,2,3"]
     assert [command[command.index("--models") + 1] for command, _ in late_launches] == [
         str(late_one),
@@ -75,8 +83,15 @@ def test_late_command_keeps_checkpoint_scoped_to_one_worker(tmp_path):
     worker.parent.mkdir(parents=True)
     worker.write_text("# worker\n")
     command = evaluate_matrix._late_command(
-        tmp_path, model, args, tmp_path / "results", 29620, num_processes=4
+        tmp_path,
+        model,
+        args,
+        tmp_path / "results",
+        29620,
+        num_processes=4,
+        worker_python="/system/python",
     )
+    assert command[:3] == ["/system/python", "-m", "accelerate.commands.launch"]
     model_index = command.index("--models")
     tasks_index = command.index("--tasks")
     assert command[model_index + 1 : tasks_index] == [str(model)]
@@ -96,6 +111,61 @@ def test_evaluation_worker_falls_back_to_wheel_data_files(tmp_path):
     worker.write_text("# installed worker\n")
 
     assert evaluate_matrix._evaluation_script(repo, "dense_parallel.py", prefix) == worker
+
+
+def test_evaluation_python_is_explicit_and_resolved(tmp_path):
+    interpreter = tmp_path / "python"
+    interpreter.write_text("")
+
+    assert evaluate_matrix._worker_python(str(interpreter)) == str(interpreter.resolve())
+
+
+def test_worker_runtime_must_match_every_training_checkpoint(tmp_path, monkeypatch):
+    checkpoint = tmp_path / "outputs" / "dense" / "run" / "checkpoint-2"
+    checkpoint.mkdir(parents=True)
+    (checkpoint.parent / "completed.json").write_text(
+        '{"versions":{"torch":"2","transformers":"5","sentence-transformers":"5",'
+        '"pylate":"1","late-interaction-kernels":"1"}}'
+    )
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_runtime_versions",
+        lambda python: {
+            "mteb": "2",
+            "torch": "2",
+            "sentence-transformers": "5",
+            "flash-attn": "2",
+            "transformers": "5",
+            "pylate": "1",
+            "fast-plaid": "1",
+            "late-interaction-kernels": "1",
+        },
+    )
+
+    versions = evaluate_matrix._validate_worker_runtime("/system/python", {"dense": [checkpoint]})
+    assert versions["flash-attn"] == "2"
+
+    evaluate_matrix._record_runtime(tmp_path, "/system/python", versions)
+    evaluate_matrix._record_runtime(tmp_path, "/same-stack/python", versions)
+    assert json.loads((tmp_path / "evaluation_runtime.json").read_text())["versions"] == versions
+
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_runtime_versions",
+        lambda python: {
+            **versions,
+            "torch": "different",
+        },
+    )
+    import pytest
+
+    with pytest.raises(RuntimeError, match="differs from training"):
+        evaluate_matrix._validate_worker_runtime("/system/python", {"dense": [checkpoint]})
+
+    with pytest.raises(RuntimeError, match="changed across a resumed results directory"):
+        evaluate_matrix._record_runtime(
+            tmp_path, "/system/python", {**versions, "mteb": "different"}
+        )
 
 
 def test_late_ipc_result_paths_are_rank_stable_and_job_unique():
@@ -163,4 +233,13 @@ def test_dense_decontaminated_cache_uses_result_task_name(monkeypatch):
         "MSMARCO",
         "SciFact",
     ]
+    model = SimpleNamespace(
+        model_card_data=SimpleNamespace(model_name=None, base_model_revision=None)
+    )
+    dense_sequential = importlib.import_module("dense_sequential")
+    dense_sequential.set_local_model_identity(
+        model, "/study/outputs/dense/adamw-lr1e-6/checkpoint-782"
+    )
+    assert model.model_card_data.model_name == "adamw-lr1e-6/checkpoint-782"
+    assert model.model_card_data.base_model_revision == "local"
     sys.modules.pop("dense_parallel", None)

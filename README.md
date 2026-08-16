@@ -144,7 +144,12 @@ Late Interaction Kernels scorer during training, and FastPLAID retrieval during 
 FastPLAID is explicitly pinned to `nbits=4`, `n_ivf_probe=8`, `n_full_scores=8192`, and seed 42.
 GPU 4–7 begin the LateOn checkpoint queue while GPU 0–3 run dense evaluation; when dense evaluation
 finishes, GPU 0–3 automatically join the remaining LateOn queue. Evaluation caches are resumable, so
-an interrupted command computes only missing task/checkpoint pairs.
+an interrupted command computes only missing task/checkpoint pairs. Dense and distributed LateOn
+workers are launched by the same Python interpreter as the orchestrator (override it explicitly with
+`--worker-python`). Before any GPU work, a runtime preflight requires Torch, Transformers, and
+SentenceTransformers, PyLate, and Late Interaction Kernels to exactly match the versions recorded
+during training. It records an immutable manifest including MTEB, FlashAttention, and FastPLAID so a
+resumed results directory cannot silently mix evaluator stacks.
 
 For a targeted evaluation:
 
@@ -172,7 +177,10 @@ finite loss, gradient-norm, learning-rate, and epoch values.
 The same gate verifies each resolved run config against the matrix, checks the copied dataset manifest
 and row count against the shared source, requires an identical runtime dataset-view fingerprint across
 all runs, requires four recorded ranks, and enforces an identical parameter partition across learning
-rates and optimizers within each model family.
+rates and optimizers within each model family. Every result must also identify the exact local
+run/checkpoint, pinned decontaminated dataset revision, expected split/subset, MTEB version, positive
+evaluation time, and nDCG@10 main score. Its recorded evaluation runtime must match both every other
+result and the corresponding training runtime.
 Wall time, Trainer throughput, CUDA memory peaks, checkpoint/optimizer-state sizes, GPU identity, and
 the five key package versions are required and checked for finite values and cross-run consistency.
 

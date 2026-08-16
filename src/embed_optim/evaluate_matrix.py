@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -14,6 +15,24 @@ from pathlib import Path
 from .config import RunConfig, load_matrix
 from .decontamination import DECONTAMINATED_TASK_NAMES, decontaminated_corpus_size
 
+EVALUATION_PACKAGES = (
+    "mteb",
+    "torch",
+    "sentence-transformers",
+    "flash-attn",
+    "transformers",
+    "pylate",
+    "fast-plaid",
+    "late-interaction-kernels",
+)
+TRAINING_RUNTIME_PACKAGES = (
+    "torch",
+    "transformers",
+    "sentence-transformers",
+    "pylate",
+    "late-interaction-kernels",
+)
+
 
 @dataclass
 class EvaluationProcess:
@@ -21,6 +40,87 @@ class EvaluationProcess:
     process: subprocess.Popen
     handle: object
     model: Path | None = None
+
+
+def _worker_python(executable: str | None = None) -> str:
+    """Resolve the one interpreter used by dense and distributed late workers."""
+
+    requested = executable or sys.executable
+    candidate = shutil.which(requested)
+    if candidate is None:
+        path = Path(requested).expanduser()
+        candidate = str(path.resolve()) if path.is_file() else None
+    if candidate is None:
+        raise FileNotFoundError(f"Cannot locate evaluation interpreter {requested!r}")
+    return str(Path(candidate).resolve())
+
+
+def _runtime_versions(python: str) -> dict[str, str]:
+    """Read the packages that affect evaluation from an isolated interpreter."""
+
+    script = (
+        "import importlib.metadata as m,json; import flash_attn; "
+        f"print(json.dumps({{p:m.version(p) for p in {EVALUATION_PACKAGES!r}}},sort_keys=True))"
+    )
+    result = subprocess.run(
+        [python, "-c", script],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    try:
+        versions = json.loads(result.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"Could not parse evaluation runtime from {python}") from error
+    if set(versions) != set(EVALUATION_PACKAGES) or any(not value for value in versions.values()):
+        raise RuntimeError(f"Incomplete evaluation runtime from {python}: {versions}")
+    return versions
+
+
+def _validate_worker_runtime(python: str, models: dict[str, list[Path]]) -> dict[str, str]:
+    """Fail before GPU work if training and evaluation libraries are not identical."""
+
+    versions = _runtime_versions(python)
+    training_versions: set[tuple[str, ...]] = set()
+    for model in (path for paths in models.values() for path in paths):
+        completed_path = model.parent / "completed.json"
+        try:
+            recorded = json.loads(completed_path.read_text())["versions"]
+            training_versions.add(tuple(recorded[package] for package in TRAINING_RUNTIME_PACKAGES))
+        except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
+            raise RuntimeError(f"Missing training runtime in {completed_path}") from error
+    if len(training_versions) != 1:
+        raise RuntimeError(f"Training runs used inconsistent runtimes: {training_versions}")
+    expected = next(iter(training_versions))
+    actual = tuple(versions[package] for package in TRAINING_RUNTIME_PACKAGES)
+    if actual != expected:
+        raise RuntimeError(
+            "Evaluation runtime differs from training for "
+            f"{TRAINING_RUNTIME_PACKAGES}: expected {expected}, got {actual}"
+        )
+    print(f"evaluation interpreter: {python} | versions={json.dumps(versions, sort_keys=True)}")
+    return versions
+
+
+def _record_runtime(results: Path, python: str, versions: dict[str, str]) -> None:
+    """Persist one immutable runtime identity for all resumable evaluation jobs."""
+
+    path = results / "evaluation_runtime.json"
+    payload = {"schema_version": 1, "python": python, "versions": versions}
+    if path.is_file():
+        try:
+            existing = json.loads(path.read_text())
+        except json.JSONDecodeError as error:
+            raise RuntimeError(f"Invalid evaluation runtime manifest: {path}") from error
+        if existing.get("schema_version") != 1 or existing.get("versions") != versions:
+            raise RuntimeError(
+                f"Evaluation runtime changed across a resumed results directory: {path}"
+            )
+        return
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+    temporary.replace(path)
 
 
 def _evaluation_script(repo: Path, name: str, prefix: Path | None = None) -> Path:
@@ -77,11 +177,13 @@ def _late_command(
     results: Path,
     port: int,
     num_processes: int,
+    worker_python: str,
 ) -> list[str]:
     ordered_tasks = sorted(args.tasks, key=decontaminated_corpus_size, reverse=True)
     return [
-        "accelerate",
-        "launch",
+        worker_python,
+        "-m",
+        "accelerate.commands.launch",
         "--num_processes",
         str(num_processes),
         "--main_process_port",
@@ -107,6 +209,7 @@ def _launch_late(
     pool: str,
     gpus: str,
     port: int,
+    worker_python: str,
 ) -> EvaluationProcess:
     handle = (log_dir / f"late-evaluation-{pool}.log").open("a")
     environment = {**os.environ, "CUDA_VISIBLE_DEVICES": gpus}
@@ -118,6 +221,7 @@ def _launch_late(
             results,
             port,
             len([gpu for gpu in gpus.split(",") if gpu.strip()]),
+            worker_python,
         ),
         cwd=repo,
         env=environment,
@@ -131,16 +235,19 @@ def _launch_late(
 def run_evaluation(args: argparse.Namespace) -> int:
     repo = Path(__file__).resolve().parents[2]
     models = _selected_models(args)
+    worker_python = _worker_python(getattr(args, "worker_python", None))
     results = Path(args.results_root).resolve()
     log_dir = Path(args.log_dir).resolve()
     results.mkdir(parents=True, exist_ok=True)
     log_dir.mkdir(parents=True, exist_ok=True)
+    versions = _validate_worker_runtime(worker_python, models)
+    _record_runtime(results, worker_python, versions)
     dense_job: EvaluationProcess | None = None
 
     if dense_models := models.get("dense"):
         ordered_tasks = sorted(args.tasks, key=decontaminated_corpus_size, reverse=True)
         command = [
-            sys.executable,
+            worker_python,
             str(_evaluation_script(repo, "dense_parallel.py")),
             "--gpus",
             args.gpus_a,
@@ -200,6 +307,7 @@ def run_evaluation(args: argparse.Namespace) -> int:
                 pool,
                 gpus,
                 port,
+                worker_python,
             )
         if dense_job is not None or late_queue or late_jobs:
             time.sleep(1)
@@ -221,6 +329,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--late-port", type=int, default=29620)
     parser.add_argument("--results-root", default="results/decontaminated-beir")
     parser.add_argument("--log-dir", default="logs/evaluation")
+    parser.add_argument(
+        "--worker-python",
+        default=None,
+        help="Python executable for every evaluator (default: this command's interpreter)",
+    )
     return parser.parse_args(argv)
 
 
