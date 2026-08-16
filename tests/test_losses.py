@@ -12,20 +12,24 @@ class IdentityEmbeddingModel(nn.Module):
 def test_dense_loss_uses_only_each_queries_own_group():
     model = IdentityEmbeddingModel()
     loss = ExplicitDenseInfoNCELoss(model, temperature=0.1)
-    queries = {"values": torch.tensor([[1.0, 0.0], [0.0, 1.0]])}
-    positive = {"values": torch.tensor([[1.0, 0.0], [0.0, 1.0]])}
-    negatives = [{"values": torch.tensor([[0.0, 1.0], [1.0, 0.0]])} for _ in range(7)]
+    queries = {"values": torch.tensor([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0]])}
+    positive = {"values": torch.tensor([[1.0, 0.0, 0.0], [0.6, 0.8, 0.0]])}
+    negatives = [
+        {"values": torch.tensor([[0.0, 1.0, 0.0], [0.8, 0.2, 0.565685]])}
+        for _ in range(7)
+    ]
     baseline = loss([queries, positive, *negatives])
 
-    # Alter every document belonging to query 1. Query 0's group scores are unchanged;
-    # there is no cross-query document matrix as there would be with in-batch negatives.
+    # Rotate every query-1 document's x/z components while preserving its normalized
+    # y component. Query 1's own scores and all of query 0's explicit group stay fixed,
+    # while query 0's scores against query 1's documents would change if the loss used
+    # in-batch negatives.
     changed_positive = {"values": positive["values"].clone()}
-    changed_positive["values"][1] = torch.tensor([100.0, 0.0])
+    changed_positive["values"][1] = torch.tensor([0.0, 0.8, 0.6])
     changed_negatives = []
     for negative in negatives:
         values = negative["values"].clone()
-        values[1] = torch.tensor([0.0, 100.0])
+        values[1] = torch.tensor([0.0, 0.2, 0.979796])
         changed_negatives.append({"values": values})
     changed = loss([queries, changed_positive, *changed_negatives])
-    assert torch.isfinite(baseline)
-    assert torch.isfinite(changed)
+    torch.testing.assert_close(changed, baseline, atol=1e-6, rtol=1e-6)
