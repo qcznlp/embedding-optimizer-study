@@ -13,6 +13,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
+from .aggregate import audit_dataset_artifacts, audit_training_artifacts
 from .config import RunConfig, load_matrix
 from .decontamination import DECONTAMINATED_TASK_NAMES, decontaminated_corpus_size
 
@@ -236,13 +237,17 @@ def checkpoint_paths(config: RunConfig, stages: list[int] | None = None) -> list
     return [path.resolve() for path in paths]
 
 
-def _selected_models(args: argparse.Namespace) -> dict[str, list[Path]]:
-    configs = [
+def _selected_configs(args: argparse.Namespace) -> list[RunConfig]:
+    return [
         config
         for config in load_matrix(args.matrix)
         if config.model_family in args.families
         and (not args.run_ids or config.run_id in args.run_ids)
     ]
+
+
+def _selected_models(args: argparse.Namespace) -> dict[str, list[Path]]:
+    configs = _selected_configs(args)
     return {
         family: [
             checkpoint
@@ -252,6 +257,30 @@ def _selected_models(args: argparse.Namespace) -> dict[str, list[Path]]:
         ]
         for family in args.families
     }
+
+
+def _validate_training_inputs(args: argparse.Namespace) -> None:
+    """Deep-audit selected checkpoints before any formal evaluation GPU work."""
+
+    configs = _selected_configs(args)
+    dataset_audit = audit_dataset_artifacts(configs)
+    if not dataset_audit["complete"]:
+        details = "; ".join(dataset_audit["errors"][:10])
+        raise RuntimeError(f"Training dataset audit failed before evaluation: {details}")
+    training_audit = audit_training_artifacts(
+        configs,
+        deep=True,
+        expected_dataset_fingerprint=dataset_audit.get("training_view_fingerprint"),
+    )
+    if not training_audit["complete"]:
+        details = "; ".join(training_audit["errors"][:10])
+        raise RuntimeError(f"Training artifact audit failed before evaluation: {details}")
+    print(
+        "training preflight: "
+        f"{training_audit['verified_runs']} runs / "
+        f"{training_audit['verified_checkpoints']} checkpoints deep-validated",
+        flush=True,
+    )
 
 
 def _late_command(
@@ -319,6 +348,7 @@ def _launch_late(
 def run_evaluation(args: argparse.Namespace) -> int:
     repo = Path(__file__).resolve().parents[2]
     models = _selected_models(args)
+    _validate_training_inputs(args)
     worker_python = _worker_python(getattr(args, "worker_python", None))
     results = Path(args.results_root).resolve()
     log_dir = Path(args.log_dir).resolve()
