@@ -20,7 +20,7 @@ The full research write-up is in [docs/blog.md](docs/blog.md).
 | Contrastive group | 1 positive + 7 seeded random hard negatives |
 | In-batch negatives | Disabled |
 | Context length | 8,192 query and document tokens |
-| Epochs / global batch | 1 / 128 |
+| Epochs / nominal global batch | 1 / 128 (final partial step: 32) |
 | Checkpoints | 20%, 40%, 60%, 80%, 100% of optimizer steps |
 | Evaluation | 14 decontaminated BEIR tasks, main score nDCG@10 |
 | Default hardware layout | Dense on GPUs 0–3, late interaction on GPUs 4–7 |
@@ -107,7 +107,9 @@ torchrun --standalone --nproc-per-node=4 -m embed_optim.train \
 Each output directory contains the resolved configuration, five complete model/optimizer/scheduler
 checkpoints, a final model, Trainer state, and a completion record. The loss is explicit group-only
 InfoNCE: documents belonging to other queries in the microbatch or on other ranks never enter the
-logit matrix.
+logit matrix. Four-GPU microbatches contain 32 examples and accumulate four times; because 15,625
+microbatches is not divisible by four, the last of 3,907 optimizer steps contains one microbatch and
+all 500,000 examples are consumed exactly once.
 
 ### 3. Evaluate every checkpoint
 

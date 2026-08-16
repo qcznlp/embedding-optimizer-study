@@ -81,6 +81,8 @@ We use linear decay with a 10% warmup, bfloat16 autocast, TF32, FlashAttention-2
 gradient checkpointing, and gradient clipping at 1.0. Each run uses four GPUs, a per-GPU micro-batch
 of 8, and four gradient-accumulation steps, yielding the shared global batch of 128. Each run saves
 complete checkpoints at 20%, 40%, 60%, 80%, and 100% of its realized optimizer steps.
+The 500,000 examples form 15,625 four-GPU microbatches, so steps 1–3,906 contain 128 examples and the
+final partial accumulation contains 32; no training examples are duplicated or dropped.
 
 ## Evaluation
 
