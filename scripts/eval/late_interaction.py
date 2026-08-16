@@ -55,6 +55,18 @@ from embed_optim.pylate_compat import configure_pylate_compatibility
 logger = logging.getLogger(__name__)
 
 
+def remove_temporary_files(paths) -> None:
+    """Best-effort removal for rank-shared IPC files."""
+
+    for path in paths:
+        try:
+            os.remove(path)
+        except FileNotFoundError:
+            pass
+        except OSError as error:
+            logger.warning("Could not remove temporary evaluation file %s: %s", path, error)
+
+
 def token_budget_batches(
     texts: list[str],
     char_budget: int,
@@ -333,9 +345,7 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         failed_flag = results_path + ".failed"
 
         if self.accelerator.is_main_process:
-            for path in (ready_flag, results_path, failed_flag):
-                if os.path.exists(path):
-                    os.remove(path)
+            remove_temporary_files((ready_flag, results_path, failed_flag))
         # Quick NCCL sync before the long single-process work begins.
         self.accelerator.wait_for_everyone()
 
@@ -378,7 +388,11 @@ class AccelerateMultiVectorModel(MultiVectorModel):
             with open(results_path, "rb") as f:
                 results = pickle.load(f)
 
+        # Every worker has materialized its own in-memory result before rank 0
+        # removes what can otherwise become hundreds of large IPC pickles.
         self.accelerator.wait_for_everyone()
+        if self.accelerator.is_main_process:
+            remove_temporary_files((ready_flag, results_path, failed_flag))
         self.model.to(self.accelerator.device)
         return results
 
@@ -403,7 +417,23 @@ class AccelerateMultiVectorModel(MultiVectorModel):
                 result_heaps[qid] = heapq.nlargest(top_k, result_heaps[qid])
         return result_heaps
 
+    def _cleanup_auto_index(self) -> None:
+        if self._index_autodelete and self._index_dir is not None:
+            shutil.rmtree(self._index_dir, ignore_errors=True)
+            self._index_dir = None
+            self._index_name = None
+
     def _index_and_retrieve(self, query_idx_to_id, query_embeddings, corpus_embeddings, top_k):
+        try:
+            return self._index_and_retrieve_impl(
+                query_idx_to_id, query_embeddings, corpus_embeddings, top_k
+            )
+        finally:
+            # This also executes while the outer failure handler unwinds before
+            # its deliberate os._exit, preventing failed retries from filling disk.
+            self._cleanup_auto_index()
+
+    def _index_and_retrieve_impl(self, query_idx_to_id, query_embeddings, corpus_embeddings, top_k):
         """Build the PLAID index from the corpus embeddings and retrieve top_k per query."""
         from fast_plaid import search as fast_plaid_search
         from pylate import indexes, retrieve
@@ -462,10 +492,6 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         torch.cuda.empty_cache()
         if torch.cuda.is_available():
             torch.cuda.synchronize()
-        if self._index_autodelete and self._index_dir is not None:
-            shutil.rmtree(self._index_dir, ignore_errors=True)
-            self._index_dir = None
-            self._index_name = None
         return result_heaps
 
 
