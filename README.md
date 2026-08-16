@@ -181,6 +181,10 @@ rates and optimizers within each model family. Every result must also identify t
 run/checkpoint, pinned decontaminated dataset revision, expected split/subset, MTEB version, positive
 evaluation time, and nDCG@10 main score. Its recorded evaluation runtime must match both every other
 result and the corresponding training runtime.
+The dataset gate independently streams all 500,000 canonical rows, recomputes their SHA-256, verifies
+the exact seven-source quotas, rejects duplicate queries or positive/negative overlap, and requires
+seven distinct seeded choices from each ten-negative candidate pool. It also reloads the materialized
+Hugging Face Dataset and checks its row count, columns, and fingerprint.
 Wall time, Trainer throughput, CUDA memory peaks, checkpoint/optimizer-state sizes, GPU identity, and
 the five key package versions are required and checked for finite values and cross-run consistency.
 
@@ -189,6 +193,8 @@ the five key package versions are required and checked for finite values and cro
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.
 - PyTorch's native Muon functional implementation and an in-repository NorMuon update matched to the
   official implementation at commit `c6989a8354730695d9f5a9faa6c55eeb24865209`.
+- Multi-step numerical regression tests compare the wrapped AdamW and Muon updates and optimizer
+  states with PyTorch's reference optimizers; NorMuon is compared with the pinned official update.
 - Dynamic per-column padding for the nine explicit contrastive fields; no global padding to 8,192.
 - Fused Late Interaction Kernels MaxSim scoring during training.
 - Length-grouped training and token-budget-packed evaluation with automatic OOM backoff.
