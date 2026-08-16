@@ -191,6 +191,9 @@ result and the corresponding training runtime. Model metadata must independently
 token limit and the expected representation/scorer pair (768-dimensional cosine for DenseOn;
 128-dimensional PyLate MaxSim for LateOn).
 The final gate also recomputes every evaluation-source SHA-256 recorded before the first GPU job.
+It parses every safetensors header and tensor extent, fully loads every optimizer and scheduler state
+with PyTorch's restricted weights-only loader, and CRC-checks every rank RNG archive. Non-empty but
+truncated or structurally invalid checkpoint payloads therefore cannot satisfy `--strict`.
 It also verifies the matrix itself against the frozen 24-run experimental contract: exact base models
 and revisions, both model families, all optimizer/LR combinations, the shared data and seed, batch and
 8,192-token settings, optimizer hyperparameters, and five checkpoint fractions. Thus a modified but

@@ -433,7 +433,84 @@ def _completion_system_problems(completed: dict, steps: list[int]) -> list[str]:
     return problems
 
 
-def audit_training_artifacts(configs: list[RunConfig]) -> dict:
+def _safetensors_problem(root: Path) -> str | None:
+    """Validate every safetensors header and tensor extent without materializing weights."""
+
+    from safetensors import safe_open
+
+    files = sorted(root.rglob("*.safetensors"))
+    if not files:
+        return "missing safetensors model"
+    tensor_count = 0
+    try:
+        for path in files:
+            with safe_open(path, framework="pt", device="cpu") as handle:
+                keys = list(handle.keys())
+                if not keys:
+                    return f"empty safetensors payload {path.name}"
+                for key in keys:
+                    shape = handle.get_slice(key).get_shape()
+                    if any(not isinstance(size, int) or size < 0 for size in shape):
+                        return f"invalid tensor shape in {path.name}:{key}"
+                tensor_count += len(keys)
+    except Exception as error:  # noqa: BLE001
+        return f"invalid safetensors payload ({type(error).__name__}: {error})"
+    return None if tensor_count else "safetensors model has no tensors"
+
+
+def _deep_checkpoint_problems(checkpoint: Path, expected_step: int, world_size: int) -> list[str]:
+    """Parse resumable payloads so non-empty but corrupt files cannot pass strict audit."""
+
+    import gc
+    import zipfile
+
+    import torch
+
+    problems: list[str] = []
+    if problem := _safetensors_problem(checkpoint):
+        problems.append(problem)
+
+    optimizer = None
+    try:
+        optimizer = torch.load(checkpoint / "optimizer.pt", map_location="cpu", weights_only=True)
+        if (
+            not isinstance(optimizer, dict)
+            or set(optimizer) != {"state", "param_groups"}
+            or not isinstance(optimizer["state"], dict)
+            or not optimizer["state"]
+            or not isinstance(optimizer["param_groups"], list)
+            or not optimizer["param_groups"]
+        ):
+            problems.append("optimizer state has an invalid structure")
+    except Exception as error:  # noqa: BLE001
+        problems.append(f"invalid optimizer state ({type(error).__name__}: {error})")
+    finally:
+        del optimizer
+        gc.collect()
+
+    try:
+        scheduler = torch.load(checkpoint / "scheduler.pt", map_location="cpu", weights_only=True)
+        if not isinstance(scheduler, dict) or int(scheduler.get("last_epoch", -1)) != expected_step:
+            problems.append("scheduler state does not match checkpoint step")
+    except Exception as error:  # noqa: BLE001
+        problems.append(f"invalid scheduler state ({type(error).__name__}: {error})")
+
+    for rank in range(world_size):
+        path = checkpoint / f"rng_state_{rank}.pth"
+        try:
+            if not zipfile.is_zipfile(path):
+                problems.append(f"rank {rank} RNG state is not a PyTorch archive")
+                continue
+            with zipfile.ZipFile(path) as archive:
+                corrupt_member = archive.testzip()
+                if corrupt_member is not None:
+                    problems.append(f"rank {rank} RNG state has corrupt member {corrupt_member}")
+        except (OSError, zipfile.BadZipFile) as error:
+            problems.append(f"invalid rank {rank} RNG state ({type(error).__name__}: {error})")
+    return problems
+
+
+def audit_training_artifacts(configs: list[RunConfig], *, deep: bool = False) -> dict:
     """Verify that every planned run has five complete, resumable checkpoints."""
 
     errors: list[str] = []
@@ -562,10 +639,13 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
         else:
             if problem := _trainer_state_problem(final_state_path, steps[-1]):
                 errors.append(f"{label}: final {problem}")
-        if not final_model_path.is_dir() or not any(
+        final_model_present = final_model_path.is_dir() and any(
             path.stat().st_size > 0 for path in final_model_path.rglob("*.safetensors")
-        ):
+        )
+        if not final_model_present:
             errors.append(f"{label}: missing final safetensors model")
+        elif deep and (problem := _safetensors_problem(final_model_path)):
+            errors.append(f"{label}: final {problem}")
 
         recorded_world_size = completion_system_metrics.get("world_size")
         if completed and recorded_world_size != 4:
@@ -606,6 +686,10 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
                 errors.append(f"{label}/checkpoint-{step}: {problem}")
                 run_checkpoint_errors += 1
                 continue
+            if deep and (problems := _deep_checkpoint_problems(checkpoint, step, world_size)):
+                errors.extend(f"{label}/checkpoint-{step}: {problem}" for problem in problems)
+                run_checkpoint_errors += 1
+                continue
             verified_checkpoints += 1
         if run_checkpoint_errors == 0 and not any(
             error.startswith(f"{label}:") for error in errors
@@ -618,6 +702,7 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
         "expected_runs": len(configs),
         "verified_checkpoints": verified_checkpoints,
         "expected_checkpoints": len(configs) * 5,
+        "deep_validation": deep,
         "errors": errors,
     }
 
@@ -1541,14 +1626,16 @@ def _coverage(
     missing = sorted(expected - observed)
     unexpected = sorted(observed - expected)
     evaluation_complete = not missing and not unexpected
+    training_complete = training_audit["complete"] and training_audit.get("deep_validation", False)
     return {
         "complete": evaluation_complete
         and contract_audit["complete"]
         and dataset_audit["complete"]
-        and training_audit["complete"],
+        and training_complete,
         "contract_complete": contract_audit["complete"],
         "dataset_complete": dataset_audit["complete"],
-        "training_complete": training_audit["complete"],
+        "training_complete": training_complete,
+        "deep_training_artifact_validation": training_audit.get("deep_validation", False),
         "evaluation_complete": evaluation_complete,
         "verified_experiment_runs": contract_audit["observed_runs"],
         "expected_experiment_runs": contract_audit["expected_runs"],
@@ -1580,7 +1667,12 @@ def aggregate(args: argparse.Namespace) -> None:
     system_rows = _system_summaries(system_metrics)
     contract_audit = audit_experiment_contract(configs)
     dataset_audit = audit_dataset_artifacts(configs)
-    training_audit = audit_training_artifacts(configs)
+    all_training_markers_present = all(
+        (config.output_dir / "completed.json").is_file() for config in configs
+    )
+    training_audit = audit_training_artifacts(
+        configs, deep=args.strict or all_training_markers_present
+    )
     coverage = _coverage(rows, summary, configs, contract_audit, dataset_audit, training_audit)
     task_rows = _task_comparison(rows, optimizer_rows) if coverage["complete"] else []
     paired_rows = _paired_comparisons(task_rows) if coverage["complete"] else []

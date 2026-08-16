@@ -138,6 +138,9 @@ Each task result and its model metadata are atomically replaced, concurrent Dens
 shared MTEB run-settings sidecar under a cross-process lock, and only the main LateOn rank writes cache
 metadata. The final audit also checks the run-settings field layout against the recorded MTEB version,
 covering the singular 2.18 and plural 2.19+ schemas without accepting a hybrid artifact.
+For the training side, the strict gate parses every safetensors tensor extent, loads each optimizer and
+scheduler state with PyTorch's restricted weights-only loader, and verifies the CRC of every rank RNG
+archive; a merely non-empty or partially written checkpoint is not counted as complete.
 
 ## Results
 
