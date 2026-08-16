@@ -49,7 +49,11 @@ from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
 from embed_optim.decontamination import get_decontaminated_tasks
-from embed_optim.evaluation_utils import FAST_PLAID_INDEX_KWARGS, late_ipc_result_path
+from embed_optim.evaluation_utils import (
+    FAST_PLAID_INDEX_KWARGS,
+    configure_atomic_mteb_results,
+    late_ipc_result_path,
+)
 from embed_optim.pylate_compat import configure_pylate_compatibility
 
 logger = logging.getLogger(__name__)
@@ -615,6 +619,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    configure_atomic_mteb_results()
 
     kwargs = InitProcessGroupKwargs(timeout=datetime.timedelta(seconds=20000))
     accelerator = Accelerator(kwargs_handlers=[kwargs])
