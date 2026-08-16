@@ -7,7 +7,12 @@ import pytest
 
 from embed_optim.aggregate import (
     _contains_run_id,
+    _optimizer_summaries,
+    _render_results,
+    _render_systems,
     _replace_marked,
+    _system_summaries,
+    _trajectory_auc,
     audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
@@ -28,6 +33,129 @@ def test_replace_marked_preserves_the_markers():
     text = "before\n<!-- A -->\nold\n<!-- B -->\nafter\n"
     result = _replace_marked(text, ("<!-- A -->", "<!-- B -->"), "new")
     assert result == "before\n<!-- A -->\n\nnew\n\n<!-- B -->\nafter\n"
+
+
+def test_optimizer_summary_reports_observed_auc_and_lr_robustness():
+    summary = []
+    for run_id, lr, score in (("adamw-low", 1e-6, 0.2), ("adamw-high", 3e-6, 0.4)):
+        for stage in range(1, 6):
+            summary.append(
+                {
+                    "model_family": "dense",
+                    "optimizer": "adamw",
+                    "learning_rate": lr,
+                    "run_id": run_id,
+                    "stage": stage,
+                    "fraction": stage / 5,
+                    "mean_ndcg_at_10": score,
+                }
+            )
+
+    rows, best_dynamics = _optimizer_summaries(summary)
+    assert len(rows) == 1
+    assert rows[0]["best_run_id"] == "adamw-high"
+    assert rows[0]["final_mean_across_lrs"] == pytest.approx(0.3)
+    assert rows[0]["best_config_observed_auc_ndcg_at_10"] == pytest.approx(0.4)
+    assert rows[0]["observed_auc_mean_across_lrs"] == pytest.approx(0.3)
+    assert _trajectory_auc(best_dynamics) == pytest.approx(0.4)
+
+
+def test_optimizer_summary_does_not_mix_same_run_id_across_families():
+    summary = []
+    for family, score in (("dense", 0.2), ("late", 0.8)):
+        for stage in range(1, 6):
+            summary.append(
+                {
+                    "model_family": family,
+                    "optimizer": "adamw",
+                    "learning_rate": 1e-6,
+                    "run_id": "adamw-lr1e-6",
+                    "stage": stage,
+                    "fraction": stage / 5,
+                    "mean_ndcg_at_10": score,
+                }
+            )
+
+    rows, best_dynamics = _optimizer_summaries(summary)
+    by_family = {row["model_family"]: row for row in rows}
+    assert by_family["dense"]["best_config_observed_auc_ndcg_at_10"] == pytest.approx(0.2)
+    assert by_family["late"]["best_config_observed_auc_ndcg_at_10"] == pytest.approx(0.8)
+    assert len(best_dynamics) == 10
+
+
+def test_system_summary_reports_speedup_against_family_adamw():
+    rows = []
+    for optimizer, wall_time, throughput in (("adamw", 4.0, 10.0), ("muon", 2.0, 20.0)):
+        rows.append(
+            {
+                "model_family": "dense",
+                "optimizer": optimizer,
+                "wall_time_hours": wall_time,
+                "samples_per_second": throughput,
+                "steps_per_second": throughput / 128,
+                "peak_allocated_gib": 1.0,
+                "peak_reserved_gib": 2.0,
+                "checkpoint_gib": 3.0,
+                "optimizer_state_gib": 4.0,
+                "gpu_name": "GPU",
+                "world_size": 4,
+            }
+        )
+
+    by_optimizer = {row["optimizer"]: row for row in _system_summaries(rows)}
+    assert by_optimizer["adamw"]["throughput_vs_adamw"] == 1.0
+    assert by_optimizer["muon"]["throughput_vs_adamw"] == 2.0
+    assert by_optimizer["muon"]["wall_time_speedup_vs_adamw"] == 2.0
+    assert "2.00×" in _render_systems(list(by_optimizer.values()))
+
+
+def test_result_render_reports_auc_and_paired_task_counts():
+    optimizer_rows = []
+    dynamics = []
+    task_rows = []
+    for family in ("dense", "late"):
+        for optimizer_index, optimizer in enumerate(("adamw", "muon", "normuon")):
+            score = 0.4 + optimizer_index * 0.01
+            optimizer_rows.append(
+                {
+                    "model_family": family,
+                    "optimizer": optimizer,
+                    "best_learning_rate": 1e-4,
+                    "best_final_ndcg_at_10": score,
+                    "final_mean_across_lrs": score,
+                    "final_population_std_across_lrs": 0.01,
+                    "final_min_across_lrs": score - 0.01,
+                    "final_max_across_lrs": score + 0.01,
+                    "best_config_observed_auc_ndcg_at_10": score - 0.02,
+                    "observed_auc_mean_across_lrs": score - 0.02,
+                }
+            )
+            for stage in range(1, 6):
+                dynamics.append(
+                    {
+                        "model_family": family,
+                        "optimizer": optimizer,
+                        "stage": stage,
+                        "mean_ndcg_at_10": score - (5 - stage) * 0.01,
+                    }
+                )
+        for task_index in range(14):
+            task_rows.append(
+                {
+                    "model_family": family,
+                    "task": f"task-{task_index}",
+                    "adamw": 0.4,
+                    "muon": 0.41,
+                    "normuon": 0.39,
+                    "muon_minus_adamw": 0.01,
+                    "normuon_minus_adamw": -0.01,
+                }
+            )
+
+    rendered = _render_results(optimizer_rows, dynamics, task_rows)
+    assert "4-LR trajectory AUC" in rendered
+    assert "muon beats AdamW on 14/14 tasks" in rendered
+    assert "normuon beats AdamW on 0/14 tasks" in rendered
 
 
 def test_system_metrics_add_audited_prior_training_segment(tmp_path):
