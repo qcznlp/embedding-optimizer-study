@@ -217,7 +217,11 @@ explanation and instead points to the native bfloat16 Muon/CUDA path under this 
 resume passed both interruption points without changing optimizer semantics, but later encountered a
 sixth asynchronous launch failure at step 3,829 on rank 2 (physical GPU 2), again reported by the
 NCCL watchdog. The supervisor restarted both concurrent runs from their independently validated
-checkpoint 3,126 states.
+checkpoint 3,126 states. That retry reached step 3,375 before a seventh failure on the same rank and
+physical GPU. In this event the application traceback directly reported
+`CUBLAS_STATUS_EXECUTION_FAILED` from the native bfloat16 Newton–Schulz `torch.addmm`, alongside the
+NCCL watchdog and same-time Xid 13 followed by Xid 43. The supervisor again resumed the independently
+validated checkpoint 3,126 states without changing the optimizer or runtime.
 
 The kernel log independently correlates every interruption with an NVIDIA driver Xid on the same
 physical device and at the same wall-clock time:
@@ -230,6 +234,7 @@ physical device and at the same wall-clock time:
 | 4 | 3,336 | 0 (`08:00`) | Muon momentum-buffer `lerp_` | 43 |
 | 5 | 3,180 | 1 (`7e:00`) | NCCL watchdog | 13, then 43 |
 | 6 | 3,829 | 2 (`a2:00`) | NCCL watchdog | 13, then 43 |
+| 7 | 3,375 | 2 (`a2:00`) | Newton–Schulz `addmm` / cuBLAS and NCCL watchdog | 13, then 43 |
 
 NVIDIA classifies [Xid 13](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html)
 as a graphics-engine exception: typically an application/CUDA fault such as an out-of-bounds access
