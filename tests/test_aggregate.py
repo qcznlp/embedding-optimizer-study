@@ -12,6 +12,7 @@ from embed_optim.aggregate import (
     _dataset_rows_audit,
     _optimizer_summaries,
     _paired_comparisons,
+    _plot,
     _render_results,
     _render_systems,
     _replace_marked,
@@ -275,6 +276,37 @@ def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monk
         "checkpoint/task evaluations." in rendered
     )
     assert "training matrix in progress" not in rendered
+
+
+def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
+    summary = []
+    for family in ("dense", "late"):
+        for optimizer_index, optimizer in enumerate(("adamw", "muon", "normuon")):
+            for learning_rate in (1e-5, 1e-4):
+                for stage in range(1, 6):
+                    summary.append(
+                        {
+                            "model_family": family,
+                            "optimizer": optimizer,
+                            "learning_rate": learning_rate,
+                            "stage": stage,
+                            "fraction": stage / 5,
+                            "mean_ndcg_at_10": 0.3 + optimizer_index * 0.01 + stage * 0.005,
+                        }
+                    )
+
+    _plot(summary, tmp_path)
+
+    expected = (
+        "dense-training-dynamics.png",
+        "late-training-dynamics.png",
+        "dense-lr-sensitivity.png",
+        "late-lr-sensitivity.png",
+    )
+    for name in expected:
+        payload = (tmp_path / "figures" / name).read_bytes()
+        assert payload.startswith(b"\x89PNG\r\n\x1a\n")
+        assert len(payload) > 1_000
 
 
 def test_system_metrics_add_audited_prior_training_segment(tmp_path):

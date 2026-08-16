@@ -235,7 +235,7 @@ verifies save, reload, context lengths, and query-expansion settings.
 ## Development
 
 ```bash
-uv sync --extra dev --extra eval
+uv sync --extra dev --extra eval --extra analysis
 pytest
 ruff check src tests scripts/eval
 ruff format --check src tests scripts/eval
