@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: "3.12"
           enable-cache: true
-      - run: uv sync --extra dev --extra eval
+      - run: uv sync --extra dev --extra eval --extra analysis
       - run: uv build
       - run: uv run pytest
       - run: uv run ruff check src tests scripts/eval
