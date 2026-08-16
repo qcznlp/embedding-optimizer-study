@@ -193,6 +193,17 @@ from the completed W&B runs and local Trainer states.
 
 <!-- SYSTEMS:END -->
 
+Infrastructure note: the first DenseOn Muon run encountered two pre-checkpoint
+`CUBLAS_STATUS_EXECUTION_FAILED` errors in PyTorch's native bfloat16 Newton–Schulz `addmm`, both on
+physical GPU 3 (at optimizer steps 52 and 388). ECC counters remained zero, but moving that device
+from the DenseOn pool to the concurrent AdamW LateOn pool eliminated the failure past both observed
+positions without changing the Muon implementation, precision, hyperparameters, model state, or data
+order. The failed DenseOn attempts occurred before checkpoint 782 and were discarded; the accepted
+run starts from the original base model and seed. LateOn resumed from its last complete checkpoint at
+step 2,345. Its reported throughput combines only the non-overlapping useful segments through that
+checkpoint and after resume, while duplicated work after step 2,345 is treated as infrastructure
+overhead rather than optimizer throughput.
+
 ## Limitations
 
 - This is one epoch on one pretrained backbone family; it does not establish a universal optimizer
