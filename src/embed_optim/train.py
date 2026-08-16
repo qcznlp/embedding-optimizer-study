@@ -226,7 +226,7 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
             for path in sorted(output_dir.glob("checkpoint-*"))
             if (path / "optimizer.pt").is_file()
         }
-        (output_dir / "completed.json").write_text(
+        completion = (
             json.dumps(
                 {
                     "run_id": config.run_id,
@@ -263,6 +263,9 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
             )
             + "\n"
         )
+        temporary = output_dir / "completed.json.tmp"
+        temporary.write_text(completion)
+        temporary.replace(output_dir / "completed.json")
     return final_dir
 
 

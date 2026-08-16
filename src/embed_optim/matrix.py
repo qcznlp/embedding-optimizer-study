@@ -80,6 +80,41 @@ def _latest_resumable_checkpoint(config: RunConfig) -> Path | None:
     return max(checkpoints, key=lambda path: int(path.name.rsplit("-", 1)[1]))
 
 
+def _run_is_complete(config: RunConfig) -> bool:
+    """Only skip a run whose terminal marker and all resumable artifacts agree."""
+
+    output = config.output_dir
+    try:
+        completed = json.loads((output / "completed.json").read_text())
+        schedule = json.loads((output / "checkpoint_schedule.json").read_text())
+        steps = [int(step) for step in schedule["steps"]]
+        final_state = json.loads((output / "trainer_state_final.json").read_text())
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+        return False
+    if len(steps) != 5 or steps != sorted(set(steps)):
+        return False
+    try:
+        completion_steps = sorted(int(step) for step in completed.get("checkpoints", []))
+        completed_step = int(completed.get("global_step", -1))
+        final_step = int(final_state.get("global_step", -1))
+    except (TypeError, ValueError):
+        return False
+    if (
+        completed.get("run_id") != config.run_id
+        or completed.get("model_family") != config.model_family
+        or completed_step != steps[-1]
+        or completion_steps != steps
+        or final_step != steps[-1]
+    ):
+        return False
+    if not all(_checkpoint_is_resumable(output / f"checkpoint-{step}") for step in steps):
+        return False
+    final_dir = output / "final"
+    return final_dir.is_dir() and any(
+        path.stat().st_size > 0 for path in final_dir.rglob("*.safetensors")
+    )
+
+
 def _launch(
     config: RunConfig,
     matrix_path: Path,
@@ -127,7 +162,7 @@ def _launch(
 
 
 def _complete(config: RunConfig) -> bool:
-    return (config.output_dir / "completed.json").is_file()
+    return _run_is_complete(config)
 
 
 def run_matrix(args: argparse.Namespace) -> int:
