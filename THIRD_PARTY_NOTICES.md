@@ -5,7 +5,8 @@ This repository is derived in part from
 Apache License 2.0. Its original copyright notices and repository history are retained.
 
 The NorMuon update in `src/embed_optim/optimizers.py` is adapted from
-[`zichongli5/NorMuon`](https://github.com/zichongli5/NorMuon):
+[`zichongli5/NorMuon`](https://github.com/zichongli5/NorMuon) at commit
+`c6989a8354730695d9f5a9faa6c55eeb24865209`:
 
 ```text
 MIT License
