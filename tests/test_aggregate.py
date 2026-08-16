@@ -1,4 +1,5 @@
 import json
+import shutil
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -170,6 +171,28 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         "errors": [],
     }
 
+    second_config = RunConfig(
+        run_id="adamw-test-two",
+        model_family="dense",
+        optimizer=OptimizerConfig(name="adamw", lr=2e-6),
+        model_name="model",
+        dataset_path=str(dataset),
+        output_root=str(tmp_path),
+    )
+    shutil.copytree(output, second_config.output_dir)
+    (second_config.output_dir / "run_config.json").write_text(json.dumps(second_config.as_dict()))
+    second_completed_path = second_config.output_dir / "completed.json"
+    second_completed = json.loads(second_completed_path.read_text())
+    second_completed["run_id"] = second_config.run_id
+    second_completed["dataset_fingerprint"] = "different-training-view"
+    second_completed_path.write_text(json.dumps(second_completed))
+    inconsistent_dataset_view = audit_training_artifacts([config, second_config])
+    assert inconsistent_dataset_view["verified_runs"] == 1
+    assert inconsistent_dataset_view["verified_checkpoints"] == 10
+    assert inconsistent_dataset_view["errors"] == [
+        "dense/adamw-test-two: training dataset view fingerprint differs across runs"
+    ]
+
     (output / "checkpoint-6" / "scheduler.pt").unlink()
     incomplete = audit_training_artifacts([config])
     assert not incomplete["complete"]
@@ -208,15 +231,15 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         json.dumps({"global_step": 8, "log_history": [{"step": 8, "loss": 0.5}]})
     )
     completed = json.loads((output / "completed.json").read_text())
-    completed["dataset_fingerprint"] = "different-fingerprint"
+    completed["dataset_fingerprint"] = None
     (output / "completed.json").write_text(json.dumps(completed))
-    wrong_dataset = audit_training_artifacts([config])
-    assert wrong_dataset["verified_checkpoints"] == 5
-    assert wrong_dataset["errors"] == [
-        "dense/adamw-test: completion dataset fingerprint does not match manifest"
+    invalid_dataset_view = audit_training_artifacts([config])
+    assert invalid_dataset_view["verified_checkpoints"] == 5
+    assert invalid_dataset_view["errors"] == [
+        "dense/adamw-test: missing/invalid training dataset view fingerprint"
     ]
 
-    completed["dataset_fingerprint"] = "dataset-fingerprint"
+    completed["dataset_fingerprint"] = "training-view-fingerprint"
     completed["system_metrics"]["wall_time_seconds_max_rank"] = 0
     (output / "completed.json").write_text(json.dumps(completed))
     invalid_system_metric = audit_training_artifacts([config])
