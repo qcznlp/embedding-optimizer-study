@@ -2,6 +2,7 @@ import importlib
 import json
 import sys
 from argparse import Namespace
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -11,6 +12,7 @@ from embed_optim import evaluate_matrix
 from embed_optim.evaluation_utils import (
     FAST_PLAID_INDEX_KWARGS,
     configure_atomic_mteb_results,
+    disable_mteb_cache_writes,
     late_ipc_result_path,
     task_result_remaining,
 )
@@ -339,3 +341,117 @@ def test_mteb_result_writes_are_atomic_and_preserve_previous_result_on_failure(
         FakeTaskResult("partial", fail=True).to_disk(result)
     assert result.read_text() == "new-complete-result"
     assert not list(tmp_path.glob(".*.tmp.json"))
+
+
+def test_mteb_run_settings_merge_is_locked_atomic_and_uses_current_schema(tmp_path):
+    import mteb
+    import mteb.cache.result_cache as result_cache_module
+
+    configure_atomic_mteb_results()
+    settings = tmp_path / "run_settings.jsonl"
+    minor = int(mteb.__version__.split(".")[1])
+
+    def write_task(index):
+        scope = (
+            {"splits": ["test"], "subsets": ["default"]}
+            if minor >= 19
+            else {"split": "test", "subset": "default"}
+        )
+        result_cache_module._write_and_merge_keyed_json(
+            settings,
+            [
+                {
+                    "task": f"Task{index}",
+                    **scope,
+                    "version": {"mteb": "test"},
+                    "encode_kwargs": {},
+                }
+            ],
+        )
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        list(executor.map(write_task, range(32)))
+
+    rows = [json.loads(line) for line in settings.read_text().splitlines()]
+    assert {row["task"] for row in rows} == {f"Task{index}" for index in range(32)}
+    if minor >= 19:
+        assert all(row["splits"] == ["test"] for row in rows)
+        assert all(row["subsets"] == ["default"] for row in rows)
+    else:
+        assert all(row["split"] == "test" for row in rows)
+        assert all(row["subset"] == "default" for row in rows)
+    assert not list(tmp_path.glob(".*.tmp.jsonl"))
+
+
+def test_mteb_model_metadata_is_atomic_and_matches_result_path(tmp_path, monkeypatch):
+    import mteb
+    from mteb.cache import ResultCache
+    from mteb.models.model_meta import ModelMeta, ScoringFunction
+
+    from embed_optim import evaluation_utils
+
+    class FakeTaskResult:
+        task_name = "SciFactDecontaminated"
+        scores = {"test": [{"hf_subset": "default"}]}
+
+        def to_disk(self, path):
+            path.write_text("{}")
+
+    meta = ModelMeta(
+        loader=None,
+        name="run/checkpoint-1",
+        revision="local",
+        release_date=None,
+        languages=None,
+        n_parameters=None,
+        memory_usage_mb=None,
+        max_tokens=8192,
+        embed_dim=768,
+        license=None,
+        open_weights=True,
+        public_training_code=None,
+        public_training_data=None,
+        framework=["Sentence Transformers", "PyTorch"],
+        similarity_fn_name=ScoringFunction.COSINE,
+        use_instructions=False,
+        training_datasets=None,
+    )
+    configure_atomic_mteb_results()
+    cache = ResultCache(tmp_path)
+    cache.save_to_cache(FakeTaskResult(), meta)
+
+    result_dir = tmp_path / "results" / "run__checkpoint-1" / "local"
+    meta_path = result_dir / "model_meta.json"
+    assert (result_dir / "SciFactDecontaminated.json").is_file()
+    assert json.loads(meta_path.read_text())["name"] == "run/checkpoint-1"
+    settings = [
+        json.loads(line) for line in (result_dir / "run_settings.jsonl").read_text().splitlines()
+    ]
+    if int(mteb.__version__.split(".")[1]) >= 19:
+        assert settings[0]["splits"] == ["test"]
+        assert settings[0]["subsets"] == ["default"]
+    else:
+        assert settings[0]["split"] == "test"
+        assert settings[0]["subset"] == "default"
+
+    previous_meta = meta_path.read_text()
+
+    def fail_json_dump(payload, handle, **kwargs):
+        handle.write("{")
+        raise RuntimeError("injected interrupted metadata write")
+
+    monkeypatch.setattr(evaluation_utils.json, "dump", fail_json_dump)
+    with pytest.raises(RuntimeError, match="injected interrupted metadata write"):
+        cache.save_to_cache(FakeTaskResult(), meta)
+    assert meta_path.read_text() == previous_meta
+    assert not list(result_dir.glob(".model_meta.*.tmp.json"))
+
+
+def test_non_main_mteb_cache_is_read_only():
+    calls = []
+    cache = SimpleNamespace(save_to_cache=lambda *args, **kwargs: calls.append((args, kwargs)))
+
+    disable_mteb_cache_writes(cache)
+    cache.save_to_cache("result", "model")
+
+    assert calls == []

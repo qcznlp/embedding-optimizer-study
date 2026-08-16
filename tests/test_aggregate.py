@@ -15,6 +15,7 @@ from embed_optim.aggregate import (
     _render_results,
     _render_systems,
     _replace_marked,
+    _run_settings_scope_matches,
     _system_summaries,
     _trajectory_auc,
     audit_dataset_artifacts,
@@ -34,6 +35,24 @@ def test_run_id_matching_does_not_confuse_muon_and_normuon():
     assert _contains_run_id(muon, "muon-lr1e-4")
     assert not _contains_run_id(normuon, "muon-lr1e-4")
     assert _contains_run_id(normuon, "normuon-lr1e-4")
+
+
+def test_run_settings_scope_schema_is_selected_by_mteb_version():
+    singular = {"split": "test", "subset": "default"}
+    plural = {"splits": ["test"], "subsets": ["default"]}
+
+    assert _run_settings_scope_matches(singular, "test", "default", "2.18.16")
+    assert not _run_settings_scope_matches(plural, "test", "default", "2.18.16")
+    assert _run_settings_scope_matches(plural, "test", "default", "2.19.3")
+    assert not _run_settings_scope_matches(singular, "test", "default", "2.19.3")
+    assert not _run_settings_scope_matches(
+        {"split": "test", "subset": "default", "splits": ["test"], "subsets": ["default"]},
+        "test",
+        "default",
+        "2.19.3",
+    )
+    with pytest.raises(ValueError, match="Unsupported MTEB"):
+        _run_settings_scope_matches(plural, "test", "default", "1.38.0")
 
 
 def test_replace_marked_preserves_the_markers():
@@ -356,8 +375,8 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
         json.dumps(
             {
                 "task": "SciFactDecontaminated",
-                "split": "test",
-                "subset": "default",
+                "splits": ["test"],
+                "subsets": ["default"],
                 "version": evaluation_versions,
                 "encode_kwargs": {},
             }
@@ -369,6 +388,24 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
     assert len(rows) == 1
     assert rows[0]["task"] == "SciFact"
     assert rows[0]["ndcg_at_10"] == 0.5
+
+    settings_path = result.parent / "run_settings.jsonl"
+    valid_settings = settings_path.read_text()
+    settings_path.write_text(
+        json.dumps(
+            {
+                "task": "SciFactDecontaminated",
+                "split": "test",
+                "subset": "default",
+                "version": evaluation_versions,
+                "encode_kwargs": {},
+            }
+        )
+        + "\n"
+    )
+    with pytest.raises(ValueError, match="Missing/ambiguous run settings"):
+        collect_evaluations(tmp_path / "results", [config])
+    settings_path.write_text(valid_settings)
 
     payload["dataset_revision"] = "wrong-revision"
     result.write_text(json.dumps(payload))

@@ -644,6 +644,35 @@ def _base_task_name(name: str) -> str:
     return name[: -len(suffix)] if name.endswith(suffix) else name
 
 
+def _run_settings_scope_matches(
+    item: dict,
+    expected_split: str,
+    expected_subset: str,
+    mteb_version: str,
+) -> bool:
+    """Match the versioned MTEB run-settings schema without accepting hybrids."""
+
+    try:
+        major, minor = (int(part) for part in mteb_version.split(".", 2)[:2])
+    except (AttributeError, TypeError, ValueError) as error:
+        raise ValueError(f"Unsupported MTEB run-settings version: {mteb_version!r}") from error
+    if major != 2 or minor < 18:
+        raise ValueError(f"Unsupported MTEB run-settings version: {mteb_version!r}")
+    if minor == 18:
+        return (
+            item.get("split") == expected_split
+            and item.get("subset") == expected_subset
+            and "splits" not in item
+            and "subsets" not in item
+        )
+    return (
+        item.get("splits") == [expected_split]
+        and item.get("subsets") == [expected_subset]
+        and "split" not in item
+        and "subset" not in item
+    )
+
+
 def _result_provenance(
     path: Path,
     payload: dict,
@@ -731,12 +760,13 @@ def _result_provenance(
         ]
     except (OSError, json.JSONDecodeError) as error:
         raise ValueError(f"Missing/invalid run settings beside {path}") from error
+    if not settings or any(not isinstance(item, dict) for item in settings):
+        raise ValueError(f"Missing/invalid run settings beside {path}")
     matching_settings = [
         item
         for item in settings
         if item.get("task") == expected_task_name
-        and item.get("split") == expected_split
-        and item.get("subset") == "default"
+        and _run_settings_scope_matches(item, expected_split, "default", mteb_version)
     ]
     if len(matching_settings) != 1:
         raise ValueError(f"Missing/ambiguous run settings beside {path}")

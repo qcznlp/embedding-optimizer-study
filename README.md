@@ -153,6 +153,10 @@ resumed results directory cannot silently mix evaluator stacks.
 The same manifest hashes all eight evaluation/aggregation source files and verifies that the selected
 worker interpreter imports the identical package sources. Resuming after any scoring-code change fails
 before GPU work instead of mixing implementations in one result directory.
+Task results and model metadata are committed with atomic replacement, while cross-process updates to
+MTEB's shared `run_settings.jsonl` are serialized with a file lock. Distributed LateOn workers use a
+single metadata writer, and strict aggregation validates the singular MTEB 2.18 or plural MTEB 2.19+
+run-settings schema against the exact runtime version recorded in the manifest.
 
 For a targeted evaluation:
 

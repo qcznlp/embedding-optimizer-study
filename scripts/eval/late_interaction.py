@@ -52,6 +52,7 @@ from embed_optim.decontamination import get_decontaminated_tasks
 from embed_optim.evaluation_utils import (
     FAST_PLAID_INDEX_KWARGS,
     configure_atomic_mteb_results,
+    disable_mteb_cache_writes,
     late_ipc_result_path,
 )
 from embed_optim.pylate_compat import configure_pylate_compatibility
@@ -637,6 +638,8 @@ def main() -> None:
         tasks = mteb.get_tasks(tasks=args.tasks)
 
     cache = ResultCache(args.results_folder)
+    if not accelerator.is_main_process:
+        disable_mteb_cache_writes(cache)
 
     for model_name in args.models:
         # Required for PyLate 1.6 under SentenceTransformers 5 model dispatch.
@@ -701,6 +704,7 @@ def main() -> None:
                 task.hf_subsets = all_subsets
             else:
                 mteb.evaluate(model, [task], cache=cache)
+                accelerator.wait_for_everyone()
 
         # Free the model on every rank before loading the next one.
         accelerator.wait_for_everyone()
