@@ -27,7 +27,6 @@ import logging
 import os
 import pickle
 import shutil
-import tempfile
 import time
 import traceback
 from pathlib import Path
@@ -50,6 +49,7 @@ from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
 from embed_optim.decontamination import get_decontaminated_tasks
+from embed_optim.evaluation_utils import late_ipc_result_path
 from embed_optim.pylate_compat import configure_pylate_compatibility
 
 logger = logging.getLogger(__name__)
@@ -323,11 +323,11 @@ class AccelerateMultiVectorModel(MultiVectorModel):
             torch.cuda.synchronize()
         self.accelerator.wait_for_everyone()
 
-        safe_index_name = "".join(
-            char if char.isalnum() or char in ("-", "_") else "_" for char in self._index_name
-        )
-        results_path = os.path.join(
-            tempfile.gettempdir(), f"mteb_plaid_results_{safe_index_name}.pkl"
+        results_path = late_ipc_result_path(
+            self.model_name,
+            task_metadata.name,
+            hf_subset,
+            hf_split,
         )
         ready_flag = results_path + ".ready"
         failed_flag = results_path + ".failed"

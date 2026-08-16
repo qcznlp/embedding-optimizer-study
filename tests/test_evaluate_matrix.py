@@ -1,6 +1,8 @@
 from argparse import Namespace
+from pathlib import Path
 
 from embed_optim import evaluate_matrix
+from embed_optim.evaluation_utils import late_ipc_result_path
 
 
 class _FakeProcess:
@@ -71,3 +73,17 @@ def test_late_command_keeps_checkpoint_scoped_to_one_worker(tmp_path):
     tasks_index = command.index("--tasks")
     assert command[model_index + 1 : tasks_index] == [str(model)]
     assert command[tasks_index + 1 : command.index("--results_folder")] == args.tasks
+
+
+def test_late_ipc_result_paths_are_rank_stable_and_job_unique():
+    base = late_ipc_result_path("model-a", "SciFact", "default", "test")
+    assert base == late_ipc_result_path("model-a", "SciFact", "default", "test")
+    variants = {
+        late_ipc_result_path("model-b", "SciFact", "default", "test"),
+        late_ipc_result_path("model-a", "FiQA2018", "default", "test"),
+        late_ipc_result_path("model-a", "SciFact", "en", "test"),
+        late_ipc_result_path("model-a", "SciFact", "default", "dev"),
+    }
+    assert base not in variants
+    assert len(variants) == 4
+    assert Path(base).name.startswith("mteb_plaid_results_")
