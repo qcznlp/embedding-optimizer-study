@@ -118,7 +118,12 @@ Dense retrieval is evaluated with MTEB exact retrieval. Late interaction is enco
 searched with FastPLAID using 4-bit residuals, 8 IVF probes, 8,192 full scores, and index seed 42.
 The training scorer uses the fused Late Interaction Kernels implementation. The pinned corpus counts
 sum to 19,525,336 documents; evaluation schedules larger corpora first across the available workers
-and resumes only the missing split/subset pairs from validated MTEB result files.
+and resumes only the missing split/subset pairs from validated MTEB result files. A launch preflight
+uses one Python runtime for both model families and requires its core model-library versions to match
+the versions recorded during training. An immutable runtime manifest also records PyLate, FastPLAID,
+Late Interaction Kernels, MTEB, and FlashAttention. Final aggregation rejects results with a different
+checkpoint identity, dataset revision, split/subset, scoring field, MTEB version, or runtime
+provenance.
 
 ## Results
 

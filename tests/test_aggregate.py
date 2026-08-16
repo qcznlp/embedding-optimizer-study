@@ -3,13 +3,17 @@ import shutil
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from embed_optim.aggregate import (
     _contains_run_id,
     _replace_marked,
     audit_training_artifacts,
+    collect_evaluations,
     collect_system_metrics,
 )
 from embed_optim.config import OptimizerConfig, RunConfig
+from embed_optim.decontamination import DECONTAMINATED_BEIR
 
 
 def test_run_id_matching_does_not_confuse_muon_and_normuon():
@@ -61,6 +65,120 @@ def test_system_metrics_add_audited_prior_training_segment(tmp_path):
     assert row["samples_per_second"] == 1.0
     assert row["steps_per_second"] == 0.1
     assert row["trainer_reported_samples_per_second"] == 9.9
+
+
+def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
+    config = RunConfig(
+        run_id="adamw-test",
+        model_family="dense",
+        optimizer=OptimizerConfig(name="adamw", lr=1e-6),
+        model_name="model",
+        dataset_path="data",
+        output_root=str(tmp_path / "outputs"),
+    )
+    config.output_dir.mkdir(parents=True)
+    (config.output_dir / "checkpoint_schedule.json").write_text(
+        json.dumps({"steps": [2, 4, 6, 8, 10]})
+    )
+    training_versions = {
+        "torch": "1",
+        "transformers": "1",
+        "sentence-transformers": "1",
+        "pylate": "1",
+        "late-interaction-kernels": "1",
+    }
+    (config.output_dir / "completed.json").write_text(json.dumps({"versions": training_versions}))
+
+    result = (
+        tmp_path
+        / "results"
+        / "dense"
+        / "adamw-test__checkpoint-2"
+        / "adamw-test"
+        / "checkpoint-2"
+        / "local"
+        / "SciFactDecontaminated.json"
+    )
+    result.parent.mkdir(parents=True)
+    payload = {
+        "dataset_revision": DECONTAMINATED_BEIR["SciFact"][1],
+        "task_name": "SciFactDecontaminated",
+        "mteb_version": "2.19.3",
+        "evaluation_time": 1.0,
+        "scores": {
+            "test": [
+                {
+                    "hf_subset": "default",
+                    "main_score": 0.5,
+                    "ndcg_at_10": 0.5,
+                    "mteb_version": "2.19.3",
+                }
+            ]
+        },
+    }
+    result.write_text(json.dumps(payload))
+    (result.parent / "model_meta.json").write_text(
+        json.dumps({"name": "adamw-test/checkpoint-2", "revision": "local"})
+    )
+    evaluation_versions = {
+        "mteb": "2.19.3",
+        "torch": "1",
+        "sentence-transformers": "1",
+        "flash-attn": "1",
+        "transformers": "1",
+    }
+    runtime_versions = {
+        **evaluation_versions,
+        "pylate": "1",
+        "fast-plaid": "1",
+        "late-interaction-kernels": "1",
+    }
+    (tmp_path / "results" / "evaluation_runtime.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "python": "/system/python",
+                "versions": runtime_versions,
+            }
+        )
+    )
+    (result.parent / "run_settings.jsonl").write_text(
+        json.dumps(
+            {
+                "task": "SciFactDecontaminated",
+                "split": "test",
+                "subset": "default",
+                "version": evaluation_versions,
+                "encode_kwargs": {},
+            }
+        )
+        + "\n"
+    )
+
+    rows = collect_evaluations(tmp_path / "results", [config])
+    assert len(rows) == 1
+    assert rows[0]["task"] == "SciFact"
+    assert rows[0]["ndcg_at_10"] == 0.5
+
+    payload["dataset_revision"] = "wrong-revision"
+    result.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="Unexpected dataset revision"):
+        collect_evaluations(tmp_path / "results", [config])
+
+    payload["dataset_revision"] = DECONTAMINATED_BEIR["SciFact"][1]
+    result.write_text(json.dumps(payload))
+    runtime_versions["pylate"] = "different"
+    (tmp_path / "results" / "evaluation_runtime.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "python": "/system/python",
+                "versions": runtime_versions,
+            }
+        )
+    )
+    with pytest.raises(ValueError, match="Training/evaluation pylate versions differ"):
+        collect_evaluations(tmp_path / "results", [config])
 
 
 def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path):

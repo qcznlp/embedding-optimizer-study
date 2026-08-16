@@ -12,11 +12,21 @@ from collections import defaultdict
 from pathlib import Path
 
 from .config import RunConfig, load_matrix
-from .decontamination import DECONTAMINATED_TASK_NAMES
+from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
 
 CHECKPOINT_PATTERN = re.compile(r"checkpoint-(\d+)")
 RESULTS_MARKERS = ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->")
 SYSTEMS_MARKERS = ("<!-- SYSTEMS:BEGIN -->", "<!-- SYSTEMS:END -->")
+EVALUATION_PACKAGES = {
+    "mteb",
+    "torch",
+    "sentence-transformers",
+    "flash-attn",
+    "transformers",
+    "pylate",
+    "fast-plaid",
+    "late-interaction-kernels",
+}
 
 
 def _trainer_state_problem(path: Path, expected_step: int) -> str | None:
@@ -327,9 +337,152 @@ def _base_task_name(name: str) -> str:
     return name[: -len(suffix)] if name.endswith(suffix) else name
 
 
+def _result_provenance(
+    path: Path,
+    payload: dict,
+    config: RunConfig,
+    step: int,
+    task: str,
+    runtime_versions: dict[str, str],
+) -> dict[str, str]:
+    """Validate one MTEB result and return its recorded package versions."""
+
+    expected_task_name = f"{task}Decontaminated"
+    expected_revision = DECONTAMINATED_BEIR[task][1]
+    expected_split = "dev" if task == "MSMARCO" else "test"
+    if payload.get("task_name") != expected_task_name:
+        raise ValueError(f"Unexpected task identity in {path}")
+    if payload.get("dataset_revision") != expected_revision:
+        raise ValueError(f"Unexpected dataset revision in {path}")
+    mteb_version = payload.get("mteb_version")
+    if not isinstance(mteb_version, str) or not mteb_version:
+        raise ValueError(f"Missing/invalid MTEB version in {path}")
+    evaluation_time = payload.get("evaluation_time")
+    if (
+        isinstance(evaluation_time, bool)
+        or not isinstance(evaluation_time, (int, float))
+        or not math.isfinite(evaluation_time)
+        or evaluation_time <= 0
+    ):
+        raise ValueError(f"Missing/invalid evaluation time in {path}")
+
+    scores = payload.get("scores")
+    if not isinstance(scores, dict) or set(scores) != {expected_split}:
+        raise ValueError(f"Unexpected evaluation split coverage in {path}")
+    split_rows = scores[expected_split]
+    if (
+        not isinstance(split_rows, list)
+        or len(split_rows) != 1
+        or not isinstance(split_rows[0], dict)
+        or split_rows[0].get("hf_subset") != "default"
+    ):
+        raise ValueError(f"Unexpected evaluation subset coverage in {path}")
+    score_row = split_rows[0]
+    if score_row.get("mteb_version") != mteb_version:
+        raise ValueError(f"Per-subset MTEB version differs in {path}")
+    ndcg = score_row.get("ndcg_at_10")
+    main_score = score_row.get("main_score")
+    if (
+        isinstance(ndcg, bool)
+        or not isinstance(ndcg, (int, float))
+        or not math.isfinite(ndcg)
+        or isinstance(main_score, bool)
+        or not isinstance(main_score, (int, float))
+        or not math.isfinite(main_score)
+        or not math.isclose(ndcg, main_score, rel_tol=0, abs_tol=1e-12)
+    ):
+        raise ValueError(f"Missing/inconsistent nDCG@10 main score in {path}")
+
+    meta_path = path.parent / "model_meta.json"
+    settings_path = path.parent / "run_settings.jsonl"
+    try:
+        meta = json.loads(meta_path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Missing/invalid model metadata beside {path}") from error
+    expected_model_name = f"{config.run_id}/checkpoint-{step}"
+    if meta.get("name") != expected_model_name or meta.get("revision") != "local":
+        raise ValueError(f"Unexpected model identity beside {path}")
+
+    try:
+        settings = [
+            json.loads(line) for line in settings_path.read_text().splitlines() if line.strip()
+        ]
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Missing/invalid run settings beside {path}") from error
+    matching_settings = [
+        item
+        for item in settings
+        if item.get("task") == expected_task_name
+        and item.get("split") == expected_split
+        and item.get("subset") == "default"
+    ]
+    if len(matching_settings) != 1:
+        raise ValueError(f"Missing/ambiguous run settings beside {path}")
+    versions = matching_settings[0].get("version")
+    expected_packages = {
+        "mteb",
+        "torch",
+        "sentence-transformers",
+        "flash-attn",
+        "transformers",
+    }
+    if (
+        not isinstance(versions, dict)
+        or set(versions) != expected_packages
+        or any(not isinstance(value, str) or not value for value in versions.values())
+        or versions["mteb"] != mteb_version
+    ):
+        raise ValueError(f"Missing/inconsistent evaluation package versions beside {path}")
+    if any(runtime_versions[package] != value for package, value in versions.items()):
+        raise ValueError(f"MTEB settings differ from evaluation runtime beside {path}")
+
+    completed_path = config.output_dir / "completed.json"
+    try:
+        training_versions = json.loads(completed_path.read_text())["versions"]
+    except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
+        raise ValueError(
+            f"Missing training versions for {config.model_family}/{config.run_id}"
+        ) from error
+    for package in (
+        "torch",
+        "transformers",
+        "sentence-transformers",
+        "pylate",
+        "late-interaction-kernels",
+    ):
+        if runtime_versions[package] != training_versions.get(package):
+            raise ValueError(f"Training/evaluation {package} versions differ for {path}")
+    return versions
+
+
+def _evaluation_runtime(results_root: Path) -> dict[str, str]:
+    """Load the immutable evaluator manifest stored before any GPU work."""
+
+    path = results_root / "evaluation_runtime.json"
+    try:
+        payload = json.loads(path.read_text())
+        versions = payload["versions"]
+    except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
+        raise ValueError(f"Missing/invalid evaluation runtime manifest: {path}") from error
+    if (
+        payload.get("schema_version") != 1
+        or not isinstance(payload.get("python"), str)
+        or not payload["python"]
+        or not isinstance(versions, dict)
+        or set(versions) != EVALUATION_PACKAGES
+        or any(not isinstance(value, str) or not value for value in versions.values())
+    ):
+        raise ValueError(f"Incomplete evaluation runtime manifest: {path}")
+    return versions
+
+
 def collect_evaluations(results_root: Path, configs: list[RunConfig]) -> list[dict]:
     indexed: dict[tuple, dict] = {}
+    versions_reference: dict[str, str] | None = None
+    runtime_versions: dict[str, str] | None = None
     for path in results_root.rglob("*Decontaminated.json"):
+        if runtime_versions is None:
+            runtime_versions = _evaluation_runtime(results_root)
         config = _run_for_result(path, configs)
         match = CHECKPOINT_PATTERN.search(str(path))
         if config is None or match is None:
@@ -342,11 +495,18 @@ def collect_evaluations(results_root: Path, configs: list[RunConfig]) -> list[di
         if step not in steps:
             continue
         payload = json.loads(path.read_text())
+        task = _base_task_name(payload["task_name"])
+        if task not in DECONTAMINATED_BEIR:
+            raise ValueError(f"Unexpected decontaminated task in {path}")
+        versions = _result_provenance(path, payload, config, step, task, runtime_versions)
+        if versions_reference is None:
+            versions_reference = versions
+        elif versions != versions_reference:
+            raise ValueError(f"Evaluation package versions differ for {path}")
         split_rows = [item for values in payload["scores"].values() for item in values]
-        scores = [float(item.get("ndcg_at_10", item["main_score"])) for item in split_rows]
+        scores = [float(item["ndcg_at_10"]) for item in split_rows]
         if not scores or not all(math.isfinite(score) for score in scores):
             raise ValueError(f"Missing/non-finite nDCG@10 in {path}")
-        task = _base_task_name(payload["task_name"])
         row = {
             "model_family": config.model_family,
             "optimizer": config.optimizer.name,
