@@ -543,8 +543,60 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         "expected_runs": 1,
         "verified_checkpoints": 5,
         "expected_checkpoints": 5,
+        "deep_validation": False,
         "errors": [],
     }
+
+    import torch
+    from safetensors.torch import save_file
+
+    save_file({"weight": torch.ones(1)}, final / "model.safetensors")
+
+    def write_deep_payload(step):
+        checkpoint = output / f"checkpoint-{step}"
+        save_file({"weight": torch.ones(1)}, checkpoint / "model.safetensors")
+        torch.save(
+            {
+                "state": {0: {"step": torch.tensor(step)}},
+                "param_groups": [{"params": [0]}],
+            },
+            checkpoint / "optimizer.pt",
+        )
+        torch.save({"last_epoch": step}, checkpoint / "scheduler.pt")
+        for rank in range(4):
+            torch.save({"rank": rank}, checkpoint / f"rng_state_{rank}.pth")
+
+    for step in steps:
+        write_deep_payload(step)
+    deep_complete = audit_training_artifacts([config], deep=True)
+    assert deep_complete["complete"] is True
+    assert deep_complete["deep_validation"] is True
+    assert deep_complete["verified_checkpoints"] == 5
+
+    corrupt_optimizer = output / "checkpoint-2" / "optimizer.pt"
+    corrupt_optimizer.write_bytes(b"not-a-pytorch-state")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any("invalid optimizer state" in error for error in corrupt["errors"])
+    write_deep_payload(2)
+
+    corrupt_model = output / "checkpoint-4" / "model.safetensors"
+    corrupt_model.write_bytes(b"not-a-safetensors-payload")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert any("invalid safetensors payload" in error for error in corrupt["errors"])
+    write_deep_payload(4)
+
+    torch.save({"last_epoch": 5}, output / "checkpoint-6" / "scheduler.pt")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert any("scheduler state does not match" in error for error in corrupt["errors"])
+    write_deep_payload(6)
+
+    corrupt_rng = output / "checkpoint-8" / "rng_state_2.pth"
+    corrupt_rng.write_bytes(b"not-a-pytorch-archive")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert any("RNG state is not a PyTorch archive" in error for error in corrupt["errors"])
+    write_deep_payload(8)
 
     second_config = RunConfig(
         run_id="adamw-test-two",
