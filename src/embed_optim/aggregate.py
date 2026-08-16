@@ -52,6 +52,70 @@ def _trainer_state_problem(path: Path, expected_step: int) -> str | None:
     return None
 
 
+def _completion_system_problems(completed: dict, steps: list[int]) -> list[str]:
+    problems: list[str] = []
+    metrics = completed.get("system_metrics")
+    if not isinstance(metrics, dict):
+        return ["missing/invalid completion system metrics"]
+    for key in (
+        "wall_time_seconds_max_rank",
+        "peak_allocated_bytes_max_rank",
+        "peak_reserved_bytes_max_rank",
+    ):
+        value = metrics.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            problems.append(f"system metric {key} is missing/non-numeric")
+        elif not math.isfinite(value) or value <= 0:
+            problems.append(f"system metric {key} is non-finite/non-positive")
+
+    trainer = metrics.get("trainer")
+    if not isinstance(trainer, dict):
+        problems.append("missing/invalid Trainer performance metrics")
+    else:
+        for key in (
+            "train_runtime",
+            "train_samples_per_second",
+            "train_steps_per_second",
+            "train_loss",
+            "epoch",
+        ):
+            value = trainer.get(key)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                problems.append(f"Trainer performance metric {key} is missing/non-numeric")
+            elif not math.isfinite(value) or (key != "train_loss" and value <= 0):
+                problems.append(f"Trainer performance metric {key} is non-finite/non-positive")
+
+    checkpoint_names = {f"checkpoint-{step}" for step in steps}
+    for key in ("checkpoint_bytes", "optimizer_state_bytes"):
+        sizes = metrics.get(key)
+        if not isinstance(sizes, dict) or set(sizes) != checkpoint_names:
+            problems.append(f"system metric {key} does not cover all five checkpoints")
+        elif any(
+            isinstance(value, bool)
+            or not isinstance(value, (int, float))
+            or not math.isfinite(value)
+            or value <= 0
+            for value in sizes.values()
+        ):
+            problems.append(f"system metric {key} contains a non-positive/invalid size")
+
+    if not isinstance(metrics.get("gpu_name"), str) or not metrics["gpu_name"].strip():
+        problems.append("completion GPU name is missing/invalid")
+    expected_versions = {
+        "torch",
+        "transformers",
+        "sentence-transformers",
+        "pylate",
+        "late-interaction-kernels",
+    }
+    versions = completed.get("versions")
+    if not isinstance(versions, dict) or set(versions) != expected_versions:
+        problems.append("completion package versions are missing/incomplete")
+    elif any(not isinstance(value, str) or not value.strip() for value in versions.values()):
+        problems.append("completion package versions contain an invalid value")
+    return problems
+
+
 def audit_training_artifacts(configs: list[RunConfig]) -> dict:
     """Verify that every planned run has five complete, resumable checkpoints."""
 
@@ -59,6 +123,8 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
     verified_runs = 0
     verified_checkpoints = 0
     partition_by_family: dict[str, dict] = {}
+    versions_reference: dict | None = None
+    gpu_name_reference: str | None = None
     for config in configs:
         label = f"{config.model_family}/{config.run_id}"
         output = config.output_dir
@@ -115,6 +181,7 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
                     errors.append(f"{label}: copied dataset manifest differs from source")
 
         completed: dict = {}
+        completion_system_metrics: dict = {}
         if not completed_path.is_file():
             errors.append(f"{label}: missing completed.json")
         else:
@@ -143,6 +210,9 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
                         f"{label}: completion dataset fingerprint does not match manifest"
                     )
             if completed:
+                raw_system_metrics = completed.get("system_metrics")
+                if isinstance(raw_system_metrics, dict):
+                    completion_system_metrics = raw_system_metrics
                 partition = completed.get("optimizer_partition")
                 if not isinstance(partition, dict) or set(partition) != {
                     "hidden",
@@ -154,6 +224,20 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
                     partition_by_family[config.model_family] = partition
                 elif partition != partition_by_family[config.model_family]:
                     errors.append(f"{label}: optimizer parameter partition differs within family")
+                for problem in _completion_system_problems(completed, steps):
+                    errors.append(f"{label}: {problem}")
+                versions = completed.get("versions")
+                if isinstance(versions, dict) and len(versions) == 5:
+                    if versions_reference is None:
+                        versions_reference = versions
+                    elif versions != versions_reference:
+                        errors.append(f"{label}: completion package versions differ across runs")
+                gpu_name = completion_system_metrics.get("gpu_name")
+                if isinstance(gpu_name, str) and gpu_name:
+                    if gpu_name_reference is None:
+                        gpu_name_reference = gpu_name
+                    elif gpu_name != gpu_name_reference:
+                        errors.append(f"{label}: completion GPU name differs across runs")
         if not final_state_path.is_file():
             errors.append(f"{label}: missing trainer_state_final.json")
         else:
@@ -164,7 +248,7 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
         ):
             errors.append(f"{label}: missing final safetensors model")
 
-        recorded_world_size = completed.get("system_metrics", {}).get("world_size")
+        recorded_world_size = completion_system_metrics.get("world_size")
         if completed and recorded_world_size != 4:
             errors.append(f"{label}: expected completion world_size 4, got {recorded_world_size}")
         world_size = 4

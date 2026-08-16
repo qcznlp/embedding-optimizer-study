@@ -99,7 +99,29 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
                     "aux_decay": {"tensors": 1, "parameters": 2},
                     "aux_no_decay": {"tensors": 1, "parameters": 1},
                 },
-                "system_metrics": {"world_size": 4},
+                "system_metrics": {
+                    "world_size": 4,
+                    "wall_time_seconds_max_rank": 1.0,
+                    "peak_allocated_bytes_max_rank": 1,
+                    "peak_reserved_bytes_max_rank": 1,
+                    "checkpoint_bytes": {f"checkpoint-{step}": 1 for step in steps},
+                    "optimizer_state_bytes": {f"checkpoint-{step}": 1 for step in steps},
+                    "trainer": {
+                        "train_runtime": 1.0,
+                        "train_samples_per_second": 10.0,
+                        "train_steps_per_second": 1.0,
+                        "train_loss": 0.5,
+                        "epoch": 1.0,
+                    },
+                    "gpu_name": "Test GPU",
+                },
+                "versions": {
+                    "torch": "1",
+                    "transformers": "1",
+                    "sentence-transformers": "1",
+                    "pylate": "1",
+                    "late-interaction-kernels": "1",
+                },
             }
         )
     )
@@ -192,4 +214,22 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     assert wrong_dataset["verified_checkpoints"] == 5
     assert wrong_dataset["errors"] == [
         "dense/adamw-test: completion dataset fingerprint does not match manifest"
+    ]
+
+    completed["dataset_fingerprint"] = "dataset-fingerprint"
+    completed["system_metrics"]["wall_time_seconds_max_rank"] = 0
+    (output / "completed.json").write_text(json.dumps(completed))
+    invalid_system_metric = audit_training_artifacts([config])
+    assert invalid_system_metric["verified_checkpoints"] == 5
+    assert invalid_system_metric["errors"] == [
+        "dense/adamw-test: system metric wall_time_seconds_max_rank is non-finite/non-positive"
+    ]
+
+    completed["system_metrics"] = None
+    (output / "completed.json").write_text(json.dumps(completed))
+    missing_system_metrics = audit_training_artifacts([config])
+    assert missing_system_metrics["verified_checkpoints"] == 5
+    assert missing_system_metrics["errors"] == [
+        "dense/adamw-test: missing/invalid completion system metrics",
+        "dense/adamw-test: expected completion world_size 4, got None",
     ]
