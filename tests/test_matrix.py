@@ -1,6 +1,12 @@
+import json
 from types import SimpleNamespace
 
-from embed_optim.matrix import Pool, _pop_next
+from embed_optim.matrix import (
+    Pool,
+    _checkpoint_is_resumable,
+    _latest_resumable_checkpoint,
+    _pop_next,
+)
 
 
 def _run(family, run_id):
@@ -24,3 +30,39 @@ def test_pool_waits_for_its_running_preferred_job_before_stealing():
     queues = {"dense": [], "late": [_run("late", "l")]}
     running = {"a": SimpleNamespace(config=_run("dense", "active"))}
     assert _pop_next(Pool("2,3", 2, "dense"), queues, running) is None
+
+
+def _write_checkpoint(root, step, *, complete=True):
+    checkpoint = root / f"checkpoint-{step}"
+    checkpoint.mkdir(parents=True)
+    for name in (
+        "config.json",
+        "optimizer.pt",
+        "scheduler.pt",
+        "training_args.bin",
+        "model.safetensors",
+    ):
+        (checkpoint / name).write_bytes(b"state")
+    (checkpoint / "trainer_state.json").write_text(json.dumps({"global_step": step}))
+    for rank in range(4):
+        (checkpoint / f"rng_state_{rank}.pth").write_bytes(b"rng")
+    if not complete:
+        (checkpoint / "optimizer.pt").write_bytes(b"")
+    return checkpoint
+
+
+def test_checkpoint_resume_selection_ignores_interrupted_latest_write(tmp_path):
+    output = tmp_path / "dense" / "run"
+    valid = _write_checkpoint(output, 10)
+    interrupted = _write_checkpoint(output, 20, complete=False)
+    config = SimpleNamespace(output_dir=output)
+
+    assert _checkpoint_is_resumable(valid)
+    assert not _checkpoint_is_resumable(interrupted)
+    assert _latest_resumable_checkpoint(config) == valid
+
+
+def test_checkpoint_resume_selection_requires_matching_state_step(tmp_path):
+    checkpoint = _write_checkpoint(tmp_path, 10)
+    (checkpoint / "trainer_state.json").write_text(json.dumps({"global_step": 9}))
+    assert not _checkpoint_is_resumable(checkpoint)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -42,6 +43,43 @@ def _pop_next(
     return queues[alternate].pop(0) if queues[alternate] else None
 
 
+def _checkpoint_is_resumable(path: Path, world_size: int = 4) -> bool:
+    """Reject a checkpoint directory interrupted partway through its write."""
+
+    try:
+        step = int(path.name.rsplit("-", 1)[1])
+    except (IndexError, ValueError):
+        return False
+    required = (
+        path / "config.json",
+        path / "optimizer.pt",
+        path / "scheduler.pt",
+        path / "trainer_state.json",
+        path / "training_args.bin",
+    )
+    if any(not item.is_file() or item.stat().st_size == 0 for item in required):
+        return False
+    if not any(item.stat().st_size > 0 for item in path.rglob("*.safetensors")):
+        return False
+    rng_states = sorted(path.glob("rng_state_*.pth"))
+    if len(rng_states) != world_size or any(item.stat().st_size == 0 for item in rng_states):
+        return False
+    try:
+        state = json.loads((path / "trainer_state.json").read_text())
+        return int(state["global_step"]) == step
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+        return False
+
+
+def _latest_resumable_checkpoint(config: RunConfig) -> Path | None:
+    checkpoints = [
+        path for path in config.output_dir.glob("checkpoint-*") if _checkpoint_is_resumable(path)
+    ]
+    if not checkpoints:
+        return None
+    return max(checkpoints, key=lambda path: int(path.name.rsplit("-", 1)[1]))
+
+
 def _launch(
     config: RunConfig,
     matrix_path: Path,
@@ -66,13 +104,8 @@ def _launch(
         "--run-id",
         config.run_id,
     ]
-    checkpoints = [
-        path
-        for path in config.output_dir.glob("checkpoint-*")
-        if (path / "trainer_state.json").is_file()
-    ]
-    if checkpoints:
-        latest = max(checkpoints, key=lambda path: int(path.name.rsplit("-", 1)[1]))
+    latest = _latest_resumable_checkpoint(config)
+    if latest is not None:
         command.extend(["--resume-from-checkpoint", str(latest.resolve())])
     print(f"[{gpu_ids}] {' '.join(command)}", flush=True)
     if dry_run:
