@@ -85,6 +85,20 @@ same decay/no-decay routing as the all-AdamW baseline. NorMuon is pinned to offi
 commit `c6989a8354730695d9f5a9faa6c55eeb24865209`; a numerical regression test checks the update,
 momentum buffer, and row-wise second moment against that reference.
 
+The routing was enumerated from the instantiated checkpoints before training:
+
+| Family | Muon/NorMuon hidden matrices | AdamW, decayed auxiliary | AdamW, no decay |
+| --- | ---: | ---: | ---: |
+| DenseOn | 110,297,088 params / 88 tensors | 38,682,624 / 1 | 34,560 / 45 |
+| LateOn | 110,297,088 params / 88 tensors | 43,501,056 / 6 | 34,560 / 45 |
+
+For the AdamW baselines, the hidden and decayed-auxiliary columns instead form one swept-LR AdamW
+group; the no-decay column uses that same learning rate with zero weight decay. Muon calls PyTorch's
+native functional update with Nesterov momentum, five Newton–Schulz steps, coefficients
+`(3.4445, -4.7750, 2.0315)`, ε=1e-7, and `adjust_lr_fn="original"`. NorMuon uses the same
+orthogonalization, then applies the official β₂=0.95 row-wise second-moment normalization, restores
+the pre-normalization Frobenius norm, and applies the matrix-aspect-ratio correction.
+
 We use linear decay with a 10% warmup, bfloat16 autocast, TF32, FlashAttention-2, non-reentrant
 gradient checkpointing, and gradient clipping at 1.0. Each run uses four GPUs, a per-GPU micro-batch
 of 8, and four gradient-accumulation steps, yielding the shared global batch of 128. Each run saves
