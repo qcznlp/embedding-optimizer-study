@@ -13,6 +13,7 @@ import statistics
 from collections import Counter, defaultdict
 from pathlib import Path
 
+from .collators import TEXT_COLUMNS
 from .config import RunConfig, load_matrix
 from .data import SOURCE_REPO, SOURCE_REVISION, SPLITS
 from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
@@ -303,6 +304,7 @@ def audit_dataset_artifacts(configs: list[RunConfig]) -> dict:
     row_audit = _dataset_rows_audit(root / "rows.jsonl", manifest)
     errors.extend(row_audit["errors"])
     dataset_path = root / "dataset"
+    training_view_fingerprint = None
     try:
         from datasets import Dataset
 
@@ -327,11 +329,18 @@ def audit_dataset_artifacts(configs: list[RunConfig]) -> dict:
             errors.append("materialized Dataset has unexpected columns")
         if dataset._fingerprint != manifest.get("dataset_fingerprint"):
             errors.append("materialized Dataset fingerprint differs from manifest")
+        try:
+            training_view_fingerprint = dataset.select_columns(
+                [*TEXT_COLUMNS, "length"]
+            )._fingerprint
+        except Exception as error:  # noqa: BLE001
+            errors.append(f"could not construct the fixed training dataset view ({error})")
     return {
         "complete": not errors,
         "dataset_path": str(root),
         "verified_rows": row_audit["rows"] if not row_audit["errors"] else 0,
         "row_manifest_sha256": row_audit.get("row_manifest_sha256"),
+        "training_view_fingerprint": training_view_fingerprint,
         "errors": errors,
     }
 
@@ -510,7 +519,12 @@ def _deep_checkpoint_problems(checkpoint: Path, expected_step: int, world_size: 
     return problems
 
 
-def audit_training_artifacts(configs: list[RunConfig], *, deep: bool = False) -> dict:
+def audit_training_artifacts(
+    configs: list[RunConfig],
+    *,
+    deep: bool = False,
+    expected_dataset_fingerprint: str | None = None,
+) -> dict:
     """Verify that every planned run has five complete, resumable checkpoints."""
 
     errors: list[str] = []
@@ -519,7 +533,7 @@ def audit_training_artifacts(configs: list[RunConfig], *, deep: bool = False) ->
     partition_by_family: dict[str, dict] = {}
     versions_reference: dict | None = None
     gpu_name_reference: str | None = None
-    dataset_fingerprint_reference: str | None = None
+    dataset_fingerprint_reference = expected_dataset_fingerprint
     for config in configs:
         label = f"{config.model_family}/{config.run_id}"
         output = config.output_dir
@@ -602,6 +616,13 @@ def audit_training_artifacts(configs: list[RunConfig], *, deep: bool = False) ->
                 dataset_fingerprint = completed.get("dataset_fingerprint")
                 if not isinstance(dataset_fingerprint, str) or not dataset_fingerprint:
                     errors.append(f"{label}: missing/invalid training dataset view fingerprint")
+                elif (
+                    expected_dataset_fingerprint is not None
+                    and dataset_fingerprint != expected_dataset_fingerprint
+                ):
+                    errors.append(
+                        f"{label}: training dataset view fingerprint differs from audited dataset"
+                    )
                 elif dataset_fingerprint_reference is None:
                     dataset_fingerprint_reference = dataset_fingerprint
                 elif dataset_fingerprint != dataset_fingerprint_reference:
@@ -1642,6 +1663,7 @@ def _coverage(
         "verified_training_examples": dataset_audit["verified_rows"],
         "expected_training_examples": 500_000,
         "training_row_manifest_sha256": dataset_audit.get("row_manifest_sha256"),
+        "training_dataset_view_fingerprint": dataset_audit.get("training_view_fingerprint"),
         "verified_training_runs": training_audit["verified_runs"],
         "expected_training_runs": training_audit["expected_runs"],
         "verified_training_checkpoints": training_audit["verified_checkpoints"],
@@ -1671,7 +1693,9 @@ def aggregate(args: argparse.Namespace) -> None:
         (config.output_dir / "completed.json").is_file() for config in configs
     )
     training_audit = audit_training_artifacts(
-        configs, deep=args.strict or all_training_markers_present
+        configs,
+        deep=args.strict or all_training_markers_present,
+        expected_dataset_fingerprint=dataset_audit.get("training_view_fingerprint"),
     )
     coverage = _coverage(rows, summary, configs, contract_audit, dataset_audit, training_audit)
     task_rows = _task_comparison(rows, optimizer_rows) if coverage["complete"] else []
