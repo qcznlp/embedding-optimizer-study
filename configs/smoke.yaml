@@ -1,0 +1,30 @@
+common:
+  dataset_path: data/smoke
+  output_root: outputs/ddp-smoke
+  seed: 42
+  epochs: 1.0
+  global_batch_size: 4
+  micro_batch_size: 1
+  max_length: 8192
+  dataloader_workers: 0
+  gradient_checkpointing: true
+  flash_attention: true
+  wandb_project: embedding-optimizer-study
+  checkpoint_fractions: [0.2, 0.4, 0.6, 0.8, 1.0]
+
+models:
+  dense:
+    model_name: lightonai/DenseOn-unsupervised
+    model_revision: 0edbd55684eb782bce55ee74c95b25c97cbe7f43
+    temperature: 0.02
+  late:
+    model_name: lightonai/LateOn-unsupervised
+    model_revision: 1047071849a708b9b3ee4dccdc60186c185224a7
+    temperature: 0.001
+
+optimizers:
+  - id: normuon-smoke
+    name: normuon
+    lr: 3.0e-4
+    aux_lr: 3.0e-6
+    normuon_beta2: 0.95

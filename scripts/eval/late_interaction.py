@@ -26,6 +26,7 @@ import json
 import logging
 import os
 import pickle
+import shutil
 import tempfile
 import time
 import traceback
@@ -48,11 +49,16 @@ from mteb.types import Array, BatchedInput, PromptType
 from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
+from embed_optim.decontamination import get_decontaminated_tasks
+from embed_optim.pylate_compat import configure_pylate_compatibility
+
 logger = logging.getLogger(__name__)
 
 
 def token_budget_batches(
-    texts: list[str], char_budget: int, max_batch: int = 2048,
+    texts: list[str],
+    char_budget: int,
+    max_batch: int = 2048,
     attn_budget: float = 2.5e9,
 ) -> list[list[int]]:
     """Length-sorted batches packed to a character budget (chars ~ 4x tokens).
@@ -139,6 +145,11 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         self.gather_gb = gather_gb
         # fast-plaid index placement at search time: auto = by free VRAM, low/medium/high = fixed tiers.
         self.index_gpu_memory = index_gpu_memory
+        # PyLate prefix insertion expects a 2-D attention mask; ST 5's flattened
+        # FlashAttention preprocessing intentionally omits it.
+        first_module = self.model._first_module()
+        if hasattr(first_module, "can_flatten_inputs"):
+            first_module.can_flatten_inputs = False
         self.model.to(accelerator.device)
         self.model.eval()
 
@@ -173,9 +184,7 @@ class AccelerateMultiVectorModel(MultiVectorModel):
             else self.model.document_length
         ) or 8192
         embed_dim = self.model.get_sentence_embedding_dimension() or 128
-        bounds = gather_chunk_bounds(
-            all_texts, max_tokens, embed_dim, self.gather_gb * 1e9
-        )
+        bounds = gather_chunk_bounds(all_texts, max_tokens, embed_dim, self.gather_gb * 1e9)
         if self.accelerator.is_main_process:
             print(
                 f"Encoding {len(all_texts)} texts with {self.accelerator.num_processes} GPUs "
@@ -206,9 +215,7 @@ class AccelerateMultiVectorModel(MultiVectorModel):
 
             chunk_embeddings = [None] * len(chunk_texts)
             with torch.no_grad():
-                for batch_ids in token_budget_batches(
-                    chunk_texts, self.encode_char_budget
-                ):
+                for batch_ids in token_budget_batches(chunk_texts, self.encode_char_budget):
                     batch = [chunk_texts[i] for i in batch_ids]
                     try:
                         embs = self.model.encode(
@@ -317,8 +324,7 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         self.accelerator.wait_for_everyone()
 
         safe_index_name = "".join(
-            char if char.isalnum() or char in ("-", "_") else "_"
-            for char in self._index_name
+            char if char.isalnum() or char in ("-", "_") else "_" for char in self._index_name
         )
         results_path = os.path.join(
             tempfile.gettempdir(), f"mteb_plaid_results_{safe_index_name}.pkl"
@@ -383,22 +389,16 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         doc_id_to_idx = {doc["id"]: idx for idx, doc in enumerate(self.task_corpus)}
         result_heaps = {qid: [] for qid in query_idx_to_id.values()}
         for q_idx, qid in query_idx_to_id.items():
-            candidate_ids = [
-                d for d in top_ranked.get(qid, []) if d in doc_id_to_idx
-            ]
+            candidate_ids = [d for d in top_ranked.get(qid, []) if d in doc_id_to_idx]
             if not candidate_ids:
                 continue
             reranked = rank.rerank(
                 documents_ids=[candidate_ids],
                 queries_embeddings=[query_embeddings[q_idx]],
-                documents_embeddings=[
-                    [corpus_embeddings[doc_id_to_idx[d]] for d in candidate_ids]
-                ],
+                documents_embeddings=[[corpus_embeddings[doc_id_to_idx[d]] for d in candidate_ids]],
             )
             for item in reranked[0]:
-                heapq.heappush(
-                    result_heaps[qid], (float(item["score"]), str(item["id"]))
-                )
+                heapq.heappush(result_heaps[qid], (float(item["score"]), str(item["id"])))
             if len(result_heaps[qid]) > top_k:
                 result_heaps[qid] = heapq.nlargest(top_k, result_heaps[qid])
         return result_heaps
@@ -426,9 +426,7 @@ class AccelerateMultiVectorModel(MultiVectorModel):
 
         print(f"Building PLAID index for {len(doc_ids):,} documents...", flush=True)
         index_start = time.perf_counter()
-        index.add_documents(
-            documents_ids=doc_ids, documents_embeddings=corpus_embeddings
-        )
+        index.add_documents(documents_ids=doc_ids, documents_embeddings=corpus_embeddings)
         print(f"PLAID index ready in {time.perf_counter() - index_start:.1f}s.", flush=True)
 
         # Reload the on-disk index for search, freeing temporary GPU state from construction.
@@ -455,9 +453,7 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         result_heaps = {qid: [] for qid in query_idx_to_id.values()}
         for q_idx, qid in query_idx_to_id.items():
             for item in scores[q_idx]:
-                heapq.heappush(
-                    result_heaps[qid], (float(item["score"]), str(item["id"]))
-                )
+                heapq.heappush(result_heaps[qid], (float(item["score"]), str(item["id"])))
 
         # Release PLAID GPU memory before the encoder moves back.
         index._index.fast_plaid.close()
@@ -466,6 +462,10 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         torch.cuda.empty_cache()
         if torch.cuda.is_available():
             torch.cuda.synchronize()
+        if self._index_autodelete and self._index_dir is not None:
+            shutil.rmtree(self._index_dir, ignore_errors=True)
+            self._index_dir = None
+            self._index_name = None
         return result_heaps
 
 
@@ -490,25 +490,16 @@ def build_model_meta(model_path: str, name: str | None = None) -> ModelMeta:
     else:
         from huggingface_hub import HfApi, hf_hub_download
 
-        backbone_cfg = json.loads(
-            Path(hf_hub_download(model_path, "config.json")).read_text()
-        )
+        backbone_cfg = json.loads(Path(hf_hub_download(model_path, "config.json")).read_text())
         dense_files = sorted(
-            f for f in HfApi().list_repo_files(model_path)
-            if f.endswith("_Dense/config.json")
+            f for f in HfApi().list_repo_files(model_path) if f.endswith("_Dense/config.json")
         )
         last_dense_cfg_text = (
-            Path(hf_hub_download(model_path, dense_files[-1])).read_text()
-            if dense_files
-            else None
+            Path(hf_hub_download(model_path, dense_files[-1])).read_text() if dense_files else None
         )
 
     max_tokens = backbone_cfg.get("max_position_embeddings")
-    embed_dim = (
-        json.loads(last_dense_cfg_text).get("out_features")
-        if last_dense_cfg_text
-        else None
-    )
+    embed_dim = json.loads(last_dense_cfg_text).get("out_features") if last_dense_cfg_text else None
 
     return ModelMeta(
         loader=MultiVectorModel,
@@ -537,45 +528,61 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Evaluate late-interaction models on MTEB tasks with accelerate"
     )
-    parser.add_argument("--models", type=str, nargs="+", required=True,
-                        help="Model names or paths")
-    parser.add_argument("--tasks", type=str, nargs="+", required=True,
-                        help="MTEB task names")
+    parser.add_argument("--models", type=str, nargs="+", required=True, help="Model names or paths")
+    parser.add_argument("--tasks", type=str, nargs="+", required=True, help="MTEB task names")
     parser.add_argument(
-        "--results_folder", type=str, default="results/late_interaction",
+        "--results_folder",
+        type=str,
+        default="results/late_interaction",
         help="MTEB result cache directory",
     )
     parser.add_argument(
-        "--encode_char_budget", type=int, default=3_000_000,
+        "--encode_char_budget",
+        type=int,
+        default=3_000_000,
         help="Chars per encode batch (length-sorted packing); lower if encoding OOMs",
     )
     parser.add_argument(
-        "--gather_gb", type=float, default=4.0,
+        "--gather_gb",
+        type=float,
+        default=4.0,
         help="Estimated fp16 embedding GB gathered to the main process per round",
     )
     parser.add_argument(
-        "--index_gpu_memory", type=str, default="auto",
+        "--index_gpu_memory",
+        type=str,
+        default="auto",
         choices=["auto", "low", "medium", "high"],
         help="fast-plaid index placement at search time (auto = by free VRAM)",
     )
+    parser.add_argument("--index_dir", type=str, default=None, help="PLAID index root directory")
     parser.add_argument(
-        "--index_dir", type=str, default=None, help="PLAID index root directory"
-    )
-    parser.add_argument(
-        "--query_length", type=int, default=None,
+        "--query_length",
+        type=int,
+        default=None,
         help="Query max length (model config default if omitted)",
     )
     parser.add_argument(
-        "--document_length", type=int, default=None,
+        "--document_length",
+        type=int,
+        default=None,
         help="Document max length (model config default if omitted)",
     )
     parser.add_argument(
-        "--languages", type=str, default=None,
+        "--languages",
+        type=str,
+        default=None,
         help="Comma-separated language codes to filter the task",
     )
     parser.add_argument(
-        "--fa2", action="store_true",
+        "--fa2",
+        action="store_true",
         help="Encode with FlashAttention-2 instead of sdpa (requires flash-attn)",
+    )
+    parser.add_argument(
+        "--decontaminated",
+        action="store_true",
+        help="Replace named BEIR tasks with LightOn's pinned decontaminated datasets",
     )
     return parser.parse_args()
 
@@ -586,7 +593,11 @@ def main() -> None:
     kwargs = InitProcessGroupKwargs(timeout=datetime.timedelta(seconds=20000))
     accelerator = Accelerator(kwargs_handlers=[kwargs])
 
-    if args.languages:
+    if args.decontaminated:
+        tasks = get_decontaminated_tasks(args.tasks)
+        if args.languages and accelerator.is_main_process:
+            print("--languages is ignored for the English decontaminated BEIR suite")
+    elif args.languages:
         languages = [lang.strip() for lang in args.languages.split(",") if lang.strip()]
         tasks = mteb.get_tasks(tasks=args.tasks, languages=languages)
         if accelerator.is_main_process:
@@ -597,6 +608,8 @@ def main() -> None:
     cache = ResultCache(args.results_folder)
 
     for model_name in args.models:
+        # Required for PyLate 1.6 under SentenceTransformers 5 model dispatch.
+        configure_pylate_compatibility()
         # mteb puts the model name in result filenames; keep parent/base so long local paths fit NAME_MAX.
         model_path = Path(model_name)
         short_name = (

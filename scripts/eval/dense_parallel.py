@@ -39,6 +39,8 @@ from dense_sequential import (
     token_budget_batches,
 )
 
+from embed_optim.decontamination import get_decontaminated_task
+
 
 def setup_budget_encode(st_model, char_budget: int) -> None:
     """Wrap the model's encode with single-process token-budget batch packing."""
@@ -48,13 +50,15 @@ def setup_budget_encode(st_model, char_budget: int) -> None:
 
     original_encode = st_model.encode
 
-    def budget_encode(sentences, **kwargs):
-        if not isinstance(sentences, list) or len(sentences) <= 1:
-            return original_encode(sentences, **kwargs)
-        batches = token_budget_batches(sentences, st_model.encode_char_budget)
+    def budget_encode(inputs, **kwargs):
+        if not isinstance(inputs, list) or len(inputs) <= 1:
+            return original_encode(inputs, **kwargs)
+        batches = token_budget_batches(inputs, st_model.encode_char_budget)
         outs = [
-            original_encode([sentences[i] for i in batch_ids],
-                            **{**kwargs, "batch_size": len(batch_ids), "show_progress_bar": False})
+            original_encode(
+                [inputs[i] for i in batch_ids],
+                **{**kwargs, "batch_size": len(batch_ids), "show_progress_bar": False},
+            )
             for batch_ids in batches
         ]
         # Invert the length-sorted packing so outputs line up with the input order.
@@ -88,7 +92,11 @@ def run_worker(args: argparse.Namespace) -> None:
 
     while True:
         try:
-            task = mteb.get_tasks(tasks=[task_name])[0]
+            task = (
+                get_decontaminated_task(task_name)
+                if args.decontaminated
+                else mteb.get_tasks(tasks=[task_name])[0]
+            )
             splits = list(task.metadata.eval_splits)
             if "test" in splits and len(splits) > 1:
                 task.metadata.eval_splits = ["test"]
@@ -108,7 +116,10 @@ def run_worker(args: argparse.Namespace) -> None:
             if st_model.encode_char_budget // 2 < 10_000:
                 raise
             st_model.encode_char_budget //= 2
-            print(f"RETRYING {task_name} (OOM) -> encode_char_budget={st_model.encode_char_budget}", flush=True)
+            print(
+                f"RETRYING {task_name} (OOM) -> encode_char_budget={st_model.encode_char_budget}",
+                flush=True,
+            )
 
 
 def schedule(args: argparse.Namespace, gpus: list[str]) -> int:
@@ -122,7 +133,11 @@ def schedule(args: argparse.Namespace, gpus: list[str]) -> int:
     for model_path in args.models:
         model_results_dir = os.path.join(args.results_folder, path_to_folder_name(model_path))
         for task_name in args.tasks:
-            subsets, splits = task_meta_subsets(task_name)
+            if args.decontaminated:
+                task = get_decontaminated_task(task_name)
+                subsets, splits = list(task.hf_subsets), list(task.metadata.eval_splits)
+            else:
+                subsets, splits = task_meta_subsets(task_name)
             if "test" in splits and len(splits) > 1:
                 splits = ["test"]
             if task_remaining(model_results_dir, task_name, subsets, splits):
@@ -132,13 +147,19 @@ def schedule(args: argparse.Namespace, gpus: list[str]) -> int:
 
     print("=" * 60)
     print("MTEB Dense Evaluation - TASK-PARALLEL (one task per GPU)")
-    print(f"Models: {len(args.models)} | GPUs: {len(gpus)} | Jobs: {len(jobs)} | Skipped: {skipped}")
+    print(
+        f"Models: {len(args.models)} | GPUs: {len(gpus)} | Jobs: {len(jobs)} | Skipped: {skipped}"
+    )
     print("=" * 60)
 
     running: dict[str, tuple[subprocess.Popen, str, str, float]] = {}
-    passthrough = (["--bf16"] if args.bf16 else []) + (["--fa2"] if args.fa2 else []) \
-        + (["--local"] if args.local else []) \
+    passthrough = (
+        (["--bf16"] if args.bf16 else [])
+        + (["--fa2"] if args.fa2 else [])
+        + (["--local"] if args.local else [])
+        + (["--decontaminated"] if args.decontaminated else [])
         + ["--encode_char_budget", str(args.encode_char_budget)]
+    )
     failed = 0
     while jobs or running:
         for gpu, (proc, model_path, task_name, started) in list(running.items()):
@@ -149,19 +170,27 @@ def schedule(args: argparse.Namespace, gpus: list[str]) -> int:
                 progress(f"[GPU {gpu}] Completed: {model_path} / {task_name} in {elapsed:.1f}s")
             else:
                 failed += 1
-                progress(f"[GPU {gpu}] FAILED: {model_path} / {task_name} "
-                         f"(exit {proc.returncode}, see {log_dir}/{path_to_folder_name(model_path)}_{task_name}.log)")
+                progress(
+                    f"[GPU {gpu}] FAILED: {model_path} / {task_name} "
+                    f"(exit {proc.returncode}, see {log_dir}/{path_to_folder_name(model_path)}_{task_name}.log)"
+                )
             del running[gpu]
 
         while jobs and (free := [g for g in gpus if g not in running]):
             gpu = free[0]
             model_path, task_name, model_results_dir = jobs.pop(0)
             log_path = log_dir / f"{path_to_folder_name(model_path)}_{task_name}.log"
-            cmd = [sys.executable, str(Path(__file__).resolve()),
-                   "--worker", task_name,
-                   "--models", model_path,
-                   "--results_folder", model_results_dir,
-                   *passthrough]
+            cmd = [
+                sys.executable,
+                str(Path(__file__).resolve()),
+                "--worker",
+                task_name,
+                "--models",
+                model_path,
+                "--results_folder",
+                model_results_dir,
+                *passthrough,
+            ]
             env = {**os.environ, "CUDA_VISIBLE_DEVICES": gpu}
             progress(f"[GPU {gpu}] Starting: {model_path} / {task_name}")
             with open(log_path, "w") as log_file:
@@ -178,28 +207,54 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse CLI args."""
 
     repo = Path(__file__).resolve().parent.parent.parent
-    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     p.add_argument("--gpus", help="Comma-separated GPU ids, e.g. 0,1,2,3,4,5,6,7")
-    p.add_argument("--results_folder",
-                   help="Folder for results; one subfolder per model is created under it")
-    p.add_argument("--models", nargs="+", default=[],
-                   help="Hub ids or local paths, e.g. lightonai/mDenseOn")
-    p.add_argument("--tasks", nargs="+", default=[],
-                   help="MTEB task names, e.g. SyntecRetrieval GermanDPR")
-    p.add_argument("--encode_char_budget", type=int, default=3_000_000,
-                   help="Chars per encode batch (length-sorted packing); lower if encoding OOMs")
-    p.add_argument("--log_dir", default=str(repo / "logs" / "task_parallel"),
-                   help="Directory for per-task worker logs")
-    p.add_argument("--bf16", action="store_true",
-                   help="Load models in BF16")
-    p.add_argument("--fa2", action="store_true",
-                   help="Load models with FlashAttention-2 (implies --bf16; requires flash-attn)")
-    p.add_argument("--local", action="store_true",
-                   help="Force loading all models via SentenceTransformer (for local checkpoints)")
+    p.add_argument(
+        "--results_folder", help="Folder for results; one subfolder per model is created under it"
+    )
+    p.add_argument(
+        "--models", nargs="+", default=[], help="Hub ids or local paths, e.g. lightonai/mDenseOn"
+    )
+    p.add_argument(
+        "--tasks", nargs="+", default=[], help="MTEB task names, e.g. SyntecRetrieval GermanDPR"
+    )
+    p.add_argument(
+        "--encode_char_budget",
+        type=int,
+        default=3_000_000,
+        help="Chars per encode batch (length-sorted packing); lower if encoding OOMs",
+    )
+    p.add_argument(
+        "--log_dir",
+        default=str(repo / "logs" / "task_parallel"),
+        help="Directory for per-task worker logs",
+    )
+    p.add_argument("--bf16", action="store_true", help="Load models in BF16")
+    p.add_argument(
+        "--fa2",
+        action="store_true",
+        help="Load models with FlashAttention-2 (implies --bf16; requires flash-attn)",
+    )
+    p.add_argument(
+        "--local",
+        action="store_true",
+        help="Force loading all models via SentenceTransformer (for local checkpoints)",
+    )
+    p.add_argument(
+        "--decontaminated",
+        action="store_true",
+        help="Replace named BEIR tasks with LightOn's pinned decontaminated datasets",
+    )
     p.add_argument("--worker", default=None, help=argparse.SUPPRESS)
 
     args = p.parse_args(argv)
-    required = ("results_folder", "models") if args.worker else ("gpus", "results_folder", "models", "tasks")
+    required = (
+        ("results_folder", "models")
+        if args.worker
+        else ("gpus", "results_folder", "models", "tasks")
+    )
     missing = [n for n in required if not getattr(args, n)]
     if missing:
         p.error("the following arguments are required: " + ", ".join("--" + n for n in missing))

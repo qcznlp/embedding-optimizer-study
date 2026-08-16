@@ -1,62 +1,82 @@
 [project]
-name = "mdenseon-mlateon-train-eval"
+name = "embedding-optimizer-study"
 version = "0.1.0"
-description = "Training and eval scripts for the mDenseOn and mLateOn retrieval models"
+description = "Reproducible AdamW, Muon, and NorMuon experiments for dense and late-interaction retrievers"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.14"
 license = "Apache-2.0"
 authors = [
-  { name = "LightOn" },
+  { name = "Qingcheng Zeng", email = "stevezenguom@gmail.com" },
+  { name = "LightOn", email = "contact@lighton.ai" },
 ]
 dependencies = [
-  "accelerate>=1.4,<2",
-  "datasets>=3.3,<4",
-  "huggingface-hub>=0.28,<2",
-  "numpy>=1.26,<3",
-  "pyarrow>=16,<24",
-  "pylate>=1.6,<2",
-  "sentence-transformers>=5.3,<5.4",
-  "torch>=2.5,<3",
+  "accelerate>=1.10,<2",
+  "datasets>=4.8,<5",
+  "huggingface-hub>=1.2,<2",
+  "late-interaction-kernels>=0.4,<0.5",
+  "numpy>=2,<3",
+  "pyarrow>=22,<24",
+  "pylate==1.6.0",
+  "pyyaml>=6,<7",
+  "sentence-transformers>=5.3,<6",
+  "torch>=2.9,<2.10",
   "tqdm>=4.67,<5",
-  "transformers>=5,<6",
+  "transformers==5.3.0",
+  "wandb>=0.24,<1",
 ]
 
 [project.optional-dependencies]
 dev = [
   "pytest>=8,<10",
+  "pytest-cov>=6,<8",
   "ruff>=0.12,<1",
 ]
 eval = [
-  "fast-plaid>=1.6,<2",
+  "fast-plaid==1.6.0.290",
   "mteb>=2.18,<3",
+  "usearch>=2.19,<3",
 ]
-flash = [
-  "flash-attn>=2.8,<3",
+analysis = [
+  "matplotlib>=3.10,<4",
+  "pandas>=2.3,<4",
 ]
+flash = ["flash-attn>=2.8,<3"]
+
+[project.scripts]
+embed-optim-prepare = "embed_optim.data:main"
+embed-optim-train = "embed_optim.train:main"
+embed-optim-matrix = "embed_optim.matrix:main"
+embed-optim-evaluate = "embed_optim.evaluate_matrix:main"
+embed-optim-aggregate = "embed_optim.aggregate:main"
 
 [project.urls]
 Paper = "https://arxiv.org/abs/2607.27178"
-Article = "https://huggingface.co/blog/lightonai/mdenseon-mlateon"
-Models = "https://huggingface.co/collections/lightonai/denseon-and-lateon"
+DenseModel = "https://huggingface.co/lightonai/DenseOn-unsupervised"
+LateModel = "https://huggingface.co/lightonai/LateOn-unsupervised"
+NorMuon = "https://github.com/zichongli5/NorMuon"
 
 [build-system]
 requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.uv]
 no-build-isolation-package = ["flash-attn"]
-override-dependencies = ["fast-plaid>=1.6,<2"]
-
-[tool.setuptools]
-py-modules = []
+override-dependencies = [
+  "fast-plaid==1.6.0.290",
+  "sentence-transformers==5.7.0",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-q"
 
 [tool.ruff]
 target-version = "py310"
-line-length = 88
+line-length = 100
+exclude = ["scripts/pretrain", "scripts/finetune"]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F"]
-ignore = ["E402"]
+select = ["E4", "E7", "E9", "F", "I"]

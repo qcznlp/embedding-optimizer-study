@@ -39,7 +39,9 @@ ModelWrapper = Any
 
 # On sys.path here because spawn workers re-import this module before unpickling the
 # model, letting them import transformers_modules.* for trust_remote_code models.
-_HF_MODULES = os.environ.get("HF_MODULES_CACHE") or os.path.expanduser("~/.cache/huggingface/modules")
+_HF_MODULES = os.environ.get("HF_MODULES_CACHE") or os.path.expanduser(
+    "~/.cache/huggingface/modules"
+)
 if os.path.isdir(_HF_MODULES) and _HF_MODULES not in sys.path:
     sys.path.append(_HF_MODULES)
 
@@ -70,8 +72,16 @@ def setup_logging(detail_log: str) -> None:
     root = logging.getLogger()
     root.handlers = [handler]
     root.setLevel(logging.INFO)
-    for name in ("datasets", "transformers", "sentence_transformers", "mteb",
-                 "huggingface_hub", "fsspec", "filelock", "urllib3"):
+    for name in (
+        "datasets",
+        "transformers",
+        "sentence_transformers",
+        "mteb",
+        "huggingface_hub",
+        "fsspec",
+        "filelock",
+        "urllib3",
+    ):
         lg = logging.getLogger(name)
         lg.handlers = []
         lg.propagate = True
@@ -96,7 +106,9 @@ def path_to_folder_name(path: str) -> str:
 
 
 def token_budget_batches(
-    texts: list[str], char_budget: int, max_batch: int = 2048,
+    texts: list[str],
+    char_budget: int,
+    max_batch: int = 2048,
     attn_budget: float = 2.5e9,
 ) -> list[list[int]]:
     """Length-sorted batches packed to a character budget (chars ~ 4x tokens).
@@ -165,10 +177,14 @@ def task_remaining(search_root: str, task_name: str, subsets: list[str], splits:
         return False
     scores = json.loads(match.read_text()).get("scores", {})
     needed = set(subsets)
-    return any(not needed.issubset({r.get("hf_subset") for r in scores.get(sp, [])}) for sp in splits)
+    return any(
+        not needed.issubset({r.get("hf_subset") for r in scores.get(sp, [])}) for sp in splits
+    )
 
 
-def load_model(model_path: str, bf16: bool = False, fa2: bool = False, local: bool = False) -> ModelWrapper:
+def load_model(
+    model_path: str, bf16: bool = False, fa2: bool = False, local: bool = False
+) -> ModelWrapper:
     """Load an MTEB-compatible encoder for `model_path` (hub id or local path)."""
 
     import mteb
@@ -179,8 +195,7 @@ def load_model(model_path: str, bf16: bool = False, fa2: bool = False, local: bo
     if bf16 or fa2:
         model_kwargs["torch_dtype"] = "bfloat16"
 
-    progress(f"Loading model: {model_path}"
-             + (" (FA2+BF16)" if fa2 else " (BF16)" if bf16 else ""))
+    progress(f"Loading model: {model_path}" + (" (FA2+BF16)" if fa2 else " (BF16)" if bf16 else ""))
     if local or model_path.startswith("/"):
         return SentenceTransformer(model_path, trust_remote_code=True, model_kwargs=model_kwargs)
     return mteb.get_model(model_path, trust_remote_code=True, model_kwargs=model_kwargs)
@@ -235,10 +250,16 @@ def _oom_safe_worker(
             output_queue.put([chunk_id, _WorkerError(f"{type(e).__name__}: {e}")])
 
 
-def _budget_multi_process(self: SentenceTransformer, inputs: list[str], show_progress_bar: bool = True,
-                          input_was_string: bool = False, pool: Pool | None = None,
-                          device: str | list[str] | None = None, chunk_size: int | None = None,
-                          **encode_kwargs: Any) -> Any:
+def _budget_multi_process(
+    self: SentenceTransformer,
+    inputs: list[str],
+    show_progress_bar: bool = True,
+    input_was_string: bool = False,
+    pool: Pool | None = None,
+    device: str | list[str] | None = None,
+    chunk_size: int | None = None,
+    **encode_kwargs: Any,
+) -> Any:
     """Token-budget replacement for SentenceTransformer._encode_multi_process.
 
     Packs `inputs` into length-sorted batches under `self.encode_char_budget` and
@@ -336,8 +357,14 @@ def setup_st_forward_compat() -> None:
         original_init = cls.__init__
 
         def adapted_init(self, *args, **kwargs):
-            # Map renamed keys back, then drop keys introduced by newer versions (e.g. transformer_task).
-            kwargs = {renamed_keys.get(k, k): v for k, v in kwargs.items()}
+            # Map only when this installed class expects the alternate spelling,
+            # then drop genuinely unknown cross-version config fields.
+            kwargs = dict(kwargs)
+            for current, legacy in renamed_keys.items():
+                if current in kwargs and current not in params and legacy in params:
+                    kwargs[legacy] = kwargs.pop(current)
+                elif legacy in kwargs and legacy not in params and current in params:
+                    kwargs[current] = kwargs.pop(legacy)
             original_init(self, *args, **{k: v for k, v in kwargs.items() if k in params})
 
         cls.__init__ = adapted_init
@@ -364,23 +391,28 @@ def setup_signal_handlers() -> None:
     signal.signal(signal.SIGTERM, _interrupt_handler)
 
 
-def plan_encoding(wrapper: ModelWrapper, model_path: str, devices: list[str]) -> tuple[Pool | None, list[str]]:
+def plan_encoding(
+    wrapper: ModelWrapper, model_path: str, devices: list[str]
+) -> tuple[Pool | None, list[str]]:
     """Return (pool, encode_devices). Encoding runs through a persistent
     SentenceTransformer pool (spawned once, reused across tasks) so the
     token-budget batch packing applies on any device count."""
 
     st_model = get_st_model(wrapper)
     if st_model is None:
-        raise RuntimeError(f"{model_path} has no underlying SentenceTransformer; "
-                           "the multi-GPU pool requires one.")
+        raise RuntimeError(
+            f"{model_path} has no underlying SentenceTransformer; the multi-GPU pool requires one."
+        )
     _make_picklable_for_spawn(st_model)
     try:
         progress(f"Starting multi-process pool on {len(devices)} GPUs")
         return st_model.start_multi_process_pool(target_devices=devices), []
     except Exception as e:  # noqa: BLE001
         # Safety net: if a model can't be pickled to spawn workers, run unsharded.
-        progress(f"WARNING: {model_path} can't use a multi-process pool "
-                 f"({type(e).__name__}); running unsharded on {devices[0]}.")
+        progress(
+            f"WARNING: {model_path} can't use a multi-process pool "
+            f"({type(e).__name__}); running unsharded on {devices[0]}."
+        )
         try:
             st_model.to(devices[0])
         except Exception:  # noqa: BLE001
@@ -414,8 +446,13 @@ def stop_pool(wrapper: ModelWrapper, pool: Pool | None) -> None:
         logger.warning("failed to stop pool cleanly: %s", e)
 
 
-def run_eval(model: ModelWrapper, task_name: str, result_cache: Any,
-             encode_pool: Pool | None, encode_devices: list[str]) -> None:
+def run_eval(
+    model: ModelWrapper,
+    task_name: str,
+    result_cache: Any,
+    encode_pool: Pool | None,
+    encode_devices: list[str],
+) -> None:
     """Evaluate one MTEB task with `mteb.evaluate`, writing into `result_cache`.
 
     A spawned pool drives the token-budget multi-GPU path; otherwise a single-device
@@ -451,8 +488,10 @@ def run_eval(model: ModelWrapper, task_name: str, result_cache: Any,
     num_pending = total_jobs - len(cached_pairs)
     if cached_pairs:
         cached_subsets = sorted({subset for _, subset in cached_pairs})
-        progress(f"Running {task_name} ({num_pending}/{total_jobs} split×subset jobs, "
-                 f"{len(cached_pairs)} cached) encode={encode_mode}")
+        progress(
+            f"Running {task_name} ({num_pending}/{total_jobs} split×subset jobs, "
+            f"{len(cached_pairs)} cached) encode={encode_mode}"
+        )
         progress(f"  resuming — cached: {', '.join(cached_subsets)}")
     else:
         progress(f"Running {task_name} ({total_jobs} split×subset jobs) encode={encode_mode}")
@@ -486,8 +525,13 @@ def run_eval(model: ModelWrapper, task_name: str, result_cache: Any,
             )
 
 
-def run_job_with_retry(model: ModelWrapper, task_name: str, result_cache: Any,
-                       encode_pool: Pool | None, encode_devices: list[str]) -> bool:
+def run_job_with_retry(
+    model: ModelWrapper,
+    task_name: str,
+    result_cache: Any,
+    encode_pool: Pool | None,
+    encode_devices: list[str],
+) -> bool:
     """Run a task; on CUDA OOM, halve the encode char budget and retry. Other
     errors aren't retryable (a smaller budget won't help), so fail fast.
 
@@ -503,7 +547,9 @@ def run_job_with_retry(model: ModelWrapper, task_name: str, result_cache: Any,
             progress(f"Completed: {task_name} (encode_char_budget={budget})")
             return True
         except Exception as error:  # noqa: BLE001
-            logger.exception("%s failed at encode_char_budget=%s", task_name, budget)  # traceback -> log file
+            logger.exception(
+                "%s failed at encode_char_budget=%s", task_name, budget
+            )  # traceback -> log file
             if "out of memory" not in str(error).lower():
                 progress(f"FAILED: {task_name} ({type(error).__name__}; not an OOM — not retrying)")
                 return False
@@ -525,9 +571,16 @@ def free_model(wrapper: ModelWrapper) -> None:
         torch.cuda.empty_cache()
 
 
-def run_evals(models: list[str], tasks: list[str], output_folder: str, devices: list[str],
-              encode_char_budget: int, bf16: bool = False, fa2: bool = False,
-              local: bool = False) -> None:
+def run_evals(
+    models: list[str],
+    tasks: list[str],
+    output_folder: str,
+    devices: list[str],
+    encode_char_budget: int,
+    bf16: bool = False,
+    fa2: bool = False,
+    local: bool = False,
+) -> None:
     """Evaluate every model over `tasks`, writing results under `output_folder`.
 
     For each model: skip tasks whose results already exist on disk, load the model
@@ -542,7 +595,9 @@ def run_evals(models: list[str], tasks: list[str], output_folder: str, devices: 
     completed = skipped = failed = 0
     print("\n" + "=" * 60)
     print("MTEB Dense Evaluation - MULTI-GPU")
-    print(f"Models: {len(models)} | GPUs: {len(devices)} ({', '.join(devices)}) | Jobs: {total_jobs}")
+    print(
+        f"Models: {len(models)} | GPUs: {len(devices)} ({', '.join(devices)}) | Jobs: {total_jobs}"
+    )
     print("=" * 60)
 
     for model_path in models:
@@ -578,7 +633,9 @@ def run_evals(models: list[str], tasks: list[str], output_folder: str, devices: 
                 start_time = time.perf_counter()
                 if run_job_with_retry(model, task_name, result_cache, encode_pool, encode_devices):
                     completed += 1
-                    print(f"--- [{model_path}] {task_name} done in {time.perf_counter() - start_time:.1f}s ---")
+                    print(
+                        f"--- [{model_path}] {task_name} done in {time.perf_counter() - start_time:.1f}s ---"
+                    )
                 else:
                     failed += 1
         finally:
@@ -597,26 +654,45 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     """Parse CLI args."""
 
     repo = Path(__file__).resolve().parent.parent.parent
-    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--gpus",
-                   help="Comma-separated GPU ids, e.g. 0,1,2,3,4,5,6,7")
-    p.add_argument("--results_folder",
-                   help="Folder for results; one subfolder per model is created under it, "
-                        "e.g. results/dense")
-    p.add_argument("--models", nargs="+", default=[],
-                   help="Hub ids or local paths, e.g. lightonai/mDenseOn")
-    p.add_argument("--tasks", nargs="+", default=[],
-                   help="MTEB task names, e.g. MIRACLRetrievalHardNegatives SyntecRetrieval")
-    p.add_argument("--encode_char_budget", type=int, default=3_000_000,
-                   help="Chars per encode batch (length-sorted packing); lower if encoding OOMs")
-    p.add_argument("--log_file", default=str(repo / "logs" / "eval_dense_detail.log"),
-                   help="Detail log for library chatter")
-    p.add_argument("--bf16", action="store_true",
-                   help="Load models in BF16")
-    p.add_argument("--fa2", action="store_true",
-                   help="Load models with FlashAttention-2 (implies --bf16; requires flash-attn)")
-    p.add_argument("--local", action="store_true",
-                   help="Force loading all models via SentenceTransformer (for local checkpoints)")
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    p.add_argument("--gpus", help="Comma-separated GPU ids, e.g. 0,1,2,3,4,5,6,7")
+    p.add_argument(
+        "--results_folder",
+        help="Folder for results; one subfolder per model is created under it, e.g. results/dense",
+    )
+    p.add_argument(
+        "--models", nargs="+", default=[], help="Hub ids or local paths, e.g. lightonai/mDenseOn"
+    )
+    p.add_argument(
+        "--tasks",
+        nargs="+",
+        default=[],
+        help="MTEB task names, e.g. MIRACLRetrievalHardNegatives SyntecRetrieval",
+    )
+    p.add_argument(
+        "--encode_char_budget",
+        type=int,
+        default=3_000_000,
+        help="Chars per encode batch (length-sorted packing); lower if encoding OOMs",
+    )
+    p.add_argument(
+        "--log_file",
+        default=str(repo / "logs" / "eval_dense_detail.log"),
+        help="Detail log for library chatter",
+    )
+    p.add_argument("--bf16", action="store_true", help="Load models in BF16")
+    p.add_argument(
+        "--fa2",
+        action="store_true",
+        help="Load models with FlashAttention-2 (implies --bf16; requires flash-attn)",
+    )
+    p.add_argument(
+        "--local",
+        action="store_true",
+        help="Force loading all models via SentenceTransformer (for local checkpoints)",
+    )
 
     args = p.parse_args(argv)
 
@@ -639,9 +715,16 @@ def main(argv: list[str] | None = None) -> None:
     output_folder = str(Path(args.results_folder))
     Path(output_folder).mkdir(parents=True, exist_ok=True)
 
-    run_evals(args.models, args.tasks, output_folder, devices,
-              encode_char_budget=args.encode_char_budget,
-              bf16=args.bf16, fa2=args.fa2, local=args.local)
+    run_evals(
+        args.models,
+        args.tasks,
+        output_folder,
+        devices,
+        encode_char_budget=args.encode_char_budget,
+        bf16=args.bf16,
+        fa2=args.fa2,
+        local=args.local,
+    )
 
 
 if __name__ == "__main__":
