@@ -131,6 +131,8 @@ from the completed W&B runs and local Trainer states.
   inside the sweep.
 - Every configuration uses the same single training/data seed (42). This controls the comparison but
   does not quantify variance across independent seeds.
+- Seed 42 fixes data selection, negative choices, Trainer sampling, and model RNG state, but the
+  high-throughput FlashAttention/TF32 CUDA path is not configured for bitwise deterministic replay.
 - No in-batch negatives makes the groups controlled and memory predictable, but the absolute scores are
   not directly comparable to recipes that use large cross-device negative pools.
 - Omitting the paper's knowledge-distillation and DenseOn Matryoshka auxiliary objectives isolates the
