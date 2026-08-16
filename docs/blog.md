@@ -75,7 +75,10 @@ fingerprint `8a489098f9729d86` and row-manifest SHA-256
 
 For Muon-family runs, only 2-D transformer hidden matrices use the matrix optimizer. Embeddings,
 LateOn projection layers, norms, and biases use AdamW. This avoids applying orthogonalized updates to
-parameters for which Muon is not designed.
+parameters for which Muon is not designed. The auxiliary AdamW uses β=(0.9, 0.999), ε=1e-8, and the
+same decay/no-decay routing as the all-AdamW baseline. NorMuon is pinned to official implementation
+commit `c6989a8354730695d9f5a9faa6c55eeb24865209`; a numerical regression test checks the update,
+momentum buffer, and row-wise second moment against that reference.
 
 We use linear decay with a 10% warmup, bfloat16 autocast, TF32, FlashAttention-2, non-reentrant
 gradient checkpointing, and gradient clipping at 1.0. Each run uses four GPUs, a per-GPU micro-batch

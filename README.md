@@ -27,7 +27,8 @@ The full research write-up is in [docs/blog.md](docs/blog.md).
 
 Muon and NorMuon are applied only to 2-D matrices in the transformer's hidden layers. Embeddings,
 projection heads, norms, and biases use AdamW at `3e-6`, following the optimizer authors' routing
-recommendation. AdamW applies its swept learning rate to all parameters. The exact 24-run matrix is
+recommendation. This auxiliary AdamW uses `betas=(0.9, 0.999)` and `eps=1e-8`; AdamW applies its swept
+learning rate to all parameters with the same moments. The exact 24-run matrix is
 versioned in [configs/experiment.yaml](configs/experiment.yaml), including immutable revisions for
 both base checkpoints.
 
