@@ -149,7 +149,7 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
     if config.wandb_entity:
         os.environ["WANDB_ENTITY"] = config.wandb_entity
     os.environ.setdefault(
-        "WANDB_RUN_ID", f"study-v1-{config.model_family}-{config.run_id}-seed{config.seed}"
+        "WANDB_RUN_ID", f"study-v2-{config.model_family}-{config.run_id}-seed{config.seed}"
     )
     os.environ.setdefault("WANDB_RESUME", "allow")
     os.environ.setdefault("WANDB_RUN_GROUP", config.model_family)
