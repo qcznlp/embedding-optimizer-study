@@ -118,6 +118,11 @@ def collect_system_metrics(configs: list[RunConfig]) -> list[dict]:
             continue
         payload = json.loads(path.read_text())
         metrics = payload.get("system_metrics", {})
+        adjustment_path = config.output_dir / "timing_adjustment.json"
+        adjustment = json.loads(adjustment_path.read_text()) if adjustment_path.is_file() else {}
+        segment_wall_time = metrics.get("wall_time_seconds_max_rank", 0)
+        prior_wall_time = adjustment.get("prior_training_wall_time_seconds", 0)
+        total_wall_time = segment_wall_time + prior_wall_time
         trainer = metrics.get("trainer", {})
         checkpoint_sizes = metrics.get("checkpoint_bytes", {})
         state_sizes = metrics.get("optimizer_state_bytes", {})
@@ -127,9 +132,18 @@ def collect_system_metrics(configs: list[RunConfig]) -> list[dict]:
                 "optimizer": config.optimizer.name,
                 "learning_rate": config.optimizer.lr,
                 "run_id": config.run_id,
-                "wall_time_hours": metrics.get("wall_time_seconds_max_rank", 0) / 3600,
-                "samples_per_second": trainer.get("train_samples_per_second"),
-                "steps_per_second": trainer.get("train_steps_per_second"),
+                "wall_time_hours": total_wall_time / 3600,
+                "recorded_segment_wall_time_hours": segment_wall_time / 3600,
+                "prior_training_wall_time_hours": prior_wall_time / 3600,
+                "timing_adjustment_path": str(adjustment_path) if adjustment else None,
+                "samples_per_second": payload.get("dataset_rows", 0) / total_wall_time
+                if total_wall_time
+                else None,
+                "steps_per_second": payload.get("global_step", 0) / total_wall_time
+                if total_wall_time
+                else None,
+                "trainer_reported_samples_per_second": trainer.get("train_samples_per_second"),
+                "trainer_reported_steps_per_second": trainer.get("train_steps_per_second"),
                 "peak_allocated_gib": metrics.get("peak_allocated_bytes_max_rank", 0) / 2**30,
                 "peak_reserved_gib": metrics.get("peak_reserved_bytes_max_rank", 0) / 2**30,
                 "checkpoint_gib": max(checkpoint_sizes.values(), default=0) / 2**30,
@@ -459,7 +473,10 @@ def _render_systems(rows: list[dict]) -> str:
         + table
         + "\n\nThe recorded wall time includes training and five full checkpoint writes. Peak CUDA memory "
         "comes from PyTorch allocator counters inside each training process, so the independent "
-        "utilization guard process is excluded. Exact per-run measurements are in "
+        "utilization guard process is excluded. For checkpoint-resumed runs, throughput is recomputed "
+        "from the sum of non-overlapping useful training segments rather than Trainer's resume-local "
+        "runtime; the segment adjustment and original Trainer fields remain in the audit table. "
+        "Exact per-run measurements are in "
         "`reports/system_metrics.csv`."
     )
 
