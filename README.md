@@ -172,6 +172,8 @@ finite loss, gradient-norm, learning-rate, and epoch values.
 The same gate verifies each resolved run config against the matrix, checks the copied dataset manifest,
 row count and fingerprint against the shared source, requires four recorded ranks, and enforces an
 identical parameter partition across learning rates and optimizers within each model family.
+Wall time, Trainer throughput, CUDA memory peaks, checkpoint/optimizer-state sizes, GPU identity, and
+the five key package versions are required and checked for finite values and cross-run consistency.
 
 ## Performance engineering
 
