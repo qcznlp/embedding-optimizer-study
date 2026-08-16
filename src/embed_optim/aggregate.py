@@ -19,6 +19,39 @@ RESULTS_MARKERS = ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->")
 SYSTEMS_MARKERS = ("<!-- SYSTEMS:BEGIN -->", "<!-- SYSTEMS:END -->")
 
 
+def _trainer_state_problem(path: Path, expected_step: int) -> str | None:
+    try:
+        state = json.loads(path.read_text())
+        global_step = int(state["global_step"])
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+        return f"invalid Trainer state ({error})"
+    if global_step != expected_step:
+        return f"Trainer state step is {global_step}, expected {expected_step}"
+
+    history = [item for item in state.get("log_history", []) if "loss" in item]
+    if not history:
+        return "Trainer state has no loss history"
+    try:
+        history_steps = [int(item["step"]) for item in history]
+    except (KeyError, TypeError, ValueError) as error:
+        return f"invalid loss-history step ({error})"
+    if history_steps != sorted(set(history_steps)):
+        return "loss-history steps are duplicated or non-monotonic"
+    if history_steps[-1] > expected_step:
+        return f"loss history extends past checkpoint step {expected_step}"
+    for item in history:
+        for key in ("loss", "grad_norm", "learning_rate", "epoch"):
+            if key not in item:
+                continue
+            try:
+                value = float(item[key])
+            except (TypeError, ValueError):
+                return f"loss-history {key} is not numeric at step {item['step']}"
+            if not math.isfinite(value):
+                return f"loss-history {key} is non-finite at step {item['step']}"
+    return None
+
+
 def audit_training_artifacts(configs: list[RunConfig]) -> dict:
     """Verify that every planned run has five complete, resumable checkpoints."""
 
@@ -64,13 +97,8 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
         if not final_state_path.is_file():
             errors.append(f"{label}: missing trainer_state_final.json")
         else:
-            try:
-                final_step = int(json.loads(final_state_path.read_text())["global_step"])
-            except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
-                errors.append(f"{label}: invalid final Trainer state ({error})")
-            else:
-                if final_step != steps[-1]:
-                    errors.append(f"{label}: final Trainer state step {final_step} != {steps[-1]}")
+            if problem := _trainer_state_problem(final_state_path, steps[-1]):
+                errors.append(f"{label}: final {problem}")
         if not final_model_path.is_dir() or not any(
             path.stat().st_size > 0 for path in final_model_path.rglob("*.safetensors")
         ):
@@ -108,14 +136,8 @@ def audit_training_artifacts(configs: list[RunConfig]) -> dict:
                 )
                 run_checkpoint_errors += 1
                 continue
-            try:
-                checkpoint_step = int(json.loads(required[3].read_text())["global_step"])
-            except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
-                errors.append(f"{label}/checkpoint-{step}: invalid Trainer state ({error})")
-                run_checkpoint_errors += 1
-                continue
-            if checkpoint_step != step:
-                errors.append(f"{label}/checkpoint-{step}: Trainer state step is {checkpoint_step}")
+            if problem := _trainer_state_problem(required[3], step):
+                errors.append(f"{label}/checkpoint-{step}: {problem}")
                 run_checkpoint_errors += 1
                 continue
             verified_checkpoints += 1

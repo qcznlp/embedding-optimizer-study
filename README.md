@@ -167,7 +167,8 @@ metrics, training history, coverage checks, and training-dynamics/LR-sensitivity
 `reports/`. Once coverage reaches `24 × 5 × 14 = 1,680`, it also replaces the marked results and
 systems sections in `docs/blog.md`. `--strict` fails unless the entire evaluation matrix is present
 and all 24 runs have five non-empty, step-consistent model/optimizer/scheduler/RNG checkpoints plus a
-final model and Trainer state.
+final model and Trainer state. Checkpoint loss histories must also have unique increasing steps and
+finite loss, gradient-norm, learning-rate, and epoch values.
 
 ## Performance engineering
 
