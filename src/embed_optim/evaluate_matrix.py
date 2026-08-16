@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -32,6 +33,13 @@ TRAINING_RUNTIME_PACKAGES = (
     "pylate",
     "late-interaction-kernels",
 )
+EVALUATION_SOURCE_MODULES = {
+    "src/embed_optim/evaluate_matrix.py": "embed_optim.evaluate_matrix",
+    "src/embed_optim/evaluation_utils.py": "embed_optim.evaluation_utils",
+    "src/embed_optim/decontamination.py": "embed_optim.decontamination",
+    "src/embed_optim/pylate_compat.py": "embed_optim.pylate_compat",
+    "src/embed_optim/aggregate.py": "embed_optim.aggregate",
+}
 
 
 @dataclass
@@ -78,6 +86,46 @@ def _runtime_versions(python: str) -> dict[str, str]:
     return versions
 
 
+def _worker_package_source_manifest(python: str) -> dict[str, dict]:
+    """Fingerprint package modules imported by the actual worker interpreter."""
+
+    script = f"""
+import hashlib
+import importlib
+import json
+from pathlib import Path
+
+modules = {EVALUATION_SOURCE_MODULES!r}
+output = {{}}
+for label, module_name in modules.items():
+    path = Path(importlib.import_module(module_name).__file__).resolve()
+    content = path.read_bytes()
+    output[label] = {{"sha256": hashlib.sha256(content).hexdigest(), "bytes": len(content)}}
+print(json.dumps(output, sort_keys=True))
+"""
+    result = subprocess.run(
+        [python, "-c", script],
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    try:
+        return json.loads(result.stdout.strip().splitlines()[-1])
+    except (IndexError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"Could not parse evaluation sources from {python}") from error
+
+
+def _validate_worker_sources(python: str, source_files: dict[str, dict]) -> None:
+    expected = {label: source_files[label] for label in EVALUATION_SOURCE_MODULES}
+    observed = _worker_package_source_manifest(python)
+    if observed != expected:
+        raise RuntimeError(
+            f"Evaluation worker {python} imports different package source files: "
+            f"expected {expected}, got {observed}"
+        )
+
+
 def _validate_worker_runtime(python: str, models: dict[str, list[Path]]) -> dict[str, str]:
     """Fail before GPU work if training and evaluation libraries are not identical."""
 
@@ -103,17 +151,31 @@ def _validate_worker_runtime(python: str, models: dict[str, list[Path]]) -> dict
     return versions
 
 
-def _record_runtime(results: Path, python: str, versions: dict[str, str]) -> None:
+def _record_runtime(
+    results: Path,
+    python: str,
+    versions: dict[str, str],
+    source_files: dict[str, dict],
+) -> None:
     """Persist one immutable runtime identity for all resumable evaluation jobs."""
 
     path = results / "evaluation_runtime.json"
-    payload = {"schema_version": 1, "python": python, "versions": versions}
+    payload = {
+        "schema_version": 2,
+        "python": python,
+        "versions": versions,
+        "source_files": source_files,
+    }
     if path.is_file():
         try:
             existing = json.loads(path.read_text())
         except json.JSONDecodeError as error:
             raise RuntimeError(f"Invalid evaluation runtime manifest: {path}") from error
-        if existing.get("schema_version") != 1 or existing.get("versions") != versions:
+        if (
+            existing.get("schema_version") != 2
+            or existing.get("versions") != versions
+            or existing.get("source_files") != source_files
+        ):
             raise RuntimeError(
                 f"Evaluation runtime changed across a resumed results directory: {path}"
             )
@@ -135,6 +197,28 @@ def _evaluation_script(repo: Path, name: str, prefix: Path | None = None) -> Pat
         if candidate.is_file():
             return candidate
     raise FileNotFoundError(f"Cannot locate evaluation worker {name!r}; checked {candidates}")
+
+
+def _evaluation_source_manifest(repo: Path, prefix: Path | None = None) -> dict[str, dict]:
+    """Fingerprint every in-repository source file that can affect reported scores."""
+
+    package = Path(__file__).resolve().parent
+    paths = {
+        "src/embed_optim/evaluate_matrix.py": Path(__file__).resolve(),
+        "src/embed_optim/evaluation_utils.py": package / "evaluation_utils.py",
+        "src/embed_optim/decontamination.py": package / "decontamination.py",
+        "src/embed_optim/pylate_compat.py": package / "pylate_compat.py",
+        "src/embed_optim/aggregate.py": package / "aggregate.py",
+        **{
+            f"scripts/eval/{name}": _evaluation_script(repo, name, prefix)
+            for name in ("dense_parallel.py", "dense_sequential.py", "late_interaction.py")
+        },
+    }
+    manifest = {}
+    for label, path in paths.items():
+        content = path.read_bytes()
+        manifest[label] = {"sha256": hashlib.sha256(content).hexdigest(), "bytes": len(content)}
+    return manifest
 
 
 def checkpoint_paths(config: RunConfig, stages: list[int] | None = None) -> list[Path]:
@@ -241,7 +325,9 @@ def run_evaluation(args: argparse.Namespace) -> int:
     results.mkdir(parents=True, exist_ok=True)
     log_dir.mkdir(parents=True, exist_ok=True)
     versions = _validate_worker_runtime(worker_python, models)
-    _record_runtime(results, worker_python, versions)
+    source_files = _evaluation_source_manifest(repo)
+    _validate_worker_sources(worker_python, source_files)
+    _record_runtime(results, worker_python, versions, source_files)
     dense_job: EvaluationProcess | None = None
 
     if dense_models := models.get("dense"):

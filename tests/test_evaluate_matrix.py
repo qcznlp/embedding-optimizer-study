@@ -1,5 +1,6 @@
 import importlib
 import json
+import sys
 from argparse import Namespace
 from pathlib import Path
 from types import SimpleNamespace
@@ -39,6 +40,7 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
     monkeypatch.setattr(evaluate_matrix.time, "sleep", lambda seconds: None)
     monkeypatch.setattr(evaluate_matrix, "_worker_python", lambda executable=None: "/system/python")
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
+    monkeypatch.setattr(evaluate_matrix, "_validate_worker_sources", lambda python, sources: None)
 
     launches = []
 
@@ -149,8 +151,9 @@ def test_worker_runtime_must_match_every_training_checkpoint(tmp_path, monkeypat
     versions = evaluate_matrix._validate_worker_runtime("/system/python", {"dense": [checkpoint]})
     assert versions["flash-attn"] == "2"
 
-    evaluate_matrix._record_runtime(tmp_path, "/system/python", versions)
-    evaluate_matrix._record_runtime(tmp_path, "/same-stack/python", versions)
+    sources = evaluate_matrix._evaluation_source_manifest(Path.cwd())
+    evaluate_matrix._record_runtime(tmp_path, "/system/python", versions, sources)
+    evaluate_matrix._record_runtime(tmp_path, "/same-stack/python", versions, sources)
     assert json.loads((tmp_path / "evaluation_runtime.json").read_text())["versions"] == versions
 
     monkeypatch.setattr(
@@ -168,8 +171,30 @@ def test_worker_runtime_must_match_every_training_checkpoint(tmp_path, monkeypat
 
     with pytest.raises(RuntimeError, match="changed across a resumed results directory"):
         evaluate_matrix._record_runtime(
-            tmp_path, "/system/python", {**versions, "mteb": "different"}
+            tmp_path,
+            "/system/python",
+            {**versions, "mteb": "different"},
+            sources,
         )
+
+    changed_sources = json.loads(json.dumps(sources))
+    changed_sources["scripts/eval/late_interaction.py"]["sha256"] = "0" * 64
+    with pytest.raises(RuntimeError, match="changed across a resumed results directory"):
+        evaluate_matrix._record_runtime(tmp_path, "/system/python", versions, changed_sources)
+
+
+def test_worker_interpreter_must_import_the_recorded_evaluation_sources(monkeypatch):
+    sources = evaluate_matrix._evaluation_source_manifest(Path.cwd())
+    observed = evaluate_matrix._worker_package_source_manifest(sys.executable)
+    expected = {label: sources[label] for label in evaluate_matrix.EVALUATION_SOURCE_MODULES}
+    assert observed == expected
+    evaluate_matrix._validate_worker_sources(sys.executable, sources)
+
+    changed = json.loads(json.dumps(observed))
+    changed["src/embed_optim/evaluation_utils.py"]["sha256"] = "0" * 64
+    monkeypatch.setattr(evaluate_matrix, "_worker_package_source_manifest", lambda python: changed)
+    with pytest.raises(RuntimeError, match="imports different package source files"):
+        evaluate_matrix._validate_worker_sources(sys.executable, sources)
 
 
 def test_late_ipc_result_paths_are_rank_stable_and_job_unique():

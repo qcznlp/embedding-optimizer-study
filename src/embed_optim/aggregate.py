@@ -784,17 +784,36 @@ def _evaluation_runtime(results_root: Path) -> dict[str, str]:
     try:
         payload = json.loads(path.read_text())
         versions = payload["versions"]
+        source_files = payload["source_files"]
     except (OSError, KeyError, TypeError, json.JSONDecodeError) as error:
         raise ValueError(f"Missing/invalid evaluation runtime manifest: {path}") from error
     if (
-        payload.get("schema_version") != 1
+        payload.get("schema_version") != 2
         or not isinstance(payload.get("python"), str)
         or not payload["python"]
         or not isinstance(versions, dict)
         or set(versions) != EVALUATION_PACKAGES
         or any(not isinstance(value, str) or not value for value in versions.values())
+        or not isinstance(source_files, dict)
+        or not source_files
+        or any(
+            not isinstance(label, str)
+            or not isinstance(identity, dict)
+            or set(identity) != {"sha256", "bytes"}
+            or not isinstance(identity["sha256"], str)
+            or len(identity["sha256"]) != 64
+            or not isinstance(identity["bytes"], int)
+            or isinstance(identity["bytes"], bool)
+            or identity["bytes"] <= 0
+            for label, identity in source_files.items()
+        )
     ):
         raise ValueError(f"Incomplete evaluation runtime manifest: {path}")
+    from .evaluate_matrix import _evaluation_source_manifest
+
+    current_sources = _evaluation_source_manifest(Path(__file__).resolve().parents[2])
+    if source_files != current_sources:
+        raise ValueError(f"Evaluation source files differ from runtime manifest: {path}")
     return versions
 
 

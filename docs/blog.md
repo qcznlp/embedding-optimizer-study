@@ -129,7 +129,9 @@ sum to 19,525,336 documents; evaluation schedules larger corpora first across th
 and resumes only the missing split/subset pairs from validated MTEB result files. A launch preflight
 uses one Python runtime for both model families and requires its core model-library versions to match
 the versions recorded during training. An immutable runtime manifest also records PyLate, FastPLAID,
-Late Interaction Kernels, MTEB, and FlashAttention. Final aggregation rejects results with a different
+Late Interaction Kernels, MTEB, and FlashAttention. It additionally records SHA-256 identities for
+all eight evaluation/aggregation source files and verifies that the worker interpreter imports those
+same package sources. Final aggregation recomputes the hashes and rejects results with a different
 checkpoint identity, dataset revision, split/subset, scoring field, MTEB version, or runtime
 provenance.
 
