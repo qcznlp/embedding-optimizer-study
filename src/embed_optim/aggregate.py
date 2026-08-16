@@ -29,6 +29,115 @@ EVALUATION_PACKAGES = {
     "fast-plaid",
     "late-interaction-kernels",
 }
+EXPECTED_SWEEP = {
+    "adamw": {
+        "adamw-lr1e-6": 1e-6,
+        "adamw-lr3e-6": 3e-6,
+        "adamw-lr1e-5": 1e-5,
+        "adamw-lr3e-5": 3e-5,
+    },
+    "muon": {
+        "muon-lr1e-4": 1e-4,
+        "muon-lr3e-4": 3e-4,
+        "muon-lr1e-3": 1e-3,
+        "muon-lr3e-3": 3e-3,
+    },
+    "normuon": {
+        "normuon-lr1e-4": 1e-4,
+        "normuon-lr3e-4": 3e-4,
+        "normuon-lr1e-3": 1e-3,
+        "normuon-lr3e-3": 3e-3,
+    },
+}
+EXPECTED_MODELS = {
+    "dense": (
+        "lightonai/DenseOn-unsupervised",
+        "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+        0.02,
+    ),
+    "late": (
+        "lightonai/LateOn-unsupervised",
+        "1047071849a708b9b3ee4dccdc60186c185224a7",
+        0.001,
+    ),
+}
+
+
+def audit_experiment_contract(configs: list[RunConfig]) -> dict:
+    """Verify that the matrix still represents the complete, frozen user request."""
+
+    errors: list[str] = []
+    expected_identities = {
+        (family, run_id)
+        for family in EXPECTED_MODELS
+        for runs in EXPECTED_SWEEP.values()
+        for run_id in runs
+    }
+    observed_identities = [(config.model_family, config.run_id) for config in configs]
+    if len(observed_identities) != len(set(observed_identities)):
+        errors.append("matrix contains duplicate family/run identities")
+    if set(observed_identities) != expected_identities:
+        errors.append("matrix does not contain the exact planned 24 family/run identities")
+
+    common_expected = {
+        "dataset_path": "data/denseon-sft-500k-seed42",
+        "seed": 42,
+        "epochs": 1.0,
+        "global_batch_size": 128,
+        "micro_batch_size": 8,
+        "max_length": 8192,
+        "warmup_ratio": 0.1,
+        "max_grad_norm": 1.0,
+        "gradient_checkpointing": True,
+        "flash_attention": True,
+        "wandb_project": "embedding-optimizer-study",
+        "wandb_entity": "stevezenguom",
+        "checkpoint_fractions": (0.2, 0.4, 0.6, 0.8, 1.0),
+    }
+    for config in configs:
+        label = f"{config.model_family}/{config.run_id}"
+        if config.model_family not in EXPECTED_MODELS:
+            errors.append(f"{label}: unexpected model family")
+            continue
+        expected_model, expected_revision, expected_temperature = EXPECTED_MODELS[
+            config.model_family
+        ]
+        if config.model_name != expected_model or config.model_revision != expected_revision:
+            errors.append(f"{label}: base model identity/revision differs from frozen contract")
+        if config.resolved_temperature != expected_temperature:
+            errors.append(f"{label}: contrastive temperature differs from frozen contract")
+        for field, expected in common_expected.items():
+            if getattr(config, field) != expected:
+                errors.append(f"{label}: {field} differs from frozen contract")
+
+        optimizer = config.optimizer
+        expected_runs = EXPECTED_SWEEP.get(optimizer.name)
+        if expected_runs is None or expected_runs.get(config.run_id) != optimizer.lr:
+            errors.append(f"{label}: optimizer name/learning rate differs from frozen sweep")
+        if optimizer.weight_decay != 0.01:
+            errors.append(f"{label}: weight decay differs from frozen contract")
+        if optimizer.name == "adamw":
+            if (optimizer.beta1, optimizer.beta2, optimizer.eps) != (0.9, 0.999, 1e-8):
+                errors.append(f"{label}: AdamW moments/epsilon differ from frozen contract")
+        elif optimizer.name in {"muon", "normuon"}:
+            if (
+                optimizer.aux_lr != 3e-6
+                or (optimizer.aux_beta1, optimizer.aux_beta2, optimizer.aux_eps)
+                != (0.9, 0.999, 1e-8)
+                or optimizer.momentum != 0.95
+                or optimizer.ns_steps != 5
+            ):
+                errors.append(f"{label}: matrix/auxiliary optimizer settings differ")
+            if optimizer.name == "muon" and optimizer.adjust_lr_fn != "original":
+                errors.append(f"{label}: Muon LR adjustment differs from frozen contract")
+            if optimizer.name == "normuon" and optimizer.normuon_beta2 != 0.95:
+                errors.append(f"{label}: NorMuon beta2 differs from frozen contract")
+    return {
+        "complete": not errors,
+        "observed_runs": len(configs),
+        "expected_runs": 24,
+        "errors": errors,
+    }
 
 
 def _dataset_rows_audit(path: Path, manifest: dict) -> dict:
@@ -1255,6 +1364,7 @@ def _coverage(
     rows: list[dict],
     summary: list[dict],
     configs: list[RunConfig],
+    contract_audit: dict,
     dataset_audit: dict,
     training_audit: dict,
 ) -> dict:
@@ -1270,11 +1380,15 @@ def _coverage(
     evaluation_complete = not missing and not unexpected
     return {
         "complete": evaluation_complete
+        and contract_audit["complete"]
         and dataset_audit["complete"]
         and training_audit["complete"],
+        "contract_complete": contract_audit["complete"],
         "dataset_complete": dataset_audit["complete"],
         "training_complete": training_audit["complete"],
         "evaluation_complete": evaluation_complete,
+        "verified_experiment_runs": contract_audit["observed_runs"],
+        "expected_experiment_runs": contract_audit["expected_runs"],
         "verified_training_examples": dataset_audit["verified_rows"],
         "expected_training_examples": 500_000,
         "training_row_manifest_sha256": dataset_audit.get("row_manifest_sha256"),
@@ -1288,6 +1402,7 @@ def _coverage(
         "expected_checkpoint_summaries": len(configs) * 5,
         "missing": ["/".join(map(str, item)) for item in missing],
         "unexpected": ["/".join(map(str, item)) for item in unexpected],
+        "contract_errors": contract_audit["errors"],
         "dataset_errors": dataset_audit["errors"],
         "training_errors": training_audit["errors"],
     }
@@ -1300,9 +1415,10 @@ def aggregate(args: argparse.Namespace) -> None:
     optimizer_rows, best_dynamics = _optimizer_summaries(summary)
     system_metrics = collect_system_metrics(configs)
     system_rows = _system_summaries(system_metrics)
+    contract_audit = audit_experiment_contract(configs)
     dataset_audit = audit_dataset_artifacts(configs)
     training_audit = audit_training_artifacts(configs)
-    coverage = _coverage(rows, summary, configs, dataset_audit, training_audit)
+    coverage = _coverage(rows, summary, configs, contract_audit, dataset_audit, training_audit)
     task_rows = _task_comparison(rows, optimizer_rows) if coverage["complete"] else []
 
     output = Path(args.output_dir)
