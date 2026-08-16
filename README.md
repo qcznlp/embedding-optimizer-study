@@ -140,9 +140,10 @@ embed-optim-evaluate \
 embed-optim-aggregate --strict
 ```
 
-This writes long-form task results, checkpoint means, training history, coverage checks, and training
-dynamics plots under `reports/`. `--strict` fails unless all `24 × 5 × 14 = 1,680` evaluations are
-present.
+This writes long-form task results, checkpoint and optimizer summaries, per-task comparisons, system
+metrics, training history, coverage checks, and training-dynamics/LR-sensitivity plots under
+`reports/`. Once coverage reaches `24 × 5 × 14 = 1,680`, it also replaces the marked results and
+systems sections in `docs/blog.md`. `--strict` fails unless the entire matrix is present.
 
 ## Performance engineering
 

@@ -5,6 +5,7 @@ import importlib.metadata
 import json
 import os
 import shutil
+import time
 from pathlib import Path
 
 import torch
@@ -148,7 +149,7 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
     if config.wandb_entity:
         os.environ["WANDB_ENTITY"] = config.wandb_entity
     os.environ.setdefault(
-        "WANDB_RUN_ID", f"{config.model_family}-{config.run_id}-seed{config.seed}"
+        "WANDB_RUN_ID", f"study-v1-{config.model_family}-{config.run_id}-seed{config.seed}"
     )
     os.environ.setdefault("WANDB_RESUME", "allow")
     os.environ.setdefault("WANDB_RUN_GROUP", config.model_family)
@@ -188,13 +189,43 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
         callbacks=callbacks,
         optimizer_config=config.optimizer,
     )
-    trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
+    started_at = time.monotonic()
+    train_result = trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+    wall_time_seconds = time.monotonic() - started_at
+
+    # Record the slowest rank and largest per-rank CUDA footprint. The collectives
+    # run on every rank before rank zero writes the shared completion manifest.
+    local_system = torch.tensor(
+        [
+            wall_time_seconds,
+            float(torch.cuda.max_memory_allocated()) if torch.cuda.is_available() else 0.0,
+            float(torch.cuda.max_memory_reserved()) if torch.cuda.is_available() else 0.0,
+        ],
+        device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),
+        dtype=torch.float64,
+    )
+    if torch.distributed.is_available() and torch.distributed.is_initialized():
+        torch.distributed.all_reduce(local_system, op=torch.distributed.ReduceOp.MAX)
+    wall_time_seconds, peak_allocated_bytes, peak_reserved_bytes = local_system.tolist()
+
     final_dir = output_dir / "final"
     trainer.save_model(str(final_dir))
     if trainer.is_world_process_zero():
         if config.model_family == "late":
             sanitize_pylate_checkpoint(final_dir)
         trainer.state.save_to_json(str(output_dir / "trainer_state_final.json"))
+        checkpoint_bytes = {
+            path.name: sum(item.stat().st_size for item in path.rglob("*") if item.is_file())
+            for path in sorted(output_dir.glob("checkpoint-*"))
+            if path.is_dir()
+        }
+        optimizer_state_bytes = {
+            path.name: (path / "optimizer.pt").stat().st_size
+            for path in sorted(output_dir.glob("checkpoint-*"))
+            if (path / "optimizer.pt").is_file()
+        }
         (output_dir / "completed.json").write_text(
             json.dumps(
                 {
@@ -205,6 +236,18 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
                     "optimizer_partition": trainer.optimizer_partition_summary,
                     "dataset_rows": len(dataset),
                     "dataset_fingerprint": dataset._fingerprint,
+                    "system_metrics": {
+                        "wall_time_seconds_max_rank": wall_time_seconds,
+                        "peak_allocated_bytes_max_rank": int(peak_allocated_bytes),
+                        "peak_reserved_bytes_max_rank": int(peak_reserved_bytes),
+                        "checkpoint_bytes": checkpoint_bytes,
+                        "optimizer_state_bytes": optimizer_state_bytes,
+                        "trainer": train_result.metrics,
+                        "gpu_name": torch.cuda.get_device_name()
+                        if torch.cuda.is_available()
+                        else None,
+                        "world_size": _world_size(),
+                    },
                     "versions": {
                         package: importlib.metadata.version(package)
                         for package in (
