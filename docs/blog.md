@@ -214,15 +214,18 @@ which earlier kernel originated the fault. The next retry encountered a fifth as
 failure at step 3,180 on rank 1 (physical GPU 1), reported by the NCCL watchdog. The five incidents
 therefore span physical GPUs 3, 2, 0, and 1, so the evidence no longer supports a single-device
 explanation and instead points to the native bfloat16 Muon/CUDA path under this runtime. A subsequent
-resume passed both interruption points without changing optimizer semantics.
+resume passed both interruption points without changing optimizer semantics, but later encountered a
+sixth asynchronous launch failure at step 3,829 on rank 2 (physical GPU 2), again reported by the
+NCCL watchdog. The supervisor restarted both concurrent runs from their independently validated
+checkpoint 3,126 states.
 
 The supervisor resumes both concurrent runs only from their last deep-validated checkpoints.
 DenseOn's reported throughput sums its non-overlapping accepted segments through step 3,126 and the
 final segment after that checkpoint; LateOn applies the same rule. Repeated post-checkpoint steps,
 failed pre-checkpoint attempts, restart initialization, and downtime are retained as infrastructure
 evidence but excluded from optimizer-throughput comparisons. After retaining the Python/CUDA stacks,
-future recovery processes disable multi-gigabyte ELF core dumps; this changes neither training nor
-optimizer execution.
+the recovery supervisor and its newly spawned workers disable multi-gigabyte ELF core dumps; this
+changes neither training nor optimizer execution.
 
 ## Limitations
 
