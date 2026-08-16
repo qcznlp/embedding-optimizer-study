@@ -23,6 +23,7 @@ from embed_optim.aggregate import (
     audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
+    render_blog,
 )
 from embed_optim.config import OptimizerConfig, RunConfig, load_matrix
 from embed_optim.decontamination import DECONTAMINATED_BEIR
@@ -185,7 +186,7 @@ def test_system_summary_reports_speedup_against_family_adamw():
     assert "2.00×" in _render_systems(list(by_optimizer.values()))
 
 
-def test_result_render_reports_auc_and_paired_task_counts():
+def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
     optimizer_rows = []
     dynamics = []
     task_rows = []
@@ -234,6 +235,10 @@ def test_result_render_reports_auc_and_paired_task_counts():
     assert "muon beats AdamW on 14/14 tasks" in rendered
     assert "normuon beats AdamW on 0/14 tasks" in rendered
     assert "Paired bootstrap 95% CI" in rendered
+    assert "../reports/figures/dense-training-dynamics.png" in rendered
+    assert "../reports/figures/late-training-dynamics.png" in rendered
+    assert "../reports/figures/dense-lr-sensitivity.png" in rendered
+    assert "../reports/figures/late-lr-sensitivity.png" in rendered
     muon = next(
         row for row in paired_rows if row["model_family"] == "dense" and row["optimizer"] == "muon"
     )
@@ -246,6 +251,30 @@ def test_result_render_reports_auc_and_paired_task_counts():
     assert muon["exact_sign_test_p_value"] == pytest.approx(2 / 2**14)
     assert muon["holm_sign_test_p_value"] == pytest.approx(4 * 2 / 2**14)
     assert paired_rows == _paired_comparisons(task_rows, bootstrap_samples=1_000)
+
+
+def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monkeypatch):
+    blog = tmp_path / "blog.md"
+    blog.write_text(
+        "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
+        "the results sections are populated only from the checked-in aggregation artifacts after coverage reaches\n"
+        "1,680/1,680.\n\n"
+        "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
+        "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n"
+    )
+    monkeypatch.setattr("embed_optim.aggregate._render_results", lambda *args: "new results")
+    monkeypatch.setattr("embed_optim.aggregate._render_systems", lambda *args: "new systems")
+
+    render_blog(blog, [], [], [], [], [])
+
+    rendered = blog.read_text()
+    assert "<!-- RESULTS:BEGIN -->\n\nnew results\n\n<!-- RESULTS:END -->" in rendered
+    assert "<!-- SYSTEMS:BEGIN -->\n\nnew systems\n\n<!-- SYSTEMS:END -->" in rendered
+    assert (
+        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
+        "checkpoint/task evaluations." in rendered
+    )
+    assert "training matrix in progress" not in rendered
 
 
 def test_system_metrics_add_audited_prior_training_segment(tmp_path):
