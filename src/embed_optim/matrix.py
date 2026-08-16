@@ -19,6 +19,29 @@ class Running:
     started: float
 
 
+@dataclass(frozen=True)
+class Pool:
+    gpu_ids: str
+    master_port: int
+    preferred_family: str
+
+
+def _pop_next(
+    pool: Pool,
+    queues: dict[str, list[RunConfig]],
+    running: dict[str, Running],
+) -> RunConfig | None:
+    """Prefer a pool's model family, then steal work after that family drains."""
+
+    preferred = pool.preferred_family
+    if queues[preferred]:
+        return queues[preferred].pop(0)
+    if any(job.config.model_family == preferred for job in running.values()):
+        return None
+    alternate = "late" if preferred == "dense" else "dense"
+    return queues[alternate].pop(0) if queues[alternate] else None
+
+
 def _launch(
     config: RunConfig,
     matrix_path: Path,
@@ -91,25 +114,26 @@ def run_matrix(args: argparse.Namespace) -> int:
         ],
     }
     pools = {
-        "dense": (args.gpus_a, args.port_a),
-        "late": (args.gpus_b, args.port_b),
+        "a": Pool(args.gpus_a, args.port_a, "dense"),
+        "b": Pool(args.gpus_b, args.port_b, "late"),
     }
     log_dir = Path(args.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
     running: dict[str, Running] = {}
     failures = 0
     while any(queues.values()) or running:
-        for family, job in list(running.items()):
+        for pool_name, job in list(running.items()):
             return_code = job.process.poll()
             if return_code is None:
                 continue
             job.log_handle.close()
             elapsed = time.monotonic() - job.started
             print(
-                f"{family}/{job.config.run_id} exited {return_code} after {elapsed / 60:.1f} min",
+                f"pool-{pool_name} {job.config.model_family}/{job.config.run_id} "
+                f"exited {return_code} after {elapsed / 60:.1f} min",
                 flush=True,
             )
-            del running[family]
+            del running[pool_name]
             if return_code != 0:
                 failures += 1
                 if args.fail_fast:
@@ -117,20 +141,22 @@ def run_matrix(args: argparse.Namespace) -> int:
                         other.process.terminate()
                     return failures
 
-        for family in ("dense", "late"):
-            if family in running or not queues[family]:
+        for pool_name, pool in pools.items():
+            if pool_name in running:
                 continue
-            gpu_ids, port = pools[family]
+            config = _pop_next(pool, queues, running)
+            if config is None:
+                continue
             job = _launch(
-                queues[family].pop(0),
+                config,
                 matrix_path,
-                gpu_ids,
-                port,
+                pool.gpu_ids,
+                pool.master_port,
                 log_dir,
                 args.dry_run,
             )
             if job is not None:
-                running[family] = job
+                running[pool_name] = job
         if args.dry_run:
             continue
         time.sleep(5)

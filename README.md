@@ -92,9 +92,10 @@ embed-optim-matrix \
   --fail-fast
 ```
 
-The scheduler runs one four-GPU DenseOn job and one four-GPU LateOn job concurrently, then advances
-each queue independently. Completed jobs are skipped on restart. Individual runs can be launched
-with:
+The scheduler starts one four-GPU DenseOn job and one four-GPU LateOn job concurrently, then advances
+each queue independently. Once one family drains, its pool automatically steals remaining jobs from
+the other family, avoiding an idle four-GPU tail. Completed jobs are skipped on restart. Individual
+runs can be launched with:
 
 ```bash
 torchrun --standalone --nproc-per-node=4 -m embed_optim.train \
