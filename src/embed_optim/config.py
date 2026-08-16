@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import dataclasses
 import json
+import sys
 from pathlib import Path
 from typing import Any, Literal
 
@@ -79,8 +80,19 @@ class RunConfig:
         return cls(**values)
 
 
-def load_matrix(path: str | Path) -> list[RunConfig]:
+def _resolve_matrix_path(path: str | Path, prefix: Path | None = None) -> Path:
+    """Resolve a source-tree config, falling back to wheel data for bundled defaults."""
+
     path = Path(path)
+    if path.is_file() or path.is_absolute() or path.parent != Path("configs"):
+        return path
+    prefix = Path(sys.prefix) if prefix is None else prefix
+    installed = prefix / "share" / "embedding-optimizer-study" / "configs" / path.name
+    return installed if installed.is_file() else path
+
+
+def load_matrix(path: str | Path) -> list[RunConfig]:
+    path = _resolve_matrix_path(path)
     raw = yaml.safe_load(path.read_text())
     common = raw.get("common", {})
     models = raw["models"]

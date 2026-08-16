@@ -64,10 +64,21 @@ build-backend = "setuptools.build_meta"
 where = ["src"]
 
 [tool.setuptools.data-files]
+"share/embedding-optimizer-study/configs" = [
+  "configs/experiment.yaml",
+  "configs/smoke.yaml",
+  "configs/stress.yaml",
+]
 "share/embedding-optimizer-study/scripts/eval" = [
   "scripts/eval/dense_parallel.py",
   "scripts/eval/dense_sequential.py",
   "scripts/eval/late_interaction.py",
+]
+"share/doc/embedding-optimizer-study" = [
+  "CITATION.cff",
+  "CONTRIBUTING.md",
+  "THIRD_PARTY_NOTICES.md",
+  "docs/blog.md",
 ]
 
 [tool.uv]
