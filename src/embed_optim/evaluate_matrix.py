@@ -23,6 +23,20 @@ class EvaluationProcess:
     model: Path | None = None
 
 
+def _evaluation_script(repo: Path, name: str, prefix: Path | None = None) -> Path:
+    """Locate an evaluation worker in a source checkout or an installed wheel."""
+
+    prefix = Path(sys.prefix) if prefix is None else prefix
+    candidates = (
+        repo / "scripts" / "eval" / name,
+        prefix / "share" / "embedding-optimizer-study" / "scripts" / "eval" / name,
+    )
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    raise FileNotFoundError(f"Cannot locate evaluation worker {name!r}; checked {candidates}")
+
+
 def checkpoint_paths(config: RunConfig, stages: list[int] | None = None) -> list[Path]:
     schedule_path = config.output_dir / "checkpoint_schedule.json"
     if not schedule_path.is_file():
@@ -71,7 +85,7 @@ def _late_command(
         str(num_processes),
         "--main_process_port",
         str(port),
-        str(repo / "scripts/eval/late_interaction.py"),
+        str(_evaluation_script(repo, "late_interaction.py")),
         "--models",
         str(model),
         "--tasks",
@@ -125,7 +139,7 @@ def run_evaluation(args: argparse.Namespace) -> int:
     if dense_models := models.get("dense"):
         command = [
             sys.executable,
-            str(repo / "scripts/eval/dense_parallel.py"),
+            str(_evaluation_script(repo, "dense_parallel.py")),
             "--gpus",
             args.gpus_a,
             "--results_folder",
@@ -134,6 +148,8 @@ def run_evaluation(args: argparse.Namespace) -> int:
             *(str(path) for path in dense_models),
             "--tasks",
             *args.tasks,
+            "--log_dir",
+            str(log_dir / "dense-tasks"),
             "--bf16",
             "--fa2",
             "--local",
