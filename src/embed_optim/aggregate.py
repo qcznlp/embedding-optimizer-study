@@ -1126,6 +1126,13 @@ def _paired_comparisons(
                     "exact_sign_test_p_value": sign_p,
                 }
             )
+    ordered = sorted(enumerate(output), key=lambda item: item[1]["exact_sign_test_p_value"])
+    running_adjusted = 0.0
+    comparisons = len(ordered)
+    for rank, (original_index, row) in enumerate(ordered):
+        adjusted = min(1.0, (comparisons - rank) * row["exact_sign_test_p_value"])
+        running_adjusted = max(running_adjusted, adjusted)
+        output[original_index]["holm_sign_test_p_value"] = running_adjusted
     return output
 
 
@@ -1287,7 +1294,15 @@ def _render_results(
     )
 
     paired_table = _markdown_table(
-        ["Family", "Comparison", "W/T/L", "Mean Δ", "Paired bootstrap 95% CI", "Sign p"],
+        [
+            "Family",
+            "Comparison",
+            "W/T/L",
+            "Mean Δ",
+            "Paired bootstrap 95% CI",
+            "Sign p",
+            "Holm p",
+        ],
         [
             [
                 row["model_family"],
@@ -1296,6 +1311,7 @@ def _render_results(
                 f"{row['mean_delta']:+.4f}",
                 f"[{row['bootstrap_ci_95_lower']:+.4f}, {row['bootstrap_ci_95_upper']:+.4f}]",
                 f"{row['exact_sign_test_p_value']:.4g}",
+                f"{row['holm_sign_test_p_value']:.4g}",
             ]
             for row in paired_rows
         ],
@@ -1371,8 +1387,9 @@ def _render_results(
             "The best-LR comparisons are selected on this same benchmark suite and should therefore "
             "be read as controlled exploratory results, not as an unbiased model-selection estimate. "
             "Paired intervals use 20,000 deterministic task-level bootstrap resamples; the sign-test "
-            "p-value is exact after excluding ties. BEIR tasks are heterogeneous and not independent "
-            "draws, so these are descriptive uncertainty summaries rather than population inference. "
+            "p-value is exact after excluding ties, and Holm p controls the family of four reported "
+            "sign tests. BEIR tasks are heterogeneous and not independent draws, so these are "
+            "descriptive uncertainty summaries rather than population inference. "
             "The four-LR mean, spread, and complete per-task rows are included to expose sensitivity "
             "rather than reporting only the winning point. Trajectory AUC is the normalized "
             "trapezoidal mean nDCG@10 over the observed 20%–100% checkpoint window; it measures "

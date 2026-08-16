@@ -224,6 +224,7 @@ def test_result_render_reports_auc_and_paired_task_counts():
     assert muon["bootstrap_ci_95_lower"] == pytest.approx(0.01)
     assert muon["bootstrap_ci_95_upper"] == pytest.approx(0.01)
     assert muon["exact_sign_test_p_value"] == pytest.approx(2 / 2**14)
+    assert muon["holm_sign_test_p_value"] == pytest.approx(4 * 2 / 2**14)
     assert paired_rows == _paired_comparisons(task_rows, bootstrap_samples=1_000)
 
 

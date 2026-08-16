@@ -118,7 +118,9 @@ four-learning-rate dispersion, best-configuration paired task wins, and measured
 relative to AdamW. For each best-config Muon/AdamW and NorMuon/AdamW comparison, we report the mean
 task delta with a deterministic seed-42, 20,000-resample paired task bootstrap 95% interval and an
 exact two-sided sign-test p-value after excluding ties. These are descriptive summaries: the optimizer LR
-is selected on the same suite, and the 14 heterogeneous BEIR tasks are not independent draws.
+is selected on the same suite, and the 14 heterogeneous BEIR tasks are not independent draws. We
+report both the raw sign-test p-value and its Holm correction across the four family-by-optimizer
+comparisons.
 
 Dense retrieval is evaluated with MTEB exact retrieval. Late interaction is encoded with PyLate and
 searched with FastPLAID using 4-bit residuals, 8 IVF probes, 8,192 full scores, and index seed 42.
