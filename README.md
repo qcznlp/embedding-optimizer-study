@@ -36,8 +36,9 @@ both base checkpoints.
 
 ## Install
 
-Python 3.10–3.13 and CUDA GPUs with bfloat16 support are expected. The tested environment uses
-Python 3.12, PyTorch 2.9.1, SentenceTransformers 5.7, CUDA 12.9, and eight 80 GB GPUs.
+Python 3.10–3.13 and CUDA GPUs with bfloat16 support are expected. The formal runs currently record
+Python 3.12, PyTorch 2.9.1, SentenceTransformers 5.7, CUDA 12.9, and four NVIDIA L20Z devices per
+job, with two jobs running concurrently across eight devices.
 
 ```bash
 git clone https://github.com/qcznlp/embedding-optimizer-study.git
