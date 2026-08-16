@@ -118,6 +118,8 @@ from the completed W&B runs and local Trainer states.
   practical optimizer recipes rather than mathematically pure single-optimizer systems.
 - Four learning rates improve robustness but do not guarantee that every optimizer's global optimum is
   inside the sweep.
+- Every configuration uses the same single training/data seed (42). This controls the comparison but
+  does not quantify variance across independent seeds.
 - No in-batch negatives makes the groups controlled and memory predictable, but the absolute scores are
   not directly comparable to recipes that use large cross-device negative pools.
 - Approximate PLAID retrieval can introduce a small difference from exhaustive late-interaction scoring;
