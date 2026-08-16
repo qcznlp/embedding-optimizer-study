@@ -95,8 +95,7 @@ Re-running with the same inputs produces the same query ordering and negative se
 embed-optim-matrix \
   --matrix configs/experiment.yaml \
   --gpus-a 0,1,2,3 \
-  --gpus-b 4,5,6,7 \
-  --fail-fast
+  --gpus-b 4,5,6,7
 ```
 
 The scheduler starts one four-GPU DenseOn job and one four-GPU LateOn job concurrently, then advances
@@ -110,6 +109,12 @@ torchrun --standalone --nproc-per-node=4 -m embed_optim.train \
   --model-family dense \
   --run-id muon-lr3e-4
 ```
+
+For long matrices, omit `--fail-fast` as above so a failure on one pool does not terminate an
+unrelated healthy job on the other pool. The command returns nonzero after the remaining queue drains
+if any job failed; rerunning it resumes only incomplete runs from their latest structurally valid
+checkpoints. Use `--fail-fast` only for smoke tests or when immediate cross-pool shutdown is
+intentional.
 
 Each output directory contains the resolved configuration, five complete model/optimizer/scheduler
 checkpoints, a final model, Trainer state, and a completion record. The loss is explicit group-only
