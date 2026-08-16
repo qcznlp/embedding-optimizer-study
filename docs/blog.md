@@ -219,6 +219,27 @@ sixth asynchronous launch failure at step 3,829 on rank 2 (physical GPU 2), agai
 NCCL watchdog. The supervisor restarted both concurrent runs from their independently validated
 checkpoint 3,126 states.
 
+The kernel log independently correlates every interruption with an NVIDIA driver Xid on the same
+physical device and at the same wall-clock time:
+
+| Incident | Optimizer step | Physical GPU (PCI bus) | User-space reporting point | Driver Xid |
+| ---: | ---: | --- | --- | --- |
+| 1 | 52 | 3 (`c6:00`) | Newton–Schulz `addmm` / cuBLAS | 43 |
+| 2 | 388 | 3 (`c6:00`) | Newton–Schulz `addmm` / cuBLAS | 13, then 43 |
+| 3 | 2,354 | 2 (`a2:00`) | NCCL watchdog | 43 |
+| 4 | 3,336 | 0 (`08:00`) | Muon momentum-buffer `lerp_` | 43 |
+| 5 | 3,180 | 1 (`7e:00`) | NCCL watchdog | 13, then 43 |
+| 6 | 3,829 | 2 (`a2:00`) | NCCL watchdog | 13, then 43 |
+
+NVIDIA classifies [Xid 13](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html)
+as a graphics-engine exception: typically an application/CUDA fault such as an out-of-bounds access
+or illegal instruction, while rare driver or hardware causes remain possible. Xid 43 records the
+resulting software-induced channel termination and says the GPU remains healthy. The repeated pattern
+across four physical GPUs, identical Xid-13 exception registers on three devices, stable concurrent
+AdamW execution before fail-fast termination, and zero volatile corrected or uncorrected ECC counts
+therefore favor an application/kernel-path explanation over a single-card hardware fault. They still
+do not identify which asynchronously executed operation originated the exception.
+
 The supervisor resumes both concurrent runs only from their last deep-validated checkpoints.
 DenseOn's reported throughput sums its non-overlapping accepted segments through step 3,126 and the
 final segment after that checkpoint; LateOn applies the same rule. Repeated post-checkpoint steps,
@@ -281,4 +302,6 @@ for system telemetry; no source run is deleted.
   [FastPLAID: High-Performance Engine for Multi-Vector Search](https://github.com/lightonai/fast-plaid),
   2025.
 - LightOn, [DenseOn and LateOn release blog](https://huggingface.co/blog/lightonai/denseon-lateon),
+  2026.
+- NVIDIA, [Analyzing Xid Errors with the Xid Catalog](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html),
   2026.
