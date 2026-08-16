@@ -134,11 +134,13 @@ scores, and index seed 42.
 The training scorer uses the fused Late Interaction Kernels implementation. The pinned corpus counts
 sum to 19,525,336 documents; evaluation schedules larger corpora first across the available workers
 and resumes only the missing split/subset pairs from validated MTEB result files. A launch preflight
-uses one Python runtime for both model families and requires its core model-library versions to match
-the versions recorded during training. An immutable runtime manifest also records PyLate, FastPLAID,
-Late Interaction Kernels, MTEB, and FlashAttention. It additionally records SHA-256 identities for
-all eight evaluation/aggregation source files and verifies that the worker interpreter imports those
-same package sources. Final aggregation recomputes the hashes and rejects results with a different
+first reconstructs the exact shared training-data view and deep-validates every selected model,
+optimizer, scheduler, and per-rank RNG payload before any formal evaluation GPU work. It then uses one
+Python runtime for both model families and requires its core model-library versions to match the
+versions recorded during training. An immutable runtime manifest also records PyLate, FastPLAID,
+Late Interaction Kernels, MTEB, and FlashAttention. It additionally records SHA-256 identities for all
+eight evaluation/aggregation source files and verifies that the worker interpreter imports those same
+package sources. Final aggregation recomputes the hashes and rejects results with a different
 checkpoint identity, dataset revision, split/subset, scoring field, MTEB version, or runtime
 provenance.
 Each task result and its model metadata are atomically replaced, concurrent DenseOn workers merge the

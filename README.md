@@ -149,8 +149,11 @@ an interrupted command computes only missing task/checkpoint pairs. Dense and di
 workers are launched by the same Python interpreter as the orchestrator (override it explicitly with
 `--worker-python`). Before any GPU work, a runtime preflight requires Torch, Transformers, and
 SentenceTransformers, PyLate, and Late Interaction Kernels to exactly match the versions recorded
-during training. It records an immutable manifest including MTEB, FlashAttention, and FastPLAID so a
-resumed results directory cannot silently mix evaluator stacks.
+during training. The same preflight reconstructs the audited training-data view, parses every selected
+safetensors payload, loads optimizer and scheduler states, and CRC-checks every rank RNG archive, so a
+damaged checkpoint cannot consume days of formal evaluation before being rejected. It then records an
+immutable manifest including MTEB, FlashAttention, and FastPLAID so a resumed results directory cannot
+silently mix evaluator stacks.
 The same manifest hashes all eight evaluation/aggregation source files and verifies that the selected
 worker interpreter imports the identical package sources. Resuming after any scoring-code change fails
 before GPU work instead of mixing implementations in one result directory.

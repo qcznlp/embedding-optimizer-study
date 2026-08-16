@@ -39,6 +39,7 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
         "_selected_models",
         lambda args: {"dense": [dense], "late": [late_one, late_two]},
     )
+    monkeypatch.setattr(evaluate_matrix, "_validate_training_inputs", lambda args: None)
     monkeypatch.setattr(evaluate_matrix.time, "sleep", lambda seconds: None)
     monkeypatch.setattr(evaluate_matrix, "_worker_python", lambda executable=None: "/system/python")
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
@@ -82,6 +83,55 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
         str(late_two),
     ]
     assert all(command[command.index("--num_processes") + 1] == "4" for command, _ in late_launches)
+
+
+def test_evaluation_preflight_requires_deep_validated_training_inputs(monkeypatch):
+    config = SimpleNamespace(model_family="dense", run_id="adamw-test")
+    monkeypatch.setattr(evaluate_matrix, "_selected_configs", lambda args: [config])
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "audit_dataset_artifacts",
+        lambda configs: {
+            "complete": True,
+            "training_view_fingerprint": "expected-view",
+            "errors": [],
+        },
+    )
+    observed = {}
+
+    def audit_training(configs, *, deep, expected_dataset_fingerprint):
+        observed.update(
+            configs=configs,
+            deep=deep,
+            expected_dataset_fingerprint=expected_dataset_fingerprint,
+        )
+        return {
+            "complete": True,
+            "verified_runs": 1,
+            "verified_checkpoints": 5,
+            "errors": [],
+        }
+
+    monkeypatch.setattr(evaluate_matrix, "audit_training_artifacts", audit_training)
+    evaluate_matrix._validate_training_inputs(SimpleNamespace())
+    assert observed == {
+        "configs": [config],
+        "deep": True,
+        "expected_dataset_fingerprint": "expected-view",
+    }
+
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "audit_training_artifacts",
+        lambda *args, **kwargs: {
+            "complete": False,
+            "verified_runs": 0,
+            "verified_checkpoints": 4,
+            "errors": ["checkpoint payload is corrupt"],
+        },
+    )
+    with pytest.raises(RuntimeError, match="checkpoint payload is corrupt"):
+        evaluate_matrix._validate_training_inputs(SimpleNamespace())
 
 
 def test_late_command_keeps_checkpoint_scoped_to_one_worker(tmp_path):
