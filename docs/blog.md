@@ -210,13 +210,19 @@ the concurrent LateOn run from checkpoint 3,126; both passed their interruption 
 After DenseOn produced and passed a deep audit of checkpoint 3,126, a fourth transient asynchronous
 launch failure occurred at step 3,336 on rank 0 (physical GPU 0). It surfaced from the native Muon
 momentum-buffer `lerp_` call, although CUDA's asynchronous reporting means that frame does not prove
-which earlier kernel originated the fault. The four incidents now span physical GPUs 3, 2, and 0, so
-the evidence no longer supports a single-device explanation. The supervisor resumed both concurrent
-runs from checkpoint 3,126 without changing optimizer semantics. DenseOn's reported throughput sums
-its non-overlapping accepted segments through step 3,126 and the final segment after that checkpoint;
-LateOn applies the same rule. Repeated post-checkpoint steps, failed pre-checkpoint attempts, restart
-initialization, and downtime are retained as infrastructure evidence but excluded from
-optimizer-throughput comparisons.
+which earlier kernel originated the fault. The next retry encountered a fifth asynchronous launch
+failure at step 3,180 on rank 1 (physical GPU 1), reported by the NCCL watchdog. The five incidents
+therefore span physical GPUs 3, 2, 0, and 1, so the evidence no longer supports a single-device
+explanation and instead points to the native bfloat16 Muon/CUDA path under this runtime. A subsequent
+resume passed both interruption points without changing optimizer semantics.
+
+The supervisor resumes both concurrent runs only from their last deep-validated checkpoints.
+DenseOn's reported throughput sums its non-overlapping accepted segments through step 3,126 and the
+final segment after that checkpoint; LateOn applies the same rule. Repeated post-checkpoint steps,
+failed pre-checkpoint attempts, restart initialization, and downtime are retained as infrastructure
+evidence but excluded from optimizer-throughput comparisons. After retaining the Python/CUDA stacks,
+future recovery processes disable multi-gigabyte ELF core dumps; this changes neither training nor
+optimizer execution.
 
 ## Limitations
 
