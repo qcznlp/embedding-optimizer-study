@@ -109,7 +109,8 @@ final partial accumulation contains 32; no training examples are duplicated or d
 
 ## Evaluation
 
-Every checkpoint is evaluated on the 14 decontaminated BEIR datasets released with the
+Every checkpoint is evaluated on the 14 decontaminated [BEIR](https://arxiv.org/abs/2104.08663)
+datasets released with the
 [DenseOn/LateOn blog](https://huggingface.co/blog/lightonai/denseon-lateon): ArguAna,
 ClimateFEVER, DBPedia, FEVER, FiQA, HotpotQA, MS MARCO, NFCorpus, NQ, Quora, SCIDOCS, SciFact,
 TREC-COVID, and Touche2020. Dataset commits are pinned in source. The primary aggregate is the
@@ -123,8 +124,10 @@ is selected on the same suite, and the 14 heterogeneous BEIR tasks are not indep
 report both the raw sign-test p-value and its Holm correction across the four family-by-optimizer
 comparisons.
 
-Dense retrieval is evaluated with MTEB exact retrieval. Late interaction is encoded with PyLate and
-searched with FastPLAID using 4-bit residuals, 8 IVF probes, 8,192 full scores, and index seed 42.
+Dense retrieval is evaluated with [MTEB](https://arxiv.org/abs/2210.07316) exact retrieval. Late
+interaction is encoded with [PyLate](https://arxiv.org/abs/2508.03555) and searched with
+[FastPLAID](https://github.com/lightonai/fast-plaid) using 4-bit residuals, 8 IVF probes, 8,192 full
+scores, and index seed 42.
 The training scorer uses the fused Late Interaction Kernels implementation. The pinned corpus counts
 sum to 19,525,336 documents; evaluation schedules larger corpora first across the available workers
 and resumes only the missing split/subset pairs from validated MTEB result files. A launch preflight
@@ -196,10 +199,22 @@ for system telemetry; no source run is deleted.
 
 ## References
 
+- Loshchilov and Hutter, [Decoupled Weight Decay Regularization](https://arxiv.org/abs/1711.05101),
+  2017.
 - Jordan et al., [Muon: An optimizer for hidden layers in neural networks](https://kellerjordan.github.io/posts/muon/),
   2024.
 - Sourty et al., [DenseOn with the LateOn](https://arxiv.org/abs/2607.27178), 2026.
 - Li et al., [NorMuon: Making Muon more efficient and scalable](https://arxiv.org/abs/2510.05491),
+  2025.
+- Thakur et al., [BEIR: A Heterogenous Benchmark for Zero-shot Evaluation of Information Retrieval
+  Models](https://arxiv.org/abs/2104.08663), 2021.
+- Muennighoff et al., [MTEB: Massive Text Embedding Benchmark](https://arxiv.org/abs/2210.07316),
+  2022.
+- Chaffin and Sourty,
+  [PyLate: Flexible Training and Retrieval for Late Interaction Models](https://arxiv.org/abs/2508.03555),
+  2025.
+- LightOn,
+  [FastPLAID: High-Performance Engine for Multi-Vector Search](https://github.com/lightonai/fast-plaid),
   2025.
 - LightOn, [DenseOn and LateOn release blog](https://huggingface.co/blog/lightonai/denseon-lateon),
   2026.
