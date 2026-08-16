@@ -72,6 +72,18 @@ def remove_temporary_files(paths) -> None:
             logger.warning("Could not remove temporary evaluation file %s: %s", path, error)
 
 
+def release_corpus_embeddings(embeddings: list[np.ndarray]) -> None:
+    """Drop every caller-visible embedding reference after PLAID has consumed them."""
+
+    # ``del embeddings`` would remove only this function's local name while the
+    # caller kept the potentially enormous list alive throughout retrieval.
+    embeddings.clear()
+    gc.collect()
+    torch.cuda.empty_cache()
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+
+
 def token_budget_batches(
     texts: list[str],
     char_budget: int,
@@ -467,11 +479,7 @@ class AccelerateMultiVectorModel(MultiVectorModel):
         # Reload the on-disk index for search, freeing temporary GPU state from construction.
         fast_plaid_index_path = index._index.fast_plaid_index_path
         index._index.fast_plaid.close()
-        del corpus_embeddings
-        gc.collect()
-        torch.cuda.empty_cache()
-        if torch.cuda.is_available():
-            torch.cuda.synchronize()
+        release_corpus_embeddings(corpus_embeddings)
         index._index.fast_plaid = fast_plaid_search.FastPlaid(
             index=fast_plaid_index_path, index_gpu_memory=self.index_gpu_memory
         )

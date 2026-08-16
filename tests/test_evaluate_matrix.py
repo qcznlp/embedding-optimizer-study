@@ -360,6 +360,21 @@ def test_late_temporary_file_cleanup_is_idempotent(tmp_path, monkeypatch):
     assert not any(path.exists() for path in files)
 
 
+def test_late_corpus_embedding_release_clears_caller_reference(monkeypatch):
+    late = _late_evaluation_module(monkeypatch)
+    embeddings = [object(), object()]
+    caller_reference = embeddings
+    calls = []
+    monkeypatch.setattr(late.gc, "collect", lambda: calls.append("gc"))
+    monkeypatch.setattr(late.torch.cuda, "empty_cache", lambda: calls.append("empty_cache"))
+    monkeypatch.setattr(late.torch.cuda, "is_available", lambda: False)
+
+    late.release_corpus_embeddings(embeddings)
+
+    assert caller_reference == []
+    assert calls == ["gc", "empty_cache"]
+
+
 def test_late_auto_index_cleanup_runs_when_retrieval_fails(tmp_path, monkeypatch):
     late = _late_evaluation_module(monkeypatch)
     model = object.__new__(late.AccelerateMultiVectorModel)
