@@ -9,8 +9,9 @@ the results sections are populated only from the checked-in aggregation artifact
 
 ## Why this comparison
 
-Most modern embedding models are still fine-tuned with AdamW. Muon instead orthogonalizes updates for
-hidden weight matrices and often tolerates much larger learning rates. NorMuon adds a row-wise second
+Most modern embedding models are still fine-tuned with AdamW. [Muon](https://kellerjordan.github.io/posts/muon/)
+instead orthogonalizes updates for hidden weight matrices and often tolerates much larger learning
+rates. NorMuon adds a row-wise second
 moment normalizer to Muon's orthogonalized update while preserving its overall update norm. Language
 model results are promising, but they do not answer whether the optimizers behave well under retrieval
 losses, where temperatures are low and representation geometry matters directly.
@@ -195,6 +196,8 @@ for system telemetry; no source run is deleted.
 
 ## References
 
+- Jordan et al., [Muon: An optimizer for hidden layers in neural networks](https://kellerjordan.github.io/posts/muon/),
+  2024.
 - Sourty et al., [DenseOn with the LateOn](https://arxiv.org/abs/2607.27178), 2026.
 - Li et al., [NorMuon: Making Muon more efficient and scalable](https://arxiv.org/abs/2510.05491),
   2025.

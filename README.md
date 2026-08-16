@@ -26,7 +26,8 @@ The full research write-up is in [docs/blog.md](docs/blog.md).
 | Evaluation | 14 decontaminated BEIR tasks, main score nDCG@10 |
 | Default hardware layout | Dense on GPUs 0–3, late interaction on GPUs 4–7 |
 
-Muon and NorMuon are applied only to 2-D matrices in the transformer's hidden layers. Embeddings,
+Following the [original Muon recipe](https://kellerjordan.github.io/posts/muon/), Muon and NorMuon are
+applied only to 2-D matrices in the transformer's hidden layers. Embeddings,
 projection heads, norms, and biases use AdamW at `3e-6`, following the optimizer authors' routing
 recommendation. This auxiliary AdamW uses `betas=(0.9, 0.999)` and `eps=1e-8`; AdamW applies its swept
 learning rate to all parameters with the same moments. The exact 24-run matrix is
@@ -241,5 +242,6 @@ its Apache-2.0 license. The study additionally implements the optimizer experime
 materialization, explicit no-in-batch losses, checkpoint matrix, pinned decontaminated tasks, and
 reporting pipeline.
 
-Please cite the DenseOn/LateOn paper and NorMuon when using this work; complete BibTeX entries are in
-[CITATION.cff](CITATION.cff) and [docs/blog.md](docs/blog.md).
+Please cite the original Muon work, the DenseOn/LateOn paper, and NorMuon when using this study;
+complete citation metadata is in [CITATION.cff](CITATION.cff), with linked references in
+[docs/blog.md](docs/blog.md).
