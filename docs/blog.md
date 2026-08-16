@@ -78,8 +78,9 @@ LateOn projection layers, norms, and biases use AdamW. This avoids applying orth
 parameters for which Muon is not designed.
 
 We use linear decay with a 10% warmup, bfloat16 autocast, TF32, FlashAttention-2, non-reentrant
-gradient checkpointing, and gradient clipping at 1.0. Each run saves complete checkpoints at 20%, 40%,
-60%, 80%, and 100% of its realized optimizer steps.
+gradient checkpointing, and gradient clipping at 1.0. Each run uses four GPUs, a per-GPU micro-batch
+of 8, and four gradient-accumulation steps, yielding the shared global batch of 128. Each run saves
+complete checkpoints at 20%, 40%, 60%, 80%, and 100% of its realized optimizer steps.
 
 ## Evaluation
 
@@ -104,8 +105,8 @@ Results will be inserted here after `reports/coverage.json` confirms all 1,680 t
 
 <!-- SYSTEMS:BEGIN -->
 
-Final wall-clock throughput, peak memory, optimizer-state size, and failure/retry counts will be
-reported from the completed W&B runs and local Trainer states.
+Final wall-clock throughput, peak memory, optimizer-state size, and checkpoint size will be reported
+from the completed W&B runs and local Trainer states.
 
 <!-- SYSTEMS:END -->
 
@@ -125,7 +126,8 @@ reported from the completed W&B runs and local Trainer states.
 ## Reproduction and audit trail
 
 All code, configs, pinned revisions, tests, and commands are in the
-[open-source repository](https://github.com/qcznlp/embedding-optimizer-study). The
+[project repository](https://github.com/qcznlp/embedding-optimizer-study). The repository remains
+private while the experiment is in progress. The
 [W&B project](https://wandb.ai/stevezenguom/embedding-optimizer-study) contains training curves and
 resolved run configurations. Local evaluation artifacts are reduced by `embed-optim-aggregate`, which
 also checks expected matrix coverage before the results section is generated.
