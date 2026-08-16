@@ -34,7 +34,11 @@ from typing import Any
 
 from sentence_transformers import SentenceTransformer
 
-from embed_optim.evaluation_utils import find_result_json, task_result_remaining
+from embed_optim.evaluation_utils import (
+    configure_atomic_mteb_results,
+    find_result_json,
+    task_result_remaining,
+)
 
 Pool = dict[str, Any]
 ModelWrapper = Any
@@ -691,6 +695,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     setup_logging(args.log_file)
+    configure_atomic_mteb_results()
 
     # Needed for the token-budget batching and OOM retry logic.
     setup_oom_safe_multigpu()

@@ -39,7 +39,7 @@ from dense_sequential import (
 )
 
 from embed_optim.decontamination import decontaminated_corpus_size, get_decontaminated_task
-from embed_optim.evaluation_utils import task_result_remaining
+from embed_optim.evaluation_utils import configure_atomic_mteb_results, task_result_remaining
 
 
 def setup_budget_encode(st_model, char_budget: int) -> None:
@@ -82,6 +82,7 @@ def run_worker(args: argparse.Namespace) -> None:
     import mteb
     import torch
 
+    configure_atomic_mteb_results()
     setup_st_forward_compat()
     task_name = args.worker
     model = load_model(args.models[0], bf16=args.bf16, fa2=args.fa2, local=args.local)

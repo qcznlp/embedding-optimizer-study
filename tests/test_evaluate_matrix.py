@@ -9,6 +9,7 @@ import pytest
 from embed_optim import evaluate_matrix
 from embed_optim.evaluation_utils import (
     FAST_PLAID_INDEX_KWARGS,
+    configure_atomic_mteb_results,
     late_ipc_result_path,
     task_result_remaining,
 )
@@ -283,3 +284,33 @@ def test_late_auto_index_cleanup_runs_when_retrieval_fails(tmp_path, monkeypatch
     assert not (tmp_path / "mteb-index-failed").exists()
     assert model._index_dir is None
     assert model._index_name is None
+
+
+def test_mteb_result_writes_are_atomic_and_preserve_previous_result_on_failure(
+    tmp_path, monkeypatch
+):
+    import mteb.results.task_result as task_result_module
+
+    class FakeTaskResult:
+        def __init__(self, payload, fail=False):
+            self.payload = payload
+            self.fail = fail
+
+        def to_disk(self, path):
+            path.write_text(self.payload)
+            if self.fail:
+                raise RuntimeError("injected interrupted write")
+
+    monkeypatch.setattr(task_result_module, "TaskResult", FakeTaskResult)
+    configure_atomic_mteb_results()
+    configure_atomic_mteb_results()
+    result = tmp_path / "SciFactDecontaminated.json"
+    result.write_text("old-complete-result")
+
+    FakeTaskResult("new-complete-result").to_disk(result)
+    assert result.read_text() == "new-complete-result"
+
+    with pytest.raises(RuntimeError, match="injected interrupted write"):
+        FakeTaskResult("partial", fail=True).to_disk(result)
+    assert result.read_text() == "new-complete-result"
+    assert not list(tmp_path.glob(".*.tmp.json"))
