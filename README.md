@@ -19,6 +19,7 @@ The full research write-up is in [docs/blog.md](docs/blog.md).
 | Training examples | 500,000 identical query groups per run |
 | Contrastive group | 1 positive + 7 seeded random hard negatives |
 | In-batch negatives | Disabled |
+| Auxiliary objectives | No knowledge distillation; no Matryoshka loss |
 | Context length | 8,192 query and document tokens |
 | Epochs / nominal global batch | 1 / 128 (final partial step: 32) |
 | Checkpoints | 20%, 40%, 60%, 80%, 100% of optimizer steps |

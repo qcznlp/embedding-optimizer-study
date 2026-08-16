@@ -44,6 +44,11 @@ MeanMaxSim, and temperature 0.001 with query expansion disabled. Both query and 
 limits are 8,192 tokens, matching the paper's supervised fine-tuning context setting. Dynamic padding
 means short batches do not pay the full 8,192-token cost.
 
+This is deliberately an optimizer-isolation objective rather than a full reproduction of the paper's
+supervised stage. In addition to removing in-batch negatives as specified for this study, we do not use
+the paper's cross-encoder knowledge distillation or DenseOn Matryoshka auxiliary loss. Both families
+therefore optimize only their explicit eight-document group contrastive loss.
+
 ### Dataset allocation
 
 The public source contains 1.22M query rows, but not every row has a mined score record. We allocate
@@ -127,6 +132,9 @@ from the completed W&B runs and local Trainer states.
   does not quantify variance across independent seeds.
 - No in-batch negatives makes the groups controlled and memory predictable, but the absolute scores are
   not directly comparable to recipes that use large cross-device negative pools.
+- Omitting the paper's knowledge-distillation and DenseOn Matryoshka auxiliary objectives isolates the
+  optimizer comparison, but it also means these scores are not a reproduction of the released models'
+  full supervised training recipe.
 - Approximate PLAID retrieval can introduce a small difference from exhaustive late-interaction scoring;
   index settings are held constant for every checkpoint.
 
