@@ -5,6 +5,14 @@ import json
 import os
 import tempfile
 
+FAST_PLAID_INDEX_KWARGS = {
+    "override": True,
+    "nbits": 4,
+    "n_ivf_probe": 8,
+    "n_full_scores": 8192,
+    "seed": 42,
+}
+
 
 def late_ipc_result_path(
     model_name: str,

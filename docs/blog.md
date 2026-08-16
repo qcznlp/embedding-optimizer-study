@@ -101,7 +101,8 @@ TREC-COVID, and Touche2020. Dataset commits are pinned in source. The primary ag
 unweighted mean of each task's main nDCG@10 score.
 
 Dense retrieval is evaluated with MTEB exact retrieval. Late interaction is encoded with PyLate and
-searched with FastPLAID. The training scorer uses the fused Late Interaction Kernels implementation.
+searched with FastPLAID using 4-bit residuals, 8 IVF probes, 8,192 full scores, and index seed 42.
+The training scorer uses the fused Late Interaction Kernels implementation.
 
 ## Results
 

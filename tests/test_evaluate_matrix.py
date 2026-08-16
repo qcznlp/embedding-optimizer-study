@@ -2,7 +2,7 @@ from argparse import Namespace
 from pathlib import Path
 
 from embed_optim import evaluate_matrix
-from embed_optim.evaluation_utils import late_ipc_result_path
+from embed_optim.evaluation_utils import FAST_PLAID_INDEX_KWARGS, late_ipc_result_path
 
 
 class _FakeProcess:
@@ -87,3 +87,13 @@ def test_late_ipc_result_paths_are_rank_stable_and_job_unique():
     assert base not in variants
     assert len(variants) == 4
     assert Path(base).name.startswith("mteb_plaid_results_")
+
+
+def test_fast_plaid_settings_match_the_pinned_paper_protocol():
+    assert FAST_PLAID_INDEX_KWARGS == {
+        "override": True,
+        "nbits": 4,
+        "n_ivf_probe": 8,
+        "n_full_scores": 8192,
+        "seed": 42,
+    }

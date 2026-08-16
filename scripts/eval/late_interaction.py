@@ -49,7 +49,7 @@ from torch.utils.data import DataLoader
 from tqdm.auto import tqdm
 
 from embed_optim.decontamination import get_decontaminated_tasks
-from embed_optim.evaluation_utils import late_ipc_result_path
+from embed_optim.evaluation_utils import FAST_PLAID_INDEX_KWARGS, late_ipc_result_path
 from embed_optim.pylate_compat import configure_pylate_compatibility
 
 logger = logging.getLogger(__name__)
@@ -639,7 +639,7 @@ def main() -> None:
                 "trust_remote_code": True,
                 "attn_implementation": "flash_attention_2" if args.fa2 else "sdpa",
             },
-            index_kwargs={"override": True},
+            index_kwargs=dict(FAST_PLAID_INDEX_KWARGS),
             # Override saved do_query_expansion; else queries are MASK-padded to the full query_length.
             do_query_expansion=False,
             **mv_kwargs,

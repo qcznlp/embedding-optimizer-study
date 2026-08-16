@@ -126,6 +126,7 @@ Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
 across four GPUs. Late-interaction evaluation uses PyLate for multivector encoding, the fused
 Late Interaction Kernels scorer during training, and FastPLAID retrieval during evaluation.
+FastPLAID is explicitly pinned to `nbits=4`, `n_ivf_probe=8`, `n_full_scores=8192`, and seed 42.
 GPU 4–7 begin the LateOn checkpoint queue while GPU 0–3 run dense evaluation; when dense evaluation
 finishes, GPU 0–3 automatically join the remaining LateOn queue. Evaluation caches are resumable, so
 an interrupted command computes only missing task/checkpoint pairs.
