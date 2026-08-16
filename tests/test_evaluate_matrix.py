@@ -134,6 +134,24 @@ def test_evaluation_preflight_requires_deep_validated_training_inputs(monkeypatc
         evaluate_matrix._validate_training_inputs(SimpleNamespace())
 
 
+def test_evaluation_selection_rejects_unknown_and_empty_run_sets(monkeypatch):
+    config = SimpleNamespace(model_family="dense", run_id="adamw-known")
+    monkeypatch.setattr(evaluate_matrix, "load_matrix", lambda path: [config])
+
+    with pytest.raises(ValueError, match="adamw-typo"):
+        evaluate_matrix._selected_configs(
+            SimpleNamespace(
+                matrix="matrix.yaml",
+                families=["dense"],
+                run_ids=["adamw-known", "adamw-typo"],
+            )
+        )
+    with pytest.raises(ValueError, match="contains no training runs"):
+        evaluate_matrix._selected_configs(
+            SimpleNamespace(matrix="matrix.yaml", families=["late"], run_ids=[])
+        )
+
+
 def test_late_command_keeps_checkpoint_scoped_to_one_worker(tmp_path):
     args = Namespace(tasks=["SciFact", "FiQA2018"])
     model = tmp_path / "run" / "checkpoint-782"
