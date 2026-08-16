@@ -599,6 +599,21 @@ def _result_provenance(
     expected_model_name = f"{config.run_id}/checkpoint-{step}"
     if meta.get("name") != expected_model_name or meta.get("revision") != "local":
         raise ValueError(f"Unexpected model identity beside {path}")
+    max_tokens = meta.get("max_tokens")
+    expected_embedding = 768 if config.model_family == "dense" else 128
+    expected_similarity = "cosine" if config.model_family == "dense" else "MaxSim"
+    required_framework = "Sentence Transformers" if config.model_family == "dense" else "PyLate"
+    if (
+        isinstance(max_tokens, bool)
+        or not isinstance(max_tokens, (int, float))
+        or not math.isfinite(max_tokens)
+        or max_tokens != config.max_length
+        or meta.get("embed_dim") != expected_embedding
+        or meta.get("similarity_fn_name") != expected_similarity
+        or not isinstance(meta.get("framework"), list)
+        or required_framework not in meta["framework"]
+    ):
+        raise ValueError(f"Unexpected model evaluation semantics beside {path}")
 
     try:
         settings = [

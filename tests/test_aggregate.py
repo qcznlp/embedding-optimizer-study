@@ -287,7 +287,16 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
     }
     result.write_text(json.dumps(payload))
     (result.parent / "model_meta.json").write_text(
-        json.dumps({"name": "adamw-test/checkpoint-2", "revision": "local"})
+        json.dumps(
+            {
+                "name": "adamw-test/checkpoint-2",
+                "revision": "local",
+                "max_tokens": 8192,
+                "embed_dim": 768,
+                "similarity_fn_name": "cosine",
+                "framework": ["Sentence Transformers", "PyTorch"],
+            }
+        )
     )
     evaluation_versions = {
         "mteb": "2.19.3",
@@ -336,6 +345,15 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
 
     payload["dataset_revision"] = DECONTAMINATED_BEIR["SciFact"][1]
     result.write_text(json.dumps(payload))
+    model_meta_path = result.parent / "model_meta.json"
+    model_meta = json.loads(model_meta_path.read_text())
+    model_meta["max_tokens"] = 512
+    model_meta_path.write_text(json.dumps(model_meta))
+    with pytest.raises(ValueError, match="Unexpected model evaluation semantics"):
+        collect_evaluations(tmp_path / "results", [config])
+    model_meta["max_tokens"] = 8192
+    model_meta_path.write_text(json.dumps(model_meta))
+
     runtime_versions["pylate"] = "different"
     (tmp_path / "results" / "evaluation_runtime.json").write_text(
         json.dumps(
