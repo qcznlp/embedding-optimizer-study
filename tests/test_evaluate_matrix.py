@@ -66,6 +66,9 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
 def test_late_command_keeps_checkpoint_scoped_to_one_worker(tmp_path):
     args = Namespace(tasks=["SciFact", "FiQA2018"])
     model = tmp_path / "run" / "checkpoint-782"
+    worker = tmp_path / "scripts" / "eval" / "late_interaction.py"
+    worker.parent.mkdir(parents=True)
+    worker.write_text("# worker\n")
     command = evaluate_matrix._late_command(
         tmp_path, model, args, tmp_path / "results", 29620, num_processes=4
     )
@@ -73,6 +76,18 @@ def test_late_command_keeps_checkpoint_scoped_to_one_worker(tmp_path):
     tasks_index = command.index("--tasks")
     assert command[model_index + 1 : tasks_index] == [str(model)]
     assert command[tasks_index + 1 : command.index("--results_folder")] == args.tasks
+
+
+def test_evaluation_worker_falls_back_to_wheel_data_files(tmp_path):
+    repo = tmp_path / "source-without-workers"
+    prefix = tmp_path / "venv"
+    worker = (
+        prefix / "share" / "embedding-optimizer-study" / "scripts" / "eval" / "dense_parallel.py"
+    )
+    worker.parent.mkdir(parents=True)
+    worker.write_text("# installed worker\n")
+
+    assert evaluate_matrix._evaluation_script(repo, "dense_parallel.py", prefix) == worker
 
 
 def test_late_ipc_result_paths_are_rank_stable_and_job_unique():
