@@ -144,8 +144,8 @@ from the completed W&B runs and local Trainer states.
 ## Reproduction and audit trail
 
 All code, configs, pinned revisions, tests, and commands are in the
-[project repository](https://github.com/qcznlp/embedding-optimizer-study). The repository remains
-private while the experiment is in progress. The
+[project repository](https://github.com/qcznlp/embedding-optimizer-study). The repository is currently
+private at the user's request and is structured for a later public release. The
 [W&B project](https://wandb.ai/stevezenguom/embedding-optimizer-study) contains training curves and
 resolved run configurations. Local evaluation artifacts are reduced by `embed-optim-aggregate`, which
 also checks expected matrix coverage before the results section is generated.
