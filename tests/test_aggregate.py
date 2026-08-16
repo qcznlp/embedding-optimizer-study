@@ -25,6 +25,7 @@ from embed_optim.aggregate import (
 )
 from embed_optim.config import OptimizerConfig, RunConfig, load_matrix
 from embed_optim.decontamination import DECONTAMINATED_BEIR
+from embed_optim.evaluate_matrix import _evaluation_source_manifest
 
 
 def test_run_id_matching_does_not_confuse_muon_and_normuon():
@@ -340,12 +341,14 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
         "fast-plaid": "1",
         "late-interaction-kernels": "1",
     }
+    source_files = _evaluation_source_manifest(Path(__file__).resolve().parents[1])
     (tmp_path / "results" / "evaluation_runtime.json").write_text(
         json.dumps(
             {
-                "schema_version": 1,
+                "schema_version": 2,
                 "python": "/system/python",
                 "versions": runtime_versions,
+                "source_files": source_files,
             }
         )
     )
@@ -387,9 +390,10 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
     (tmp_path / "results" / "evaluation_runtime.json").write_text(
         json.dumps(
             {
-                "schema_version": 1,
+                "schema_version": 2,
                 "python": "/system/python",
                 "versions": runtime_versions,
+                "source_files": source_files,
             }
         )
     )
