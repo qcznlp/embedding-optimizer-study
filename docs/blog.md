@@ -205,11 +205,18 @@ The replacement run later encountered a third transient failure at step 2,354, n
 validated checkpoint at step 2,345. This time rank 2 (physical GPU 2 in the swapped pool) reported an
 asynchronous CUDA launch failure through the NCCL watchdog, without an application traceback that
 identified the originating kernel. The recovery supervisor resumed DenseOn from checkpoint 2,345 and
-the concurrent LateOn run from checkpoint 3,126; both passed their interruption points. DenseOn's
-reported throughput sums the accepted segment through step 2,345 and the final segment after that
-checkpoint. LateOn analogously sums its non-overlapping segments through step 3,126 and the final
-segment. Repeated post-checkpoint steps, failed pre-checkpoint attempts, restart initialization, and
-downtime are retained as infrastructure evidence but excluded from optimizer-throughput comparisons.
+the concurrent LateOn run from checkpoint 3,126; both passed their interruption points.
+
+After DenseOn produced and passed a deep audit of checkpoint 3,126, a fourth transient asynchronous
+launch failure occurred at step 3,336 on rank 0 (physical GPU 0). It surfaced from the native Muon
+momentum-buffer `lerp_` call, although CUDA's asynchronous reporting means that frame does not prove
+which earlier kernel originated the fault. The four incidents now span physical GPUs 3, 2, and 0, so
+the evidence no longer supports a single-device explanation. The supervisor resumed both concurrent
+runs from checkpoint 3,126 without changing optimizer semantics. DenseOn's reported throughput sums
+its non-overlapping accepted segments through step 3,126 and the final segment after that checkpoint;
+LateOn applies the same rule. Repeated post-checkpoint steps, failed pre-checkpoint attempts, restart
+initialization, and downtime are retained as infrastructure evidence but excluded from
+optimizer-throughput comparisons.
 
 ## Limitations
 
