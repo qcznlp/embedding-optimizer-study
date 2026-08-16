@@ -19,6 +19,121 @@ RESULTS_MARKERS = ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->")
 SYSTEMS_MARKERS = ("<!-- SYSTEMS:BEGIN -->", "<!-- SYSTEMS:END -->")
 
 
+def audit_training_artifacts(configs: list[RunConfig]) -> dict:
+    """Verify that every planned run has five complete, resumable checkpoints."""
+
+    errors: list[str] = []
+    verified_runs = 0
+    verified_checkpoints = 0
+    for config in configs:
+        label = f"{config.model_family}/{config.run_id}"
+        output = config.output_dir
+        schedule_path = output / "checkpoint_schedule.json"
+        completed_path = output / "completed.json"
+        final_state_path = output / "trainer_state_final.json"
+        final_model_path = output / "final"
+        if not schedule_path.is_file():
+            errors.append(f"{label}: missing checkpoint_schedule.json")
+            continue
+        try:
+            schedule = json.loads(schedule_path.read_text())
+            steps = [int(step) for step in schedule["steps"]]
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+            errors.append(f"{label}: invalid checkpoint schedule ({error})")
+            continue
+        if len(steps) != 5 or steps != sorted(set(steps)):
+            errors.append(
+                f"{label}: expected five strictly increasing checkpoint steps, got {steps}"
+            )
+            continue
+        completed: dict = {}
+        if not completed_path.is_file():
+            errors.append(f"{label}: missing completed.json")
+        else:
+            try:
+                completed = json.loads(completed_path.read_text())
+            except json.JSONDecodeError as error:
+                errors.append(f"{label}: invalid completed.json ({error})")
+            if completed and int(completed.get("global_step", -1)) != steps[-1]:
+                errors.append(f"{label}: completion global_step does not match final checkpoint")
+            if (
+                completed
+                and sorted(int(step) for step in completed.get("checkpoints", [])) != steps
+            ):
+                errors.append(f"{label}: completion checkpoint list does not match schedule")
+        if not final_state_path.is_file():
+            errors.append(f"{label}: missing trainer_state_final.json")
+        else:
+            try:
+                final_step = int(json.loads(final_state_path.read_text())["global_step"])
+            except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+                errors.append(f"{label}: invalid final Trainer state ({error})")
+            else:
+                if final_step != steps[-1]:
+                    errors.append(f"{label}: final Trainer state step {final_step} != {steps[-1]}")
+        if not final_model_path.is_dir() or not any(
+            path.stat().st_size > 0 for path in final_model_path.rglob("*.safetensors")
+        ):
+            errors.append(f"{label}: missing final safetensors model")
+
+        world_size = int(completed.get("system_metrics", {}).get("world_size", 4))
+        run_checkpoint_errors = 0
+        for step in steps:
+            checkpoint = output / f"checkpoint-{step}"
+            required = (
+                checkpoint / "config.json",
+                checkpoint / "optimizer.pt",
+                checkpoint / "scheduler.pt",
+                checkpoint / "trainer_state.json",
+                checkpoint / "training_args.bin",
+            )
+            missing = [
+                path.name for path in required if not path.is_file() or path.stat().st_size == 0
+            ]
+            if missing:
+                errors.append(f"{label}/checkpoint-{step}: missing/empty {', '.join(missing)}")
+                run_checkpoint_errors += 1
+                continue
+            if not any(path.stat().st_size > 0 for path in checkpoint.rglob("*.safetensors")):
+                errors.append(f"{label}/checkpoint-{step}: missing/empty safetensors model")
+                run_checkpoint_errors += 1
+                continue
+            rng_states = sorted(checkpoint.glob("rng_state_*.pth"))
+            if len(rng_states) != world_size or any(
+                path.stat().st_size == 0 for path in rng_states
+            ):
+                errors.append(
+                    f"{label}/checkpoint-{step}: expected {world_size} non-empty rank RNG states, "
+                    f"found {len(rng_states)}"
+                )
+                run_checkpoint_errors += 1
+                continue
+            try:
+                checkpoint_step = int(json.loads(required[3].read_text())["global_step"])
+            except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+                errors.append(f"{label}/checkpoint-{step}: invalid Trainer state ({error})")
+                run_checkpoint_errors += 1
+                continue
+            if checkpoint_step != step:
+                errors.append(f"{label}/checkpoint-{step}: Trainer state step is {checkpoint_step}")
+                run_checkpoint_errors += 1
+                continue
+            verified_checkpoints += 1
+        if run_checkpoint_errors == 0 and not any(
+            error.startswith(f"{label}:") for error in errors
+        ):
+            verified_runs += 1
+
+    return {
+        "complete": not errors,
+        "verified_runs": verified_runs,
+        "expected_runs": len(configs),
+        "verified_checkpoints": verified_checkpoints,
+        "expected_checkpoints": len(configs) * 5,
+        "errors": errors,
+    }
+
+
 def _contains_run_id(path: Path, run_id: str) -> bool:
     """Match a run directory exactly, avoiding muon/normuon substring collisions."""
 
@@ -511,7 +626,9 @@ def render_blog(
     blog_path.write_text(text)
 
 
-def _coverage(rows: list[dict], summary: list[dict], configs: list[RunConfig]) -> dict:
+def _coverage(
+    rows: list[dict], summary: list[dict], configs: list[RunConfig], training_audit: dict
+) -> dict:
     observed = {(row["model_family"], row["run_id"], row["stage"], row["task"]) for row in rows}
     expected = {
         (config.model_family, config.run_id, stage, task)
@@ -521,14 +638,22 @@ def _coverage(rows: list[dict], summary: list[dict], configs: list[RunConfig]) -
     }
     missing = sorted(expected - observed)
     unexpected = sorted(observed - expected)
+    evaluation_complete = not missing and not unexpected
     return {
-        "complete": not missing and not unexpected,
+        "complete": evaluation_complete and training_audit["complete"],
+        "training_complete": training_audit["complete"],
+        "evaluation_complete": evaluation_complete,
+        "verified_training_runs": training_audit["verified_runs"],
+        "expected_training_runs": training_audit["expected_runs"],
+        "verified_training_checkpoints": training_audit["verified_checkpoints"],
+        "expected_training_checkpoints": training_audit["expected_checkpoints"],
         "observed_results": len(observed),
         "expected_results": len(expected),
         "observed_checkpoint_summaries": len(summary),
         "expected_checkpoint_summaries": len(configs) * 5,
         "missing": ["/".join(map(str, item)) for item in missing],
         "unexpected": ["/".join(map(str, item)) for item in unexpected],
+        "training_errors": training_audit["errors"],
     }
 
 
@@ -539,7 +664,8 @@ def aggregate(args: argparse.Namespace) -> None:
     optimizer_rows, best_dynamics = _optimizer_summaries(summary)
     system_metrics = collect_system_metrics(configs)
     system_rows = _system_summaries(system_metrics)
-    coverage = _coverage(rows, summary, configs)
+    training_audit = audit_training_artifacts(configs)
+    coverage = _coverage(rows, summary, configs, training_audit)
     task_rows = _task_comparison(rows, optimizer_rows) if coverage["complete"] else []
 
     output = Path(args.output_dir)
