@@ -393,7 +393,7 @@ We selected the latter because it preserves Muon's bfloat16 internal representat
 five iterations, normalization, momentum, learning-rate adjustment, and parameter update. Only the
 operator decomposition differs from pinned PyTorch; it is also the already-pinned Newton–Schulz
 path used by this repository's NorMuon implementation. The final repository implementation passed
-a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 85
+a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 91
 passing tests. An initial real-model replay was discarded after its shortened `max_steps=1905`
 horizon correctly exposed a different LR schedule. We added a diagnostic stop callback and repeated
 the replay while preserving the formal 3,907-step scheduler. It resumed the original LateOn `1e-4`
@@ -491,6 +491,11 @@ Checkpoint resumes can make an SDK run contain repeated optimizer steps even whe
 state is correct. For the final dashboard, `embed-optim-sync-wandb` therefore publishes one immutable,
 content-addressed canonical history from every completed Trainer state. Raw resume segments are kept
 for system telemetry; no source run is deleted.
+
+During training, the CPU-only `embed-optim-watch-checkpoints` sidecar waits for each atomic checkpoint
+payload, performs the same deep model/optimizer/scheduler/argument/RNG audit, rejects unchanged model
+weights, and records progress in an atomic JSON state file. This makes checkpoint acceptance
+observable before the final evaluation gate without consuming GPU capacity.
 
 ## References
 

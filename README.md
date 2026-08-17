@@ -133,6 +133,23 @@ logit matrix. Four-GPU microbatches contain 32 examples and accumulate four time
 microbatches is not divisible by four, the last of 3,907 optimizer steps contains one microbatch and
 all 500,000 examples are consumed exactly once.
 
+Deep-audit newly written checkpoints continuously from a CPU-only sidecar:
+
+```bash
+embed-optim-watch-checkpoints \
+  --matrix configs/experiment.yaml \
+  --watch \
+  --state logs/checkpoint-audit.json
+```
+
+The watcher waits until each scheduled checkpoint is atomically resumable, then fully loads its
+model/optimizer/scheduler/training-argument payload, checks all four RNG archives, validates the
+runtime contract, and rejects an unchanged model relative to the preceding checkpoint. Its atomic
+JSON state makes progress externally observable and ensures an unchanged payload is audited only
+once; changing any checkpoint file causes a fresh audit. It performs no GPU work. Add
+`--fail-on-problem` when the watcher should terminate immediately on an audit failure, or omit
+`--watch` for a single scan.
+
 After all runs finish, publish deterministic canonical W&B curves reconstructed from each final
 Trainer state:
 
