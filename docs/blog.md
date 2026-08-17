@@ -426,6 +426,14 @@ declared step, and all four rank-local RNG states were present and loadable. The
 checkpoints raise formal coverage to 32/120 while the completed-run count remains 6/24 and evaluation
 coverage remains 0/1,680. Training continues from these same audited histories.
 
+Both restarted runs subsequently wrote checkpoint 1,563 without a CUDA, NCCL, or Xid event. The
+sidecar, now itself running under the frozen Python 3.12 / PyTorch 2.9.1+cu129 runtime, fully loaded
+both new payloads and returned zero problems. Their model digests (`f6c098f2737f` and
+`a4bb260bf088`) differ from the corresponding checkpoint-782 digests; model and optimizer tensors
+are finite, scheduler/Trainer steps match 1,563, and all four RNG archives remain loadable. These
+checkpoints raise formal coverage to 34/120. Completed-run and evaluation coverage remain 6/24 and
+0/1,680 while both training processes continue from the audited states.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
