@@ -38,8 +38,8 @@ def _evaluation_command(args: argparse.Namespace) -> list[str]:
     ]
 
 
-def _aggregate_command(args: argparse.Namespace) -> list[str]:
-    return [
+def _aggregate_command(args: argparse.Namespace, *, render_blog: bool = False) -> list[str]:
+    command = [
         args.python,
         "-m",
         "embed_optim.aggregate",
@@ -51,8 +51,20 @@ def _aggregate_command(args: argparse.Namespace) -> list[str]:
         args.output_dir,
         "--blog",
         args.blog,
-        "--no-render-blog",
         "--strict",
+    ]
+    if not render_blog:
+        command.append("--no-render-blog")
+    return command
+
+
+def _wandb_command(args: argparse.Namespace) -> list[str]:
+    return [
+        args.python,
+        "-m",
+        "embed_optim.wandb_sync",
+        "--matrix",
+        str(resolve_matrix_path(args.matrix).resolve()),
     ]
 
 
@@ -83,28 +95,52 @@ def supervise(
         sleeper(args.training_poll_seconds)
 
     print(f"All {len(configs)} training runs are complete; starting evaluation", flush=True)
-    launches = 0
+    cycles = 0
+    coverage_complete = False
     while True:
-        if args.max_launches and launches >= args.max_launches:
+        if args.max_launches and cycles >= args.max_launches:
             print(
-                f"Stopping after {launches} evaluation launches without strict coverage",
+                f"Stopping after {cycles} recovery cycles without complete finalization",
                 file=sys.stderr,
                 flush=True,
             )
             return 1
 
-        launches += 1
-        print(f"Evaluation launch {launches} started", flush=True)
-        evaluation = run_command(_evaluation_command(args), check=False)
-        print(f"Evaluation launch {launches} exited {evaluation.returncode}", flush=True)
+        cycles += 1
+        if not coverage_complete:
+            print(f"Evaluation recovery cycle {cycles} started", flush=True)
+            evaluation = run_command(_evaluation_command(args), check=False)
+            print(f"Evaluation coordinator exited {evaluation.returncode}", flush=True)
 
-        coverage = run_command(_aggregate_command(args), check=False)
-        print(f"Strict coverage audit exited {coverage.returncode}", flush=True)
-        if coverage.returncode == 0:
+            coverage = run_command(_aggregate_command(args), check=False)
+            print(f"Strict coverage audit exited {coverage.returncode}", flush=True)
+            coverage_complete = coverage.returncode == 0
+            if not coverage_complete:
+                if not args.max_launches or cycles < args.max_launches:
+                    sleeper(args.restart_delay)
+                continue
             print("Strict evaluation coverage is complete", flush=True)
+
+        if args.skip_wandb_sync:
+            wandb_return_code = 0
+        else:
+            wandb = run_command(_wandb_command(args), check=False)
+            wandb_return_code = wandb.returncode
+            print(f"Canonical W&B sync exited {wandb_return_code}", flush=True)
+
+        if wandb_return_code != 0:
+            print("Deferring final report render until canonical W&B sync succeeds", flush=True)
+            if not args.max_launches or cycles < args.max_launches:
+                sleeper(args.restart_delay)
+            continue
+
+        final_report = run_command(_aggregate_command(args, render_blog=True), check=False)
+        print(f"Final report and blog render exited {final_report.returncode}", flush=True)
+        if final_report.returncode == 0:
+            print("Evaluation, W&B histories, reports, and blog are complete", flush=True)
             return 0
 
-        if not args.max_launches or launches < args.max_launches:
+        if not args.max_launches or cycles < args.max_launches:
             sleeper(args.restart_delay)
 
 
@@ -132,6 +168,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--training-poll-seconds", type=float, default=60.0)
     parser.add_argument("--restart-delay", type=float, default=60.0)
+    parser.add_argument(
+        "--skip-wandb-sync",
+        action="store_true",
+        help="Skip canonical W&B publication while retaining strict evaluation and blog gates",
+    )
     parser.add_argument(
         "--max-launches",
         type=int,

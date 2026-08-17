@@ -220,8 +220,11 @@ It remains CPU-only while it waits for all 24 structurally complete training run
 the resumable evaluator and runs the strict aggregation audit after every attempt. A worker,
 coordinator, or task failure causes another launch after `--restart-delay`; already validated MTEB
 results are reused. The supervisor exits successfully only after the audit proves all 1,680 expected
-run/checkpoint/task results and the complete training/data/runtime contract. `--max-launches N`
-provides an optional retry bound; zero, the default, keeps recovering unattended.
+run/checkpoint/task results and the complete training/data/runtime contract. It then idempotently
+publishes all canonical W&B histories and reruns strict aggregation with final Markdown-blog
+rendering. Failures in either finalization step are retried without relaunching GPU evaluation.
+`--max-launches N` provides an optional retry bound; zero, the default, keeps recovering unattended.
+Use `--skip-wandb-sync` only for reproductions that intentionally have no W&B destination.
 
 Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned in
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
