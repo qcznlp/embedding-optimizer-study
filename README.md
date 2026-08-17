@@ -133,6 +133,21 @@ logit matrix. Four-GPU microbatches contain 32 examples and accumulate four time
 microbatches is not divisible by four, the last of 3,907 optimizer steps contains one microbatch and
 all 500,000 examples are consumed exactly once.
 
+For unattended multi-day execution, wrap the matrix in the restart supervisor:
+
+```bash
+embed-optim-supervise \
+  --matrix configs/experiment.yaml \
+  --gpus-a 0,1,2,3 \
+  --gpus-b 4,5,6,7
+```
+
+The matrix already requeues failed distributed child jobs from their latest deeply resumable
+checkpoint. The supervisor adds protection around the top-level orchestrator itself: after any exit,
+it recomputes structurally complete runs from their terminal artifacts and relaunches only the
+remaining matrix. `--wait-for-pid PID` adopts an already-running matrix without interrupting it;
+`--max-launches N` is available when bounded retries are preferred.
+
 Deep-audit newly written checkpoints continuously from a CPU-only sidecar:
 
 ```bash
