@@ -728,6 +728,18 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     assert any("invalid optimizer state" in error for error in corrupt["errors"])
     write_deep_payload(2)
 
+    nonfinite_optimizer = output / "checkpoint-2" / "optimizer.pt"
+    optimizer_state = torch.load(nonfinite_optimizer, map_location="cpu", weights_only=True)
+    optimizer_state["state"][0]["step"] = torch.tensor(float("nan"))
+    torch.save(optimizer_state, nonfinite_optimizer)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any(
+        "optimizer state contains a non-finite tensor" in error for error in corrupt["errors"]
+    )
+    write_deep_payload(2)
+
     corrupt_model = output / "checkpoint-4" / "model.safetensors"
     corrupt_model.write_bytes(b"not-a-safetensors-payload")
     corrupt = audit_training_artifacts([config], deep=True)

@@ -467,6 +467,53 @@ def _safetensors_problem(root: Path) -> str | None:
     return None if tensor_count else "safetensors model has no tensors"
 
 
+def _optimizer_state_problem(optimizer: object) -> str | None:
+    """Validate optimizer topology and reject silently non-finite state."""
+
+    import torch
+
+    if (
+        not isinstance(optimizer, dict)
+        or set(optimizer) != {"state", "param_groups"}
+        or not isinstance(optimizer["state"], dict)
+        or not optimizer["state"]
+        or not isinstance(optimizer["param_groups"], list)
+        or not optimizer["param_groups"]
+    ):
+        return "optimizer state has an invalid structure"
+
+    parameter_ids: list[object] = []
+    for group in optimizer["param_groups"]:
+        if not isinstance(group, dict) or not isinstance(group.get("params"), list):
+            return "optimizer parameter groups have an invalid structure"
+        parameter_ids.extend(group["params"])
+    try:
+        grouped_parameters = set(parameter_ids)
+    except TypeError:
+        return "optimizer parameter groups contain an invalid parameter identifier"
+    if len(grouped_parameters) != len(parameter_ids):
+        return "optimizer parameter groups contain duplicate parameters"
+    if not set(optimizer["state"]).issubset(grouped_parameters):
+        return "optimizer state contains a parameter outside its groups"
+
+    for parameter_id, state in optimizer["state"].items():
+        if not isinstance(state, dict):
+            return f"optimizer state for parameter {parameter_id!r} is not a mapping"
+        for state_name, value in state.items():
+            if torch.is_tensor(value) and (value.is_floating_point() or value.is_complex()):
+                if not bool(torch.isfinite(value).all()):
+                    return (
+                        "optimizer state contains a non-finite tensor at "
+                        f"parameter {parameter_id!r}:{state_name}"
+                    )
+            elif isinstance(value, float) and not math.isfinite(value):
+                return (
+                    "optimizer state contains a non-finite scalar at "
+                    f"parameter {parameter_id!r}:{state_name}"
+                )
+    return None
+
+
 def _deep_checkpoint_problems(checkpoint: Path, expected_step: int, world_size: int) -> list[str]:
     """Parse resumable payloads so non-empty but corrupt files cannot pass strict audit."""
 
@@ -481,16 +528,11 @@ def _deep_checkpoint_problems(checkpoint: Path, expected_step: int, world_size: 
 
     optimizer = None
     try:
-        optimizer = torch.load(checkpoint / "optimizer.pt", map_location="cpu", weights_only=True)
-        if (
-            not isinstance(optimizer, dict)
-            or set(optimizer) != {"state", "param_groups"}
-            or not isinstance(optimizer["state"], dict)
-            or not optimizer["state"]
-            or not isinstance(optimizer["param_groups"], list)
-            or not optimizer["param_groups"]
-        ):
-            problems.append("optimizer state has an invalid structure")
+        optimizer = torch.load(
+            checkpoint / "optimizer.pt", map_location="cpu", weights_only=True, mmap=True
+        )
+        if problem := _optimizer_state_problem(optimizer):
+            problems.append(problem)
     except Exception as error:  # noqa: BLE001
         problems.append(f"invalid optimizer state ({type(error).__name__}: {error})")
     finally:
