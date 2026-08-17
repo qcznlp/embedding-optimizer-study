@@ -256,9 +256,12 @@ evidence but excluded from optimizer-throughput comparisons. After retaining the
 the recovery supervisor and its newly spawned workers disable multi-gigabyte ELF core dumps; this
 changes neither training nor optimizer execution. This accounting gives the completed DenseOn Muon
 `1e-4` run 3.512 hours of useful wall time; its content-addressed canonical W&B history contains 392
-strictly ordered rows through step 3,907. An armed handoff supervisor switches subsequent matrix
-retries to failure-isolated GPU pools after the current matrix process exits, so a fault in one
-family will no longer terminate a healthy job in the other family.
+strictly ordered rows through step 3,907. The completed LateOn AdamW `3e-6` run likewise has 8.291
+hours of useful wall time and 16.751 examples/s after excluding duplicated recovery work; its deep
+audit verified all five checkpoints, and its content-addressed canonical W&B history also contains
+392 rows through step 3,907. An armed handoff supervisor switches subsequent matrix retries to
+failure-isolated GPU pools after the current matrix process exits, so a fault in one family will no
+longer terminate a healthy job in the other family.
 
 ## Limitations
 
