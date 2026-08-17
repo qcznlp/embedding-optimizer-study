@@ -72,6 +72,27 @@ def test_checkpoint_resume_selection_requires_matching_state_step(tmp_path):
     assert not _checkpoint_is_resumable(checkpoint)
 
 
+def test_checkpoint_resume_selection_falls_back_after_deep_audit_failure(tmp_path, monkeypatch):
+    output = tmp_path / "dense" / "run"
+    older = _write_checkpoint(output, 10)
+    latest = _write_checkpoint(output, 20)
+    (output / "checkpoint_schedule.json").write_text(json.dumps({"steps": [10, 20, 30, 40, 50]}))
+    config = SimpleNamespace(output_dir=output)
+    audited = []
+
+    def deep_problems(checkpoint, expected_step, world_size, config, final_step):
+        audited.append((checkpoint.name, expected_step, world_size, final_step))
+        return ["corrupt optimizer"] if checkpoint == latest else []
+
+    monkeypatch.setattr("embed_optim.aggregate._deep_checkpoint_problems", deep_problems)
+
+    assert _latest_resumable_checkpoint(config) == older
+    assert audited == [
+        ("checkpoint-20", 20, 4, 50),
+        ("checkpoint-10", 10, 4, 50),
+    ]
+
+
 def test_run_completion_requires_consistent_terminal_artifacts(tmp_path):
     output = tmp_path / "dense" / "run"
     steps = [2, 4, 6, 8, 10]

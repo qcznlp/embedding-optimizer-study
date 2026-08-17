@@ -73,12 +73,50 @@ def _checkpoint_is_resumable(path: Path, world_size: int = 4) -> bool:
 
 
 def _latest_resumable_checkpoint(config: RunConfig) -> Path | None:
-    checkpoints = [
-        path for path in config.output_dir.glob("checkpoint-*") if _checkpoint_is_resumable(path)
-    ]
+    checkpoints = sorted(
+        (path for path in config.output_dir.glob("checkpoint-*") if _checkpoint_is_resumable(path)),
+        key=lambda path: int(path.name.rsplit("-", 1)[1]),
+        reverse=True,
+    )
     if not checkpoints:
         return None
-    return max(checkpoints, key=lambda path: int(path.name.rsplit("-", 1)[1]))
+
+    # Older/synthetic output directories may not have the schedule. Formal runs
+    # write it before their first checkpoint; when present, use the same deep
+    # payload and runtime-contract audit that gates evaluation.
+    schedule_path = config.output_dir / "checkpoint_schedule.json"
+    if not schedule_path.is_file():
+        return checkpoints[0]
+    try:
+        schedule = json.loads(schedule_path.read_text())
+        steps = sorted(int(step) for step in schedule["steps"])
+        if len(steps) != 5 or len(set(steps)) != 5:
+            raise ValueError(f"expected five unique steps, got {steps}")
+        final_step = steps[-1]
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError, IndexError) as error:
+        raise RuntimeError(f"Invalid checkpoint schedule {schedule_path}: {error}") from error
+
+    from .aggregate import _deep_checkpoint_problems
+
+    rejected: list[str] = []
+    for checkpoint in checkpoints:
+        step = int(checkpoint.name.rsplit("-", 1)[1])
+        if step not in steps:
+            rejected.append(f"{checkpoint.name}: step is outside the declared schedule")
+            continue
+        problems = _deep_checkpoint_problems(
+            checkpoint,
+            step,
+            world_size=4,
+            config=config,
+            final_step=final_step,
+        )
+        if not problems:
+            return checkpoint
+        rejected.append(f"{checkpoint.name}: {'; '.join(problems)}")
+    raise RuntimeError(
+        f"No deeply resumable checkpoint remains in {config.output_dir}: " + " | ".join(rejected)
+    )
 
 
 def _run_is_complete(config: RunConfig) -> bool:
