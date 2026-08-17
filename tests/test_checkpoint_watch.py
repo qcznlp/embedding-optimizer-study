@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from embed_optim.checkpoint_watch import audit_once
+from embed_optim.checkpoint_watch import _validate_formal_runtime, audit_once
 
 
 def _config(tmp_path):
@@ -171,3 +171,24 @@ def test_watcher_reaudits_when_world_size_changes(tmp_path, monkeypatch):
     audit_once([config], state_path, world_size=2)
 
     assert calls == [4, 2]
+
+
+def test_watcher_validates_declared_formal_runtime_before_audit(tmp_path, monkeypatch):
+    spec = tmp_path / "formal_runtime.json"
+    observed = []
+    runtime = {
+        "python_executable": "/formal/python",
+        "packages": {"torch": "2.9.1+cu129"},
+        "torch_cuda": "12.9",
+    }
+    monkeypatch.setattr("embed_optim.checkpoint_watch.matrix_runtime_spec", lambda matrix: spec)
+    monkeypatch.setattr(
+        "embed_optim.runtime.verify_runtime_spec",
+        lambda path: observed.append(path) or runtime,
+    )
+
+    assert _validate_formal_runtime("experiment.yaml") == runtime
+    assert observed == [spec]
+
+    monkeypatch.setattr("embed_optim.checkpoint_watch.matrix_runtime_spec", lambda matrix: None)
+    assert _validate_formal_runtime("portable.yaml") is None

@@ -168,7 +168,7 @@ to work on that family.
 Deep-audit newly written checkpoints continuously from a CPU-only sidecar:
 
 ```bash
-embed-optim-watch-checkpoints \
+/usr/bin/python3 -m embed_optim.checkpoint_watch \
   --matrix configs/experiment.yaml \
   --watch \
   --state logs/checkpoint-audit.json
@@ -180,7 +180,9 @@ runtime contract, and rejects an unchanged model relative to the preceding check
 JSON state makes progress externally observable and ensures an unchanged payload is audited only
 once; changing any checkpoint file causes a fresh audit. It performs no GPU work. Add
 `--fail-on-problem` when the watcher should terminate immediately on an audit failure, or omit
-`--watch` for a single scan.
+`--watch` for a single scan. When the matrix declares `formal_runtime`, the watcher verifies its own
+interpreter and every frozen package version before reading any checkpoint; use the same verified
+Python that writes the training artifacts.
 
 After all runs finish, publish deterministic canonical W&B curves reconstructed from each final
 Trainer state:

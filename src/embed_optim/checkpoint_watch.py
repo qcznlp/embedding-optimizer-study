@@ -9,11 +9,26 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from .config import RunConfig, load_matrix
+from .config import RunConfig, load_matrix, matrix_runtime_spec
 
 
 def _utc_now() -> str:
     return datetime.now(UTC).isoformat().replace("+00:00", "Z")
+
+
+def _validate_formal_runtime(matrix: str | Path) -> dict[str, Any] | None:
+    runtime_spec = matrix_runtime_spec(matrix)
+    if runtime_spec is None:
+        return None
+    from .runtime import verify_runtime_spec
+
+    runtime = verify_runtime_spec(runtime_spec)
+    print(
+        f"formal runtime verified: {runtime['python_executable']} | "
+        f"torch={runtime['packages']['torch']} cuda={runtime['torch_cuda']}",
+        flush=True,
+    )
+    return runtime
 
 
 def _read_schedule(config: RunConfig) -> list[int] | None:
@@ -220,6 +235,7 @@ def main() -> None:
     if args.watch and args.poll_seconds <= 0:
         raise ValueError("--poll-seconds must be positive when --watch is set")
 
+    _validate_formal_runtime(args.matrix)
     configs = load_matrix(args.matrix)
     if args.families:
         configs = [config for config in configs if config.model_family in args.families]
