@@ -335,6 +335,15 @@ gradient-norm differences were 0.00243 and 0.00341, respectively, with a maximum
 as expected for the FlashAttention/TF32/bfloat16 path, does not provide bitwise replay. Only the new
 post-resume branch contributes to checkpoints, timing, W&B canonical history, and evaluation.
 
+PyLate 1.6 emits initialization warnings about the model's construction dtype, DDP
+`drop_last`, and its legacy `tokenize` entry point. These are compatibility notices rather than
+silent runtime changes in this sweep. The model is deliberately constructed with float32 master
+parameters and enters FlashAttention under bfloat16 autocast. Both audited LateOn Muon checkpoints
+record `bf16=True`, `tf32=True`, `dataloader_drop_last=True`, a per-device batch of 8, gradient
+accumulation of 4, and identical model/data seeds of 42. The 500,000-row dataset divides evenly
+across four ranks, so enabling `drop_last` discards no training example. The explicit nine-column
+collator and loss continue to enforce one query, one positive, and seven query-local negatives.
+
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
