@@ -116,8 +116,9 @@ if any job failed; rerunning it resumes only incomplete runs from their latest s
 and deeply audited checkpoint, falling back to an earlier declared checkpoint if the latest payload
 is corrupt. The deep resume gate validates the mixed-optimizer group algorithms, hyperparameters,
 scheduled learning rates, per-parameter state fields/shapes and AdamW step counters, together with
-the scheduler's base/last learning rates and step count. It stops instead of silently restarting from
-the base when no valid checkpoint remains.
+the scheduler's base/last learning rates and step count. Floating-point model tensors must be finite,
+and consecutive formal checkpoints must not contain identical model payloads. It stops instead of
+silently restarting from the base when no valid checkpoint remains.
 Use `--fail-fast` only for smoke tests or when immediate cross-pool shutdown is
 intentional.
 

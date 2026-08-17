@@ -302,9 +302,10 @@ equaled 1,563, and the three saved group learning rates matched the linear sched
 relative L2 change from checkpoint 782 to 1,563 was 0.00383 for Muon-routed hidden matrices,
 0.000566 for decayed auxiliary tensors, and 0.000136 for no-decay tensors. The stricter audit now
 also verifies group algorithms, hyperparameters, scheduled learning rates, state fields and shapes,
-AdamW step counters, scheduler base/last learning rates, and scheduler step count. The only traceback
-in the LateOn log is the expected `SIGTERM` record from the controlled restart at checkpoint 782,
-not a PyLate, CUDA, or Muon failure. The resumed DenseOn run
+AdamW step counters, scheduler base/last learning rates, scheduler step count, finite model tensors,
+and a distinct model payload at each checkpoint. All 40 checkpoints from the eight completed runs
+passed this expanded audit. The only traceback in the LateOn log is the expected `SIGTERM` record
+from the controlled restart at checkpoint 782, not a PyLate, CUDA, or Muon failure. The resumed DenseOn run
 subsequently reached checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads
 also passed the deep audit. Timing accounting retains the non-overlapping segment through step 782
 and excludes duplicated post-checkpoint steps and restart initialization. That DenseOn attempt later

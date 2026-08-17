@@ -766,7 +766,7 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
 
     def write_deep_payload(step):
         checkpoint = output / f"checkpoint-{step}"
-        save_file({"weight": torch.ones(1)}, checkpoint / "model.safetensors")
+        save_file({"weight": torch.tensor([float(step)])}, checkpoint / "model.safetensors")
         scheduled_lr = config.optimizer.lr * _linear_schedule_multiplier(
             step, steps[-1], config.warmup_ratio
         )
@@ -911,6 +911,16 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     corrupt_model.write_bytes(b"not-a-safetensors-payload")
     corrupt = audit_training_artifacts([config], deep=True)
     assert any("invalid safetensors payload" in error for error in corrupt["errors"])
+    write_deep_payload(4)
+
+    save_file({"weight": torch.tensor([float("nan")])}, corrupt_model)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert any("non-finite tensor" in error for error in corrupt["errors"])
+    write_deep_payload(4)
+
+    shutil.copy2(output / "checkpoint-2" / "model.safetensors", corrupt_model)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert any("model payload is unchanged" in error for error in corrupt["errors"])
     write_deep_payload(4)
 
     torch.save({"last_epoch": 5}, output / "checkpoint-6" / "scheduler.pt")

@@ -443,7 +443,7 @@ def _completion_system_problems(completed: dict, steps: list[int]) -> list[str]:
 
 
 def _safetensors_problem(root: Path) -> str | None:
-    """Validate every safetensors header and tensor extent without materializing weights."""
+    """Validate every safetensors tensor, including finite floating-point values."""
 
     from safetensors import safe_open
 
@@ -461,10 +461,28 @@ def _safetensors_problem(root: Path) -> str | None:
                     shape = handle.get_slice(key).get_shape()
                     if any(not isinstance(size, int) or size < 0 for size in shape):
                         return f"invalid tensor shape in {path.name}:{key}"
+                    tensor = handle.get_tensor(key)
+                    if (tensor.is_floating_point() or tensor.is_complex()) and not bool(
+                        tensor.isfinite().all()
+                    ):
+                        return f"non-finite tensor in {path.name}:{key}"
+                    del tensor
                 tensor_count += len(keys)
     except Exception as error:  # noqa: BLE001
         return f"invalid safetensors payload ({type(error).__name__}: {error})"
     return None if tensor_count else "safetensors model has no tensors"
+
+
+def _safetensors_digest(root: Path) -> str:
+    """Hash the complete model payload so repeated checkpoint weights are detectable."""
+
+    digest = hashlib.sha256()
+    for path in sorted(root.rglob("*.safetensors")):
+        digest.update(path.relative_to(root).as_posix().encode())
+        with path.open("rb") as handle:
+            while chunk := handle.read(8 * 1024 * 1024):
+                digest.update(chunk)
+    return digest.hexdigest()
 
 
 def _optimizer_state_problem(optimizer: object) -> str | None:
@@ -1112,6 +1130,7 @@ def audit_training_artifacts(
             errors.append(f"{label}: expected completion world_size 4, got {recorded_world_size}")
         world_size = 4
         run_checkpoint_errors = 0
+        previous_model_digest: str | None = None
         for step in steps:
             checkpoint = output / f"checkpoint-{step}"
             required = (
@@ -1154,6 +1173,16 @@ def audit_training_artifacts(
                 errors.extend(f"{label}/checkpoint-{step}: {problem}" for problem in problems)
                 run_checkpoint_errors += 1
                 continue
+            if deep:
+                model_digest = _safetensors_digest(checkpoint)
+                if model_digest == previous_model_digest:
+                    errors.append(
+                        f"{label}/checkpoint-{step}: model payload is unchanged from the "
+                        "previous checkpoint"
+                    )
+                    run_checkpoint_errors += 1
+                    continue
+                previous_model_digest = model_digest
             verified_checkpoints += 1
         if run_checkpoint_errors == 0 and not any(
             error.startswith(f"{label}:") for error in errors
