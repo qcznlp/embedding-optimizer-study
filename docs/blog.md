@@ -286,7 +286,11 @@ LateOn continued independently.
 
 At LateOn step 782, the first formal checkpoint passed a deep payload audit: the model, mixed
 Muon/AdamW optimizer state, scheduler, Trainer state, and all four rank RNG states loaded without an
-error. A controlled restart then activated the patched scheduler. It selected the two intended
+error. The optimizer payload assigns 88 hidden matrices to Muon and 51 embedding, projection, norm,
+and bias tensors to auxiliary AdamW; all state tensors are finite. A tensor-by-tensor comparison
+against the pinned unsupervised base revision found that all 139 trainable tensors changed by this
+checkpoint, including every backbone tensor and all three projection modules. A controlled restart
+then activated the patched scheduler. It selected the two intended
 unfinished runs, resumed DenseOn Muon `3e-4` from checkpoint 2,345 and LateOn Muon `1e-4` from
 checkpoint 782, and the latter continued through step 789. This is an end-to-end PyLate checkpoint
 recovery test rather than only a file-presence check. The resumed DenseOn run subsequently reached
