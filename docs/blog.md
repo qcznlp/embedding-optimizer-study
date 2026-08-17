@@ -281,6 +281,13 @@ process advanced DenseOn to Muon `1e-3`; it failed at step 303 on rank 3 (physic
 asynchronous NCCL-watchdog report. The driver logged Xid 13 and 43 on the same device, including the
 same exception-register values previously observed on physical GPU 2, while ECC remained zero and
 LateOn continued independently.
+At LateOn step 782, the first formal checkpoint passed a deep payload audit: the model, mixed
+Muon/AdamW optimizer state, scheduler, Trainer state, and all four rank RNG states loaded without an
+error. A controlled restart then activated the patched scheduler. It selected the two intended
+unfinished runs, resumed DenseOn Muon `3e-4` from checkpoint 2,345 and LateOn Muon `1e-4` from
+checkpoint 782, and the latter continued through step 789. This is an end-to-end PyLate checkpoint
+recovery test rather than only a file-presence check. Timing accounting retains the non-overlapping
+segment through step 782 and excludes duplicated post-checkpoint steps and restart initialization.
 
 ## Limitations
 
