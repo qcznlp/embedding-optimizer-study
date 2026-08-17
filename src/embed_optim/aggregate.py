@@ -1506,8 +1506,6 @@ def collect_evaluations(results_root: Path, configs: list[RunConfig]) -> list[di
     versions_reference: dict[str, str] | None = None
     runtime_versions: dict[str, str] | None = None
     for path in results_root.rglob("*Decontaminated.json"):
-        if runtime_versions is None:
-            runtime_versions = _evaluation_runtime(results_root)
         config = _run_for_result(path, configs)
         match = CHECKPOINT_PATTERN.search(str(path))
         if config is None or match is None:
@@ -1519,6 +1517,8 @@ def collect_evaluations(results_root: Path, configs: list[RunConfig]) -> list[di
         steps = sorted(json.loads(schedule_path.read_text())["steps"])
         if step not in steps:
             continue
+        if runtime_versions is None:
+            runtime_versions = _evaluation_runtime(results_root)
         payload = json.loads(path.read_text())
         task = _base_task_name(payload["task_name"])
         if task not in DECONTAMINATED_BEIR:

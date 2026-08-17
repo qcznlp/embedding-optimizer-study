@@ -682,6 +682,29 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
         collect_evaluations(tmp_path / "results", [config])
 
 
+def test_evaluation_collection_ignores_unrelated_smoke_results_without_runtime(tmp_path):
+    config = RunConfig(
+        run_id="adamw-test",
+        model_family="dense",
+        optimizer=OptimizerConfig(name="adamw", lr=1e-6),
+        model_name="model",
+        dataset_path="data",
+        output_root=str(tmp_path / "outputs"),
+    )
+    smoke_result = (
+        tmp_path
+        / "results"
+        / "smoke-dense"
+        / "results"
+        / "no_model_name__available"
+        / "SciFactDecontaminated.json"
+    )
+    smoke_result.parent.mkdir(parents=True)
+    smoke_result.write_text("{}")
+
+    assert collect_evaluations(tmp_path / "results", [config]) == []
+
+
 def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path):
     config = RunConfig(
         run_id="adamw-test",
