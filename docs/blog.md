@@ -239,12 +239,13 @@ physical device and at the same wall-clock time:
 | 6 | 3,829 | 2 (`a2:00`) | NCCL watchdog | 13, then 43 |
 | 7 | 3,375 | 2 (`a2:00`) | Newton–Schulz `addmm` / cuBLAS and NCCL watchdog | 13, then 43 |
 | 8 | 2,717 | 2 (`a2:00`) | NCCL watchdog | 43 |
+| 9 | 303 | 4 (`0001:09:00`) | NCCL watchdog | 13, then 43 |
 
 NVIDIA classifies [Xid 13](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html)
 as a graphics-engine exception: typically an application/CUDA fault such as an out-of-bounds access
 or illegal instruction, while rare driver or hardware causes remain possible. Xid 43 records the
 resulting software-induced channel termination and says the GPU remains healthy. The repeated pattern
-across four physical GPUs, identical Xid-13 exception registers on three devices, stable concurrent
+across five physical GPUs, identical Xid-13 exception registers on four devices, stable concurrent
 AdamW execution before fail-fast termination, and zero volatile corrected or uncorrected ECC counts
 therefore favor an application/kernel-path explanation over a single-card hardware fault. They still
 do not identify which asynchronously executed operation originated the exception.
@@ -275,6 +276,11 @@ intended. This event also exposed a scheduler recovery bug: a failed configurati
 next configuration instead of immediately resuming its latest checkpoint. The matrix runner now
 requeues a failed configuration at the front of its family queue, with an integration test that
 verifies the retry occurs before later queued work.
+Before that patched scheduler could be activated at a safe LateOn checkpoint boundary, the old
+process advanced DenseOn to Muon `1e-3`; it failed at step 303 on rank 3 (physical GPU 4) with another
+asynchronous NCCL-watchdog report. The driver logged Xid 13 and 43 on the same device, including the
+same exception-register values previously observed on physical GPU 2, while ECC remained zero and
+LateOn continued independently.
 
 ## Limitations
 
