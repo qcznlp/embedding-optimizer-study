@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from dataclasses import dataclass
 from typing import Any
 
@@ -15,10 +16,6 @@ SCALAR_HISTORY_KEYS = {
     "grad_norm": "train/grad_norm",
     "learning_rate": "train/learning_rate",
     "loss": "train/loss",
-    "train_loss": "train/final_loss",
-    "train_runtime": "train/runtime_seconds",
-    "train_samples_per_second": "train/samples_per_second",
-    "train_steps_per_second": "train/steps_per_second",
 }
 
 
@@ -29,6 +26,36 @@ class CanonicalRun:
     history_sha256: str
     wandb_run_id: str
     source_wandb_run_id: str
+
+
+def _audited_system_metrics(config: RunConfig, completed: dict[str, Any]) -> dict[str, float]:
+    """Reconstruct useful full-run timing without duplicated resume segments."""
+
+    accepted_path = config.output_dir / "accepted_timing.json"
+    if accepted_path.is_file():
+        accepted = json.loads(accepted_path.read_text())
+        segment_seconds = sum(
+            float(segment["wall_time_seconds_max_rank"]) for segment in accepted.get("segments", [])
+        )
+    else:
+        segment_seconds = float(
+            completed.get("system_metrics", {}).get("wall_time_seconds_max_rank", 0)
+        )
+    adjustment_path = config.output_dir / "timing_adjustment.json"
+    adjustment = json.loads(adjustment_path.read_text()) if adjustment_path.is_file() else {}
+    prior_seconds = float(adjustment.get("prior_training_wall_time_seconds", 0))
+    useful_seconds = segment_seconds + prior_seconds
+    rows = int(completed.get("dataset_rows", 0))
+    steps = int(completed.get("global_step", 0))
+    if not math.isfinite(useful_seconds) or useful_seconds <= 0 or rows <= 0 or steps <= 0:
+        raise ValueError(
+            f"Invalid audited system metrics for {config.model_family}/{config.run_id}"
+        )
+    return {
+        "system/useful_training_wall_time_seconds": useful_seconds,
+        "system/useful_samples_per_second": rows / useful_seconds,
+        "system/useful_steps_per_second": steps / useful_seconds,
+    }
 
 
 def canonical_history(state: dict[str, Any]) -> tuple[dict[str, int | float], ...]:
@@ -84,7 +111,9 @@ def build_canonical_run(config: RunConfig) -> CanonicalRun:
             f"Completion/state step mismatch for {config.model_family}/{config.run_id}: "
             f"{completed['global_step']} != {state['global_step']}"
         )
-    history = canonical_history(state)
+    history = list(canonical_history(state))
+    history[-1] = {**history[-1], **_audited_system_metrics(config, completed)}
+    history = tuple(history)
     digest = history_sha256(history)
     source_id = f"study-v2-{config.model_family}-{config.run_id}-seed{config.seed}"
     run_id = f"canonical-{config.model_family}-{config.run_id}-{digest[:12]}"
@@ -141,6 +170,7 @@ def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
     try:
         run.define_metric("global_step")
         run.define_metric("train/*", step_metric="global_step")
+        run.define_metric("system/*", step_metric="global_step")
         for record in spec.history:
             run.log(record)
         run.summary.update(
@@ -149,6 +179,11 @@ def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
                 "final_global_step": int(spec.history[-1]["global_step"]),
                 "history_rows": len(spec.history),
                 "source_wandb_run_id": spec.source_wandb_run_id,
+                **{
+                    key: value
+                    for key, value in spec.history[-1].items()
+                    if key.startswith("system/")
+                },
             }
         )
     finally:
