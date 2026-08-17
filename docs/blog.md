@@ -457,6 +457,14 @@ loss was 0.7056 for AdamW `3e-6`, 0.6237 for Muon `1e-4` (11.61% lower), and 0.4
 2.380, and 2.372, respectively. This is evidence about optimization dynamics, not retrieval quality;
 the decontaminated BEIR evaluations remain the required basis for optimizer conclusions.
 
+The audited useful-time ledgers do not show a per-step throughput advantage at this point. The two
+completed LateOn AdamW runs take 7.6649 and 7.6396 seconds per optimizer step after excluding restart
+downtime and duplicated work. Through checkpoint 1,563, Muon `1e-4` and `3e-4` take 7.6401 and
+7.6918 seconds per step. Their two-run mean is 7.6660 seconds versus 7.6523 for AdamW, a preliminary
+0.18% Muon slowdown that is operationally close to parity. Thus the early Muon signal is faster loss
+reduction at higher learning rates, not faster step execution. This comparison remains partial until
+all four learning rates for every optimizer finish and the final timing audit is complete.
+
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
