@@ -22,6 +22,7 @@ from .callbacks import (
     FractionalCheckpointCallback,
     PyLateCheckpointCompatibilityCallback,
     WandbExperimentConfigCallback,
+    accepted_timing_summary,
     sanitize_pylate_checkpoint,
 )
 from .collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
@@ -218,6 +219,9 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
         if config.model_family == "late":
             sanitize_pylate_checkpoint(final_dir)
         trainer.state.save_to_json(str(output_dir / "trainer_state_final.json"))
+        accepted_timing = accepted_timing_summary(
+            output_dir / "accepted_timing.json", trainer.state.global_step
+        )
         checkpoint_bytes = {
             path.name: sum(item.stat().st_size for item in path.rglob("*") if item.is_file())
             for path in sorted(output_dir.glob("checkpoint-*"))
@@ -250,6 +254,7 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
                         else None,
                         "world_size": _world_size(),
                     },
+                    "accepted_timing": accepted_timing,
                     "versions": {
                         package: importlib.metadata.version(package)
                         for package in (

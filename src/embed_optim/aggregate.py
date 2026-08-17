@@ -565,7 +565,7 @@ def _accepted_timing_problems(
         expected_start = end
         total += wall_time
 
-    recorded_total = payload.get("total_wall_time_seconds")
+    recorded_total = payload.get("total_wall_time_seconds_max_rank")
     if (
         not isinstance(recorded_total, (int, float))
         or not math.isfinite(float(recorded_total))
@@ -735,6 +735,19 @@ def audit_training_artifacts(
                 expected_final_step=steps[-1] if completed else None,
             )
             errors.extend(f"{label}: {problem}" for problem in timing_problems)
+            if completed and not timing_problems:
+                timing_payload = json.loads(accepted_timing_path.read_text())
+                expected_summary = {
+                    "schema_version": 1,
+                    "segments": len(timing_payload["segments"]),
+                    "total_wall_time_seconds_max_rank": timing_payload[
+                        "total_wall_time_seconds_max_rank"
+                    ],
+                }
+                if completed.get("accepted_timing") != expected_summary:
+                    errors.append(
+                        f"{label}: completion accepted timing summary differs from ledger"
+                    )
         if not final_state_path.is_file():
             errors.append(f"{label}: missing trainer_state_final.json")
         else:

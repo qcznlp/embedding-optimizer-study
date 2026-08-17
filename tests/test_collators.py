@@ -1,12 +1,14 @@
 import json
 from types import SimpleNamespace
 
+import pytest
 import torch
 from transformers import TrainerControl, TrainerState
 
 from embed_optim.callbacks import (
     AcceptedTimingCallback,
     FractionalCheckpointCallback,
+    accepted_timing_summary,
     sanitize_pylate_checkpoint,
 )
 from embed_optim.collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
@@ -112,7 +114,7 @@ def test_accepted_timing_callback_records_non_overlapping_resume_segments(tmp_pa
         7.0,
         4.0,
     ]
-    assert payload["total_wall_time_seconds"] == 16.0
+    assert payload["total_wall_time_seconds_max_rank"] == 16.0
 
 
 def test_accepted_timing_callback_records_slowest_distributed_rank(tmp_path, monkeypatch):
@@ -135,3 +137,31 @@ def test_accepted_timing_callback_records_slowest_distributed_rank(tmp_path, mon
 
     payload = json.loads((tmp_path / "accepted_timing.json").read_text())
     assert payload["segments"][0]["wall_time_seconds_max_rank"] == 9.0
+
+
+def test_accepted_timing_summary_requires_terminal_step_and_matching_total(tmp_path):
+    path = tmp_path / "accepted_timing.json"
+    payload = {
+        "schema_version": 1,
+        "segments": [
+            {
+                "start_step_exclusive": 0,
+                "end_step_inclusive": 10,
+                "wall_time_seconds_max_rank": 2.5,
+            }
+        ],
+        "total_wall_time_seconds_max_rank": 2.5,
+    }
+    path.write_text(json.dumps(payload))
+    assert accepted_timing_summary(path, 10) == {
+        "schema_version": 1,
+        "segments": 1,
+        "total_wall_time_seconds_max_rank": 2.5,
+    }
+
+    with pytest.raises(RuntimeError, match="ends at 10, expected 11"):
+        accepted_timing_summary(path, 11)
+    payload["total_wall_time_seconds_max_rank"] = 1.0
+    path.write_text(json.dumps(payload))
+    with pytest.raises(RuntimeError, match="total does not match"):
+        accepted_timing_summary(path, 10)

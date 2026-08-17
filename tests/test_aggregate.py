@@ -370,7 +370,7 @@ def test_system_metrics_prefers_checkpoint_accepted_timing_ledger(tmp_path):
                     {"wall_time_seconds_max_rank": 20},
                     {"wall_time_seconds_max_rank": 30},
                 ],
-                "total_wall_time_seconds": 50,
+                "total_wall_time_seconds_max_rank": 50,
             }
         )
     )
@@ -407,13 +407,13 @@ def test_accepted_timing_audit_requires_contiguous_steps_and_matching_total(tmp_
                 "wall_time_seconds_max_rank": 60.0,
             },
         ],
-        "total_wall_time_seconds": 120.0,
+        "total_wall_time_seconds_max_rank": 120.0,
     }
     path.write_text(json.dumps(payload))
     assert _accepted_timing_problems(path, expected_start_step=4, expected_final_step=8) == []
 
     payload["segments"][1]["start_step_exclusive"] = 5
-    payload["total_wall_time_seconds"] = 1.0
+    payload["total_wall_time_seconds_max_rank"] = 1.0
     path.write_text(json.dumps(payload))
     problems = _accepted_timing_problems(path, expected_start_step=4, expected_final_step=8)
     assert "accepted timing segment 1 starts at 5, expected 6" in problems

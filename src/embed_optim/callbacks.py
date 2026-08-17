@@ -110,7 +110,11 @@ class AcceptedTimingCallback(TrainerCallback):
 
     def _read(self) -> dict:
         if not self.path.is_file():
-            return {"schema_version": 1, "segments": [], "total_wall_time_seconds": 0.0}
+            return {
+                "schema_version": 1,
+                "segments": [],
+                "total_wall_time_seconds_max_rank": 0.0,
+            }
         payload = json.loads(self.path.read_text())
         if payload.get("schema_version") != 1 or not isinstance(payload.get("segments"), list):
             raise RuntimeError(f"Invalid accepted timing ledger: {self.path}")
@@ -183,7 +187,7 @@ class AcceptedTimingCallback(TrainerCallback):
             "wall_time_seconds_max_rank": wall_time_seconds,
         }
         segments.append(segment)
-        payload["total_wall_time_seconds"] = sum(
+        payload["total_wall_time_seconds_max_rank"] = sum(
             float(item["wall_time_seconds_max_rank"]) for item in segments
         )
         self.path.parent.mkdir(parents=True, exist_ok=True)
@@ -194,6 +198,34 @@ class AcceptedTimingCallback(TrainerCallback):
         self.started_at_utc = completed_at_utc
         self.start_step = end_step
         return control
+
+
+def accepted_timing_summary(path: str | Path, expected_final_step: int) -> dict:
+    """Require a complete timing ledger before a run can write its completion marker."""
+
+    path = Path(path)
+    payload = json.loads(path.read_text())
+    segments = payload.get("segments")
+    if payload.get("schema_version") != 1 or not isinstance(segments, list) or not segments:
+        raise RuntimeError(f"Invalid accepted timing ledger: {path}")
+    if int(segments[-1]["end_step_inclusive"]) != expected_final_step:
+        raise RuntimeError(
+            f"Accepted timing ledger ends at {segments[-1].get('end_step_inclusive')}, "
+            f"expected {expected_final_step}"
+        )
+    total = sum(float(segment["wall_time_seconds_max_rank"]) for segment in segments)
+    recorded_total = float(payload["total_wall_time_seconds_max_rank"])
+    if (
+        not math.isfinite(total)
+        or total <= 0
+        or not math.isclose(recorded_total, total, rel_tol=1e-9, abs_tol=1e-6)
+    ):
+        raise RuntimeError(f"Accepted timing ledger total does not match its segments: {path}")
+    return {
+        "schema_version": 1,
+        "segments": len(segments),
+        "total_wall_time_seconds_max_rank": total,
+    }
 
 
 class WandbExperimentConfigCallback(TrainerCallback):
