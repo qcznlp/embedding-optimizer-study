@@ -208,6 +208,12 @@ def run_matrix(args: argparse.Namespace) -> int:
                     for other in running.values():
                         other.process.terminate()
                     return failures
+                # A failed distributed job is normally recoverable from its
+                # latest complete checkpoint.  Put it back at the front of its
+                # family queue so a transient CUDA/NCCL failure does not leave
+                # the run incomplete until every later configuration finishes.
+                if not _complete(job.config):
+                    queues[job.config.model_family].insert(0, job.config)
 
         for pool_name, pool in pools.items():
             if pool_name in running:

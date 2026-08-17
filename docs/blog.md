@@ -238,6 +238,7 @@ physical device and at the same wall-clock time:
 | 5 | 3,180 | 1 (`7e:00`) | NCCL watchdog | 13, then 43 |
 | 6 | 3,829 | 2 (`a2:00`) | NCCL watchdog | 13, then 43 |
 | 7 | 3,375 | 2 (`a2:00`) | Newton–Schulz `addmm` / cuBLAS and NCCL watchdog | 13, then 43 |
+| 8 | 2,717 | 2 (`a2:00`) | NCCL watchdog | 43 |
 
 NVIDIA classifies [Xid 13](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html)
 as a graphics-engine exception: typically an application/CUDA fault such as an out-of-bounds access
@@ -264,7 +265,16 @@ user-directed priority handoff moved Muon ahead of the remaining AdamW runs with
 configuration or the 24-run contract. The handoff also replaced the old cross-pool fail-fast process
 with failure-isolated GPU pools, resumed DenseOn from the audited checkpoint, and started the formal
 LateOn Muon `1e-4` run. That LateOn run passed optimizer steps 52 and 388—the two early locations at
-which DenseOn had previously reported direct cuBLAS failures—without a CUDA, NCCL, or Xid event.
+which DenseOn had previously reported direct cuBLAS failures—and continued through step 500 without
+a CUDA, NCCL, or Xid event. Meanwhile, DenseOn Muon `3e-4` deep-validated checkpoints 782, 1,563,
+and 2,345 before an eighth transient failure at step 2,717. Rank 2 (physical GPU 2) reported an
+asynchronous launch failure through the NCCL watchdog, and the driver recorded a same-device Xid 43;
+there was no direct originating-kernel traceback and all volatile ECC counters remained zero. The
+independent LateOn process continued training, demonstrating that the pool isolation works as
+intended. This event also exposed a scheduler recovery bug: a failed configuration advanced to the
+next configuration instead of immediately resuming its latest checkpoint. The matrix runner now
+requeues a failed configuration at the front of its family queue, with an integration test that
+verifies the retry occurs before later queued work.
 
 ## Limitations
 

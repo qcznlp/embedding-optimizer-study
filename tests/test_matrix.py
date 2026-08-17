@@ -1,5 +1,7 @@
 import json
+import subprocess
 from types import SimpleNamespace
+from unittest.mock import MagicMock
 
 from embed_optim.matrix import (
     Pool,
@@ -7,6 +9,7 @@ from embed_optim.matrix import (
     _latest_resumable_checkpoint,
     _pop_next,
     _run_is_complete,
+    run_matrix,
 )
 
 
@@ -91,3 +94,48 @@ def test_run_completion_requires_consistent_terminal_artifacts(tmp_path):
     assert _run_is_complete(config)
     (output / "completed.json").write_text("{")
     assert not _run_is_complete(config)
+
+
+def test_failed_job_is_retried_before_later_family_config(monkeypatch, tmp_path):
+    first = _run("dense", "d1")
+    second = _run("dense", "d2")
+    third = _run("dense", "d3")
+    for config in (first, second, third):
+        config.output_dir = tmp_path / config.run_id
+
+    launched = []
+    return_codes = iter([1, 0, 0, 0])
+
+    def fake_launch(config, *args, **kwargs):
+        launched.append(config.run_id)
+        process = MagicMock(spec=subprocess.Popen)
+        process.poll.return_value = next(return_codes)
+        return SimpleNamespace(
+            config=config,
+            process=process,
+            log_handle=MagicMock(),
+            started=0.0,
+        )
+
+    monkeypatch.setattr("embed_optim.matrix.load_matrix", lambda _: [first, second, third])
+    monkeypatch.setattr("embed_optim.matrix._complete", lambda _: False)
+    monkeypatch.setattr("embed_optim.matrix._launch", fake_launch)
+    monkeypatch.setattr("embed_optim.matrix.time.monotonic", lambda: 60.0)
+    monkeypatch.setattr("embed_optim.matrix.time.sleep", lambda _: None)
+    args = SimpleNamespace(
+        matrix=tmp_path / "matrix.yaml",
+        families=["dense"],
+        run_ids=[],
+        gpus_a="0,1,2,3",
+        gpus_b="4,5,6,7",
+        port_a=29510,
+        port_b=29520,
+        log_dir=tmp_path / "logs",
+        fail_fast=False,
+        dry_run=False,
+    )
+
+    assert run_matrix(args) == 1
+    # Pool B may steal d2 before pool A observes d1's failure.  Once the
+    # failure is known, d1 must be retried before the still-queued d3.
+    assert launched == ["d1", "d2", "d1", "d3"]
