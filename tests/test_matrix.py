@@ -36,6 +36,21 @@ def test_pool_waits_for_its_running_preferred_job_before_stealing():
     assert _pop_next(Pool("2,3", 2, "dense"), queues, running) is None
 
 
+def test_two_pools_claim_distinct_jobs_from_one_family():
+    queues = {
+        "dense": [],
+        "late": [_run("late", "l1"), _run("late", "l2")],
+    }
+    running = {}
+
+    first = _pop_next(Pool("0,1", 1, "dense"), queues, running)
+    running["a"] = SimpleNamespace(config=first)
+    second = _pop_next(Pool("2,3", 2, "late"), queues, running)
+
+    assert (first.run_id, second.run_id) == ("l1", "l2")
+    assert queues == {"dense": [], "late": []}
+
+
 def _write_checkpoint(root, step, *, complete=True):
     checkpoint = root / f"checkpoint-{step}"
     checkpoint.mkdir(parents=True)
