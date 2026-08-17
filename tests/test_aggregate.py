@@ -11,6 +11,8 @@ from embed_optim.aggregate import (
     _accepted_timing_problems,
     _contains_run_id,
     _dataset_rows_audit,
+    _linear_schedule_multiplier,
+    _optimizer_contract_problem,
     _optimizer_summaries,
     _paired_comparisons,
     _plot,
@@ -38,6 +40,69 @@ def test_run_id_matching_does_not_confuse_muon_and_normuon():
     assert _contains_run_id(muon, "muon-lr1e-4")
     assert not _contains_run_id(normuon, "muon-lr1e-4")
     assert _contains_run_id(normuon, "normuon-lr1e-4")
+
+
+def test_optimizer_contract_validates_mixed_muon_topology():
+    import torch
+
+    config = RunConfig(
+        run_id="muon-test",
+        model_family="late",
+        optimizer=OptimizerConfig(name="muon", lr=1e-4, aux_lr=3e-6),
+        model_name="model",
+        dataset_path="dataset",
+    )
+    step, final_step = 40, 100
+    multiplier = _linear_schedule_multiplier(step, final_step, config.warmup_ratio)
+
+    def adam_state():
+        return {
+            "step": torch.tensor(float(step)),
+            "exp_avg": torch.zeros(3),
+            "exp_avg_sq": torch.zeros(3),
+        }
+
+    optimizer = {
+        "state": {
+            0: {"momentum_buffer": torch.zeros(3, 2)},
+            1: adam_state(),
+            2: adam_state(),
+        },
+        "param_groups": [
+            {
+                "params": [0],
+                "algorithm": "muon",
+                "lr": config.optimizer.lr * multiplier,
+                "momentum": config.optimizer.momentum,
+                "beta2": config.optimizer.normuon_beta2,
+                "ns_steps": config.optimizer.ns_steps,
+                "adjust_lr_fn": config.optimizer.adjust_lr_fn,
+                "weight_decay": config.optimizer.weight_decay,
+            },
+            {
+                "params": [1],
+                "algorithm": "adamw",
+                "lr": config.optimizer.aux_lr * multiplier,
+                "betas": (config.optimizer.aux_beta1, config.optimizer.aux_beta2),
+                "eps": config.optimizer.aux_eps,
+                "weight_decay": config.optimizer.weight_decay,
+            },
+            {
+                "params": [2],
+                "algorithm": "adamw",
+                "lr": config.optimizer.aux_lr * multiplier,
+                "betas": (config.optimizer.aux_beta1, config.optimizer.aux_beta2),
+                "eps": config.optimizer.aux_eps,
+                "weight_decay": 0.0,
+            },
+        ],
+    }
+
+    assert _optimizer_contract_problem(optimizer, config, step, final_step) is None
+    optimizer["param_groups"][0]["lr"] *= 2
+    assert "parameter group 0 lr" in _optimizer_contract_problem(
+        optimizer, config, step, final_step
+    )
 
 
 def test_run_settings_scope_schema_is_selected_by_mteb_version():
@@ -702,14 +767,50 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     def write_deep_payload(step):
         checkpoint = output / f"checkpoint-{step}"
         save_file({"weight": torch.ones(1)}, checkpoint / "model.safetensors")
+        scheduled_lr = config.optimizer.lr * _linear_schedule_multiplier(
+            step, steps[-1], config.warmup_ratio
+        )
         torch.save(
             {
-                "state": {0: {"step": torch.tensor(step)}},
-                "param_groups": [{"params": [0]}],
+                "state": {
+                    parameter_id: {
+                        "step": torch.tensor(float(step)),
+                        "exp_avg": torch.zeros(1),
+                        "exp_avg_sq": torch.zeros(1),
+                    }
+                    for parameter_id in (0, 1)
+                },
+                "param_groups": [
+                    {
+                        "params": [0],
+                        "algorithm": "adamw",
+                        "lr": scheduled_lr,
+                        "betas": (config.optimizer.beta1, config.optimizer.beta2),
+                        "eps": config.optimizer.eps,
+                        "weight_decay": config.optimizer.weight_decay,
+                    },
+                    {
+                        "params": [1],
+                        "algorithm": "adamw",
+                        "lr": scheduled_lr,
+                        "betas": (config.optimizer.beta1, config.optimizer.beta2),
+                        "eps": config.optimizer.eps,
+                        "weight_decay": 0.0,
+                    },
+                ],
             },
             checkpoint / "optimizer.pt",
         )
-        torch.save({"last_epoch": step}, checkpoint / "scheduler.pt")
+        torch.save(
+            {
+                "base_lrs": [config.optimizer.lr, config.optimizer.lr],
+                "last_epoch": step,
+                "_step_count": step + 1,
+                "_last_lr": [scheduled_lr, scheduled_lr],
+                "lr_lambdas": [{}, {}],
+            },
+            checkpoint / "scheduler.pt",
+        )
         torch.save(
             SimpleNamespace(
                 per_device_train_batch_size=8,
@@ -758,6 +859,28 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     assert corrupt["complete"] is False
     assert corrupt["verified_checkpoints"] == 4
     assert any("invalid optimizer state" in error for error in corrupt["errors"])
+    write_deep_payload(2)
+
+    wrong_optimizer = torch.load(
+        output / "checkpoint-2" / "optimizer.pt", map_location="cpu", weights_only=True
+    )
+    wrong_optimizer["param_groups"][0]["algorithm"] = "muon"
+    torch.save(wrong_optimizer, output / "checkpoint-2" / "optimizer.pt")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any("algorithm is 'muon', expected 'adamw'" in error for error in corrupt["errors"])
+    write_deep_payload(2)
+
+    wrong_scheduler = torch.load(
+        output / "checkpoint-2" / "scheduler.pt", map_location="cpu", weights_only=True
+    )
+    wrong_scheduler["base_lrs"][0] *= 2
+    torch.save(wrong_scheduler, output / "checkpoint-2" / "scheduler.pt")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any("scheduler base_lrs[0]" in error for error in corrupt["errors"])
     write_deep_payload(2)
 
     nonfinite_optimizer = output / "checkpoint-2" / "optimizer.pt"

@@ -514,6 +514,204 @@ def _optimizer_state_problem(optimizer: object) -> str | None:
     return None
 
 
+def _linear_schedule_multiplier(step: int, final_step: int, warmup_ratio: float) -> float:
+    """Match Transformers' linear warmup/decay multiplier at a saved optimizer step."""
+
+    warmup_steps = math.ceil(final_step * warmup_ratio)
+    if step < warmup_steps:
+        return step / max(1, warmup_steps)
+    return max(0.0, (final_step - step) / max(1, final_step - warmup_steps))
+
+
+def _optimizer_contract_problem(
+    optimizer: object,
+    config: RunConfig,
+    expected_step: int,
+    final_step: int,
+) -> str | None:
+    """Prove that a readable state still has the intended mixed-optimizer topology."""
+
+    if not isinstance(optimizer, dict):
+        return "optimizer state has an invalid structure"
+    state = optimizer.get("state")
+    groups = optimizer.get("param_groups")
+    if not isinstance(state, dict) or not isinstance(groups, list):
+        return "optimizer state has an invalid structure"
+
+    optimizer_config = config.optimizer
+    if optimizer_config.name == "adamw":
+        expected_groups = [
+            {
+                "algorithm": "adamw",
+                "base_lr": optimizer_config.lr,
+                "weight_decay": optimizer_config.weight_decay,
+                "betas": (optimizer_config.beta1, optimizer_config.beta2),
+                "eps": optimizer_config.eps,
+            },
+            {
+                "algorithm": "adamw",
+                "base_lr": optimizer_config.lr,
+                "weight_decay": 0.0,
+                "betas": (optimizer_config.beta1, optimizer_config.beta2),
+                "eps": optimizer_config.eps,
+            },
+        ]
+    else:
+        expected_groups = [
+            {
+                "algorithm": optimizer_config.name,
+                "base_lr": optimizer_config.lr,
+                "weight_decay": optimizer_config.weight_decay,
+                "momentum": optimizer_config.momentum,
+                "beta2": optimizer_config.normuon_beta2,
+                "ns_steps": optimizer_config.ns_steps,
+                "adjust_lr_fn": optimizer_config.adjust_lr_fn,
+            },
+            {
+                "algorithm": "adamw",
+                "base_lr": optimizer_config.aux_lr,
+                "weight_decay": optimizer_config.weight_decay,
+                "betas": (optimizer_config.aux_beta1, optimizer_config.aux_beta2),
+                "eps": optimizer_config.aux_eps,
+            },
+            {
+                "algorithm": "adamw",
+                "base_lr": optimizer_config.aux_lr,
+                "weight_decay": 0.0,
+                "betas": (optimizer_config.aux_beta1, optimizer_config.aux_beta2),
+                "eps": optimizer_config.aux_eps,
+            },
+        ]
+
+    if len(groups) != len(expected_groups):
+        return f"optimizer has {len(groups)} parameter groups, expected {len(expected_groups)}"
+    multiplier = _linear_schedule_multiplier(expected_step, final_step, config.warmup_ratio)
+    grouped_ids: set[object] = set()
+    for index, (group, expected) in enumerate(zip(groups, expected_groups)):
+        parameter_ids = group.get("params")
+        if not isinstance(parameter_ids, list) or not parameter_ids:
+            return f"optimizer parameter group {index} is empty or invalid"
+        grouped_ids.update(parameter_ids)
+        for name, expected_value in expected.items():
+            observed = group.get(name)
+            if name == "base_lr":
+                name = "lr"
+                observed = group.get(name)
+                expected_value = float(expected_value) * multiplier
+            if isinstance(expected_value, float):
+                try:
+                    matches = math.isclose(
+                        float(observed), expected_value, rel_tol=1e-12, abs_tol=1e-15
+                    )
+                except (TypeError, ValueError):
+                    matches = False
+            else:
+                matches = observed == expected_value
+            if not matches:
+                return (
+                    f"optimizer parameter group {index} {name} is {observed!r}, "
+                    f"expected {expected_value!r}"
+                )
+
+        algorithm = expected["algorithm"]
+        expected_state_fields = {
+            "adamw": {"step", "exp_avg", "exp_avg_sq"},
+            "muon": {"momentum_buffer"},
+            "normuon": {"momentum_buffer", "second_moment"},
+        }[algorithm]
+        for parameter_id in parameter_ids:
+            parameter_state = state.get(parameter_id)
+            if not isinstance(parameter_state, dict):
+                return f"optimizer state is missing parameter {parameter_id!r}"
+            if set(parameter_state) != expected_state_fields:
+                return (
+                    f"optimizer state fields for parameter {parameter_id!r} are "
+                    f"{sorted(parameter_state)}, expected {sorted(expected_state_fields)}"
+                )
+            if algorithm == "adamw":
+                try:
+                    state_step = float(parameter_state["step"])
+                except (TypeError, ValueError):
+                    return f"AdamW state step for parameter {parameter_id!r} is invalid"
+                if state_step != expected_step:
+                    return (
+                        f"AdamW state step for parameter {parameter_id!r} is {state_step}, "
+                        f"expected {expected_step}"
+                    )
+                exp_avg_shape = getattr(parameter_state["exp_avg"], "shape", None)
+                exp_avg_sq_shape = getattr(parameter_state["exp_avg_sq"], "shape", None)
+                if exp_avg_shape is None or exp_avg_sq_shape is None:
+                    return f"AdamW moments for parameter {parameter_id!r} are not tensors"
+                if exp_avg_shape != exp_avg_sq_shape:
+                    return f"AdamW moments for parameter {parameter_id!r} have different shapes"
+            else:
+                momentum_buffer = parameter_state["momentum_buffer"]
+                if getattr(momentum_buffer, "ndim", None) != 2:
+                    return f"{algorithm} momentum for parameter {parameter_id!r} is not 2-D"
+                if algorithm == "normuon":
+                    expected_shape = (*momentum_buffer.shape[:-1], 1)
+                    observed_shape = getattr(parameter_state["second_moment"], "shape", None)
+                    if observed_shape != expected_shape:
+                        return (
+                            f"NorMuon second moment for parameter {parameter_id!r} has shape "
+                            f"{tuple(observed_shape) if observed_shape is not None else None}, expected "
+                            f"{tuple(expected_shape)}"
+                        )
+
+    if set(state) != grouped_ids:
+        return "optimizer state does not cover every grouped parameter"
+    return None
+
+
+def _scheduler_contract_problem(
+    scheduler: object,
+    config: RunConfig,
+    expected_step: int,
+    final_step: int,
+) -> str | None:
+    """Validate the LR scheduler fields that control a resumed trajectory."""
+
+    if not isinstance(scheduler, dict):
+        return "scheduler state has an invalid structure"
+    try:
+        last_epoch = int(scheduler.get("last_epoch", -1))
+        step_count = int(scheduler.get("_step_count", -1))
+    except (TypeError, ValueError):
+        return "scheduler step fields are invalid"
+    if last_epoch != expected_step:
+        return "scheduler state does not match checkpoint step"
+    if step_count != expected_step + 1:
+        return f"scheduler step count is {step_count}, expected {expected_step + 1}"
+
+    optimizer_config = config.optimizer
+    expected_base_lrs = (
+        [optimizer_config.lr, optimizer_config.lr]
+        if optimizer_config.name == "adamw"
+        else [optimizer_config.lr, optimizer_config.aux_lr, optimizer_config.aux_lr]
+    )
+    multiplier = _linear_schedule_multiplier(expected_step, final_step, config.warmup_ratio)
+    expected_last_lrs = [base_lr * multiplier for base_lr in expected_base_lrs]
+    for name, expected_values in (
+        ("base_lrs", expected_base_lrs),
+        ("_last_lr", expected_last_lrs),
+    ):
+        observed_values = scheduler.get(name)
+        if not isinstance(observed_values, list) or len(observed_values) != len(expected_values):
+            return f"scheduler {name} has an invalid group count"
+        for index, (observed, expected) in enumerate(zip(observed_values, expected_values)):
+            try:
+                matches = math.isclose(float(observed), expected, rel_tol=1e-12, abs_tol=1e-15)
+            except (TypeError, ValueError):
+                matches = False
+            if not matches:
+                return f"scheduler {name}[{index}] is {observed!r}, expected {expected!r}"
+
+    lr_lambdas = scheduler.get("lr_lambdas")
+    if not isinstance(lr_lambdas, list) or len(lr_lambdas) != len(expected_base_lrs):
+        return "scheduler LR lambda state has an invalid group count"
+    return None
+
+
 def _training_arguments_problem(
     path: Path, config: RunConfig, world_size: int, final_step: int
 ) -> str | None:
@@ -623,6 +821,9 @@ def _deep_checkpoint_problems(
         )
         if problem := _optimizer_state_problem(optimizer):
             problems.append(problem)
+        elif config is not None and final_step is not None:
+            if problem := _optimizer_contract_problem(optimizer, config, expected_step, final_step):
+                problems.append(problem)
     except Exception as error:  # noqa: BLE001
         problems.append(f"invalid optimizer state ({type(error).__name__}: {error})")
     finally:
@@ -631,7 +832,12 @@ def _deep_checkpoint_problems(
 
     try:
         scheduler = torch.load(checkpoint / "scheduler.pt", map_location="cpu", weights_only=True)
-        if not isinstance(scheduler, dict) or int(scheduler.get("last_epoch", -1)) != expected_step:
+        if config is not None and final_step is not None:
+            if problem := _scheduler_contract_problem(scheduler, config, expected_step, final_step):
+                problems.append(problem)
+        elif (
+            not isinstance(scheduler, dict) or int(scheduler.get("last_epoch", -1)) != expected_step
+        ):
             problems.append("scheduler state does not match checkpoint step")
     except Exception as error:  # noqa: BLE001
         problems.append(f"invalid scheduler state ({type(error).__name__}: {error})")

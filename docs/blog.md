@@ -296,7 +296,15 @@ checkpoint 782, and the latter continued through step 789. This is an end-to-end
 recovery test rather than only a file-presence check. The same LateOn process subsequently reached
 checkpoint 1,563 without a CUDA, NCCL, or Xid event; its model, optimizer, scheduler, runtime
 arguments, and four RNG states passed the stricter deep audit, all 139 trainable tensors changed
-again relative to checkpoint 782, and training continued through step 1,566. The resumed DenseOn run
+again relative to checkpoint 782, and training continued beyond that checkpoint. The 88 Muon
+momentum buffers and all 51 auxiliary AdamW states were finite; every auxiliary AdamW step counter
+equaled 1,563, and the three saved group learning rates matched the linear scheduler exactly. The
+relative L2 change from checkpoint 782 to 1,563 was 0.00383 for Muon-routed hidden matrices,
+0.000566 for decayed auxiliary tensors, and 0.000136 for no-decay tensors. The stricter audit now
+also verifies group algorithms, hyperparameters, scheduled learning rates, state fields and shapes,
+AdamW step counters, scheduler base/last learning rates, and scheduler step count. The only traceback
+in the LateOn log is the expected `SIGTERM` record from the controlled restart at checkpoint 782,
+not a PyLate, CUDA, or Muon failure. The resumed DenseOn run
 subsequently reached checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads
 also passed the deep audit. Timing accounting retains the non-overlapping segment through step 782
 and excludes duplicated post-checkpoint steps and restart initialization. That DenseOn attempt later
@@ -308,7 +316,9 @@ isolated LateOn Muon process continued uninterrupted. The accepted-time adjustme
 completed 2,346–3,126 interval from the failed attempt; duplicated steps after 3,126 are excluded.
 That retry completed step 3,907. All five checkpoints passed the full protocol and payload audit;
 the non-overlapping useful wall time is 3.525 hours, and the canonical 392-row W&B history is stored
-under content hash `96c6e8c8bbce`.
+under content hash `5fe30f45c960`. Canonical histories exclude Trainer's resume-local terminal
+runtime/loss summaries and instead publish useful wall time and throughput reconstructed from the
+audited non-overlapping timing ledger.
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
@@ -324,6 +334,11 @@ omitted from its eventual throughput denominator.
   practical optimizer recipes rather than mathematically pure single-optimizer systems.
 - Four learning rates improve robustness but do not guarantee that every optimizer's global optimum is
   inside the sweep.
+- PyLate 1.6 uses Late Interaction Kernels 0.4.5's reduced-precision KD backward. An adversarial
+  masking test returned the exact expected score and zero gradients for masked query/document tokens,
+  but random bfloat16 near-ties differed from eager PyTorch by up to 0.00252 in score and could choose
+  a different sparse MaxSim argmax. Every LateOn run uses the same pinned kernel and hardware, so this
+  is controlled within the study, but cross-backend bitwise equivalence is not claimed.
 - Every configuration uses the same single training/data seed (42). This controls the comparison but
   does not quantify variance across independent seeds.
 - Seed 42 fixes data selection, negative choices, Trainer sampling, and model RNG state, but the

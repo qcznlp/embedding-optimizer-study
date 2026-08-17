@@ -114,7 +114,10 @@ For long matrices, omit `--fail-fast` as above so a failure on one pool does not
 unrelated healthy job on the other pool. The command returns nonzero after the remaining queue drains
 if any job failed; rerunning it resumes only incomplete runs from their latest structurally valid
 and deeply audited checkpoint, falling back to an earlier declared checkpoint if the latest payload
-is corrupt. It stops instead of silently restarting from the base when no valid checkpoint remains.
+is corrupt. The deep resume gate validates the mixed-optimizer group algorithms, hyperparameters,
+scheduled learning rates, per-parameter state fields/shapes and AdamW step counters, together with
+the scheduler's base/last learning rates and step count. It stops instead of silently restarting from
+the base when no valid checkpoint remains.
 Use `--fail-fast` only for smoke tests or when immediate cross-pool shutdown is
 intentional.
 
@@ -135,7 +138,9 @@ embed-optim-sync-wandb --matrix configs/experiment.yaml
 The canonical run ID is content-addressed by the normalized history. Re-running the command verifies
 and skips an identical remote run, while checkpoint-resume segments remain available as raw system
 telemetry. This avoids backward or duplicated optimizer steps in the comparison dashboard without
-deleting source runs.
+deleting source runs. Resume-local Trainer terminal summaries are excluded; canonical system
+summaries use useful wall time and throughput reconstructed from the audited non-overlapping timing
+ledger.
 
 ### 3. Evaluate every checkpoint
 
