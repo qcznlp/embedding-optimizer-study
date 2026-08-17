@@ -209,6 +209,10 @@ results and systems sections in `docs/blog.md`. `--strict` fails unless the enti
 and all 24 runs have five non-empty, step-consistent model/optimizer/scheduler/RNG checkpoints plus a
 final model and Trainer state. Checkpoint loss histories must also have unique increasing steps and
 finite loss, gradient-norm, learning-rate, and epoch values.
+The dynamics deliverables include optimizer-level mean ± LR-configuration standard deviation,
+separate three-panel figures showing every one of the four LR runs at all five checkpoints, the
+five-point trajectory of each optimizer's best final configuration, and all 120 raw run/checkpoint
+summaries in `checkpoint_summary.csv`.
 The same gate verifies each resolved run config against the matrix, checks the copied dataset manifest
 and row count against the shared source, requires an identical runtime dataset-view fingerprint across
 all runs, requires four recorded ranks, and enforces an identical parameter partition across learning

@@ -2219,7 +2219,7 @@ def render_blog(
     text = _replace_marked(text, SYSTEMS_MARKERS, _render_systems(system_rows))
     text = text.replace(
         "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
-        "the results sections are populated only from the checked-in aggregation artifacts after coverage reaches\n"
+        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
         "1,680/1,680.",
         "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 checkpoint/task evaluations.",
     )

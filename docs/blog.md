@@ -4,7 +4,7 @@
 > and decontaminated BEIR evaluation.
 
 **Experiment status:** training matrix in progress. This document already records the frozen protocol;
-the results sections are populated only from the checked-in aggregation artifacts after coverage reaches
+the results sections are populated only from strictly validated aggregation artifacts after coverage reaches
 1,680/1,680.
 
 ## Why this comparison

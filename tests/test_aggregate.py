@@ -370,7 +370,7 @@ def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monk
     blog = tmp_path / "blog.md"
     blog.write_text(
         "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
-        "the results sections are populated only from the checked-in aggregation artifacts after coverage reaches\n"
+        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
         "1,680/1,680.\n\n"
         "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
         "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n"
