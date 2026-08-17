@@ -156,8 +156,9 @@ workers are launched by the same Python interpreter as the orchestrator (overrid
 `--worker-python`). Before any GPU work, a runtime preflight requires Torch, Transformers, and
 SentenceTransformers, PyLate, and Late Interaction Kernels to exactly match the versions recorded
 during training. The same preflight reconstructs the audited training-data view, parses every selected
-safetensors payload, validates optimizer topology and state finiteness, checks scheduler steps, and
-CRC-checks every rank RNG archive, so a damaged checkpoint cannot consume days of formal evaluation
+safetensors payload, verifies the serialized batch/warmup/precision/runtime arguments, validates
+optimizer topology and state finiteness, checks scheduler steps, and CRC-checks every rank RNG
+archive, so a damaged or protocol-divergent checkpoint cannot consume days of formal evaluation
 before being rejected. It then records an
 immutable manifest including MTEB, FlashAttention, and FastPLAID so a resumed results directory cannot
 silently mix evaluator stacks.
