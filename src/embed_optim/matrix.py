@@ -96,8 +96,11 @@ def _latest_resumable_checkpoint(config: RunConfig) -> Path | None:
     except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError, IndexError) as error:
         raise RuntimeError(f"Invalid checkpoint schedule {schedule_path}: {error}") from error
 
-    from .aggregate import _deep_checkpoint_problems
+    from .aggregate import _deep_checkpoint_problems, _safetensors_digest
 
+    resumable_by_step = {
+        int(checkpoint.name.rsplit("-", 1)[1]): checkpoint for checkpoint in checkpoints
+    }
     rejected: list[str] = []
     for checkpoint in checkpoints:
         step = int(checkpoint.name.rsplit("-", 1)[1])
@@ -112,6 +115,16 @@ def _latest_resumable_checkpoint(config: RunConfig) -> Path | None:
             final_step=final_step,
         )
         if not problems:
+            previous_steps = [candidate for candidate in steps if candidate < step]
+            previous_step = previous_steps[-1] if previous_steps else None
+            previous = resumable_by_step.get(previous_step)
+            if previous is not None and _safetensors_digest(checkpoint) == _safetensors_digest(
+                previous
+            ):
+                rejected.append(
+                    f"{checkpoint.name}: model payload is unchanged from {previous.name}"
+                )
+                continue
             return checkpoint
         rejected.append(f"{checkpoint.name}: {'; '.join(problems)}")
     raise RuntimeError(

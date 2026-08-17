@@ -44,9 +44,9 @@ def _write_checkpoint(root, step, *, complete=True):
         "optimizer.pt",
         "scheduler.pt",
         "training_args.bin",
-        "model.safetensors",
     ):
         (checkpoint / name).write_bytes(b"state")
+    (checkpoint / "model.safetensors").write_bytes(f"state-{step}".encode())
     (checkpoint / "trainer_state.json").write_text(json.dumps({"global_step": step}))
     for rank in range(4):
         (checkpoint / f"rng_state_{rank}.pth").write_bytes(b"rng")
@@ -91,6 +91,20 @@ def test_checkpoint_resume_selection_falls_back_after_deep_audit_failure(tmp_pat
         ("checkpoint-20", 20, 4, 50),
         ("checkpoint-10", 10, 4, 50),
     ]
+
+
+def test_checkpoint_resume_selection_rejects_unchanged_model_payload(tmp_path, monkeypatch):
+    output = tmp_path / "dense" / "run"
+    older = _write_checkpoint(output, 10)
+    latest = _write_checkpoint(output, 20)
+    (latest / "model.safetensors").write_bytes((older / "model.safetensors").read_bytes())
+    (output / "checkpoint_schedule.json").write_text(json.dumps({"steps": [10, 20, 30, 40, 50]}))
+    config = SimpleNamespace(output_dir=output)
+    monkeypatch.setattr(
+        "embed_optim.aggregate._deep_checkpoint_problems", lambda *args, **kwargs: []
+    )
+
+    assert _latest_resumable_checkpoint(config) == older
 
 
 def test_run_completion_requires_consistent_terminal_artifacts(tmp_path):
