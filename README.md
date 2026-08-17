@@ -113,7 +113,9 @@ torchrun --standalone --nproc-per-node=4 -m embed_optim.train \
 For long matrices, omit `--fail-fast` as above so a failure on one pool does not terminate an
 unrelated healthy job on the other pool. The command returns nonzero after the remaining queue drains
 if any job failed; rerunning it resumes only incomplete runs from their latest structurally valid
-checkpoints. Use `--fail-fast` only for smoke tests or when immediate cross-pool shutdown is
+and deeply audited checkpoint, falling back to an earlier declared checkpoint if the latest payload
+is corrupt. It stops instead of silently restarting from the base when no valid checkpoint remains.
+Use `--fail-fast` only for smoke tests or when immediate cross-pool shutdown is
 intentional.
 
 Each output directory contains the resolved configuration, five complete model/optimizer/scheduler
