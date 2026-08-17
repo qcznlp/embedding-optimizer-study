@@ -293,15 +293,22 @@ checkpoint, including every backbone tensor and all three projection modules. A 
 then activated the patched scheduler. It selected the two intended
 unfinished runs, resumed DenseOn Muon `3e-4` from checkpoint 2,345 and LateOn Muon `1e-4` from
 checkpoint 782, and the latter continued through step 789. This is an end-to-end PyLate checkpoint
-recovery test rather than only a file-presence check. The resumed DenseOn run subsequently reached
-checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads also passed the deep
-audit. Timing accounting retains the non-overlapping segment through step 782 and excludes duplicated
-post-checkpoint steps and restart initialization. That DenseOn attempt later failed at step 3,345:
+recovery test rather than only a file-presence check. The same LateOn process subsequently reached
+checkpoint 1,563 without a CUDA, NCCL, or Xid event; its model, optimizer, scheduler, runtime
+arguments, and four RNG states passed the stricter deep audit, all 139 trainable tensors changed
+again relative to checkpoint 782, and training continued through step 1,566. The resumed DenseOn run
+subsequently reached checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads
+also passed the deep audit. Timing accounting retains the non-overlapping segment through step 782
+and excludes duplicated post-checkpoint steps and restart initialization. That DenseOn attempt later
+failed at step 3,345:
 rank 1 (physical GPU 1) directly reported `CUBLAS_STATUS_EXECUTION_FAILED` from the native
 bfloat16 Newton–Schulz `torch.addmm`, and the driver recorded a same-device Xid 43. The patched
 scheduler immediately selected the same configuration and resumed checkpoint 3,126, while the
 isolated LateOn Muon process continued uninterrupted. The accepted-time adjustment retains only the
 completed 2,346–3,126 interval from the failed attempt; duplicated steps after 3,126 are excluded.
+That retry completed step 3,907. All five checkpoints passed the full protocol and payload audit;
+the non-overlapping useful wall time is 3.525 hours, and the canonical 392-row W&B history is stored
+under content hash `96c6e8c8bbce`.
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
