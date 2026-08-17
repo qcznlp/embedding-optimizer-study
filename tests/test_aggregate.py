@@ -710,6 +710,38 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
             checkpoint / "optimizer.pt",
         )
         torch.save({"last_epoch": step}, checkpoint / "scheduler.pt")
+        torch.save(
+            SimpleNamespace(
+                per_device_train_batch_size=8,
+                gradient_accumulation_steps=4,
+                num_train_epochs=1.0,
+                max_steps=-1,
+                learning_rate=1e-6,
+                max_grad_norm=1.0,
+                bf16=True,
+                tf32=True,
+                fp16=False,
+                seed=42,
+                data_seed=42,
+                gradient_checkpointing=True,
+                dataloader_num_workers=8,
+                dataloader_pin_memory=True,
+                dataloader_persistent_workers=True,
+                dataloader_prefetch_factor=4,
+                dataloader_drop_last=True,
+                remove_unused_columns=False,
+                ddp_find_unused_parameters=False,
+                train_sampling_strategy="group_by_length",
+                logging_steps=10,
+                run_name="dense-adamw-test",
+                project="embedding-optimizer-study",
+                lr_scheduler_type="linear",
+                save_strategy="no",
+                report_to=["wandb"],
+                warmup_steps=0.1,
+            ),
+            checkpoint / "training_args.bin",
+        )
         for rank in range(4):
             torch.save({"rank": rank}, checkpoint / f"rng_state_{rank}.pth")
 
@@ -737,6 +769,18 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     assert corrupt["verified_checkpoints"] == 4
     assert any(
         "optimizer state contains a non-finite tensor" in error for error in corrupt["errors"]
+    )
+    write_deep_payload(2)
+
+    invalid_training_args = output / "checkpoint-2" / "training_args.bin"
+    training_args = torch.load(invalid_training_args, map_location="cpu", weights_only=False)
+    training_args.gradient_accumulation_steps = 3
+    torch.save(training_args, invalid_training_args)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any(
+        "gradient_accumulation_steps is 3, expected 4" in error for error in corrupt["errors"]
     )
     write_deep_payload(2)
 

@@ -514,7 +514,97 @@ def _optimizer_state_problem(optimizer: object) -> str | None:
     return None
 
 
-def _deep_checkpoint_problems(checkpoint: Path, expected_step: int, world_size: int) -> list[str]:
+def _training_arguments_problem(
+    path: Path, config: RunConfig, world_size: int, final_step: int
+) -> str | None:
+    """Prove the serialized runtime arguments match the frozen run contract."""
+
+    import torch
+
+    try:
+        args = torch.load(path, map_location="cpu", weights_only=False)
+    except Exception as error:  # noqa: BLE001
+        return f"invalid training arguments ({type(error).__name__}: {error})"
+
+    micro_global = config.micro_batch_size * world_size
+    if config.global_batch_size % micro_global:
+        return "configured global batch is not divisible by micro batch times world size"
+    expected = {
+        "per_device_train_batch_size": config.micro_batch_size,
+        "gradient_accumulation_steps": config.global_batch_size // micro_global,
+        "num_train_epochs": config.epochs,
+        "max_steps": -1,
+        "learning_rate": config.optimizer.lr,
+        "max_grad_norm": config.max_grad_norm,
+        "bf16": True,
+        "tf32": True,
+        "fp16": False,
+        "seed": config.seed,
+        "data_seed": config.seed,
+        "gradient_checkpointing": config.gradient_checkpointing,
+        "dataloader_num_workers": config.dataloader_workers,
+        "dataloader_pin_memory": True,
+        "dataloader_persistent_workers": config.dataloader_workers > 0,
+        "dataloader_prefetch_factor": 4 if config.dataloader_workers > 0 else None,
+        "dataloader_drop_last": True,
+        "remove_unused_columns": False,
+        "ddp_find_unused_parameters": False,
+        "train_sampling_strategy": "group_by_length",
+        "logging_steps": 10,
+        "run_name": f"{config.model_family}-{config.run_id}",
+        "project": config.wandb_project,
+    }
+    for name, expected_value in expected.items():
+        try:
+            observed = getattr(args, name)
+        except AttributeError:
+            return f"training arguments are missing {name}"
+        if isinstance(expected_value, float):
+            try:
+                matches = math.isclose(
+                    float(observed), expected_value, rel_tol=1e-12, abs_tol=1e-15
+                )
+            except (TypeError, ValueError):
+                matches = False
+        else:
+            matches = observed == expected_value
+        if not matches:
+            return f"training argument {name} is {observed!r}, expected {expected_value!r}"
+
+    scheduler = getattr(args, "lr_scheduler_type", None)
+    if getattr(scheduler, "value", scheduler) != "linear":
+        return f"training argument lr_scheduler_type is {scheduler!r}, expected 'linear'"
+    save_strategy = getattr(args, "save_strategy", None)
+    if getattr(save_strategy, "value", save_strategy) != "no":
+        return f"training argument save_strategy is {save_strategy!r}, expected 'no'"
+    report_to = getattr(args, "report_to", None)
+    if report_to != ["wandb"]:
+        return f"training argument report_to is {report_to!r}, expected ['wandb']"
+
+    warmup_value = getattr(args, "warmup_steps", None)
+    try:
+        warmup_value = float(warmup_value)
+        observed_warmup = (
+            int(warmup_value) if warmup_value >= 1 else math.ceil(final_step * warmup_value)
+        )
+    except (TypeError, ValueError):
+        return f"training argument warmup_steps is invalid: {warmup_value!r}"
+    expected_warmup = math.ceil(final_step * config.warmup_ratio)
+    if observed_warmup != expected_warmup:
+        return (
+            f"resolved warmup is {observed_warmup} steps, expected {expected_warmup} "
+            f"for terminal step {final_step}"
+        )
+    return None
+
+
+def _deep_checkpoint_problems(
+    checkpoint: Path,
+    expected_step: int,
+    world_size: int,
+    config: RunConfig | None = None,
+    final_step: int | None = None,
+) -> list[str]:
     """Parse resumable payloads so non-empty but corrupt files cannot pass strict audit."""
 
     import gc
@@ -545,6 +635,14 @@ def _deep_checkpoint_problems(checkpoint: Path, expected_step: int, world_size: 
             problems.append("scheduler state does not match checkpoint step")
     except Exception as error:  # noqa: BLE001
         problems.append(f"invalid scheduler state ({type(error).__name__}: {error})")
+
+    if config is not None:
+        if final_step is None:
+            problems.append("training argument audit is missing the terminal step")
+        elif problem := _training_arguments_problem(
+            checkpoint / "training_args.bin", config, world_size, final_step
+        ):
+            problems.append(problem)
 
     for rank in range(world_size):
         path = checkpoint / f"rng_state_{rank}.pth"
@@ -842,7 +940,11 @@ def audit_training_artifacts(
                 errors.append(f"{label}/checkpoint-{step}: {problem}")
                 run_checkpoint_errors += 1
                 continue
-            if deep and (problems := _deep_checkpoint_problems(checkpoint, step, world_size)):
+            if deep and (
+                problems := _deep_checkpoint_problems(
+                    checkpoint, step, world_size, config=config, final_step=steps[-1]
+                )
+            ):
                 errors.extend(f"{label}/checkpoint-{step}: {problem}" for problem in problems)
                 run_checkpoint_errors += 1
                 continue
