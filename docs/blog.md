@@ -393,7 +393,7 @@ We selected the latter because it preserves Muon's bfloat16 internal representat
 five iterations, normalization, momentum, learning-rate adjustment, and parameter update. Only the
 operator decomposition differs from pinned PyTorch; it is also the already-pinned Newton–Schulz
 path used by this repository's NorMuon implementation. The final repository implementation passed
-a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 95
+a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 96
 passing tests. An initial real-model replay was discarded after its shortened `max_steps=1905`
 horizon correctly exposed a different LR schedule. We added a diagnostic stop callback and repeated
 the replay while preserving the formal 3,907-step scheduler. It resumed the original LateOn `1e-4`
@@ -499,8 +499,10 @@ observable before the final evaluation gate without consuming GPU capacity.
 
 The `embed-optim-supervise` wrapper separately protects the top-level multi-day matrix process. It
 can adopt an already-running matrix without interrupting its children, then recomputes completion from
-terminal artifacts and relaunches only unfinished configurations after any orchestrator exit. The
-formal evaluation handoff explicitly uses the same Python 3.12 / PyTorch 2.9.1+cu129 interpreter as
+terminal artifacts and relaunches only unfinished configurations after any orchestrator exit. Its
+sequential-family mode preserves the LateOn-first priority while letting both four-GPU pools work on
+that family. Formal evaluation handoff explicitly uses the same Python 3.12 /
+PyTorch 2.9.1+cu129 interpreter as
 training for both its coordinator and workers; the repository's development/CI environment is not
 substituted for that runtime.
 

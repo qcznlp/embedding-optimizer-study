@@ -146,7 +146,9 @@ The matrix already requeues failed distributed child jobs from their latest deep
 checkpoint. The supervisor adds protection around the top-level orchestrator itself: after any exit,
 it recomputes structurally complete runs from their terminal artifacts and relaunches only the
 remaining matrix. `--wait-for-pid PID` adopts an already-running matrix without interrupting it;
-`--max-launches N` is available when bounded retries are preferred.
+`--max-launches N` is available when bounded retries are preferred. Use `--sequential-families` to
+finish the families in the order supplied to `--families` while still allowing both four-GPU pools
+to work on that family.
 
 Deep-audit newly written checkpoints continuously from a CPU-only sidecar:
 

@@ -20,6 +20,7 @@ def _args(**overrides):
         "poll_seconds": 2.0,
         "restart_delay": 3.0,
         "max_launches": 0,
+        "sequential_families": False,
     }
     values.update(overrides)
     return SimpleNamespace(**values)
@@ -95,6 +96,33 @@ def test_supervisor_skips_matrix_when_selected_runs_are_complete(monkeypatch):
     )
 
     assert result == 0
+
+
+def test_supervisor_preserves_requested_family_order(monkeypatch):
+    configs = [_config("late", "muon"), _config("dense", "normuon")]
+    completed = set()
+    monkeypatch.setattr("embed_optim.supervisor.load_matrix", lambda path: configs)
+    monkeypatch.setattr(
+        "embed_optim.supervisor._run_is_complete", lambda config: config.run_id in completed
+    )
+    launched_families = []
+
+    def run(command, check):
+        start = command.index("--families") + 1
+        end = command.index("--gpus-a")
+        families = command[start:end]
+        launched_families.append(families)
+        completed.update(config.run_id for config in configs if config.model_family in families)
+        return SimpleNamespace(returncode=0)
+
+    result = supervise(
+        _args(families=["late", "dense"], sequential_families=True),
+        run_command=run,
+        sleeper=lambda seconds: None,
+    )
+
+    assert result == 0
+    assert launched_families == [["late"], ["dense"]]
 
 
 def test_supervisor_cli_rejects_invalid_intervals():

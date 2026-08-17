@@ -34,7 +34,8 @@ def _selected_configs(args: argparse.Namespace) -> list[RunConfig]:
     return configs
 
 
-def _matrix_command(args: argparse.Namespace) -> list[str]:
+def _matrix_command(args: argparse.Namespace, families: list[str] | None = None) -> list[str]:
+    families = list(args.families if families is None else families)
     command = [
         args.python,
         "-m",
@@ -42,7 +43,7 @@ def _matrix_command(args: argparse.Namespace) -> list[str]:
         "--matrix",
         str(Path(args.matrix).resolve()),
         "--families",
-        *args.families,
+        *families,
         "--gpus-a",
         args.gpus_a,
         "--gpus-b",
@@ -75,7 +76,6 @@ def supervise(
             sleeper(args.poll_seconds)
 
     launches = 0
-    command = _matrix_command(args)
     while True:
         incomplete = [config for config in configs if not _run_is_complete(config)]
         if not incomplete:
@@ -95,6 +95,16 @@ def supervise(
             f"Matrix launch {launches}; {len(incomplete)}/{len(configs)} incomplete: {labels}",
             flush=True,
         )
+        launch_families = list(args.families)
+        if args.sequential_families:
+            launch_families = [
+                next(
+                    family
+                    for family in args.families
+                    if any(config.model_family == family for config in incomplete)
+                )
+            ]
+        command = _matrix_command(args, launch_families)
         result = run_command(command, check=False)
         remaining = sum(not _run_is_complete(config) for config in configs)
         print(
@@ -124,6 +134,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--poll-seconds", type=float, default=30.0)
     parser.add_argument("--restart-delay", type=float, default=30.0)
     parser.add_argument("--max-launches", type=int, default=0)
+    parser.add_argument("--sequential-families", action="store_true")
     args = parser.parse_args(argv)
     if args.wait_for_pid is not None and args.wait_for_pid <= 0:
         parser.error("--wait-for-pid must be positive")
