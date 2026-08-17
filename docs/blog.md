@@ -320,6 +320,15 @@ the non-overlapping useful wall time is 3.525 hours, and the canonical 392-row W
 under content hash `5fe30f45c960`. Canonical histories exclude Trainer's resume-local terminal
 runtime/loss summaries and instead publish useful wall time and throughput reconstructed from the
 audited non-overlapping timing ledger.
+
+To prioritize the higher-risk LateOn/Muon path, a subsequent controlled handoff occurred only after
+LateOn Muon `1e-4` checkpoint 1,563 and DenseOn Muon `1e-3` checkpoint 782 had passed the expanded
+deep audit. Work performed after those durable boundaries was deliberately discarded. The two
+accepted LateOn segments through step 1,563 total 11,877.64 seconds; restart gaps and repeated steps
+are excluded. Both four-GPU pools then switched to LateOn: `1e-4` resumed from step 1,563 on its
+original pool while `3e-4` started from the pinned base on the other pool. The DenseOn `1e-3`
+checkpoint remains resumable, and its atomic timing ledger retains the accepted `0–782` segment.
+
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
