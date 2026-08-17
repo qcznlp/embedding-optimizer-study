@@ -241,12 +241,13 @@ physical device and at the same wall-clock time:
 | 8 | 2,717 | 2 (`a2:00`) | NCCL watchdog | 43 |
 | 9 | 303 | 4 (`0001:09:00`) | NCCL watchdog | 13, then 43 |
 | 10 | 3,345 | 1 (`7e:00`) | Newton–Schulz `addmm` / cuBLAS | 43 |
+| 11 | 1,899 | 7 (`0001:c7:00`) | Muon momentum-buffer `lerp_` and NCCL watchdog | 43 |
 
 NVIDIA classifies [Xid 13](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html)
 as a graphics-engine exception: typically an application/CUDA fault such as an out-of-bounds access
 or illegal instruction, while rare driver or hardware causes remain possible. Xid 43 records the
 resulting software-induced channel termination and says the GPU remains healthy. The repeated pattern
-across five physical GPUs, identical Xid-13 exception registers on four devices, stable concurrent
+across six physical GPUs, identical Xid-13 exception registers on four devices, stable concurrent
 AdamW execution before fail-fast termination, and zero volatile corrected or uncorrected ECC counts
 therefore favor an application/kernel-path explanation over a single-card hardware fault. They still
 do not identify which asynchronously executed operation originated the exception.
@@ -256,8 +257,9 @@ DenseOn's reported throughput sums its non-overlapping accepted segments through
 final segment after that checkpoint; LateOn applies the same rule. Repeated post-checkpoint steps,
 failed pre-checkpoint attempts, restart initialization, and downtime are retained as infrastructure
 evidence but excluded from optimizer-throughput comparisons. After retaining the Python/CUDA stacks,
-the recovery supervisor and its newly spawned workers disable multi-gigabyte ELF core dumps; this
-changes neither training nor optimizer execution. This accounting gives the completed DenseOn Muon
+the active matrix and all of its training descendants have their core-file limits set to zero for
+subsequent failures; this changes neither training nor optimizer execution. This accounting gives
+the completed DenseOn Muon
 `1e-4` run 3.512 hours of useful wall time; its content-addressed canonical W&B history contains 392
 strictly ordered rows through step 3,907. The completed LateOn AdamW `3e-6` run likewise has 8.291
 hours of useful wall time and 16.751 examples/s after excluding duplicated recovery work; its deep
@@ -304,8 +306,9 @@ relative L2 change from checkpoint 782 to 1,563 was 0.00383 for Muon-routed hidd
 also verifies group algorithms, hyperparameters, scheduled learning rates, state fields and shapes,
 AdamW step counters, scheduler base/last learning rates, scheduler step count, finite model tensors,
 and a distinct model payload at each checkpoint. All 40 checkpoints from the eight completed runs
-passed this expanded audit. The only traceback in the LateOn log is the expected `SIGTERM` record
-from the controlled restart at checkpoint 782, not a PyLate, CUDA, or Muon failure. The resumed DenseOn run
+passed this expanded audit. Through the validated LateOn checkpoint 1,563, the only traceback in its
+log was the expected `SIGTERM` record from the controlled restart at checkpoint 782, not a PyLate,
+CUDA, or Muon failure. The resumed DenseOn run
 subsequently reached checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads
 also passed the deep audit. Timing accounting retains the non-overlapping segment through step 782
 and excludes duplicated post-checkpoint steps and restart initialization. That DenseOn attempt later
@@ -334,6 +337,19 @@ gradient-norm differences were 0.00243 and 0.00341, respectively, with a maximum
 0.0127. Checkpoint/RNG restoration therefore preserves the intended trajectory and data contract but,
 as expected for the FlashAttention/TF32/bfloat16 path, does not provide bitwise replay. Only the new
 post-resume branch contributes to checkpoints, timing, W&B canonical history, and evaluation.
+
+That new LateOn Muon `1e-4` branch later encountered its first CUDA failure at optimizer step 1,899.
+Rank 3 (physical GPU 7, PCI `0001:c7:00`) raised `CUDA error: unspecified launch failure` while the
+Python stack was inside PyTorch's native `_single_tensor_muon` momentum-buffer `lerp_`; the NCCL
+watchdog then terminated the distributed job, and the driver recorded a same-device Xid 43. Because
+CUDA reports asynchronously, the `lerp_` frame may have observed a fault from the preceding
+bfloat16 Newton–Schulz operation rather than originated it. GPU recovery status remained `None`, all
+volatile and aggregate corrected/uncorrected ECC counters remained zero, and the isolated LateOn
+Muon `3e-4` process continued. The scheduler requeued the same `1e-4` configuration and resumed the
+deep-validated checkpoint 1,563; steps 1,564–1,899 from the failed attempt are retained as fault
+evidence but excluded from accepted timing and final checkpoints. This extends the same native Muon
+failure pattern to LateOn and a sixth physical GPU, while providing no evidence of a PyLate MaxSim
+or late-interaction loss failure.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
