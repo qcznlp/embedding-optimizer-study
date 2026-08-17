@@ -1925,6 +1925,37 @@ def _plot(summary: list[dict], output_dir: Path) -> None:
         fig.savefig(figure_dir / f"{family}-training-dynamics.png", dpi=180)
         plt.close(fig)
 
+        optimizers = sorted(subset.optimizer.unique())
+        fig, axes = plt.subplots(
+            1,
+            len(optimizers),
+            figsize=(5 * len(optimizers), 4.5),
+            sharex=True,
+            sharey=True,
+            squeeze=False,
+        )
+        for axis, optimizer in zip(axes[0], optimizers):
+            optimizer_rows = subset[subset.optimizer == optimizer]
+            for (_run_id, learning_rate), values in optimizer_rows.groupby(
+                ["run_id", "learning_rate"]
+            ):
+                ordered = values.sort_values("fraction")
+                axis.plot(
+                    ordered.fraction,
+                    ordered.mean_ndcg_at_10,
+                    marker="o",
+                    label=f"LR {_format_lr(float(learning_rate))}",
+                )
+            axis.set_title({"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}[optimizer])
+            axis.set_xlabel("Training fraction")
+            axis.grid(alpha=0.25)
+            axis.legend(fontsize="small")
+        axes[0][0].set_ylabel("Mean decontaminated BEIR nDCG@10")
+        fig.suptitle(f"{family.capitalize()} five-checkpoint dynamics for every LR run")
+        fig.tight_layout()
+        fig.savefig(figure_dir / f"{family}-training-dynamics-by-run.png", dpi=180)
+        plt.close(fig)
+
         final = subset[subset.stage == 5]
         fig, axis = plt.subplots(figsize=(8, 5))
         for optimizer, values in final.groupby("optimizer"):
@@ -2092,6 +2123,13 @@ def _render_results(
             "\n".join(winners),
             "![Dense training dynamics](../reports/figures/dense-training-dynamics.png)\n\n"
             "![Late-interaction training dynamics](../reports/figures/late-training-dynamics.png)",
+            "### Five-checkpoint dynamics for every learning-rate run\n\n"
+            "Each panel below shows all four LR configurations rather than an optimizer-level "
+            "average; every curve contains the formal 20%, 40%, 60%, 80%, and 100% checkpoints.\n\n"
+            "![Dense per-run training dynamics]"
+            "(../reports/figures/dense-training-dynamics-by-run.png)\n\n"
+            "![Late-interaction per-run training dynamics]"
+            "(../reports/figures/late-training-dynamics-by-run.png)",
             "### Dynamics of each optimizer's best final configuration\n\n" + dynamics_table,
             "### Paired best-config task effects\n\n" + paired_table,
             "![Dense learning-rate sensitivity](../reports/figures/dense-lr-sensitivity.png)\n\n"

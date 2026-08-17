@@ -348,6 +348,8 @@ def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
     assert "Paired bootstrap 95% CI" in rendered
     assert "../reports/figures/dense-training-dynamics.png" in rendered
     assert "../reports/figures/late-training-dynamics.png" in rendered
+    assert "../reports/figures/dense-training-dynamics-by-run.png" in rendered
+    assert "../reports/figures/late-training-dynamics-by-run.png" in rendered
     assert "../reports/figures/dense-lr-sensitivity.png" in rendered
     assert "../reports/figures/late-lr-sensitivity.png" in rendered
     muon = next(
@@ -399,6 +401,7 @@ def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
                             "model_family": family,
                             "optimizer": optimizer,
                             "learning_rate": learning_rate,
+                            "run_id": f"{optimizer}-lr{learning_rate:.0e}",
                             "stage": stage,
                             "fraction": stage / 5,
                             "mean_ndcg_at_10": 0.3 + optimizer_index * 0.01 + stage * 0.005,
@@ -410,6 +413,8 @@ def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
     expected = (
         "dense-training-dynamics.png",
         "late-training-dynamics.png",
+        "dense-training-dynamics-by-run.png",
+        "late-training-dynamics-by-run.png",
         "dense-lr-sensitivity.png",
         "late-lr-sensitivity.png",
     )
