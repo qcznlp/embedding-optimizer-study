@@ -393,7 +393,7 @@ We selected the latter because it preserves Muon's bfloat16 internal representat
 five iterations, normalization, momentum, learning-rate adjustment, and parameter update. Only the
 operator decomposition differs from pinned PyTorch; it is also the already-pinned Newton–Schulz
 path used by this repository's NorMuon implementation. The final repository implementation passed
-a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 84
+a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 85
 passing tests. An initial real-model replay was discarded after its shortened `max_steps=1905`
 horizon correctly exposed a different LR schedule. We added a diagnostic stop callback and repeated
 the replay while preserving the formal 3,907-step scheduler. It resumed the original LateOn `1e-4`
@@ -416,6 +416,15 @@ runs: 6/24 runs and 30/120 checkpoints, with 0/1,680 checkpoint-task evaluations
 checkpoints must record `ns_implementation=unfused-bfloat16-v1` and pass the same deep audit before
 they can increase those counts. The W&B source IDs for those optimizers use a separate `study-v3`
 namespace, preventing canonical histories from silently combining pre- and post-mitigation rows.
+
+The first two restarted formal LateOn Muon runs (`1e-4` and `3e-4`) both crossed step 633, the
+earliest failure point in the quarantined native-`addmm` LateOn histories, without a CUDA, NCCL, or
+new Xid event. Each then wrote checkpoint 782. Independent deep validation returned zero problems
+for both payloads: model weights and every optimizer tensor were finite, the optimizer groups
+recorded `ns_implementation=unfused-bfloat16-v1`, the scheduler and Trainer states ended at the
+declared step, and all four rank-local RNG states were present and loadable. These two accepted
+checkpoints raise formal coverage to 32/120 while the completed-run count remains 6/24 and evaluation
+coverage remains 0/1,680. Training continues from these same audited histories.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
