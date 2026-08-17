@@ -137,6 +137,9 @@ def _training_arguments(config: RunConfig) -> SentenceTransformerTrainingArgumen
         dataloader_pin_memory=True,
         dataloader_persistent_workers=config.dataloader_workers > 0,
         dataloader_prefetch_factor=4 if config.dataloader_workers > 0 else None,
+        # Keep the serialized runtime contract explicit instead of relying on
+        # SentenceTransformers to mutate this setting after it detects DDP.
+        dataloader_drop_last=True,
         train_sampling_strategy="group_by_length",
         length_column_name="length",
         remove_unused_columns=False,
