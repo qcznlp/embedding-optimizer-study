@@ -328,6 +328,12 @@ accepted LateOn segments through step 1,563 total 11,877.64 seconds; restart gap
 are excluded. Both four-GPU pools then switched to LateOn: `1e-4` resumed from step 1,563 on its
 original pool while `3e-4` started from the pinned base on the other pool. The DenseOn `1e-3`
 checkpoint remains resumable, and its atomic timing ledger retains the accepted `0–782` segment.
+The discarded post-1,563 branch also provides a controlled replay probe. Across the first seven
+repeated ten-step log windows, the linear-scheduler LR was identical; the mean absolute loss and
+gradient-norm differences were 0.00243 and 0.00341, respectively, with a maximum loss difference of
+0.0127. Checkpoint/RNG restoration therefore preserves the intended trajectory and data contract but,
+as expected for the FlashAttention/TF32/bfloat16 path, does not provide bitwise replay. Only the new
+post-resume branch contributes to checkpoints, timing, W&B canonical history, and evaluation.
 
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
