@@ -8,6 +8,8 @@ from embed_optim.config import (
     RunConfig,
     _resolve_matrix_path,
     load_matrix,
+    matrix_runtime_spec,
+    resolve_matrix_path,
     source_wandb_run_id,
 )
 
@@ -32,7 +34,17 @@ def test_bundled_default_matrix_falls_back_to_wheel_data(tmp_path, monkeypatch):
     installed.write_text("bundled: true\n")
 
     assert _resolve_matrix_path("configs/experiment.yaml", prefix) == installed
+    assert resolve_matrix_path("configs/experiment.yaml", prefix) == installed
     assert _resolve_matrix_path("custom.yaml", prefix) == Path("custom.yaml")
+
+
+def test_only_formal_matrix_declares_runtime_contract():
+    root = Path(__file__).parents[1]
+
+    assert matrix_runtime_spec(root / "configs" / "experiment.yaml") == (
+        root / "configs" / "formal_runtime.json"
+    )
+    assert matrix_runtime_spec(root / "configs" / "smoke.yaml") is None
 
 
 def test_muon_source_wandb_id_isolated_from_native_history():

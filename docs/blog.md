@@ -393,7 +393,7 @@ We selected the latter because it preserves Muon's bfloat16 internal representat
 five iterations, normalization, momentum, learning-rate adjustment, and parameter update. Only the
 operator decomposition differs from pinned PyTorch; it is also the already-pinned Newton–Schulz
 path used by this repository's NorMuon implementation. The final repository implementation passed
-a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 100
+a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 103
 passing tests. An initial real-model replay was discarded after its shortened `max_steps=1905`
 horizon correctly exposed a different LR schedule. We added a diagnostic stop callback and repeated
 the replay while preserving the formal 3,907-step scheduler. It resumed the original LateOn `1e-4`
@@ -506,6 +506,8 @@ PyTorch 2.9.1+cu129 interpreter as
 training for both its coordinator and workers; the repository's development/CI environment is not
 substituted for that runtime. `configs/formal_runtime.json` freezes the complete package/CUDA-build
 contract, and `embed-optim-verify-runtime` fails before work if the selected interpreter differs.
+The formal matrix, every direct training worker, and the evaluation coordinator all invoke this gate
+automatically; smoke and CI matrices omit the formal-runtime declaration.
 
 ## References
 

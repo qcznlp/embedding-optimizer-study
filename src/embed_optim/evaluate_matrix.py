@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .aggregate import audit_dataset_artifacts, audit_training_artifacts
-from .config import RunConfig, load_matrix
+from .config import RunConfig, load_matrix, matrix_runtime_spec
 from .decontamination import DECONTAMINATED_TASK_NAMES, decontaminated_corpus_size
 
 EVALUATION_PACKAGES = (
@@ -150,6 +150,23 @@ def _validate_worker_runtime(python: str, models: dict[str, list[Path]]) -> dict
         )
     print(f"evaluation interpreter: {python} | versions={json.dumps(versions, sort_keys=True)}")
     return versions
+
+
+def _validate_formal_runtime(python: str, matrix: str | Path) -> None:
+    spec = matrix_runtime_spec(matrix)
+    if spec is None:
+        return
+    result = subprocess.run(
+        [python, "-m", "embed_optim.runtime", "--spec", str(spec.resolve())],
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    if result.returncode:
+        details = result.stdout.strip() or result.stderr.strip()
+        raise RuntimeError(f"Formal evaluation runtime validation failed: {details}")
+    print(f"formal evaluation runtime verified: {python}", flush=True)
 
 
 def _record_runtime(
@@ -359,6 +376,7 @@ def run_evaluation(args: argparse.Namespace) -> int:
     models = _selected_models(args)
     _validate_training_inputs(args)
     worker_python = _worker_python(getattr(args, "worker_python", None))
+    _validate_formal_runtime(worker_python, args.matrix)
     results = Path(args.results_root).resolve()
     log_dir = Path(args.log_dir).resolve()
     results.mkdir(parents=True, exist_ok=True)

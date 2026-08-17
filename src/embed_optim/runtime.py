@@ -74,6 +74,15 @@ def runtime_problems(spec: dict[str, Any], actual: dict[str, Any]) -> list[str]:
     return problems
 
 
+def verify_runtime_spec(path: str | Path) -> dict[str, Any]:
+    spec = load_runtime_spec(path)
+    actual = runtime_snapshot(list(spec["packages"]))
+    problems = runtime_problems(spec, actual)
+    if problems:
+        raise RuntimeError("Formal runtime mismatch: " + "; ".join(problems))
+    return actual
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Verify an interpreter against the frozen formal experiment runtime"

@@ -60,7 +60,9 @@ formal training or evaluation, use the provisioned CUDA 12.9 environment and ver
 
 The command prints the complete observed runtime and exits nonzero on any Python, Torch CUDA-build,
 training-library, or evaluation-library mismatch. Use that same verified interpreter for training,
-the matrix supervisor, the evaluation coordinator, and `--worker-python`.
+the matrix supervisor, the evaluation coordinator, and `--worker-python`. The formal matrix,
+individual formal training workers, and evaluation coordinator also run this verification
+automatically; smoke and stress configs remain portable by omitting `formal_runtime`.
 
 The package can also be installed with pip:
 

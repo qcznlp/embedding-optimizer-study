@@ -27,7 +27,13 @@ from .callbacks import (
     sanitize_pylate_checkpoint,
 )
 from .collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
-from .config import RunConfig, load_matrix, save_resolved_config, source_wandb_run_id
+from .config import (
+    RunConfig,
+    load_matrix,
+    matrix_runtime_spec,
+    save_resolved_config,
+    source_wandb_run_id,
+)
 from .losses import ExplicitDenseInfoNCELoss, ExplicitLateInfoNCELoss
 from .optimizers import build_optimizer
 from .pylate_compat import configure_pylate_compatibility
@@ -301,6 +307,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    if runtime_spec := matrix_runtime_spec(args.matrix):
+        from .runtime import verify_runtime_spec
+
+        runtime = verify_runtime_spec(runtime_spec)
+        if int(os.environ.get("RANK", "0")) == 0:
+            print(
+                f"formal runtime verified: {runtime['python_executable']} | "
+                f"torch={runtime['packages']['torch']} cuda={runtime['torch_cuda']}",
+                flush=True,
+            )
     matches = [
         config
         for config in load_matrix(args.matrix)

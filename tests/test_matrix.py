@@ -211,6 +211,7 @@ def test_failed_job_is_retried_before_later_family_config(monkeypatch, tmp_path)
 
     monkeypatch.setattr("embed_optim.matrix.load_matrix", lambda _: [first, second, third])
     monkeypatch.setattr("embed_optim.matrix._complete", lambda _: False)
+    monkeypatch.setattr("embed_optim.matrix.matrix_runtime_spec", lambda _: None)
     monkeypatch.setattr("embed_optim.matrix._launch", fake_launch)
     monkeypatch.setattr("embed_optim.matrix.time.monotonic", lambda: 60.0)
     monkeypatch.setattr("embed_optim.matrix.time.sleep", lambda _: None)

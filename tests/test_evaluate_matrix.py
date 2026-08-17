@@ -42,6 +42,7 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
     monkeypatch.setattr(evaluate_matrix, "_validate_training_inputs", lambda args: None)
     monkeypatch.setattr(evaluate_matrix.time, "sleep", lambda seconds: None)
     monkeypatch.setattr(evaluate_matrix, "_worker_python", lambda executable=None: "/system/python")
+    monkeypatch.setattr(evaluate_matrix, "_validate_formal_runtime", lambda python, matrix: None)
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_sources", lambda python, sources: None)
 
@@ -132,6 +133,38 @@ def test_evaluation_preflight_requires_deep_validated_training_inputs(monkeypatc
     )
     with pytest.raises(RuntimeError, match="checkpoint payload is corrupt"):
         evaluate_matrix._validate_training_inputs(SimpleNamespace())
+
+
+def test_evaluation_formal_runtime_uses_worker_interpreter(tmp_path, monkeypatch):
+    matrix = tmp_path / "experiment.yaml"
+    spec = tmp_path / "formal_runtime.json"
+    matrix.write_text("formal_runtime: formal_runtime.json\n")
+    spec.write_text("{}")
+    observed = {}
+
+    def run(command, **kwargs):
+        observed.update(command=command, kwargs=kwargs)
+        return SimpleNamespace(returncode=0, stdout='{"valid": true}', stderr="")
+
+    monkeypatch.setattr(evaluate_matrix.subprocess, "run", run)
+    evaluate_matrix._validate_formal_runtime("/formal/python", matrix)
+
+    assert observed["command"] == [
+        "/formal/python",
+        "-m",
+        "embed_optim.runtime",
+        "--spec",
+        str(spec),
+    ]
+    assert observed["kwargs"]["timeout"] == 60
+
+    monkeypatch.setattr(
+        evaluate_matrix.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=1, stdout="mismatch", stderr=""),
+    )
+    with pytest.raises(RuntimeError, match="mismatch"):
+        evaluate_matrix._validate_formal_runtime("/wrong/python", matrix)
 
 
 def test_evaluation_selection_rejects_unknown_and_empty_run_sets(monkeypatch):

@@ -43,3 +43,29 @@ def test_stop_after_step_preserves_horizon_and_requests_durable_save():
             SimpleNamespace(global_step=1905, max_steps=3907),
             control,
         )
+
+
+def test_formal_training_verifies_declared_runtime(monkeypatch):
+    config = SimpleNamespace(model_family="late", run_id="muon-test")
+    observed = {}
+    monkeypatch.setattr(train, "matrix_runtime_spec", lambda path: Path("runtime.json"))
+    monkeypatch.setattr(train, "load_matrix", lambda path: [config])
+    monkeypatch.setattr(
+        "embed_optim.runtime.verify_runtime_spec",
+        lambda path: {
+            "python_executable": "/formal/python",
+            "packages": {"torch": "2.9.1+cu129"},
+            "torch_cuda": "12.9",
+        },
+    )
+    monkeypatch.setattr(
+        train,
+        "run_training",
+        lambda selected, resume_from_checkpoint=None: observed.update(
+            config=selected, resume=resume_from_checkpoint
+        ),
+    )
+
+    train.main(["--matrix", "matrix.yaml", "--model-family", "late", "--run-id", "muon-test"])
+
+    assert observed == {"config": config, "resume": None}

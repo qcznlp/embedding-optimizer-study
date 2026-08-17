@@ -102,8 +102,12 @@ def _resolve_matrix_path(path: str | Path, prefix: Path | None = None) -> Path:
     return installed if installed.is_file() else path
 
 
+def resolve_matrix_path(path: str | Path, prefix: Path | None = None) -> Path:
+    return _resolve_matrix_path(path, prefix)
+
+
 def load_matrix(path: str | Path) -> list[RunConfig]:
-    path = _resolve_matrix_path(path)
+    path = resolve_matrix_path(path)
     raw = yaml.safe_load(path.read_text())
     common = raw.get("common", {})
     models = raw["models"]
@@ -121,6 +125,20 @@ def load_matrix(path: str | Path) -> list[RunConfig]:
             }
             runs.append(RunConfig.from_dict(values))
     return runs
+
+
+def matrix_runtime_spec(path: str | Path) -> Path | None:
+    """Return a matrix's optional formal-runtime spec, resolved beside the matrix."""
+
+    matrix_path = resolve_matrix_path(path)
+    raw = yaml.safe_load(matrix_path.read_text())
+    value = raw.get("formal_runtime")
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"Invalid formal_runtime in {matrix_path}")
+    runtime_path = Path(value)
+    return runtime_path if runtime_path.is_absolute() else matrix_path.parent / runtime_path
 
 
 def save_resolved_config(config: RunConfig, path: str | Path) -> None:

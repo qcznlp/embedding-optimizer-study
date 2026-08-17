@@ -10,7 +10,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from .config import RunConfig, load_matrix
+from .config import RunConfig, load_matrix, matrix_runtime_spec, resolve_matrix_path
 
 
 @dataclass
@@ -253,7 +253,16 @@ def _complete(config: RunConfig) -> bool:
 
 
 def run_matrix(args: argparse.Namespace) -> int:
-    matrix_path = Path(args.matrix).resolve()
+    matrix_path = resolve_matrix_path(args.matrix).resolve()
+    if runtime_spec := matrix_runtime_spec(matrix_path):
+        from .runtime import verify_runtime_spec
+
+        runtime = verify_runtime_spec(runtime_spec)
+        print(
+            f"formal runtime verified: {runtime['python_executable']} | "
+            f"torch={runtime['packages']['torch']} cuda={runtime['torch_cuda']}",
+            flush=True,
+        )
     configs = [
         config
         for config in load_matrix(matrix_path)

@@ -5,10 +5,9 @@ import os
 import subprocess
 import sys
 import time
-from pathlib import Path
 from typing import Callable
 
-from .config import RunConfig, load_matrix
+from .config import RunConfig, load_matrix, resolve_matrix_path
 from .matrix import _run_is_complete
 
 
@@ -41,7 +40,7 @@ def _matrix_command(args: argparse.Namespace, families: list[str] | None = None)
         "-m",
         "embed_optim.matrix",
         "--matrix",
-        str(Path(args.matrix).resolve()),
+        str(resolve_matrix_path(args.matrix).resolve()),
         "--families",
         *families,
         "--gpus-a",
