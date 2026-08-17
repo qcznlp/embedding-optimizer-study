@@ -259,9 +259,12 @@ changes neither training nor optimizer execution. This accounting gives the comp
 strictly ordered rows through step 3,907. The completed LateOn AdamW `3e-6` run likewise has 8.291
 hours of useful wall time and 16.751 examples/s after excluding duplicated recovery work; its deep
 audit verified all five checkpoints, and its content-addressed canonical W&B history also contains
-392 rows through step 3,907. An armed handoff supervisor switches subsequent matrix retries to
-failure-isolated GPU pools after the current matrix process exits, so a fault in one family will no
-longer terminate a healthy job in the other family.
+392 rows through step 3,907. After a deep audit of DenseOn Muon `3e-4` checkpoint 1,563, a
+user-directed priority handoff moved Muon ahead of the remaining AdamW runs without changing any run
+configuration or the 24-run contract. The handoff also replaced the old cross-pool fail-fast process
+with failure-isolated GPU pools, resumed DenseOn from the audited checkpoint, and started the formal
+LateOn Muon `1e-4` run. That LateOn run passed optimizer steps 52 and 388—the two early locations at
+which DenseOn had previously reported direct cuBLAS failures—without a CUDA, NCCL, or Xid event.
 
 ## Limitations
 
