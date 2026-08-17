@@ -465,6 +465,13 @@ downtime and duplicated work. Through checkpoint 1,563, Muon `1e-4` and `3e-4` t
 reduction at higher learning rates, not faster step execution. This comparison remains partial until
 all four learning rates for every optimizer finish and the final timing audit is complete.
 
+Muon does provide a material checkpoint-footprint advantage. At step 1,563, both LateOn AdamW
+checkpoints contain a 1,230,780,939-byte optimizer state, whereas both Muon checkpoints contain
+789,544,331 bytes: a 35.85% reduction. Because the model and remaining payload are common, the full
+checkpoint falls from approximately 1.850 GB to 1.409 GB, a 23.85% reduction or 420.8 MiB saved per
+checkpoint. This improves storage and optimizer-state I/O, even though steady-state step throughput
+is currently at parity.
+
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
