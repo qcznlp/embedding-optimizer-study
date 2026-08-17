@@ -221,7 +221,10 @@ checkpoint 3,126 states. That retry reached step 3,375 before a seventh failure 
 physical GPU. In this event the application traceback directly reported
 `CUBLAS_STATUS_EXECUTION_FAILED` from the native bfloat16 Newton–Schulz `torch.addmm`, alongside the
 NCCL watchdog and same-time Xid 13 followed by Xid 43. The supervisor again resumed the independently
-validated checkpoint 3,126 states without changing the optimizer or runtime.
+validated checkpoint 3,126 states without changing the optimizer or runtime. The following resume
+passed every prior interruption point and completed step 3,907. A full post-run audit loaded all five
+model/optimizer/scheduler checkpoints, checked all four rank RNG states at each stage, validated the
+final model and Trainer state, and reported five of five checkpoints with zero errors.
 
 The kernel log independently correlates every interruption with an NVIDIA driver Xid on the same
 physical device and at the same wall-clock time:
@@ -251,7 +254,11 @@ final segment after that checkpoint; LateOn applies the same rule. Repeated post
 failed pre-checkpoint attempts, restart initialization, and downtime are retained as infrastructure
 evidence but excluded from optimizer-throughput comparisons. After retaining the Python/CUDA stacks,
 the recovery supervisor and its newly spawned workers disable multi-gigabyte ELF core dumps; this
-changes neither training nor optimizer execution.
+changes neither training nor optimizer execution. This accounting gives the completed DenseOn Muon
+`1e-4` run 3.512 hours of useful wall time; its content-addressed canonical W&B history contains 392
+strictly ordered rows through step 3,907. An armed handoff supervisor switches subsequent matrix
+retries to failure-isolated GPU pools after the current matrix process exits, so a fault in one
+family will no longer terminate a healthy job in the other family.
 
 ## Limitations
 
