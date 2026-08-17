@@ -335,14 +335,23 @@ gradient-norm differences were 0.00243 and 0.00341, respectively, with a maximum
 as expected for the FlashAttention/TF32/bfloat16 path, does not provide bitwise replay. Only the new
 post-resume branch contributes to checkpoints, timing, W&B canonical history, and evaluation.
 
-PyLate 1.6 emits initialization warnings about the model's construction dtype, DDP
-`drop_last`, and its legacy `tokenize` entry point. These are compatibility notices rather than
-silent runtime changes in this sweep. The model is deliberately constructed with float32 master
-parameters and enters FlashAttention under bfloat16 autocast. Both audited LateOn Muon checkpoints
+The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
+construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
+notices rather than silent runtime changes. The model is deliberately constructed with float32
+master parameters and enters FlashAttention under bfloat16 autocast. Both audited checkpoints
 record `bf16=True`, `tf32=True`, `dataloader_drop_last=True`, a per-device batch of 8, gradient
-accumulation of 4, and identical model/data seeds of 42. The 500,000-row dataset divides evenly
-across four ranks, so enabling `drop_last` discards no training example. The explicit nine-column
-collator and loss continue to enforce one query, one positive, and seven query-local negatives.
+accumulation of 4, and identical model/data seeds of 42. The runner now also pins `drop_last=True`
+before Trainer initialization instead of relying on SentenceTransformers' DDP mutation. The
+500,000-row dataset divides evenly across four ranks, so this discards no training example. The
+explicit nine-column collator and loss continue to enforce one query, one positive, and seven
+query-local negatives.
+
+As a pre-checkpoint runtime diagnostic, we compared identical logged batch windows against the
+completed LateOn AdamW `3e-6` run. Muon `3e-4` averaged 0.8758 loss over steps 1–180 versus 0.9700
+for AdamW, with maximum gradient norms of 2.358 and 2.380. The resumed Muon `1e-4` branch averaged
+0.3030 loss over steps 1,570–1,740 versus 0.3929 for AdamW, with maximum gradient norms of 0.936 and
+0.941. This rules out an obvious silent divergence in the two active paths; it is not a retrieval
+quality comparison and does not replace the checkpoint-level decontaminated BEIR evaluation.
 
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
