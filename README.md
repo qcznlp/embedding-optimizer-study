@@ -233,7 +233,9 @@ Each successful checkpoint atomically appends a non-overlapping maximum-rank seg
 `accepted_timing.json`. Strict aggregation verifies step continuity, positive finite durations, the
 recorded sum, and the final step before using that ledger for throughput. Work after the latest
 durable checkpoint on a failed attempt, restart initialization, and downtime are therefore excluded
-without relying on a human to reconstruct every retry.
+without relying on a human to reconstruct every retry. Historical work retained before the atomic
+ledger existed must provide timezone-aware start/end evidence for each segment; strict audit checks
+non-overlap, timestamp-derived duration, checkpoint boundaries, and the exact recorded sum.
 
 ## Performance engineering
 

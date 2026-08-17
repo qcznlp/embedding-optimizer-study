@@ -334,7 +334,9 @@ durable checkpoint. The final audit requires contiguous accepted step ranges, fi
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
 before this mechanism was enabled remain backed by W&B `startedAt` values and checkpoint Trainer-state
 mtimes; this also restores DenseOn Muon `3e-4` steps 1,564–2,345 that would otherwise have been
-omitted from its eventual throughput denominator.
+omitted from its eventual throughput denominator. These historical adjustments now share one schema;
+strict audit parses every timezone-aware timestamp, recomputes each duration, rejects overlap or an
+undeclared terminal checkpoint, and proves that the segment sum equals the throughput adjustment.
 
 ## Limitations
 

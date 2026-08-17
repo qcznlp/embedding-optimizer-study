@@ -11,6 +11,7 @@ import random
 import re
 import statistics
 from collections import Counter, defaultdict
+from datetime import datetime
 from pathlib import Path
 
 from .collators import TEXT_COLUMNS
@@ -943,6 +944,78 @@ def _accepted_timing_problems(
     return problems
 
 
+def _timing_adjustment_problems(path: Path, checkpoint_steps: list[int]) -> list[str]:
+    """Validate manually retained pre-ledger work against timestamp evidence."""
+
+    try:
+        payload = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        return [f"invalid timing adjustment ({error})"]
+    segments = payload.get("segments")
+    if not isinstance(segments, list) or not segments:
+        return ["timing adjustment has no evidence segments"]
+
+    problems: list[str] = []
+    total = 0.0
+    previous_end: datetime | None = None
+    previous_step = 0
+    for index, segment in enumerate(segments):
+        if not isinstance(segment, dict):
+            problems.append(f"timing adjustment segment {index} is not an object")
+            continue
+        try:
+            start = datetime.fromisoformat(str(segment["started_at_utc"]).replace("Z", "+00:00"))
+            end = datetime.fromisoformat(
+                str(segment["checkpoint_completed_at_utc"]).replace("Z", "+00:00")
+            )
+            wall_time = float(segment["wall_time_seconds"])
+            included_step = int(segment["included_through_checkpoint_step"])
+        except (KeyError, TypeError, ValueError) as error:
+            problems.append(f"timing adjustment segment {index} is invalid ({error})")
+            continue
+        if start.tzinfo is None or end.tzinfo is None:
+            problems.append(f"timing adjustment segment {index} timestamps lack timezones")
+        if end <= start:
+            problems.append(f"timing adjustment segment {index} has non-positive duration")
+        if previous_end is not None and start < previous_end:
+            problems.append(f"timing adjustment segment {index} overlaps its predecessor")
+        if included_step not in checkpoint_steps:
+            problems.append(
+                f"timing adjustment segment {index} ends at undeclared checkpoint {included_step}"
+            )
+        if included_step <= previous_step:
+            problems.append(
+                f"timing adjustment segment {index} checkpoint is not strictly increasing"
+            )
+        observed_duration = (end - start).total_seconds()
+        if (
+            not math.isfinite(wall_time)
+            or wall_time <= 0
+            or not math.isclose(wall_time, observed_duration, rel_tol=1e-9, abs_tol=1e-3)
+        ):
+            problems.append(
+                f"timing adjustment segment {index} wall time differs from its timestamps"
+            )
+        total += wall_time
+        previous_end = end
+        previous_step = included_step
+
+    recorded_total = payload.get("prior_training_wall_time_seconds")
+    if (
+        isinstance(recorded_total, bool)
+        or not isinstance(recorded_total, (int, float))
+        or not math.isfinite(float(recorded_total))
+        or not math.isclose(float(recorded_total), total, rel_tol=1e-9, abs_tol=1e-6)
+    ):
+        problems.append("timing adjustment total does not match its evidence segments")
+    if payload.get("included_through_checkpoint_step") != previous_step:
+        problems.append("timing adjustment terminal checkpoint does not match its segments")
+    for field in ("evidence", "reason"):
+        if not isinstance(payload.get(field), str) or not payload[field].strip():
+            problems.append(f"timing adjustment {field} is missing")
+    return problems
+
+
 def audit_training_artifacts(
     configs: list[RunConfig],
     *,
@@ -1085,6 +1158,8 @@ def audit_training_artifacts(
             timing_adjustment_path = output / "timing_adjustment.json"
             expected_timing_start = 0
             if timing_adjustment_path.is_file():
+                adjustment_problems = _timing_adjustment_problems(timing_adjustment_path, steps)
+                errors.extend(f"{label}: {problem}" for problem in adjustment_problems)
                 try:
                     expected_timing_start = int(
                         json.loads(timing_adjustment_path.read_text())[

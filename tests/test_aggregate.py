@@ -21,6 +21,7 @@ from embed_optim.aggregate import (
     _replace_marked,
     _run_settings_scope_matches,
     _system_summaries,
+    _timing_adjustment_problems,
     _trajectory_auc,
     audit_dataset_artifacts,
     audit_experiment_contract,
@@ -102,6 +103,45 @@ def test_optimizer_contract_validates_mixed_muon_topology():
     optimizer["param_groups"][0]["lr"] *= 2
     assert "parameter group 0 lr" in _optimizer_contract_problem(
         optimizer, config, step, final_step
+    )
+
+
+def test_timing_adjustment_requires_nonoverlapping_timestamp_evidence(tmp_path):
+    path = tmp_path / "timing_adjustment.json"
+    payload = {
+        "prior_training_wall_time_seconds": 180.0,
+        "included_through_checkpoint_step": 4,
+        "segments": [
+            {
+                "started_at_utc": "2026-01-01T00:00:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:01:00Z",
+                "wall_time_seconds": 60.0,
+                "included_through_checkpoint_step": 2,
+            },
+            {
+                "started_at_utc": "2026-01-01T00:02:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:04:00Z",
+                "wall_time_seconds": 120.0,
+                "included_through_checkpoint_step": 4,
+            },
+        ],
+        "evidence": "W&B start times and checkpoint mtimes",
+        "reason": "Retain only useful work through durable checkpoints",
+    }
+    path.write_text(json.dumps(payload))
+    assert _timing_adjustment_problems(path, [2, 4, 6, 8, 10]) == []
+
+    payload["prior_training_wall_time_seconds"] = 181.0
+    path.write_text(json.dumps(payload))
+    assert "timing adjustment total does not match" in " ".join(
+        _timing_adjustment_problems(path, [2, 4, 6, 8, 10])
+    )
+
+    payload["prior_training_wall_time_seconds"] = 180.0
+    payload["segments"][1]["started_at_utc"] = "2026-01-01T00:00:30Z"
+    path.write_text(json.dumps(payload))
+    assert "overlaps its predecessor" in " ".join(
+        _timing_adjustment_problems(path, [2, 4, 6, 8, 10])
     )
 
 
