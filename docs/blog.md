@@ -288,8 +288,10 @@ Muon/AdamW optimizer state, scheduler, Trainer state, and all four rank RNG stat
 error. A controlled restart then activated the patched scheduler. It selected the two intended
 unfinished runs, resumed DenseOn Muon `3e-4` from checkpoint 2,345 and LateOn Muon `1e-4` from
 checkpoint 782, and the latter continued through step 789. This is an end-to-end PyLate checkpoint
-recovery test rather than only a file-presence check. Timing accounting retains the non-overlapping
-segment through step 782 and excludes duplicated post-checkpoint steps and restart initialization.
+recovery test rather than only a file-presence check. The resumed DenseOn run subsequently reached
+checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads also passed the deep
+audit. Timing accounting retains the non-overlapping segment through step 782 and excludes duplicated
+post-checkpoint steps and restart initialization.
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
