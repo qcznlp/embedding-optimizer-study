@@ -432,7 +432,10 @@ both new payloads and returned zero problems. Their model digests (`f6c098f2737f
 `a4bb260bf088`) differ from the corresponding checkpoint-782 digests; model and optimizer tensors
 are finite, scheduler/Trainer steps match 1,563, and all four RNG archives remain loadable. These
 checkpoints raise formal coverage to 34/120. Completed-run and evaluation coverage remain 6/24 and
-0/1,680 while both training processes continue from the audited states.
+0/1,680 while both training processes continue from the audited states. Both formal histories then
+continued beyond step 1,905, independently crossing the quarantined native implementation's failure
+points at 1,666 and 1,899 without an application-level CUDA/NCCL exception, out-of-memory event,
+traceback, or process restart.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
