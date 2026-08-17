@@ -240,6 +240,7 @@ physical device and at the same wall-clock time:
 | 7 | 3,375 | 2 (`a2:00`) | Newton–Schulz `addmm` / cuBLAS and NCCL watchdog | 13, then 43 |
 | 8 | 2,717 | 2 (`a2:00`) | NCCL watchdog | 43 |
 | 9 | 303 | 4 (`0001:09:00`) | NCCL watchdog | 13, then 43 |
+| 10 | 3,345 | 1 (`7e:00`) | Newton–Schulz `addmm` / cuBLAS | 43 |
 
 NVIDIA classifies [Xid 13](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html)
 as a graphics-engine exception: typically an application/CUDA fault such as an out-of-bounds access
@@ -291,7 +292,12 @@ checkpoint 782, and the latter continued through step 789. This is an end-to-end
 recovery test rather than only a file-presence check. The resumed DenseOn run subsequently reached
 checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads also passed the deep
 audit. Timing accounting retains the non-overlapping segment through step 782 and excludes duplicated
-post-checkpoint steps and restart initialization.
+post-checkpoint steps and restart initialization. That DenseOn attempt later failed at step 3,345:
+rank 1 (physical GPU 1) directly reported `CUBLAS_STATUS_EXECUTION_FAILED` from the native
+bfloat16 Newton–Schulz `torch.addmm`, and the driver recorded a same-device Xid 43. The patched
+scheduler immediately selected the same configuration and resumed checkpoint 3,126, while the
+isolated LateOn Muon process continued uninterrupted. The accepted-time adjustment retains only the
+completed 2,346–3,126 interval from the failed attempt; duplicated steps after 3,126 are excluded.
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
