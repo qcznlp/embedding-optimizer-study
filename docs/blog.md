@@ -437,6 +437,13 @@ continued beyond step 1,905, independently crossing the quarantined native imple
 points at 1,666 and 1,899 without an application-level CUDA/NCCL exception, out-of-memory event,
 traceback, or process restart.
 
+Both histories then wrote checkpoint 2,345 and resumed training beyond it. The formal sidecar loaded
+each payload and again returned zero problems. Their new model digests (`ddcc05816abc` and
+`795f19a73f30`) differ from the corresponding checkpoint-1,563 digests, while the optimizer,
+scheduler, Trainer state, four rank-local RNG archives, and accepted-time ledgers all satisfy the
+declared contract. Formal coverage is therefore 36/120 checkpoints; completed-run and evaluation
+coverage remain 6/24 and 0/1,680 because neither active run has yet reached step 3,907.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
@@ -453,15 +460,18 @@ comparison on identical data order. Across the 79 logged intervals through step 
 loss was 0.7056 for AdamW `3e-6`, 0.6237 for Muon `1e-4` (11.61% lower), and 0.4984 for Muon `3e-4`
 (29.37% lower). Across the following 78 intervals through step 1,563, the corresponding means were
 0.4261, 0.3289 (22.81% lower), and 0.2657 (37.64% lower). The final logged losses were 0.3843,
-0.2861, and 0.2361. Maximum gradient norms over the full 157 records remained comparable at 2.380,
-2.380, and 2.372, respectively. This is evidence about optimization dynamics, not retrieval quality;
-the decontaminated BEIR evaluations remain the required basis for optimizer conclusions.
+0.2861, and 0.2361. Across the third 78-record interval (logged steps 1,570–2,340), the means were
+0.385853, 0.295440 (23.43% lower), and 0.239651 (37.89% lower); its final logged losses were 0.362098,
+0.292158, and 0.253511. Maximum gradient norms over the first 157 records remained comparable at
+2.380, 2.380, and 2.372, respectively, while the third-interval maxima were 1.046, 0.967, and 0.889.
+This is evidence about optimization dynamics, not retrieval quality; the decontaminated BEIR
+evaluations remain the required basis for optimizer conclusions.
 
 The audited useful-time ledgers do not show a per-step throughput advantage at this point. The two
 completed LateOn AdamW runs take 7.6649 and 7.6396 seconds per optimizer step after excluding restart
-downtime and duplicated work. Through checkpoint 1,563, Muon `1e-4` and `3e-4` take 7.6401 and
-7.6918 seconds per step. Their two-run mean is 7.6660 seconds versus 7.6523 for AdamW, a preliminary
-0.18% Muon slowdown that is operationally close to parity. Thus the early Muon signal is faster loss
+downtime and duplicated work. Through checkpoint 2,345, Muon `1e-4` and `3e-4` take 7.6565 and
+7.7110 seconds per step. Their two-run mean is 7.6838 seconds versus 7.6523 for AdamW, a preliminary
+0.41% Muon slowdown that is operationally close to parity. Thus the early Muon signal is faster loss
 reduction at higher learning rates, not faster step execution. This comparison remains partial until
 all four learning rates for every optimizer finish and the final timing audit is complete.
 
@@ -469,8 +479,8 @@ Muon does provide a material checkpoint-footprint advantage. At step 1,563, both
 checkpoints contain a 1,230,780,939-byte optimizer state, whereas both Muon checkpoints contain
 789,544,331 bytes: a 35.85% reduction. Because the model and remaining payload are common, the full
 checkpoint falls from approximately 1.850 GB to 1.409 GB, a 23.85% reduction or 420.8 MiB saved per
-checkpoint. This improves storage and optimizer-state I/O, even though steady-state step throughput
-is currently at parity.
+checkpoint. The exact optimizer-state sizes are unchanged at checkpoint 2,345. This improves storage
+and optimizer-state I/O, even though steady-state step throughput is currently at parity.
 
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
