@@ -21,12 +21,13 @@ from .callbacks import (
     AcceptedTimingCallback,
     FractionalCheckpointCallback,
     PyLateCheckpointCompatibilityCallback,
+    StopAfterStepCallback,
     WandbExperimentConfigCallback,
     accepted_timing_summary,
     sanitize_pylate_checkpoint,
 )
 from .collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
-from .config import RunConfig, load_matrix, save_resolved_config
+from .config import RunConfig, load_matrix, save_resolved_config, source_wandb_run_id
 from .losses import ExplicitDenseInfoNCELoss, ExplicitLateInfoNCELoss
 from .optimizers import build_optimizer
 from .pylate_compat import configure_pylate_compatibility
@@ -153,9 +154,7 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
     os.environ["WANDB_PROJECT"] = config.wandb_project
     if config.wandb_entity:
         os.environ["WANDB_ENTITY"] = config.wandb_entity
-    os.environ.setdefault(
-        "WANDB_RUN_ID", f"study-v2-{config.model_family}-{config.run_id}-seed{config.seed}"
-    )
+    os.environ.setdefault("WANDB_RUN_ID", source_wandb_run_id(config))
     os.environ.setdefault("WANDB_RESUME", "allow")
     os.environ.setdefault("WANDB_RUN_GROUP", config.model_family)
     os.environ.setdefault(
@@ -186,6 +185,9 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
     if config.model_family == "late":
         callbacks.append(PyLateCheckpointCompatibilityCallback())
     callbacks.append(AcceptedTimingCallback(output_dir))
+    stop_after_step = int(os.environ.get("EMBED_OPTIM_STOP_AFTER_STEP", "-1"))
+    if stop_after_step > 0:
+        callbacks.append(StopAfterStepCallback(stop_after_step))
     trainer = OptimizerTrainer(
         model=model,
         args=_training_arguments(config),
@@ -235,47 +237,47 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
             for path in sorted(output_dir.glob("checkpoint-*"))
             if (path / "optimizer.pt").is_file()
         }
-        completion = (
-            json.dumps(
-                {
-                    "run_id": config.run_id,
-                    "model_family": config.model_family,
-                    "global_step": trainer.state.global_step,
-                    "checkpoints": sorted(callback.requested),
-                    "optimizer_partition": trainer.optimizer_partition_summary,
-                    "dataset_rows": len(dataset),
-                    "dataset_fingerprint": dataset._fingerprint,
-                    "system_metrics": {
-                        "wall_time_seconds_max_rank": wall_time_seconds,
-                        "peak_allocated_bytes_max_rank": int(peak_allocated_bytes),
-                        "peak_reserved_bytes_max_rank": int(peak_reserved_bytes),
-                        "checkpoint_bytes": checkpoint_bytes,
-                        "optimizer_state_bytes": optimizer_state_bytes,
-                        "trainer": train_result.metrics,
-                        "gpu_name": torch.cuda.get_device_name()
-                        if torch.cuda.is_available()
-                        else None,
-                        "world_size": _world_size(),
-                    },
-                    "accepted_timing": accepted_timing,
-                    "versions": {
-                        package: importlib.metadata.version(package)
-                        for package in (
-                            "torch",
-                            "transformers",
-                            "sentence-transformers",
-                            "pylate",
-                            "late-interaction-kernels",
-                        )
-                    },
-                },
-                indent=2,
-            )
-            + "\n"
-        )
-        temporary = output_dir / "completed.json.tmp"
+        completion_payload = {
+            "run_id": config.run_id,
+            "model_family": config.model_family,
+            "global_step": trainer.state.global_step,
+            "checkpoints": sorted(callback.requested),
+            "optimizer_partition": trainer.optimizer_partition_summary,
+            "dataset_rows": len(dataset),
+            "dataset_fingerprint": dataset._fingerprint,
+            "system_metrics": {
+                "wall_time_seconds_max_rank": wall_time_seconds,
+                "peak_allocated_bytes_max_rank": int(peak_allocated_bytes),
+                "peak_reserved_bytes_max_rank": int(peak_reserved_bytes),
+                "checkpoint_bytes": checkpoint_bytes,
+                "optimizer_state_bytes": optimizer_state_bytes,
+                "trainer": train_result.metrics,
+                "gpu_name": torch.cuda.get_device_name() if torch.cuda.is_available() else None,
+                "world_size": _world_size(),
+            },
+            "accepted_timing": accepted_timing,
+            "versions": {
+                package: importlib.metadata.version(package)
+                for package in (
+                    "torch",
+                    "transformers",
+                    "sentence-transformers",
+                    "pylate",
+                    "late-interaction-kernels",
+                )
+            },
+        }
+        optimizer_implementation = config.as_dict()["optimizer"].get("ns_implementation")
+        if optimizer_implementation:
+            completion_payload["optimizer_implementation"] = optimizer_implementation
+        completion_name = "completed.json"
+        if stop_after_step > 0:
+            completion_payload["diagnostic_stop_after_step"] = stop_after_step
+            completion_name = "diagnostic_completed.json"
+        completion = json.dumps(completion_payload, indent=2) + "\n"
+        temporary = output_dir / f"{completion_name}.tmp"
         temporary.write_text(completion)
-        temporary.replace(output_dir / "completed.json")
+        temporary.replace(output_dir / completion_name)
     return final_dir
 
 
@@ -286,6 +288,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--resume-from-checkpoint")
     parser.add_argument("--max-steps", type=int, help="Smoke-test override")
+    parser.add_argument(
+        "--stop-after-step",
+        type=int,
+        help="Diagnostic stop that preserves the full scheduler horizon",
+    )
     parser.add_argument("--global-batch-size", type=int, help="Smoke-test override")
     parser.add_argument("--micro-batch-size", type=int, help="Smoke-test override")
     parser.add_argument("--no-wandb", action="store_true")
@@ -319,6 +326,8 @@ def main(argv: list[str] | None = None) -> None:
         os.environ["WANDB_MODE"] = "disabled"
     if args.max_steps:
         os.environ["EMBED_OPTIM_MAX_STEPS"] = str(args.max_steps)
+    if args.stop_after_step:
+        os.environ["EMBED_OPTIM_STOP_AFTER_STEP"] = str(args.stop_after_step)
     run_training(config, resume_from_checkpoint=args.resume_from_checkpoint)
 
 

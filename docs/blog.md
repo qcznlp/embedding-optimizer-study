@@ -97,11 +97,14 @@ The routing was enumerated from the instantiated checkpoints before training:
 | LateOn | 110,297,088 params / 88 tensors | 43,501,056 / 6 | 34,560 / 45 |
 
 For the AdamW baselines, the hidden and decayed-auxiliary columns instead form one swept-LR AdamW
-group; the no-decay column uses that same learning rate with zero weight decay. Muon calls PyTorch's
-native functional update with Nesterov momentum, five Newton–Schulz steps, coefficients
-`(3.4445, -4.7750, 2.0315)`, ε=1e-7, and `adjust_lr_fn="original"`. NorMuon uses the same
-orthogonalization, then applies the official β₂=0.95 row-wise second-moment normalization, restores
-the pre-normalization Frobenius norm, and applies the matrix-aspect-ratio correction.
+group; the no-decay column uses that same learning rate with zero weight decay. Muon uses Nesterov
+momentum, five bfloat16 Newton–Schulz steps, coefficients `(3.4445, -4.7750, 2.0315)`, ε=1e-7, and
+`adjust_lr_fn="original"`. The implementation preserves PyTorch Muon's polynomial but expresses the
+two fused `addmm` operations as matrix multiplications and elementwise combinations; every optimizer
+checkpoint records implementation ID `unfused-bfloat16-v1`. The failure investigation below explains
+and validates this runtime-specific choice. NorMuon uses the same orthogonalization, then applies the
+official β₂=0.95 row-wise second-moment normalization, restores the pre-normalization Frobenius norm,
+and applies the matrix-aspect-ratio correction.
 
 We use linear decay with a 10% warmup, bfloat16 autocast, TF32, FlashAttention-2, non-reentrant
 gradient checkpointing, and gradient clipping at 1.0. Each run uses four GPUs, a per-GPU micro-batch
@@ -242,6 +245,8 @@ physical device and at the same wall-clock time:
 | 9 | 303 | 4 (`0001:09:00`) | NCCL watchdog | 13, then 43 |
 | 10 | 3,345 | 1 (`7e:00`) | Newton–Schulz `addmm` / cuBLAS | 43 |
 | 11 | 1,899 | 7 (`0001:c7:00`) | Muon momentum-buffer `lerp_` and NCCL watchdog | 43 |
+| 12 | 1,666 | 7 (`0001:c7:00`) | Muon momentum-buffer `lerp_` | 43 |
+| 13 | 633 | 4 (`0001:09:00`) | NCCL watchdog | 43 |
 
 NVIDIA classifies [Xid 13](https://docs.nvidia.com/deploy/xid-errors/analyzing-xid-catalog.html)
 as a graphics-engine exception: typically an application/CUDA fault such as an out-of-bounds access
@@ -350,6 +355,55 @@ deep-validated checkpoint 1,563; steps 1,564–1,899 from the failed attempt are
 evidence but excluded from accepted timing and final checkpoints. This extends the same native Muon
 failure pattern to LateOn and a sixth physical GPU, while providing no evidence of a PyLate MaxSim
 or late-interaction loss failure.
+
+The first automatic retry failed again after 103 replayed steps, at optimizer step 1,666, on the same
+local rank 3 and physical GPU 7. It produced the same asynchronous launch-failure stack at native
+Muon's momentum-buffer `lerp_` and another same-device Xid 43; the core-file limit prevented a
+second multi-gigabyte dump. The isolated `3e-4` run then failed before its first checkpoint, at step
+633, on its own local rank 3 and physical GPU 4. Its Python process only observed the asynchronous
+failure in the NCCL watchdog, while the driver recorded a same-device Xid 43. This third LateOn
+event disproved the provisional single-device diagnosis: all three occurred on local rank 3 but
+spanned two independent pools and two physical GPUs. The automatic retries were stopped without
+writing another formal checkpoint. LateOn `1e-4` checkpoint 1,563 remains deep-valid and unchanged;
+`3e-4` has no accepted checkpoint or timing segment.
+
+The repeated cross-device pattern moved the investigation below PyLate and into the native CUDA
+Muon path. The pinned PyTorch implementation converts every Newton–Schulz input to bfloat16 and
+executes its polynomial through `torch.addmm`; the current
+[upstream implementation](https://github.com/pytorch/pytorch/blob/main/torch/optim/_muon.py) uses the
+same path. PyTorch's
+[CUDA numerical-accuracy note](https://docs.pytorch.org/docs/stable/notes/cuda.html#reduced-precision-reduction-in-bf16-gemms)
+documents a backend switch that disables reduced-precision reductions for bfloat16 GEMMs. A first,
+tightly scoped prototype applied that switch only while Muon's GEMMs were dispatched. A synthetic
+four-rank replay used the exact 88 LateOn hidden-matrix shapes, five Newton–Schulz iterations, NCCL
+collectives, and per-step synchronization. Despite the switch, native `torch.addmm` directly failed
+after approximately 126 optimizer steps on physical GPU 2, followed by a same-device Xid 43 at
+00:05:05 UTC. The other four-GPU pool completed 200 steps. This controlled reproduction ruled out
+reduced-precision reduction as a sufficient fix, so the prototype was removed before any formal
+checkpoint used it.
+
+We then compared two implementations that avoid the failing bfloat16 `addmm` path: FP32/TF32
+Newton–Schulz with `addmm`, and the original bfloat16 polynomial decomposed into matrix
+multiplications and elementwise combinations. Both candidates completed 1,000 synchronized steps
+on each of two four-GPU pools, covering all eight physical GPUs without a CUDA, NCCL, or Xid event.
+We selected the latter because it preserves Muon's bfloat16 internal representation, coefficients,
+five iterations, normalization, momentum, learning-rate adjustment, and parameter update. Only the
+operator decomposition differs from pinned PyTorch; it is also the already-pinned Newton–Schulz
+path used by this repository's NorMuon implementation. The final repository implementation passed
+a separate repetition of the same 1,000-step test on all eight GPUs, and the full suite reports 84
+passing tests. An initial real-model replay was discarded after its shortened `max_steps=1905`
+horizon correctly exposed a different LR schedule. We added a diagnostic stop callback and repeated
+the replay while preserving the formal 3,907-step scheduler. It resumed the original LateOn `1e-4`
+checkpoint 1,563, matched the original step-1,570 LR of `6.65e-5`, and stopped normally at step
+1,905 after 2,670 seconds. This exact-scheduler replay crossed both failures at steps 1,666 and 1,899
+without a CUDA, NCCL, or Xid event. Its step-1,905 model differed from step 1,563; model, optimizer,
+scheduler, training-argument, four-rank RNG, and timing payloads loaded successfully, all optimizer
+state was finite, and the 1,563–1,905 ledger passed its continuity audit. The only strict-audit
+difference was expected: an optimizer state loaded from the old checkpoint cannot contain the new
+implementation-label field; injecting the declared label in memory made the complete optimizer
+contract pass. Since even an algebraically equivalent operation decomposition can change bfloat16
+rounding, this replay remains diagnostic evidence. Every formal Muon configuration now restarts from
+the common base rather than mixing native and unfused histories.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility

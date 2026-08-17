@@ -110,6 +110,10 @@ torchrun --standalone --nproc-per-node=4 -m embed_optim.train \
   --run-id muon-lr3e-4
 ```
 
+For a bounded checkpoint replay, use `--stop-after-step N` rather than changing `--max-steps`.
+The former preserves the full-run scheduler horizon, saves the stop-step checkpoint and timing
+ledger, and writes `diagnostic_completed.json` instead of a formal completion marker.
+
 For long matrices, omit `--fail-fast` as above so a failure on one pool does not terminate an
 unrelated healthy job on the other pool. The command returns nonzero after the remaining queue drains
 if any job failed; rerunning it resumes only incomplete runs from their latest structurally valid
@@ -240,10 +244,11 @@ non-overlap, timestamp-derived duration, checkpoint boundaries, and the exact re
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.
-- PyTorch's native Muon functional implementation and an in-repository NorMuon update matched to the
-  official implementation at commit `c6989a8354730695d9f5a9faa6c55eeb24865209`.
-- Multi-step numerical regression tests compare the wrapped AdamW and Muon updates and optimizer
-  states with PyTorch's reference optimizers; NorMuon is compared with the pinned official update.
+- An unfused bfloat16 Muon Newton–Schulz path that preserves PyTorch Muon's polynomial while avoiding
+  a reproducible CUDA `addmm` failure; checkpoints pin implementation ID `unfused-bfloat16-v1`.
+- Multi-step numerical regression tests compare AdamW and Muon with PyTorch references, lock Muon's
+  unfused expression, and compare NorMuon with official commit
+  `c6989a8354730695d9f5a9faa6c55eeb24865209`.
 - Dynamic per-column padding for the nine explicit contrastive fields; no global padding to 8,192.
 - Fused Late Interaction Kernels MaxSim scoring during training.
 - Length-grouped training and token-budget-packed evaluation with automatic OOM backoff.

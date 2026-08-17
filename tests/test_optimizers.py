@@ -8,6 +8,7 @@ from torch import nn
 from embed_optim.config import OptimizerConfig
 from embed_optim.optimizers import (
     EmbeddingOptimizer,
+    _muon_update,
     _normuon_update,
     build_optimizer,
     parameter_partition,
@@ -93,7 +94,7 @@ def test_normuon_update_matches_pinned_official_reference():
     torch.testing.assert_close(local_second_moment, reference_second_moment)
 
 
-def test_wrapped_muon_matches_pytorch_reference_for_multiple_steps():
+def test_wrapped_muon_tracks_pytorch_reference_for_multiple_steps():
     torch.manual_seed(23)
     local_parameter = nn.Parameter(torch.randn(8, 4))
     reference_parameter = nn.Parameter(local_parameter.detach().clone())
@@ -129,13 +130,41 @@ def test_wrapped_muon_matches_pytorch_reference_for_multiple_steps():
         local.step()
         reference.step()
 
-    torch.testing.assert_close(local_parameter, reference_parameter, rtol=0, atol=0)
+    torch.testing.assert_close(local_parameter, reference_parameter, rtol=2e-4, atol=2e-5)
     torch.testing.assert_close(
         local.state[local_parameter]["momentum_buffer"],
         reference.state[reference_parameter]["momentum_buffer"],
         rtol=0,
         atol=0,
     )
+
+
+def test_muon_update_uses_unfused_bfloat16_newton_schulz(monkeypatch):
+    torch.manual_seed(31)
+    gradient = torch.randn(8, 4)
+    local_momentum = torch.randn_like(gradient)
+    reference_momentum = local_momentum.clone()
+
+    def reject_addmm(*args, **kwargs):
+        del args, kwargs
+        raise AssertionError("unfused Muon must not dispatch torch.addmm")
+
+    monkeypatch.setattr(torch, "addmm", reject_addmm)
+
+    local = _muon_update(gradient, local_momentum, momentum=0.95, ns_steps=5)
+    reference_momentum.lerp_(gradient, 0.05)
+    reference_input = gradient.lerp(reference_momentum, 0.95).bfloat16()
+    if reference_input.size(0) > reference_input.size(1):
+        reference_input = reference_input.T
+    reference_input.div_(reference_input.norm().clamp_min(1e-7))
+    a, b, c = 3.4445, -4.7750, 2.0315
+    for _ in range(5):
+        gram = reference_input @ reference_input.T
+        reference_input = a * reference_input + (b * gram + c * gram @ gram) @ reference_input
+    reference = reference_input.T
+
+    torch.testing.assert_close(local, reference, rtol=0, atol=0)
+    torch.testing.assert_close(local_momentum, reference_momentum, rtol=0, atol=0)
 
 
 def test_wrapped_adamw_matches_pytorch_reference_for_multiple_steps():

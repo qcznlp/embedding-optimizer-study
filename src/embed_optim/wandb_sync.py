@@ -9,7 +9,7 @@ import math
 from dataclasses import dataclass
 from typing import Any
 
-from .config import RunConfig, load_matrix
+from .config import RunConfig, load_matrix, source_wandb_run_id
 
 SCALAR_HISTORY_KEYS = {
     "epoch": "train/epoch",
@@ -115,7 +115,7 @@ def build_canonical_run(config: RunConfig) -> CanonicalRun:
     history[-1] = {**history[-1], **_audited_system_metrics(config, completed)}
     history = tuple(history)
     digest = history_sha256(history)
-    source_id = f"study-v2-{config.model_family}-{config.run_id}-seed{config.seed}"
+    source_id = source_wandb_run_id(config)
     run_id = f"canonical-{config.model_family}-{config.run_id}-{digest[:12]}"
     return CanonicalRun(config, history, digest, run_id, source_id)
 

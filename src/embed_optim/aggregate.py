@@ -15,7 +15,7 @@ from datetime import datetime
 from pathlib import Path
 
 from .collators import TEXT_COLUMNS
-from .config import RunConfig, load_matrix
+from .config import MUON_NS_IMPLEMENTATION, RunConfig, load_matrix
 from .data import SOURCE_REPO, SOURCE_REVISION, SPLITS
 from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
 
@@ -584,6 +584,7 @@ def _optimizer_contract_problem(
                 "momentum": optimizer_config.momentum,
                 "beta2": optimizer_config.normuon_beta2,
                 "ns_steps": optimizer_config.ns_steps,
+                "ns_implementation": MUON_NS_IMPLEMENTATION,
                 "adjust_lr_fn": optimizer_config.adjust_lr_fn,
             },
             {

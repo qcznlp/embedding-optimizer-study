@@ -30,7 +30,7 @@ from embed_optim.aggregate import (
     collect_system_metrics,
     render_blog,
 )
-from embed_optim.config import OptimizerConfig, RunConfig, load_matrix
+from embed_optim.config import MUON_NS_IMPLEMENTATION, OptimizerConfig, RunConfig, load_matrix
 from embed_optim.decontamination import DECONTAMINATED_BEIR
 from embed_optim.evaluate_matrix import _evaluation_source_manifest
 
@@ -77,6 +77,7 @@ def test_optimizer_contract_validates_mixed_muon_topology():
                 "momentum": config.optimizer.momentum,
                 "beta2": config.optimizer.normuon_beta2,
                 "ns_steps": config.optimizer.ns_steps,
+                "ns_implementation": MUON_NS_IMPLEMENTATION,
                 "adjust_lr_fn": config.optimizer.adjust_lr_fn,
                 "weight_decay": config.optimizer.weight_decay,
             },
@@ -100,6 +101,9 @@ def test_optimizer_contract_validates_mixed_muon_topology():
     }
 
     assert _optimizer_contract_problem(optimizer, config, step, final_step) is None
+    implementation = optimizer["param_groups"][0].pop("ns_implementation")
+    assert "ns_implementation" in _optimizer_contract_problem(optimizer, config, step, final_step)
+    optimizer["param_groups"][0]["ns_implementation"] = implementation
     optimizer["param_groups"][0]["lr"] *= 2
     assert "parameter group 0 lr" in _optimizer_contract_problem(
         optimizer, config, step, final_step

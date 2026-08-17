@@ -95,6 +95,46 @@ class PyLateCheckpointCompatibilityCallback(TrainerCallback):
         return control
 
 
+class StopAfterStepCallback(TrainerCallback):
+    """Stop a diagnostic replay without shortening its scheduler horizon."""
+
+    def __init__(self, target_step: int) -> None:
+        if target_step <= 0:
+            raise ValueError(f"Stop step must be positive, got {target_step}")
+        self.target_step = target_step
+
+    def on_train_begin(
+        self,
+        args: TrainingArguments,
+        state: TrainerState,
+        control: TrainerControl,
+        **kwargs,
+    ) -> TrainerControl:
+        del args, kwargs
+        if state.global_step >= self.target_step:
+            raise ValueError(
+                f"Stop step {self.target_step} must be after resumed step {state.global_step}"
+            )
+        if self.target_step > state.max_steps:
+            raise ValueError(
+                f"Stop step {self.target_step} exceeds training horizon {state.max_steps}"
+            )
+        return control
+
+    def on_step_end(
+        self,
+        args: TrainingArguments,
+        state: TrainerState,
+        control: TrainerControl,
+        **kwargs,
+    ) -> TrainerControl:
+        del args, kwargs
+        if state.global_step >= self.target_step:
+            control.should_save = True
+            control.should_training_stop = True
+        return control
+
+
 class AcceptedTimingCallback(TrainerCallback):
     """Persist non-overlapping wall-time segments at durable checkpoint boundaries."""
 

@@ -10,6 +10,7 @@ import yaml
 
 ModelFamily = Literal["dense", "late"]
 OptimizerName = Literal["adamw", "muon", "normuon"]
+MUON_NS_IMPLEMENTATION = "unfused-bfloat16-v1"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -31,7 +32,14 @@ class OptimizerConfig:
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> "OptimizerConfig":
-        return cls(**values)
+        values = dict(values)
+        implementation = values.pop("ns_implementation", None)
+        config = cls(**values)
+        if implementation is not None and (
+            config.name not in {"muon", "normuon"} or implementation != MUON_NS_IMPLEMENTATION
+        ):
+            raise ValueError(f"Unsupported optimizer implementation {implementation!r}")
+        return config
 
 
 @dataclasses.dataclass(frozen=True)
@@ -69,7 +77,10 @@ class RunConfig:
         return Path(self.output_root) / self.model_family / self.run_id
 
     def as_dict(self) -> dict[str, Any]:
-        return dataclasses.asdict(self)
+        values = dataclasses.asdict(self)
+        if self.optimizer.name in {"muon", "normuon"}:
+            values["optimizer"]["ns_implementation"] = MUON_NS_IMPLEMENTATION
+        return values
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> "RunConfig":
@@ -116,3 +127,9 @@ def save_resolved_config(config: RunConfig, path: str | Path) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(config.as_dict(), indent=2, sort_keys=True) + "\n")
+
+
+def source_wandb_run_id(config: RunConfig) -> str:
+    version = "v3" if config.optimizer.name in {"muon", "normuon"} else "v2"
+    suffix = f"-{MUON_NS_IMPLEMENTATION}" if version == "v3" else ""
+    return f"study-{version}-{config.model_family}-{config.run_id}-seed{config.seed}{suffix}"
