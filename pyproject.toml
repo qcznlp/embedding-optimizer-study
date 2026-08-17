@@ -51,6 +51,7 @@ embed-optim-aggregate = "embed_optim.aggregate:main"
 embed-optim-sync-wandb = "embed_optim.wandb_sync:main"
 embed-optim-watch-checkpoints = "embed_optim.checkpoint_watch:main"
 embed-optim-supervise = "embed_optim.supervisor:main"
+embed-optim-verify-runtime = "embed_optim.runtime:main"
 
 [project.urls]
 Paper = "https://arxiv.org/abs/2607.27178"
@@ -69,6 +70,7 @@ where = ["src"]
 [tool.setuptools.data-files]
 "share/embedding-optimizer-study/configs" = [
   "configs/experiment.yaml",
+  "configs/formal_runtime.json",
   "configs/smoke.yaml",
   "configs/stress.yaml",
 ]

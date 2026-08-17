@@ -38,7 +38,8 @@ both base checkpoints.
 
 Python 3.10–3.13 and CUDA GPUs with bfloat16 support are expected. The formal runs currently record
 Python 3.12, PyTorch 2.9.1, SentenceTransformers 5.7, CUDA 12.9, and four NVIDIA L20Z devices per
-job, with two jobs running concurrently across eight devices.
+job, with two jobs running concurrently across eight devices. The exact formal package contract is
+machine-readable in [configs/formal_runtime.json](configs/formal_runtime.json).
 
 ```bash
 git clone https://github.com/qcznlp/embedding-optimizer-study.git
@@ -48,6 +49,18 @@ uv sync --extra eval --extra analysis
 uv pip install flash-attn --no-build-isolation
 source .venv/bin/activate
 ```
+
+The checked-in `uv.lock` is the portable development/CI environment and currently resolves PyTorch
+2.9.0; it is intentionally not presented as the runtime that produced the formal artifacts. Before
+formal training or evaluation, use the provisioned CUDA 12.9 environment and verify its interpreter:
+
+```bash
+/usr/bin/python3 -m embed_optim.runtime --spec configs/formal_runtime.json
+```
+
+The command prints the complete observed runtime and exits nonzero on any Python, Torch CUDA-build,
+training-library, or evaluation-library mismatch. Use that same verified interpreter for training,
+the matrix supervisor, the evaluation coordinator, and `--worker-python`.
 
 The package can also be installed with pip:
 
