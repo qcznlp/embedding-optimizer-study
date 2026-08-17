@@ -310,10 +310,13 @@ relative L2 change from checkpoint 782 to 1,563 was 0.00383 for Muon-routed hidd
 0.000566 for decayed auxiliary tensors, and 0.000136 for no-decay tensors. The stricter audit now
 also verifies group algorithms, hyperparameters, scheduled learning rates, state fields and shapes,
 AdamW step counters, scheduler base/last learning rates, scheduler step count, finite model tensors,
-and a distinct model payload at each checkpoint. All 40 checkpoints from the eight completed runs
-passed this expanded audit. Through the validated LateOn checkpoint 1,563, the only traceback in its
-log was the expected `SIGTERM` record from the controlled restart at checkpoint 782, not a PyLate,
-CUDA, or Muon failure. The resumed DenseOn run
+and a distinct model payload at each checkpoint. At that stage, all 40 checkpoints from the eight
+runs then considered complete passed this expanded audit; six were AdamW runs and two were native
+Muon runs. The two native-Muon histories were subsequently quarantined after the cross-device
+failure was reproduced and the operator implementation changed, so those ten checkpoints do not
+enter the final optimizer comparison. Through the validated LateOn checkpoint 1,563, the only
+traceback in its log was the expected `SIGTERM` record from the controlled restart at checkpoint
+782, not a PyLate, CUDA, or Muon failure. The resumed DenseOn run
 subsequently reached checkpoint 3,126, whose model, optimizer, scheduler, and four rank RNG payloads
 also passed the deep audit. Timing accounting retains the non-overlapping segment through step 782
 and excludes duplicated post-checkpoint steps and restart initialization. That DenseOn attempt later
@@ -404,6 +407,15 @@ implementation-label field; injecting the declared label in memory made the comp
 contract pass. Since even an algebraically equivalent operation decomposition can change bfloat16
 rounding, this replay remains diagnostic evidence. Every formal Muon configuration now restarts from
 the common base rather than mixing native and unfused histories.
+
+The restart creates an explicit methodological boundary. All DenseOn and LateOn Muon artifacts made
+with native `addmm`—including checkpoint payloads, timing segments, and W&B histories—are retained in
+a quarantine archive for fault analysis but are excluded from coverage, evaluation, aggregation, and
+figures. At the boundary, the accepted formal ledger therefore contains only the six completed AdamW
+runs: 6/24 runs and 30/120 checkpoints, with 0/1,680 checkpoint-task evaluations. New Muon and NorMuon
+checkpoints must record `ns_implementation=unfused-bfloat16-v1` and pass the same deep audit before
+they can increase those counts. The W&B source IDs for those optimizers use a separate `study-v3`
+namespace, preventing canonical histories from silently combining pre- and post-mitigation rows.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
