@@ -124,17 +124,16 @@ class AcceptedTimingCallback(TrainerCallback):
         **kwargs,
     ) -> TrainerControl:
         del kwargs
-        if args.process_index != 0:
-            return control
-        payload = self._read()
         current_step = int(state.global_step)
-        if payload["segments"]:
-            last_step = int(payload["segments"][-1]["end_step_inclusive"])
-            if last_step > current_step:
-                raise RuntimeError(
-                    f"Accepted timing ledger ends at step {last_step}, "
-                    f"after resumed step {current_step}"
-                )
+        if args.process_index == 0:
+            payload = self._read()
+            if payload["segments"]:
+                last_step = int(payload["segments"][-1]["end_step_inclusive"])
+                if last_step > current_step:
+                    raise RuntimeError(
+                        f"Accepted timing ledger ends at step {last_step}, "
+                        f"after resumed step {current_step}"
+                    )
         self.started_monotonic = time.monotonic()
         self.started_at_utc = self._utc_now()
         self.start_step = current_step
@@ -148,8 +147,6 @@ class AcceptedTimingCallback(TrainerCallback):
         **kwargs,
     ) -> TrainerControl:
         del kwargs
-        if args.process_index != 0:
-            return control
         if self.started_monotonic is None or self.started_at_utc is None or self.start_step is None:
             raise RuntimeError("Accepted timing callback did not observe train begin")
         end_step = int(state.global_step)
@@ -157,6 +154,18 @@ class AcceptedTimingCallback(TrainerCallback):
             return control
         completed_monotonic = time.monotonic()
         completed_at_utc = self._utc_now()
+        wall_time_seconds = completed_monotonic - self.started_monotonic
+        import torch
+
+        if torch.distributed.is_available() and torch.distributed.is_initialized():
+            duration = torch.tensor(wall_time_seconds, dtype=torch.float64, device=args.device)
+            torch.distributed.all_reduce(duration, op=torch.distributed.ReduceOp.MAX)
+            wall_time_seconds = float(duration.item())
+        if args.process_index != 0:
+            self.started_monotonic = completed_monotonic
+            self.started_at_utc = completed_at_utc
+            self.start_step = end_step
+            return control
         payload = self._read()
         segments = payload["segments"]
         if segments:
@@ -171,11 +180,11 @@ class AcceptedTimingCallback(TrainerCallback):
             "end_step_inclusive": end_step,
             "started_at_utc": self.started_at_utc,
             "checkpoint_completed_at_utc": completed_at_utc,
-            "wall_time_seconds": completed_monotonic - self.started_monotonic,
+            "wall_time_seconds_max_rank": wall_time_seconds,
         }
         segments.append(segment)
         payload["total_wall_time_seconds"] = sum(
-            float(item["wall_time_seconds"]) for item in segments
+            float(item["wall_time_seconds_max_rank"]) for item in segments
         )
         self.path.parent.mkdir(parents=True, exist_ok=True)
         temporary = self.path.with_suffix(".tmp")

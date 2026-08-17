@@ -107,5 +107,31 @@ def test_accepted_timing_callback_records_non_overlapping_resume_segments(tmp_pa
         (segment["start_step_exclusive"], segment["end_step_inclusive"])
         for segment in payload["segments"]
     ] == [(0, 2), (2, 4), (4, 6)]
-    assert [segment["wall_time_seconds"] for segment in payload["segments"]] == [5.0, 7.0, 4.0]
+    assert [segment["wall_time_seconds_max_rank"] for segment in payload["segments"]] == [
+        5.0,
+        7.0,
+        4.0,
+    ]
     assert payload["total_wall_time_seconds"] == 16.0
+
+
+def test_accepted_timing_callback_records_slowest_distributed_rank(tmp_path, monkeypatch):
+    ticks = iter([10.0, 15.0])
+    monkeypatch.setattr("embed_optim.callbacks.time.monotonic", lambda: next(ticks))
+    monkeypatch.setattr(torch.distributed, "is_available", lambda: True)
+    monkeypatch.setattr(torch.distributed, "is_initialized", lambda: True)
+
+    def replace_with_max(duration, op):
+        assert op == torch.distributed.ReduceOp.MAX
+        duration.fill_(9.0)
+
+    monkeypatch.setattr(torch.distributed, "all_reduce", replace_with_max)
+    args = SimpleNamespace(process_index=0, device=torch.device("cpu"))
+    state = TrainerState(global_step=0)
+    callback = AcceptedTimingCallback(tmp_path)
+    callback.on_train_begin(args, state, TrainerControl())
+    state.global_step = 2
+    callback.on_save(args, state, TrainerControl())
+
+    payload = json.loads((tmp_path / "accepted_timing.json").read_text())
+    assert payload["segments"][0]["wall_time_seconds_max_rank"] == 9.0

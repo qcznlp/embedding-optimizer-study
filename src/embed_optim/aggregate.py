@@ -547,7 +547,7 @@ def _accepted_timing_problems(
         try:
             start = int(segment["start_step_exclusive"])
             end = int(segment["end_step_inclusive"])
-            wall_time = float(segment["wall_time_seconds"])
+            wall_time = float(segment["wall_time_seconds_max_rank"])
         except (KeyError, TypeError, ValueError):
             problems.append(f"accepted timing segment {index} has invalid numeric fields")
             continue
@@ -1127,7 +1127,7 @@ def collect_system_metrics(configs: list[RunConfig]) -> list[dict]:
         if accepted_timing_path.is_file():
             accepted_timing = json.loads(accepted_timing_path.read_text())
             segment_wall_time = sum(
-                float(segment["wall_time_seconds"])
+                float(segment["wall_time_seconds_max_rank"])
                 for segment in accepted_timing.get("segments", [])
             )
         else:

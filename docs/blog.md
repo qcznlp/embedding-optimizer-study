@@ -290,7 +290,7 @@ unfinished runs, resumed DenseOn Muon `3e-4` from checkpoint 2,345 and LateOn Mu
 checkpoint 782, and the latter continued through step 789. This is an end-to-end PyLate checkpoint
 recovery test rather than only a file-presence check. Timing accounting retains the non-overlapping
 segment through step 782 and excludes duplicated post-checkpoint steps and restart initialization.
-Subsequent attempts commit this accounting automatically in an atomic timing ledger after each
+Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
 durations, a matching segment sum, and the expected terminal step. Historical segments retained
 before this mechanism was enabled remain backed by W&B `startedAt` values and checkpoint Trainer-state

@@ -367,8 +367,8 @@ def test_system_metrics_prefers_checkpoint_accepted_timing_ledger(tmp_path):
             {
                 "schema_version": 1,
                 "segments": [
-                    {"wall_time_seconds": 20},
-                    {"wall_time_seconds": 30},
+                    {"wall_time_seconds_max_rank": 20},
+                    {"wall_time_seconds_max_rank": 30},
                 ],
                 "total_wall_time_seconds": 50,
             }
@@ -397,14 +397,14 @@ def test_accepted_timing_audit_requires_contiguous_steps_and_matching_total(tmp_
                 "end_step_inclusive": 6,
                 "started_at_utc": "2026-01-01T00:00:00Z",
                 "checkpoint_completed_at_utc": "2026-01-01T00:01:00Z",
-                "wall_time_seconds": 60.0,
+                "wall_time_seconds_max_rank": 60.0,
             },
             {
                 "start_step_exclusive": 6,
                 "end_step_inclusive": 8,
                 "started_at_utc": "2026-01-01T00:01:00Z",
                 "checkpoint_completed_at_utc": "2026-01-01T00:02:00Z",
-                "wall_time_seconds": 60.0,
+                "wall_time_seconds_max_rank": 60.0,
             },
         ],
         "total_wall_time_seconds": 120.0,
