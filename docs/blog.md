@@ -445,12 +445,14 @@ before Trainer initialization instead of relying on SentenceTransformers' DDP mu
 explicit nine-column collator and loss continue to enforce one query, one positive, and seven
 query-local negatives.
 
-As a pre-checkpoint runtime diagnostic, we compared identical logged batch windows against the
-completed LateOn AdamW `3e-6` run. Muon `3e-4` averaged 0.8758 loss over steps 1–180 versus 0.9700
-for AdamW, with maximum gradient norms of 2.358 and 2.380. The resumed Muon `1e-4` branch averaged
-0.3030 loss over steps 1,570–1,740 versus 0.3929 for AdamW, with maximum gradient norms of 0.936 and
-0.941. This rules out an obvious silent divergence in the two active paths; it is not a retrieval
-quality comparison and does not replace the checkpoint-level decontaminated BEIR evaluation.
+The accepted checkpoint-1,563 histories provide the first post-mitigation training-dynamics
+comparison on identical data order. Across the 79 logged intervals through step 782, mean LateOn
+loss was 0.7056 for AdamW `3e-6`, 0.6237 for Muon `1e-4` (11.61% lower), and 0.4984 for Muon `3e-4`
+(29.37% lower). Across the following 78 intervals through step 1,563, the corresponding means were
+0.4261, 0.3289 (22.81% lower), and 0.2657 (37.64% lower). The final logged losses were 0.3843,
+0.2861, and 0.2361. Maximum gradient norms over the full 157 records remained comparable at 2.380,
+2.380, and 2.372, respectively. This is evidence about optimization dynamics, not retrieval quality;
+the decontaminated BEIR evaluations remain the required basis for optimizer conclusions.
 
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
