@@ -1,7 +1,14 @@
+import json
+from types import SimpleNamespace
+
 import torch
 from transformers import TrainerControl, TrainerState
 
-from embed_optim.callbacks import FractionalCheckpointCallback, sanitize_pylate_checkpoint
+from embed_optim.callbacks import (
+    AcceptedTimingCallback,
+    FractionalCheckpointCallback,
+    sanitize_pylate_checkpoint,
+)
 from embed_optim.collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
 
 
@@ -74,3 +81,31 @@ def test_fractional_checkpoint_callback_requests_each_target(tmp_path):
         control.should_save = False
         control = callback.on_step_end(None, state, control)
         assert control.should_save
+
+
+def test_accepted_timing_callback_records_non_overlapping_resume_segments(tmp_path, monkeypatch):
+    ticks = iter([10.0, 15.0, 22.0, 30.0, 34.0])
+    monkeypatch.setattr("embed_optim.callbacks.time.monotonic", lambda: next(ticks))
+    args = SimpleNamespace(process_index=0)
+    state = TrainerState(global_step=0)
+    control = TrainerControl()
+
+    callback = AcceptedTimingCallback(tmp_path)
+    callback.on_train_begin(args, state, control)
+    state.global_step = 2
+    callback.on_save(args, state, control)
+    state.global_step = 4
+    callback.on_save(args, state, control)
+
+    resumed = AcceptedTimingCallback(tmp_path)
+    resumed.on_train_begin(args, state, control)
+    state.global_step = 6
+    resumed.on_save(args, state, control)
+
+    payload = json.loads((tmp_path / "accepted_timing.json").read_text())
+    assert [
+        (segment["start_step_exclusive"], segment["end_step_inclusive"])
+        for segment in payload["segments"]
+    ] == [(0, 2), (2, 4), (4, 6)]
+    assert [segment["wall_time_seconds"] for segment in payload["segments"]] == [5.0, 7.0, 4.0]
+    assert payload["total_wall_time_seconds"] == 16.0

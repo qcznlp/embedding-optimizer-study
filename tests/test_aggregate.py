@@ -8,6 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 from embed_optim.aggregate import (
+    _accepted_timing_problems,
     _contains_run_id,
     _dataset_rows_audit,
     _optimizer_summaries,
@@ -344,6 +345,79 @@ def test_system_metrics_add_audited_prior_training_segment(tmp_path):
     assert row["samples_per_second"] == 1.0
     assert row["steps_per_second"] == 0.1
     assert row["trainer_reported_samples_per_second"] == 9.9
+
+
+def test_system_metrics_prefers_checkpoint_accepted_timing_ledger(tmp_path):
+    output = tmp_path / "late" / "muon-lr1e-4"
+    output.mkdir(parents=True)
+    (output / "completed.json").write_text(
+        json.dumps(
+            {
+                "global_step": 100,
+                "dataset_rows": 1000,
+                "system_metrics": {"wall_time_seconds_max_rank": 9999, "trainer": {}},
+            }
+        )
+    )
+    (output / "timing_adjustment.json").write_text(
+        json.dumps({"prior_training_wall_time_seconds": 10})
+    )
+    (output / "accepted_timing.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "segments": [
+                    {"wall_time_seconds": 20},
+                    {"wall_time_seconds": 30},
+                ],
+                "total_wall_time_seconds": 50,
+            }
+        )
+    )
+    config = SimpleNamespace(
+        output_dir=output,
+        model_family="late",
+        optimizer=SimpleNamespace(name="muon", lr=1e-4),
+        run_id="muon-lr1e-4",
+    )
+
+    row = collect_system_metrics([config])[0]
+    assert row["wall_time_hours"] == pytest.approx(60 / 3600)
+    assert row["samples_per_second"] == pytest.approx(1000 / 60)
+    assert row["accepted_timing_path"] == str(output / "accepted_timing.json")
+
+
+def test_accepted_timing_audit_requires_contiguous_steps_and_matching_total(tmp_path):
+    path = tmp_path / "accepted_timing.json"
+    payload = {
+        "schema_version": 1,
+        "segments": [
+            {
+                "start_step_exclusive": 4,
+                "end_step_inclusive": 6,
+                "started_at_utc": "2026-01-01T00:00:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:01:00Z",
+                "wall_time_seconds": 60.0,
+            },
+            {
+                "start_step_exclusive": 6,
+                "end_step_inclusive": 8,
+                "started_at_utc": "2026-01-01T00:01:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:02:00Z",
+                "wall_time_seconds": 60.0,
+            },
+        ],
+        "total_wall_time_seconds": 120.0,
+    }
+    path.write_text(json.dumps(payload))
+    assert _accepted_timing_problems(path, expected_start_step=4, expected_final_step=8) == []
+
+    payload["segments"][1]["start_step_exclusive"] = 5
+    payload["total_wall_time_seconds"] = 1.0
+    path.write_text(json.dumps(payload))
+    problems = _accepted_timing_problems(path, expected_start_step=4, expected_final_step=8)
+    assert "accepted timing segment 1 starts at 5, expected 6" in problems
+    assert "accepted timing total does not match its segments" in problems
 
 
 def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):

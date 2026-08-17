@@ -18,6 +18,7 @@ from sentence_transformers import (
 from transformers import set_seed
 
 from .callbacks import (
+    AcceptedTimingCallback,
     FractionalCheckpointCallback,
     PyLateCheckpointCompatibilityCallback,
     WandbExperimentConfigCallback,
@@ -180,6 +181,7 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
     callbacks = [callback, WandbExperimentConfigCallback(config.as_dict())]
     if config.model_family == "late":
         callbacks.append(PyLateCheckpointCompatibilityCallback())
+    callbacks.append(AcceptedTimingCallback(output_dir))
     trainer = OptimizerTrainer(
         model=model,
         args=_training_arguments(config),

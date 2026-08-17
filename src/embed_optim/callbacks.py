@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import math
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 from transformers import TrainerCallback, TrainerControl, TrainerState, TrainingArguments
@@ -90,6 +92,98 @@ class PyLateCheckpointCompatibilityCallback(TrainerCallback):
         del kwargs
         if args.process_index == 0:
             sanitize_pylate_checkpoint(Path(args.output_dir) / f"checkpoint-{state.global_step}")
+        return control
+
+
+class AcceptedTimingCallback(TrainerCallback):
+    """Persist non-overlapping wall-time segments at durable checkpoint boundaries."""
+
+    def __init__(self, output_dir: str | Path) -> None:
+        self.path = Path(output_dir) / "accepted_timing.json"
+        self.started_monotonic: float | None = None
+        self.started_at_utc: str | None = None
+        self.start_step: int | None = None
+
+    @staticmethod
+    def _utc_now() -> str:
+        return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    def _read(self) -> dict:
+        if not self.path.is_file():
+            return {"schema_version": 1, "segments": [], "total_wall_time_seconds": 0.0}
+        payload = json.loads(self.path.read_text())
+        if payload.get("schema_version") != 1 or not isinstance(payload.get("segments"), list):
+            raise RuntimeError(f"Invalid accepted timing ledger: {self.path}")
+        return payload
+
+    def on_train_begin(
+        self,
+        args: TrainingArguments,
+        state: TrainerState,
+        control: TrainerControl,
+        **kwargs,
+    ) -> TrainerControl:
+        del kwargs
+        if args.process_index != 0:
+            return control
+        payload = self._read()
+        current_step = int(state.global_step)
+        if payload["segments"]:
+            last_step = int(payload["segments"][-1]["end_step_inclusive"])
+            if last_step > current_step:
+                raise RuntimeError(
+                    f"Accepted timing ledger ends at step {last_step}, "
+                    f"after resumed step {current_step}"
+                )
+        self.started_monotonic = time.monotonic()
+        self.started_at_utc = self._utc_now()
+        self.start_step = current_step
+        return control
+
+    def on_save(
+        self,
+        args: TrainingArguments,
+        state: TrainerState,
+        control: TrainerControl,
+        **kwargs,
+    ) -> TrainerControl:
+        del kwargs
+        if args.process_index != 0:
+            return control
+        if self.started_monotonic is None or self.started_at_utc is None or self.start_step is None:
+            raise RuntimeError("Accepted timing callback did not observe train begin")
+        end_step = int(state.global_step)
+        if end_step <= self.start_step:
+            return control
+        completed_monotonic = time.monotonic()
+        completed_at_utc = self._utc_now()
+        payload = self._read()
+        segments = payload["segments"]
+        if segments:
+            last_step = int(segments[-1]["end_step_inclusive"])
+            if last_step != self.start_step:
+                raise RuntimeError(
+                    f"Accepted timing ledger ends at step {last_step}, "
+                    f"but this segment starts at {self.start_step}"
+                )
+        segment = {
+            "start_step_exclusive": self.start_step,
+            "end_step_inclusive": end_step,
+            "started_at_utc": self.started_at_utc,
+            "checkpoint_completed_at_utc": completed_at_utc,
+            "wall_time_seconds": completed_monotonic - self.started_monotonic,
+        }
+        segments.append(segment)
+        payload["total_wall_time_seconds"] = sum(
+            float(item["wall_time_seconds"]) for item in segments
+        )
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = self.path.with_suffix(".tmp")
+        temporary.write_text(json.dumps(payload, indent=2) + "\n")
+        temporary.replace(self.path)
+        self.started_monotonic = completed_monotonic
+        self.started_at_utc = completed_at_utc
+        self.start_step = end_step
         return control
 
 

@@ -219,6 +219,11 @@ Hugging Face Dataset, checks its row count, columns, and fingerprint, then recon
 ten-column training view and requires every completion record to match that exact view fingerprint.
 Wall time, Trainer throughput, CUDA memory peaks, checkpoint/optimizer-state sizes, GPU identity, and
 the five key package versions are required and checked for finite values and cross-run consistency.
+Each successful checkpoint atomically appends a non-overlapping segment to
+`accepted_timing.json`. Strict aggregation verifies step continuity, positive finite durations, the
+recorded sum, and the final step before using that ledger for throughput. Work after the latest
+durable checkpoint on a failed attempt, restart initialization, and downtime are therefore excluded
+without relying on a human to reconstruct every retry.
 
 ## Performance engineering
 

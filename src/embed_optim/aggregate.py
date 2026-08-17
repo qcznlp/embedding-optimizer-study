@@ -519,6 +519,66 @@ def _deep_checkpoint_problems(checkpoint: Path, expected_step: int, world_size: 
     return problems
 
 
+def _accepted_timing_problems(
+    path: Path,
+    *,
+    expected_start_step: int,
+    expected_final_step: int | None = None,
+) -> list[str]:
+    """Validate the checkpoint-committed, non-overlapping timing ledger."""
+
+    try:
+        payload = json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        return [f"invalid accepted timing ledger ({error})"]
+    if payload.get("schema_version") != 1:
+        return ["accepted timing ledger has an unsupported schema"]
+    segments = payload.get("segments")
+    if not isinstance(segments, list) or not segments:
+        return ["accepted timing ledger has no segments"]
+
+    problems: list[str] = []
+    expected_start = expected_start_step
+    total = 0.0
+    for index, segment in enumerate(segments):
+        if not isinstance(segment, dict):
+            problems.append(f"accepted timing segment {index} is not an object")
+            continue
+        try:
+            start = int(segment["start_step_exclusive"])
+            end = int(segment["end_step_inclusive"])
+            wall_time = float(segment["wall_time_seconds"])
+        except (KeyError, TypeError, ValueError):
+            problems.append(f"accepted timing segment {index} has invalid numeric fields")
+            continue
+        if start != expected_start:
+            problems.append(
+                f"accepted timing segment {index} starts at {start}, expected {expected_start}"
+            )
+        if end <= start:
+            problems.append(f"accepted timing segment {index} has non-increasing steps")
+        if not math.isfinite(wall_time) or wall_time <= 0:
+            problems.append(f"accepted timing segment {index} has invalid wall time")
+        for field in ("started_at_utc", "checkpoint_completed_at_utc"):
+            if not isinstance(segment.get(field), str) or not segment[field]:
+                problems.append(f"accepted timing segment {index} has invalid {field}")
+        expected_start = end
+        total += wall_time
+
+    recorded_total = payload.get("total_wall_time_seconds")
+    if (
+        not isinstance(recorded_total, (int, float))
+        or not math.isfinite(float(recorded_total))
+        or not math.isclose(float(recorded_total), total, rel_tol=1e-9, abs_tol=1e-6)
+    ):
+        problems.append("accepted timing total does not match its segments")
+    if expected_final_step is not None and expected_start != expected_final_step:
+        problems.append(
+            f"accepted timing ledger ends at {expected_start}, expected {expected_final_step}"
+        )
+    return problems
+
+
 def audit_training_artifacts(
     configs: list[RunConfig],
     *,
@@ -655,6 +715,26 @@ def audit_training_artifacts(
                         gpu_name_reference = gpu_name
                     elif gpu_name != gpu_name_reference:
                         errors.append(f"{label}: completion GPU name differs across runs")
+
+        accepted_timing_path = output / "accepted_timing.json"
+        if accepted_timing_path.is_file():
+            timing_adjustment_path = output / "timing_adjustment.json"
+            expected_timing_start = 0
+            if timing_adjustment_path.is_file():
+                try:
+                    expected_timing_start = int(
+                        json.loads(timing_adjustment_path.read_text())[
+                            "included_through_checkpoint_step"
+                        ]
+                    )
+                except (KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+                    errors.append(f"{label}: invalid timing adjustment ({error})")
+            timing_problems = _accepted_timing_problems(
+                accepted_timing_path,
+                expected_start_step=expected_timing_start,
+                expected_final_step=steps[-1] if completed else None,
+            )
+            errors.extend(f"{label}: {problem}" for problem in timing_problems)
         if not final_state_path.is_file():
             errors.append(f"{label}: missing trainer_state_final.json")
         else:
@@ -1043,7 +1123,15 @@ def collect_system_metrics(configs: list[RunConfig]) -> list[dict]:
         metrics = payload.get("system_metrics", {})
         adjustment_path = config.output_dir / "timing_adjustment.json"
         adjustment = json.loads(adjustment_path.read_text()) if adjustment_path.is_file() else {}
-        segment_wall_time = metrics.get("wall_time_seconds_max_rank", 0)
+        accepted_timing_path = config.output_dir / "accepted_timing.json"
+        if accepted_timing_path.is_file():
+            accepted_timing = json.loads(accepted_timing_path.read_text())
+            segment_wall_time = sum(
+                float(segment["wall_time_seconds"])
+                for segment in accepted_timing.get("segments", [])
+            )
+        else:
+            segment_wall_time = metrics.get("wall_time_seconds_max_rank", 0)
         prior_wall_time = adjustment.get("prior_training_wall_time_seconds", 0)
         total_wall_time = segment_wall_time + prior_wall_time
         trainer = metrics.get("trainer", {})
@@ -1059,6 +1147,9 @@ def collect_system_metrics(configs: list[RunConfig]) -> list[dict]:
                 "recorded_segment_wall_time_hours": segment_wall_time / 3600,
                 "prior_training_wall_time_hours": prior_wall_time / 3600,
                 "timing_adjustment_path": str(adjustment_path) if adjustment else None,
+                "accepted_timing_path": str(accepted_timing_path)
+                if accepted_timing_path.is_file()
+                else None,
                 "samples_per_second": payload.get("dataset_rows", 0) / total_wall_time
                 if total_wall_time
                 else None,

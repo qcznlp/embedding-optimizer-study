@@ -276,11 +276,13 @@ intended. This event also exposed a scheduler recovery bug: a failed configurati
 next configuration instead of immediately resuming its latest checkpoint. The matrix runner now
 requeues a failed configuration at the front of its family queue, with an integration test that
 verifies the retry occurs before later queued work.
+
 Before that patched scheduler could be activated at a safe LateOn checkpoint boundary, the old
 process advanced DenseOn to Muon `1e-3`; it failed at step 303 on rank 3 (physical GPU 4) with another
 asynchronous NCCL-watchdog report. The driver logged Xid 13 and 43 on the same device, including the
 same exception-register values previously observed on physical GPU 2, while ECC remained zero and
 LateOn continued independently.
+
 At LateOn step 782, the first formal checkpoint passed a deep payload audit: the model, mixed
 Muon/AdamW optimizer state, scheduler, Trainer state, and all four rank RNG states loaded without an
 error. A controlled restart then activated the patched scheduler. It selected the two intended
@@ -288,6 +290,12 @@ unfinished runs, resumed DenseOn Muon `3e-4` from checkpoint 2,345 and LateOn Mu
 checkpoint 782, and the latter continued through step 789. This is an end-to-end PyLate checkpoint
 recovery test rather than only a file-presence check. Timing accounting retains the non-overlapping
 segment through step 782 and excludes duplicated post-checkpoint steps and restart initialization.
+Subsequent attempts commit this accounting automatically in an atomic timing ledger after each
+durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
+durations, a matching segment sum, and the expected terminal step. Historical segments retained
+before this mechanism was enabled remain backed by W&B `startedAt` values and checkpoint Trainer-state
+mtimes; this also restores DenseOn Muon `3e-4` steps 1,564–2,345 that would otherwise have been
+omitted from its eventual throughput denominator.
 
 ## Limitations
 
