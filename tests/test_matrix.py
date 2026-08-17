@@ -96,6 +96,48 @@ def test_run_completion_requires_consistent_terminal_artifacts(tmp_path):
     assert not _run_is_complete(config)
 
 
+def test_run_completion_validates_declared_accepted_timing(tmp_path):
+    output = tmp_path / "dense" / "run"
+    steps = [2, 4, 6, 8, 10]
+    for step in steps:
+        _write_checkpoint(output, step)
+    final = output / "final"
+    final.mkdir()
+    (final / "model.safetensors").write_bytes(b"model")
+    (output / "checkpoint_schedule.json").write_text(json.dumps({"steps": steps}))
+    (output / "trainer_state_final.json").write_text(json.dumps({"global_step": 10}))
+    timing = {
+        "schema_version": 1,
+        "segments": [
+            {
+                "start_step_exclusive": 0,
+                "end_step_inclusive": 10,
+                "wall_time_seconds_max_rank": 5.0,
+            }
+        ],
+        "total_wall_time_seconds_max_rank": 5.0,
+    }
+    (output / "accepted_timing.json").write_text(json.dumps(timing))
+    completed = {
+        "run_id": "run",
+        "model_family": "dense",
+        "global_step": 10,
+        "checkpoints": steps,
+        "accepted_timing": {
+            "schema_version": 1,
+            "segments": 1,
+            "total_wall_time_seconds_max_rank": 5.0,
+        },
+    }
+    (output / "completed.json").write_text(json.dumps(completed))
+    config = SimpleNamespace(output_dir=output, run_id="run", model_family="dense")
+
+    assert _run_is_complete(config)
+    timing["total_wall_time_seconds_max_rank"] = 4.0
+    (output / "accepted_timing.json").write_text(json.dumps(timing))
+    assert not _run_is_complete(config)
+
+
 def test_failed_job_is_retried_before_later_family_config(monkeypatch, tmp_path):
     first = _run("dense", "d1")
     second = _run("dense", "d2")

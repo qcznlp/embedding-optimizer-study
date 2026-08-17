@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import sys
@@ -107,6 +108,41 @@ def _run_is_complete(config: RunConfig) -> bool:
         or final_step != steps[-1]
     ):
         return False
+    accepted_summary = completed.get("accepted_timing")
+    if accepted_summary is not None:
+        timing_path = output / "accepted_timing.json"
+        try:
+            timing = json.loads(timing_path.read_text())
+            segments = timing["segments"]
+            recorded_total = float(timing["total_wall_time_seconds_max_rank"])
+            summary_total = float(accepted_summary["total_wall_time_seconds_max_rank"])
+            total = sum(float(segment["wall_time_seconds_max_rank"]) for segment in segments)
+            timing_steps = [
+                (
+                    int(segment["start_step_exclusive"]),
+                    int(segment["end_step_inclusive"]),
+                )
+                for segment in segments
+            ]
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+            return False
+        if (
+            timing.get("schema_version") != 1
+            or not timing_steps
+            or any(end <= start for start, end in timing_steps)
+            or any(
+                previous[1] != current[0]
+                for previous, current in zip(timing_steps, timing_steps[1:])
+            )
+            or timing_steps[-1][1] != steps[-1]
+            or not math.isfinite(total)
+            or total <= 0
+            or not math.isclose(recorded_total, total, rel_tol=1e-9, abs_tol=1e-6)
+            or accepted_summary.get("schema_version") != 1
+            or accepted_summary.get("segments") != len(segments)
+            or not math.isclose(summary_total, total, rel_tol=1e-9, abs_tol=1e-6)
+        ):
+            return False
     if not all(_checkpoint_is_resumable(output / f"checkpoint-{step}") for step in steps):
         return False
     final_dir = output / "final"
