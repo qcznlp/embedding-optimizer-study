@@ -60,7 +60,7 @@ formal training or evaluation, use the provisioned CUDA 12.9 environment and ver
 
 The command prints the complete observed runtime and exits nonzero on any Python, Torch CUDA-build,
 training-library, or evaluation-library mismatch. Use that same verified interpreter for training,
-the matrix supervisor, the evaluation coordinator, and `--worker-python`. The formal matrix,
+the matrix supervisor, the evaluation supervisor/coordinator, and `--worker-python`. The formal matrix,
 individual formal training workers, and evaluation coordinator also run this verification
 automatically; smoke and stress configs remain portable by omitting `formal_runtime`.
 
@@ -204,6 +204,24 @@ embed-optim-evaluate \
   --gpus-a 0,1,2,3 \
   --gpus-b 4,5,6,7
 ```
+
+For the full unattended handoff from training to evaluation, use the persistent supervisor instead:
+
+```bash
+embed-optim-supervise-evaluation \
+  --matrix configs/experiment.yaml \
+  --gpus-a 0,1,2,3 \
+  --gpus-b 4,5,6,7 \
+  --python /usr/bin/python3 \
+  --worker-python /usr/bin/python3
+```
+
+It remains CPU-only while it waits for all 24 structurally complete training runs. It then launches
+the resumable evaluator and runs the strict aggregation audit after every attempt. A worker,
+coordinator, or task failure causes another launch after `--restart-delay`; already validated MTEB
+results are reused. The supervisor exits successfully only after the audit proves all 1,680 expected
+run/checkpoint/task results and the complete training/data/runtime contract. `--max-launches N`
+provides an optional retry bound; zero, the default, keeps recovering unattended.
 
 Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned in
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
