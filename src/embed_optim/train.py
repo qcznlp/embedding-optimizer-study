@@ -344,7 +344,15 @@ def main(argv: list[str] | None = None) -> None:
         os.environ["EMBED_OPTIM_MAX_STEPS"] = str(args.max_steps)
     if args.stop_after_step:
         os.environ["EMBED_OPTIM_STOP_AFTER_STEP"] = str(args.stop_after_step)
-    run_training(config, resume_from_checkpoint=args.resume_from_checkpoint)
+    try:
+        run_training(config, resume_from_checkpoint=args.resume_from_checkpoint)
+    finally:
+        # Trainer/Accelerate initializes the process group but does not always
+        # tear it down before the module exits. Explicit cleanup avoids the
+        # otherwise harmless ProcessGroupNCCL resource-leak warning and also
+        # releases distributed resources when training raises.
+        if torch.distributed.is_available() and torch.distributed.is_initialized():
+            torch.distributed.destroy_process_group()
 
 
 if __name__ == "__main__":

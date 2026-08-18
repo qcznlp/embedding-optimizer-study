@@ -65,7 +65,46 @@ def test_formal_training_verifies_declared_runtime(monkeypatch):
             config=selected, resume=resume_from_checkpoint
         ),
     )
+    monkeypatch.setattr(train.torch.distributed, "is_available", lambda: True)
+    monkeypatch.setattr(train.torch.distributed, "is_initialized", lambda: True)
+    monkeypatch.setattr(
+        train.torch.distributed,
+        "destroy_process_group",
+        lambda: observed.update(process_group_destroyed=True),
+    )
 
     train.main(["--matrix", "matrix.yaml", "--model-family", "late", "--run-id", "muon-test"])
 
-    assert observed == {"config": config, "resume": None}
+    assert observed == {
+        "config": config,
+        "resume": None,
+        "process_group_destroyed": True,
+    }
+
+
+def test_training_failure_still_destroys_process_group(monkeypatch):
+    config = SimpleNamespace(model_family="dense", run_id="failed-test")
+    observed = []
+    monkeypatch.setattr(train, "matrix_runtime_spec", lambda path: None)
+    monkeypatch.setattr(train, "load_matrix", lambda path: [config])
+    monkeypatch.setattr(
+        train,
+        "run_training",
+        lambda selected, resume_from_checkpoint=None: (_ for _ in ()).throw(
+            RuntimeError("training failed")
+        ),
+    )
+    monkeypatch.setattr(train.torch.distributed, "is_available", lambda: True)
+    monkeypatch.setattr(train.torch.distributed, "is_initialized", lambda: True)
+    monkeypatch.setattr(
+        train.torch.distributed,
+        "destroy_process_group",
+        lambda: observed.append("destroyed"),
+    )
+
+    with pytest.raises(RuntimeError, match="training failed"):
+        train.main(
+            ["--matrix", "matrix.yaml", "--model-family", "dense", "--run-id", "failed-test"]
+        )
+
+    assert observed == ["destroyed"]
