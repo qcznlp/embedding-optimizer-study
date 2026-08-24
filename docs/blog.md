@@ -492,7 +492,19 @@ steps and data order. This is useful optimization-dynamics evidence, but not yet
 higher rate improves retrieval quality. Checkpoint 1,563 then passed with model digest
 `734fbf789cc3`, raising coverage to 96/120 at that point. Its second timing segment took 6,003.24
 seconds; mean loss was 0.2765 at `3e-5`, compared with 0.3295 at `1e-5`, and every recorded loss and
-gradient norm remained finite.
+gradient norm remained finite. Checkpoint 2,345 also passed with a new model digest
+(`a3aab9a26335`) and a 6,056.08-second third segment, raising coverage to 98/120. Mean loss in that
+interval was 0.2508 at `3e-5` and 0.3002 at `1e-5`, again with finite gradients.
+
+The first LateOn NorMuon run, at `1e-4`, then passed checkpoint 782 and raised coverage to 99/120.
+Its model digest is `44c29a85ce62`; the optimizer payload contains momentum and row-wise
+second-moment buffers for all 88 matrix tensors, AdamW first- and second-moment buffers for all 51
+auxiliary tensors, and four valid rank-local RNG archives. The accepted segment took 6,057.91
+maximum-rank seconds. Mean loss was 0.6347, close to Muon `1e-4` at 0.6237 over the same 79 records
+and data order; both remained well above AdamW `3e-5` at 0.4589. NorMuon's 790,110,283-byte optimizer
+state is only 565,952 bytes larger than Muon's, while remaining 35.80% smaller than the
+1,230,780,939-byte all-AdamW state. These are training-dynamics and systems observations, not
+retrieval-quality conclusions.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
