@@ -46,7 +46,7 @@ git clone https://github.com/qcznlp/embedding-optimizer-study.git
 cd embedding-optimizer-study
 
 uv sync --extra eval --extra analysis
-uv pip install flash-attn --no-build-isolation
+uv pip install flash-attn==2.7.4.post1 --no-build-isolation
 source .venv/bin/activate
 ```
 
