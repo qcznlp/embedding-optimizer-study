@@ -474,6 +474,14 @@ versus 0.3030 for NorMuon `3e-4` and 0.3219 for `1e-3` on the identical interval
 divergent at this stage, but it is already an overshoot rather than evidence that still larger
 learning rates improve optimization; retrieval conclusions remain gated on BEIR.
 
+The resumed LateOn AdamW `3e-5` run also wrote checkpoint 782 and raised formal coverage to 93/120.
+Its new model digest is `ac28cf34627a`; all 139 parameter states contain finite AdamW first- and
+second-moment buffers, and the model, scheduler, Trainer, and four rank-local RNG payloads passed the
+deep audit with zero problems. The accepted first segment took 6,004.35 maximum-rank seconds. Its 79
+logged losses were finite and averaged 0.4589, compared with 0.5605 for AdamW `1e-5` over the same
+steps and data order. This is useful optimization-dynamics evidence, but not yet evidence that the
+higher rate improves retrieval quality.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
