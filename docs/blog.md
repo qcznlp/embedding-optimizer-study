@@ -476,7 +476,12 @@ learning rates improve optimization. Checkpoint 2,345 subsequently passed with a
 digest (`f56518f3f150`), raising coverage to 94/120; its 782-step segment took 2,564.97 seconds. The
 same comparison persisted in this third interval: mean loss was 0.4959 at `3e-3`, versus 0.2741 at
 `3e-4` and 0.2947 at `1e-3`, with every recorded loss and gradient norm finite. Retrieval conclusions
-remain gated on BEIR.
+remain gated on BEIR. Checkpoints 3,126 and 3,907 later passed the same audit, and the run wrote its
+complete final model and terminal Trainer state. The final model digest is `bc4336982ebb`; the five
+contiguous timing segments total 12,807.20 maximum-rank seconds. In the fifth interval, mean loss was
+0.3657 at `3e-3`, versus 0.2502 at `3e-4` and 0.2491 at `1e-3`, so the high rate remained finite but
+did not close the optimization gap. This completion raised the matrix to 19/24 runs and 97/120
+checkpoints; the scheduler immediately reassigned its four-GPU pool to LateOn NorMuon `1e-4`.
 
 The resumed LateOn AdamW `3e-5` run also wrote checkpoint 782 and raised formal coverage to 93/120.
 Its new model digest is `ac28cf34627a`; all 139 parameter states contain finite AdamW first- and
@@ -484,7 +489,10 @@ second-moment buffers, and the model, scheduler, Trainer, and four rank-local RN
 deep audit with zero problems. The accepted first segment took 6,004.35 maximum-rank seconds. Its 79
 logged losses were finite and averaged 0.4589, compared with 0.5605 for AdamW `1e-5` over the same
 steps and data order. This is useful optimization-dynamics evidence, but not yet evidence that the
-higher rate improves retrieval quality.
+higher rate improves retrieval quality. Checkpoint 1,563 then passed with model digest
+`734fbf789cc3`, raising coverage to 96/120 at that point. Its second timing segment took 6,003.24
+seconds; mean loss was 0.2765 at `3e-5`, compared with 0.3295 at `1e-5`, and every recorded loss and
+gradient norm remained finite.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
