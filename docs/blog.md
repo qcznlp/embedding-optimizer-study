@@ -503,8 +503,10 @@ auxiliary tensors, and four valid rank-local RNG archives. The accepted segment 
 maximum-rank seconds. Mean loss was 0.6347, close to Muon `1e-4` at 0.6237 over the same 79 records
 and data order; both remained well above AdamW `3e-5` at 0.4589. NorMuon's 790,110,283-byte optimizer
 state is only 565,952 bytes larger than Muon's, while remaining 35.80% smaller than the
-1,230,780,939-byte all-AdamW state. These are training-dynamics and systems observations, not
-retrieval-quality conclusions.
+1,230,780,939-byte all-AdamW state. Its first segment averages 7.7467 seconds per optimizer step,
+0.89% slower than AdamW `3e-5` and 0.97% slower than Muon `1e-4` over the identical step range; this
+does not show a steady-state throughput advantage. These are training-dynamics and systems
+observations, not retrieval-quality conclusions.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
