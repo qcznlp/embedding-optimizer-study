@@ -467,7 +467,12 @@ new DenseOn NorMuon `3e-3` run then wrote checkpoint 782. Its model digest is `c
 model, NorMuon/AdamW optimizer, scheduler, Trainer, and four RNG payloads all deep-validated with zero
 problems, raising coverage to 91/120 while training continued. The optimizer records the required
 `unfused-bfloat16-v1` implementation, and its accepted ledger contains exactly steps 1–782 with
-2,559.12 seconds of maximum-rank useful time.
+2,559.12 seconds of maximum-rank useful time. Checkpoint 1,563 then passed the same audit with a new
+model digest (`6422282a4548`), raising coverage to 92/120. Its second 781-step timing segment took
+2,559.00 seconds. The 78 logged losses in that segment remained finite, but their mean was 0.5539,
+versus 0.3030 for NorMuon `3e-4` and 0.3219 for `1e-3` on the identical interval. Thus `3e-3` is not
+divergent at this stage, but it is already an overshoot rather than evidence that still larger
+learning rates improve optimization; retrieval conclusions remain gated on BEIR.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
