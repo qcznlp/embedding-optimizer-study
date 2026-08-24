@@ -472,7 +472,11 @@ model digest (`6422282a4548`), raising coverage to 92/120. Its second 781-step t
 2,559.00 seconds. The 78 logged losses in that segment remained finite, but their mean was 0.5539,
 versus 0.3030 for NorMuon `3e-4` and 0.3219 for `1e-3` on the identical interval. Thus `3e-3` is not
 divergent at this stage, but it is already an overshoot rather than evidence that still larger
-learning rates improve optimization; retrieval conclusions remain gated on BEIR.
+learning rates improve optimization. Checkpoint 2,345 subsequently passed with another distinct model
+digest (`f56518f3f150`), raising coverage to 94/120; its 782-step segment took 2,564.97 seconds. The
+same comparison persisted in this third interval: mean loss was 0.4959 at `3e-3`, versus 0.2741 at
+`3e-4` and 0.2947 at `1e-3`, with every recorded loss and gradient norm finite. Retrieval conclusions
+remain gated on BEIR.
 
 The resumed LateOn AdamW `3e-5` run also wrote checkpoint 782 and raised formal coverage to 93/120.
 Its new model digest is `ac28cf34627a`; all 139 parameter states contain finite AdamW first- and
