@@ -455,6 +455,20 @@ rank shutdown emitted PyTorch's warning that `destroy_process_group()` had not b
 not invalidate either completion, but the runner now performs this cleanup explicitly on both normal
 and exceptional exits.
 
+After that pause was released, a later matrix pass completed ten more formal runs: all four DenseOn
+Muon learning rates, DenseOn NorMuon at `1e-4`, `3e-4`, and `1e-3`, the remaining LateOn Muon rates
+at `1e-3` and `3e-3`, and LateOn AdamW at `1e-5`. Every one ended at step 3,907 and all fifty new
+checkpoints passed the same payload audit, bringing the matrix to 18/24 runs and 90/120 checkpoints.
+A subsequent user stop arrived while DenseOn NorMuon `3e-3` and LateOn AdamW `3e-5` were still before
+their first durable checkpoint. Those partial attempts contributed no accepted timing or formal
+checkpoint. On resumption, both restarted from the common base and seed; canonical W&B reconstruction
+will use the final local Trainer histories rather than concatenate the discarded raw prefixes. The
+new DenseOn NorMuon `3e-3` run then wrote checkpoint 782. Its model digest is `c98490c78fa2`; the
+model, NorMuon/AdamW optimizer, scheduler, Trainer, and four RNG payloads all deep-validated with zero
+problems, raising coverage to 91/120 while training continued. The optimizer records the required
+`unfused-bfloat16-v1` implementation, and its accepted ledger contains exactly steps 1–782 with
+2,559.12 seconds of maximum-rank useful time.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
