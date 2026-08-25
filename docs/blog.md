@@ -532,8 +532,12 @@ AdamW `3e-5` and 1.22% slower than Muon `1e-4`. Its 78-record mean loss was 0.33
 the scheduler, Trainer, and four rank-local RNG archives agree with the boundary. The third segment
 took 6,042.60 seconds, or 7.7271 seconds per step: 0.22% faster than AdamW `3e-5` but 0.49% slower
 than Muon `1e-4`. Mean loss was 0.3007, compared with 0.2954 for Muon `1e-4`, 0.3002 for AdamW
-`1e-5`, and 0.2508 for AdamW `3e-5`. These are training-dynamics and systems observations, not
-retrieval-quality conclusions.
+`1e-5`, and 0.2508 for AdamW `3e-5`. Checkpoint 3,126 then passed with model digest `966260de464f`,
+raising coverage to 105/120. Its optimizer, scheduler, Trainer, and four rank-local RNG archives are
+finite and agree with the step boundary. The fourth segment took 6,046.67 seconds, or 7.7422 seconds
+per step: 0.97% slower than Muon `1e-4` and 0.50% slower than AdamW `3e-5`. Mean loss was 0.2777,
+compared with 0.2729 for Muon `1e-4`, 0.2775 for AdamW `1e-5`, and 0.2292 for AdamW `3e-5`. These
+are training-dynamics and systems observations, not retrieval-quality conclusions.
 
 The `3e-4` NorMuon run subsequently passed checkpoint 782 with model digest `71c87da125c6`, raising
 coverage to 104/120. Its 88 matrix and 51 auxiliary states are finite at the boundary, and the
