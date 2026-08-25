@@ -209,7 +209,11 @@ splits and the irreducible one-text OOM case, and the full test suite passed. Be
 source is LateOn-specific and no LateOn result existed, the evaluator manifest was migrated with an
 explicit old/new hash record; all twelve pre-existing DenseOn units passed the strict collector after
 the migration. LateOn evaluation then restarted from the beginning, so no partial pre-fix encoding
-is used in the reported scores.
+is used in the reported scores. During the repaired replay, both independent two-GPU workers emitted
+exactly one adaptive-split warning at local document 1,892,742 (74%) for a packed batch of 2,048
+texts. Both then completed the next distributed gather and advanced beyond the original failure
+point without an OOM or worker failure. This validates the intended failure-path recovery; the task
+scores remain gated on completing indexing, search, atomic result publication, and strict collection.
 
 Infrastructure note: the first DenseOn Muon run encountered two pre-checkpoint
 `CUBLAS_STATUS_EXECUTION_FAILED` errors in PyTorch's native bfloat16 Newton–Schulz `addmm`, both on
