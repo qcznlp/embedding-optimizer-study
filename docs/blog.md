@@ -512,7 +512,13 @@ and data order; both remained well above AdamW `3e-5` at 0.4589. NorMuon's 790,1
 state is only 565,952 bytes larger than Muon's, while remaining 35.80% smaller than the
 1,230,780,939-byte all-AdamW state. Its first segment averages 7.7467 seconds per optimizer step,
 0.89% slower than AdamW `3e-5` and 0.97% slower than Muon `1e-4` over the identical step range; this
-does not show a steady-state throughput advantage. These are training-dynamics and systems
+does not show a steady-state throughput advantage. Checkpoint 1,563 subsequently passed with model
+digest `07c7cb8a7e96`, raising formal coverage to 101/120. All 88 matrix states contain finite NorMuon
+momentum and row-wise second-moment buffers, all 51 auxiliary states contain finite AdamW buffers at
+step 1,563, and the scheduler, Trainer, and four rank-local RNG archives agree with the boundary. The
+second segment took 6,013.85 maximum-rank seconds, or 7.7002 seconds per step: 0.18% slower than
+AdamW `3e-5` and 1.22% slower than Muon `1e-4`. Its 78-record mean loss was 0.3356, compared with
+0.3289 for Muon `1e-4` and 0.2765 for AdamW `3e-5`. These are training-dynamics and systems
 observations, not retrieval-quality conclusions.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
