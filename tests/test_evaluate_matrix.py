@@ -452,9 +452,7 @@ def test_late_adaptive_encode_reraises_single_text_oom(monkeypatch):
 
     monkeypatch.setattr(late.torch.cuda, "empty_cache", lambda: cache_calls.append(True))
     with pytest.raises(late.torch.OutOfMemoryError, match="single text cannot fit"):
-        late.encode_batch_to_fp16_numpy(
-            AlwaysOomModel(), ["only"], prompt=None, is_query=True
-        )
+        late.encode_batch_to_fp16_numpy(AlwaysOomModel(), ["only"], prompt=None, is_query=True)
     assert cache_calls == [True]
 
 
