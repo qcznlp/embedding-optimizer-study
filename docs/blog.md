@@ -503,6 +503,15 @@ timing segment took 6,016.75 maximum-rank seconds. Mean loss over its 78 new rec
 rate therefore retains the lowest controlled training loss through 80% of the run, while retrieval
 quality remains gated on the decontaminated BEIR evaluation.
 
+The final checkpoint at step 3,907 then passed with model digest `e0a02c3d6908`, completing this run
+and raising formal coverage to 20/24 runs and 102/120 checkpoints. All 139 AdamW states are finite at
+step 3,907; the scheduler, Trainer, and four rank-local Python/NumPy/CPU/CUDA RNG archives agree with
+the boundary. The fifth timing segment took 6,002.76 maximum-rank seconds, bringing accepted
+end-to-end time to 30,083.17 seconds. Mean loss over its 78 records was 0.2258 at `3e-5`, versus
+0.2773 at `1e-5`, 0.3585 at `3e-6`, and 0.4661 at `1e-6`; its final logged loss was 0.2249 and every
+recorded gradient norm remained finite. The training-loss ordering therefore persisted through the
+full run, but decontaminated BEIR remains the gate for retrieval-quality claims.
+
 The first LateOn NorMuon run, at `1e-4`, then passed checkpoint 782 and raised coverage to 99/120.
 Its model digest is `44c29a85ce62`; the optimizer payload contains momentum and row-wise
 second-moment buffers for all 88 matrix tensors, AdamW first- and second-moment buffers for all 51
