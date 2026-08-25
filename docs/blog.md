@@ -535,6 +535,14 @@ than Muon `1e-4`. Mean loss was 0.3007, compared with 0.2954 for Muon `1e-4`, 0.
 `1e-5`, and 0.2508 for AdamW `3e-5`. These are training-dynamics and systems observations, not
 retrieval-quality conclusions.
 
+The `3e-4` NorMuon run subsequently passed checkpoint 782 with model digest `71c87da125c6`, raising
+coverage to 104/120. Its 88 matrix and 51 auxiliary states are finite at the boundary, and the
+scheduler, Trainer, and four rank-local RNG archives agree. The segment took 6,100.94 maximum-rank
+seconds, or 7.8017 seconds per step: 0.95% slower than Muon `3e-4` and 1.61% slower than AdamW
+`3e-5`. Mean loss across 79 records was 0.5071, close to Muon `3e-4` at 0.4984 and below NorMuon
+`1e-4` at 0.6347, but still above AdamW `3e-5` at 0.4589. This extends the controlled dynamics
+comparison to a second NorMuon rate without yet making a retrieval-quality claim.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
