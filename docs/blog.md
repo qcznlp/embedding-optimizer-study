@@ -583,6 +583,18 @@ took 6,073.92 maximum-rank seconds, or 7.7771 seconds per step: 1.37% slower tha
 loss was 0.1743, and every recorded loss and gradient norm remained finite. This extends the
 controlled higher-rate dynamics result through 80% of training; retrieval quality remains gated on
 the decontaminated BEIR evaluation.
+The final checkpoint at step 3,907 then passed with model digest `1ab87d88703b`, completing the
+`3e-4` NorMuon run and raising formal coverage to 22/24 runs and 112/120 checkpoints. Independent
+validation found zero problems: all 88 matrix-state pairs and 51 auxiliary AdamW state pairs are
+finite, the auxiliary steps equal 3,907, the scheduler reports epoch 3,907 and step count 3,908,
+the Trainer reports the terminal step, and all four RNG archives are valid. The fifth segment took
+6,094.94 maximum-rank seconds, or 7.8040 seconds per step: 1.41% slower than Muon `3e-4` and 1.54%
+slower than AdamW `3e-5`. Accepted end-to-end time was 30,459.02 seconds, 1.25% slower than both
+comparators. Mean loss over the final 78 records was 0.2184, close to Muon `3e-4` at 0.2159, 3.26%
+below AdamW `3e-5` at 0.2258, and 21.02% below NorMuon `1e-4` at 0.2765; all losses and gradient
+norms remained finite. The freed four-GPU pool automatically launched the final queued `3e-3`
+NorMuon run and entered optimizer steps without manual intervention. This closes the controlled
+`3e-4` training trajectory, while retrieval quality remains gated on decontaminated BEIR.
 
 The `1e-3` NorMuon run then passed checkpoint 782 with model digest `7676bb32a4a2`, raising formal
 coverage to 109/120 checkpoints. Its 88 NorMuon matrix states and 51 auxiliary AdamW states are
