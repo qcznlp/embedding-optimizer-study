@@ -212,8 +212,12 @@ the migration. LateOn evaluation then restarted from the beginning, so no partia
 is used in the reported scores. During the repaired replay, both independent two-GPU workers emitted
 exactly one adaptive-split warning at local document 1,892,742 (74%) for a packed batch of 2,048
 texts. Both then completed the next distributed gather and advanced beyond the original failure
-point without an OOM or worker failure. This validates the intended failure-path recovery; the task
-scores remain gated on completing indexing, search, atomic result publication, and strict collection.
+point without an OOM or worker failure. They subsequently encoded all 5,117,453 ClimateFEVER
+documents, built their approximately 92 GiB temporary PLAID indexes in 1,656.8 and 1,645.2 seconds,
+and searched all 969 queries in 50.9 and 49.3 seconds. Both task files and model metadata were
+atomically published, both temporary indexes were removed, and the strict collector accepted the
+two results as the first formal LateOn units. This validates the intended recovery across the full
+encoding, indexing, search, publication, cleanup, and provenance-checking path.
 
 Infrastructure note: the first DenseOn Muon run encountered two pre-checkpoint
 `CUBLAS_STATUS_EXECUTION_FAILED` errors in PyTorch's native bfloat16 Newton–Schulz `addmm`, both on
