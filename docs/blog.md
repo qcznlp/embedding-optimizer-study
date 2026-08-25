@@ -707,6 +707,27 @@ same-rate advantage over Muon therefore persists through 80% of training, while 
 controls continue to show that `3e-3` is over-aggressive. Retrieval quality remains gated on
 decontaminated BEIR.
 
+The final checkpoint at step 3,907 then passed with model digest `aeac171fecc5`, completing all
+24/24 training runs and all 120/120 formal checkpoint audits. Independent reload again found zero
+problems: all 88 NorMuon matrix-state pairs and 51 auxiliary AdamW state pairs are finite, every
+auxiliary step equals 3,907, the scheduler reports epoch 3,907 and step count 3,908, the Trainer
+reports the terminal step, and all four rank-local RNG archives are valid. The completion marker
+records 31,164.56 maximum-rank wall seconds, 31,159.27 accepted seconds, 39.79 GB peak allocated,
+50.03 GB peak reserved, and a 790.11 MB optimizer payload. Mean loss over the final 78 records was
+0.2600, 2.38% below Muon `3e-3` at 0.2663, but 30.12% above NorMuon `1e-3` at 0.1998 and 15.15%
+above AdamW `3e-5` at 0.2258. The final logged loss was 0.2513 and every recorded loss and gradient
+norm remained finite. Thus the same-rate optimization-loss advantage over Muon persists through
+the complete run, while the lower-rate controls continue to indicate that `3e-3` is too aggressive.
+
+The fifth timing segment measured 6,634.98 maximum-rank seconds, or 8.4955 seconds per step, and
+the accepted full-run time was 31,159.27 seconds. These are 9.82% and 2.92% slower than Muon
+`3e-3`, respectively. They are intentionally excluded from optimizer-only throughput conclusions:
+at the user's direction, DenseOn evaluation began on GPUs 0--3 around training step 3,209 and its
+CPU-intensive preprocessing overlapped most of this final segment on GPUs 4--7. The first four
+segments retain controlled single-workload timing evidence; the fifth segment and end-to-end time
+instead document the observed shared-node system cost. Retrieval-quality conclusions remain gated
+on completion of the decontaminated BEIR matrix.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
