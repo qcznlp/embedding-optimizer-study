@@ -694,6 +694,19 @@ same-rate advantage over Muon therefore persists through 60% of training, as doe
 `3e-3` is over-aggressive relative to the lower-rate controls. Retrieval quality remains gated on
 decontaminated BEIR.
 
+At checkpoint 3,126, the `3e-3` run passed again with model digest `7213a954f1cb`, raising formal
+coverage to 119/120 checkpoints. Independent reload found zero problems: all 88 NorMuon
+matrix-state pairs and 51 auxiliary AdamW state pairs are finite, every auxiliary step equals
+3,126, the scheduler reports epoch 3,126 and step count 3,127, the Trainer reports step 3,126, and
+all four rank-local RNG archives are valid. The fourth segment took 6,153.42 maximum-rank seconds,
+or 7.8789 seconds per step: 1.79% slower than Muon `3e-3`, 1.41% slower than NorMuon `1e-3`, and
+2.27% slower than AdamW `3e-5`. Mean loss over its 78 records was 0.2909, 4.85% below Muon `3e-3`
+at 0.3058, but 36.59% above NorMuon `1e-3` at 0.2130 and 26.95% above AdamW `3e-5` at 0.2292. The
+final logged loss was 0.2133 and every recorded loss and gradient norm remained finite. The
+same-rate advantage over Muon therefore persists through 80% of training, while the lower-rate
+controls continue to show that `3e-3` is over-aggressive. Retrieval quality remains gated on
+decontaminated BEIR.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
