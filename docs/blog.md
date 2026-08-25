@@ -573,6 +573,16 @@ at 0.2397 and below AdamW `3e-5` at 0.2508; every recorded loss and gradient nor
 This continues the training-loss advantage of the higher rate through 60% of the run without
 establishing a retrieval-quality advantage.
 
+The `1e-3` NorMuon run then passed checkpoint 782 with model digest `7676bb32a4a2`, raising formal
+coverage to 109/120 checkpoints. Its 88 NorMuon matrix states and 51 auxiliary AdamW states are
+finite, and the scheduler, Trainer, and four rank-local RNG archives agree with the boundary. The
+first segment took 6,104.48 maximum-rank seconds, or 7.8062 seconds per step: 0.31% slower than Muon
+`1e-3` and 1.67% slower than AdamW `3e-5`. Mean loss across 79 records was 0.4185, close to Muon
+`1e-3` at 0.4169 and below both AdamW `3e-5` at 0.4589 and NorMuon `3e-4` at 0.5071. Every recorded
+loss and gradient norm remained finite, including the passage through the `1e-3` peak learning
+rate. This is evidence of numerical robustness and lower controlled training loss at the higher
+rate, while retrieval quality remains unevaluated.
+
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
 notices rather than silent runtime changes. The model is deliberately constructed with float32
