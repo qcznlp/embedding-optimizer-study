@@ -593,6 +593,18 @@ first segment took 6,104.48 maximum-rank seconds, or 7.8062 seconds per step: 0.
 loss and gradient norm remained finite, including the passage through the `1e-3` peak learning
 rate. This is evidence of numerical robustness and lower controlled training loss at the higher
 rate, while retrieval quality remains unevaluated.
+Checkpoint 1,563 subsequently passed with model digest `cc9a6a8c8f31`, raising formal coverage to
+111/120 checkpoints. An independent reload again found zero deep-audit problems: all 88 NorMuon
+matrix-state pairs and all 51 auxiliary AdamW state pairs are finite, every auxiliary step equals
+1,563, the scheduler reports epoch 1,563 and step count 1,564, the Trainer reports step 1,563, and
+all four rank-local RNG archives are valid. The second segment took 6,093.14 maximum-rank seconds,
+or 7.8017 seconds per step: 0.10% slower than Muon `1e-3`, 0.27% slower than NorMuon `3e-4`, and
+1.50% slower than AdamW `3e-5`. Mean loss over the 78 new records was 0.2624, 1.57% below Muon
+`1e-3` at 0.2666, 2.07% below NorMuon `3e-4` at 0.2680, and 5.09% below AdamW `3e-5` at 0.2765.
+The final logged loss was 0.2481 and every recorded gradient norm remained finite. This checkpoint
+therefore adds a second stable post-peak interval at the maximum tested NorMuon rate, while the
+decontaminated BEIR evaluation remains necessary to determine whether its loss advantage transfers
+to retrieval.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
