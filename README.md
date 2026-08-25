@@ -7,7 +7,9 @@ shared 500,000-query training set, runs 24 controlled training jobs, evaluates f
 every job on 14 pinned decontaminated BEIR datasets, and produces publication-ready tables and plots.
 
 The live experiment dashboard is [Weights & Biases: embedding-optimizer-study](https://wandb.ai/stevezenguom/embedding-optimizer-study).
-The full research write-up is in [docs/blog.md](docs/blog.md).
+The full research write-up is in [docs/blog.md](docs/blog.md). A follow-on NAACL study connecting
+optimizer updates, weight trajectories, representation geometry, and retrieval behavior is specified
+in [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md).
 
 ## Experimental contract
 
