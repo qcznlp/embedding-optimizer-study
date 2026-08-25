@@ -564,6 +564,14 @@ took 6,076.99 maximum-rank seconds, or 7.7810 seconds per step: 1.64% slower tha
 1.23% slower than AdamW `3e-5`. Mean loss over its 78 new records was 0.2680, close to Muon `3e-4`
 at 0.2657 and below AdamW `3e-5` at 0.2765. This is a training-loss and systems result; the
 decontaminated BEIR evaluation remains the retrieval-quality gate.
+Checkpoint 2,345 then passed with model digest `91d749e4042b`, raising formal coverage to 108/120
+checkpoints. Its 88 NorMuon matrix states and 51 auxiliary AdamW states are finite, and the
+scheduler, Trainer, and four rank-local RNG archives agree with the boundary. The third segment
+took 6,112.23 maximum-rank seconds, or 7.8161 seconds per step: 0.86% slower than Muon `3e-4` and
+0.93% slower than AdamW `3e-5`. Mean loss over its 78 new records was 0.2418, close to Muon `3e-4`
+at 0.2397 and below AdamW `3e-5` at 0.2508; every recorded loss and gradient norm remained finite.
+This continues the training-loss advantage of the higher rate through 60% of the run without
+establishing a retrieval-quality advantage.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
