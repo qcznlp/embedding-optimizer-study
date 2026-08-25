@@ -494,7 +494,14 @@ higher rate improves retrieval quality. Checkpoint 1,563 then passed with model 
 seconds; mean loss was 0.2765 at `3e-5`, compared with 0.3295 at `1e-5`, and every recorded loss and
 gradient norm remained finite. Checkpoint 2,345 also passed with a new model digest
 (`a3aab9a26335`) and a 6,056.08-second third segment, raising coverage to 98/120. Mean loss in that
-interval was 0.2508 at `3e-5` and 0.3002 at `1e-5`, again with finite gradients.
+interval was 0.2508 at `3e-5` and 0.3002 at `1e-5`, again with finite gradients. Checkpoint 3,126
+subsequently passed the same deep audit and raised coverage to 100/120. Its model digest is
+`41197d64ff72`; all 139 AdamW states are finite and record optimizer step 3,126, and the scheduler,
+Trainer state, and four rank-local RNG archives agree with that boundary. The fourth contiguous
+timing segment took 6,016.75 maximum-rank seconds. Mean loss over its 78 new records was 0.2292 at
+`3e-5`, compared with 0.2775 at `1e-5`, 0.3585 at `3e-6`, and 0.4662 at `1e-6`. The highest AdamW
+rate therefore retains the lowest controlled training loss through 80% of the run, while retrieval
+quality remains gated on the decontaminated BEIR evaluation.
 
 The first LateOn NorMuon run, at `1e-4`, then passed checkpoint 782 and raised coverage to 99/120.
 Its model digest is `44c29a85ce62`; the optimizer payload contains momentum and row-wise
