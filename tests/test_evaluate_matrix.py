@@ -408,6 +408,56 @@ def test_late_corpus_embedding_release_clears_caller_reference(monkeypatch):
     assert calls == ["gc", "empty_cache"]
 
 
+def test_late_adaptive_encode_releases_each_microbatch_and_preserves_order(monkeypatch):
+    late = _late_evaluation_module(monkeypatch)
+    calls = []
+    cache_calls = []
+
+    class FakeModel:
+        def encode(self, texts, **kwargs):
+            calls.append((list(texts), kwargs))
+            if len(texts) > 2:
+                raise late.torch.OutOfMemoryError("injected batch OOM")
+            return [late.torch.full((int(text) + 1, 3), int(text)) for text in texts]
+
+    monkeypatch.setattr(late.torch.cuda, "empty_cache", lambda: cache_calls.append(True))
+    embeddings, splits = late.encode_batch_to_fp16_numpy(
+        FakeModel(), ["0", "1", "2", "3", "4"], prompt="p", is_query=False
+    )
+
+    assert [texts for texts, _ in calls] == [
+        ["0", "1", "2", "3", "4"],
+        ["0", "1"],
+        ["2", "3", "4"],
+        ["2"],
+        ["3", "4"],
+    ]
+    assert splits == 2
+    assert len(cache_calls) == 2
+    assert all(isinstance(embedding, late.np.ndarray) for embedding in embeddings)
+    assert all(embedding.dtype == late.np.float16 for embedding in embeddings)
+    assert [embedding.shape for embedding in embeddings] == [(i + 1, 3) for i in range(5)]
+    assert [float(embedding[0, 0]) for embedding in embeddings] == list(range(5))
+    assert all(call["batch_size"] == len(texts) for texts, call in calls)
+    assert all(call["prompt"] == "p" and not call["is_query"] for _, call in calls)
+
+
+def test_late_adaptive_encode_reraises_single_text_oom(monkeypatch):
+    late = _late_evaluation_module(monkeypatch)
+    cache_calls = []
+
+    class AlwaysOomModel:
+        def encode(self, texts, **kwargs):
+            raise late.torch.OutOfMemoryError("single text cannot fit")
+
+    monkeypatch.setattr(late.torch.cuda, "empty_cache", lambda: cache_calls.append(True))
+    with pytest.raises(late.torch.OutOfMemoryError, match="single text cannot fit"):
+        late.encode_batch_to_fp16_numpy(
+            AlwaysOomModel(), ["only"], prompt=None, is_query=True
+        )
+    assert cache_calls == [True]
+
+
 def test_late_auto_index_cleanup_runs_when_retrieval_fails(tmp_path, monkeypatch):
     late = _late_evaluation_module(monkeypatch)
     model = object.__new__(late.AccelerateMultiVectorModel)

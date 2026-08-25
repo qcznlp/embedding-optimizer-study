@@ -162,12 +162,14 @@ and resumes only the missing split/subset pairs from validated MTEB result files
 first reconstructs the exact shared training-data view and deep-validates every selected model,
 optimizer, scheduler, and per-rank RNG payload before any formal evaluation GPU work. It then uses one
 Python runtime for both model families and requires its core model-library versions to match the
-versions recorded during training. An immutable runtime manifest also records PyLate, FastPLAID,
-Late Interaction Kernels, MTEB, and FlashAttention. It additionally records SHA-256 identities for all
-eight evaluation/aggregation source files and verifies that the worker interpreter imports those same
-package sources. Final aggregation recomputes the hashes and rejects results with a different
-checkpoint identity, dataset revision, split/subset, scoring field, MTEB version, or runtime
-provenance.
+versions recorded during training. A runtime manifest also records PyLate, FastPLAID, Late Interaction
+Kernels, MTEB, and FlashAttention. It additionally records SHA-256 identities for all eight
+evaluation/aggregation source files and verifies that the worker interpreter imports those same
+package sources. A family-scoped evaluator correction is allowed only before that family has any
+accepted result and must leave an explicit old/new manifest migration record; the manifest is
+immutable within each accepted result epoch. Final aggregation recomputes the hashes and rejects
+results with a different checkpoint identity, dataset revision, split/subset, scoring field, MTEB
+version, or runtime provenance.
 Each task result and its model metadata are atomically replaced, concurrent DenseOn workers merge the
 shared MTEB run-settings sidecar under a cross-process lock, and only the main LateOn rank writes cache
 metadata. The final audit also checks the run-settings field layout against the recorded MTEB version,
@@ -195,6 +197,19 @@ Final wall-clock throughput, peak memory, optimizer-state size, and checkpoint s
 from the completed W&B runs and local Trainer states.
 
 <!-- SYSTEMS:END -->
+
+Evaluation-recovery note: the first two LateOn ClimateFEVER evaluations both reached 74% of corpus
+encoding and then exhausted an 80 GiB device on rank 1. The original one-shot fallback halved an
+oversized packed batch but retained the first half's device embeddings while encoding the second;
+the retained outputs left only 2.40 GiB free when the second half requested another 2.53 GiB. Neither
+attempt wrote a task result, and the strict collector still reported zero accepted LateOn units. The
+evaluator now repeatedly bisects only the failing microbatch and copies every successful microbatch
+to host fp16 before starting the next. Two focused regressions cover order-preserving multi-level
+splits and the irreducible one-text OOM case, and the full test suite passed. Because the changed
+source is LateOn-specific and no LateOn result existed, the evaluator manifest was migrated with an
+explicit old/new hash record; all twelve pre-existing DenseOn units passed the strict collector after
+the migration. LateOn evaluation then restarted from the beginning, so no partial pre-fix encoding
+is used in the reported scores.
 
 Infrastructure note: the first DenseOn Muon run encountered two pre-checkpoint
 `CUBLAS_STATUS_EXECUTION_FAILED` errors in PyTorch's native bfloat16 Newton–Schulz `addmm`, both on
