@@ -527,8 +527,13 @@ momentum and row-wise second-moment buffers, all 51 auxiliary states contain fin
 step 1,563, and the scheduler, Trainer, and four rank-local RNG archives agree with the boundary. The
 second segment took 6,013.85 maximum-rank seconds, or 7.7002 seconds per step: 0.18% slower than
 AdamW `3e-5` and 1.22% slower than Muon `1e-4`. Its 78-record mean loss was 0.3356, compared with
-0.3289 for Muon `1e-4` and 0.2765 for AdamW `3e-5`. These are training-dynamics and systems
-observations, not retrieval-quality conclusions.
+0.3289 for Muon `1e-4` and 0.2765 for AdamW `3e-5`. Checkpoint 2,345 then passed with model digest
+`513c6c054043`, raising coverage to 103/120. Its 88 matrix and 51 auxiliary states are finite, and
+the scheduler, Trainer, and four rank-local RNG archives agree with the boundary. The third segment
+took 6,042.60 seconds, or 7.7271 seconds per step: 0.22% faster than AdamW `3e-5` but 0.49% slower
+than Muon `1e-4`. Mean loss was 0.3007, compared with 0.2954 for Muon `1e-4`, 0.3002 for AdamW
+`1e-5`, and 0.2508 for AdamW `3e-5`. These are training-dynamics and systems observations, not
+retrieval-quality conclusions.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
