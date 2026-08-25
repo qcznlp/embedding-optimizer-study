@@ -546,6 +546,14 @@ seconds, or 7.8017 seconds per step: 0.95% slower than Muon `3e-4` and 1.61% slo
 `3e-5`. Mean loss across 79 records was 0.5071, close to Muon `3e-4` at 0.4984 and below NorMuon
 `1e-4` at 0.6347, but still above AdamW `3e-5` at 0.4589. This extends the controlled dynamics
 comparison to a second NorMuon rate without yet making a retrieval-quality claim.
+Checkpoint 1,563 subsequently passed with model digest `6c75c2e00ea8`, raising formal coverage to
+106/120 checkpoints. All 88 matrix states contain finite NorMuon momentum and row-wise
+second-moment buffers, all 51 auxiliary states contain finite AdamW buffers at step 1,563, and the
+scheduler, Trainer, and four rank-local RNG archives agree with the boundary. The second segment
+took 6,076.99 maximum-rank seconds, or 7.7810 seconds per step: 1.64% slower than Muon `3e-4` and
+1.23% slower than AdamW `3e-5`. Mean loss over its 78 new records was 0.2680, close to Muon `3e-4`
+at 0.2657 and below AdamW `3e-5` at 0.2765. This is a training-loss and systems result; the
+decontaminated BEIR evaluation remains the retrieval-quality gate.
 
 The first two LateOn Muon launches emitted PyLate 1.6 initialization warnings about the model's
 construction dtype, DDP `drop_last`, and its legacy `tokenize` entry point. These were compatibility
