@@ -572,6 +572,17 @@ took 6,112.23 maximum-rank seconds, or 7.8161 seconds per step: 0.86% slower tha
 at 0.2397 and below AdamW `3e-5` at 0.2508; every recorded loss and gradient norm remained finite.
 This continues the training-loss advantage of the higher rate through 60% of the run without
 establishing a retrieval-quality advantage.
+Checkpoint 3,126 then passed with model digest `810c16c7e698`, raising formal coverage to 110/120
+checkpoints. An independent reload found zero deep-audit problems: all 88 NorMuon momentum and
+row-wise second-moment pairs and all 51 auxiliary AdamW first- and second-moment pairs are finite,
+the auxiliary steps equal 3,126, the scheduler reports epoch 3,126 and step count 3,127, the Trainer
+reports step 3,126, and all four rank-local RNG archives are valid. The fourth contiguous segment
+took 6,073.92 maximum-rank seconds, or 7.7771 seconds per step: 1.37% slower than Muon `3e-4` and
+0.95% slower than AdamW `3e-5`. Its 78-record mean loss was 0.2218, close to Muon `3e-4` at 0.2195,
+3.24% below AdamW `3e-5` at 0.2292, and 20.14% below NorMuon `1e-4` at 0.2777. The final logged
+loss was 0.1743, and every recorded loss and gradient norm remained finite. This extends the
+controlled higher-rate dynamics result through 80% of training; retrieval quality remains gated on
+the decontaminated BEIR evaluation.
 
 The `1e-3` NorMuon run then passed checkpoint 782 with model digest `7676bb32a4a2`, raising formal
 coverage to 109/120 checkpoints. Its 88 NorMuon matrix states and 51 auxiliary AdamW states are
