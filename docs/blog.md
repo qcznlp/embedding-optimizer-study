@@ -538,6 +538,16 @@ finite and agree with the step boundary. The fourth segment took 6,046.67 second
 per step: 0.97% slower than Muon `1e-4` and 0.50% slower than AdamW `3e-5`. Mean loss was 0.2777,
 compared with 0.2729 for Muon `1e-4`, 0.2775 for AdamW `1e-5`, and 0.2292 for AdamW `3e-5`. These
 are training-dynamics and systems observations, not retrieval-quality conclusions.
+The final checkpoint at step 3,907 then passed with model digest `090d7d0c13dd`, completing the
+`1e-4` NorMuon run and raising formal coverage to 21/24 runs and 107/120 checkpoints. All 88 matrix
+states and 51 auxiliary states are finite; the scheduler, Trainer, and four rank-local RNG archives
+agree with the terminal boundary. The fifth segment took 6,066.96 maximum-rank seconds, or 7.7682
+seconds per step: 1.11% slower than Muon `1e-4` and 1.07% slower than AdamW `3e-5`. Accepted
+end-to-end time was 30,227.99 seconds, 0.95% slower than Muon and 0.48% slower than AdamW `3e-5`.
+Mean loss over the 78 final records was 0.2765, versus 0.2720 for Muon `1e-4`, 0.2773 for AdamW
+`1e-5`, and 0.2258 for AdamW `3e-5`; every recorded loss and gradient norm remained finite. NorMuon
+therefore closely tracks same-rate Muon in controlled training loss but does not show a throughput
+advantage in this run. Retrieval quality remains gated on the decontaminated BEIR evaluation.
 
 The `3e-4` NorMuon run subsequently passed checkpoint 782 with model digest `71c87da125c6`, raising
 coverage to 104/120. Its 88 matrix and 51 auxiliary states are finite at the boundary, and the
