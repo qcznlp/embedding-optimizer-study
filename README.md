@@ -368,6 +368,40 @@ displacements, not optimizer steps. Claims about actual AdamW/Muon update direct
 the common-state gradient and virtual-update experiments specified in
 [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md).
 
+### 6. Analyze fixed representation probes
+
+`embed-optim-analyze-probe` turns a versioned embedding export into a provenance-checked JSON report.
+The `.npz` contract is deliberately model-independent so the same fixed sample IDs can be encoded by
+the pretrained model and any selected checkpoint:
+
+- `sample_ids`: unique `[samples]` identifiers;
+- `query_embeddings`: `[samples, dim]` for DenseOn or `[samples, query_tokens, dim]` for LateOn;
+- `document_embeddings`: `[samples, candidates, dim]` for DenseOn or
+  `[samples, candidates, document_tokens, dim]` for LateOn;
+- `query_mask` and `document_mask`: required for LateOn, with one or more valid tokens per item;
+- `reference_scores`: optional `[samples, candidates]` scores from a declared reference checkpoint.
+
+Candidate index zero is always the positive; the remaining candidates are the seven explicit hard
+negatives. Run:
+
+```bash
+embed-optim-analyze-probe \
+  --input probes/dense/muon-lr1e-4-checkpoint-782.npz \
+  --output results/representation-space/dense/muon-lr1e-4-checkpoint-782.json \
+  --family dense \
+  --label dense/muon-lr1e-4/checkpoint-782
+```
+
+For both families, the report includes positive–hardest-negative margins, MRR, candidate-score
+dispersion, representation covariance effective rank, stable rank, leading-variance concentration,
+mean-vector anisotropy, and optional ranking drift from `reference_scores`. The LateOn path computes
+the training recipe's MeanMaxSim and additionally reports query-token evidence entropy/Gini,
+positive-document token coverage, and repeated MaxSim-token dominance. Large representation sets are
+subsampled with a recorded deterministic seed; scoring itself is exact and batchable. The input
+SHA-256, every array shape/dtype, metric settings, and positive-index convention are written with the
+result. This command analyzes exported representations; the checkpoint encoder and probe-selection
+manifest remain separate so sample selection cannot be silently changed during metric computation.
+
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.

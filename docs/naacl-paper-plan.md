@@ -263,6 +263,15 @@ For LateOn, add token-level measures:
 The strongest analysis links a change at layer `l` to a downstream change in score margin or ranking,
 not merely to another intrinsic geometry scalar.
 
+The repository now implements the metric half of this protocol as
+`embed-optim-analyze-probe`. It consumes a hashed, fixed `.npz` export with explicit sample IDs,
+positive-first candidates, and LateOn token masks. Dense exports are scored with cosine similarity;
+LateOn exports are scored with the same MeanMaxSim reduction used for training. The output records
+margin distributions, rank/isotropy summaries, optional reference-ranking drift, and LateOn token
+evidence concentration/coverage. Probe selection and checkpoint encoding must produce their own
+versioned manifest: the analyzer intentionally does not select examples, which keeps selection fixed
+and auditable across optimizers.
+
 ## Causal controls and additional runs
 
 ### Required fairness control
