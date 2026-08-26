@@ -12,6 +12,7 @@ from typing import Any
 
 import torch
 from safetensors import safe_open
+from safetensors.torch import save_file
 
 from .optimizers import parameter_partition_name
 
@@ -47,6 +48,24 @@ def _atomic_jsonl(path: Path, records: list[dict[str, Any]]) -> None:
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(temporary, path)
+
+
+def _atomic_safetensors(
+    path: Path,
+    tensors: dict[str, torch.Tensor],
+    *,
+    metadata: dict[str, str],
+) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.stem}.tmp.{os.getpid()}.safetensors")
+    try:
+        save_file(tensors, temporary, metadata=metadata)
+        with temporary.open("rb") as handle:
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
 
 
 TensorLocation = tuple[Path, str]

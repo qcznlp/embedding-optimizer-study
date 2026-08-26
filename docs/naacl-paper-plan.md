@@ -332,6 +332,20 @@ ecological description of what each trained run would do next. In all scale-matc
 match both global and per-layer budgets so a change in layer allocation is not mistaken for a change
 in within-matrix geometry.
 
+The repository implements the frozen-weight state-warm-up protocol with
+`embed-optim-export-gradients` and `embed-optim-analyze-updates`. The preregistered settings in
+`configs/common_state_probe.json` select 32 source-balanced examples, average them into eight ordered
+gradient states, use micro-batches of one, apply the formal global gradient-clipping threshold, and
+never advance the checkpoint weights. Parameters and accumulated gradients remain float32 while the
+forward pass uses the same bfloat16 autocast policy as training. Shards are committed and hashed
+independently so interrupted GPU exports resume without changing their sample/RNG sequence. The
+analyzer replays the exact AdamW, Muon, and NorMuon state equations used by training, including CUDA
+bfloat16 Newton–Schulz, records raw direction geometry, and exports per-layer Frobenius-matched
+directions for downstream interventions. Weight decay is kept separate;
+otherwise its checkpoint-dependent `lambda W` term would contaminate the comparison of data-gradient
+preconditioners. A one-gradient export is the cold-start diagnostic, but it is not interchangeable
+with the preregistered eight-gradient stateful result.
+
 ### Short counterfactual branches
 
 From the same pretrained, 20%, and 60% checkpoints, train each optimizer for a short fixed sequence

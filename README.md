@@ -469,6 +469,55 @@ before their dependent checkpoints, assigns one checkpoint per GPU, and retries 
 Every export and metric report is content-hash audited before it is skipped on resume. Use
 `--dry-run` to list only incomplete jobs without downloading a model or starting a GPU process.
 
+### 7. Compare common-state optimizer updates
+
+The checkpoint trajectories above cannot isolate an optimizer rule because each completed run visits
+different weights and gradients. The common-state pipeline first caches a fixed sequence of gradients
+without advancing the checkpoint:
+
+```bash
+embed-optim-export-gradients \
+  --checkpoint outputs/dense/muon-lr1e-4/checkpoint-2345 \
+  --probe data/probes/training-1024-seed1729 \
+  --probe-spec configs/representation_probe.json \
+  --common-state-spec configs/common_state_probe.json \
+  --family dense \
+  --output-dir results/common-state/gradients/dense-muon-lr1e-4-step2345
+```
+
+The frozen specification selects 32 probe examples with a seeded, source-balanced round robin and
+forms eight ordered four-example gradients using micro-batches of one. Like formal training, model
+parameters and accumulated gradients remain float32 while forward operations use bfloat16 autocast.
+Every gradient is computed in evaluation mode at the identical weights, clipped at the training
+threshold of 1.0 across all model parameters, and then saves only the exact hidden-matrix partition
+used by Muon. The runtime-to-safetensors name mapping is required to be a complete one-to-one match
+and is recorded explicitly. The checkpoint, probe, selection, clipping factor, loss, tensor
+partition, runtime, and every shard are content-hashed. A partially completed export resumes only
+after validating every committed shard.
+
+Replay that shared gradient history through the three optimizer state machines with:
+
+```bash
+embed-optim-analyze-updates \
+  --checkpoint outputs/dense/muon-lr1e-4/checkpoint-2345 \
+  --gradient-manifest \
+    results/common-state/gradients/dense-muon-lr1e-4-step2345/manifest.json \
+  --common-state-spec configs/common_state_probe.json \
+  --output-dir results/common-state/updates/dense-muon-lr1e-4-step2345
+```
+
+This advances AdamW's coordinate moments, Muon's momentum, and NorMuon's momentum plus row-wise
+second moment while holding the parameters fixed. It reports the final raw update spectra, row/column
+balance, energy concentration, gradient/weight angles, and optimizer-pair direction cosines. Weight
+decay is excluded and labeled as such. It also exports one intervention direction per optimizer whose
+Frobenius norm is matched to the corresponding layer's weight norm; multiplying every tensor by the
+same `alpha` therefore gives all optimizers the same per-layer update-to-weight budget. Numerical
+tests replay multiple gradients and compare all three directions directly with the optimizer used in
+formal training. The frozen analyzer executes Newton–Schulz on CUDA, matching the formal bfloat16
+kernel backend rather than substituting a CPU matrix product. This protocol isolates the stateful
+transform; it does not claim that the cached fixed-weight gradients reproduce an optimizer's native
+training trajectory.
+
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.
