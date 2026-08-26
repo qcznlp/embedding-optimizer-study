@@ -42,6 +42,18 @@ Regenerate the vector figure with:
 embed-optim-plot-geometry
 ```
 
+The complementary phase plot includes AdamW and uses relative displacement on a logarithmic axis.
+The gray band is only the scale range observed for all three optimizers; it is not a matched causal
+experiment.
+
+![All-optimizer checkpoint geometry by displacement scale](optimizer_geometry_phase.svg)
+
+Regenerate it with:
+
+```bash
+embed-optim-plot-geometry-phase
+```
+
 These are one-seed, integrated checkpoint trajectories, not individual optimizer updates or causal
 effects. The common-state virtual updates, matched-scale controls, short branches, and confirmatory
 seeds in the paper plan are required before turning this pattern into a mechanism claim.

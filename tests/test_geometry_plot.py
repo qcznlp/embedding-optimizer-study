@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from embed_optim.geometry_plot import plot_pair_contrasts
+from embed_optim.geometry_plot import plot_optimizer_phase, plot_pair_contrasts
 from embed_optim.geometry_summary import PAIR_CONTRAST_FIELDS
 
 
@@ -62,3 +62,54 @@ def test_plot_pair_contrasts_rejects_duplicate_stage(tmp_path: Path):
     _write_contrasts(input_path, duplicate=True)
     with pytest.raises(ValueError, match="Duplicate contrast stage"):
         plot_pair_contrasts(input_path, tmp_path / "figure.svg")
+
+
+def _write_phase_rows(path: Path) -> None:
+    fieldnames = [
+        "model_family",
+        "optimizer",
+        "learning_rate",
+        "stage",
+        "step",
+        "reference_displacement_to_weight_ratio",
+        "reference_delta_row_cv_parameter_weighted",
+        "reference_delta_top_1pct_row_energy_parameter_weighted",
+    ]
+    rows = []
+    for family in ("dense", "late"):
+        for optimizer in ("adamw", "muon", "normuon"):
+            for learning_rate in (1e-4, 3e-4):
+                for stage in (1, 2):
+                    scale = {"adamw": 1.0, "muon": 1.1, "normuon": 1.1}[optimizer]
+                    balance = {"adamw": 0.1, "muon": 0.2, "normuon": 0.05}[optimizer]
+                    rows.append(
+                        {
+                            "model_family": family,
+                            "optimizer": optimizer,
+                            "learning_rate": learning_rate,
+                            "stage": stage,
+                            "step": stage * 10,
+                            "reference_displacement_to_weight_ratio": scale * learning_rate * stage,
+                            "reference_delta_row_cv_parameter_weighted": balance,
+                            "reference_delta_top_1pct_row_energy_parameter_weighted": balance / 10,
+                        }
+                    )
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def test_plot_optimizer_phase_is_deterministic(tmp_path: Path):
+    input_path = tmp_path / "checkpoint-trajectory.csv"
+    output_path = tmp_path / "phase.svg"
+    _write_phase_rows(input_path)
+
+    first = plot_optimizer_phase(input_path, output_path)
+    first_bytes = output_path.read_bytes()
+    second = plot_optimizer_phase(input_path, output_path)
+
+    assert first == second
+    assert output_path.read_bytes() == first_bytes
+    assert first["rows"] == 24
+    assert first["optimizers"] == ["adamw", "muon", "normuon"]

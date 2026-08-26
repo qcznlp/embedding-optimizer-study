@@ -161,6 +161,8 @@ comparisons, but they rule out framing Muon's expected benefit as neuron-wise ro
 Muon hypothesis should instead be tested in singular-spectrum conditioning; row balancing is the
 specific NorMuon hypothesis.
 
+![All-optimizer checkpoint geometry by displacement scale](../reports/weight-space/optimizer_geometry_phase.svg)
+
 ## Weight- and update-space analysis
 
 Use only hidden 2-D matrices for direct Muon/AdamW geometry comparisons, and report attention and
