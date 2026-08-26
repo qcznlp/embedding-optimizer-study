@@ -13,9 +13,11 @@ from embed_optim.hybrid_control import (
 )
 
 
-def test_frozen_hybrid_protocol_rehashes_all_declared_sources():
+def test_frozen_hybrid_protocol_rehashes_tracked_sources_in_distribution():
     root = Path(__file__).parents[1]
-    protocol = _validate_protocol(root / "configs" / "hybrid_adamw_control.json")
+    protocol = _validate_protocol(
+        root / "configs" / "hybrid_adamw_control.json", require_external=False
+    )
 
     assert protocol["selection"]["expected_runs"] == 8
     assert protocol["selection"]["expected_beir_units"] == 112

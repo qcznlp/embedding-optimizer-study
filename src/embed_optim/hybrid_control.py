@@ -49,7 +49,7 @@ def _atomic_csv(path: Path, rows: list[dict[str, Any]]) -> None:
     os.replace(temporary, path)
 
 
-def _validate_protocol(path: Path) -> dict[str, Any]:
+def _validate_protocol(path: Path, *, require_external: bool = True) -> dict[str, Any]:
     path = path.resolve()
     payload = json.loads(path.read_text(encoding="utf-8"))
     selection = payload.get("selection") or {}
@@ -78,6 +78,8 @@ def _validate_protocol(path: Path) -> dict[str, Any]:
         raise ValueError("Hybrid AdamW protocol has an incomplete source ledger")
     for label, source in sources.items():
         source_path = (repository / source.get("path", "")).resolve()
+        if not require_external and label == "training_data_manifest" and not source_path.exists():
+            continue
         if not source_path.is_file() or _sha256(source_path) != source.get("sha256"):
             raise ValueError(f"Hybrid AdamW frozen source differs: {label} ({source_path})")
     return payload
