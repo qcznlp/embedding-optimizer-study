@@ -133,7 +133,7 @@ def test_distribution_bundles_frozen_paper_claim_protocol() -> None:
     }
 
 
-def test_distribution_bundles_buildable_result_safe_paper() -> None:
+def test_distribution_bundles_result_safe_paper_sources() -> None:
     installed = _installed_data_paths()
     paper_files = (
         "paper/Makefile",
