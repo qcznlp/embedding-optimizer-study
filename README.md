@@ -289,7 +289,8 @@ representation tiers, all summaries and plots, the cross-space bridge, and final
 validation. It also completes the eight-run hybrid-AdamW routing control, all three confirmatory
 training/evaluation seeds, and the three-seed shared-checkpoint short branches before rebuilding the
 ACL-format paper draft. A terminal strict paper audit prevents the ledger from completing while any
-headline remains pending or any declared evidence manifest is incomplete. Dense and LateOn probe
+headline or generated result table remains pending, differs from its recorded hash, or any declared
+evidence manifest is incomplete. Dense and LateOn probe
 exports run separately with conservative
 family-specific batch sizes while using all declared GPUs. Every step has an isolated log and an
 atomic JSON ledger under `logs/post-eval-pipeline/`; failed steps retry and leave an exact restart
