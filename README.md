@@ -339,6 +339,11 @@ reaches a tensor's smaller dimension; set it to zero for an inexpensive exact-st
 Each checkpoint is committed as an atomic JSONL file, hashes and settings are captured in
 `manifest.json`, and an identical rerun resumes by skipping finished checkpoints.
 
+For a preregistered high-resolution tier, `--steps` selects exact saved steps and
+`--tensor-regex` selects named matrices. These options make full-SVD layer/depth probes practical;
+they are mutually exclusive with `--max-checkpoints`. In a selected sequence,
+`delta_from_previous` is relative to the previous selected checkpoint.
+
 After all runs finish, strictly validate and aggregate the records:
 
 ```bash

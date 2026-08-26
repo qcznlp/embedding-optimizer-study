@@ -172,3 +172,52 @@ def test_analyze_run_rejects_partition_manifest_mismatch(tmp_path: Path):
     completed_path.write_text(json.dumps(completed), encoding="utf-8")
     with pytest.raises(ValueError, match="does not match completed.json"):
         analyze_run(run, tmp_path / "analysis", sketch_rank=0, max_checkpoints=1)
+
+
+def test_analyze_run_selects_steps_and_tensors(tmp_path: Path):
+    run, reference = _write_tiny_run(tmp_path)
+    output = tmp_path / "selected-analysis"
+    manifest = analyze_run(
+        run,
+        output,
+        reference=reference,
+        sketch_rank=0,
+        steps=(2,),
+        tensor_regex=r"encoder\.layers\.0\.weight$",
+    )
+
+    assert [item.get("step") for item in manifest["inputs"] if item["kind"] == "checkpoint"] == [2]
+    assert manifest["analysis_config"]["steps"] == [2]
+    assert manifest["analysis_config"]["tensor_regex"] == r"encoder\.layers\.0\.weight$"
+    record = json.loads((output / "records" / "checkpoint-2.jsonl").read_text())
+    assert record["tensor"] == "encoder.layers.0.weight"
+    assert "delta_from_previous" not in record
+    assert record["delta_from_reference"]["frobenius_norm"] == pytest.approx(2.0)
+
+
+def test_analyze_run_rejects_invalid_step_selection(tmp_path: Path):
+    run, _ = _write_tiny_run(tmp_path)
+    with pytest.raises(ValueError, match="mutually exclusive"):
+        analyze_run(run, tmp_path / "both", max_checkpoints=1, steps=(1,))
+    with pytest.raises(ValueError, match="distinct"):
+        analyze_run(run, tmp_path / "duplicate", steps=(1, 1))
+    with pytest.raises(ValueError, match="Unknown checkpoint step"):
+        analyze_run(run, tmp_path / "unknown", steps=(3,))
+
+
+def test_analyze_run_rejects_empty_tensor_selection(tmp_path: Path):
+    run, _ = _write_tiny_run(tmp_path)
+    with pytest.raises(ValueError, match="No tensors matched"):
+        analyze_run(run, tmp_path / "empty", steps=(1,), tensor_regex=r"does-not-exist$")
+
+
+def test_analyze_run_default_identity_remains_backward_compatible(tmp_path: Path):
+    run, _ = _write_tiny_run(tmp_path)
+    manifest = analyze_run(run, tmp_path / "analysis", sketch_rank=0)
+    assert manifest["analysis_config"] == {
+        "partitions": ["hidden"],
+        "sketch_rank": 0,
+        "oversample": 8,
+        "power_iterations": 2,
+        "seed": 42,
+    }

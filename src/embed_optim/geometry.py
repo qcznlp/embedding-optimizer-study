@@ -5,6 +5,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from contextlib import ExitStack
 from pathlib import Path
 from typing import Any
@@ -396,6 +397,8 @@ def analyze_run(
     power_iterations: int = 2,
     seed: int = 42,
     max_checkpoints: int | None = None,
+    steps: tuple[int, ...] | None = None,
+    tensor_regex: str | None = None,
 ) -> dict[str, Any]:
     run_dir = run_dir.resolve()
     output_dir = output_dir.resolve()
@@ -408,10 +411,22 @@ def analyze_run(
     completed = json.loads(completed_path.read_text(encoding="utf-8"))
     run_config = json.loads(run_config_path.read_text(encoding="utf-8"))
     checkpoints = _checkpoint_paths(run_dir, completed)
+    if max_checkpoints is not None and steps is not None:
+        raise ValueError("max_checkpoints and steps are mutually exclusive")
     if max_checkpoints is not None:
         if max_checkpoints <= 0:
             raise ValueError("max_checkpoints must be positive")
         checkpoints = checkpoints[:max_checkpoints]
+    if steps is not None:
+        if not steps or len(set(steps)) != len(steps):
+            raise ValueError("steps must contain distinct checkpoint steps")
+        requested_steps = set(steps)
+        available_steps = {step for step, _ in checkpoints}
+        missing_steps = sorted(requested_steps - available_steps)
+        if missing_steps:
+            raise ValueError(f"Unknown checkpoint step(s): {missing_steps}")
+        checkpoints = [item for item in checkpoints if item[0] in requested_steps]
+    pattern = re.compile(tensor_regex) if tensor_regex is not None else None
 
     input_provenance = [
         {"kind": "checkpoint", "step": step, **_source_provenance(path)}
@@ -427,6 +442,10 @@ def analyze_run(
         "power_iterations": power_iterations,
         "seed": seed,
     }
+    if steps is not None:
+        analysis_config["steps"] = sorted(steps)
+    if tensor_regex is not None:
+        analysis_config["tensor_regex"] = tensor_regex
     identity = {
         "schema_version": SCHEMA_VERSION,
         "run": {
@@ -489,6 +508,8 @@ def analyze_run(
                 partition = parameter_partition_name(name, len(shape))
                 if partition not in partitions:
                     continue
+                if pattern is not None and pattern.search(name) is None:
+                    continue
                 if len(shape) != 2:
                     raise ValueError(f"Selected tensor {name!r} is not two-dimensional")
                 weight = current.tensor(name)
@@ -538,6 +559,11 @@ def analyze_run(
                     record["delta_from_reference"]["cosine_with_weight"] = _cosine(delta, weight)
                 records.append(record)
 
+            if not records:
+                raise ValueError(
+                    f"No tensors matched partitions={partitions} tensor_regex={tensor_regex!r}"
+                )
+
         _atomic_jsonl(record_path, records)
         manifest["partition_summary"] = summary
         manifest["records"][str(step)] = _record_provenance(record_path, output_dir)
@@ -560,6 +586,8 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--power-iterations", type=int, default=2)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max-checkpoints", type=int)
+    parser.add_argument("--steps", nargs="+", type=int)
+    parser.add_argument("--tensor-regex")
     return parser
 
 
@@ -575,6 +603,8 @@ def main(argv: list[str] | None = None) -> None:
         power_iterations=args.power_iterations,
         seed=args.seed,
         max_checkpoints=args.max_checkpoints,
+        steps=tuple(args.steps) if args.steps is not None else None,
+        tensor_regex=args.tensor_regex,
     )
     print(
         json.dumps(

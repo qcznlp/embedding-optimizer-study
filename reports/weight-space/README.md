@@ -24,3 +24,18 @@ embed-optim-summarize-geometry \
   --output-dir reports/weight-space \
   --verify-inputs
 ```
+
+For the preregistered high-resolution spectrum tier, select exact checkpoints and tensors instead
+of materializing every matrix. The following example computes full singular spectra because rank 768
+reaches the smaller dimension of every selected matrix. Within this selected sequence,
+`delta_from_previous` means displacement from the previous selected checkpoint.
+
+```bash
+embed-optim-geometry \
+  --run-dir outputs/dense/muon-lr1e-4 \
+  --reference /path/to/pinned/DenseOn-unsupervised \
+  --output-dir results/weight-space-spectra/dense/muon-lr1e-4 \
+  --steps 782 2345 3907 \
+  --tensor-regex '^0\.layers\.(0|10|21)\.(attn\.Wqkv|mlp\.Wi)\.weight$' \
+  --sketch-rank 768
+```
