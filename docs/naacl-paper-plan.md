@@ -289,6 +289,9 @@ The analyzer retains legacy padded-mask compatibility while canonical exports us
 A sidecar binds the archive to all model JSON/safetensors inputs, the frozen probe manifest/spec,
 package versions, context length, prompts, and encoding hardware. This makes representation metrics
 comparable across checkpoints without trusting filenames or an implicit tokenizer/model state.
+`embed-optim-probe-matrix` turns this contract into a resumable eight-GPU matrix: it deduplicates the
+two pretrained references, gates dependent checkpoint analyses on the corresponding reference
+archive, and skips a unit only after both its export and metric provenance pass content-hash audits.
 
 ## Causal controls and additional runs
 

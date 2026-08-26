@@ -455,6 +455,20 @@ makes its absence a hard error for the canonical analysis tier.
 same probe manifest/selection, and adds score RMS drift, top-1 agreement, and top-k overlap relative
 to the pretrained or other declared reference export.
 
+Run the complete pretrained-plus-120-checkpoint representation matrix after retrieval evaluation
+releases the GPUs:
+
+```bash
+embed-optim-probe-matrix \
+  --matrix configs/experiment.yaml \
+  --gpus 0,1,2,3,4,5,6,7
+```
+
+The dispatcher resolves each pinned pretrained Hugging Face snapshot, runs the two reference exports
+before their dependent checkpoints, assigns one checkpoint per GPU, and retries interrupted jobs.
+Every export and metric report is content-hash audited before it is skipped on resume. Use
+`--dry-run` to list only incomplete jobs without downloading a model or starting a GPU process.
+
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.
