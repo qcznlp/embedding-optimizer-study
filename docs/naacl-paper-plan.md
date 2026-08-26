@@ -462,11 +462,19 @@ effect predicts the main representation or retrieval results.
 
 ### Confirmatory multi-seed runs
 
-After the exploratory sweep, freeze one configuration per optimizer and family using a validation
-criterion that does not inspect BEIR test labels. Run at least three seeds (preferably five) with the
-same data IDs but independently seeded negative selection and example order. Report hierarchical
-bootstrap confidence intervals over seeds, tasks, and queries. Use paired randomization/bootstrap
-tests at query level and correct the small set of prospectively frozen optimizer comparisons.
+The non-BEIR selection stage is now concretely frozen in `configs/validation_probe.json`. It selects
+4,096 source-balanced queries from the unused portion of the pinned 1.22M-query source after
+recomputing and excluding all 500,000 training query IDs. All 24 exploratory final checkpoints are
+scored with the exact eight-way training objective. Within each optimizer and family, choose the
+lowest mean contrastive loss, then the highest positive margin and lower hidden learning rate as
+tie-breakers. This rule, its 24-job output, and the resulting six recipes are content-audited before
+any confirmatory run is generated; BEIR scores are never an input to recipe selection.
+
+Run at least three new seeds (preferably five) with the same data IDs but independently seeded
+negative selection and example order. Report hierarchical bootstrap confidence intervals over
+seeds, tasks, and queries. Use paired randomization/bootstrap tests at query level and correct the
+small set of prospectively frozen optimizer comparisons. The original exploratory seed must not be
+silently counted as a confirmatory seed after its BEIR results were visible.
 
 ## Selection protocol and statistical claims
 

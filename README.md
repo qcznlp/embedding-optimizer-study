@@ -602,6 +602,38 @@ aggregations—ten anchors per family/operator, four learning rates at the final
 prespecified within-run associations—so it cannot silently select favorable layers, learning rates,
 or correlations after seeing the results.
 
+### Query-disjoint recipe validation
+
+The exploratory sweep must not choose a winning learning rate from the same BEIR labels used for
+the headline result. [`validation_probe.json`](configs/validation_probe.json) therefore freezes
+4,096 queries from the unused part of the pinned 1.22M-query source. The materializer first
+recomputes the canonical 500K training ledger and excludes every training query ID within its
+source split; it then selects 585 queries per source and 586 from FEVER, with one positive and seven
+newly sampled negatives per query.
+
+Prepare or independently audit the validation data with:
+
+```bash
+embed-optim-prepare-validation
+embed-optim-prepare-validation --audit-only
+```
+
+The strict audit rehashes all 16 Arrow/state files, replays the 500K exclusion ledger, verifies zero
+query overlap, and checks all 4,096 positive-first groups for seven distinct non-positive negatives.
+After the main BEIR jobs release the GPUs, evaluate only the final checkpoint of each exploratory
+run and select one rate per optimizer and family:
+
+```bash
+embed-optim-validation-matrix --gpus 0,1,2,3,4,5,6,7
+embed-optim-validation-matrix --audit-only --verify-hashes
+embed-optim-summarize-validation
+```
+
+The 24 validation jobs retain per-example and per-source loss, margin, reciprocal-rank, and top-1
+records. Selection minimizes mean eight-way contrastive loss, then breaks ties by higher positive
+margin and lower hidden learning rate. `reports/recipe-validation/recipe_selection.json` is the only
+allowed source of learning rates for the later confirmatory seeds; BEIR scores are not an input.
+
 ### Hybrid AdamW routing control
 
 The prospectively locked NAACL fairness control is separate from the 24-run discovery matrix:

@@ -92,6 +92,36 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 ),
             ),
             PipelineStep(
+                "validation-data-audit",
+                _module(args.python, "embed_optim.validation_data", "--audit-only"),
+            ),
+            PipelineStep(
+                "recipe-validation-matrix",
+                _module(
+                    args.python,
+                    "embed_optim.validation_matrix",
+                    *shared,
+                    "--gpus",
+                    args.gpus,
+                    "--max-retries",
+                    str(args.worker_retries),
+                ),
+            ),
+            PipelineStep(
+                "recipe-validation-audit",
+                _module(
+                    args.python,
+                    "embed_optim.validation_matrix",
+                    *shared,
+                    "--audit-only",
+                    "--verify-hashes",
+                ),
+            ),
+            PipelineStep(
+                "recipe-validation-summary",
+                _module(args.python, "embed_optim.validation_summary", *shared),
+            ),
+            PipelineStep(
                 "common-state-matrix",
                 _module(
                     args.python,

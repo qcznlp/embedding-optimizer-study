@@ -47,6 +47,9 @@ flash = ["flash-attn==2.7.4.post1"]
 embed-optim-prepare = "embed_optim.data:main"
 embed-optim-prepare-probe = "embed_optim.probes:main"
 embed-optim-prepare-beir-probe = "embed_optim.beir_probe:main"
+embed-optim-prepare-validation = "embed_optim.validation_data:main"
+embed-optim-validation-matrix = "embed_optim.validation_matrix:main"
+embed-optim-summarize-validation = "embed_optim.validation_summary:main"
 embed-optim-export-probe = "embed_optim.probe_export:main"
 embed-optim-export-gradients = "embed_optim.gradient_probe:main"
 embed-optim-common-state-matrix = "embed_optim.common_state_matrix:main"
@@ -108,6 +111,7 @@ where = ["src"]
   "configs/representation_probe.json",
   "configs/smoke.yaml",
   "configs/stress.yaml",
+  "configs/validation_probe.json",
 ]
 "share/embedding-optimizer-study/scripts/eval" = [
   "scripts/eval/dense_parallel.py",

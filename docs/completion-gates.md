@@ -10,6 +10,7 @@ the authoritative artifact and the command that must validate its full scope.
 | Shared training data | Materialized dataset manifest/rows plus every `completed.json` | Exactly 500,000 canonical rows, seven source quotas, seven distinct seeded negatives per query, no positive overlap, and one shared training-view fingerprint. |
 | Training artifacts | Run directories and `logs/checkpoint-audit.json` | 24/24 terminal runs and 120/120 non-empty, step-consistent model/optimizer/scheduler/Trainer/RNG checkpoints pass deep validation. |
 | Training dynamics | Canonical Trainer histories and W&B canonical runs | Every run has unique increasing steps through 3,907, finite loss/gradient/LR/epoch values, audited system metrics, and one matching content-addressed W&B history. |
+| Query-disjoint recipe validation | `configs/validation_probe.json`, `data/validation-4096-seed20260826/manifest.json`, and `reports/recipe-validation/manifest.json` | All 4,096 queries are disjoint from the 500K training ledger, all positive/seven-negative groups pass audit, 24 final-checkpoint jobs are complete, and six recipes are selected without BEIR outcomes. |
 | Retrieval evaluation | Pinned evaluation manifest and MTEB result files | All `24 × 5 × 14 = 1,680` run/checkpoint/task units identify the expected local checkpoint, dataset revision, split/subset, runtime, scorer, and finite nDCG@10. |
 | Final statistics | `reports/coverage.json`, long-form tables, summaries, paired effects, and figures | `embed-optim-aggregate --strict` exits zero; no partial or best-effort report is accepted. |
 | Weight-space analysis | [`reports/weight-space/summary_manifest.json`](../reports/weight-space/summary_manifest.json) | 24 runs and 120 checkpoint rows pass record-hash, finite-value, partition, and source-input revalidation. |
@@ -31,6 +32,9 @@ the aggregation and W&B finalizers:
 
 ```bash
 embed-optim-sync-wandb --matrix configs/experiment.yaml
+embed-optim-prepare-validation --audit-only
+embed-optim-validation-matrix --audit-only --verify-hashes
+embed-optim-summarize-validation
 embed-optim-summarize-geometry \
   --geometry-root results/weight-space \
   --output-dir reports/weight-space \
