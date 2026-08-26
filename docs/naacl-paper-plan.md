@@ -225,6 +225,22 @@ At the pretrained model and selected 20%, 60%, and 100% checkpoints:
 This is the cleanest way to show that differences come from the update rule rather than different
 points on different trajectories.
 
+Optimizer state needs its own control. Report two explicitly separate protocols:
+
+1. **Cold-start transform:** initialize every optimizer state to zero at the common weights and
+   compare the first prescribed update. This is exactly reproducible but measures initialization
+   behavior.
+2. **Frozen-weight state warm-up:** hold weights fixed, feed every optimizer the same ordered sequence
+   of probe-batch gradients to build momentum/second-moment state without applying updates, then
+   compare the update on a held-out next batch. This isolates the stateful transform under a shared
+   gradient history.
+
+Loading each optimizer's native checkpoint moments would reintroduce trajectory history and must not
+be described as a common-state comparison. Native-state probes can be reported separately as an
+ecological description of what each trained run would do next. In all scale-matched conditions,
+match both global and per-layer budgets so a change in layer allocation is not mistaken for a change
+in within-matrix geometry.
+
 ### Short counterfactual branches
 
 From the same pretrained, 20%, and 60% checkpoints, train each optimizer for a short fixed sequence
@@ -269,6 +285,19 @@ Report three complementary comparisons:
 Treat BEIR datasets and random seeds as sampling levels. Report the per-task table even when an
 aggregate is favorable; optimizer benefits that come from only one large dataset are not a robust
 result.
+
+## Claim-evidence firewall
+
+| Intended claim | Minimum supporting evidence | Evidence that is insufficient by itself |
+|---|---|---|
+| Faster or more memory-efficient training | Audited useful wall time, examples/second, time-to-quality, and peak memory on matched hardware | Lower loss at the same step |
+| Better retrieval recipe | Frozen validation-selected recipe, confirmatory seeds, paired query/task uncertainty, and full per-task results | Best learning rate selected on BEIR test scores |
+| NorMuon balances update energy | Common-state individual updates with matched global/per-layer scale and repeated layers/batches | Lower row CV in distant checkpoint displacement |
+| Geometry explains retrieval behavior | Geometry change precedes margin/ranking change and survives short-branch or intervention controls | Cross-run correlation between two intrinsic metrics |
+| More robust optimization | Prespecified stability criteria across seeds, learning rates, batches, and perturbations | One wide learning-rate sweep with a single seed |
+
+The abstract and conclusion should contain only claims that cross the corresponding evidence bar.
+Everything else should be labeled descriptive or exploratory.
 
 ## Main paper figures
 
