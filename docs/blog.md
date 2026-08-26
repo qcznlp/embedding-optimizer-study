@@ -3,9 +3,9 @@
 > A controlled comparison on DenseOn and LateOn, with identical data, five-point training dynamics,
 > and decontaminated BEIR evaluation.
 
-**Experiment status:** training matrix in progress. This document already records the frozen protocol;
-the results sections are populated only from strictly validated aggregation artifacts after coverage reaches
-1,680/1,680.
+**Experiment status:** training complete (24/24 runs; 120/120 checkpoints); evaluation matrix in
+progress. This document already records the frozen protocol; the results sections are populated only
+from strictly validated aggregation artifacts after coverage reaches 1,680/1,680.
 
 ## Why this comparison
 

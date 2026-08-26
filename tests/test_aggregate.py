@@ -369,9 +369,9 @@ def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
 def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monkeypatch):
     blog = tmp_path / "blog.md"
     blog.write_text(
-        "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
-        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
-        "1,680/1,680.\n\n"
+        "**Experiment status:** training complete (24/24 runs; 120/120 checkpoints); evaluation matrix in\n"
+        "progress. This document already records the frozen protocol; the results sections are populated only\n"
+        "from strictly validated aggregation artifacts after coverage reaches 1,680/1,680.\n\n"
         "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
         "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n"
     )
@@ -387,7 +387,7 @@ def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monk
         "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
         "checkpoint/task evaluations." in rendered
     )
-    assert "training matrix in progress" not in rendered
+    assert "evaluation matrix in" not in rendered
 
 
 def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
