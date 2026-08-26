@@ -74,8 +74,10 @@ python -m pip install -e '.[eval,analysis,flash]'
 
 Pip follows PyLate 1.6's declared SentenceTransformers 5.3 pin. The uv lock uses the tested
 SentenceTransformers 5.7 stack through an explicit compatibility override.
-Built distributions include the frozen study configs, evaluation workers, blog, citation metadata,
-and third-party notices. If a bundled `configs/*.yaml` path is absent from the working directory, the
+Built distributions include the frozen study configs, evaluation workers, blog, NAACL follow-on
+plan, checked-in weight-space tables/figures and their content-addressed manifest, citation metadata,
+and third-party notices. The installed `docs/` and `reports/` topology preserves the blog's local
+figure and table links. If a bundled `configs/*.yaml` path is absent from the working directory, the
 CLI automatically resolves it from the installation prefix.
 
 Authenticate separately for services that need it; credentials are never stored in this repository:
