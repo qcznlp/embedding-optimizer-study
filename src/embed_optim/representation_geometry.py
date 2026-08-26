@@ -24,7 +24,7 @@ def _export_manifest_identity(
     family: ModelFamily,
     array_metadata: dict[str, Any],
     required: bool,
-) -> dict[str, str] | None:
+) -> dict[str, Any] | None:
     manifest_path = source.with_suffix(source.suffix + ".manifest.json")
     if not manifest_path.is_file():
         if required:
@@ -47,7 +47,15 @@ def _export_manifest_identity(
     encoding = manifest.get("encoding")
     if not isinstance(encoding, dict) or encoding.get("positive_candidate_index") != 0:
         raise ValueError("Probe export manifest does not preserve the positive-first convention")
-    return {"path": str(manifest_path), "sha256": _sha256(manifest_path)}
+    probe = manifest.get("probe")
+    if not isinstance(probe, dict):
+        raise ValueError(f"Probe export manifest lacks probe provenance: {manifest_path}")
+    return {
+        "path": str(manifest_path),
+        "sha256": _sha256(manifest_path),
+        "probe_manifest_sha256": probe.get("manifest_sha256"),
+        "probe_selection_sha256": probe.get("selection_sha256"),
+    }
 
 
 def _as_float_tensor(array: np.ndarray, name: str) -> Tensor:
@@ -278,9 +286,7 @@ def dense_probe_metrics(
             "dense query/document shapes disagree: "
             f"queries={tuple(query_embeddings.shape)}, documents={tuple(document_embeddings.shape)}"
         )
-    queries = F.normalize(query_embeddings.float(), p=2, dim=-1)
-    documents = F.normalize(document_embeddings.float(), p=2, dim=-1)
-    scores = torch.einsum("bd,bcd->bc", queries, documents)
+    scores = dense_probe_scores(query_embeddings, document_embeddings)
     return {
         "scorer": "cosine",
         "score_geometry": ranking_summary(
@@ -304,6 +310,21 @@ def dense_probe_metrics(
     }
 
 
+def dense_probe_scores(query_embeddings: Tensor, document_embeddings: Tensor) -> Tensor:
+    if query_embeddings.ndim != 2 or document_embeddings.ndim != 3:
+        raise ValueError("Dense score inputs require 2-D queries and 3-D documents")
+    if query_embeddings.size(0) != document_embeddings.size(0) or query_embeddings.size(
+        1
+    ) != document_embeddings.size(2):
+        raise ValueError(
+            "Dense score input shapes disagree: "
+            f"queries={tuple(query_embeddings.shape)}, documents={tuple(document_embeddings.shape)}"
+        )
+    queries = F.normalize(query_embeddings.float(), p=2, dim=-1)
+    documents = F.normalize(document_embeddings.float(), p=2, dim=-1)
+    return torch.einsum("bd,bcd->bc", queries, documents)
+
+
 def _masked_mean(values: Tensor, mask: Tensor, dimension: int) -> Tensor:
     weights = mask.to(values.dtype)
     while weights.ndim < values.ndim:
@@ -325,6 +346,40 @@ def _late_batch_scores(
     positive_contributions = [values[mask] for values, mask in zip(contributions[:, 0], query_mask)]
     positive_selections = [values[mask] for values, mask in zip(selected_tokens[:, 0], query_mask)]
     return scores, positive_contributions, positive_selections
+
+
+def late_probe_scores(
+    query_embeddings: Tensor,
+    document_embeddings: Tensor,
+    query_mask: Tensor,
+    document_mask: Tensor,
+    *,
+    batch_size: int,
+) -> Tensor:
+    if query_embeddings.ndim != 3 or document_embeddings.ndim != 4:
+        raise ValueError("Late score inputs require 3-D queries and 4-D documents")
+    if query_embeddings.size(0) != document_embeddings.size(0) or query_embeddings.size(
+        2
+    ) != document_embeddings.size(3):
+        raise ValueError(
+            "Late score input shapes disagree: "
+            f"queries={tuple(query_embeddings.shape)}, documents={tuple(document_embeddings.shape)}"
+        )
+    if batch_size <= 0:
+        raise ValueError(f"batch_size must be positive, got {batch_size}")
+    queries = F.normalize(query_embeddings.float(), p=2, dim=-1)
+    documents = F.normalize(document_embeddings.float(), p=2, dim=-1)
+    batches = []
+    for start in range(0, queries.size(0), batch_size):
+        stop = min(queries.size(0), start + batch_size)
+        scores, _, _ = _late_batch_scores(
+            queries[start:stop],
+            documents[start:stop],
+            query_mask[start:stop],
+            document_mask[start:stop],
+        )
+        batches.append(scores)
+    return torch.cat(batches, dim=0)
 
 
 def late_probe_metrics(
@@ -458,6 +513,7 @@ def analyze_probe(
     seed: int = 42,
     top_k: int = 3,
     require_export_manifest: bool = False,
+    reference_source: Path | None = None,
 ) -> dict[str, Any]:
     source = source.resolve()
     if not source.is_file():
@@ -483,6 +539,8 @@ def analyze_probe(
                 f"{sample_ids.size}, {queries.size(0)}, {documents.size(0)}"
             )
         reference_scores = None
+        if "reference_scores" in archive.files and reference_source is not None:
+            raise ValueError("Use either embedded reference_scores or --reference-input, not both")
         if "reference_scores" in archive.files:
             reference_scores = _as_float_tensor(archive["reference_scores"], "reference_scores")
         sample_groups = None
@@ -503,6 +561,15 @@ def analyze_probe(
             name: {"shape": list(archive[name].shape), "dtype": str(archive[name].dtype)}
             for name in sorted(archive.files)
         }
+        reference_identity = None
+        if reference_source is not None:
+            reference_scores, reference_identity = _reference_probe_scores(
+                reference_source,
+                family=family,
+                sample_ids=sample_ids,
+                batch_size=batch_size,
+                require_export_manifest=require_export_manifest,
+            )
         if family == "dense":
             metrics = dense_probe_metrics(
                 queries,
@@ -548,6 +615,12 @@ def analyze_probe(
         array_metadata=array_metadata,
         required=require_export_manifest,
     )
+    if export_manifest is not None and reference_identity is not None:
+        reference_manifest = reference_identity.get("export_manifest")
+        if reference_manifest is not None:
+            for key in ("probe_manifest_sha256", "probe_selection_sha256"):
+                if export_manifest.get(key) != reference_manifest.get(key):
+                    raise ValueError(f"Current and reference exports disagree on {key}")
 
     payload = {
         "schema_version": SCHEMA_VERSION,
@@ -558,6 +631,7 @@ def analyze_probe(
             "sha256": source_sha256,
             "arrays": array_metadata,
             "export_manifest": export_manifest,
+            "reference": reference_identity,
         },
         "parameters": {
             "batch_size": batch_size,
@@ -574,6 +648,73 @@ def analyze_probe(
     return payload
 
 
+def _reference_probe_scores(
+    source: Path,
+    *,
+    family: ModelFamily,
+    sample_ids: np.ndarray,
+    batch_size: int,
+    require_export_manifest: bool,
+) -> tuple[Tensor, dict[str, Any]]:
+    source = source.resolve()
+    if not source.is_file():
+        raise FileNotFoundError(source)
+    source_sha256 = _sha256(source)
+    with np.load(source, allow_pickle=False) as archive:
+        required = {"sample_ids", "query_embeddings", "document_embeddings"}
+        if family == "late":
+            required.update({"query_mask", "document_mask"})
+        missing = required.difference(archive.files)
+        if missing:
+            raise ValueError(f"Reference probe archive is missing arrays: {sorted(missing)}")
+        reference_ids = np.asarray(archive["sample_ids"])
+        if not np.array_equal(reference_ids, sample_ids):
+            raise ValueError("Current and reference probe sample_ids differ or are reordered")
+        queries = _as_float_tensor(archive["query_embeddings"], "reference query_embeddings")
+        documents = _as_float_tensor(
+            archive["document_embeddings"], "reference document_embeddings"
+        )
+        array_metadata = {
+            name: {"shape": list(archive[name].shape), "dtype": str(archive[name].dtype)}
+            for name in sorted(archive.files)
+        }
+        if family == "dense":
+            scores = dense_probe_scores(queries, documents)
+        else:
+            if queries.ndim != 3 or documents.ndim != 4:
+                raise ValueError("Late reference probes require 3-D queries and 4-D documents")
+            query_mask = _as_mask(
+                archive["query_mask"],
+                "reference query_mask",
+                (queries.size(0), queries.size(1)),
+            )
+            document_mask = _as_mask(
+                archive["document_mask"],
+                "reference document_mask",
+                (documents.size(0), documents.size(1), documents.size(2)),
+            )
+            scores = late_probe_scores(
+                queries,
+                documents,
+                query_mask,
+                document_mask,
+                batch_size=batch_size,
+            )
+    export_manifest = _export_manifest_identity(
+        source,
+        source_sha256=source_sha256,
+        family=family,
+        array_metadata=array_metadata,
+        required=require_export_manifest,
+    )
+    return scores, {
+        "path": str(source),
+        "sha256": source_sha256,
+        "arrays": array_metadata,
+        "export_manifest": export_manifest,
+    }
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Analyze fixed dense or late-interaction probe embeddings"
@@ -587,6 +728,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--top-k", type=int, default=3)
     parser.add_argument("--require-export-manifest", action="store_true")
+    parser.add_argument("--reference-input", type=Path)
     return parser.parse_args(argv)
 
 
@@ -602,6 +744,7 @@ def main(argv: list[str] | None = None) -> None:
         seed=args.seed,
         top_k=args.top_k,
         require_export_manifest=args.require_export_manifest,
+        reference_source=args.reference_input,
     )
     print(json.dumps(payload, indent=2, sort_keys=True, allow_nan=False))
 

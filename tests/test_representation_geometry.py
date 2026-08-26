@@ -119,6 +119,32 @@ def test_analyze_probe_hashes_input_and_writes_atomic_json(tmp_path: Path):
     assert set(payload["metrics"]["score_geometry"]["by_group"]) == {"fiqa", "nq"}
 
 
+def test_analyze_probe_rejects_reordered_reference_samples(tmp_path: Path):
+    current = tmp_path / "current.npz"
+    reference = tmp_path / "reference.npz"
+    arrays = {
+        "sample_ids": np.array([101, 102]),
+        "query_embeddings": np.array([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32),
+        "document_embeddings": np.array(
+            [
+                [[1.0, 0.0], [0.0, 1.0]],
+                [[0.0, 1.0], [1.0, 0.0]],
+            ],
+            dtype=np.float32,
+        ),
+    }
+    np.savez(current, **arrays)
+    np.savez(reference, **{**arrays, "sample_ids": arrays["sample_ids"][::-1]})
+
+    with pytest.raises(ValueError, match="sample_ids differ or are reordered"):
+        analyze_probe(
+            current,
+            tmp_path / "metrics.json",
+            family="dense",
+            reference_source=reference,
+        )
+
+
 def test_analyze_probe_rejects_invalid_late_masks(tmp_path: Path):
     source = tmp_path / "late.npz"
     np.savez(

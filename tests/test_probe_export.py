@@ -160,7 +160,7 @@ def test_dense_export_is_atomic_hashed_and_analyzer_compatible(tmp_path: Path, m
     assert model.calls[0][1]["prompt"] == "query: "
     assert model.calls[1][1]["prompt"] == "document: "
 
-    repeated, _ = export_probe(
+    repeated, repeated_manifest_path = export_probe(
         checkpoint,
         probe,
         tmp_path / "exports" / "dense-repeated.npz",
@@ -179,9 +179,24 @@ def test_dense_export_is_atomic_hashed_and_analyzer_compatible(tmp_path: Path, m
         tmp_path / "metrics.json",
         family="dense",
         require_export_manifest=True,
+        reference_source=repeated,
     )
     assert set(metrics["metrics"]["score_geometry"]["by_group"]) == {"fiqa", "nq"}
     assert metrics["input"]["export_manifest"]["sha256"] == _sha256(manifest_path)
+    assert metrics["metrics"]["score_geometry"]["reference_ranking"]["mean_top_k_overlap"] == 1.0
+    assert metrics["input"]["reference"]["sha256"] == _sha256(repeated)
+
+    repeated_manifest = json.loads(repeated_manifest_path.read_text())
+    repeated_manifest["probe"]["selection_sha256"] = "f" * 64
+    repeated_manifest_path.write_text(json.dumps(repeated_manifest) + "\n")
+    with pytest.raises(ValueError, match="probe_selection_sha256"):
+        analyze_probe(
+            exported,
+            tmp_path / "mismatched-reference.json",
+            family="dense",
+            require_export_manifest=True,
+            reference_source=repeated,
+        )
 
     manifest["output"]["sha256"] = "0" * 64
     manifest_path.write_text(json.dumps(manifest) + "\n")

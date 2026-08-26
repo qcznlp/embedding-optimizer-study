@@ -431,6 +431,7 @@ embed-optim-analyze-probe \
   --output results/representation-space/dense/muon-lr1e-4-checkpoint-782.json \
   --family dense \
   --require-export-manifest \
+  --reference-input results/representation-space/exports/dense-pretrained.npz \
   --label dense/muon-lr1e-4/checkpoint-782
 ```
 
@@ -445,6 +446,9 @@ result. This command analyzes exported representations; the checkpoint encoder a
 manifest remain separate so sample selection cannot be silently changed during metric computation.
 When the adjacent export sidecar is present it is always validated; `--require-export-manifest`
 makes its absence a hard error for the canonical analysis tier.
+`--reference-input` requires the exact same ordered sample IDs, verifies that both sidecars bind the
+same probe manifest/selection, and adds score RMS drift, top-1 agreement, and top-k overlap relative
+to the pretrained or other declared reference export.
 
 ## Performance engineering
 
