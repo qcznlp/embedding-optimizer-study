@@ -843,11 +843,13 @@ are not pooled into the matrix-optimizer comparison. Across 24 runs and five sta
 For every hidden matrix we compute exact Frobenius norms, displacement from the pinned pretrained
 model, displacement from the preceding saved checkpoint, row- and column-norm coefficient of
 variation, Gini coefficients, and the fraction of energy carried by the largest 1% and 10% of rows
-or columns. A deterministic randomized spectrum is stored separately and labeled approximate. Every
-record includes the source model digest, tensor name, partition, shape, algorithm, and seed; strict
-summarization rehashes both the JSONL records and all 120 source model files. These measurements
-describe an integrated checkpoint trajectory. They are not raw gradients or individual optimizer
-steps.
+or columns. The completed all-checkpoint pass uses `--sketch-rank 0`, so singular-spectrum fields
+carry explicit disabled sentinels rather than estimates. Each JSONL record identifies its tensor,
+partition, shape, step, and algorithm, while the run manifest binds the analysis settings, source
+model digests, and output hashes. Strict summarization rehashes both the JSONL records and all 120
+source model files. These measurements describe an integrated checkpoint trajectory. They are not
+raw gradients or individual optimizer steps; exact spectra are reserved for the frozen common-state
+state--layer subset.
 
 At step 3,907, all eight DenseOn/LateOn and learning-rate-matched Muon/NorMuon pairs have nearly the
 same overall displacement from the pretrained model: the NorMuon-to-Muon displacement ratio is

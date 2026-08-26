@@ -194,8 +194,10 @@ better retrieval quality.
 
 We stream all 120 checkpoints and analyze the 88 hidden matrices routed through Muon-family rules
 separately from embeddings, norms, biases, and heads. For every tensor we measure displacement from
-the pretrained state, row and column energy balance, trajectory length, and randomized spectral
-summaries. Full spectra are reserved for a frozen layer subset.
+the pretrained state, row and column energy balance, concentration, and the coarse path joining the
+pretrained state to the five retained checkpoints. Singular-spectrum fields are deliberately
+disabled in this all-checkpoint tier; exact spectra are reserved for a frozen state--layer subset in
+the common-state analysis.
 
 Across \NumWeightPairs{} matched Muon/NorMuon checkpoint pairs, the NorMuon-to-Muon reference
 displacement ratio lies in \DisplacementRatioRange. Despite this nearly identical aggregate scale,

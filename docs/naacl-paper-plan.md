@@ -245,20 +245,22 @@ updated from dominating a nominal “Muon weight spectrum” comparison.
 
 Run the retrospective checkpoint analysis in two tiers. Stream every selected tensor from
 `model.safetensors` and compute inexpensive exact quantities (Frobenius norm, row/column balance,
-checkpoint displacement, and trajectory length) for all 120 checkpoints. Compute full singular
-spectra only for a prespecified layer/checkpoint subset; use a deterministic low-rank sketch for the
-remaining tensors and report its captured Frobenius-energy fraction. Store one record per tensor and
-checkpoint with the input model digest, tensor name, optimizer partition, shape, algorithm, seed, and
-approximation settings. A difference between distant checkpoints is a trajectory displacement, not
-an optimizer step; raw gradients and actual single-step updates require the common-state probes below.
+checkpoint displacement, and the coarse path through retained checkpoints) for all 120 checkpoints.
+The completed all-checkpoint tier uses `--sketch-rank 0`; it does not infer a singular spectrum from
+disabled fields. Compute exact singular spectra only for the prespecified state--layer subset under
+the common-state protocol. Store one record per tensor and checkpoint, and bind the input model
+digest, optimizer partition, algorithm, seed, and analysis settings in its run manifest. A difference
+between distant checkpoints is a trajectory displacement, not an optimizer step; raw gradients and
+actual single-step updates require the common-state probes below.
 
 The repository implements this retrospective tier as `embed-optim-geometry`. It streams both the
 root Transformer and SentenceTransformers/PyLate module safetensors, validates the reconstructed
 88/auxiliary partition against each run's completion record, hashes every input and atomic JSONL
 output, and resumes only when the complete analysis manifest matches. Passing the pinned pretrained
 snapshot through `--reference` adds initialization displacement; consecutive checkpoint displacement
-is recorded automatically. The tool deliberately labels randomized spectrum and displacement fields
-as approximations rather than presenting them as actual optimizer steps. The companion
+is recorded automatically. When enabled, the tool labels randomized spectra as approximate;
+checkpoint displacement remains an exact distant-state difference and is never presented as an
+optimizer step. The companion
 `embed-optim-summarize-geometry` command enforces the full matrix, revalidates record hashes and
 finite values, and emits checkpoint- and run-level trajectory tables; `--verify-inputs` additionally
 rehashes every source model tensor file.

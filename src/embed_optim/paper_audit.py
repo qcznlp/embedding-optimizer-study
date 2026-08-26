@@ -19,7 +19,7 @@ HEADLINE_MACROS = (
     "InterventionHeadline",
     "ConfirmationHeadline",
 )
-PAPER_CLAIM_PROTOCOL_SHA256 = "796942192f77bc3d5d36dead69c8f7b3dd4eb0abc52403d3f93e665b73fcaafb"
+PAPER_CLAIM_PROTOCOL_SHA256 = "873e741bafad1bc0b2f8650e3614be1e7bb4af12e92c2d69c79045dad28937bb"
 PAPER_CLAIM_SOURCE_PATHS = (
     "configs/experiment.yaml",
     "configs/common_state_probe.json",
@@ -92,6 +92,8 @@ def load_paper_claim_protocol(
     protocol_path = requested.resolve() if requested.is_absolute() else (root / requested).resolve()
     protocol = _json(protocol_path)
     freeze = protocol.get("freeze_context", {})
+    amendments = protocol.get("amendments")
+    amendment = amendments[0] if isinstance(amendments, list) and len(amendments) == 1 else {}
     headlines = protocol.get("headline_contract", {})
     bindings = protocol.get("source_bindings")
     if (
@@ -116,6 +118,27 @@ def load_paper_claim_protocol(
             )
         )
         or set(headlines) != set(HEADLINE_MACROS)
+        or amendment.get("scope") != "documentation_only_weight_spectrum_tier_correction"
+        or amendment.get("previous_source_sha256")
+        != "2d61c1c1a150269986dbc41786f5b10c7304b45d23148278959ef3d75b72c888"
+        or amendment.get("updated_source_sha256")
+        != "adf12c547e4c337a5acb94657b7f6c4207da550c9f2f46ea3ea5098f3e418ce4"
+        or amendment.get("strict_beir_valid_units") != 196
+        or amendment.get("strict_beir_expected_units") != 1_680
+        or amendment.get("complete_retrieval_matrix_visible") is not False
+        or any(
+            amendment.get(field) is not False
+            for field in (
+                "formal_common_state_output_visible",
+                "formal_representation_output_visible",
+                "formal_functional_intervention_output_visible",
+                "hybrid_adamw_output_visible",
+                "short_branch_output_visible",
+                "confirmatory_output_visible",
+                "headline_contract_changed",
+                "result_contingent_story_map_changed",
+            )
+        )
         or not isinstance(bindings, list)
         or len(bindings) != len(PAPER_CLAIM_SOURCE_PATHS)
         or [item.get("path") for item in bindings if isinstance(item, dict)]
@@ -679,6 +702,7 @@ def audit_paper(
             "sha256": _sha256(claim_path),
             "status": claim_protocol["status"],
             "frozen_at": claim_protocol["frozen_at"],
+            "amendments": claim_protocol["amendments"],
             "source_bindings": claim_sources,
         },
         "pending_headlines": pending,

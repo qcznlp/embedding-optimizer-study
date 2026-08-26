@@ -53,6 +53,7 @@ def test_current_paper_constants_match_strict_sources():
     assert discovery_evidence[2]["complete"] is True
     assert discovery_evidence[3]["complete"] is False
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
+    assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 10
     assert result["paper_results"]["complete"] is False
 
@@ -64,6 +65,34 @@ def test_paper_claim_protocol_freezes_result_contingent_language_before_completi
     assert protocol["freeze_context"]["strict_beir_valid_units"] == 168
     assert protocol["freeze_context"]["complete_retrieval_matrix_visible"] is False
     assert protocol["freeze_context"]["formal_common_state_output_visible"] is False
+    assert protocol["amendments"] == [
+        {
+            "amended_at": "2026-08-26T19:51:44Z",
+            "scope": "documentation_only_weight_spectrum_tier_correction",
+            "reason": (
+                "Correct the bound paper plan to state that the completed 120-checkpoint "
+                "trajectory tier used sketch-rank 0 and that exact spectra are reserved for the "
+                "frozen common-state subset; no result-selection or interpretation rule changed."
+            ),
+            "previous_source_sha256": (
+                "2d61c1c1a150269986dbc41786f5b10c7304b45d23148278959ef3d75b72c888"
+            ),
+            "updated_source_sha256": (
+                "adf12c547e4c337a5acb94657b7f6c4207da550c9f2f46ea3ea5098f3e418ce4"
+            ),
+            "strict_beir_valid_units": 196,
+            "strict_beir_expected_units": 1680,
+            "complete_retrieval_matrix_visible": False,
+            "formal_common_state_output_visible": False,
+            "formal_representation_output_visible": False,
+            "formal_functional_intervention_output_visible": False,
+            "hybrid_adamw_output_visible": False,
+            "short_branch_output_visible": False,
+            "confirmatory_output_visible": False,
+            "headline_contract_changed": False,
+            "result_contingent_story_map_changed": False,
+        }
+    ]
     assert set(protocol["headline_contract"]) == {
         "DiscoveryHeadline",
         "CommonStateHeadline",
