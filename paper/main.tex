@@ -175,6 +175,12 @@ these new-seed runs support the confirmatory optimizer comparison.
 
 \DiscoveryHeadline.
 
+Across the four native learning-rate sweep points, Muon-family median training throughput is
+\MuonFamilyThroughputRatioRange{} of the within-family AdamW baseline, while optimizer-state size is
+\MuonFamilyStateRatioRange{} of AdamW. Thus these runs do not support a raw end-to-end throughput
+advantage, although they do establish a smaller optimizer-state footprint. Whether fewer steps
+offset the per-step cost is evaluated only through retrieval time-to-quality.
+
 The final analysis will report (i) complete five-stage quality trajectories, (ii) time-to-quality at
 prespecified thresholds, (iii) the number and location of unstable configurations, (iv) peak memory
 and optimizer-state size, and (v) all per-task results. Lower training loss is never substituted for

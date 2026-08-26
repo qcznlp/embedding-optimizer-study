@@ -214,6 +214,14 @@ a target retrieval score in sufficiently fewer steps, while lower optimizer-stat
 separate systems benefit. Operator efficiency, realized throughput, state memory, and
 time-to-quality must therefore remain four distinct quantities throughout the paper.
 
+![Native recipe systems trade-offs](../reports/training-dynamics/system_tradeoffs.svg)
+
+The corresponding five-stage training-loss panel retains every learning-rate trajectory rather than
+collapsing each optimizer to its winning configuration. It belongs in the appendix unless loss and
+retrieval quality diverge strongly enough to become a main finding.
+
+![All discovery training-loss trajectories](../reports/training-dynamics/training_loss_dynamics.svg)
+
 ### Artifact-aware implementation boundary
 
 The audited DenseOn and LateOn checkpoints each contain 134 model tensors. Eighty-nine are

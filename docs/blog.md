@@ -183,6 +183,17 @@ archive; a merely non-empty or partially written checkpoint is not counted as co
 
 ## Results
 
+### Audited training-only dynamics
+
+The figures below use all four learning-rate sweep points and all five retained training stages.
+The loss bands are the standard deviation over the ten trailing logged observations at each stage,
+not uncertainty across random seeds. Retrieval time-to-quality remains pending until the strict
+1,680-unit evaluation matrix completes.
+
+![All discovery training-loss trajectories](../reports/training-dynamics/training_loss_dynamics.svg)
+
+![Native recipe systems trade-offs](../reports/training-dynamics/system_tradeoffs.svg)
+
 <!-- RESULTS:BEGIN -->
 
 Results will be inserted here after `reports/coverage.json` confirms all 1,680 task/checkpoint pairs.

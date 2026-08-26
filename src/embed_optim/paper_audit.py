@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import re
 from pathlib import Path
 from typing import Any
@@ -22,6 +23,7 @@ STRICT_EVIDENCE = {
     "DiscoveryHeadline": (
         Path("reports/coverage.json"),
         Path("reports/training-dynamics/summary_manifest.json"),
+        Path("reports/training-dynamics/plot_manifest.json"),
     ),
     "CommonStateHeadline": (
         Path("reports/common-state/summary_manifest.json"),
@@ -95,9 +97,55 @@ def _weight_constants(weight_dir: Path) -> dict[str, str]:
     }
 
 
+def _training_constants(training_dir: Path) -> dict[str, str]:
+    manifest_path = training_dir / "summary_manifest.json"
+    manifest = _json(manifest_path)
+    coverage = manifest.get("coverage", {})
+    item = manifest.get("outputs", {}).get("optimizer_systems", {})
+    table = training_dir / "optimizer_system_summary.csv"
+    if (
+        manifest.get("schema_version") != SCHEMA_VERSION
+        or manifest.get("complete") is not True
+        or coverage.get("runs") != 24
+        or coverage.get("checkpoints") != 120
+        or coverage.get("history_rows") != 9_384
+        or coverage.get("optimizer_family_groups") != 6
+        or item.get("rows") != 6
+        or item.get("bytes") != table.stat().st_size
+        or item.get("sha256") != _sha256(table)
+    ):
+        raise ValueError("Training-dynamics paper source failed its strict manifest contract")
+    with table.open(encoding="utf-8", newline="") as handle:
+        rows = list(csv.DictReader(handle))
+    indexed = {(row["model_family"], row["optimizer"]): row for row in rows}
+    expected = {
+        (family, optimizer)
+        for family in ("dense", "late")
+        for optimizer in ("adamw", "muon", "normuon")
+    }
+    if (
+        len(rows) != 6
+        or set(indexed) != expected
+        or any(int(row["learning_rate_points"]) != 4 for row in rows)
+    ):
+        raise ValueError("Training systems table does not cover the six frozen sweep groups")
+
+    def value_range(field: str) -> str:
+        values = [float(row[field]) for row in rows if row["optimizer"] in {"muon", "normuon"}]
+        if len(values) != 4 or not all(math.isfinite(value) and value > 0 for value in values):
+            raise ValueError(f"Training systems table has invalid {field} values")
+        return f"{min(values):.4f}--{max(values):.4f}"
+
+    return {
+        "MuonFamilyThroughputRatioRange": value_range("throughput_to_adamw_ratio"),
+        "MuonFamilyStateRatioRange": value_range("optimizer_state_to_adamw_ratio"),
+    }
+
+
 def expected_constant_macros(
     matrix: str | Path = "configs/experiment.yaml",
     weight_dir: str | Path = "reports/weight-space",
+    training_dir: str | Path = "reports/training-dynamics",
     *,
     repo_root: str | Path = ".",
 ) -> tuple[dict[str, str], dict[str, Any]]:
@@ -136,6 +184,7 @@ def expected_constant_macros(
         "NumTrainingQueries": "500{,}000",
         "NumHardNegatives": str(dataset["sampled_negatives"]),
         "ContextLength": "8{,}192",
+        **_training_constants(Path(training_dir).resolve()),
         **_weight_constants(Path(weight_dir).resolve()),
     }
     sources = {
@@ -147,6 +196,10 @@ def expected_constant_macros(
         "weight_manifest": {
             "path": str((Path(weight_dir).resolve() / "summary_manifest.json")),
             "sha256": _sha256(Path(weight_dir).resolve() / "summary_manifest.json"),
+        },
+        "training_manifest": {
+            "path": str((Path(training_dir).resolve() / "summary_manifest.json")),
+            "sha256": _sha256(Path(training_dir).resolve() / "summary_manifest.json"),
         },
     }
     return expected, sources
@@ -174,13 +227,19 @@ def audit_paper(
     repo_root: str | Path = ".",
     matrix: str | Path = "configs/experiment.yaml",
     weight_dir: str | Path = "reports/weight-space",
+    training_dir: str | Path = "reports/training-dynamics",
     strict: bool = False,
 ) -> dict[str, Any]:
     root = Path(repo_root).resolve()
     paper = (root / paper_dir).resolve()
     results_path = paper / "results.tex"
     macros = _macros(results_path)
-    expected, sources = expected_constant_macros(root / matrix, root / weight_dir, repo_root=root)
+    expected, sources = expected_constant_macros(
+        root / matrix,
+        root / weight_dir,
+        root / training_dir,
+        repo_root=root,
+    )
     mismatches = {
         name: {"expected": value, "observed": macros.get(name)}
         for name, value in expected.items()
@@ -239,6 +298,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
     parser.add_argument("--weight-dir", type=Path, default=Path("reports/weight-space"))
+    parser.add_argument("--training-dir", type=Path, default=Path("reports/training-dynamics"))
     parser.add_argument("--strict", action="store_true")
     return parser.parse_args(argv)
 
@@ -250,6 +310,7 @@ def main(argv: list[str] | None = None) -> None:
         repo_root=args.repo_root,
         matrix=args.matrix,
         weight_dir=args.weight_dir,
+        training_dir=args.training_dir,
         strict=args.strict,
     )
     print(json.dumps(result, indent=2, sort_keys=True))

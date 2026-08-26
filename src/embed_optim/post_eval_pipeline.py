@@ -96,6 +96,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(args.python, "embed_optim.training_dynamics", *shared),
             ),
             PipelineStep(
+                "training-dynamics-plot",
+                _module(args.python, "embed_optim.training_dynamics_plot"),
+            ),
+            PipelineStep(
                 "validation-data-audit",
                 _module(args.python, "embed_optim.validation_data", "--audit-only"),
             ),

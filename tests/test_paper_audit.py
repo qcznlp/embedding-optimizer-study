@@ -31,9 +31,12 @@ def test_current_paper_constants_match_strict_sources():
     assert result["constant_macros"]["NumDiscoveryRuns"] == "24"
     assert result["constant_macros"]["NumDiscoveryUnits"] == "1680"
     assert result["constant_macros"]["NumWeightPairs"] == "40"
+    assert result["constant_macros"]["MuonFamilyThroughputRatioRange"] == "0.9348--0.9946"
+    assert result["constant_macros"]["MuonFamilyStateRatioRange"] == "0.6299--0.6420"
     discovery_evidence = result["evidence"]["DiscoveryHeadline"]
-    assert len(discovery_evidence) == 2
+    assert len(discovery_evidence) == 3
     assert discovery_evidence[1]["complete"] is True
+    assert discovery_evidence[2]["complete"] is True
 
 
 def test_strict_paper_audit_rejects_pending_headlines():

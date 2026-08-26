@@ -24,7 +24,7 @@ drafting; `embed-optim-audit-paper --strict` becomes a hard final-submission gat
 
 | Claim family | Authoritative evidence | Required gate |
 |---|---|---|
-| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, `reports/system_metrics.csv` | 24 runs and 120 checkpoints pass the deep audit |
+| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and both manifests under `reports/training-dynamics/` | 24 runs, 120 checkpoints, 9,384 history rows, six systems summaries, and two source-bound figures pass audit |
 | Discovery retrieval behavior | `reports/coverage.json`, strict aggregate tables and plot sidecars | exactly 1,680 decontaminated-BEIR units |
 | Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 24 runs, 120 checkpoints, verified model inputs |
 | Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | 20 anchors, 1,760 gradients, 5,280 transforms, 360 spectra |

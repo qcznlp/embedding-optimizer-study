@@ -16,6 +16,8 @@ rather than silently becoming prose claims.
 The complete training-only systems and loss-dynamics tables can be regenerated independently of
 retrieval evaluation with `embed-optim-summarize-training`; its manifest binds all 24 completion,
 checkpoint-schedule, and canonical Trainer-history sources.
+`embed-optim-plot-training` then renders the complete five-stage loss trajectories and native-recipe
+systems trade-offs from those declared tables, with its own content-addressed plot manifest.
 
 ## Experimental contract
 
