@@ -429,20 +429,22 @@ Everything else should be labeled descriptive or exploratory.
 
 ## Main paper figures
 
-1. **Quality-efficiency frontier:** mean decontaminated BEIR nDCG@10 versus wall time for all five
-   checkpoints, with stable learning-rate regions and peak memory.
-2. **Update geometry fingerprint:** layer-by-depth heatmaps of update effective rank, condition
-   number, and row-norm CV for identical-batch counterfactual updates.
-3. **The bridge:** update geometry, representation effective rank/hubness, margin, and future BEIR
-   quality on a shared training timeline.
-4. **Causal intervention:** short branches from a common checkpoint and optimizer-switch results.
-5. **Dense versus late interaction:** single-vector geometry against token-level MaxSim utilization.
-6. **Mismatch and robustness:** pretrained-feature drift versus retrieval quality under native and
-   matched update strengths.
+Keep the main-paper visual budget to four composite figures; a six-figure mechanism inventory would
+crowd an NAACL-length argument and make the paper read like unrelated analyses.
+
+1. **What happens:** mean decontaminated BEIR nDCG@10 versus wall time for all five checkpoints,
+   with learning-rate stability and peak memory in aligned panels.
+2. **What the optimizer does:** layer-by-depth heatmaps plus representative spectra for common-state
+   update effective rank, spectral tail, condition, row-norm CV, and optimizer-pair direction angle.
+3. **How it reaches retrieval:** a shared-timeline bridge from update geometry to representation
+   rank/hubness and score margin, with DenseOn and LateOn/MaxSim token utilization as two panels.
+4. **Why the bridge is causal:** scale-matched virtual steps, short branches, optimizer switches,
+   and pretrained-feature drift summarized in one intervention figure.
 
 The main results table should include final quality, best intermediate quality, time-to-quality,
 optimizer-state memory, and run stability. Full learning-rate and task matrices belong in the
-appendix.
+appendix. Put standalone heavy-tail fits, layer-wise activation covariance, robustness perturbations,
+and the full mismatch sweep in the appendix unless one becomes the decisive explanation.
 
 ## Suggested paper structure
 
@@ -504,7 +506,8 @@ chronology:
 - [HTMuon](https://aclanthology.org/2026.findings-acl.1819/) argues that Muon can suppress
   heavy-tailed weight spectra and overemphasize noise-dominated update directions. This gives our
   spectrum analysis a genuine competing hypothesis: higher update effective rank need not imply
-  better retrieval, and tail fits should be reported only for the preregistered full-spectrum tier.
+  better retrieval, and tail fits should be reported only for a separately frozen full-spectrum
+  tier rather than inferred from the rank-64 sketches.
 - [The Newton-Muon Optimizer](https://arxiv.org/abs/2604.01472) interprets standard Muon as omitting
   right preconditioning by the layer-input second moment. Dense versus late-interaction retrieval
   may expose different input-covariance regimes, so activation covariance is a useful explanatory
