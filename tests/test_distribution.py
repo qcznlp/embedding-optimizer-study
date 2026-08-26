@@ -93,3 +93,22 @@ def test_distribution_bundles_frozen_common_state_spectrum_protocol() -> None:
     assert spec["selection"]["expected_spectra"] == 360
     assert spec["freeze_context"]["formal_common_state_outputs_already_observed"] is False
     assert spec["freeze_context"]["partial_beir_results_already_observed"] is True
+
+
+def test_distribution_bundles_training_receipt_and_retrieval_dynamics_protocol() -> None:
+    installed = _installed_data_paths()
+    training_source = "configs/training_data_contract.json"
+    retrieval_source = "configs/retrieval_dynamics_protocol.json"
+    assert installed[training_source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/training_data_contract.json"
+    )
+    assert installed[retrieval_source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/retrieval_dynamics_protocol.json"
+    )
+    training = json.loads((ROOT / training_source).read_text())
+    retrieval = json.loads((ROOT / retrieval_source).read_text())
+    assert training["total_queries"] == 500_000
+    assert training["sampled_negatives"] == 7
+    assert len(training["independent_protocol_bindings"]) == 5
+    assert retrieval["freeze_context"]["strict_beir_valid_units"] == 160
+    assert retrieval["freeze_context"]["complete_retrieval_matrix_visible"] is False
