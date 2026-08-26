@@ -791,20 +791,19 @@ duplicate AdamW resume records by global step. This is evidence about optimizati
 retrieval quality; the decontaminated BEIR evaluations remain the required basis for optimizer
 conclusions.
 
-The audited useful-time ledgers do not show a per-step throughput advantage at this point. The two
-completed LateOn AdamW runs take 7.6649 and 7.6396 seconds per optimizer step after excluding restart
-downtime and duplicated work. Across their complete accepted histories, Muon `1e-4` and `3e-4` take
-7.6639 and 7.7001 seconds per step. Their two-run mean is 7.6820 seconds versus 7.6523 for AdamW, a
-preliminary 0.39% Muon slowdown that is operationally close to parity. Thus the early Muon signal is
-faster loss reduction at higher learning rates, not faster step execution. This comparison remains
-partial until all four learning rates for every optimizer finish and the final timing audit is complete.
+The complete audited useful-time ledgers do not show a native throughput advantage. Across all four
+learning-rate points, DenseOn median throughput is 39.4299 samples/s for AdamW, 37.4139 for Muon,
+and 36.8600 for NorMuon: the matrix optimizers are 5.11% and 6.52% slower. LateOn is closer to
+parity at 16.6584, 16.5678, and 16.4245 samples/s, but Muon and NorMuon are still 0.54% and 1.40%
+slower than AdamW. Thus the Muon-family signal in this implementation is faster loss reduction at
+higher learning rates, not faster step execution.
 
-Muon does provide a material checkpoint-footprint advantage. At step 1,563, both LateOn AdamW
-checkpoints contain a 1,230,780,939-byte optimizer state, whereas both Muon checkpoints contain
-789,544,331 bytes: a 35.85% reduction. Because the model and remaining payload are common, the full
-checkpoint falls from approximately 1.850 GB to 1.409 GB, a 23.85% reduction or 420.8 MiB saved per
-checkpoint. The exact optimizer-state sizes are unchanged at checkpoint 2,345. This improves storage
-and optimizer-state I/O, even though steady-state step throughput is currently at parity.
+The matrix optimizers do provide a material checkpoint-footprint advantage across the complete
+matrix. Median optimizer state falls from 1.11035 GiB with DenseOn AdamW to 0.69942 GiB with Muon
+and 0.69994 GiB with NorMuon, reductions of 37.01% and 36.96%. For LateOn it falls from 1.14625 GiB
+to 0.73532 and 0.73585 GiB, reductions of 35.85% and 35.80%. Including the shared model and remaining
+payload, median checkpoint size falls by 24.62%/24.59% for DenseOn and 23.85%/23.82% for LateOn.
+This improves storage and optimizer-state I/O even though steady-state step throughput does not.
 
 Subsequent attempts commit the maximum four-rank duration automatically in an atomic timing ledger after each
 durable checkpoint. The final audit requires contiguous accepted step ranges, finite positive
