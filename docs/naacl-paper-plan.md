@@ -385,6 +385,15 @@ direction cosines, and same-anchor Muon/NorMuon contrasts against AdamW. This is
 route from the 20 analyzer directories to paper figures: incomplete diagnostics remain visibly
 marked and cannot be mistaken for the final mechanism result.
 
+The representative full-spectrum tier is independently locked in
+`configs/common_state_spectrum_probe.json`: layers 0, 10, and 21 crossed with attention input and
+MLP expansion projections, all 20 anchors, both families, and all three counterfactual update
+operators. The freeze ledger discloses that 110/1,680 BEIR units and the completed weight
+trajectories were already visible, but no formal common-state or representation output existed.
+`embed-optim-common-state-spectra` computes all 360 exact spectra, content-hashes every source and
+output, and emits both per-spectrum summaries and normalized long-form singular-value curves. This
+prevents choosing visually favorable layers after inspecting the update spectra.
+
 The spec also preserves one pre-execution amendment: `model_mode` changed from evaluation to
 training before any common-state GPU artifact existed, because Transformers gates gradient
 checkpointing on `module.training`. This correction changes the dropout realization but not the

@@ -79,3 +79,17 @@ def test_distribution_bundles_prospective_beir_probe_protocol() -> None:
     assert spec["expected"]["manifest_sha256"] == (
         "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d"
     )
+
+
+def test_distribution_bundles_frozen_common_state_spectrum_protocol() -> None:
+    installed = _installed_data_paths()
+    source = "configs/common_state_spectrum_probe.json"
+    assert installed[source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/common_state_spectrum_probe.json"
+    )
+    spec = json.loads((ROOT / source).read_text())
+    assert spec["selection"]["expected_anchors"] == 20
+    assert spec["selection"]["expected_tensors_per_anchor"] == 6
+    assert spec["selection"]["expected_spectra"] == 360
+    assert spec["freeze_context"]["formal_common_state_outputs_already_observed"] is False
+    assert spec["freeze_context"]["partial_beir_results_already_observed"] is True

@@ -855,6 +855,14 @@ control with Muon's exact parameter routing. The protocol ledger discloses that 
 BEIR units had already been observed when its 20-anchor completion grid was locked, so this is not
 presented as a preregistration made before all outcome inspection.
 
+A narrower exact-spectrum tier was subsequently locked at 110/1,680 valid BEIR units and before any
+formal common-state output existed. It selects attention-input and MLP-expansion matrices at layers
+0, 10, and 21 by architecture position, then computes all three counterfactual update spectra at all
+20 anchors in both model families: 360 exact spectra total. The checked-in ledger also discloses
+that the completed weight trajectories and exploratory representation smoke tests were already
+visible. This subset will support representative singular-value curves without choosing favorable
+layers after inspecting the common-state spectra.
+
 ## Limitations
 
 - This is one epoch on one pretrained backbone family; it does not establish a universal optimizer

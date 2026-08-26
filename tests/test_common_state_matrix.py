@@ -1,11 +1,15 @@
 import json
+import sys
+from argparse import Namespace
 from pathlib import Path
 
 from embed_optim.common_state_matrix import (
     CommonStateJob,
+    _job_cli,
     _load_protocol,
     build_common_state_jobs,
     common_state_job_complete,
+    parse_args,
 )
 from embed_optim.config import OptimizerConfig, RunConfig
 from embed_optim.geometry import _sha256
@@ -165,3 +169,33 @@ def test_common_state_completion_checks_both_manifests_and_outputs(tmp_path: Pat
     assert common_state_job_complete(job, spec, verify_hashes=True)
     output_paths["muon_matched"].write_bytes(b"changed")
     assert not common_state_job_complete(job, spec)
+
+
+def test_common_state_worker_command_round_trips_through_parser(tmp_path: Path):
+    job = CommonStateJob(
+        family="late",
+        label="late/muon-lr1e-3/checkpoint-2345",
+        checkpoint=(tmp_path / "checkpoint-2345").resolve(),
+        gradient_dir=(tmp_path / "gradients").resolve(),
+        update_dir=(tmp_path / "updates").resolve(),
+        gradient_steps=8,
+        hidden_tensors=88,
+        hidden_parameters=110_297_088,
+    )
+    command = _job_cli(
+        job,
+        Namespace(
+            probe=tmp_path / "probe",
+            probe_spec=tmp_path / "probe.json",
+            common_state_spec=tmp_path / "common-state.json",
+        ),
+    )
+
+    assert command[:3] == [sys.executable, "-m", "embed_optim.common_state_matrix"]
+    parsed = parse_args(command[3:])
+    assert parsed.worker is True
+    assert parsed.family == "late"
+    assert parsed.label == job.label
+    assert parsed.checkpoint == job.checkpoint
+    assert parsed.hidden_tensors == 88
+    assert parsed.hidden_parameters == 110_297_088

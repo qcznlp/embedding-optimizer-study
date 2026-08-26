@@ -589,6 +589,34 @@ cosines, parameter-weighted anchor summaries, and Muon/NorMuon contrasts against
 weights and ordered gradient history. As with the representation summarizer, `--allow-partial`
 produces a manifest explicitly marked incomplete and is only for diagnostics.
 
+The rank-64 sketches above support broad layer coverage, but they do not preserve an exact singular
+value curve. A separately frozen protocol selects six matrices by architecture alone: attention
+input and MLP expansion projections at layers 0, 10, and 21. The ledger records that 110/1,680 BEIR
+units and the exact-statistics weight trajectories were already visible, while no formal
+common-state or representation output existed. It is therefore a prospective completion lock, not
+a preregistration claim. Preview the exact 20-anchor, 360-spectrum tier with:
+
+```bash
+embed-optim-common-state-spectra --dry-run
+```
+
+After the common-state matrix is complete, run it across the available GPUs:
+
+```bash
+embed-optim-common-state-spectra \
+  --matrix configs/experiment.yaml \
+  --common-state-root results/common-state \
+  --output-root results/common-state-spectra \
+  --gpus 0,1,2,3,4,5,6,7
+```
+
+Each job computes exact float32 `torch.linalg.svdvals` from the float16, per-tensor
+Frobenius-matched intervention directions. The matrix command rehashes all common-state inputs,
+resumes only matching outputs, and automatically writes `spectrum_metrics.csv`, a long-form
+`singular_values.csv` with Frobenius/spectral normalization and cumulative energy, and a strict
+summary manifest. Reaggregate without GPU work using `--summarize-only`; add `--audit-only
+--verify-hashes` to validate the per-anchor tier itself.
+
 For a single ad hoc checkpoint, the equivalent first stage is:
 
 ```bash
