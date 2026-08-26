@@ -205,8 +205,25 @@ Results will be inserted here after `reports/coverage.json` confirms all 1,680 t
 
 <!-- SYSTEMS:BEGIN -->
 
-Final wall-clock throughput, peak memory, optimizer-state size, and checkpoint size will be reported
-from the completed W&B runs and local Trainer states.
+Every run used four NVIDIA L20Z devices. Values below are medians over all four learning-rate
+configurations for that optimizer and family; CUDA memory is the maximum allocated on one rank, not
+the sum across ranks.
+
+| Family | Optimizer | Useful hours | Samples/s | Throughput vs AdamW | Peak allocated GiB | Optimizer state GiB | Checkpoint GiB |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 3.52 | 39.43 | 1.0000× | 7.41 | 1.110 | 1.669 |
+| DenseOn | Muon | 3.71 | 37.41 | 0.9489× | 6.98 | 0.699 | 1.258 |
+| DenseOn | NorMuon | 3.77 | 36.86 | 0.9348× | 6.97 | 0.700 | 1.259 |
+| LateOn | AdamW | 8.34 | 16.66 | 1.0000× | 37.46 | 1.146 | 1.723 |
+| LateOn | Muon | 8.38 | 16.57 | 0.9946× | 37.05 | 0.735 | 1.312 |
+| LateOn | NorMuon | 8.46 | 16.42 | 0.9860× | 37.05 | 0.736 | 1.312 |
+
+The complete native-recipe measurements do **not** show faster step execution for the matrix
+optimizers: Muon/NorMuon throughput is 5.11%/6.52% below AdamW for DenseOn and 0.54%/1.40% below
+AdamW for LateOn. Their systems benefit is instead a 35.80%--37.01% smaller optimizer state and a
+23.82%--24.62% smaller complete checkpoint. Time-to-retrieval-quality remains a separate question
+until all 1,680 evaluation units finish. The source-bound six-row audit is
+[`optimizer_system_summary.csv`](../reports/training-dynamics/optimizer_system_summary.csv).
 
 <!-- SYSTEMS:END -->
 
