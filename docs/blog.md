@@ -803,6 +803,56 @@ omitted from its eventual throughput denominator. These historical adjustments n
 strict audit parses every timezone-aware timestamp, recomputes each duration, rejects overlap or an
 undeclared terminal checkpoint, and proves that the segment sum equals the throughput adjustment.
 
+## Weight-space trajectory analysis
+
+The five saved stages also let us ask whether the optimizers reach similar retrieval models through
+different regions of parameter space. We streamed every checkpoint directly from safetensors and
+analyzed the exact 88 hidden matrices routed to Muon or NorMuon during training. The token embedding,
+projection/head parameters, norms, and biases remain in their declared auxiliary AdamW partition and
+are not pooled into the matrix-optimizer comparison. Across 24 runs and five stages, this produces
+10,560 tensor/checkpoint records.
+
+For every hidden matrix we compute exact Frobenius norms, displacement from the pinned pretrained
+model, displacement from the preceding saved checkpoint, row- and column-norm coefficient of
+variation, Gini coefficients, and the fraction of energy carried by the largest 1% and 10% of rows
+or columns. A deterministic randomized spectrum is stored separately and labeled approximate. Every
+record includes the source model digest, tensor name, partition, shape, algorithm, and seed; strict
+summarization rehashes both the JSONL records and all 120 source model files. These measurements
+describe an integrated checkpoint trajectory. They are not raw gradients or individual optimizer
+steps.
+
+At step 3,907, all eight DenseOn/LateOn and learning-rate-matched Muon/NorMuon pairs have nearly the
+same overall displacement from the pretrained model: the NorMuon-to-Muon displacement ratio is
+1.000668--1.003879. Their displacement is distributed very differently across rows, however.
+NorMuon's parameter-weighted row-norm CV is only 0.232758--0.463783 of Muon's, and its top-1%-row
+energy share is 0.659264--0.730320 of Muon's. The direction is present at every saved stage: over all
+40 matched pairs, displacement ratios remain 0.995607--1.003879, row-CV ratios remain
+0.166608--0.463783, and top-1%-row energy ratios remain 0.585108--0.730320.
+
+![Matched Muon and NorMuon checkpoint geometry](../reports/weight-space/optimizer_pair_contrast_trajectory.svg)
+
+This is a specific descriptive signal: NorMuon redistributes trajectory displacement across neurons
+without primarily changing its aggregate magnitude. It does not yet prove that row normalization
+caused a retrieval difference. That claim requires individual common-state updates on identical
+batches, matched global and per-layer update budgets, and a downstream change in margins or rankings.
+
+AdamW also prevents an overly simple interpretation. In the overlapping observed displacement
+range, DenseOn Muon `1e-4` at the final stage has displacement/weight 0.007359 and row CV 0.1972; the
+nearest AdamW point (`3e-5`, stage 2) has 0.008040 and 0.0951, while NorMuon `1e-4` has 0.007365 and
+0.0894. LateOn shows the same ordering: 0.007895/0.2012 for Muon, 0.008193/0.1011 for the nearest
+AdamW point, and 0.007917/0.0933 for NorMuon. These are post-hoc checkpoint matches, not a fair
+causal comparison, but they rule out presenting Muon's expected advantage as neuron-wise row
+balancing. Muon's mechanism should instead be tested in singular-spectrum conditioning; row
+balancing is the specific NorMuon hypothesis.
+
+![All-optimizer checkpoint geometry by displacement scale](../reports/weight-space/optimizer_geometry_phase.svg)
+
+The exact checkpoint, run, and matched-pair tables, their content-addressed manifest, and regeneration
+commands are in [`reports/weight-space`](../reports/weight-space/README.md). A follow-on common-state
+and representation-space protocol is preregistered in the
+[`NAACL paper plan`](naacl-paper-plan.md); it separates cold-start optimizer transforms from
+state-warmed transforms and adds a hybrid AdamW control with Muon's exact parameter routing.
+
 ## Limitations
 
 - This is one epoch on one pretrained backbone family; it does not establish a universal optimizer
