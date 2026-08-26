@@ -138,6 +138,9 @@ def test_summarize_geometry_validates_and_aggregates(tmp_path: Path):
         runs = list(csv.DictReader(handle))
     with (output / "optimizer_pair_contrasts.csv").open(newline="") as handle:
         contrasts = list(csv.DictReader(handle))
+    with (output / "optimizer_pair_contrast_trajectory.csv").open(newline="") as handle:
+        contrast_trajectory = list(csv.DictReader(handle))
+    assert b"\r\n" not in (output / "checkpoint_trajectory.csv").read_bytes()
     assert float(checkpoints[0]["reference_displacement_frobenius_norm"]) == pytest.approx(1.0)
     assert checkpoints[0]["previous_checkpoint_displacement_frobenius_norm"] == ""
     assert float(
@@ -147,6 +150,7 @@ def test_summarize_geometry_validates_and_aggregates(tmp_path: Path):
     assert float(runs[0]["coarse_checkpoint_path_length"]) == pytest.approx(2.0)
     assert float(runs[0]["coarse_checkpoint_path_efficiency"]) == pytest.approx(1.0)
     assert contrasts == []
+    assert contrast_trajectory == []
 
 
 def test_summarize_geometry_emits_matched_muon_normuon_contrasts(tmp_path: Path):
@@ -156,10 +160,15 @@ def test_summarize_geometry_emits_matched_muon_normuon_contrasts(tmp_path: Path)
 
     with (output / "optimizer_pair_contrasts.csv").open(newline="") as handle:
         contrasts = list(csv.DictReader(handle))
+    with (output / "optimizer_pair_contrast_trajectory.csv").open(newline="") as handle:
+        contrast_trajectory = list(csv.DictReader(handle))
     assert summary["outputs"]["optimizer_pair_contrasts.csv"]["rows"] == 1
+    assert summary["outputs"]["optimizer_pair_contrast_trajectory.csv"]["rows"] == 2
     assert len(contrasts) == 1
+    assert [row["stage"] for row in contrast_trajectory] == ["1", "2"]
     contrast = contrasts[0]
     assert contrast["model_family"] == "dense"
+    assert contrast["stage"] == "2"
     assert contrast["step"] == "2"
     assert float(contrast["normuon_to_muon_displacement_ratio"]) == pytest.approx(2**-0.5)
     assert float(contrast["normuon_to_muon_row_cv_ratio"]) == pytest.approx(0.0)

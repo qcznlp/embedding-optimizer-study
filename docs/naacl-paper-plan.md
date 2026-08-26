@@ -137,6 +137,11 @@ of Muon's, and its top-1%-row energy share is 0.659264–0.730320 of Muon's. The
 all four learning rates in both DenseOn and LateOn.
 The strict source table is
 [`optimizer_pair_contrasts.csv`](../reports/weight-space/optimizer_pair_contrasts.csv).
+The corresponding
+[`optimizer_pair_contrast_trajectory.csv`](../reports/weight-space/optimizer_pair_contrast_trajectory.csv)
+contains all 40 checkpoint pairs: displacement ratios remain 0.995607–1.003879, row-norm CV ratios
+remain 0.166608–0.463783, and top-1%-row energy ratios remain 0.585108–0.730320. Thus the direction
+does not emerge only at the final checkpoint.
 
 This pattern supports a precise working hypothesis: NorMuon changes how trajectory energy is
 distributed across neurons without primarily changing total displacement. It is still one-seed,

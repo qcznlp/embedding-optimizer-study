@@ -7,6 +7,7 @@ These tables summarize the exact-statistics tier of the weight-space analysis ov
 - `run_trajectory_summary.csv`: final displacement and the five-checkpoint coarse path per run;
 - `optimizer_pair_contrasts.csv`: matched-learning-rate final Muon/NorMuon displacement and row-energy
   ratios;
+- `optimizer_pair_contrast_trajectory.csv`: the same strict contrasts at all five checkpoints;
 - `summary_manifest.json`: coverage, shared data fingerprint, source-manifest hashes, and output
   hashes.
 
@@ -22,6 +23,10 @@ the same displacement scale, the parameter-weighted row-norm CV ratio is 0.23275
 top-1%-row energy ratio is 0.659264–0.730320. Both model families show the same direction. This is
 consistent with NorMuon redistributing trajectory energy across rows rather than merely shrinking
 the overall displacement.
+
+The five-checkpoint table contains 40 matched pairs. Across the complete trajectory, displacement
+ratios stay within 0.995607–1.003879, row-norm CV ratios within 0.166608–0.463783, and top-1%-row
+energy ratios within 0.585108–0.730320; the direction never reverses.
 
 These are one-seed, integrated checkpoint trajectories, not individual optimizer updates or causal
 effects. The common-state virtual updates, matched-scale controls, short branches, and confirmatory

@@ -14,6 +14,7 @@ from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 PAIR_CONTRAST_FIELDS = [
     "model_family",
     "learning_rate",
+    "stage",
     "step",
     "muon_run_id",
     "normuon_run_id",
@@ -33,7 +34,7 @@ def _atomic_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.tmp.{os.getpid()}")
     with temporary.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
         handle.flush()
@@ -107,36 +108,38 @@ def _weighted_mean(records: list[dict[str, Any]], section: str, *path: str) -> f
 def _optimizer_pair_contrasts(
     checkpoint_rows: list[dict[str, Any]], *, allow_partial: bool
 ) -> list[dict[str, Any]]:
-    final_rows: dict[tuple[str, str, float], dict[str, Any]] = {}
+    indexed_rows: dict[tuple[str, str, float, int, int], dict[str, Any]] = {}
     for row in checkpoint_rows:
-        key = (row["model_family"], row["optimizer"], row["learning_rate"])
-        previous = final_rows.get(key)
-        if previous is None or row["step"] > previous["step"]:
-            final_rows[key] = row
+        key = (
+            row["model_family"],
+            row["optimizer"],
+            row["learning_rate"],
+            row["stage"],
+            row["step"],
+        )
+        if key in indexed_rows:
+            raise ValueError(f"Duplicate checkpoint contrast row: {key}")
+        indexed_rows[key] = row
 
     muon_keys = {
-        (family, learning_rate)
-        for family, optimizer, learning_rate in final_rows
+        (family, learning_rate, stage, step)
+        for family, optimizer, learning_rate, stage, step in indexed_rows
         if optimizer == "muon"
     }
     normuon_keys = {
-        (family, learning_rate)
-        for family, optimizer, learning_rate in final_rows
+        (family, learning_rate, stage, step)
+        for family, optimizer, learning_rate, stage, step in indexed_rows
         if optimizer == "normuon"
     }
     if not allow_partial and muon_keys and normuon_keys and muon_keys != normuon_keys:
         raise ValueError(
-            "Muon and NorMuon final rows do not have the same family/learning-rate coverage"
+            "Muon and NorMuon rows do not have the same family/learning-rate/checkpoint coverage"
         )
 
     contrasts: list[dict[str, Any]] = []
-    for family, learning_rate in sorted(muon_keys & normuon_keys):
-        muon = final_rows[(family, "muon", learning_rate)]
-        normuon = final_rows[(family, "normuon", learning_rate)]
-        if muon["step"] != normuon["step"]:
-            raise ValueError(
-                f"Muon and NorMuon final steps differ for {family} at lr={learning_rate}"
-            )
+    for family, learning_rate, stage, step in sorted(muon_keys & normuon_keys):
+        muon = indexed_rows[(family, "muon", learning_rate, stage, step)]
+        normuon = indexed_rows[(family, "normuon", learning_rate, stage, step)]
         displacement_muon = muon["reference_displacement_frobenius_norm"]
         row_cv_muon = muon["reference_delta_row_cv_parameter_weighted"]
         top_energy_muon = muon["reference_delta_top_1pct_row_energy_parameter_weighted"]
@@ -148,7 +151,8 @@ def _optimizer_pair_contrasts(
             {
                 "model_family": family,
                 "learning_rate": learning_rate,
-                "step": muon["step"],
+                "stage": stage,
+                "step": step,
                 "muon_run_id": muon["run_id"],
                 "normuon_run_id": normuon["run_id"],
                 "muon_reference_displacement_frobenius_norm": displacement_muon,
@@ -339,10 +343,23 @@ def summarize_geometry(
     checkpoint_path = output_dir / "checkpoint_trajectory.csv"
     run_path = output_dir / "run_trajectory_summary.csv"
     contrast_path = output_dir / "optimizer_pair_contrasts.csv"
-    contrast_rows = _optimizer_pair_contrasts(checkpoint_rows, allow_partial=allow_partial)
+    contrast_trajectory_path = output_dir / "optimizer_pair_contrast_trajectory.csv"
+    contrast_trajectory_rows = _optimizer_pair_contrasts(
+        checkpoint_rows, allow_partial=allow_partial
+    )
+    final_stage_by_pair: dict[tuple[str, float], int] = {}
+    for row in contrast_trajectory_rows:
+        key = (row["model_family"], row["learning_rate"])
+        final_stage_by_pair[key] = max(final_stage_by_pair.get(key, 0), row["stage"])
+    contrast_rows = [
+        row
+        for row in contrast_trajectory_rows
+        if row["stage"] == final_stage_by_pair[(row["model_family"], row["learning_rate"])]
+    ]
     _atomic_csv(checkpoint_path, checkpoint_rows, list(checkpoint_rows[0]))
     _atomic_csv(run_path, run_rows, list(run_rows[0]))
     _atomic_csv(contrast_path, contrast_rows, PAIR_CONTRAST_FIELDS)
+    _atomic_csv(contrast_trajectory_path, contrast_trajectory_rows, PAIR_CONTRAST_FIELDS)
     summary = {
         "schema_version": SCHEMA_VERSION,
         "complete": len(run_rows) == len(configs),
@@ -367,6 +384,11 @@ def summarize_geometry(
                 "rows": len(contrast_rows),
                 "bytes": contrast_path.stat().st_size,
                 "sha256": _sha256(contrast_path),
+            },
+            contrast_trajectory_path.name: {
+                "rows": len(contrast_trajectory_rows),
+                "bytes": contrast_trajectory_path.stat().st_size,
+                "sha256": _sha256(contrast_trajectory_path),
             },
         },
         "interpretation": (
