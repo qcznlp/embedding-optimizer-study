@@ -11,6 +11,8 @@ the authoritative artifact and the command that must validate its full scope.
 | Training artifacts | Run directories and `logs/checkpoint-audit.json` | 24/24 terminal runs and 120/120 non-empty, step-consistent model/optimizer/scheduler/Trainer/RNG checkpoints pass deep validation. |
 | Training dynamics | Canonical Trainer histories and W&B canonical runs | Every run has unique increasing steps through 3,907, finite loss/gradient/LR/epoch values, audited system metrics, and one matching content-addressed W&B history. |
 | Query-disjoint recipe validation | `configs/validation_probe.json`, `data/validation-4096-seed20260826/manifest.json`, and `reports/recipe-validation/manifest.json` | All 4,096 queries are disjoint from the 500K training ledger, all positive/seven-negative groups pass audit, 24 final-checkpoint jobs are complete, and six recipes are selected without BEIR outcomes. |
+| Confirmatory data and matrices | `configs/confirmatory_protocol.json`, `reports/confirmatory-data/receipt.json`, and `configs/generated/confirmatory/manifest.json` | Seeds 314159/271828/161803 reuse all 500,000 query/positive identities, independently resample seven distinct negatives from the reconstructed ten-document pools, exceed the frozen pairwise-change threshold, and generate exactly 18 validation-selected runs. |
+| Confirmatory training/evaluation | 18 audited completion records and the confirmatory strict BEIR aggregate | Two families × three optimizers × three new seeds complete with the query-disjoint-selected recipes; all `18 × 14 = 252` final-checkpoint retrieval units and seed/task uncertainty pass audit. |
 | Retrieval evaluation | Pinned evaluation manifest and MTEB result files | All `24 × 5 × 14 = 1,680` run/checkpoint/task units identify the expected local checkpoint, dataset revision, split/subset, runtime, scorer, and finite nDCG@10. |
 | Final statistics | `reports/coverage.json`, long-form tables, summaries, paired effects, and figures | `embed-optim-aggregate --strict` exits zero; no partial or best-effort report is accepted. |
 | Weight-space analysis | [`reports/weight-space/summary_manifest.json`](../reports/weight-space/summary_manifest.json) | 24 runs and 120 checkpoint rows pass record-hash, finite-value, partition, and source-input revalidation. |
@@ -35,6 +37,8 @@ embed-optim-sync-wandb --matrix configs/experiment.yaml
 embed-optim-prepare-validation --audit-only
 embed-optim-validation-matrix --audit-only --verify-hashes
 embed-optim-summarize-validation
+embed-optim-prepare-confirmatory-data --audit-only --verify-source
+embed-optim-generate-confirmatory-matrices --audit-only
 embed-optim-summarize-geometry \
   --geometry-root results/weight-space \
   --output-dir reports/weight-space \

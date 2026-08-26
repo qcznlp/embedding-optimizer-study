@@ -122,6 +122,14 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(args.python, "embed_optim.validation_summary", *shared),
             ),
             PipelineStep(
+                "confirmatory-data-preparation",
+                _module(args.python, "embed_optim.confirmatory_data"),
+            ),
+            PipelineStep(
+                "confirmatory-matrix-generation",
+                _module(args.python, "embed_optim.confirmatory_matrix"),
+            ),
+            PipelineStep(
                 "common-state-matrix",
                 _module(
                     args.python,

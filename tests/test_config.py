@@ -53,6 +53,56 @@ def test_hybrid_adamw_matrix_is_an_eight_run_routing_control():
     )
 
 
+def test_matrix_supports_family_specific_explicit_runs(tmp_path: Path):
+    path = tmp_path / "explicit.yaml"
+    path.write_text(
+        """
+common:
+  dataset_path: data
+  seed: 314159
+models:
+  dense:
+    model_name: dense-model
+  late:
+    model_name: late-model
+runs:
+  - id: adamw-selected
+    model_family: dense
+    optimizer: {name: adamw, lr: 1.0e-5}
+  - id: adamw-selected
+    model_family: late
+    optimizer: {name: adamw, lr: 3.0e-5}
+""".lstrip(),
+        encoding="utf-8",
+    )
+
+    runs = load_matrix(path)
+
+    assert len(runs) == 2
+    assert {run.model_family for run in runs} == {"dense", "late"}
+    assert {run.model_family: run.optimizer.lr for run in runs} == {
+        "dense": 1e-5,
+        "late": 3e-5,
+    }
+    assert all(run.seed == 314159 for run in runs)
+
+
+def test_matrix_rejects_mixed_grid_and_explicit_runs(tmp_path: Path):
+    path = tmp_path / "mixed.yaml"
+    path.write_text(
+        """
+common: {dataset_path: data}
+models: {dense: {model_name: model}}
+optimizers: [{id: adamw, name: adamw, lr: 1.0e-5}]
+runs: [{id: adamw, model_family: dense, optimizer: {name: adamw, lr: 1.0e-5}}]
+""".lstrip(),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="both explicit runs"):
+        load_matrix(path)
+
+
 def test_bundled_default_matrix_falls_back_to_wheel_data(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     prefix = tmp_path / "venv"

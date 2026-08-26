@@ -112,6 +112,32 @@ def load_matrix(path: str | Path) -> list[RunConfig]:
     common = raw.get("common", {})
     models = raw["models"]
     runs: list[RunConfig] = []
+    explicit_runs = raw.get("runs")
+    if explicit_runs is not None:
+        if "optimizers" in raw:
+            raise ValueError(f"{path} cannot declare both explicit runs and an optimizer grid")
+        if not isinstance(explicit_runs, list) or not explicit_runs:
+            raise ValueError(f"{path} must declare at least one explicit run")
+        for run_values in explicit_runs:
+            if not isinstance(run_values, dict):
+                raise ValueError(f"{path} contains a non-object explicit run")
+            entry = dict(run_values)
+            run_id = entry.pop("id")
+            model_family = entry.pop("model_family")
+            optimizer = entry.pop("optimizer")
+            if entry:
+                raise ValueError(f"Unsupported explicit-run fields in {path}: {sorted(entry)}")
+            if model_family not in models:
+                raise ValueError(f"Unknown model family {model_family!r} in {path}")
+            values = {
+                **common,
+                **models[model_family],
+                "run_id": run_id,
+                "model_family": model_family,
+                "optimizer": optimizer,
+            }
+            runs.append(RunConfig.from_dict(values))
+        return runs
     for model_family, model_values in models.items():
         for optimizer_values in raw["optimizers"]:
             opt = dict(optimizer_values)

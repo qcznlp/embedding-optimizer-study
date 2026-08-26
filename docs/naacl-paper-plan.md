@@ -516,11 +516,22 @@ lowest mean contrastive loss, then the highest positive margin and lower hidden 
 tie-breakers. This rule, its 24-job output, and the resulting six recipes are content-audited before
 any confirmatory run is generated; BEIR scores are never an input to recipe selection.
 
-Run at least three new seeds (preferably five) with the same data IDs but independently seeded
-negative selection and example order. Report hierarchical bootstrap confidence intervals over
-seeds, tasks, and queries. Use paired randomization/bootstrap tests at query level and correct the
-small set of prospectively frozen optimizer comparisons. The original exploratory seed must not be
-silently counted as a confirmatory seed after its BEIR results were visible.
+The confirmatory randomization is now concretely frozen in `configs/confirmatory_protocol.json`.
+Seeds `314159`, `271828`, and `161803` retain the exact 500,000 query, positive, sample, and source
+identities. Each independently resamples seven documents without replacement from the reconstructed
+first-ten eligible negative pool and supplies both the Trainer and data seed. The preparation audit
+must reverse-reconstruct the seed-42 ledger, require distinct non-positive pool entries, prove zero
+query/positive text drift, and require at least 98% changed negative groups for every base/new and
+new/new seed pair.
+
+After query-disjoint validation selects one recipe for each family/optimizer, generate exactly six
+runs per new seed (18 total). Retain five checkpoints for restart/artifact integrity but formally
+evaluate only the final checkpoint on BEIR, adding 252 confirmatory retrieval units. Report
+hierarchical bootstrap confidence intervals over seeds, tasks, and queries. Use paired
+randomization/bootstrap tests at query level and correct the small set of frozen optimizer
+comparisons. The original exploratory seed must not be silently counted as a confirmatory seed after
+its BEIR results were visible. Five seeds remain a useful extension if the three-seed intervals are
+too wide, not a post-hoc way to reverse an unfavorable conclusion.
 
 ## Selection protocol and statistical claims
 

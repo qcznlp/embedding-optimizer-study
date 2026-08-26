@@ -634,6 +634,46 @@ records. Selection minimizes mean eight-way contrastive loss, then breaks ties b
 margin and lower hidden learning rate. `reports/recipe-validation/recipe_selection.json` is the only
 allowed source of learning rates for the later confirmatory seeds; BEIR scores are not an input.
 
+### Confirmatory seeds
+
+[`confirmatory_protocol.json`](configs/confirmatory_protocol.json) prospectively freezes three new
+seeds (`314159`, `271828`, and `161803`) before any query-disjoint validation or confirmatory model
+output existed. Every view preserves the exact 500,000 query IDs, positive IDs/text, sample IDs, and
+source quotas from seed 42. Only the seven-of-ten negative draw and Trainer/data seed change; seed 42
+remains exploratory and is not counted as confirmatory evidence.
+
+Materialize all three views in one pinned-source scan, or independently re-audit them with:
+
+```bash
+embed-optim-prepare-confirmatory-data
+embed-optim-prepare-confirmatory-data --audit-only
+embed-optim-prepare-confirmatory-data --audit-only --verify-source
+```
+
+The first stage reconstructs each query's first ten eligible score-ranked documents and proves that
+the original seed-42 indices reproduce the frozen source ledger. The view audit requires exact
+query/positive text identity, seven distinct non-positive negatives, unchanged quotas, content
+hashes and Dataset fingerprints, and at least 98% changed negative groups for every seed pair.
+`--verify-source` repeats the expensive raw score-table reconstruction rather than trusting the
+content-addressed pool cache.
+
+After `embed-optim-summarize-validation` produces the six non-BEIR-selected recipes, generate three
+family-specific matrices (six runs per seed, 18 runs total):
+
+```bash
+embed-optim-generate-confirmatory-matrices
+embed-optim-generate-confirmatory-matrices --audit-only
+
+embed-optim-matrix --matrix configs/generated/confirmatory/seed314159.yaml
+embed-optim-matrix --matrix configs/generated/confirmatory/seed271828.yaml
+embed-optim-matrix --matrix configs/generated/confirmatory/seed161803.yaml
+```
+
+The generated matrices are bound to the validation-selection digest and each data-view manifest.
+They retain five training checkpoints for artifact/resume auditing, but only the final checkpoint is
+part of the confirmatory BEIR claim: `18 × 14 = 252` formal retrieval units. This yields seed-level
+uncertainty without reusing the discovery seed or selecting a learning rate on BEIR test outcomes.
+
 ### Hybrid AdamW routing control
 
 The prospectively locked NAACL fairness control is separate from the 24-run discovery matrix:
