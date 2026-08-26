@@ -559,6 +559,20 @@ entropy/Gini, document-token coverage, and repeated-token dominance. These are k
 panel so architecture-specific MaxSim evidence is not visually conflated with the shared Dense/Late
 metrics.
 
+Once BEIR coverage is also complete, join the three analysis spaces without manual spreadsheet
+matching:
+
+```bash
+embed-optim-build-mechanism-bridge
+```
+
+This command requires the verified 120-checkpoint weight summary, both complete 122-job
+representation summaries, and strict 1,680/1,680 BEIR coverage. It emits one joined checkpoint table,
+96 within-run first-difference rows, and prespecified descriptive Spearman correlations at both the
+family and optimizer-within-family levels. The manifest explicitly marks these one-seed checkpoint
+associations as observational; common-state and short-branch interventions remain necessary for a
+causal claim.
+
 ### 7. Compare common-state optimizer updates
 
 The checkpoint trajectories above cannot isolate an optimizer rule because each completed run visits

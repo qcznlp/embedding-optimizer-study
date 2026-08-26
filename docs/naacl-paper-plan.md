@@ -317,6 +317,12 @@ hashes in a sidecar instead of selecting a visually favorable configuration.
 The companion `embed-optim-plot-late-token-dynamics` panel exposes all four prespecified MaxSim
 token-utilization summaries on both tiers. Keeping this panel separate prevents LateOn-only evidence
 from changing the shared cross-architecture plot definition after results are visible.
+After strict BEIR aggregation, `embed-optim-build-mechanism-bridge` joins all 120 checkpoints across
+weight trajectories, both probe tiers, and 14-task mean retrieval quality. It exports both raw
+checkpoint levels and 96 within-run first differences, plus a fixed set of family-level and
+optimizer-conditional Spearman associations. These tables test temporal co-movement and organize
+the paper's bridge figure, but their manifest explicitly labels them observational; only the
+common-state and short-branch interventions can support causal wording.
 
 ## Causal controls and additional runs
 
