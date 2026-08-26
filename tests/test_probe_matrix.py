@@ -2,8 +2,17 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import numpy as np
+
 from embed_optim.config import OptimizerConfig, RunConfig
-from embed_optim.probe_matrix import ProbeJob, build_probe_jobs, run_probe_job, run_probe_matrix
+from embed_optim.geometry import _sha256
+from embed_optim.probe_matrix import (
+    ProbeJob,
+    build_probe_jobs,
+    probe_job_complete,
+    run_probe_job,
+    run_probe_matrix,
+)
 
 
 def _config(tmp_path: Path, family: str, run_id: str) -> RunConfig:
@@ -108,3 +117,61 @@ def test_run_probe_job_resumes_valid_export_and_rewrites_metrics(tmp_path: Path,
     )
 
     assert calls == [("analyze", job.reference_export)]
+
+
+def test_probe_job_completion_revalidates_export_and_metric_hashes(tmp_path: Path):
+    export = tmp_path / "dense.npz"
+    metrics = tmp_path / "dense.json"
+    arrays = {
+        "sample_ids": np.array([1]),
+        "query_embeddings": np.ones((1, 2), dtype=np.float32),
+        "document_embeddings": np.ones((1, 2, 2), dtype=np.float32),
+    }
+    np.savez(export, **arrays)
+    array_metadata = {
+        name: {"shape": list(value.shape), "dtype": str(value.dtype)}
+        for name, value in sorted(arrays.items())
+    }
+    manifest_path = export.with_suffix(".npz.manifest.json")
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "family": "dense",
+                "probe": {"manifest_sha256": "a", "selection_sha256": "b"},
+                "encoding": {"positive_candidate_index": 0},
+                "output": {"sha256": _sha256(export), "arrays": array_metadata},
+            }
+        )
+    )
+    job = ProbeJob(
+        kind="reference",
+        family="dense",
+        label="dense/pretrained",
+        checkpoint=tmp_path / "checkpoint",
+        export=export,
+        metrics=metrics,
+        reference_export=None,
+    )
+    metrics.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "family": "dense",
+                "label": job.label,
+                "input": {
+                    "path": str(export.resolve()),
+                    "sha256": _sha256(export),
+                    "export_manifest": {"sha256": _sha256(manifest_path)},
+                    "reference": None,
+                },
+                "parameters": {"require_export_manifest": True},
+            }
+        )
+    )
+
+    assert probe_job_complete(job)
+    manifest = json.loads(manifest_path.read_text())
+    manifest["output"]["sha256"] = "0" * 64
+    manifest_path.write_text(json.dumps(manifest))
+    assert not probe_job_complete(job)
