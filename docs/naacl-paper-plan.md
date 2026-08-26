@@ -642,7 +642,7 @@ training dynamics; the existing sweep already supplies the exploratory five-stag
 | Intended claim | Minimum supporting evidence | Evidence that is insufficient by itself |
 |---|---|---|
 | Faster or more memory-efficient training | Audited useful wall time, examples/second, time-to-quality, and peak memory on matched hardware | Lower loss at the same step |
-| Better retrieval recipe | Frozen validation-selected recipe, confirmatory seeds, paired query/task uncertainty, and full per-task results | Best learning rate selected on BEIR test scores |
+| Better retrieval recipe | Frozen validation-selected recipe, confirmatory seeds, paired seed/task uncertainty, and full per-task results | Best learning rate selected on BEIR test scores |
 | NorMuon balances update energy | Common-state individual updates with matched global/per-layer scale and repeated layers/batches | Lower row CV in distant checkpoint displacement |
 | Geometry explains retrieval behavior | Geometry change precedes margin/ranking change and survives short-branch or intervention controls | Cross-run correlation between two intrinsic metrics |
 | More robust optimization | Prespecified stability criteria across seeds, learning rates, batches, and perturbations | One wide learning-rate sweep with a single seed |

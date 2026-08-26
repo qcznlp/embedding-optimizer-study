@@ -181,9 +181,11 @@ Across the four native learning-rate sweep points, Muon-family median training t
 advantage, although they do establish a smaller optimizer-state footprint. Whether fewer steps
 offset the per-step cost is evaluated only through retrieval time-to-quality.
 
-The final analysis will report (i) complete five-stage quality trajectories, (ii) time-to-quality at
-prespecified thresholds, (iii) the number and location of unstable configurations, (iv) peak memory
-and optimizer-state size, and (v) all per-task results. Lower training loss is never substituted for
+The final analysis will report (i) complete five-stage quality trajectories, (ii) observed first
+passage to the within-family median final AdamW reference, (iii) the number and location of unstable
+configurations, (iv) peak memory and optimizer-state size, and (v) all per-task results. The
+first-passage rule was locked after 160 of 1,680 discovery units were visible and is disclosed as an
+exploratory completion analysis, not a preregistration. Lower training loss is never substituted for
 better retrieval quality.
 
 \section{What Do the Optimizers Change?}
@@ -206,10 +208,11 @@ that the redistribution causes a retrieval improvement.
 \subsection{Common-state update fingerprints}
 
 At the pretrained state and selected 20, 60, and 100\% checkpoints, we freeze weights and replay the
-same ordered sequence of eight gradients into every optimizer. We compare both cold-start and
-state-warmed transforms, keep weight decay separate, and evaluate native, globally Frobenius-matched,
-and per-layer-matched directions. The primary measurements are effective rank, condition number,
-row-energy concentration, layer allocation, and pairwise update angle. \CommonStateHeadline.
+same ordered sequence of eight gradients into every optimizer. This frozen-weight state warm-up is
+the formal common-state protocol; any one-gradient cold-start diagnostic is labeled auxiliary rather
+than pooled with it. We keep weight decay separate and evaluate raw and per-tensor Frobenius-matched
+directions. The primary measurements are effective rank, condition number, row-energy concentration,
+layer allocation, and pairwise update angle. \CommonStateHeadline.
 
 \section{How Does Geometry Reach the Retrieval Function?}
 
@@ -283,7 +286,7 @@ The released code supports strict artifact audits before producing paper tables 
 Claim & Required evidence & Insufficient evidence alone \\
 \midrule
 Faster training & useful wall time, examples/s, GPU-hours, and matched-hardware time-to-quality & lower loss at equal steps \\
-Better retrieval recipe & validation-frozen recipe, new seeds, paired task/query uncertainty & best discovery learning rate on BEIR \\
+Better retrieval recipe & validation-frozen recipe, new seeds, paired seed/task uncertainty & best discovery learning rate on BEIR \\
 NorMuon balances rows & common-state updates with global and per-layer scale controls & distant checkpoint row CV \\
 Geometry explains retrieval & geometry precedes and predicts functional change under intervention & cross-run intrinsic correlation \\
 More robust optimization & frozen stability criteria across rates, seeds, and batches & one successful high-rate run \\
