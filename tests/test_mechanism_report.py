@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 from embed_optim.geometry import _sha256
-from embed_optim.mechanism_report import render_mechanism_report
+from embed_optim.mechanism_report import ensure_retrieval_dynamics, render_mechanism_report
 
 
 def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
@@ -401,3 +401,19 @@ def test_mechanism_report_rejects_partial_common_state(tmp_path: Path):
             representation_figure=figures[1],
             late_token_figure=figures[2],
         )
+
+
+def test_mechanism_report_materializes_missing_retrieval_summary(tmp_path: Path):
+    retrieval = tmp_path / "retrieval"
+    calls = []
+
+    def build(*, output_dir):
+        calls.append(output_dir)
+        output_dir.mkdir(parents=True)
+        (output_dir / "summary_manifest.json").write_text("{}\n", encoding="utf-8")
+
+    manifest = ensure_retrieval_dynamics(retrieval, builder=build)
+
+    assert manifest == retrieval / "summary_manifest.json"
+    assert calls == [retrieval]
+    ensure_retrieval_dynamics(retrieval, builder=lambda **kwargs: pytest.fail(str(kwargs)))

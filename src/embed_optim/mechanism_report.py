@@ -517,6 +517,25 @@ def _atomic_text(path: Path, content: str) -> None:
     os.replace(temporary, path)
 
 
+def ensure_retrieval_dynamics(
+    retrieval_dir: Path,
+    *,
+    builder: Any | None = None,
+) -> Path:
+    retrieval_dir = retrieval_dir.resolve()
+    manifest_path = retrieval_dir / "summary_manifest.json"
+    if manifest_path.is_file():
+        return manifest_path
+    if builder is None:
+        from .retrieval_dynamics import build_retrieval_dynamics
+
+        builder = build_retrieval_dynamics
+    builder(output_dir=retrieval_dir)
+    if not manifest_path.is_file():
+        raise ValueError("Retrieval-dynamics builder did not produce its strict summary manifest")
+    return manifest_path
+
+
 def render_mechanism_report(
     common_state_dir: Path,
     spectrum_dir: Path,
@@ -730,6 +749,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    ensure_retrieval_dynamics(args.retrieval_dir)
     manifest = render_mechanism_report(
         args.common_state_dir,
         args.spectrum_dir,

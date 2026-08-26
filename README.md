@@ -274,6 +274,9 @@ steps, shared-start short branches, and the validation-frozen three-seed BEIR co
 sections are content-hashed and idempotently replace only their declared Markdown marker regions;
 the terminal outcome renderer also verifies that the mechanism marker still byte-matches its source
 report before signing the final whole-blog hash.
+For compatibility with an already-armed older handoff process, the mechanism renderer materializes
+the strict retrieval-dynamics report if its manifest is absent; that fallback still requires the
+complete 1,680-unit coverage contract and cannot render from partial results.
 
 Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned in
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
