@@ -14,6 +14,10 @@ make
 
 `results.tex` is deliberately the only place where numerical result macros may enter prose. A
 macro containing `\ResultPending` marks an unresolved completion gate and renders visibly in red.
+The prospectively frozen headline and interpretation rules live in
+`../configs/paper_claim_protocol.json`. They bind the experiment and intervention protocols by hash,
+require all family/optimizer contrasts, and define when a confirmatory interval permits positive,
+negative, or only inconclusive language.
 The paper is not submission-ready while any such marker remains.
 
 Audit the checked-in constants against the frozen matrix, materialized dataset, and strict

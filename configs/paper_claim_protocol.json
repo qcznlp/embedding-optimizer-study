@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "status": "prospective_completion_lock",
+  "frozen_at": "2026-08-26T17:49:04Z",
+  "freeze_context": {
+    "strict_beir_valid_units": 168,
+    "strict_beir_expected_units": 1680,
+    "complete_retrieval_matrix_visible": false,
+    "retrieval_dynamics_output_visible": false,
+    "training_systems_output_visible": true,
+    "weight_trajectory_output_visible": true,
+    "formal_common_state_output_visible": false,
+    "formal_representation_output_visible": false,
+    "formal_functional_intervention_output_visible": false,
+    "hybrid_adamw_output_visible": false,
+    "short_branch_output_visible": false,
+    "confirmatory_output_visible": false,
+    "note": "The narrative map and headline-selection rules were frozen after training-system and integrated weight-trajectory inspection, but before the complete discovery retrieval matrix or any formal common-state, representation, intervention, hybrid, short-branch, or confirmatory output existed. This is a prospective completion lock, not a preregistration before all outcome inspection."
+  },
+  "source_bindings": [
+    {
+      "path": "configs/experiment.yaml",
+      "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+    },
+    {
+      "path": "configs/common_state_probe.json",
+      "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+    },
+    {
+      "path": "configs/common_state_spectrum_probe.json",
+      "sha256": "a8d99735de5d7faea52355f27b5c70edb595165a74d05cf118652970cc807e0f"
+    },
+    {
+      "path": "configs/representation_probe.json",
+      "sha256": "45e76c8daa5bda0213c346b39200a34ddc1e9295f37198a2bd238276ee6057e2"
+    },
+    {
+      "path": "configs/beir_representation_probe.json",
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    {
+      "path": "configs/functional_intervention.json",
+      "sha256": "8f8a478bede92f9b2e1999b5491a3983cc244fad90ec5321b6d8914a2f633bab"
+    },
+    {
+      "path": "configs/hybrid_adamw_control.json",
+      "sha256": "24838ba1f8015d1e4198b1a5192daedf9b1c3cdeaceedf8858e72c406454b270"
+    },
+    {
+      "path": "configs/short_branch_protocol.json",
+      "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+    },
+    {
+      "path": "configs/confirmatory_protocol.json",
+      "sha256": "f512e98ec07635c82ce9af6b6c8ed745146c4dc34379efb78b583b33bf53e550"
+    },
+    {
+      "path": "docs/naacl-paper-plan.md",
+      "sha256": "2d61c1c1a150269986dbc41786f5b10c7304b45d23148278959ef3d75b72c888"
+    }
+  ],
+  "headline_contract": {
+    "DiscoveryHeadline": {
+      "required_scope": "all 24 runs, all five observed checkpoints, and all 14 decontaminated BEIR tasks",
+      "primary_outputs": [
+        "per-family final mean nDCG@10 for every learning-rate point",
+        "within-family AdamW-median observed time-to-quality with right censoring",
+        "audited useful wall time, examples per second, optimizer-state size, and peak memory"
+      ],
+      "selection_rule": "Retain every learning-rate point. A best point may be named only together with its configured learning rate and the complete within-family sweep; discovery values are exploratory and do not support a replicated optimizer claim."
+    },
+    "CommonStateHeadline": {
+      "required_scope": "all 20 frozen common-state anchors after eight shared frozen-weight gradients and all 360 exact spectra",
+      "primary_outputs": [
+        "per-operator effective-rank and spectral-norm ratios to AdamW",
+        "per-operator row-norm CV and top-1-percent row-energy ratios to AdamW",
+        "pairwise optimizer direction cosine under per-tensor Frobenius matching"
+      ],
+      "selection_rule": "Report DenseOn and LateOn separately and report both Muon and NorMuon. Muon spectral conditioning and NorMuon row balancing are distinct hypotheses; neither may be substituted for the other."
+    },
+    "RepresentationHeadline": {
+      "required_scope": "both strict 120-checkpoint representation tiers and the 120-checkpoint/96-transition mechanism bridge",
+      "primary_outputs": [
+        "unseen positive margin",
+        "unseen query normalized effective rank",
+        "pretrained-reference top-1 agreement",
+        "LateOn document-token coverage",
+        "mean decontaminated BEIR nDCG@10"
+      ],
+      "selection_rule": "Checkpoint levels and prespecified within-run first-difference Spearman associations are descriptive. A geometry-to-retrieval claim additionally requires a matching controlled intervention or shared-start result."
+    },
+    "InterventionHeadline": {
+      "required_scope": "all 20 functional anchors, all eight hybrid AdamW controls, and all 18 three-order-seed shared-start branches",
+      "primary_outputs": [
+        "scale-0.001 matched-direction loss, margin, reciprocal-rank, and top-1 changes with sign reversal",
+        "hybrid-minus-native AdamW paired final task results for all four learning rates",
+        "final-stage Muon-AdamW, NorMuon-AdamW, and NorMuon-Muon short-branch contrasts"
+      ],
+      "selection_rule": "A virtual step supports only an immediate directional claim. Accumulation language requires the corresponding shared-start contrast, and orthogonalization language requires the hybrid-routing control."
+    },
+    "ConfirmationHeadline": {
+      "required_scope": "all six family-by-optimizer contrasts over three new seeds and 14 tasks",
+      "primary_outputs": [
+        "mean paired nDCG@10 difference",
+        "hierarchical seed/task 95-percent bootstrap interval",
+        "seed and task win/tie/loss counts"
+      ],
+      "selection_rule": "Call a contrast positive only when the interval lower bound is above zero, negative only when the upper bound is below zero, and otherwise inconclusive. Report all three optimizer contrasts for both model families; do not infer query-level significance."
+    }
+  },
+  "result_contingent_story_map": {
+    "retrieval_and_time_to_quality_gain": "Spectral update conditioning transfers to retrieval under the matched controls.",
+    "time_to_quality_gain_but_final_tie": "The optimizer changes adaptation efficiency without establishing a superior final representation.",
+    "loss_gain_but_retrieval_loss": "Optimizer mismatch or excessive functional drift separates training-objective progress from zero-shot retrieval.",
+    "normuon_late_specific_gain_with_token_coverage": "Row adaptation complements orthogonalization in a token-level scoring function.",
+    "geometry_change_without_function_change": "Much of the parameter-space difference is functionally redundant for retrieval."
+  },
+  "claim_boundary": "The protocol fixes what must be reported and how interval signs constrain language; it does not guarantee that any optimizer wins. Discovery learning-rate points, checkpoint correlations, and integrated weight trajectories remain exploratory or descriptive. Only common-state interventions identify immediate direction effects, shared-start branches test accumulation, and validation-frozen new-seed BEIR runs support replicated optimizer comparisons."
+}

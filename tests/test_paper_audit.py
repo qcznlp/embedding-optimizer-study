@@ -11,6 +11,7 @@ from embed_optim.paper_audit import (
     _macros,
     audit_paper,
     expected_constant_macros,
+    load_paper_claim_protocol,
 )
 
 
@@ -51,6 +52,29 @@ def test_current_paper_constants_match_strict_sources():
     assert discovery_evidence[1]["complete"] is True
     assert discovery_evidence[2]["complete"] is True
     assert discovery_evidence[3]["complete"] is False
+    assert result["claim_protocol"]["status"] == "prospective_completion_lock"
+    assert len(result["claim_protocol"]["source_bindings"]) == 10
+
+
+def test_paper_claim_protocol_freezes_result_contingent_language_before_completion():
+    path, protocol, sources = load_paper_claim_protocol()
+
+    assert path.name == "paper_claim_protocol.json"
+    assert protocol["freeze_context"]["strict_beir_valid_units"] == 168
+    assert protocol["freeze_context"]["complete_retrieval_matrix_visible"] is False
+    assert protocol["freeze_context"]["formal_common_state_output_visible"] is False
+    assert set(protocol["headline_contract"]) == {
+        "DiscoveryHeadline",
+        "CommonStateHeadline",
+        "RepresentationHeadline",
+        "InterventionHeadline",
+        "ConfirmationHeadline",
+    }
+    assert (
+        "otherwise inconclusive"
+        in protocol["headline_contract"]["ConfirmationHeadline"]["selection_rule"]
+    )
+    assert len(sources) == 10
 
 
 def test_strict_paper_audit_rejects_pending_headlines():

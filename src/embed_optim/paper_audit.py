@@ -19,6 +19,19 @@ HEADLINE_MACROS = (
     "InterventionHeadline",
     "ConfirmationHeadline",
 )
+PAPER_CLAIM_PROTOCOL_SHA256 = "796942192f77bc3d5d36dead69c8f7b3dd4eb0abc52403d3f93e665b73fcaafb"
+PAPER_CLAIM_SOURCE_PATHS = (
+    "configs/experiment.yaml",
+    "configs/common_state_probe.json",
+    "configs/common_state_spectrum_probe.json",
+    "configs/representation_probe.json",
+    "configs/beir_representation_probe.json",
+    "configs/functional_intervention.json",
+    "configs/hybrid_adamw_control.json",
+    "configs/short_branch_protocol.json",
+    "configs/confirmatory_protocol.json",
+    "docs/naacl-paper-plan.md",
+)
 STRICT_EVIDENCE = {
     "DiscoveryHeadline": (
         Path("reports/coverage.json"),
@@ -67,6 +80,77 @@ def _json(path: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"Expected JSON object: {path}")
     return payload
+
+
+def load_paper_claim_protocol(
+    path: str | Path = "configs/paper_claim_protocol.json",
+    *,
+    repo_root: str | Path = ".",
+) -> tuple[Path, dict[str, Any], list[dict[str, Any]]]:
+    root = Path(repo_root).resolve()
+    requested = Path(path)
+    protocol_path = requested.resolve() if requested.is_absolute() else (root / requested).resolve()
+    protocol = _json(protocol_path)
+    freeze = protocol.get("freeze_context", {})
+    headlines = protocol.get("headline_contract", {})
+    bindings = protocol.get("source_bindings")
+    if (
+        protocol.get("schema_version") != SCHEMA_VERSION
+        or protocol.get("status") != "prospective_completion_lock"
+        or _sha256(protocol_path) != PAPER_CLAIM_PROTOCOL_SHA256
+        or freeze.get("strict_beir_valid_units") != 168
+        or freeze.get("strict_beir_expected_units") != 1_680
+        or freeze.get("complete_retrieval_matrix_visible") is not False
+        or freeze.get("retrieval_dynamics_output_visible") is not False
+        or freeze.get("training_systems_output_visible") is not True
+        or freeze.get("weight_trajectory_output_visible") is not True
+        or any(
+            freeze.get(field) is not False
+            for field in (
+                "formal_common_state_output_visible",
+                "formal_representation_output_visible",
+                "formal_functional_intervention_output_visible",
+                "hybrid_adamw_output_visible",
+                "short_branch_output_visible",
+                "confirmatory_output_visible",
+            )
+        )
+        or set(headlines) != set(HEADLINE_MACROS)
+        or not isinstance(bindings, list)
+        or len(bindings) != len(PAPER_CLAIM_SOURCE_PATHS)
+        or [item.get("path") for item in bindings if isinstance(item, dict)]
+        != list(PAPER_CLAIM_SOURCE_PATHS)
+        or "does not guarantee that any optimizer wins"
+        not in str(protocol.get("claim_boundary", ""))
+    ):
+        raise ValueError("Paper claim protocol differs from its prospective completion lock")
+    confirmation = headlines["ConfirmationHeadline"]
+    representation = headlines["RepresentationHeadline"]
+    if (
+        "interval lower bound is above zero" not in str(confirmation.get("selection_rule", ""))
+        or "otherwise inconclusive" not in str(confirmation.get("selection_rule", ""))
+        or "descriptive" not in str(representation.get("selection_rule", ""))
+    ):
+        raise ValueError("Paper claim language no longer respects the frozen evidence boundary")
+
+    source_records = []
+    for relative, binding in zip(PAPER_CLAIM_SOURCE_PATHS, bindings, strict=True):
+        source = (root / relative).resolve()
+        if (
+            not source.is_file()
+            or not isinstance(binding, dict)
+            or binding.get("path") != relative
+            or binding.get("sha256") != _sha256(source)
+        ):
+            raise ValueError(f"Paper claim protocol source binding differs: {relative}")
+        source_records.append(
+            {
+                "path": str(source),
+                "bytes": source.stat().st_size,
+                "sha256": _sha256(source),
+            }
+        )
+    return protocol_path, protocol, source_records
 
 
 def _count_value(value: Any, target: Any) -> int:
@@ -490,6 +574,7 @@ def audit_paper(
     root = Path(repo_root).resolve()
     paper = (root / paper_dir).resolve()
     results_path = paper / "results.tex"
+    claim_path, claim_protocol, claim_sources = load_paper_claim_protocol(repo_root=root)
     macros = _macros(results_path)
     expected, sources = expected_constant_macros(
         root / matrix,
@@ -535,6 +620,14 @@ def audit_paper(
         "results_path": str(results_path),
         "constant_macros": expected,
         "constant_sources": sources,
+        "claim_protocol": {
+            "path": str(claim_path),
+            "bytes": claim_path.stat().st_size,
+            "sha256": _sha256(claim_path),
+            "status": claim_protocol["status"],
+            "frozen_at": claim_protocol["frozen_at"],
+            "source_bindings": claim_sources,
+        },
         "pending_headlines": pending,
         "incomplete_evidence": incomplete_evidence,
         "evidence": evidence,

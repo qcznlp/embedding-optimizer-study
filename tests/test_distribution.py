@@ -112,3 +112,22 @@ def test_distribution_bundles_training_receipt_and_retrieval_dynamics_protocol()
     assert len(training["independent_protocol_bindings"]) == 5
     assert retrieval["freeze_context"]["strict_beir_valid_units"] == 160
     assert retrieval["freeze_context"]["complete_retrieval_matrix_visible"] is False
+
+
+def test_distribution_bundles_frozen_paper_claim_protocol() -> None:
+    installed = _installed_data_paths()
+    source = "configs/paper_claim_protocol.json"
+    assert installed[source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/paper_claim_protocol.json"
+    )
+    protocol = json.loads((ROOT / source).read_text())
+    assert protocol["freeze_context"]["strict_beir_valid_units"] == 168
+    assert protocol["freeze_context"]["complete_retrieval_matrix_visible"] is False
+    assert len(protocol["source_bindings"]) == 10
+    assert set(protocol["headline_contract"]) == {
+        "DiscoveryHeadline",
+        "CommonStateHeadline",
+        "RepresentationHeadline",
+        "InterventionHeadline",
+        "ConfirmationHeadline",
+    }
