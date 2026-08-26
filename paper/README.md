@@ -1,0 +1,35 @@
+# NAACL manuscript
+
+This directory contains the result-safe manuscript for the optimizer study. It uses the official
+ACL style files pinned to commit `d5adc823ff0f80f98c80405ca0ab66c68e684409` of
+[`acl-org/acl-style-files`](https://github.com/acl-org/acl-style-files). The style files are fetched
+into an ignored local directory so this repository does not silently fork the conference template.
+
+Build the review-format PDF with:
+
+```bash
+cd paper
+make
+```
+
+`results.tex` is deliberately the only place where numerical result macros may enter prose. A
+macro containing `\ResultPending` marks an unresolved completion gate and renders visibly in red.
+The paper is not submission-ready while any such marker remains.
+
+## Evidence contract
+
+| Claim family | Authoritative evidence | Required gate |
+|---|---|---|
+| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, `reports/system_metrics.csv` | 24 runs and 120 checkpoints pass the deep audit |
+| Discovery retrieval behavior | `reports/coverage.json`, strict aggregate tables and plot sidecars | exactly 1,680 decontaminated-BEIR units |
+| Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 24 runs, 120 checkpoints, verified model inputs |
+| Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | 20 anchors, 1,760 gradients, 5,280 transforms, 360 spectra |
+| Representation and score geometry | strict manifests under `reports/representation-space/` | two pretrained references plus 120 checkpoints per probe tier |
+| Immediate causal intervention | `reports/functional-intervention/manifest.json` | 20 anchors and 58,240 paired sample records |
+| Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 18 runs, 90 checkpoints on both frozen probes |
+| Routing fairness | `reports/hybrid-adamw/summary_manifest.json` | eight hybrid runs and 112 final BEIR units |
+| Confirmatory retrieval claims | `reports/confirmatory/summary_manifest.json` | three new seeds, 18 runs, 252 final BEIR units |
+
+Checkpoint correlations are always described as observational. Causal language is reserved for
+same-state interventions and shared-start branches. The exploratory seed is never pooled with the
+three confirmation seeds as though all four were prospectively sampled.

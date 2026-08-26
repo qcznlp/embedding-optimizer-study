@@ -9,7 +9,9 @@ every job on 14 pinned decontaminated BEIR datasets, and produces publication-re
 The live experiment dashboard is [Weights & Biases: embedding-optimizer-study](https://wandb.ai/stevezenguom/embedding-optimizer-study).
 The full research write-up is in [docs/blog.md](docs/blog.md). A follow-on NAACL study connecting
 optimizer updates, weight trajectories, representation geometry, and retrieval behavior is specified
-in [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md).
+in [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md). The result-safe, ACL-formatted manuscript
+source is under [paper/](paper/README.md); unresolved evidence gates render as visible placeholders
+rather than silently becoming prose claims.
 
 ## Experimental contract
 

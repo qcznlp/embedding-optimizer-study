@@ -1,0 +1,297 @@
+\documentclass[11pt]{article}
+
+\usepackage[review]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{url}
+
+\input{results}
+
+\title{From Update Geometry to Retrieval Geometry:\\
+Understanding Muon for Dense and Late-Interaction Text Embeddings}
+
+\author{Anonymous ACL submission}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Neural retrievers are usually adapted with AdamW, whereas matrix-aware optimizers such as Muon
+promise faster and more robust optimization by changing the geometry of matrix updates. Whether
+that inductive bias transfers to Adam-pretrained embedding models---and whether it affects dense and
+late-interaction retrievers through the same mechanism---remains unclear. We conduct a controlled
+\NumDiscoveryRuns-run study over two retriever architectures, three optimizers, four learning rates,
+five training stages, and \NumBEIRTasks{} decontaminated zero-shot retrieval tasks. We then evaluate
+every optimizer at common weight states and on common gradient histories, relate update spectra and
+row balance to representation rank, margins, ranking drift, and MaxSim token utilization, and test
+the resulting links with scale-matched interventions, shared-start branches, and a parameter-routing
+control. \DiscoveryHeadline. \ConfirmationHeadline.
+\end{abstract}
+
+\section{Introduction}
+
+AdamW is the default optimizer for training and adapting text embedding models. Its coordinate-wise
+second-moment normalization is effective and familiar, but it ignores the matrix structure of
+Transformer projections. Muon instead orthogonalizes momentum updates for hidden matrices, and
+NorMuon augments that transform with neuron-wise adaptation
+\citep{loshchilov2019decoupled,liu2025muon,li2025normuon}. Large-scale language-model pretraining
+suggests that these matrix-aware rules can improve compute efficiency. It does not follow that they
+will improve retrieval fine-tuning: the starting model was pretrained with an Adam-family optimizer,
+the contrastive objective depends on rankings rather than next-token likelihood, and dense and
+late-interaction models expose different functional bottlenecks.
+
+This paper therefore asks a mechanism question rather than staging another optimizer leaderboard:
+\emph{how does matrix-aware optimization change the path from an Adam-pretrained encoder to a
+retrieval function, and when are those changes useful?} We separate four spaces that are often
+conflated: the update prescribed at the same parameters, the accumulated weight trajectory, the
+resulting representation and score geometry, and the final retrieval ranking. This separation is
+essential because large parameter-space distances can be functionally redundant, while small
+directional changes can alter nearest-neighbor rankings.
+
+Our study uses the unsupervised DenseOn and LateOn checkpoints
+\citep{sourty2026denseon}, a shared deterministic \NumTrainingQueries-query training view with
+\NumHardNegatives{} explicit negatives per query, and no in-batch negatives. The discovery stage
+retains \NumDiscoveryCheckpoints{} checkpoints and evaluates all \NumDiscoveryUnits{}
+checkpoint--task combinations. A second stage holds weights, batches, gradients, optimizer-state
+history, and update budgets fixed to identify optimizer-specific update fingerprints. Finally,
+functional interventions and short shared-start branches test whether these local fingerprints
+survive into retrieval behavior.
+
+Our contributions are fourfold:
+\begin{itemize}
+    \item We provide a controlled dense/late-interaction benchmark of AdamW, Muon, and NorMuon,
+    reporting learning dynamics, time-to-quality, memory, learning-rate tolerance, and complete
+    decontaminated retrieval results.
+    \item We distinguish Muon's singular-direction conditioning hypothesis from NorMuon's
+    neuron-wise row-balancing hypothesis using common-state updates rather than distant checkpoint
+    differences alone.
+    \item We connect update geometry to retrieval-specific function geometry: dense-vector rank,
+    hubness, and margins, plus token-level MaxSim evidence concentration for late interaction.
+    \item We isolate update rule, parameter routing, update magnitude, and optimizer-pretraining
+    mismatch through hybrid AdamW, scale-matched virtual steps, shared-checkpoint branches, and
+    prospectively frozen multi-seed confirmation.
+\end{itemize}
+
+\section{Background and Predictions}
+
+\subsection{Three update geometries}
+
+For a matrix parameter $W$ with gradient $G_t$, AdamW applies an element-wise preconditioner,
+\begin{equation}
+\Delta W_t^{\mathrm{AdamW}} =
+-\eta\frac{\widehat{M}_t}{\sqrt{\widehat{V}_t}+\epsilon}-\eta\lambda W_t,
+\end{equation}
+whereas Muon applies a Newton--Schulz approximation to the polar factor of a momentum matrix,
+approximately replacing its nonzero singular values by a common scale. NorMuon subsequently applies
+row-wise second-moment normalization. Consequently, we predict that Muon increases the effective
+rank and improves the conditioning of individual matrix updates relative to AdamW, while NorMuon
+specifically reduces dispersion and concentration of row energy relative to Muon. A flatter update
+spectrum is not assumed to be beneficial: it may amplify noise-dominated directions or disrupt
+useful Adam-pretrained features \citep{qu2026finetune}.
+
+\subsection{From update geometry to retrieval geometry}
+
+The hypothesized chain is
+\begin{equation}
+\begin{aligned}
+\text{operator} &\rightarrow \text{update/trajectory} \\
+                &\rightarrow \text{representation/score} \\
+                &\rightarrow \text{ranking}.
+\end{aligned}
+\end{equation}
+Dense retrieval compresses a sequence into one vector, so we measure embedding covariance rank,
+isotropy, hubness, and query--positive margins. LateOn uses a ColBERT-style MaxSim interaction
+\citep{khattab2020colbert}; we additionally measure how evenly query tokens contribute evidence and
+how broadly document tokens are selected. A geometry metric is explanatory only when it predicts a
+margin or ranking change, and checkpoint-level correlations remain observational.
+
+\section{Related Work}
+
+\paragraph{Neural retrieval.}
+Dense dual encoders score a query and document through compact single-vector representations,
+whereas ColBERT-style retrievers preserve token vectors and aggregate token-wise maxima
+\citep{khattab2020colbert}. BEIR established heterogeneous zero-shot evaluation as a central stress
+test for retrievers \citep{thakur2021beir}; DenseOn and LateOn provide unusually controlled dense
+and late-interaction starting points trained from an open recipe \citep{sourty2026denseon}.
+Representation geometry has already been connected to zero-shot retrieval---for example, HIL
+explicitly balances isotropic and anisotropic components \citep{kim2024hil}. We treat isotropy and
+effective rank as explanatory variables rather than contributions by themselves, and require them
+to connect optimizer interventions to scores or rankings.
+
+\paragraph{Matrix-aware optimization.}
+AdamW combines coordinate-wise moment adaptation with decoupled weight decay
+\citep{loshchilov2019decoupled}. Muon instead exploits the matrix organization of hidden weights and
+has shown favorable scaling in language-model pretraining \citep{liu2025muon}. NorMuon identifies
+non-uniform row norms after orthogonalization and adds neuron-wise second-moment adaptation
+\citep{li2025normuon}. Concurrent analysis of Adam-pretrained model adaptation reports that a naive
+optimizer switch can disrupt pretrained knowledge as update strength grows
+\citep{qu2026finetune}. These works motivate our hypotheses, but none traces the complete path from
+same-state matrix updates through dense and token-level retrieval rankings.
+
+\section{Controlled Retrieval Study}
+
+\subsection{Models, data, and objective}
+
+DenseOn is a single-vector encoder and LateOn is a token-level late-interaction encoder. Both base
+checkpoints have undergone unsupervised retrieval pretraining but not the supervised fine-tuning
+studied here \citep{sourty2026denseon}. We select one deterministic view of
+\NumTrainingQueries{} queries from the released training corpus. Every group contains one positive
+and \NumHardNegatives{} distinct sampled negatives; all runs share the exact group identities and
+order. We optimize an eight-way contrastive objective without in-batch negatives, use a maximum
+context length of \ContextLength{}, a global batch size of 128, one epoch, bfloat16 forward passes,
+FlashAttention, and gradient checkpointing.
+
+\subsection{Discovery matrix}
+
+For each architecture, we train AdamW, Muon, and NorMuon at four learning rates. AdamW uses
+$\{10^{-6},3\!\times\!10^{-6},10^{-5},3\!\times\!10^{-5}\}$; Muon and NorMuon use
+$\{10^{-4},3\!\times\!10^{-4},10^{-3},3\!\times\!10^{-3}\}$. Muon-family optimizers route hidden
+two-dimensional Transformer matrices through the matrix rule and all auxiliary parameters through
+AdamW at $3\!\times\!10^{-6}$. We retain checkpoints at 20, 40, 60, 80, and 100\% of training.
+
+All checkpoints are evaluated on the same \NumBEIRTasks-task decontaminated BEIR suite
+\citep{thakur2021beir}. We report nDCG@10 against steps, examples, useful wall time, and GPU-hours;
+peak memory and optimizer-state size are reported separately. Full learning-rate trajectories are
+shown, not only each optimizer's best point.
+
+\subsection{Selection and confirmation}
+
+The discovery grid is exploratory. We select one recipe per architecture and optimizer using a
+frozen 4,096-query validation set that is disjoint from the 500K training ledger and does not use
+BEIR scores. The selection rule minimizes eight-way validation loss, then maximizes positive margin,
+with the smaller learning rate as the final tie-breaker. Three new seeds preserve query and positive
+identities while independently resampling negatives from the reconstructed candidate pools. Only
+these new-seed runs support the confirmatory optimizer comparison.
+
+\section{What Happens During Retrieval Training?}
+
+\DiscoveryHeadline.
+
+The final analysis will report (i) complete five-stage quality trajectories, (ii) time-to-quality at
+prespecified thresholds, (iii) the number and location of unstable configurations, (iv) peak memory
+and optimizer-state size, and (v) all per-task results. Lower training loss is never substituted for
+better retrieval quality.
+
+\section{What Do the Optimizers Change?}
+
+\subsection{Integrated weight trajectories}
+
+We stream all 120 checkpoints and analyze the 88 hidden matrices routed through Muon-family rules
+separately from embeddings, norms, biases, and heads. For every tensor we measure displacement from
+the pretrained state, row and column energy balance, trajectory length, and randomized spectral
+summaries. Full spectra are reserved for a frozen layer subset.
+
+Across \NumWeightPairs{} matched Muon/NorMuon checkpoint pairs, the NorMuon-to-Muon reference
+displacement ratio lies in \DisplacementRatioRange. Despite this nearly identical aggregate scale,
+the corresponding row-norm coefficient-of-variation ratio is \RowCVRatioRange, and the top-1\%-row
+energy ratio is \TopRowEnergyRatioRange. The direction repeats at all five stages, four nominal
+learning rates, and both architectures. This is evidence that NorMuon redistributes trajectory
+energy across output rows without primarily changing total displacement; it is not yet evidence
+that the redistribution causes a retrieval improvement.
+
+\subsection{Common-state update fingerprints}
+
+At the pretrained state and selected 20, 60, and 100\% checkpoints, we freeze weights and replay the
+same ordered sequence of eight gradients into every optimizer. We compare both cold-start and
+state-warmed transforms, keep weight decay separate, and evaluate native, globally Frobenius-matched,
+and per-layer-matched directions. The primary measurements are effective rank, condition number,
+row-energy concentration, layer allocation, and pairwise update angle. \CommonStateHeadline.
+
+\section{How Does Geometry Reach the Retrieval Function?}
+
+On fixed in-distribution and unseen probes, we measure query--positive alignment, the full margin
+distribution, embedding effective rank and isotropy, hubness, and top-$k$ agreement with the
+pretrained model. LateOn additionally exposes MaxSim evidence entropy, document-token coverage, and
+repeated-token dominance. We join these measurements to weight trajectories and retrieval scores at
+all 120 checkpoints, and separately analyze within-run first differences. \RepresentationHeadline.
+
+\section{Causal Controls}
+
+\paragraph{Routing-matched AdamW.}
+The main AdamW sweep applies one learning rate to every trainable parameter, whereas Muon-family
+runs use an auxiliary AdamW route. An eight-run hybrid AdamW control adopts the identical partition
+and auxiliary rate, isolating the matrix transform from parameter routing.
+
+\paragraph{Scale-matched virtual steps.}
+At each common-state anchor, we intervene along AdamW, Muon, and NorMuon directions while holding
+weights, examples, gradients, and update norm fixed. Baseline, three positive scales, and a
+sign-reversed condition are evaluated on the same 224 unseen queries. These one-step results identify
+immediate directional effects but not long-horizon training behavior.
+
+\paragraph{Shared-start branches.}
+Both architectures branch from the same 60\% AdamW checkpoint. AdamW, Muon, and NorMuon receive
+hidden learning rates calibrated to a common global $\lVert\Delta W\rVert_F/\lVert W\rVert_F$
+target and train over the same 50K groups under three order seeds. All five checkpoints are scored
+on the query-disjoint and unseen functional probes. \InterventionHeadline.
+
+\section{Discussion}
+
+The interpretation is selected by evidence rather than by optimizer preference. A Muon
+time-to-quality gain with tied final retrieval would establish an optimization benefit but not a
+better representation. Lower loss with worse BEIR performance would support optimizer mismatch and
+functional drift. A NorMuon advantage concentrated in LateOn, accompanied by improved token-evidence
+coverage, would support a retrieval-specific role for row adaptation. If update and weight geometry
+change without consistent margin or ranking changes, the appropriate conclusion is that much of the
+parameter-space difference is functionally redundant.
+
+The practical recommendation will therefore condition on model family, update strength, and the
+desired compute/quality operating point rather than naming a universal winner. \ConfirmationHeadline.
+
+\section{Limitations}
+
+The study uses two related 149M-parameter base models and one English supervised corpus, so it does
+not establish behavior at substantially different scales, languages, or objectives. Both starting
+models were pretrained with an Adam-family optimizer, making the conclusions directly relevant to
+optimizer switching but not to Muon-from-scratch pretraining. Four learning rates provide a broad
+but finite search, and three confirmation seeds may leave small effects uncertain. Intrinsic
+geometry metrics are not causal by themselves; causal language is restricted to fixed-state
+interventions and shared-start branches. Finally, decontamination reduces known overlap but cannot
+prove the absence of every semantic duplicate.
+
+\section{Ethics and Reproducibility}
+
+The experiments adapt openly released retrieval models and datasets. We report all frozen task,
+checkpoint, and learning-rate cells, including failures, and preserve model revisions, dataset
+fingerprints, negative-sampling seeds, package versions, checkpoint hashes, and W\&B histories. The
+confirmatory seed and recipe-selection protocol is kept separate from the exploratory BEIR matrix.
+The released code supports strict artifact audits before producing paper tables or figures.
+
+\bibliography{references}
+
+\appendix
+\section{Claim--Evidence Firewall}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{p{0.20\linewidth}p{0.39\linewidth}p{0.32\linewidth}}
+\toprule
+Claim & Required evidence & Insufficient evidence alone \\
+\midrule
+Faster training & useful wall time, examples/s, GPU-hours, and matched-hardware time-to-quality & lower loss at equal steps \\
+Better retrieval recipe & validation-frozen recipe, new seeds, paired task/query uncertainty & best discovery learning rate on BEIR \\
+NorMuon balances rows & common-state updates with global and per-layer scale controls & distant checkpoint row CV \\
+Geometry explains retrieval & geometry precedes and predicts functional change under intervention & cross-run intrinsic correlation \\
+More robust optimization & frozen stability criteria across rates, seeds, and batches & one successful high-rate run \\
+\bottomrule
+\end{tabular}
+\caption{Minimum evidence required for each headline claim.}
+\label{tab:claim-firewall}
+\end{table*}
+
+\section{Full Experimental Matrix}
+
+The discovery matrix contains two model families, three optimizer rules, four learning rates per
+rule, five checkpoints, and 14 tasks. Dataset rows preserve one query, one positive, seven explicit
+negatives, source identity, and deterministic order. Formal manifests bind all model and dataset
+revisions. Detailed configuration tables and complete per-task results will be generated from the
+strict aggregate rather than copied manually.
+
+\end{document}
