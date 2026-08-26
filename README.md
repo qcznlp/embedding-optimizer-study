@@ -685,12 +685,13 @@ embed-optim-prepare-confirmatory-data --audit-only
 embed-optim-prepare-confirmatory-data --audit-only --verify-source
 ```
 
-The first stage reconstructs each query's first ten eligible score-ranked documents and proves that
-the original seed-42 indices reproduce the frozen source ledger. The view audit requires exact
+The materialization command always reconstructs the cached pool from the pinned score source before
+writing its formal receipt and proves that the original seed-42 indices reproduce the frozen source
+ledger. The view audit requires exact
 query/positive text identity, seven distinct non-positive negatives, unchanged quotas, content
 hashes and Dataset fingerprints, and at least 98% changed negative groups for every seed pair.
-`--verify-source` repeats the expensive raw score-table reconstruction rather than trusting the
-content-addressed pool cache.
+Audit-only mode is read-only and normally trusts the content-addressed pool cache; adding
+`--verify-source` makes that audit repeat the expensive raw score-table reconstruction.
 
 After `embed-optim-summarize-validation` produces the six non-BEIR-selected recipes, generate three
 family-specific matrices (six runs per seed, 18 runs total):

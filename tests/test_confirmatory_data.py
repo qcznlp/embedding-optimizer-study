@@ -159,9 +159,15 @@ def test_confirmatory_selection_is_deterministic_distinct_and_seeded():
 
 def test_audit_only_does_not_rewrite_the_materialization_receipt(monkeypatch, tmp_path: Path):
     writes = []
+    audits = []
+
+    def audit(*_args, **kwargs):
+        audits.append(kwargs)
+        return {"schema_version": 1, "status": "complete"}
+
     monkeypatch.setattr(
         "embed_optim.confirmatory_data.audit_confirmatory_data",
-        lambda *_args, **_kwargs: {"schema_version": 1, "status": "complete"},
+        audit,
     )
     monkeypatch.setattr(
         "embed_optim.confirmatory_data._atomic_json",
@@ -171,3 +177,55 @@ def test_audit_only_does_not_rewrite_the_materialization_receipt(monkeypatch, tm
     main(["--audit-only", "--receipt", str(tmp_path / "receipt.json")])
 
     assert writes == []
+    assert audits == [{"verify_source": False}]
+
+
+def test_materialization_rescans_the_pinned_score_source(monkeypatch, tmp_path: Path):
+    writes = []
+    audits = []
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data.prepare_negative_pool", lambda *_a, **_k: None
+    )
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data.prepare_confirmatory_views", lambda *_a, **_k: None
+    )
+
+    def audit(*_args, **kwargs):
+        audits.append(kwargs)
+        return {"schema_version": 1, "status": "complete"}
+
+    monkeypatch.setattr("embed_optim.confirmatory_data.audit_confirmatory_data", audit)
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data._atomic_json",
+        lambda *args, **kwargs: writes.append((args, kwargs)),
+    )
+
+    main(["--receipt", str(tmp_path / "receipt.json")])
+
+    assert audits == [{"verify_source": True}]
+    assert len(writes) == 1
+
+
+def test_audit_only_rescans_source_only_when_explicitly_requested(monkeypatch, tmp_path: Path):
+    audits = []
+
+    def audit(*_args, **kwargs):
+        audits.append(kwargs)
+        return {"schema_version": 1, "status": "complete"}
+
+    monkeypatch.setattr("embed_optim.confirmatory_data.audit_confirmatory_data", audit)
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data._atomic_json",
+        lambda *_args, **_kwargs: pytest.fail("audit-only must not write"),
+    )
+
+    main(
+        [
+            "--audit-only",
+            "--verify-source",
+            "--receipt",
+            str(tmp_path / "receipt.json"),
+        ]
+    )
+
+    assert audits == [{"verify_source": True}]

@@ -829,7 +829,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--protocol", type=Path, default=Path("configs/confirmatory_protocol.json"))
     parser.add_argument("--audit-only", action="store_true")
-    parser.add_argument("--verify-source", action="store_true")
+    parser.add_argument(
+        "--verify-source",
+        action="store_true",
+        help=(
+            "Reconstruct pools from pinned source scores in audit-only mode; "
+            "formal materialization always does this"
+        ),
+    )
     parser.add_argument("--score-batch-size", type=int, default=2_048)
     parser.add_argument(
         "--receipt", type=Path, default=Path("reports/confirmatory-data/receipt.json")
@@ -842,7 +849,10 @@ def main(argv: list[str] | None = None) -> None:
     if not args.audit_only:
         prepare_negative_pool(args.protocol, score_batch_size=args.score_batch_size)
         prepare_confirmatory_views(args.protocol)
-    receipt = audit_confirmatory_data(args.protocol, verify_source=args.verify_source)
+    receipt = audit_confirmatory_data(
+        args.protocol,
+        verify_source=args.verify_source or not args.audit_only,
+    )
     if not args.audit_only:
         _atomic_json(args.receipt, receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
