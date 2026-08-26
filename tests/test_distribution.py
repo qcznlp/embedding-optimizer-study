@@ -1,0 +1,46 @@
+from __future__ import annotations
+
+import posixpath
+import re
+from pathlib import Path, PurePosixPath
+
+ROOT = Path(__file__).parents[1]
+
+
+def _installed_data_paths() -> dict[str, PurePosixPath]:
+    pyproject = (ROOT / "pyproject.toml").read_text()
+    section = pyproject.split("[tool.setuptools.data-files]", 1)[1].split("\n[", 1)[0]
+    groups = re.findall(r'^"([^"]+)" = \[(.*?)^\]$', section, flags=re.MULTILINE | re.DOTALL)
+    return {
+        source: PurePosixPath(destination) / Path(source).name
+        for destination, sources in groups
+        for source in re.findall(r'^\s+"([^"]+)",?$', sources, flags=re.MULTILINE)
+    }
+
+
+def _resolve_relative(source: PurePosixPath, target: str) -> PurePosixPath:
+    return PurePosixPath(posixpath.normpath(str(source.parent / target)))
+
+
+def test_distribution_preserves_weight_space_document_links() -> None:
+    installed = _installed_data_paths()
+    expected_links = {
+        "docs/blog.md": (
+            "../reports/weight-space/optimizer_pair_contrast_trajectory.svg",
+            "../reports/weight-space/optimizer_geometry_phase.svg",
+            "../reports/weight-space/README.md",
+            "naacl-paper-plan.md",
+        ),
+        "docs/naacl-paper-plan.md": (
+            "../reports/weight-space/optimizer_pair_contrasts.csv",
+            "../reports/weight-space/optimizer_pair_contrast_trajectory.csv",
+            "../reports/weight-space/optimizer_pair_contrast_trajectory.svg",
+            "../reports/weight-space/optimizer_geometry_phase.svg",
+        ),
+    }
+
+    installed_targets = set(installed.values())
+    for source, links in expected_links.items():
+        installed_source = installed[source]
+        for link in links:
+            assert _resolve_relative(installed_source, link) in installed_targets
