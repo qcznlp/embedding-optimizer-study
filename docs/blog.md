@@ -927,8 +927,10 @@ also checks expected matrix coverage before the results section is generated.
 
 Checkpoint resumes can make an SDK run contain repeated optimizer steps even when the local Trainer
 state is correct. For the final dashboard, `embed-optim-sync-wandb` therefore publishes one immutable,
-content-addressed canonical history from every completed Trainer state. Raw resume segments are kept
-for system telemetry; no source run is deleted.
+content-addressed canonical history from every completed Trainer state. The content-verified 24-run
+discovery matrix carries the `canonical-current` tag; earlier content-addressed revisions remain
+available for provenance. Raw resume segments are kept for system telemetry, and no source run is
+deleted.
 
 During training, the CPU-only `embed-optim-watch-checkpoints` sidecar waits for each atomic checkpoint
 payload, performs the same deep model/optimizer/scheduler/argument/RNG audit, rejects unchanged model
