@@ -210,15 +210,17 @@ def _complete_manifest(path: Path) -> bool:
         payload = _json(path)
     except (OSError, json.JSONDecodeError, TypeError, ValueError):
         return False
-    if payload.get("schema_version") != SCHEMA_VERSION or payload.get("complete") is not True:
-        return False
     if path.name == "coverage.json":
         return (
-            payload.get("observed_results") == 1680
+            payload.get("complete") is True
+            and payload.get("observed_results") == 1680
             and payload.get("expected_results") == 1680
             and payload.get("observed_checkpoint_summaries") == 120
+            and payload.get("expected_checkpoint_summaries") == 120
+            and payload.get("missing") == []
+            and payload.get("unexpected") == []
         )
-    return True
+    return payload.get("schema_version") == SCHEMA_VERSION and payload.get("complete") is True
 
 
 def audit_paper(

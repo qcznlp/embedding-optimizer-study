@@ -294,6 +294,7 @@ def summarize_functional_interventions(
     }
     manifest = {
         "schema_version": SCHEMA_VERSION,
+        "complete": True,
         "status": "complete",
         "intervention_spec": {
             "path": str(spec_path),
