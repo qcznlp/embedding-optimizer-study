@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from embed_optim.post_eval_pipeline import (
+    TransientProgressAuditError,
     _strict_progress,
     parse_args,
     pipeline_steps,
@@ -14,9 +15,14 @@ from embed_optim.post_eval_pipeline import (
 )
 
 
-def _progress(path: Path, *, complete: bool = True, unexpected: int = 0) -> None:
+def _progress(
+    path: Path, *, complete: bool = True, unexpected: int = 0, error: str | None = None
+) -> None:
     valid = 1680 if complete else 120
     path.parent.mkdir(parents=True, exist_ok=True)
+    if error is not None:
+        path.write_text(json.dumps({"schema_version": 1, "complete": False, "error": error}) + "\n")
+        return
     path.write_text(
         json.dumps(
             {
@@ -114,4 +120,37 @@ def test_strict_progress_rejects_unexpected_results(tmp_path: Path):
     progress = tmp_path / "progress.json"
     _progress(progress, unexpected=1)
     with pytest.raises(ValueError, match="Invalid strict evaluation progress"):
+        _strict_progress(progress)
+
+
+def test_pipeline_waits_through_transient_audit_error_while_evaluator_is_live(
+    tmp_path: Path, capsys
+):
+    args = _args(tmp_path, "--wait-pids", "12345")
+    progress = Path(args.progress)
+    _progress(progress, error="source temporarily unavailable")
+    pid_checks = 0
+
+    def pid_exists(pid):
+        nonlocal pid_checks
+        assert pid == 12345
+        pid_checks += 1
+        return pid_checks == 1
+
+    def recover(seconds):
+        assert seconds >= 0
+        _progress(progress)
+
+    def run(command, **kwargs):
+        kwargs["stdout"].write("fixture command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=run, sleeper=recover, pid_exists=pid_exists) == 0
+    assert "temporarily unavailable" in capsys.readouterr().out
+
+
+def test_strict_progress_exposes_transient_watcher_error(tmp_path: Path):
+    progress = tmp_path / "progress.json"
+    _progress(progress, error="audit failed")
+    with pytest.raises(TransientProgressAuditError, match="audit failed"):
         _strict_progress(progress)

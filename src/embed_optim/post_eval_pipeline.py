@@ -21,6 +21,10 @@ class PipelineStep:
     command: tuple[str, ...]
 
 
+class TransientProgressAuditError(ValueError):
+    """The watcher could not audit its current snapshot while evaluators may still recover."""
+
+
 def _timestamp() -> str:
     return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
@@ -267,6 +271,8 @@ def _strict_progress(path: Path) -> tuple[bool, int, int]:
         return False, 0, 1680
     expected = payload.get("expected_units")
     valid = payload.get("valid_units")
+    if payload.get("schema_version") == SCHEMA_VERSION and payload.get("error") is not None:
+        raise TransientProgressAuditError(str(payload["error"]))
     if (
         payload.get("schema_version") != SCHEMA_VERSION
         or expected != 1680
@@ -301,8 +307,25 @@ def supervise_post_eval(
 
     progress_path = Path(args.progress).resolve()
     previous_valid: int | None = None
+    previous_progress_error: str | None = None
     while True:
-        complete, valid, expected = _strict_progress(progress_path)
+        try:
+            complete, valid, expected = _strict_progress(progress_path)
+        except TransientProgressAuditError as error:
+            live = [pid for pid in args.wait_pids if pid_exists(pid)]
+            if not live:
+                raise
+            message = str(error)
+            if message != previous_progress_error:
+                print(
+                    "Strict coverage audit is temporarily unavailable while evaluator PIDs "
+                    f"remain live {live}: {message}",
+                    flush=True,
+                )
+                previous_progress_error = message
+            sleeper(args.poll_seconds)
+            continue
+        previous_progress_error = None
         if valid != previous_valid:
             print(f"Waiting for strict BEIR coverage: {valid}/{expected}", flush=True)
             previous_valid = valid
