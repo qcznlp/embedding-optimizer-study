@@ -132,6 +132,52 @@ time.
 moderate learning rates or constrained updates retain pretrained knowledge while preserving Muon's
 conditioning benefit.
 
+## Identification strategy: four spaces, three evidence levels
+
+Use **optimization geometry**, rather than raw *weight-space distance*, as the mechanism umbrella.
+Transformer parameterizations admit rotations, permutations, and rescalings that can move weights
+without changing the retrieval function. The paper should therefore keep four spaces distinct:
+
+| Space | Primary object | Main measurements | What it can establish |
+|---|---|---|---|
+| Operator/update | The update prescribed at the same weights from the same gradient history | singular spectrum, effective rank, row-energy concentration, update angles, update/weight scale | the optimizer rules have distinct geometric fingerprints |
+| Trajectory/weight | The accumulated path from the shared pretrained initialization | normalized displacement, path length/efficiency, weight spectra, layer allocation | the fingerprints persist or disappear under training, descriptively |
+| Representation/score | Query, document, and LateOn token representations and their scores | covariance rank, isotropy, hubness, margin, ranking overlap, MaxSim evidence entropy | a geometric difference reaches the retrieval function |
+| Retrieval outcome | Rankings on held-out validation and decontaminated BEIR | nDCG@10, time-to-quality, task and seed uncertainty | the changed function is useful, neutral, or harmful |
+
+The causal evidence should then escalate in three levels:
+
+1. **Descriptive:** complete learning-rate trajectories and checkpoint geometry show what co-varies.
+   These results motivate hypotheses but cannot identify the optimizer operator.
+2. **Locally causal:** common-state replay and sign/scale-matched virtual steps change only the
+   prescribed direction while holding weights, examples, gradients, and scale fixed. These identify
+   immediate directional effects on loss, margin, and rankings.
+3. **Accumulated causal:** short shared-checkpoint branches, hybrid-AdamW routing, and component
+   ablations test whether the local effect survives repeated updates. New-seed confirmatory runs
+   establish whether the resulting retrieval prescription generalizes.
+
+Do not describe the observational update-representation correlations as a formal causal mediation
+analysis. The defensible wording is a *mechanistic chain supported by interventions*: operator
+interventions establish the first link, function-space measurements establish the second, and short
+branches test accumulation over optimization time.
+
+### Primary contrasts
+
+Keep a small, prospectively fixed set of contrasts so the paper does not become an inventory of
+geometry metrics:
+
+1. **AdamW versus hybrid AdamW:** effect of parameter routing and auxiliary learning rate.
+2. **Hybrid AdamW versus Muon:** effect of matrix orthogonalization under matched routing and update
+   budgets.
+3. **Muon versus NorMuon:** effect of neuron-wise adaptation after orthogonalization.
+4. **DenseOn versus LateOn interaction:** whether a single-vector and token-level scoring function
+   transmit the same update signature differently.
+5. **Native versus scale-matched update:** whether a result comes from direction or merely update
+   magnitude.
+
+All other layer, checkpoint, and task breakdowns explain these contrasts; they are not additional
+independent headline hypotheses.
+
 ## Evidence already supplied by the current study
 
 The current experiment is the broad empirical backbone:

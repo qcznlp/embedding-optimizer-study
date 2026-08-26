@@ -88,10 +88,16 @@ def test_frozen_validation_protocol_is_disjoint_and_beir_independent():
     assert spec["freeze_context"]["strict_beir_valid_units"] == 144
     assert spec["freeze_context"]["validation_examples_or_model_outputs_visible"] is False
     assert spec["recipe_selection"]["checkpoint"] == "final checkpoint only"
-    assert (
-        _sha256(Path(spec["source"]["training_data"]) / "manifest.json")
-        == spec["source"]["manifest_sha256"]
-    )
+    assert len(spec["source"]["manifest_sha256"]) == 64
+    assert len(spec["source"]["row_ledger_sha256"]) == 64
+
+    # The 500K materialization is intentionally gitignored.  Keep this unit test
+    # hermetic on clean clones while still checking the pinned artifact whenever
+    # it is present; the validation CLI performs the mandatory full artifact
+    # audit before preparation or evaluation.
+    local_manifest = Path(spec["source"]["training_data"]) / "manifest.json"
+    if local_manifest.is_file():
+        assert _sha256(local_manifest) == spec["source"]["manifest_sha256"]
 
 
 def test_validation_expectations_are_exact():
