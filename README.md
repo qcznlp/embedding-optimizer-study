@@ -319,6 +319,32 @@ without relying on a human to reconstruct every retry. Historical work retained 
 ledger existed must provide timezone-aware start/end evidence for each segment; strict audit checks
 non-overlap, timestamp-derived duration, checkpoint boundaries, and the exact recorded sum.
 
+### 5. Analyze weight-space trajectories
+
+The NAACL follow-on can stream the 88 transformer hidden matrices from every checkpoint without
+instantiating a model or loading the complete state into memory:
+
+```bash
+embed-optim-geometry \
+  --run-dir outputs/dense/muon-lr1e-4 \
+  --reference /path/to/pinned/DenseOn-unsupervised \
+  --output-dir results/weight-space/dense/muon-lr1e-4
+```
+
+The command reuses the exact parameter-routing predicate used during training and refuses a
+checkpoint whose hidden/auxiliary tensor counts differ from `completed.json`. It records exact
+Frobenius, row-balance, column-balance, Gini, and energy-concentration statistics plus a deterministic
+rank-64 randomized singular-spectrum sketch. Full SVD is used automatically when `--sketch-rank`
+reaches a tensor's smaller dimension; set it to zero for an inexpensive exact-statistics-only pass.
+Each checkpoint is committed as an atomic JSONL file, hashes and settings are captured in
+`manifest.json`, and an identical rerun resumes by skipping finished checkpoints.
+
+With `--reference`, records include displacement from the pinned pretrained model; checkpoints after
+the first also include displacement from the preceding saved checkpoint. These are trajectory
+displacements, not optimizer steps. Claims about actual AdamW/Muon update directions still require
+the common-state gradient and virtual-update experiments specified in
+[docs/naacl-paper-plan.md](docs/naacl-paper-plan.md).
+
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.

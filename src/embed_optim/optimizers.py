@@ -14,19 +14,32 @@ from .config import MUON_NS_IMPLEMENTATION, OptimizerConfig
 _NO_DECAY = re.compile(r"(?:^|\.)(?:bias|.*norm(?:\d+)?\.weight)$", re.IGNORECASE)
 
 
-def _is_hidden_matrix(name: str, parameter: nn.Parameter) -> bool:
+def parameter_partition_name(name: str, ndim: int) -> str:
+    """Return the training-time optimizer partition for a named tensor.
+
+    Keeping this rule independent of ``nn.Parameter`` lets offline checkpoint analyses reproduce
+    the exact routing used during training without instantiating the model.
+    """
     lowered = name.lower()
-    return (
-        parameter.ndim == 2
+    if (
+        ndim == 2
         and (lowered.startswith("layers.") or ".layers." in lowered)
         and "embedding" not in lowered
         and "classifier" not in lowered
         and "head" not in lowered
-    )
+    ):
+        return "hidden"
+    if ndim >= 2 and _NO_DECAY.search(name) is None:
+        return "aux_decay"
+    return "aux_no_decay"
+
+
+def _is_hidden_matrix(name: str, parameter: nn.Parameter) -> bool:
+    return parameter_partition_name(name, parameter.ndim) == "hidden"
 
 
 def _uses_weight_decay(name: str, parameter: nn.Parameter) -> bool:
-    return parameter.ndim >= 2 and _NO_DECAY.search(name) is None
+    return parameter_partition_name(name, parameter.ndim) == "aux_decay"
 
 
 def parameter_partition(model: nn.Module) -> dict[str, list[tuple[str, nn.Parameter]]]:
@@ -36,12 +49,7 @@ def parameter_partition(model: nn.Module) -> dict[str, list[tuple[str, nn.Parame
         if not parameter.requires_grad or id(parameter) in seen:
             continue
         seen.add(id(parameter))
-        if _is_hidden_matrix(name, parameter):
-            result["hidden"].append((name, parameter))
-        elif _uses_weight_decay(name, parameter):
-            result["aux_decay"].append((name, parameter))
-        else:
-            result["aux_no_decay"].append((name, parameter))
+        result[parameter_partition_name(name, parameter.ndim)].append((name, parameter))
     return result
 
 

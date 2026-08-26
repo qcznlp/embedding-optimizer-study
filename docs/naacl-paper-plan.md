@@ -116,6 +116,14 @@ checkpoint with the input model digest, tensor name, optimizer partition, shape,
 approximation settings. A difference between distant checkpoints is a trajectory displacement, not
 an optimizer step; raw gradients and actual single-step updates require the common-state probes below.
 
+The repository implements this retrospective tier as `embed-optim-geometry`. It streams both the
+root Transformer and SentenceTransformers/PyLate module safetensors, validates the reconstructed
+88/auxiliary partition against each run's completion record, hashes every input and atomic JSONL
+output, and resumes only when the complete analysis manifest matches. Passing the pinned pretrained
+snapshot through `--reference` adds initialization displacement; consecutive checkpoint displacement
+is recorded automatically. The tool deliberately labels randomized spectrum and displacement fields
+as approximations rather than presenting them as actual optimizer steps.
+
 ## Weight- and update-space analysis
 
 Use only hidden 2-D matrices for direct Muon/AdamW geometry comparisons, and report attention and

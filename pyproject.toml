@@ -18,6 +18,7 @@ dependencies = [
   "pyarrow>=22,<24",
   "pylate==1.6.0",
   "pyyaml>=6,<7",
+  "safetensors>=0.6,<1",
   "sentence-transformers>=5.3,<6",
   "torch>=2.9,<2.10",
   "tqdm>=4.67,<5",
@@ -53,6 +54,7 @@ embed-optim-sync-wandb = "embed_optim.wandb_sync:main"
 embed-optim-watch-checkpoints = "embed_optim.checkpoint_watch:main"
 embed-optim-supervise = "embed_optim.supervisor:main"
 embed-optim-verify-runtime = "embed_optim.runtime:main"
+embed-optim-geometry = "embed_optim.geometry:main"
 
 [project.urls]
 Paper = "https://arxiv.org/abs/2607.27178"
