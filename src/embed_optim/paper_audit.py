@@ -24,6 +24,7 @@ STRICT_EVIDENCE = {
         Path("reports/coverage.json"),
         Path("reports/training-dynamics/summary_manifest.json"),
         Path("reports/training-dynamics/plot_manifest.json"),
+        Path("reports/retrieval-dynamics/summary_manifest.json"),
     ),
     "CommonStateHeadline": (
         Path("reports/common-state/summary_manifest.json"),

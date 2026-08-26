@@ -26,6 +26,7 @@ drafting; `embed-optim-audit-paper --strict` becomes a hard final-submission gat
 |---|---|---|
 | Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and both manifests under `reports/training-dynamics/` | 24 runs, 120 checkpoints, 9,384 history rows, six systems summaries, and two source-bound figures pass audit |
 | Discovery retrieval behavior | `reports/coverage.json`, strict aggregate tables and plot sidecars | exactly 1,680 decontaminated-BEIR units |
+| Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics/summary_manifest.json` | 120 checkpoint means and all 1,680 source task files pass hashes; first passage uses the prospectively locked AdamW-median rule with right censoring and discloses its 160/1,680-unit freeze timing |
 | Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 24 runs, 120 checkpoints, verified model inputs |
 | Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | 20 anchors, 1,760 gradients, 5,280 transforms, 360 spectra |
 | Representation and score geometry | strict manifests under `reports/representation-space/` | two pretrained references plus 120 checkpoints per probe tier |

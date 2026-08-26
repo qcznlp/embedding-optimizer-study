@@ -18,6 +18,13 @@ retrieval evaluation with `embed-optim-summarize-training`; its manifest binds a
 checkpoint-schedule, and canonical Trainer-history sources.
 `embed-optim-plot-training` then renders the complete five-stage loss trajectories and native-recipe
 systems trade-offs from those declared tables, with its own content-addressed plot manifest.
+After strict retrieval coverage reaches 1,680/1,680,
+`embed-optim-summarize-retrieval-dynamics` reconstructs all 120 checkpoint means directly from the
+provenance-valid task files, joins audited useful wall time, and reports observed first passage to a
+within-family AdamW reference without interpolation or silently dropping right-censored runs. The
+rule and its 160/1,680-unit visibility disclosure are content-locked in
+`configs/retrieval_dynamics_protocol.json`; this is a prospective completion analysis rather than a
+preregistration.
 
 ## Experimental contract
 

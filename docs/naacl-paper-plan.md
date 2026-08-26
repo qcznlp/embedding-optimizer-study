@@ -214,6 +214,18 @@ a target retrieval score in sufficiently fewer steps, while lower optimizer-stat
 separate systems benefit. Operator efficiency, realized throughput, state memory, and
 time-to-quality must therefore remain four distinct quantities throughout the paper.
 
+The formal time-to-quality renderer is `embed-optim-summarize-retrieval-dynamics`. It reconstructs
+all 120 checkpoint means from the 1,680 provenance-valid task files, then defines one reference per
+model family as the median final nDCG@10 of the four AdamW learning-rate points. For every one of the
+24 trajectories it reports the first of the five observed checkpoints that reaches this reference;
+it performs no interpolation and retains non-reaching runs as right-censored. Checkpoint time is
+the run's audited useful wall time multiplied by `checkpoint_step / 3907`, explicitly labeled as a
+step-proportional estimate rather than a measured checkpoint timestamp. This Muon-outcome-independent
+rule avoids choosing a visually favorable absolute threshold after seeing Muon results. The rule was
+frozen after 160 of 1,680 discovery evaluation units were visible, while the complete retrieval
+matrix and this report were not visible. It is therefore a prospectively locked completion analysis,
+not a preregistration; the manuscript must disclose that timing and keep the analysis exploratory.
+
 ![Native recipe systems trade-offs](../reports/training-dynamics/system_tradeoffs.svg)
 
 The corresponding five-stage training-loss panel retains every learning-rate trajectory rather than
