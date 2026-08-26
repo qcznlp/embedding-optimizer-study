@@ -37,6 +37,10 @@ def test_distribution_preserves_weight_space_document_links() -> None:
             "../reports/weight-space/optimizer_pair_contrast_trajectory.svg",
             "../reports/weight-space/optimizer_geometry_phase.svg",
         ),
+        "docs/completion-gates.md": (
+            "../reports/weight-space/summary_manifest.json",
+            "blog.md",
+        ),
     }
 
     installed_targets = set(installed.values())
