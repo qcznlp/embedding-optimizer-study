@@ -1,13 +1,69 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 import time
+from pathlib import Path
 from typing import Callable
 
 from .config import RunConfig, load_matrix, resolve_matrix_path
 from .matrix import _run_is_complete
+
+
+def _pid_exists(pid: int) -> bool:
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _ancestor_pids(pid: int) -> set[int]:
+    ancestors: set[int] = set()
+    current = pid
+    while current > 1:
+        try:
+            parent_line = next(
+                line
+                for line in Path(f"/proc/{current}/status").read_text().splitlines()
+                if line.startswith("PPid:")
+            )
+            parent = int(parent_line.split(":", 1)[1].strip())
+        except (FileNotFoundError, ProcessLookupError, StopIteration, ValueError):
+            break
+        if parent <= 1 or parent in ancestors:
+            break
+        ancestors.add(parent)
+        current = parent
+    return ancestors
+
+
+def _matching_command_pids(fragment: str) -> list[int]:
+    """Return live external PIDs whose argv contains ``fragment``.
+
+    The supervisor's own argv and wrapper ancestors contain every requested
+    fragment, so they are excluded explicitly. A process disappearing during
+    the scan is benign.
+    """
+
+    own_pid = os.getpid()
+    excluded = {own_pid, *_ancestor_pids(own_pid)}
+    matches = []
+    for path in Path("/proc").glob("[0-9]*/cmdline"):
+        pid = int(path.parent.name)
+        if pid in excluded:
+            continue
+        try:
+            command = path.read_bytes().replace(b"\0", b" ").decode(errors="replace")
+        except (FileNotFoundError, PermissionError, ProcessLookupError):
+            continue
+        if fragment in command:
+            matches.append(pid)
+    return sorted(matches)
 
 
 def _evaluation_command(args: argparse.Namespace) -> list[str]:
@@ -76,6 +132,8 @@ def supervise(
     args: argparse.Namespace,
     *,
     run_command: Callable[..., subprocess.CompletedProcess] = subprocess.run,
+    pid_exists: Callable[[int], bool] = _pid_exists,
+    matching_command_pids: Callable[[str], list[int]] = _matching_command_pids,
     sleeper: Callable[[float], None] = time.sleep,
 ) -> int:
     """Wait for training, then resume evaluation until strict coverage is complete."""
@@ -95,6 +153,26 @@ def supervise(
         sleeper(args.training_poll_seconds)
 
     print(f"All {len(configs)} training runs are complete; starting evaluation", flush=True)
+    if args.wait_for_pids or args.wait_for_commands:
+        print(
+            "Waiting for adopted evaluators: "
+            f"pids={args.wait_for_pids}, command_fragments={args.wait_for_commands}",
+            flush=True,
+        )
+        while True:
+            live = [pid for pid in args.wait_for_pids if pid_exists(pid)]
+            command_matches = {
+                fragment: matching_command_pids(fragment) for fragment in args.wait_for_commands
+            }
+            command_matches = {fragment: pids for fragment, pids in command_matches.items() if pids}
+            if not live and not command_matches:
+                break
+            print(
+                f"Adopted evaluators still alive: pids={live}, command_matches={command_matches}",
+                flush=True,
+            )
+            sleeper(args.wait_poll_seconds)
+
     cycles = 0
     coverage_complete = False
     while True:
@@ -120,6 +198,9 @@ def supervise(
                     sleeper(args.restart_delay)
                 continue
             print("Strict evaluation coverage is complete", flush=True)
+            if args.evaluation_only:
+                print("Evaluation-only recovery is complete", flush=True)
+                return 0
 
         if args.skip_wandb_sync:
             wandb_return_code = 0
@@ -167,6 +248,28 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Python executable for evaluator workers (default: --python)",
     )
     parser.add_argument("--training-poll-seconds", type=float, default=60.0)
+    parser.add_argument(
+        "--wait-for-pid",
+        dest="wait_for_pids",
+        action="append",
+        type=int,
+        default=[],
+        help=(
+            "Adopt an already-running evaluator or dispatcher by waiting for its PID before "
+            "launching recovery; repeat for multiple independent coordinators"
+        ),
+    )
+    parser.add_argument(
+        "--wait-for-command",
+        dest="wait_for_commands",
+        action="append",
+        default=[],
+        help=(
+            "Also wait while any external process argv contains this fragment; repeat to adopt "
+            "orphan workers whose coordinator PID may change"
+        ),
+    )
+    parser.add_argument("--wait-poll-seconds", type=float, default=30.0)
     parser.add_argument("--restart-delay", type=float, default=60.0)
     parser.add_argument(
         "--skip-wandb-sync",
@@ -179,8 +282,25 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=0,
         help="Maximum evaluator launches, where zero retries without a limit",
     )
+    parser.add_argument(
+        "--evaluation-only",
+        action="store_true",
+        help=(
+            "Stop after strict evaluation coverage succeeds; use when a separate post-evaluation "
+            "pipeline owns W&B publication and report rendering"
+        ),
+    )
     args = parser.parse_args(argv)
-    if args.training_poll_seconds <= 0 or args.restart_delay < 0 or args.max_launches < 0:
+    if any(pid <= 0 for pid in args.wait_for_pids):
+        parser.error("--wait-for-pid must be positive")
+    if any(not fragment.strip() for fragment in args.wait_for_commands):
+        parser.error("--wait-for-command must not be empty")
+    if (
+        args.training_poll_seconds <= 0
+        or args.wait_poll_seconds <= 0
+        or args.restart_delay < 0
+        or args.max_launches < 0
+    ):
         parser.error("poll/restart intervals and max launches must be non-negative")
     return args
 

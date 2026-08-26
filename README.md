@@ -254,6 +254,28 @@ rendering. Failures in either finalization step are retried without relaunching 
 `--max-launches N` provides an optional retry bound; zero, the default, keeps recovering unattended.
 Use `--skip-wandb-sync` only for reproductions that intentionally have no W&B destination.
 
+To protect evaluators that are already running under independent Dense and Late coordinators,
+adopt both processes instead of launching a duplicate matrix:
+
+```bash
+embed-optim-supervise-evaluation \
+  --wait-for-pid DENSE_COORDINATOR_PID \
+  --wait-for-pid LATE_DISPATCHER_PID \
+  --wait-for-command scripts/eval/dense_parallel.py \
+  --wait-for-command scripts/eval/late_interaction.py \
+  --evaluation-only \
+  --python /usr/bin/python3 \
+  --worker-python /usr/bin/python3
+```
+
+The supervisor waits until every adopted PID exits and no matching worker command remains, then
+launches the resumable evaluator only as a recovery pass. Command-fragment adoption covers orphan
+workers even if their coordinator exits and prevents duplicate checkpoint scoring. `--evaluation-only`
+stops after strict coverage succeeds, leaving W&B publication, mechanism experiments, and final report
+rendering to a separately armed
+`embed-optim-post-eval-pipeline`. This mode is safe for split-family or externally recovered
+evaluators because no second GPU coordinator starts while any adopted owner is alive.
+
 If retrieval evaluation is already running, arm the resumable post-evaluation handoff instead of
 starting a second coordinator:
 

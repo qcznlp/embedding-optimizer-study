@@ -25,9 +25,13 @@ def _args(**overrides):
         "python": "/system/python",
         "worker_python": "/worker/python",
         "training_poll_seconds": 2.0,
+        "wait_for_pids": [],
+        "wait_for_commands": [],
+        "wait_poll_seconds": 4.0,
         "restart_delay": 3.0,
         "max_launches": 0,
         "skip_wandb_sync": False,
+        "evaluation_only": False,
     }
     values.update(overrides)
     return SimpleNamespace(**values)
@@ -81,6 +85,72 @@ def test_evaluation_supervisor_accepts_complete_coverage_after_worker_failure(mo
     )
 
     assert result == 0
+
+
+def test_evaluation_supervisor_adopts_multiple_coordinators_before_recovery(monkeypatch):
+    config = _config("dense", "adamw")
+    monkeypatch.setattr("embed_optim.evaluation_supervisor.load_matrix", lambda matrix: [config])
+    monkeypatch.setattr("embed_optim.evaluation_supervisor._run_is_complete", lambda config: True)
+    states = {101: iter((True, False, False)), 202: iter((True, True, False))}
+    sleeps = []
+    commands = []
+
+    def pid_exists(pid):
+        return next(states[pid])
+
+    def run(command, check):
+        commands.append(command[2])
+        return SimpleNamespace(returncode=0)
+
+    result = supervise(
+        _args(wait_for_pids=[101, 202], evaluation_only=True),
+        run_command=run,
+        pid_exists=pid_exists,
+        matching_command_pids=lambda fragment: [],
+        sleeper=sleeps.append,
+    )
+
+    assert result == 0
+    assert sleeps == [4.0, 4.0]
+    assert commands == ["embed_optim.evaluate_matrix", "embed_optim.aggregate"]
+
+
+def test_evaluation_only_skips_wandb_and_final_render(monkeypatch):
+    config = _config("late", "muon")
+    monkeypatch.setattr("embed_optim.evaluation_supervisor.load_matrix", lambda matrix: [config])
+    monkeypatch.setattr("embed_optim.evaluation_supervisor._run_is_complete", lambda config: True)
+    commands = []
+
+    def run(command, check):
+        commands.append(command)
+        return SimpleNamespace(returncode=0)
+
+    result = supervise(_args(evaluation_only=True), run_command=run)
+
+    assert result == 0
+    assert [command[2] for command in commands] == [
+        "embed_optim.evaluate_matrix",
+        "embed_optim.aggregate",
+    ]
+    assert "--no-render-blog" in commands[-1]
+
+
+def test_evaluation_supervisor_adopts_orphan_workers_by_command(monkeypatch):
+    config = _config("late", "muon")
+    monkeypatch.setattr("embed_optim.evaluation_supervisor.load_matrix", lambda matrix: [config])
+    monkeypatch.setattr("embed_optim.evaluation_supervisor._run_is_complete", lambda config: True)
+    matches = iter(([301, 302], [302], []))
+    sleeps = []
+
+    result = supervise(
+        _args(wait_for_commands=["scripts/eval/late_interaction.py"], evaluation_only=True),
+        run_command=lambda command, check: SimpleNamespace(returncode=0),
+        matching_command_pids=lambda fragment: next(matches),
+        sleeper=sleeps.append,
+    )
+
+    assert result == 0
+    assert sleeps == [4.0, 4.0]
 
 
 def test_evaluation_supervisor_retries_finalization_without_relaunching_evaluation(
@@ -152,3 +222,9 @@ def test_evaluation_supervisor_cli_rejects_invalid_intervals():
         parse_args(["--training-poll-seconds", "0"])
     with pytest.raises(SystemExit):
         parse_args(["--restart-delay", "-1"])
+    with pytest.raises(SystemExit):
+        parse_args(["--wait-poll-seconds", "0"])
+    with pytest.raises(SystemExit):
+        parse_args(["--wait-for-pid", "-1"])
+    with pytest.raises(SystemExit):
+        parse_args(["--wait-for-command", ""])
