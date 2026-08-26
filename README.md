@@ -541,6 +541,19 @@ unexpected JSON files. It writes `checkpoint_metrics.csv`, long-form
 `summary_manifest.json`. `--allow-partial` is available only for explicitly labeled diagnostics;
 the resulting manifest records `complete: false` and cannot support final-paper claims.
 
+After both formal tiers pass strict aggregation, render their shared dynamics panel with:
+
+```bash
+embed-optim-plot-representation-dynamics
+```
+
+The plotter rehashes both complete 122-job summaries, their three source tables, and both frozen
+probe identities. It then plots positive–hardest-negative margin, query effective rank, and top-1
+agreement with the pretrained ranking for DenseOn/LateOn on both the training-distribution and
+unseen-BEIR probes. Lines are medians and bands are interquartile ranges over all four learning-rate
+runs; the shared pretrained state is shown explicitly at training fraction zero. The deterministic
+SVG and its content-hashed manifest are written under `reports/representation-space/`.
+
 ### 7. Compare common-state optimizer updates
 
 The checkpoint trajectories above cannot isolate an optimizer rule because each completed run visits

@@ -310,6 +310,10 @@ and spec, requires two reference plus 120 checkpoint reports, checks every task/
 representation role, and emits separate checkpoint, long-form representation, and group tables with
 a hashed summary manifest. This prevents a partial or cross-probe directory from becoming a paper
 figure through manual JSON collection.
+`embed-optim-plot-representation-dynamics` then requires both complete formal tiers and renders the
+shared DenseOn/LateOn panel for margin, query effective rank, and pretrained-ranking agreement. It
+uses every learning-rate trajectory, shows the common pretrained point, and records the exact source
+hashes in a sidecar instead of selecting a visually favorable configuration.
 
 ## Causal controls and additional runs
 
