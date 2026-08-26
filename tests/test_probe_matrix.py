@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -51,6 +52,15 @@ def test_build_probe_jobs_deduplicates_reference_and_covers_five_checkpoints(tmp
     assert jobs[-1].label == "dense/muon-b/checkpoint-10"
     assert jobs[-1].reference_export == jobs[0].export
 
+    identified = build_probe_jobs(
+        [first],
+        {"dense": reference},
+        tmp_path / "identified",
+        ("probe-manifest", "probe-spec"),
+    )
+    assert {job.probe_manifest_sha256 for job in identified} == {"probe-manifest"}
+    assert {job.probe_spec_sha256 for job in identified} == {"probe-spec"}
+
 
 def test_probe_matrix_dry_run_only_lists_incomplete_jobs(tmp_path: Path, monkeypatch, capsys):
     jobs = [
@@ -94,7 +104,7 @@ def test_run_probe_job_resumes_valid_export_and_rewrites_metrics(tmp_path: Path,
         reference_export=tmp_path / "pretrained.npz",
     )
     calls = []
-    monkeypatch.setattr("embed_optim.probe_matrix._valid_export", lambda *args: True)
+    monkeypatch.setattr("embed_optim.probe_matrix._valid_export", lambda *args, **kwargs: True)
     monkeypatch.setattr(
         "embed_optim.probe_matrix.export_probe",
         lambda *args, **kwargs: calls.append("export"),
@@ -171,6 +181,20 @@ def test_probe_job_completion_revalidates_export_and_metric_hashes(tmp_path: Pat
     )
 
     assert probe_job_complete(job)
+    bound_job = replace(
+        job,
+        probe_manifest_sha256="a",
+        probe_spec_sha256="expected-spec",
+    )
+    assert not probe_job_complete(bound_job)
+    manifest = json.loads(manifest_path.read_text())
+    manifest["probe"]["frozen_spec"] = {"sha256": "expected-spec"}
+    manifest_path.write_text(json.dumps(manifest))
+    metrics_payload = json.loads(metrics.read_text())
+    metrics_payload["input"]["export_manifest"]["sha256"] = _sha256(manifest_path)
+    metrics.write_text(json.dumps(metrics_payload))
+    assert probe_job_complete(bound_job)
+
     manifest = json.loads(manifest_path.read_text())
     manifest["output"]["sha256"] = "0" * 64
     manifest_path.write_text(json.dumps(manifest))

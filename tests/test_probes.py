@@ -65,6 +65,10 @@ def test_probe_spec_resolves_from_installed_data(tmp_path: Path, monkeypatch):
     assert resolve_probe_spec_path("configs/representation_probe.json", tmp_path) == installed
     assert resolve_probe_spec_path("custom.json", tmp_path) == Path("custom.json")
 
+    beir = installed.with_name("beir_representation_probe.json")
+    beir.write_text("{}\n")
+    assert resolve_probe_spec_path("configs/beir_representation_probe.json", tmp_path) == beir
+
 
 def test_prepare_probe_is_deterministic_and_content_verified(tmp_path: Path):
     source = _source_fixture(tmp_path)

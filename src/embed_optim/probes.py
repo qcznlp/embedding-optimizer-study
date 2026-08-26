@@ -26,9 +26,7 @@ def resolve_probe_spec_path(path: str | Path, prefix: Path | None = None) -> Pat
     if path.is_file() or path.is_absolute() or path.parent != Path("configs"):
         return path
     prefix = Path(sys.prefix) if prefix is None else prefix
-    installed = (
-        prefix / "share" / "embedding-optimizer-study" / "configs" / "representation_probe.json"
-    )
+    installed = prefix / "share" / "embedding-optimizer-study" / "configs" / path.name
     return installed if installed.is_file() else path
 
 

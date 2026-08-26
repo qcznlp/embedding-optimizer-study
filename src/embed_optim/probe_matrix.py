@@ -16,6 +16,7 @@ from huggingface_hub import snapshot_download
 from .config import ModelFamily, RunConfig, load_matrix, resolve_matrix_path
 from .geometry import _sha256
 from .probe_export import export_probe
+from .probes import resolve_probe_spec_path
 from .representation_geometry import SCHEMA_VERSION, _export_manifest_identity, analyze_probe
 
 JobKind = Literal["reference", "checkpoint"]
@@ -30,6 +31,8 @@ class ProbeJob:
     export: Path
     metrics: Path
     reference_export: Path | None
+    probe_manifest_sha256: str | None = None
+    probe_spec_sha256: str | None = None
 
 
 @dataclass
@@ -63,6 +66,7 @@ def build_probe_jobs(
     configs: list[RunConfig],
     references: dict[ModelFamily, Path],
     output_root: Path,
+    probe_identity: tuple[str, str] | None = None,
 ) -> list[ProbeJob]:
     output_root = output_root.resolve()
     families = sorted({config.model_family for config in configs})
@@ -71,6 +75,7 @@ def build_probe_jobs(
         raise ValueError(f"Missing pretrained references for families: {missing_references}")
 
     jobs: list[ProbeJob] = []
+    probe_manifest_sha256, probe_spec_sha256 = probe_identity or (None, None)
     for family in families:
         export = output_root / "exports" / family / "pretrained.npz"
         jobs.append(
@@ -82,6 +87,8 @@ def build_probe_jobs(
                 export=export,
                 metrics=output_root / "metrics" / family / "pretrained.json",
                 reference_export=None,
+                probe_manifest_sha256=probe_manifest_sha256,
+                probe_spec_sha256=probe_spec_sha256,
             )
         )
 
@@ -98,12 +105,39 @@ def build_probe_jobs(
                     export=output_root / "exports" / relative.with_suffix(".npz"),
                     metrics=output_root / "metrics" / relative.with_suffix(".json"),
                     reference_export=reference_export,
+                    probe_manifest_sha256=probe_manifest_sha256,
+                    probe_spec_sha256=probe_spec_sha256,
                 )
             )
     return jobs
 
 
-def _valid_export(path: Path, family: ModelFamily) -> bool:
+def _requested_probe_identity(probe: Path, probe_spec: Path) -> tuple[str, str]:
+    manifest_path = probe.resolve() / "manifest.json"
+    selection_path = probe.resolve() / "selection.jsonl"
+    if not manifest_path.is_file() or not selection_path.is_file():
+        raise FileNotFoundError(f"Frozen probe is incomplete under {probe.resolve()}")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("selection_sha256") != _sha256(selection_path):
+        raise ValueError("Frozen probe selection ledger digest mismatch")
+    manifest_sha256 = _sha256(manifest_path)
+    resolved_spec = resolve_probe_spec_path(probe_spec).resolve()
+    spec = json.loads(resolved_spec.read_text(encoding="utf-8"))
+    expected = spec.get("expected")
+    if not isinstance(expected, dict) or expected.get("manifest_sha256") != manifest_sha256:
+        raise ValueError(
+            f"Probe {manifest_path} is not bound to frozen specification {resolved_spec}"
+        )
+    return manifest_sha256, _sha256(resolved_spec)
+
+
+def _valid_export(
+    path: Path,
+    family: ModelFamily,
+    *,
+    probe_manifest_sha256: str | None = None,
+    probe_spec_sha256: str | None = None,
+) -> bool:
     if not path.is_file():
         return False
     try:
@@ -120,15 +154,35 @@ def _valid_export(path: Path, family: ModelFamily) -> bool:
             array_metadata=array_metadata,
             required=True,
         )
+        manifest = json.loads(
+            path.with_suffix(path.suffix + ".manifest.json").read_text(encoding="utf-8")
+        )
+        probe = manifest["probe"]
+        if (
+            probe_manifest_sha256 is not None
+            and probe.get("manifest_sha256") != probe_manifest_sha256
+        ):
+            return False
+        frozen_spec = probe.get("frozen_spec")
+        if probe_spec_sha256 is not None and (
+            not isinstance(frozen_spec, dict) or frozen_spec.get("sha256") != probe_spec_sha256
+        ):
+            return False
     except (OSError, ValueError, KeyError, json.JSONDecodeError):
         return False
     return True
 
 
 def probe_job_complete(job: ProbeJob) -> bool:
-    if not _valid_export(job.export, job.family) or not job.metrics.is_file():
+    identity = {
+        "probe_manifest_sha256": job.probe_manifest_sha256,
+        "probe_spec_sha256": job.probe_spec_sha256,
+    }
+    if not _valid_export(job.export, job.family, **identity) or not job.metrics.is_file():
         return False
-    if job.reference_export is not None and not _valid_export(job.reference_export, job.family):
+    if job.reference_export is not None and not _valid_export(
+        job.reference_export, job.family, **identity
+    ):
         return False
     try:
         payload = json.loads(job.metrics.read_text(encoding="utf-8"))
@@ -168,7 +222,12 @@ def run_probe_job(
     device: str,
     flash_attention: bool,
 ) -> None:
-    if not _valid_export(job.export, job.family):
+    if not _valid_export(
+        job.export,
+        job.family,
+        probe_manifest_sha256=job.probe_manifest_sha256,
+        probe_spec_sha256=job.probe_spec_sha256,
+    ):
         export_probe(
             job.checkpoint,
             probe,
@@ -296,7 +355,12 @@ def run_probe_matrix(jobs: list[ProbeJob], args: argparse.Namespace) -> int:
                     index
                     for index, job in enumerate(pending)
                     if job.reference_export is None
-                    or _valid_export(job.reference_export, job.family)
+                    or _valid_export(
+                        job.reference_export,
+                        job.family,
+                        probe_manifest_sha256=job.probe_manifest_sha256,
+                        probe_spec_sha256=job.probe_spec_sha256,
+                    )
                 ),
                 None,
             )
@@ -375,6 +439,7 @@ def main(argv: list[str] | None = None) -> None:
         required = (args.kind, args.family, args.label, args.checkpoint, args.export, args.metrics)
         if any(value is None for value in required):
             raise ValueError("Worker invocation is missing required job fields")
+        probe_identity = _requested_probe_identity(args.probe, args.probe_spec)
         run_probe_job(
             ProbeJob(
                 kind=args.kind,
@@ -386,6 +451,8 @@ def main(argv: list[str] | None = None) -> None:
                 reference_export=(
                     None if args.reference_export is None else args.reference_export.resolve()
                 ),
+                probe_manifest_sha256=probe_identity[0],
+                probe_spec_sha256=probe_identity[1],
             ),
             probe=args.probe.resolve(),
             probe_spec=args.probe_spec.resolve(),
@@ -416,7 +483,8 @@ def main(argv: list[str] | None = None) -> None:
             references[family] = Path(config.model_name).resolve()
         else:
             references[family] = _resolve_reference(config, explicit)
-    jobs = build_probe_jobs(configs, references, args.output_root)
+    probe_identity = _requested_probe_identity(args.probe, args.probe_spec)
+    jobs = build_probe_jobs(configs, references, args.output_root, probe_identity)
     failures = run_probe_matrix(jobs, args)
     if failures:
         raise SystemExit(1)

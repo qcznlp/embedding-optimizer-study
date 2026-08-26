@@ -280,7 +280,17 @@ configs/representation_probe.json` freezes 1,024 complete training groups before
 result is inspected. The specification fixes a balanced seven-source allocation, BLAKE2b selection
 seed, source-manifest digest, exact selected-ID/ledger digests, and output Dataset fingerprints. This
 tier is explicitly training-seen and cannot support a held-out generalization claim. A separately
-versioned unseen-BEIR probe remains required for the functional bridge and recipe selection.
+versioned unseen-BEIR probe is now implemented by `embed-optim-prepare-beir-probe`. Its prospective
+protocol samples 16 queries per pinned task without using model outcomes, chooses a deterministic
+highest-qrel positive, and uses seven qrel-excluded cross-query positives ranked by lexical overlap.
+The resulting 224-row tier is balanced across all 14 tasks and held out from the 500K training view.
+Its checked-in specification discloses that 98 of 1,680 BEIR units and partial scores had already
+been observed. The final 224-row artifact was independently checked against the raw pinned qrels
+(224 positive and 1,568 negative judgments), and a frozen rerun reproduced the ledger, Arrow data,
+Dataset metadata, state, and manifest byte-for-byte. The specification records two pre-output pool
+size amendments forced by the small NQ and Touche2020 qrel sets; no model output informed either
+change. These lexical negatives are functional probes, not a replacement for full-corpus BEIR
+evaluation or a claim that they reproduce the training hard-negative distribution.
 
 `embed-optim-export-probe` supplies the checkpoint-encoding half of the contract. It uses the exact
 Dense query/document prefixes or the pinned PyLate query/document/skiplist behavior, then writes

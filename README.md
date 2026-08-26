@@ -397,8 +397,33 @@ exact text and negative order required by both model families.
 
 This canonical probe is a **training-distribution mechanism probe**: all 1,024 groups came from the
 500K examples seen during the one-epoch study. It may support trajectory, margin, and token-usage
-diagnostics, but it is not held-out evidence. Any source-validation or unseen-BEIR probe must have a
-separate frozen manifest and must not be selected using the 14-task test scores.
+diagnostics, but it is not held-out evidence.
+
+The separate unseen probe protocol is checked in as
+`configs/beir_representation_probe.json`. It selects 16 eval queries from each of the 14 pinned
+decontaminated BEIR tasks without consuming a checkpoint score, ranking, or embedding. For every
+query it chooses one deterministic highest-qrel positive, then seven non-relevant positives from a
+24-query same-task pool using IDF-weighted lexical overlap and a seeded digest tie break. This yields
+224 positive-plus-seven-negative groups that are held out from the 500K training view and balanced
+across tasks. Qrels for the current query are always excluded, so a document relevant to multiple
+queries cannot silently become a false negative.
+
+The one-time derivation used an explicit `--allow-unfrozen` flag before the expected hashes existed.
+The checked-in specification now freezes the audited manifest, selection, sample-ID, and Dataset
+fingerprints. Reproduce it in a fresh output directory with:
+
+```bash
+embed-optim-prepare-beir-probe \
+  --spec configs/beir_representation_probe.json \
+  --output data/probes/decontaminated-beir-224-reproduction
+```
+
+The frozen rerun reproduced the manifest, selection ledger, Arrow data, Dataset metadata, and state
+files byte-for-byte. An independent qrel audit checked 224 positives and all 1,568 negatives against
+the pinned raw judgments. The specification records that 98 of 1,680 retrieval units and partial
+scores existed when the protocol was written; it is a prospective completion lock, not a claim of
+preregistration before outcome inspection. The two pre-output candidate-pool amendments are also
+recorded, and its selection rule remains outcome-independent.
 
 Encode the same probe with a selected checkpoint:
 
@@ -439,7 +464,8 @@ the pretrained model and any selected checkpoint:
 - `reference_scores`: optional `[samples, candidates]` scores from a declared reference checkpoint.
 
 Candidate index zero is always the positive; the remaining candidates are the seven explicit hard
-negatives. Run:
+negatives. For the unseen BEIR probe they are fixed lexical cross-query negatives rather than the
+training set's mined hard negatives; tables and captions must preserve that distinction. Run:
 
 ```bash
 embed-optim-analyze-probe \
@@ -472,6 +498,24 @@ releases the GPUs:
 ```bash
 embed-optim-probe-matrix \
   --matrix configs/experiment.yaml \
+  --output-root results/representation-space/training \
+  --gpus 0,1,2,3,4,5,6,7
+```
+
+The dispatcher binds every job to both the selected probe-manifest hash and frozen-spec hash. A
+stale export from the other tier is treated as incomplete and recomputed; a mismatched
+`--probe`/`--probe-spec` pair is rejected before any GPU worker launches.
+
+Run the same pretrained-plus-checkpoint matrix on the frozen unseen tier with a disjoint output and
+log root so no training-probe archive can be mistaken for held-out evidence:
+
+```bash
+embed-optim-probe-matrix \
+  --matrix configs/experiment.yaml \
+  --probe data/probes/decontaminated-beir-224-seed4242 \
+  --probe-spec configs/beir_representation_probe.json \
+  --output-root results/representation-space/decontaminated-beir \
+  --log-dir logs/representation-space/decontaminated-beir \
   --gpus 0,1,2,3,4,5,6,7
 ```
 

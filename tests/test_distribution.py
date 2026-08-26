@@ -63,3 +63,19 @@ def test_distribution_bundles_frozen_representation_probe_spec() -> None:
     assert spec["expected"]["manifest_sha256"] == (
         "40953eb60bb5dbfa02d9abde5e634bb3221ee934d7ca654c5e5a7e961b39eed2"
     )
+
+
+def test_distribution_bundles_prospective_beir_probe_protocol() -> None:
+    installed = _installed_data_paths()
+    source = "configs/beir_representation_probe.json"
+    assert installed[source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/beir_representation_probe.json"
+    )
+    spec = json.loads((ROOT / source).read_text())
+    assert len(spec["tasks"]) == 14
+    assert sum(task["query_count"] for task in spec["tasks"]) == 224
+    assert {task["candidate_pool_count"] for task in spec["tasks"]} == {24}
+    assert {task["split"] for task in spec["tasks"] if task["name"] == "MSMARCO"} == {"dev"}
+    assert spec["expected"]["manifest_sha256"] == (
+        "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d"
+    )
