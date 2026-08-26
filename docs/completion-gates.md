@@ -9,7 +9,7 @@ the authoritative artifact and the command that must validate its full scope.
 | Frozen experiment | `configs/experiment.yaml` and the immutable contract in `embed_optim.aggregate` | Exactly two model families, three optimizers, four learning rates each, seed 42, and five checkpoint fractions: 24 runs total. |
 | Shared training data | Materialized dataset manifest/rows plus every `completed.json` | Exactly 500,000 canonical rows, seven source quotas, seven distinct seeded negatives per query, no positive overlap, and one shared training-view fingerprint. |
 | Training artifacts | Run directories and `logs/checkpoint-audit.json` | 24/24 terminal runs and 120/120 non-empty, step-consistent model/optimizer/scheduler/Trainer/RNG checkpoints pass deep validation. |
-| Training dynamics | Canonical Trainer histories and W&B canonical runs | Every run has unique increasing steps through 3,907, finite loss/gradient/LR/epoch values, audited system metrics, and one matching content-addressed W&B history. |
+| Training dynamics | Canonical Trainer histories and W&B canonical runs | Every run has unique increasing steps through 3,907, finite loss/gradient/LR/epoch values, audited system metrics, and exactly one matching content-addressed W&B history tagged `canonical-current`; retained historical revisions are permitted but must not carry that tag. |
 | Training-only paper tables and figures | `reports/training-dynamics/summary_manifest.json` and `plot_manifest.json` | Exactly 24 run rows, 120 five-stage trailing-window rows, six family/optimizer system summaries, two source-bound SVG figures, and content hashes for every completion/schedule/history source pass audit. |
 | Query-disjoint recipe validation | `configs/validation_probe.json`, `data/validation-4096-seed20260826/manifest.json`, and `reports/recipe-validation/manifest.json` | All 4,096 queries are disjoint from the 500K training ledger, all positive/seven-negative groups pass audit, 24 final-checkpoint jobs are complete, and six recipes are selected without BEIR outcomes. |
 | Confirmatory data and matrices | `configs/confirmatory_protocol.json`, `reports/confirmatory-data/receipt.json`, and `configs/generated/confirmatory/manifest.json` | Seeds 314159/271828/161803 reuse all 500,000 query/positive identities, independently resample seven distinct negatives from the reconstructed ten-document pools, exceed the frozen pairwise-change threshold, and generate exactly 18 validation-selected runs. |
@@ -34,8 +34,8 @@ the authoritative artifact and the command that must validate its full scope.
 
 ## Final independent audit
 
-Run these after the unattended evaluator reports complete, even though the supervisor already runs
-the aggregation and W&B finalizers:
+Run these after both the unattended evaluator and the post-evaluation pipeline ledger report
+complete, even though the pipeline already runs these gates:
 
 ```bash
 embed-optim-sync-wandb --matrix configs/experiment.yaml
@@ -70,6 +70,10 @@ embed-optim-aggregate --matrix configs/experiment.yaml --strict
 embed-optim-summarize-hybrid-control
 embed-optim-build-mechanism-bridge
 embed-optim-render-mechanism-report
+embed-optim-render-outcome-report
+embed-optim-render-paper-results
+make -C paper
+embed-optim-audit-paper --strict
 
 uv build
 uv run pytest
