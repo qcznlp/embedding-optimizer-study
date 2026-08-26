@@ -421,6 +421,23 @@ Use a compact decomposition rather than a large optimizer zoo:
 Match update scale at the first step and report both matched-scale and native-recipe results. This
 tests which effect comes from orthogonalization and which from neuron-wise adaptation.
 
+### Basis-sensitivity diagnostic
+
+Treat optimizer geometry at three distinct granularities: AdamW is coordinate-wise, Muon is
+matrix/singular-direction aware, and NorMuon additionally privileges the output-neuron row basis.
+This suggests a compact diagnostic that does not require another full training sweep. For selected
+attention heads, apply a fixed seeded orthogonal rotation `R` to the query and key output coordinates
+so that the attention logits are unchanged, replay the same frozen gradient history in the original
+and rotated parameterizations, map each prescribed update back to the original basis, and compare
+update cosine, norm, spectrum, and one-step function drift. Use the fused QKV layout only after
+splitting and independently validating the Q/K slices.
+
+This is a symmetry diagnostic, not a retrieval-quality result. It tests whether the optimizer reacts
+to an arbitrary coordinate representation of the same attention function. Exact polar Muon should
+be orthogonally equivariant up to numerical approximation; coordinate-wise AdamW and NorMuon's
+row-specific state can retain basis sensitivity. Keep this experiment in the appendix unless its
+effect predicts the main representation or retrieval results.
+
 ### Confirmatory multi-seed runs
 
 After the exploratory sweep, freeze one configuration per optimizer and family using a validation
@@ -574,6 +591,16 @@ chronology:
   and Adam-like rules inside a broader family of layer-dependent matrix geometries. It narrows our
   novelty claim from “geometry matters” to the retrieval-specific causal bridge and motivates
   reporting which layers favor which update geometry instead of seeking one universal winner.
+- [Muon Learns More Robust and Transferable Features than Adam](https://arxiv.org/abs/2606.09658)
+  connects Muon pretraining to larger margins, higher hidden-state effective rank, robustness, and
+  transfer in language and vision classification. These are direct competing explanations for our
+  representation probes, but they do not establish that the same effects survive an optimizer
+  switch from Adam-pretrained weights or improve dense/late-interaction rankings.
+- [The Loss Does Not See the Basis, but Adam Does](https://arxiv.org/abs/2608.05136) formalizes a
+  coordinate-basis dependence of Adam in factored models and contrasts it with gauge-equivariant
+  update rules including Muon. Our optional Q/K rotation diagnostic tests a narrow, function-
+  preserving attention symmetry; it should not generalize that theory to the entire Transformer
+  without evidence.
 - [HIL](https://aclanthology.org/2024.naacl-long.437/) connects representation
   isotropy/anisotropy to zero-shot dense retrieval. Isotropy is consequently an explanatory variable
   here, not a standalone novelty claim; optimizer interventions must connect it to downstream
