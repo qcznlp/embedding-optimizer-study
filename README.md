@@ -262,6 +262,17 @@ MTEB's shared `run_settings.jsonl` are serialized with a file lock. Distributed 
 single metadata writer, and strict aggregation validates the singular MTEB 2.18 or plural MTEB 2.19+
 run-settings schema against the exact runtime version recorded in the manifest.
 
+For a continuously refreshed count that uses the same strict collector instead of trusting file
+names, run:
+
+```bash
+embed-optim-evaluation-progress --watch-seconds 300
+```
+
+It atomically updates `logs/evaluation/live-audit.json`, records family/task/run coverage, and stops
+only when all 1,680 provenance-valid units are present. A transient collector error is written into
+the snapshot and retried rather than being mistaken for zero coverage.
+
 For a targeted evaluation:
 
 ```bash
