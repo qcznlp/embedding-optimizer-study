@@ -131,6 +131,26 @@ def _existing_run(path: str):
         raise
 
 
+def _mark_canonical_current(run: Any) -> bool:
+    """Persist the non-destructive marker used to select the authoritative matrix."""
+
+    tags = [str(tag) for tag in (run.tags or [])]
+    changed = False
+    if "canonical-current" not in tags:
+        tags.append("canonical-current")
+        changed = True
+    if "canonical-superseded" in tags:
+        tags = [tag for tag in tags if tag != "canonical-superseded"]
+        changed = True
+    if run.summary.get("canonical_status") != "current":
+        run.summary["canonical_status"] = "current"
+        changed = True
+    if changed:
+        run.tags = tags
+        run.update()
+    return changed
+
+
 def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
     """Publish one immutable history, or verify and skip an identical existing run."""
 
@@ -148,7 +168,8 @@ def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
         expected_step = int(spec.history[-1]["global_step"])
         if remote_digest != spec.history_sha256 or int(remote_step or -1) != expected_step:
             raise RuntimeError(f"Existing canonical run does not match local history: {run_path}")
-        return f"verified {run_path}"
+        marked = _mark_canonical_current(existing)
+        return f"verified{'-and-marked-current' if marked else ''} {run_path}"
 
     import wandb
 
@@ -159,7 +180,13 @@ def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
         name=f"{config.model_family}-{config.run_id}-canonical",
         group=config.model_family,
         job_type="canonical-history",
-        tags=[config.model_family, config.optimizer.name, f"seed-{config.seed}", "canonical"],
+        tags=[
+            config.model_family,
+            config.optimizer.name,
+            f"seed-{config.seed}",
+            "canonical",
+            "canonical-current",
+        ],
         resume="never",
         config={
             **config.as_dict(),
@@ -179,6 +206,7 @@ def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
                 "final_global_step": int(spec.history[-1]["global_step"]),
                 "history_rows": len(spec.history),
                 "source_wandb_run_id": spec.source_wandb_run_id,
+                "canonical_status": "current",
                 **{
                     key: value
                     for key, value in spec.history[-1].items()

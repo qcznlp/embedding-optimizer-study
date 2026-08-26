@@ -7,6 +7,8 @@ shared 500,000-query training set, runs 24 controlled training jobs, evaluates f
 every job on 14 pinned decontaminated BEIR datasets, and produces publication-ready tables and plots.
 
 The live experiment dashboard is [Weights & Biases: embedding-optimizer-study](https://wandb.ai/stevezenguom/embedding-optimizer-study).
+The final sync marks the content-verified 24-run discovery matrix with the `canonical-current` tag;
+historical retries and superseded content-addressed histories remain visible for provenance.
 The full research write-up is in [docs/blog.md](docs/blog.md). A follow-on NAACL study connecting
 optimizer updates, weight trajectories, representation geometry, and retrieval behavior is specified
 in [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md). The result-safe, ACL-formatted manuscript

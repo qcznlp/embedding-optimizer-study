@@ -4,7 +4,22 @@ from dataclasses import replace
 import pytest
 
 from embed_optim.config import OptimizerConfig, RunConfig
-from embed_optim.wandb_sync import build_canonical_run, canonical_history, history_sha256
+from embed_optim.wandb_sync import (
+    _mark_canonical_current,
+    build_canonical_run,
+    canonical_history,
+    history_sha256,
+)
+
+
+class _RemoteRun:
+    def __init__(self, tags, status=None):
+        self.tags = tags
+        self.summary = {} if status is None else {"canonical_status": status}
+        self.updates = 0
+
+    def update(self):
+        self.updates += 1
 
 
 def test_canonical_history_is_sorted_and_merges_duplicate_steps():
@@ -120,3 +135,15 @@ def test_build_canonical_run_is_content_addressed(tmp_path):
         "system/useful_samples_per_second": 10.0,
         "system/useful_steps_per_second": 2.0,
     }
+
+
+def test_current_canonical_marker_is_non_destructive_and_idempotent():
+    run = _RemoteRun(["dense", "canonical", "canonical-superseded"], "superseded")
+
+    assert _mark_canonical_current(run) is True
+    assert run.tags == ["dense", "canonical", "canonical-current"]
+    assert run.summary["canonical_status"] == "current"
+    assert run.updates == 1
+
+    assert _mark_canonical_current(run) is False
+    assert run.updates == 1
