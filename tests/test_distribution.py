@@ -131,3 +131,37 @@ def test_distribution_bundles_frozen_paper_claim_protocol() -> None:
         "InterventionHeadline",
         "ConfirmationHeadline",
     }
+
+
+def test_distribution_bundles_buildable_result_safe_paper() -> None:
+    installed = _installed_data_paths()
+    paper_files = (
+        "paper/Makefile",
+        "paper/README.md",
+        "paper/main.tex",
+        "paper/references.bib",
+        "paper/results.tex",
+    )
+    result_tables = (
+        "paper/generated/common-state.tex",
+        "paper/generated/confirmation.tex",
+        "paper/generated/discovery.tex",
+        "paper/generated/intervention.tex",
+        "paper/generated/representation.tex",
+    )
+    for source in paper_files:
+        assert installed[source] == PurePosixPath(
+            "share/doc/embedding-optimizer-study"
+        ) / PurePosixPath(source)
+    for source in result_tables:
+        assert installed[source] == PurePosixPath(
+            "share/doc/embedding-optimizer-study"
+        ) / PurePosixPath(source)
+
+    main = (ROOT / "paper/main.tex").read_text()
+    makefile = (ROOT / "paper/Makefile").read_text()
+    for source in result_tables:
+        table = PurePosixPath(source).stem
+        assert f"\\input{{generated/{table}}}" in main
+        assert f"generated/{table}.tex" in makefile
+        assert "\\ResultPending" in (ROOT / source).read_text()
