@@ -232,6 +232,22 @@ rendering. Failures in either finalization step are retried without relaunching 
 `--max-launches N` provides an optional retry bound; zero, the default, keeps recovering unattended.
 Use `--skip-wandb-sync` only for reproductions that intentionally have no W&B destination.
 
+If retrieval evaluation is already running, arm the resumable post-evaluation handoff instead of
+starting a second coordinator:
+
+```bash
+embed-optim-post-eval-pipeline
+```
+
+It waits for the strict progress snapshot to reach 1,680/1,680, allows evaluator processes to settle,
+then executes the strict evaluation/W&B/blog gates, common-state matrix and exact spectra, both
+representation tiers, all summaries and plots, the cross-space bridge, and final repository
+validation. Dense and LateOn probe exports run separately with conservative family-specific batch
+sizes while using all declared GPUs. Every step has an isolated log and an atomic JSON ledger under
+`logs/post-eval-pipeline/`; failed steps retry and leave an exact restart diagnosis. `--wait-pids`
+can additionally hold the handoff until known evaluator coordinators exit, and `--dry-run` prints the
+complete command plan without waiting or launching work.
+
 Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned in
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
 across four GPUs. Late-interaction evaluation uses PyLate for multivector encoding, the fused

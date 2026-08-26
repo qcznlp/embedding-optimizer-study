@@ -118,6 +118,10 @@ def _representation_tier(tier: str):
 
 
 def test_mechanism_bridge_strictly_joins_all_checkpoint_sources(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(
+        "embed_optim.mechanism_bridge._declared_checkpoint_steps",
+        lambda config: [782, 1563, 2345, 3126, 3907],
+    )
     training = _representation_tier("training")
     unseen = _representation_tier("unseen")
 
@@ -165,7 +169,11 @@ def test_mechanism_bridge_strictly_joins_all_checkpoint_sources(tmp_path: Path, 
     assert json.loads((output / "summary_manifest.json").read_text()) == manifest
 
 
-def test_mechanism_bridge_rejects_partial_beir_coverage(tmp_path: Path):
+def test_mechanism_bridge_rejects_partial_beir_coverage(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(
+        "embed_optim.mechanism_bridge._declared_checkpoint_steps",
+        lambda config: [782, 1563, 2345, 3126, 3907],
+    )
     with pytest.raises(ValueError, match="not strictly complete"):
         build_mechanism_bridge(
             Path("configs/experiment.yaml"),

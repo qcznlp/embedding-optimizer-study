@@ -17,6 +17,7 @@ the authoritative artifact and the command that must validate its full scope.
 | Representation bridge | Both representation-tier `summary_manifest.json` files and the two manifests under `reports/representation-space/` | Each tier contains exactly two pretrained plus 120 checkpoint reports with the frozen probe identity, sample groups, representation roles, and ranking-reference contract; the shared and LateOn-specific plotted dynamics rehash both strict summaries. |
 | Cross-space join | `reports/mechanism-bridge/summary_manifest.json` | Exactly 120 checkpoint rows and 96 within-run transitions join the strict weight, representation, and 1,680-unit BEIR sources; correlations remain labeled descriptive. |
 | Blog | [`docs/blog.md`](blog.md) | Strict aggregation replaces both marked sections and the in-progress sentinel; every reported number derives from checked-in aggregate artifacts. |
+| Unattended handoff | `logs/post-eval-pipeline/pipeline-ledger.json` | The strict evaluation, W&B, mechanism, representation, bridge, test, formatting, and build steps all record successful terminal attempts. |
 | Reproducible distribution | Wheel, sdist, repository tests, and CI | Package build succeeds; configs, workers, docs, report tables/figures/manifests, citation, license, and notices are present with working local links. |
 | Publication hygiene | Git tracked tree/history and GitHub settings | No credential material is tracked; the repository remains private until the user explicitly requests publication. |
 

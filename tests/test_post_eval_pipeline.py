@@ -1,0 +1,114 @@
+from __future__ import annotations
+
+import json
+import subprocess
+from pathlib import Path
+
+import pytest
+
+from embed_optim.post_eval_pipeline import (
+    _strict_progress,
+    parse_args,
+    pipeline_steps,
+    supervise_post_eval,
+)
+
+
+def _progress(path: Path, *, complete: bool = True, unexpected: int = 0) -> None:
+    valid = 1680 if complete else 120
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "complete": complete,
+                "error": None,
+                "expected_units": 1680,
+                "valid_units": valid,
+                "missing_units": 1680 - valid,
+                "unexpected_units": unexpected,
+            }
+        )
+        + "\n"
+    )
+
+
+def _args(tmp_path: Path, *extra: str):
+    return parse_args(
+        [
+            "--progress",
+            str(tmp_path / "progress.json"),
+            "--workdir",
+            str(Path.cwd()),
+            "--log-dir",
+            str(tmp_path / "logs"),
+            "--settle-seconds",
+            "0",
+            "--skip-wandb-sync",
+            "--skip-validation",
+            *extra,
+        ]
+    )
+
+
+def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsys):
+    args = _args(tmp_path, "--dry-run")
+    steps = pipeline_steps(args)
+
+    assert len(steps) == 18
+    assert steps[0].name == "strict-evaluation-audit"
+    assert steps[-1].name == "mechanism-bridge"
+    assert [step.name for step in steps].index("common-state-matrix") < [
+        step.name for step in steps
+    ].index("training-dense-representation-matrix")
+    late = next(step for step in steps if step.name == "late-token-dynamics-plot")
+    assert late.command[1] == "-c"
+    assert supervise_post_eval(args) == 0
+    rendered = json.loads(capsys.readouterr().out)
+    assert [item["name"] for item in rendered] == [step.name for step in steps]
+
+
+def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
+    args = _args(tmp_path, "--wait-pids", "12345")
+    _progress(Path(args.progress))
+    commands = []
+
+    def run(command, **kwargs):
+        commands.append(command)
+        kwargs["stdout"].write("fixture command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=run, pid_exists=lambda pid: False) == 0
+    assert len(commands) == 18
+    ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
+    assert ledger["complete"] is True
+    assert ledger["wait_pids"] == [12345]
+    assert len(ledger["steps"]) == 18
+    assert all(step["complete"] for step in ledger["steps"])
+    assert all(len(step["attempts"]) == 1 for step in ledger["steps"])
+    assert len(list(Path(args.log_dir).glob("*.log"))) == 18
+
+
+def test_pipeline_retries_then_records_failed_step(tmp_path: Path):
+    args = _args(tmp_path, "--step-retries", "1")
+    _progress(Path(args.progress))
+    calls = []
+
+    def fail(command, **kwargs):
+        calls.append(command)
+        kwargs["stdout"].write("failed\n")
+        return subprocess.CompletedProcess(command, 17)
+
+    assert supervise_post_eval(args, run_command=fail, sleeper=lambda seconds: None) == 1
+    assert len(calls) == 2
+    ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
+    assert ledger["complete"] is False
+    assert ledger["failed_step"] == "strict-evaluation-audit"
+    assert len(ledger["steps"][0]["attempts"]) == 2
+
+
+def test_strict_progress_rejects_unexpected_results(tmp_path: Path):
+    progress = tmp_path / "progress.json"
+    _progress(progress, unexpected=1)
+    with pytest.raises(ValueError, match="Invalid strict evaluation progress"):
+        _strict_progress(progress)
