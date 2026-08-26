@@ -38,6 +38,7 @@ def _identity(
     return {
         "family": family,
         "kind": kind,
+        "seed": "",
         "optimizer": optimizer,
         "learning_rate": learning_rate,
         "run_id": run_id,

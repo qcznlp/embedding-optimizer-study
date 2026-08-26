@@ -58,6 +58,7 @@ TOKEN_METRICS = {
 IDENTITY_FIELDS = [
     "family",
     "kind",
+    "seed",
     "optimizer",
     "learning_rate",
     "run_id",
@@ -78,6 +79,7 @@ class ExpectedMetric:
     stage: int
     fraction: float
     step: int
+    seed: int | str = ""
 
 
 def expected_probe_metrics(
@@ -159,6 +161,7 @@ def _identity_row(expected: ExpectedMetric, scorer: str) -> dict[str, Any]:
     return {
         "family": expected.job.family,
         "kind": expected.job.kind,
+        "seed": expected.seed,
         "optimizer": expected.optimizer,
         "learning_rate": expected.learning_rate,
         "run_id": expected.run_id,

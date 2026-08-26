@@ -715,11 +715,15 @@ embed-optim-matrix --matrix configs/generated/short-branch/seed161803.yaml
 # After all 18 branches finish, score every retained checkpoint on both frozen probes.
 embed-optim-short-branch-evaluate --gpus 0,1,2,3,4,5,6,7
 embed-optim-short-branch-evaluate --audit-only
+embed-optim-summarize-short-branch
 ```
 
 All five branch checkpoints are evaluated on the frozen query-disjoint validation and 224-query
 unseen functional probes, not another full-corpus BEIR sweep. This 18-run branch tests whether an
-immediate scale-matched directional effect accumulates under three different example orders.
+immediate scale-matched directional effect accumulates under three different example orders. The
+strict summary joins all 90 checkpoints across both probes and emits paired seed-level dynamics for
+loss, margin, reciprocal rank, top-1 accuracy, pretrained ranking drift, representation rank, and
+LateOn token utilization.
 
 ### Hybrid AdamW routing control
 
