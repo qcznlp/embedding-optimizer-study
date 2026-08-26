@@ -122,7 +122,10 @@ root Transformer and SentenceTransformers/PyLate module safetensors, validates t
 output, and resumes only when the complete analysis manifest matches. Passing the pinned pretrained
 snapshot through `--reference` adds initialization displacement; consecutive checkpoint displacement
 is recorded automatically. The tool deliberately labels randomized spectrum and displacement fields
-as approximations rather than presenting them as actual optimizer steps.
+as approximations rather than presenting them as actual optimizer steps. The companion
+`embed-optim-summarize-geometry` command enforces the full matrix, revalidates record hashes and
+finite values, and emits checkpoint- and run-level trajectory tables; `--verify-inputs` additionally
+rehashes every source model tensor file.
 
 ## Weight- and update-space analysis
 

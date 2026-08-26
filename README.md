@@ -339,6 +339,22 @@ reaches a tensor's smaller dimension; set it to zero for an inexpensive exact-st
 Each checkpoint is committed as an atomic JSONL file, hashes and settings are captured in
 `manifest.json`, and an identical rerun resumes by skipping finished checkpoints.
 
+After all runs finish, strictly validate and aggregate the records:
+
+```bash
+embed-optim-summarize-geometry \
+  --geometry-root results/weight-space \
+  --output-dir reports/weight-space \
+  --verify-inputs
+```
+
+This requires the exact run set in `configs/experiment.yaml`, verifies every model/input digest when
+requested, always verifies every JSONL digest and finite tensor metric, and writes a 120-row
+`checkpoint_trajectory.csv`, a 24-row `run_trajectory_summary.csv`, and a content-addressed summary
+manifest. Use `--allow-partial` only for exploratory work before all runs are available.
+The checked-in exact-statistics tables and their interpretation notes are under
+[reports/weight-space](reports/weight-space/README.md).
+
 With `--reference`, records include displacement from the pinned pretrained model; checkpoints after
 the first also include displacement from the preceding saved checkpoint. These are trajectory
 displacements, not optimizer steps. Claims about actual AdamW/Muon update directions still require
