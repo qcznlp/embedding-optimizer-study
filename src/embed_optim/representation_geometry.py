@@ -155,7 +155,11 @@ def representation_summary(
 
 
 def ranking_summary(
-    scores: Tensor, *, top_k: int, reference_scores: Tensor | None = None
+    scores: Tensor,
+    *,
+    top_k: int,
+    reference_scores: Tensor | None = None,
+    sample_groups: list[str] | None = None,
 ) -> dict[str, Any]:
     if scores.ndim != 2 or scores.size(0) == 0 or scores.size(1) < 2:
         raise ValueError(
@@ -197,6 +201,22 @@ def ranking_summary(
             ),
             "score_drift_rms": float((scores - reference_scores).square().mean().sqrt().item()),
         }
+    if sample_groups is not None:
+        if len(sample_groups) != scores.size(0):
+            raise ValueError(
+                f"sample_groups must have {scores.size(0)} entries, got {len(sample_groups)}"
+            )
+        result["by_group"] = {}
+        for group in sorted(set(sample_groups)):
+            indices = torch.tensor(
+                [index for index, value in enumerate(sample_groups) if value == group],
+                dtype=torch.long,
+            )
+            result["by_group"][group] = ranking_summary(
+                scores[indices],
+                top_k=top_k,
+                reference_scores=None if reference_scores is None else reference_scores[indices],
+            )
     return result
 
 
@@ -208,6 +228,7 @@ def dense_probe_metrics(
     seed: int,
     top_k: int,
     reference_scores: Tensor | None = None,
+    sample_groups: list[str] | None = None,
 ) -> dict[str, Any]:
     if query_embeddings.ndim != 2:
         raise ValueError(
@@ -233,6 +254,7 @@ def dense_probe_metrics(
             scores,
             top_k=min(top_k, candidates),
             reference_scores=reference_scores,
+            sample_groups=sample_groups,
         ),
         "representations": {
             "queries": representation_summary(
@@ -283,6 +305,7 @@ def late_probe_metrics(
     seed: int,
     top_k: int,
     reference_scores: Tensor | None = None,
+    sample_groups: list[str] | None = None,
 ) -> dict[str, Any]:
     if query_embeddings.ndim != 3:
         raise ValueError(
@@ -352,6 +375,7 @@ def late_probe_metrics(
             scores,
             top_k=min(top_k, candidates),
             reference_scores=reference_scores,
+            sample_groups=sample_groups,
         ),
         "token_utilization": {
             "positive_query_token_evidence_normalized_entropy": _quantiles(
@@ -426,6 +450,20 @@ def analyze_probe(
         reference_scores = None
         if "reference_scores" in archive.files:
             reference_scores = _as_float_tensor(archive["reference_scores"], "reference_scores")
+        sample_groups = None
+        if "sample_groups" in archive.files:
+            raw_groups = np.asarray(archive["sample_groups"])
+            if raw_groups.ndim != 1 or raw_groups.size != sample_ids.size:
+                raise ValueError(
+                    "sample_groups must match sample_ids: "
+                    f"expected {(sample_ids.size,)}, got {raw_groups.shape}"
+                )
+            if raw_groups.dtype.kind not in "SUiu":
+                raise ValueError(
+                    "sample_groups must use a pickle-free string or integer dtype, "
+                    f"got {raw_groups.dtype}"
+                )
+            sample_groups = [str(value) for value in raw_groups.tolist()]
         array_metadata = {
             name: {"shape": list(archive[name].shape), "dtype": str(archive[name].dtype)}
             for name in sorted(archive.files)
@@ -438,6 +476,7 @@ def analyze_probe(
                 seed=seed,
                 top_k=top_k,
                 reference_scores=reference_scores,
+                sample_groups=sample_groups,
             )
         elif family == "late":
             if queries.ndim != 3 or documents.ndim != 4:
@@ -462,6 +501,7 @@ def analyze_probe(
                 seed=seed,
                 top_k=top_k,
                 reference_scores=reference_scores,
+                sample_groups=sample_groups,
             )
         else:
             raise ValueError(f"Unsupported family {family!r}")

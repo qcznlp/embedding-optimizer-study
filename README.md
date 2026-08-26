@@ -368,13 +368,33 @@ displacements, not optimizer steps. Claims about actual AdamW/Muon update direct
 the common-state gradient and virtual-update experiments specified in
 [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md).
 
-### 6. Analyze fixed representation probes
+### 6. Prepare and analyze fixed representation probes
+
+Materialize the preregistered training-distribution probe with:
+
+```bash
+embed-optim-prepare-probe --spec configs/representation_probe.json
+```
+
+The frozen specification selects 1,024 complete query/positive/seven-negative groups from the
+canonical 500K dataset. It balances the seven source datasets (146 or 147 groups per source), ranks
+samples within each source with a seeded BLAKE2b-128 digest, and publishes the expected source,
+selection, selected-ID, Dataset-fingerprint, and final-manifest digests. The command builds into a
+temporary directory and verifies every expected value before atomically publishing the probe. Its
+`selection.jsonl` contains IDs and selection ranks but no text; the materialized Dataset retains the
+exact text and negative order required by both model families.
+
+This canonical probe is a **training-distribution mechanism probe**: all 1,024 groups came from the
+500K examples seen during the one-epoch study. It may support trajectory, margin, and token-usage
+diagnostics, but it is not held-out evidence. Any source-validation or unseen-BEIR probe must have a
+separate frozen manifest and must not be selected using the 14-task test scores.
 
 `embed-optim-analyze-probe` turns a versioned embedding export into a provenance-checked JSON report.
 The `.npz` contract is deliberately model-independent so the same fixed sample IDs can be encoded by
 the pretrained model and any selected checkpoint:
 
 - `sample_ids`: unique `[samples]` identifiers;
+- `sample_groups`: optional pickle-free string/integer source labels for per-group ranking metrics;
 - `query_embeddings`: `[samples, dim]` for DenseOn or `[samples, query_tokens, dim]` for LateOn;
 - `document_embeddings`: `[samples, candidates, dim]` for DenseOn or
   `[samples, candidates, document_tokens, dim]` for LateOn;

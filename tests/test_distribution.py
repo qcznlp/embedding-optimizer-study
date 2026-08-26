@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import posixpath
 import re
 from pathlib import Path, PurePosixPath
@@ -48,3 +49,17 @@ def test_distribution_preserves_weight_space_document_links() -> None:
         installed_source = installed[source]
         for link in links:
             assert _resolve_relative(installed_source, link) in installed_targets
+
+
+def test_distribution_bundles_frozen_representation_probe_spec() -> None:
+    installed = _installed_data_paths()
+    source = "configs/representation_probe.json"
+    assert installed[source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/representation_probe.json"
+    )
+    spec = json.loads((ROOT / source).read_text())
+    assert spec["count"] == 1024
+    assert spec["seed"] == 1729
+    assert spec["expected"]["manifest_sha256"] == (
+        "40953eb60bb5dbfa02d9abde5e634bb3221ee934d7ca654c5e5a7e961b39eed2"
+    )

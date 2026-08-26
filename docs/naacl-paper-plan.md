@@ -272,6 +272,13 @@ evidence concentration/coverage. Probe selection and checkpoint encoding must pr
 versioned manifest: the analyzer intentionally does not select examples, which keeps selection fixed
 and auditable across optimizers.
 
+For the in-distribution tier, `embed-optim-prepare-probe --spec
+configs/representation_probe.json` freezes 1,024 complete training groups before any representation
+result is inspected. The specification fixes a balanced seven-source allocation, BLAKE2b selection
+seed, source-manifest digest, exact selected-ID/ledger digests, and output Dataset fingerprints. This
+tier is explicitly training-seen and cannot support a held-out generalization claim. A separately
+versioned unseen-BEIR probe remains required for the functional bridge and recipe selection.
+
 ## Causal controls and additional runs
 
 ### Required fairness control

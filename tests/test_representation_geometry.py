@@ -44,6 +44,7 @@ def test_dense_probe_reports_exact_margin_and_reference_stability():
         seed=42,
         top_k=2,
         reference_scores=reference,
+        sample_groups=["a", "b"],
     )
 
     score = result["score_geometry"]
@@ -52,6 +53,8 @@ def test_dense_probe_reports_exact_margin_and_reference_stability():
     assert score["mean_reciprocal_rank"] == pytest.approx(0.75)
     assert score["reference_ranking"]["top1_agreement"] == pytest.approx(1.0)
     assert score["reference_ranking"]["score_drift_rms"] == pytest.approx(0.0)
+    assert score["by_group"]["a"]["top1_accuracy"] == pytest.approx(1.0)
+    assert score["by_group"]["b"]["top1_accuracy"] == pytest.approx(0.0)
 
 
 def test_late_probe_reports_mean_maxsim_and_token_utilization():
@@ -95,6 +98,7 @@ def test_analyze_probe_hashes_input_and_writes_atomic_json(tmp_path: Path):
     np.savez_compressed(
         source,
         sample_ids=np.array([101, 102]),
+        sample_groups=np.array(["fiqa", "nq"]),
         query_embeddings=np.array([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32),
         document_embeddings=np.array(
             [
@@ -112,6 +116,7 @@ def test_analyze_probe_hashes_input_and_writes_atomic_json(tmp_path: Path):
     assert payload["label"] == "checkpoint-782"
     assert len(payload["input"]["sha256"]) == 64
     assert payload["input"]["arrays"]["document_embeddings"]["shape"] == [2, 2, 2]
+    assert set(payload["metrics"]["score_geometry"]["by_group"]) == {"fiqa", "nq"}
 
 
 def test_analyze_probe_rejects_invalid_late_masks(tmp_path: Path):
