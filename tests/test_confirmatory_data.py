@@ -11,6 +11,7 @@ from embed_optim.confirmatory_data import (
     _scan_negative_pools,
     _selected_pool_indices,
     load_confirmatory_protocol,
+    main,
 )
 
 
@@ -154,3 +155,19 @@ def test_confirmatory_selection_is_deterministic_distinct_and_seeded():
     assert len(first) == 7
     assert all(0 <= index < 10 for index in first)
     assert first != alternate
+
+
+def test_audit_only_does_not_rewrite_the_materialization_receipt(monkeypatch, tmp_path: Path):
+    writes = []
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data.audit_confirmatory_data",
+        lambda *_args, **_kwargs: {"schema_version": 1, "status": "complete"},
+    )
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data._atomic_json",
+        lambda *args, **kwargs: writes.append((args, kwargs)),
+    )
+
+    main(["--audit-only", "--receipt", str(tmp_path / "receipt.json")])
+
+    assert writes == []

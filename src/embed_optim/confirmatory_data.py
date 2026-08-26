@@ -843,7 +843,8 @@ def main(argv: list[str] | None = None) -> None:
         prepare_negative_pool(args.protocol, score_batch_size=args.score_batch_size)
         prepare_confirmatory_views(args.protocol)
     receipt = audit_confirmatory_data(args.protocol, verify_source=args.verify_source)
-    _atomic_json(args.receipt, receipt)
+    if not args.audit_only:
+        _atomic_json(args.receipt, receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
 
 
