@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -7,8 +8,10 @@ from pathlib import Path
 import pytest
 
 from embed_optim.paper_audit import (
+    PAPER_RESULT_TABLE_PATHS,
     _complete_manifest,
     _macros,
+    _paper_result_tables_complete,
     audit_paper,
     expected_constant_macros,
     load_paper_claim_protocol,
@@ -196,3 +199,26 @@ def test_paper_results_manifest_requires_generated_tex_and_all_evidence(tmp_path
     path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
 
     assert _complete_manifest(path) is False
+
+
+def test_result_table_audit_requires_exact_hashes_and_no_pending_markers(tmp_path: Path):
+    records = []
+    for relative in PAPER_RESULT_TABLE_PATHS:
+        output = tmp_path / relative
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text("final result table\n", encoding="utf-8")
+        records.append(
+            {
+                "path": str(output),
+                "bytes": output.stat().st_size,
+                "sha256": hashlib.sha256(output.read_bytes()).hexdigest(),
+            }
+        )
+
+    assert _paper_result_tables_complete(tmp_path, records) is True
+
+    pending = tmp_path / PAPER_RESULT_TABLE_PATHS[0]
+    pending.write_text("\\ResultPending{not final}\n", encoding="utf-8")
+    records[0]["bytes"] = pending.stat().st_size
+    records[0]["sha256"] = hashlib.sha256(pending.read_bytes()).hexdigest()
+    assert _paper_result_tables_complete(tmp_path, records) is False

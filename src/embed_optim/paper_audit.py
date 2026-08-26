@@ -19,6 +19,13 @@ HEADLINE_MACROS = (
     "InterventionHeadline",
     "ConfirmationHeadline",
 )
+PAPER_RESULT_TABLE_PATHS = (
+    Path("paper/generated/discovery.tex"),
+    Path("paper/generated/common-state.tex"),
+    Path("paper/generated/representation.tex"),
+    Path("paper/generated/intervention.tex"),
+    Path("paper/generated/confirmation.tex"),
+)
 PAPER_CLAIM_PROTOCOL_SHA256 = "873e741bafad1bc0b2f8650e3614be1e7bb4af12e92c2d69c79045dad28937bb"
 PAPER_CLAIM_SOURCE_PATHS = (
     "configs/experiment.yaml",
@@ -595,6 +602,7 @@ def _paper_results_complete(path: Path, payload: dict[str, Any]) -> bool:
     claim = payload.get("claim_protocol")
     evidence = payload.get("evidence_manifests")
     tables = payload.get("source_tables")
+    result_tables = payload.get("result_tables")
     headlines = payload.get("headlines")
     results = payload.get("results_tex")
     if (
@@ -614,6 +622,7 @@ def _paper_results_complete(path: Path, payload: dict[str, Any]) -> bool:
         or not isinstance(tables, list)
         or len(tables) != 10
         or any(not _hashed_file_complete(root, record) for record in tables)
+        or not _paper_result_tables_complete(root, result_tables)
         or not isinstance(headlines, dict)
         or set(headlines) != set(HEADLINE_MACROS)
         or any(not isinstance(value, str) or not value for value in headlines.values())
@@ -634,6 +643,21 @@ def _paper_results_complete(path: Path, payload: dict[str, Any]) -> bool:
         "\\ResultPending" not in value and macros.get(name) == value
         for name, value in headlines.items()
     )
+
+
+def _paper_result_tables_complete(root: Path, records: Any) -> bool:
+    expected = tuple((root / relative).resolve() for relative in PAPER_RESULT_TABLE_PATHS)
+    if not isinstance(records, list) or len(records) != len(expected):
+        return False
+    if any(
+        not _hashed_file_complete(root, record, expected_path=path)
+        for record, path in zip(records, expected, strict=True)
+    ):
+        return False
+    try:
+        return all("\\ResultPending" not in path.read_text(encoding="utf-8") for path in expected)
+    except (OSError, UnicodeDecodeError):
+        return False
 
 
 def audit_paper(

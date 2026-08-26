@@ -5,6 +5,8 @@ ACL_STYLE_BASE := https://raw.githubusercontent.com/acl-org/acl-style-files/$(AC
 VENDOR := vendor
 BUILD := build
 STYLE_FILES := $(VENDOR)/acl.sty $(VENDOR)/acl_natbib.bst
+RESULT_TABLES := generated/discovery.tex generated/common-state.tex \
+	generated/representation.tex generated/intervention.tex generated/confirmation.tex
 PYTHON ?= python3
 
 .PHONY: all vendor headlines clean distclean
@@ -26,7 +28,7 @@ $(VENDOR)/acl.sty: | $(VENDOR)/.ready
 $(VENDOR)/acl_natbib.bst: | $(VENDOR)/.ready
 	curl --fail --location --silent --show-error $(ACL_STYLE_BASE)/acl_natbib.bst --output $@
 
-$(BUILD)/main.pdf: main.tex results.tex references.bib $(STYLE_FILES)
+$(BUILD)/main.pdf: main.tex results.tex $(RESULT_TABLES) references.bib $(STYLE_FILES)
 	mkdir -p $(BUILD)
 	TEXINPUTS=$(abspath $(VENDOR))//: BSTINPUTS=$(abspath $(VENDOR))//: \
 		latexmk -pdf -bibtex -interaction=nonstopmode -halt-on-error \

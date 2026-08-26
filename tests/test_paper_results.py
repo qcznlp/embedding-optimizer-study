@@ -5,8 +5,10 @@ import pytest
 from embed_optim.paper_results import (
     IncompletePaperEvidenceError,
     _ci_classification,
+    _latex_escape,
     _replace_headlines,
     build_headline_macros,
+    build_result_tables,
     main,
 )
 
@@ -125,6 +127,51 @@ def test_headline_replacement_changes_only_the_five_declared_macros():
     assert rendered.endswith("footer\n")
     assert "pending" not in rendered
     assert all(f"{{{value}}}" in rendered for value in headlines.values())
+
+
+def test_result_tables_cover_all_frozen_groups_and_contrasts():
+    final = {
+        (family, optimizer): 0.4 + 0.01 * index
+        for family in ("dense", "late")
+        for index, optimizer in enumerate(("adamw", "muon", "normuon"))
+    }
+    rows = _rows()
+    rows.pop("correlation_rows")
+
+    tables = build_result_tables(final_medians=final, **rows)
+
+    assert set(tables) == {
+        "paper/generated/discovery.tex",
+        "paper/generated/common-state.tex",
+        "paper/generated/representation.tex",
+        "paper/generated/intervention.tex",
+        "paper/generated/confirmation.tex",
+    }
+    discovery = tables["paper/generated/discovery.tex"]
+    confirmation = tables["paper/generated/confirmation.tex"]
+    assert (
+        sum(
+            f"{family} & {optimizer}" in discovery
+            for family in ("DenseOn", "LateOn")
+            for optimizer in ("AdamW", "Muon", "NorMuon")
+        )
+        == 6
+    )
+    assert (
+        sum(
+            f"{family} & {contrast}" in confirmation
+            for family in ("DenseOn", "LateOn")
+            for contrast in ("Muon - AdamW", "NorMuon - AdamW", "NorMuon - Muon")
+        )
+        == 6
+    )
+    assert all("ResultPending" not in content for content in tables.values())
+
+
+def test_latex_escape_protects_generated_data_cells():
+    assert _latex_escape("a_b&c%#${}~^\\") == (
+        r"a\_b\&c\%\#\$\{\}\textasciitilde{}\textasciicircum{}\textbackslash{}"
+    )
 
 
 def test_interval_classification_uses_the_frozen_zero_boundary():

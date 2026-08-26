@@ -175,6 +175,8 @@ these new-seed runs support the confirmatory optimizer comparison.
 
 \DiscoveryHeadline.
 
+\input{generated/discovery}
+
 Across the four native learning-rate sweep points, Muon-family median training throughput is
 \MuonFamilyThroughputRatioRange{} of the within-family AdamW baseline, while optimizer-state size is
 \MuonFamilyStateRatioRange{} of AdamW. Thus these runs do not support a raw end-to-end throughput
@@ -216,6 +218,8 @@ than pooled with it. We keep weight decay separate and evaluate raw and per-tens
 directions. The primary measurements are effective rank, condition number, row-energy concentration,
 layer allocation, and pairwise update angle. \CommonStateHeadline.
 
+\input{generated/common-state}
+
 \section{How Does Geometry Reach the Retrieval Function?}
 
 On fixed in-distribution and unseen probes, we measure query--positive alignment, the full margin
@@ -223,6 +227,8 @@ distribution, embedding effective rank and isotropy, hubness, and top-$k$ agreem
 pretrained model. LateOn additionally exposes MaxSim evidence entropy, document-token coverage, and
 repeated-token dominance. We join these measurements to weight trajectories and retrieval scores at
 all 120 checkpoints, and separately analyze within-run first differences. \RepresentationHeadline.
+
+\input{generated/representation}
 
 \section{Causal Controls}
 
@@ -243,6 +249,8 @@ hidden learning rates calibrated to a common global $\lVert\Delta W\rVert_F/\lVe
 target and train over the same 50K groups under three order seeds. All five checkpoints are scored
 on the query-disjoint and unseen functional probes. \InterventionHeadline.
 
+\input{generated/intervention}
+
 \section{Discussion}
 
 The interpretation is selected by evidence rather than by optimizer preference. A Muon
@@ -255,6 +263,8 @@ parameter-space difference is functionally redundant.
 
 The practical recommendation will therefore condition on model family, update strength, and the
 desired compute/quality operating point rather than naming a universal winner. \ConfirmationHeadline.
+
+\input{generated/confirmation}
 
 \section{Limitations}
 

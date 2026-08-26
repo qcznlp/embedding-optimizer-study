@@ -25,6 +25,7 @@ from .outcome_report import (
 )
 from .paper_audit import (
     HEADLINE_MACROS,
+    PAPER_RESULT_TABLE_PATHS,
     _macros,
     audit_paper,
     expected_constant_macros,
@@ -221,6 +222,212 @@ def build_headline_macros(
     return result
 
 
+def _latex_escape(value: object) -> str:
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+    }
+    return "".join(replacements.get(character, character) for character in str(value))
+
+
+def _latex_table(
+    *,
+    environment: str,
+    columns: str,
+    headers: tuple[str, ...],
+    rows: list[tuple[object, ...]],
+    caption: str,
+    label: str,
+) -> str:
+    if environment not in {"table", "table*"} or len(columns) != len(headers):
+        raise ValueError("Invalid generated LaTeX table shape")
+    if not rows or any(len(row) != len(headers) for row in rows):
+        raise ValueError("Generated LaTeX table rows do not match their headers")
+    body = [" & ".join(_latex_escape(cell) for cell in row) + r" \\" for row in rows]
+    return "\n".join(
+        [
+            "% Generated atomically by embed-optim-render-paper-results.",
+            f"\\begin{{{environment}}}[t]",
+            r"\centering",
+            r"\small",
+            f"\\begin{{tabular}}{{{columns}}}",
+            r"\toprule",
+            " & ".join(headers) + r" \\",
+            r"\midrule",
+            *body,
+            r"\bottomrule",
+            r"\end{tabular}",
+            f"\\caption{{{caption}}}",
+            f"\\label{{{label}}}",
+            f"\\end{{{environment}}}",
+            "",
+        ]
+    )
+
+
+def build_result_tables(
+    *,
+    final_medians: dict[tuple[str, str], float],
+    retrieval_rows: list[list[str]],
+    common_rows: list[list[str]],
+    spectrum_rows: list[list[str]],
+    representation_rows: list[list[str]],
+    functional_rows: list[list[str]],
+    hybrid_rows: list[list[str]],
+    short_rows: list[list[str]],
+    confirmation_rows: list[list[str]],
+) -> dict[str, str]:
+    retrieval = _indexed(retrieval_rows, context="retrieval table")
+    common = _indexed(common_rows, context="common-state table")
+    spectra = _indexed(spectrum_rows, context="spectrum table")
+    representation = _indexed(representation_rows, context="representation table")
+    functional = {(row[0], row[1], row[2]): row for row in functional_rows if len(row) >= 8}
+    short = _indexed(short_rows, context="short-branch table")
+    confirmation = _indexed(confirmation_rows, context="confirmation table")
+    optimizer_labels = tuple(OPTIMIZER_LABELS[name] for name in OPTIMIZERS)
+
+    discovery_rows = [
+        (
+            FAMILY_LABELS[family],
+            OPTIMIZER_LABELS[optimizer],
+            f"{final_medians[(family, optimizer)]:.4f}",
+            retrieval[(FAMILY_LABELS[family], OPTIMIZER_LABELS[optimizer])][3],
+        )
+        for family in FAMILIES
+        for optimizer in OPTIMIZERS
+    ]
+    common_table_rows = [
+        (
+            family_label,
+            operator,
+            common[(family_label, operator)][2],
+            spectra[(family_label, operator)][2],
+        )
+        for family_label in FAMILY_LABELS.values()
+        for operator in ("Muon", "NorMuon")
+    ]
+    representation_table_rows = [
+        (
+            family_label,
+            optimizer,
+            representation[(family_label, optimizer)][3],
+            representation[(family_label, optimizer)][5],
+            representation[(family_label, optimizer)][6] if family_label == "LateOn" else "--",
+        )
+        for family_label in FAMILY_LABELS.values()
+        for optimizer in optimizer_labels
+    ]
+    intervention_rows = []
+    for family_label in FAMILY_LABELS.values():
+        matched = "/".join(
+            functional[(family_label, optimizer, "descent")][4] for optimizer in optimizer_labels
+        )
+        shared = "/".join(
+            (
+                short[(family_label, "Muon - AdamW")][3],
+                short[(family_label, "NorMuon - Muon")][3],
+            )
+        )
+        hybrid_deltas = [
+            _finite(row[4]) for row in hybrid_rows if len(row) >= 6 and row[0] == family_label
+        ]
+        if len(hybrid_deltas) != 4:
+            raise ValueError(f"Intervention table requires four hybrid rows for {family_label}")
+        intervention_rows.append(
+            (family_label, matched, shared, f"{statistics.mean(hybrid_deltas):.4f}")
+        )
+    confirmation_table_rows = [
+        (
+            family_label,
+            contrast,
+            *confirmation[(family_label, contrast)][2:6],
+        )
+        for family_label in FAMILY_LABELS.values()
+        for contrast in CONTRAST_LABELS
+    ]
+
+    table_contents = (
+        _latex_table(
+            environment="table*",
+            columns="llcc",
+            headers=("Model", "Optimizer", "Final nDCG@10", "Rates reaching AdamW target"),
+            rows=discovery_rows,
+            caption=(
+                "Discovery retrieval outcomes. Final scores are medians over four learning-rate "
+                "points; target passage uses the frozen within-family AdamW reference."
+            ),
+            label="tab:discovery-results",
+        ),
+        _latex_table(
+            environment="table*",
+            columns="llcc",
+            headers=("Model", "Rule", "Row-CV / AdamW", "Normalized stable rank"),
+            rows=common_table_rows,
+            caption="Same-state update fingerprints under shared gradients.",
+            label="tab:common-state-results",
+        ),
+        _latex_table(
+            environment="table*",
+            columns="llccc",
+            headers=(
+                "Model",
+                "Optimizer",
+                "Unseen margin",
+                "Top-1 agreement",
+                "Late token coverage",
+            ),
+            rows=representation_table_rows,
+            caption=(
+                "Final-stage representation and score geometry, aggregated without selecting a "
+                "BEIR winner."
+            ),
+            label="tab:representation-results",
+        ),
+        _latex_table(
+            environment="table*",
+            columns="lccc",
+            headers=(
+                "Model",
+                r"Matched-step margin $\Delta$ (A/M/N)",
+                r"Shared-start margin $\Delta$ (M--A/N--M)",
+                r"Hybrid AdamW $\Delta$",
+            ),
+            rows=intervention_rows,
+            caption="Immediate, accumulated, and routing-matched causal controls.",
+            label="tab:intervention-results",
+        ),
+        _latex_table(
+            environment="table*",
+            columns="llcccc",
+            headers=(
+                "Model",
+                "Contrast",
+                r"Mean $\Delta$ nDCG@10",
+                r"95\% CI",
+                "Seed W/T/L",
+                "Task W/T/L",
+            ),
+            rows=confirmation_table_rows,
+            caption="Validation-frozen, three-seed confirmatory retrieval contrasts.",
+            label="tab:confirmation-results",
+        ),
+    )
+    if len(table_contents) != len(PAPER_RESULT_TABLE_PATHS):
+        raise ValueError("Generated paper table count differs from the frozen path contract")
+    return {
+        path.as_posix(): content
+        for path, content in zip(PAPER_RESULT_TABLE_PATHS, table_contents, strict=True)
+    }
+
+
 def _replace_headlines(text: str, headlines: dict[str, str]) -> str:
     lines = text.splitlines()
     replaced = set()
@@ -308,12 +515,30 @@ def render_paper_results(
         short_rows=short_rows,
         confirmation_rows=confirmation_rows,
     )
+    result_tables = build_result_tables(
+        final_medians=final_medians,
+        retrieval_rows=retrieval_rows,
+        common_rows=common_rows,
+        spectrum_rows=spectrum_rows,
+        representation_rows=representation_rows,
+        functional_rows=functional_rows,
+        hybrid_rows=hybrid_rows,
+        short_rows=short_rows,
+        confirmation_rows=confirmation_rows,
+    )
+    for relative, content in result_tables.items():
+        _atomic_text(root / relative, content)
     _atomic_text(
         paper_results,
         _replace_headlines(paper_results.read_text(encoding="utf-8"), headlines),
     )
     if any(_macros(paper_results).get(name) != value for name, value in headlines.items()):
         raise ValueError("Rendered paper headline macros do not round-trip")
+    if any(
+        (root / relative).read_text(encoding="utf-8") != content
+        for relative, content in result_tables.items()
+    ):
+        raise ValueError("Rendered paper result tables do not round-trip")
 
     evidence_paths = sorted(
         {
@@ -343,6 +568,7 @@ def render_paper_results(
         },
         "evidence_manifests": [_source(path) for path in evidence_paths],
         "source_tables": [_source(path) for path in source_tables],
+        "result_tables": [_source(root / path) for path in PAPER_RESULT_TABLE_PATHS],
         "headlines": headlines,
         "results_tex": _source(paper_results),
         "claim_boundary": (
