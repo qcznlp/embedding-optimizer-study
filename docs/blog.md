@@ -849,9 +849,11 @@ balancing is the specific NorMuon hypothesis.
 
 The exact checkpoint, run, and matched-pair tables, their content-addressed manifest, and regeneration
 commands are in [`reports/weight-space`](../reports/weight-space/README.md). A follow-on common-state
-and representation-space protocol is preregistered in the
-[`NAACL paper plan`](naacl-paper-plan.md); it separates cold-start optimizer transforms from
-state-warmed transforms and adds a hybrid AdamW control with Muon's exact parameter routing.
+and representation-space protocol is frozen in the [`NAACL paper plan`](naacl-paper-plan.md); it
+separates cold-start optimizer transforms from state-warmed transforms and adds a hybrid AdamW
+control with Muon's exact parameter routing. The protocol ledger discloses that 98 of 1,680 partial
+BEIR units had already been observed when its 20-anchor completion grid was locked, so this is not
+presented as a preregistration made before all outcome inspection.
 
 ## Limitations
 
