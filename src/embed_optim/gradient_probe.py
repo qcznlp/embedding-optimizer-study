@@ -138,6 +138,7 @@ def _validate_common_state_spec(
         "forward_dtype": config["forward_dtype"],
         "storage_dtype": config["storage_dtype"],
         "model_mode": config["model_mode"],
+        "gradient_checkpointing": config["gradient_checkpointing"],
         "weights_advanced": config["weights_advanced"],
     }
     if observed_gradient != expected_gradient:
@@ -263,6 +264,7 @@ def export_gradient_probe(
     device: str = "cuda",
     flash_attention: bool = True,
     train_mode: bool = False,
+    gradient_checkpointing: bool = True,
     overwrite: bool = False,
 ) -> dict[str, Any]:
     """Export clipped hidden-matrix gradients without changing checkpoint weights."""
@@ -312,6 +314,7 @@ def export_gradient_probe(
         "device": device,
         "flash_attention": flash_attention,
         "model_mode": "train" if train_mode else "eval",
+        "gradient_checkpointing": gradient_checkpointing,
         "parameter_partition": "hidden",
         "weights_advanced": False,
     }
@@ -397,6 +400,10 @@ def export_gradient_probe(
         device=device,
         flash_attention=flash_attention,
     )
+    if gradient_checkpointing:
+        if not hasattr(model, "gradient_checkpointing_enable"):
+            raise TypeError("Loaded model does not support gradient checkpointing")
+        model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
     loss, collator = _probe_components(model, family, effective_temperature)
     model.train(mode=train_mode)
     partition = parameter_partition(model)
@@ -537,6 +544,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--no-flash-attention", action="store_true")
     parser.add_argument("--train-mode", action="store_true")
+    parser.add_argument("--no-gradient-checkpointing", action="store_true")
     parser.add_argument("--overwrite", action="store_true")
     return parser
 
@@ -562,6 +570,7 @@ def main(argv: list[str] | None = None) -> None:
         device=args.device,
         flash_attention=not args.no_flash_attention,
         train_mode=args.train_mode,
+        gradient_checkpointing=not args.no_gradient_checkpointing,
         overwrite=args.overwrite,
     )
     print(

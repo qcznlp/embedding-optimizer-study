@@ -25,6 +25,7 @@
     "forward_dtype": "bfloat16",
     "storage_dtype": "float32",
     "model_mode": "eval",
+    "gradient_checkpointing": true,
     "weights_advanced": false
   },
   "operator_protocol": {
@@ -40,5 +41,35 @@
     "device": "cuda"
   },
   "matched_update_normalization": "per-tensor-frobenius-equals-weight-frobenius",
-  "checkpoint_fractions": [0.0, 0.2, 0.6, 1.0]
+  "analysis_protocol": {
+    "sketch_rank": 64,
+    "oversample": 8,
+    "power_iterations": 2,
+    "seed": 42,
+    "matched_update_storage_dtype": "float16",
+    "weight_decay_included": false
+  },
+  "anchor_protocol": {
+    "include_pretrained": true,
+    "run_ids": [
+      "adamw-lr1e-5",
+      "muon-lr1e-3",
+      "normuon-lr1e-3"
+    ],
+    "checkpoint_fractions": [0.2, 0.6, 1.0],
+    "expected_families": ["dense", "late"],
+    "expected_anchors_per_family": 10,
+    "expected_total_anchors": 20,
+    "expected_hidden_partition": {
+      "tensors": 88,
+      "parameters": 110297088
+    },
+    "selection_basis": "Nominal interior learning rates fixed before complete BEIR coverage; mechanism anchors rather than task-suite winner selection.",
+    "freeze_context": {
+      "frozen_at_utc": "2026-08-26T08:31:00Z",
+      "strict_beir_valid_units": 98,
+      "strict_beir_expected_units": 1680,
+      "partial_results_already_observed": true
+    }
+  }
 }

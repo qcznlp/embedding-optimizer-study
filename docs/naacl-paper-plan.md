@@ -337,7 +337,8 @@ The repository implements the frozen-weight state-warm-up protocol with
 `configs/common_state_probe.json` select 32 source-balanced examples, average them into eight ordered
 gradient states, use micro-batches of one, apply the formal global gradient-clipping threshold, and
 never advance the checkpoint weights. Parameters and accumulated gradients remain float32 while the
-forward pass uses the same bfloat16 autocast policy as training. Shards are committed and hashed
+forward pass uses the same bfloat16 autocast and non-reentrant gradient-checkpointing policy as
+training. Shards are committed and hashed
 independently so interrupted GPU exports resume without changing their sample/RNG sequence. The
 analyzer replays the exact AdamW, Muon, and NorMuon state equations used by training, including CUDA
 bfloat16 Newton–Schulz, records raw direction geometry, and exports per-layer Frobenius-matched
@@ -345,6 +346,18 @@ directions for downstream interventions. Weight decay is kept separate;
 otherwise its checkpoint-dependent `lambda W` term would contaminate the comparison of data-gradient
 preconditioners. A one-gradient export is the cold-start diagnostic, but it is not interchangeable
 with the preregistered eight-gradient stateful result.
+
+The formal anchor matrix is also frozen before the complete BEIR matrix is available. The immutable
+spec records that 98 of 1,680 strict units and partial scores had already been observed at freeze
+time; this is therefore a prospective completion lock, not a claim of preregistration before any
+outcome inspection. It includes the pretrained state and the 20%, 60%, and 100% checkpoints from
+`adamw-lr1e-5`, `muon-lr1e-3`, and `normuon-lr1e-3` for each family: 10 anchors per family and 20
+total. These nominal interior-rate trajectories are mechanism anchors, not task-suite winners. The
+`embed-optim-common-state-matrix` dispatcher materializes this exact grid across eight GPUs, resumes
+only provenance-compatible gradient shards, and runs an independent hash audit over all gradient,
+metric, and matched-direction artifacts. The matrix intentionally samples states visited by all
+three optimizer families; every counterfactual transform at an anchor still receives the same
+weights and the same ordered gradient history.
 
 ### Short counterfactual branches
 

@@ -236,6 +236,11 @@ def _validate_common_state_spec(
     operator_config: UpdateOperatorConfig,
     operator_device: str,
     gradient_manifest: dict[str, Any],
+    sketch_rank: int,
+    oversample: int,
+    power_iterations: int,
+    seed: int,
+    storage_dtype: str,
 ) -> dict[str, Any] | None:
     if spec_path is None:
         return None
@@ -252,6 +257,18 @@ def _validate_common_state_spec(
     expected_normalization = "per-tensor-frobenius-equals-weight-frobenius"
     if spec.get("matched_update_normalization") != expected_normalization:
         raise ValueError("Frozen common-state specification has an unsupported normalization")
+    expected_analysis = {
+        "sketch_rank": sketch_rank,
+        "oversample": oversample,
+        "power_iterations": power_iterations,
+        "seed": seed,
+        "matched_update_storage_dtype": storage_dtype,
+        "weight_decay_included": False,
+    }
+    if spec.get("analysis_protocol") != expected_analysis:
+        raise ValueError(
+            "Update analysis settings differ from the frozen common-state specification"
+        )
     declared = gradient_manifest.get("common_state_spec")
     if not isinstance(declared, dict) or declared.get("sha256") != _sha256(path):
         raise ValueError("Gradient manifest does not use the requested common-state specification")
@@ -292,6 +309,11 @@ def analyze_common_state_updates(
         operator_config=operator_config,
         operator_device=operator_device,
         gradient_manifest=gradient_manifest_payload,
+        sketch_rank=sketch_rank,
+        oversample=oversample,
+        power_iterations=power_iterations,
+        seed=seed,
+        storage_dtype=storage_dtype,
     )
     checkpoint_inputs = _checkpoint_inputs(checkpoint)
     declared_checkpoint = gradient_manifest_payload.get("checkpoint")

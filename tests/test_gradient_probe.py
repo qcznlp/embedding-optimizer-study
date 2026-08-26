@@ -138,6 +138,7 @@ def _common_state_spec(root: Path, probe: Path) -> Path:
                     "forward_dtype": "float32",
                     "storage_dtype": "float32",
                     "model_mode": "eval",
+                    "gradient_checkpointing": False,
                     "weights_advanced": False,
                 },
                 "operator_protocol": {
@@ -151,7 +152,14 @@ def _common_state_spec(root: Path, probe: Path) -> Path:
                 },
                 "operator_runtime": {"device": "cpu"},
                 "matched_update_normalization": ("per-tensor-frobenius-equals-weight-frobenius"),
-                "checkpoint_fractions": [0.0, 1.0],
+                "analysis_protocol": {
+                    "sketch_rank": 2,
+                    "oversample": 0,
+                    "power_iterations": 0,
+                    "seed": 42,
+                    "matched_update_storage_dtype": "float32",
+                    "weight_decay_included": False,
+                },
             },
             sort_keys=True,
         )
@@ -210,6 +218,7 @@ def test_gradient_export_is_resumable_and_feeds_common_state_analysis(tmp_path: 
         storage_dtype="float32",
         device="cpu",
         flash_attention=False,
+        gradient_checkpointing=False,
     )
 
     assert manifest["status"] == "complete"
@@ -243,6 +252,7 @@ def test_gradient_export_is_resumable_and_feeds_common_state_analysis(tmp_path: 
         storage_dtype="float32",
         device="cpu",
         flash_attention=False,
+        gradient_checkpointing=False,
     )
     assert resumed == manifest
     assert (output / "gradient-0001.safetensors").stat().st_mtime_ns == before

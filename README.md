@@ -483,38 +483,67 @@ Every export and metric report is content-hash audited before it is skipped on r
 ### 7. Compare common-state optimizer updates
 
 The checkpoint trajectories above cannot isolate an optimizer rule because each completed run visits
-different weights and gradients. The common-state pipeline first caches a fixed sequence of gradients
-without advancing the checkpoint:
+different weights and gradients. The formal matrix is frozen before complete BEIR coverage: it uses
+the pretrained state plus the 20%, 60%, and 100% checkpoints from the nominal interior-rate
+`adamw-lr1e-5`, `muon-lr1e-3`, and `normuon-lr1e-3` trajectories in both families. These are
+mechanism anchors, not configurations selected as BEIR winners. The spec transparently records that
+98 of 1,680 strict BEIR units and partial scores had already been observed when this anchor grid was
+frozen, so this is a prospective completion lock rather than a claim of preregistration before all
+outcome inspection. Inspect the exact 20-job matrix without using a GPU:
+
+```bash
+embed-optim-common-state-matrix --dry-run
+```
+
+After retrieval evaluation releases the GPUs, run the resumable matrix with:
+
+```bash
+embed-optim-common-state-matrix \
+  --matrix configs/experiment.yaml \
+  --gpus 0,1,2,3,4,5,6,7
+```
+
+Each worker first caches a fixed sequence of gradients without advancing its checkpoint, then runs
+the update analyzer on the same visible GPU. The final content audit can be repeated independently:
+
+```bash
+embed-optim-common-state-matrix --audit-only --verify-hashes
+```
+
+For a single ad hoc checkpoint, the equivalent first stage is:
 
 ```bash
 embed-optim-export-gradients \
-  --checkpoint outputs/dense/muon-lr1e-4/checkpoint-2345 \
+  --checkpoint outputs/dense/muon-lr1e-3/checkpoint-2345 \
   --probe data/probes/training-1024-seed1729 \
   --probe-spec configs/representation_probe.json \
   --common-state-spec configs/common_state_probe.json \
   --family dense \
-  --output-dir results/common-state/gradients/dense-muon-lr1e-4-step2345
+  --output-dir results/common-state/dense/muon-lr1e-3/checkpoint-2345/gradients
 ```
 
 The frozen specification selects 32 probe examples with a seeded, source-balanced round robin and
 forms eight ordered four-example gradients using micro-batches of one. Like formal training, model
 parameters and accumulated gradients remain float32 while forward operations use bfloat16 autocast.
-Every gradient is computed in evaluation mode at the identical weights, clipped at the training
-threshold of 1.0 across all model parameters, and then saves only the exact hidden-matrix partition
-used by Muon. The runtime-to-safetensors name mapping is required to be a complete one-to-one match
-and is recorded explicitly. The checkpoint, probe, selection, clipping factor, loss, tensor
-partition, runtime, and every shard are content-hashed. A partially completed export resumes only
-after validating every committed shard.
+Non-reentrant gradient checkpointing preserves the formal memory policy. Every gradient is computed
+in evaluation mode at the identical weights, clipped at the training threshold of 1.0 across all
+model parameters, and then saves only the exact hidden-matrix partition used by Muon. The
+runtime-to-safetensors name mapping is required to be a complete one-to-one match and is recorded
+explicitly. The checkpoint, probe, selection, clipping factor, loss, tensor partition, runtime, and
+every shard are content-hashed. A partially completed export resumes only after validating every
+committed shard.
 
 Replay that shared gradient history through the three optimizer state machines with:
 
 ```bash
 embed-optim-analyze-updates \
-  --checkpoint outputs/dense/muon-lr1e-4/checkpoint-2345 \
+  --checkpoint outputs/dense/muon-lr1e-3/checkpoint-2345 \
   --gradient-manifest \
-    results/common-state/gradients/dense-muon-lr1e-4-step2345/manifest.json \
+    results/common-state/dense/muon-lr1e-3/checkpoint-2345/gradients/manifest.json \
   --common-state-spec configs/common_state_probe.json \
-  --output-dir results/common-state/updates/dense-muon-lr1e-4-step2345
+  --operator-device cuda \
+  --storage-dtype float16 \
+  --output-dir results/common-state/dense/muon-lr1e-3/checkpoint-2345/updates
 ```
 
 This advances AdamW's coordinate moments, Muon's momentum, and NorMuon's momentum plus row-wise
