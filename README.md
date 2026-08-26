@@ -244,11 +244,13 @@ embed-optim-post-eval-pipeline
 It waits for the strict progress snapshot to reach 1,680/1,680, allows evaluator processes to settle,
 then executes the strict evaluation/W&B/blog gates, common-state matrix and exact spectra, both
 representation tiers, all summaries and plots, the cross-space bridge, and final repository
-validation. Dense and LateOn probe exports run separately with conservative family-specific batch
-sizes while using all declared GPUs. Every step has an isolated log and an atomic JSON ledger under
-`logs/post-eval-pipeline/`; failed steps retry and leave an exact restart diagnosis. `--wait-pids`
-can additionally hold the handoff until known evaluator coordinators exit, and `--dry-run` prints the
-complete command plan without waiting or launching work.
+validation. It also completes the eight-run hybrid-AdamW routing control, all three confirmatory
+training/evaluation seeds, and the three-seed shared-checkpoint short branches before rebuilding the
+ACL-format paper draft. Dense and LateOn probe exports run separately with conservative
+family-specific batch sizes while using all declared GPUs. Every step has an isolated log and an
+atomic JSON ledger under `logs/post-eval-pipeline/`; failed steps retry and leave an exact restart
+diagnosis. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit,
+and `--dry-run` prints the complete command plan without waiting or launching work.
 
 Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned in
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks

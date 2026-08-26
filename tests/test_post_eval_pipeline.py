@@ -61,9 +61,9 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     args = _args(tmp_path, "--dry-run")
     steps = pipeline_steps(args)
 
-    assert len(steps) == 29
+    assert len(steps) == 46
     assert steps[0].name == "strict-evaluation-audit"
-    assert steps[-1].name == "mechanism-blog-render"
+    assert steps[-1].name == "paper-draft-build"
     assert [step.name for step in steps].index("mechanism-bridge") < [
         step.name for step in steps
     ].index("mechanism-blog-render")
@@ -82,6 +82,24 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     assert [step.name for step in steps].index("functional-intervention-summary") < [
         step.name for step in steps
     ].index("training-dense-representation-matrix")
+    assert [step.name for step in steps].index("hybrid-adamw-training") < [
+        step.name for step in steps
+    ].index("hybrid-adamw-evaluation")
+    assert [step.name for step in steps].index("confirmatory-matrix-generation") < [
+        step.name for step in steps
+    ].index("confirmatory-training-seed-314159")
+    assert [step.name for step in steps].index("confirmatory-training-seed-161803") < [
+        step.name for step in steps
+    ].index("confirmatory-evaluation")
+    assert [step.name for step in steps].index("short-branch-matrix-generation") < [
+        step.name for step in steps
+    ].index("short-branch-training-seed-314159")
+    assert [step.name for step in steps].index("short-branch-training-seed-161803") < [
+        step.name for step in steps
+    ].index("short-branch-evaluation")
+    assert [step.name for step in steps].index("short-branch-evaluation-audit") < [
+        step.name for step in steps
+    ].index("short-branch-summary")
     late = next(step for step in steps if step.name == "late-token-dynamics-plot")
     assert late.command[1] == "-c"
     assert supervise_post_eval(args) == 0
@@ -100,14 +118,14 @@ def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
         return subprocess.CompletedProcess(command, 0)
 
     assert supervise_post_eval(args, run_command=run, pid_exists=lambda pid: False) == 0
-    assert len(commands) == 29
+    assert len(commands) == 46
     ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
     assert ledger["complete"] is True
     assert ledger["wait_pids"] == [12345]
-    assert len(ledger["steps"]) == 29
+    assert len(ledger["steps"]) == 46
     assert all(step["complete"] for step in ledger["steps"])
     assert all(len(step["attempts"]) == 1 for step in ledger["steps"])
-    assert len(list(Path(args.log_dir).glob("*.log"))) == 29
+    assert len(list(Path(args.log_dir).glob("*.log"))) == 46
 
 
 def test_pipeline_retries_then_records_failed_step(tmp_path: Path):

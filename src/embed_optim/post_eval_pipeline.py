@@ -312,6 +312,156 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
             ),
         ]
     )
+    training_pools = (
+        "--gpus-a",
+        args.gpus_a,
+        "--gpus-b",
+        args.gpus_b,
+    )
+    steps.extend(
+        [
+            PipelineStep(
+                "hybrid-adamw-training",
+                _module(
+                    args.python,
+                    "embed_optim.matrix",
+                    "--matrix",
+                    "configs/hybrid_adamw.yaml",
+                    *training_pools,
+                    "--port-a",
+                    "29810",
+                    "--port-b",
+                    "29820",
+                    "--log-dir",
+                    "logs/hybrid-adamw-training",
+                ),
+            ),
+            PipelineStep(
+                "hybrid-adamw-evaluation",
+                _module(
+                    args.python,
+                    "embed_optim.evaluate_matrix",
+                    "--matrix",
+                    "configs/hybrid_adamw.yaml",
+                    "--stages",
+                    "5",
+                    *training_pools,
+                    "--late-port-a",
+                    "29830",
+                    "--late-port",
+                    "29840",
+                    "--results-root",
+                    "results/hybrid-adamw-beir",
+                    "--log-dir",
+                    "logs/hybrid-adamw-evaluation",
+                    "--worker-python",
+                    args.python,
+                ),
+            ),
+            PipelineStep(
+                "hybrid-adamw-summary",
+                _module(args.python, "embed_optim.hybrid_control"),
+            ),
+        ]
+    )
+    confirmatory_seeds = (314159, 271828, 161803)
+    for offset, seed in enumerate(confirmatory_seeds):
+        steps.append(
+            PipelineStep(
+                f"confirmatory-training-seed-{seed}",
+                _module(
+                    args.python,
+                    "embed_optim.matrix",
+                    "--matrix",
+                    f"configs/generated/confirmatory/seed{seed}.yaml",
+                    *training_pools,
+                    "--port-a",
+                    str(29910 + 20 * offset),
+                    "--port-b",
+                    str(29920 + 20 * offset),
+                    "--log-dir",
+                    f"logs/confirmatory-training/seed{seed}",
+                ),
+            )
+        )
+    steps.extend(
+        [
+            PipelineStep(
+                "confirmatory-evaluation",
+                _module(
+                    args.python,
+                    "embed_optim.confirmatory_evaluation",
+                    *training_pools,
+                    "--worker-python",
+                    args.python,
+                ),
+            ),
+            PipelineStep(
+                "confirmatory-evaluation-audit",
+                _module(
+                    args.python,
+                    "embed_optim.confirmatory_evaluation",
+                    "--audit-only",
+                ),
+            ),
+            PipelineStep(
+                "confirmatory-summary",
+                _module(args.python, "embed_optim.confirmatory_summary"),
+            ),
+        ]
+    )
+    for offset, seed in enumerate(confirmatory_seeds):
+        steps.append(
+            PipelineStep(
+                f"short-branch-training-seed-{seed}",
+                _module(
+                    args.python,
+                    "embed_optim.matrix",
+                    "--matrix",
+                    f"configs/generated/short-branch/seed{seed}.yaml",
+                    *training_pools,
+                    "--port-a",
+                    str(30010 + 20 * offset),
+                    "--port-b",
+                    str(30020 + 20 * offset),
+                    "--log-dir",
+                    f"logs/short-branch-training/seed{seed}",
+                ),
+            )
+        )
+    steps.extend(
+        [
+            PipelineStep(
+                "short-branch-training-audit",
+                _module(args.python, "embed_optim.short_branch", "--audit-only"),
+            ),
+            PipelineStep(
+                "short-branch-evaluation",
+                _module(
+                    args.python,
+                    "embed_optim.short_branch_evaluation",
+                    "--gpus",
+                    args.gpus,
+                    "--max-retries",
+                    str(args.worker_retries),
+                ),
+            ),
+            PipelineStep(
+                "short-branch-evaluation-audit",
+                _module(
+                    args.python,
+                    "embed_optim.short_branch_evaluation",
+                    "--audit-only",
+                    "--verify-hashes",
+                ),
+            ),
+            PipelineStep(
+                "short-branch-summary",
+                _module(args.python, "embed_optim.short_branch_summary"),
+            ),
+            PipelineStep("paper-draft-build", ("make", "-C", "paper")),
+        ]
+    )
     if not args.skip_validation:
         steps.extend(
             [
@@ -491,6 +641,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--reports-dir", default="reports")
     parser.add_argument("--blog", default="docs/blog.md")
     parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
+    parser.add_argument("--gpus-a", default="0,1,2,3")
+    parser.add_argument("--gpus-b", default="4,5,6,7")
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--workdir", default=str(Path.cwd()))
     parser.add_argument("--log-dir", default="logs/post-eval-pipeline")
