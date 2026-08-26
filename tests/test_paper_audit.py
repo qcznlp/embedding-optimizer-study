@@ -54,6 +54,7 @@ def test_current_paper_constants_match_strict_sources():
     assert discovery_evidence[3]["complete"] is False
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert len(result["claim_protocol"]["source_bindings"]) == 10
+    assert result["paper_results"]["complete"] is False
 
 
 def test_paper_claim_protocol_freezes_result_contingent_language_before_completion():
@@ -154,6 +155,14 @@ def test_retrieval_dynamics_manifest_requires_full_hashed_contract(tmp_path: Pat
 
 def test_outcome_manifest_requires_final_blog_and_source_hash_contract(tmp_path: Path):
     path = tmp_path / "reports" / "outcome-summary.manifest.json"
+    path.parent.mkdir(parents=True)
+    path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
+
+    assert _complete_manifest(path) is False
+
+
+def test_paper_results_manifest_requires_generated_tex_and_all_evidence(tmp_path: Path):
+    path = tmp_path / "reports" / "paper-results.manifest.json"
     path.parent.mkdir(parents=True)
     path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
 

@@ -24,6 +24,11 @@ Audit the checked-in constants against the frozen matrix, materialized dataset, 
 weight-space manifest with `embed-optim-audit-paper`. The command reports unresolved evidence during
 drafting; `embed-optim-audit-paper --strict` becomes a hard final-submission gate.
 
+After every strict evidence report exists, run `embed-optim-render-paper-results`. It replaces only
+the five headline macros, writes `reports/paper-results.manifest.json`, and binds the resulting
+`results.tex` bytes to the claim protocol, all evidence manifests, and all source tables. The strict
+paper audit rejects a manual headline edit or a stale generated manifest.
+
 ## Evidence contract
 
 | Claim family | Authoritative evidence | Required gate |

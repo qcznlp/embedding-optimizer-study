@@ -61,7 +61,7 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     args = _args(tmp_path, "--dry-run")
     steps = pipeline_steps(args)
 
-    assert len(steps) == 52
+    assert len(steps) == 53
     assert steps[0].name == "strict-evaluation-audit"
     assert steps[-1].name == "paper-final-strict-audit"
     assert steps[-1].command[-1] == "--strict"
@@ -121,6 +121,9 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     ].index("outcome-blog-render")
     assert [step.name for step in steps].index("outcome-blog-render") < [
         step.name for step in steps
+    ].index("paper-results-render")
+    assert [step.name for step in steps].index("paper-results-render") < [
+        step.name for step in steps
     ].index("paper-evidence-audit")
     assert [step.name for step in steps].index("paper-evidence-audit") < [
         step.name for step in steps
@@ -146,14 +149,14 @@ def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
         return subprocess.CompletedProcess(command, 0)
 
     assert supervise_post_eval(args, run_command=run, pid_exists=lambda pid: False) == 0
-    assert len(commands) == 52
+    assert len(commands) == 53
     ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
     assert ledger["complete"] is True
     assert ledger["wait_pids"] == [12345]
-    assert len(ledger["steps"]) == 52
+    assert len(ledger["steps"]) == 53
     assert all(step["complete"] for step in ledger["steps"])
     assert all(len(step["attempts"]) == 1 for step in ledger["steps"])
-    assert len(list(Path(args.log_dir).glob("*.log"))) == 52
+    assert len(list(Path(args.log_dir).glob("*.log"))) == 53
 
 
 def test_pipeline_retries_then_records_failed_step(tmp_path: Path):

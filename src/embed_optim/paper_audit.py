@@ -387,6 +387,8 @@ def _complete_manifest(path: Path) -> bool:
         return _retrieval_dynamics_complete(path, payload)
     if path.name == "outcome-summary.manifest.json":
         return _outcome_report_complete(path, payload)
+    if path.name == "paper-results.manifest.json":
+        return _paper_results_complete(path, payload)
     return payload.get("schema_version") == SCHEMA_VERSION and payload.get("complete") is True
 
 
@@ -562,6 +564,55 @@ def _outcome_report_complete(path: Path, payload: dict[str, Any]) -> bool:
     )
 
 
+def _paper_results_complete(path: Path, payload: dict[str, Any]) -> bool:
+    root = path.parents[1]
+    expected_evidence = {
+        (root / relative).resolve() for paths in STRICT_EVIDENCE.values() for relative in paths
+    }
+    claim = payload.get("claim_protocol")
+    evidence = payload.get("evidence_manifests")
+    tables = payload.get("source_tables")
+    headlines = payload.get("headlines")
+    results = payload.get("results_tex")
+    if (
+        payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("complete") is not True
+        or not _hashed_file_complete(
+            root,
+            claim,
+            expected_path=root / "configs/paper_claim_protocol.json",
+        )
+        or claim.get("sha256") != PAPER_CLAIM_PROTOCOL_SHA256
+        or claim.get("status") != "prospective_completion_lock"
+        or not isinstance(evidence, list)
+        or len(evidence) != len(expected_evidence)
+        or {_declared_path(root, record) for record in evidence} != expected_evidence
+        or any(not _hashed_file_complete(root, record) for record in evidence)
+        or not isinstance(tables, list)
+        or len(tables) != 10
+        or any(not _hashed_file_complete(root, record) for record in tables)
+        or not isinstance(headlines, dict)
+        or set(headlines) != set(HEADLINE_MACROS)
+        or any(not isinstance(value, str) or not value for value in headlines.values())
+        or not _hashed_file_complete(
+            root,
+            results,
+            expected_path=root / "paper/results.tex",
+        )
+        or "do not convert descriptive checkpoint associations into causal evidence"
+        not in str(payload.get("claim_boundary", ""))
+    ):
+        return False
+    try:
+        macros = _macros(root / "paper/results.tex")
+    except (OSError, TypeError, ValueError):
+        return False
+    return all(
+        "\\ResultPending" not in value and macros.get(name) == value
+        for name, value in headlines.items()
+    )
+
+
 def audit_paper(
     paper_dir: str | Path = "paper",
     *,
@@ -611,7 +662,9 @@ def audit_paper(
         for headline, items in evidence.items()
         if not items or not all(item["complete"] for item in items)
     )
-    complete = not pending and not incomplete_evidence
+    paper_results_path = root / "reports/paper-results.manifest.json"
+    paper_results_complete = _complete_manifest(paper_results_path)
+    complete = not pending and not incomplete_evidence and paper_results_complete
     result = {
         "schema_version": SCHEMA_VERSION,
         "complete": complete,
@@ -631,11 +684,17 @@ def audit_paper(
         "pending_headlines": pending,
         "incomplete_evidence": incomplete_evidence,
         "evidence": evidence,
+        "paper_results": {
+            "path": str(paper_results_path),
+            "complete": paper_results_complete,
+            "sha256": _sha256(paper_results_path) if paper_results_path.is_file() else None,
+        },
     }
     if strict and not complete:
         raise ValueError(
             "Paper is not final: "
-            f"pending_headlines={pending}, incomplete_evidence={incomplete_evidence}"
+            f"pending_headlines={pending}, incomplete_evidence={incomplete_evidence}, "
+            f"paper_results_complete={paper_results_complete}"
         )
     return result
 
