@@ -352,7 +352,7 @@ reaches a tensor's smaller dimension; set it to zero for an inexpensive exact-st
 Each checkpoint is committed as an atomic JSONL file, hashes and settings are captured in
 `manifest.json`, and an identical rerun resumes by skipping finished checkpoints.
 
-For a preregistered high-resolution tier, `--steps` selects exact saved steps and
+For a prespecified high-resolution tier, `--steps` selects exact saved steps and
 `--tensor-regex` selects named matrices. These options make full-SVD layer/depth probes practical;
 they are mutually exclusive with `--max-checkpoints`. In a selected sequence,
 `delta_from_previous` is relative to the previous selected checkpoint.
@@ -381,7 +381,7 @@ the common-state gradient and virtual-update experiments specified in
 
 ### 6. Prepare and analyze fixed representation probes
 
-Materialize the preregistered training-distribution probe with:
+Materialize the frozen training-distribution probe with:
 
 ```bash
 embed-optim-prepare-probe --spec configs/representation_probe.json
@@ -446,7 +446,7 @@ container overhead); the exact encoded size is recorded per export. The adjacent
 and manifest, and the final archive; it also records array shapes/dtypes, package/CUDA versions,
 context length, prompts, query-expansion state, device, and GPU. The default archive is uncompressed
 to avoid wasting CPU on nearly incompressible fp16 vectors. `--allow-unfrozen-probe` is available for
-exploratory inputs, but such outputs retain their own hashes and are not part of the preregistered
+exploratory inputs, but such outputs retain their own hashes and are not part of the frozen formal
 tier.
 
 `embed-optim-analyze-probe` turns a versioned embedding export into a provenance-checked JSON report.
@@ -572,6 +572,22 @@ the update analyzer on the same visible GPU. The final content audit can be repe
 ```bash
 embed-optim-common-state-matrix --audit-only --verify-hashes
 ```
+
+Once all 20 anchors pass that audit, turn the tensor JSONL files into strict, paper-ready tables:
+
+```bash
+embed-optim-summarize-common-state \
+  --matrix configs/experiment.yaml \
+  --result-root results/common-state \
+  --output-dir reports/common-state
+```
+
+The summarizer rehashes every gradient shard, matched-update tensor file, update record, and
+manifest. It requires the exact frozen anchor grid and an identical hidden-tensor signature across
+both families. The outputs preserve raw per-tensor gradient and update metrics, pairwise direction
+cosines, parameter-weighted anchor summaries, and Muon/NorMuon contrasts against AdamW at the same
+weights and ordered gradient history. As with the representation summarizer, `--allow-partial`
+produces a manifest explicitly marked incomplete and is only for diagnostics.
 
 For a single ad hoc checkpoint, the equivalent first stage is:
 

@@ -483,7 +483,7 @@ def _resolve_reference(config: RunConfig, explicit: Path | None) -> Path:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run the preregistered common-state gradient and update-geometry matrix"
+        description="Run the prospectively frozen common-state gradient and update-geometry matrix"
     )
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
     parser.add_argument(

@@ -81,7 +81,7 @@ conditional, or negative:
 
 The experiments must distinguish these outcomes rather than selecting a narrative afterward.
 
-## Research questions and preregistered hypotheses
+## Research questions and prospectively frozen hypotheses
 
 ### RQ1: Does optimizer choice matter for neural retrieval?
 
@@ -160,7 +160,7 @@ updated from dominating a nominal “Muon weight spectrum” comparison.
 Run the retrospective checkpoint analysis in two tiers. Stream every selected tensor from
 `model.safetensors` and compute inexpensive exact quantities (Frobenius norm, row/column balance,
 checkpoint displacement, and trajectory length) for all 120 checkpoints. Compute full singular
-spectra only for a preregistered layer/checkpoint subset; use a deterministic low-rank sketch for the
+spectra only for a prespecified layer/checkpoint subset; use a deterministic low-rank sketch for the
 remaining tensors and report its captured Frobenius-energy fraction. Store one record per tensor and
 checkpoint with the input model digest, tensor name, optimizer partition, shape, algorithm, seed, and
 approximation settings. A difference between distant checkpoints is a trajectory displacement, not
@@ -179,7 +179,7 @@ rehashes every source model tensor file.
 
 ### Initial descriptive signal from the completed trajectories
 
-The exact-statistics tier already gives the mechanism section a concrete preregistered target. At
+The exact-statistics tier already gives the mechanism section a concrete prespecified target. At
 step 3,907, all eight Muon/NorMuon pairs that share a model family and nominal learning rate have a
 NorMuon-to-Muon pretrained-reference displacement ratio between 1.000668 and 1.003879. Despite this
 nearly identical aggregate scale, NorMuon's parameter-weighted row-norm CV is only 0.232758–0.463783
@@ -351,7 +351,7 @@ match both global and per-layer budgets so a change in layer allocation is not m
 in within-matrix geometry.
 
 The repository implements the frozen-weight state-warm-up protocol with
-`embed-optim-export-gradients` and `embed-optim-analyze-updates`. The preregistered settings in
+`embed-optim-export-gradients` and `embed-optim-analyze-updates`. The prospectively frozen settings in
 `configs/common_state_probe.json` select 32 source-balanced examples, average them into eight ordered
 gradient states, use micro-batches of one, apply the formal global gradient-clipping threshold, and
 never advance the checkpoint weights. Parameters and accumulated gradients remain float32 while the
@@ -365,7 +365,7 @@ bfloat16 Newton–Schulz, records raw direction geometry, and exports per-layer 
 directions for downstream interventions. Weight decay is kept separate;
 otherwise its checkpoint-dependent `lambda W` term would contaminate the comparison of data-gradient
 preconditioners. A one-gradient export is the cold-start diagnostic, but it is not interchangeable
-with the preregistered eight-gradient stateful result.
+with the prospectively frozen eight-gradient stateful result.
 
 The formal anchor matrix is also frozen before the complete BEIR matrix is available. The immutable
 spec records that 98 of 1,680 strict units and partial scores had already been observed at freeze
@@ -378,6 +378,12 @@ only provenance-compatible gradient shards, and runs an independent hash audit o
 metric, and matched-direction artifacts. The matrix intentionally samples states visited by all
 three optimizer families; every counterfactual transform at an anchor still receives the same
 weights and the same ordered gradient history.
+
+After the grid completes, `embed-optim-summarize-common-state` performs a second strict audit and
+emits raw gradient/update tensor tables, anchor-level parameter-weighted summaries, pairwise
+direction cosines, and same-anchor Muon/NorMuon contrasts against AdamW. This is the only supported
+route from the 20 analyzer directories to paper figures: incomplete diagnostics remain visibly
+marked and cannot be mistaken for the final mechanism result.
 
 The spec also preserves one pre-execution amendment: `model_mode` changed from evaluation to
 training before any common-state GPU artifact existed, because Transformers gates gradient
@@ -409,7 +415,7 @@ After the exploratory sweep, freeze one configuration per optimizer and family u
 criterion that does not inspect BEIR test labels. Run at least three seeds (preferably five) with the
 same data IDs but independently seeded negative selection and example order. Report hierarchical
 bootstrap confidence intervals over seeds, tasks, and queries. Use paired randomization/bootstrap
-tests at query level and correct the small set of preregistered optimizer comparisons.
+tests at query level and correct the small set of prospectively frozen optimizer comparisons.
 
 ## Selection protocol and statistical claims
 

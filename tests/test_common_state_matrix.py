@@ -65,7 +65,7 @@ def test_frozen_common_state_protocol_is_self_consistent():
     assert "before any common-state GPU output" in anchor["freeze_context"]["protocol_amendment"]
 
 
-def test_build_common_state_jobs_covers_preregistered_anchor_grid(tmp_path: Path):
+def test_build_common_state_jobs_covers_frozen_anchor_grid(tmp_path: Path):
     configs = [
         _config(tmp_path, family, run_id, optimizer, lr)
         for family in ("dense", "late")

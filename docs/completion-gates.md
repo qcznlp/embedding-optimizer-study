@@ -13,6 +13,8 @@ the authoritative artifact and the command that must validate its full scope.
 | Retrieval evaluation | Pinned evaluation manifest and MTEB result files | All `24 × 5 × 14 = 1,680` run/checkpoint/task units identify the expected local checkpoint, dataset revision, split/subset, runtime, scorer, and finite nDCG@10. |
 | Final statistics | `reports/coverage.json`, long-form tables, summaries, paired effects, and figures | `embed-optim-aggregate --strict` exits zero; no partial or best-effort report is accepted. |
 | Weight-space analysis | [`reports/weight-space/summary_manifest.json`](../reports/weight-space/summary_manifest.json) | 24 runs and 120 checkpoint rows pass record-hash, finite-value, partition, and source-input revalidation. |
+| Common-state mechanism | `reports/common-state/summary_manifest.json` | All 20 frozen anchors, 1,760 gradient tensors, 5,280 optimizer-update tensors, and their declared source hashes pass strict aggregation. |
+| Representation bridge | Both representation-tier `summary_manifest.json` files | Each tier contains exactly two pretrained plus 120 checkpoint reports with the frozen probe identity, sample groups, representation roles, and ranking-reference contract. |
 | Blog | [`docs/blog.md`](blog.md) | Strict aggregation replaces both marked sections and the in-progress sentinel; every reported number derives from checked-in aggregate artifacts. |
 | Reproducible distribution | Wheel, sdist, repository tests, and CI | Package build succeeds; configs, workers, docs, report tables/figures/manifests, citation, license, and notices are present with working local links. |
 | Publication hygiene | Git tracked tree/history and GitHub settings | No credential material is tracked; the repository remains private until the user explicitly requests publication. |
@@ -28,6 +30,11 @@ embed-optim-summarize-geometry \
   --geometry-root results/weight-space \
   --output-dir reports/weight-space \
   --verify-inputs
+embed-optim-common-state-matrix --audit-only --verify-hashes
+embed-optim-summarize-common-state \
+  --matrix configs/experiment.yaml \
+  --result-root results/common-state \
+  --output-dir reports/common-state
 embed-optim-aggregate --matrix configs/experiment.yaml --strict
 
 uv build
