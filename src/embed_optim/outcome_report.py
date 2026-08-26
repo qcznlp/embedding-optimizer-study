@@ -18,6 +18,7 @@ from .mechanism_report import (
 )
 
 OUTCOME_MARKERS = ("<!-- OUTCOMES:BEGIN -->", "<!-- OUTCOMES:END -->")
+MECHANISM_MARKERS = ("<!-- MECHANISM:BEGIN -->", "<!-- MECHANISM:END -->")
 FAMILIES = ("dense", "late")
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CONTRASTS = (("muon", "adamw"), ("normuon", "adamw"), ("normuon", "muon"))
@@ -39,6 +40,29 @@ def _source(manifest_path: Path, **coverage: Any) -> dict[str, Any]:
         "sha256": _sha256(manifest_path),
         **coverage,
     }
+
+
+def _validate_mechanism_section(report_path: Path, blog_path: Path) -> Path:
+    report_path = report_path.resolve()
+    manifest_path = report_path.with_suffix(".manifest.json")
+    manifest = _load_manifest(manifest_path)
+    output = manifest.get("output", {})
+    if (
+        manifest.get("complete") is not True
+        or Path(str(output.get("path", ""))).resolve() != report_path
+        or not report_path.is_file()
+        or report_path.stat().st_size != output.get("bytes")
+        or _sha256(report_path) != output.get("sha256")
+    ):
+        raise ValueError("Mechanism report differs from its strict manifest")
+    blog = blog_path.read_text(encoding="utf-8")
+    begin, end = MECHANISM_MARKERS
+    if blog.count(begin) != 1 or blog.count(end) != 1:
+        raise ValueError("Expected exactly one mechanism marker pair in the blog")
+    rendered = blog.split(begin, 1)[1].split(end, 1)[0].strip()
+    if rendered != report_path.read_text(encoding="utf-8").strip():
+        raise ValueError("Final blog mechanism marker differs from its rendered report")
+    return manifest_path
 
 
 def _hybrid_rows(root: Path) -> tuple[list[list[str]], Path, dict[str, Any]]:
@@ -295,9 +319,12 @@ def render_outcome_report(
     hybrid_dir: Path,
     short_branch_dir: Path,
     confirmatory_dir: Path,
+    mechanism_report: Path,
     blog_path: Path,
     output_path: Path,
 ) -> dict[str, Any]:
+    blog_path = blog_path.resolve()
+    mechanism_manifest_path = _validate_mechanism_section(mechanism_report, blog_path)
     functional, functional_table, functional_manifest = _functional_rows(functional_dir)
     hybrid, hybrid_table, hybrid_manifest = _hybrid_rows(hybrid_dir)
     short, short_table, short_manifest = _short_branch_rows(short_branch_dir)
@@ -367,9 +394,9 @@ def render_outcome_report(
     )
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
-    blog_path = blog_path.resolve()
     _atomic_text(blog_path, _replace_marked(blog_path.read_text(encoding="utf-8"), content))
     source_manifests = {
+        "mechanism_report": _source(mechanism_manifest_path),
         "functional_intervention": _source(
             functional_dir / "manifest.json", anchors=functional_manifest["anchors"]
         ),
@@ -424,6 +451,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--hybrid-dir", type=Path, default=Path("reports/hybrid-adamw"))
     parser.add_argument("--short-branch-dir", type=Path, default=Path("reports/short-branch"))
     parser.add_argument("--confirmatory-dir", type=Path, default=Path("reports/confirmatory"))
+    parser.add_argument(
+        "--mechanism-report", type=Path, default=Path("reports/mechanism-summary.md")
+    )
     parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument("--output", type=Path, default=Path("reports/outcome-summary.md"))
     return parser.parse_args(argv)
@@ -436,6 +466,7 @@ def main(argv: list[str] | None = None) -> None:
         args.hybrid_dir,
         args.short_branch_dir,
         args.confirmatory_dir,
+        args.mechanism_report,
         args.blog,
         args.output,
     )

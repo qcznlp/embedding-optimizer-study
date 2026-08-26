@@ -227,6 +227,8 @@ def _complete_manifest(path: Path) -> bool:
         )
     if path.name == "summary_manifest.json" and path.parent.name == "retrieval-dynamics":
         return _retrieval_dynamics_complete(path, payload)
+    if path.name == "outcome-summary.manifest.json":
+        return _outcome_report_complete(path, payload)
     return payload.get("schema_version") == SCHEMA_VERSION and payload.get("complete") is True
 
 
@@ -332,6 +334,73 @@ def _retrieval_dynamics_complete(path: Path, payload: dict[str, Any]) -> bool:
     result_paths = [_declared_path(root, record) for record in result_records]
     return len(set(result_paths)) == 1_680 and all(
         _hashed_file_complete(root, record) for record in result_records
+    )
+
+
+def _outcome_report_complete(path: Path, payload: dict[str, Any]) -> bool:
+    root = path.parents[1]
+    sources = payload.get("sources", {})
+    expected_sources = {
+        "mechanism_report": root / "reports/mechanism-summary.manifest.json",
+        "functional_intervention": root / "reports/functional-intervention/manifest.json",
+        "hybrid_adamw": root / "reports/hybrid-adamw/summary_manifest.json",
+        "short_branch": root / "reports/short-branch/summary_manifest.json",
+        "confirmation": root / "reports/confirmatory/summary_manifest.json",
+    }
+    if (
+        payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("complete") is not True
+        or not isinstance(sources, dict)
+        or set(sources) != set(expected_sources)
+        or any(
+            not _hashed_file_complete(root, sources[name], expected_path=source_path)
+            or not _complete_manifest(source_path)
+            for name, source_path in expected_sources.items()
+        )
+    ):
+        return False
+
+    expected_tables = (
+        root / "reports/functional-intervention/family_summary.csv",
+        root / "reports/hybrid-adamw/final_summary.csv",
+        root / "reports/short-branch/paired_dynamics_summary.csv",
+        root / "reports/confirmatory/paired_summary.csv",
+    )
+    tables = payload.get("source_tables")
+    if (
+        not isinstance(tables, list)
+        or len(tables) != len(expected_tables)
+        or any(
+            not _hashed_file_complete(root, record, expected_path=expected)
+            for record, expected in zip(tables, expected_tables, strict=True)
+        )
+    ):
+        return False
+
+    report_path = root / "reports/outcome-summary.md"
+    blog_path = root / "docs/blog.md"
+    if (
+        not _hashed_file_complete(root, payload.get("output"), expected_path=report_path)
+        or not _hashed_file_complete(root, payload.get("blog"), expected_path=blog_path)
+        or payload.get("blog", {}).get("markers")
+        != ["<!-- OUTCOMES:BEGIN -->", "<!-- OUTCOMES:END -->"]
+    ):
+        return False
+    try:
+        blog = blog_path.read_text(encoding="utf-8")
+        outcome = report_path.read_text(encoding="utf-8").strip()
+        mechanism_manifest = _json(expected_sources["mechanism_report"])
+        mechanism_path = _declared_path(root, mechanism_manifest.get("output"))
+        mechanism = mechanism_path.read_text(encoding="utf-8").strip()
+    except (OSError, AttributeError, json.JSONDecodeError, TypeError, ValueError):
+        return False
+    outcome_begin, outcome_end = "<!-- OUTCOMES:BEGIN -->", "<!-- OUTCOMES:END -->"
+    mechanism_begin, mechanism_end = "<!-- MECHANISM:BEGIN -->", "<!-- MECHANISM:END -->"
+    return (
+        blog.count(outcome_begin) == blog.count(outcome_end) == 1
+        and blog.count(mechanism_begin) == blog.count(mechanism_end) == 1
+        and blog.split(outcome_begin, 1)[1].split(outcome_end, 1)[0].strip() == outcome
+        and blog.split(mechanism_begin, 1)[1].split(mechanism_end, 1)[0].strip() == mechanism
     )
 
 

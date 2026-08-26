@@ -83,3 +83,11 @@ def test_retrieval_dynamics_manifest_requires_full_hashed_contract(tmp_path: Pat
     path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
 
     assert _complete_manifest(path) is False
+
+
+def test_outcome_manifest_requires_final_blog_and_source_hash_contract(tmp_path: Path):
+    path = tmp_path / "reports" / "outcome-summary.manifest.json"
+    path.parent.mkdir(parents=True)
+    path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
+
+    assert _complete_manifest(path) is False

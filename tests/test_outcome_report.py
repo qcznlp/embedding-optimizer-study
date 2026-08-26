@@ -205,21 +205,41 @@ def _inputs(tmp_path: Path):
     hybrid = _hybrid(tmp_path / "hybrid")
     short = _short(tmp_path / "short")
     confirmatory = _confirmatory(tmp_path / "confirmatory")
+    mechanism = tmp_path / "reports" / "mechanism-summary.md"
+    mechanism.parent.mkdir(parents=True, exist_ok=True)
+    mechanism.write_text("mechanism evidence\n", encoding="utf-8")
+    _manifest(
+        mechanism.with_suffix(".manifest.json"),
+        {
+            "schema_version": 1,
+            "complete": True,
+            "output": {
+                "path": str(mechanism.resolve()),
+                "bytes": mechanism.stat().st_size,
+                "sha256": _sha256(mechanism),
+            },
+        },
+    )
     blog = tmp_path / "blog.md"
     blog.write_text(
-        "before\n<!-- OUTCOMES:BEGIN -->\nold\n<!-- OUTCOMES:END -->\nafter\n",
+        "before\n<!-- MECHANISM:BEGIN -->\nmechanism evidence\n<!-- MECHANISM:END -->\n"
+        "<!-- OUTCOMES:BEGIN -->\nold\n<!-- OUTCOMES:END -->\nafter\n",
         encoding="utf-8",
     )
-    return functional, hybrid, short, confirmatory, blog
+    return functional, hybrid, short, confirmatory, mechanism, blog
 
 
 def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path):
-    functional, hybrid, short, confirmatory, blog = _inputs(tmp_path)
+    functional, hybrid, short, confirmatory, mechanism, blog = _inputs(tmp_path)
     output = tmp_path / "reports" / "outcome-summary.md"
 
-    manifest = render_outcome_report(functional, hybrid, short, confirmatory, blog, output)
+    manifest = render_outcome_report(
+        functional, hybrid, short, confirmatory, mechanism, blog, output
+    )
     first = (output.read_bytes(), blog.read_bytes())
-    repeated = render_outcome_report(functional, hybrid, short, confirmatory, blog, output)
+    repeated = render_outcome_report(
+        functional, hybrid, short, confirmatory, mechanism, blog, output
+    )
 
     assert manifest == repeated
     assert manifest["complete"] is True
@@ -233,7 +253,7 @@ def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path
 
 
 def test_outcome_report_rejects_hashed_table_drift(tmp_path: Path):
-    functional, hybrid, short, confirmatory, blog = _inputs(tmp_path)
+    functional, hybrid, short, confirmatory, mechanism, blog = _inputs(tmp_path)
     (confirmatory / "paired_summary.csv").write_text("changed\n", encoding="utf-8")
 
     with pytest.raises(ValueError, match="Declared table differs"):
@@ -242,6 +262,23 @@ def test_outcome_report_rejects_hashed_table_drift(tmp_path: Path):
             hybrid,
             short,
             confirmatory,
+            mechanism,
+            blog,
+            tmp_path / "outcome.md",
+        )
+
+
+def test_outcome_report_rejects_stale_mechanism_marker(tmp_path: Path):
+    functional, hybrid, short, confirmatory, mechanism, blog = _inputs(tmp_path)
+    blog.write_text(blog.read_text().replace("mechanism evidence", "stale"), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="mechanism marker differs"):
+        render_outcome_report(
+            functional,
+            hybrid,
+            short,
+            confirmatory,
+            mechanism,
             blog,
             tmp_path / "outcome.md",
         )

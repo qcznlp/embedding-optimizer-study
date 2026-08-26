@@ -271,7 +271,9 @@ The final blog has two independent generated sections. `embed-optim-render-mecha
 retrieval dynamics, common-state spectra, representation geometry, and the descriptive temporal
 bridge. `embed-optim-render-outcome-report` then binds hybrid AdamW routing, scale-matched virtual
 steps, shared-start short branches, and the validation-frozen three-seed BEIR confirmation. Both
-sections are content-hashed and idempotently replace only their declared Markdown marker regions.
+sections are content-hashed and idempotently replace only their declared Markdown marker regions;
+the terminal outcome renderer also verifies that the mechanism marker still byte-matches its source
+report before signing the final whole-blog hash.
 
 Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned in
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
