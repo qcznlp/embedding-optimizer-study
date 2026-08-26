@@ -305,6 +305,11 @@ comparable across checkpoints without trusting filenames or an implicit tokenize
 `embed-optim-probe-matrix` turns this contract into a resumable eight-GPU matrix: it deduplicates the
 two pretrained references, gates dependent checkpoint analyses on the corresponding reference
 archive, and skips a unit only after both its export and metric provenance pass content-hash audits.
+`embed-optim-summarize-probes` is the strict downstream gate: it binds a summary to the frozen probe
+and spec, requires two reference plus 120 checkpoint reports, checks every task/source quota and
+representation role, and emits separate checkpoint, long-form representation, and group tables with
+a hashed summary manifest. This prevents a partial or cross-probe directory from becoming a paper
+figure through manual JSON collection.
 
 ## Causal controls and additional runs
 

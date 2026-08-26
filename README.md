@@ -524,6 +524,23 @@ before their dependent checkpoints, assigns one checkpoint per GPU, and retries 
 Every export and metric report is content-hash audited before it is skipped on resume. Use
 `--dry-run` to list only incomplete jobs without downloading a model or starting a GPU process.
 
+After a tier reaches all 122 jobs, aggregate it without hand-editing JSON:
+
+```bash
+embed-optim-summarize-probes \
+  --matrix configs/experiment.yaml \
+  --result-root results/representation-space/decontaminated-beir \
+  --probe data/probes/decontaminated-beir-224-seed4242 \
+  --probe-spec configs/beir_representation_probe.json
+```
+
+The strict summarizer rehashes every export and metric sidecar, requires exactly two pretrained plus
+120 checkpoint jobs, verifies the eight-candidate and per-group sample contracts, and refuses
+unexpected JSON files. It writes `checkpoint_metrics.csv`, long-form
+`representation_metrics.csv`, per-source/task `group_metrics.csv`, and a hashed
+`summary_manifest.json`. `--allow-partial` is available only for explicitly labeled diagnostics;
+the resulting manifest records `complete: false` and cannot support final-paper claims.
+
 ### 7. Compare common-state optimizer updates
 
 The checkpoint trajectories above cannot isolate an optimizer rule because each completed run visits
