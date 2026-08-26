@@ -127,6 +127,24 @@ as approximations rather than presenting them as actual optimizer steps. The com
 finite values, and emits checkpoint- and run-level trajectory tables; `--verify-inputs` additionally
 rehashes every source model tensor file.
 
+### Initial descriptive signal from the completed trajectories
+
+The exact-statistics tier already gives the mechanism section a concrete preregistered target. At
+step 3,907, all eight Muon/NorMuon pairs that share a model family and nominal learning rate have a
+NorMuon-to-Muon pretrained-reference displacement ratio between 1.000668 and 1.003879. Despite this
+nearly identical aggregate scale, NorMuon's parameter-weighted row-norm CV is only 0.232758–0.463783
+of Muon's, and its top-1%-row energy share is 0.659264–0.730320 of Muon's. The direction repeats for
+all four learning rates in both DenseOn and LateOn.
+The strict source table is
+[`optimizer_pair_contrasts.csv`](../reports/weight-space/optimizer_pair_contrasts.csv).
+
+This pattern supports a precise working hypothesis: NorMuon changes how trajectory energy is
+distributed across neurons without primarily changing total displacement. It is still one-seed,
+integrated-trajectory evidence. The paper must test the same signature on individual common-state
+updates and connect it to token utilization or retrieval behavior before using causal language.
+AdamW uses a different native learning-rate range, so a post-hoc nearest-displacement comparison is
+not an adequate control; use matched-scale virtual updates and hybrid AdamW instead.
+
 ## Weight- and update-space analysis
 
 Use only hidden 2-D matrices for direct Muon/AdamW geometry comparisons, and report attention and
