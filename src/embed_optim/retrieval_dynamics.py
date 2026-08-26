@@ -429,24 +429,29 @@ def build_retrieval_dynamics(
         "sources": {
             "frozen_protocol": {
                 "path": _portable_path(frozen_protocol_path, repository_root),
+                "bytes": frozen_protocol_path.stat().st_size,
                 "sha256": _sha256(frozen_protocol_path),
                 "frozen_at": protocol["frozen_at"],
             },
             "matrix": {
                 "path": _portable_path(matrix_path, repository_root),
+                "bytes": matrix_path.stat().st_size,
                 "sha256": _sha256(matrix_path),
             },
             "strict_coverage": {
                 "path": _portable_path(coverage_file, repository_root),
+                "bytes": coverage_file.stat().st_size,
                 "sha256": _sha256(coverage_file),
                 "observed_results": coverage["observed_results"],
             },
             "training_summary": {
                 "path": _portable_path(training_root / "summary_manifest.json", repository_root),
+                "bytes": (training_root / "summary_manifest.json").stat().st_size,
                 "sha256": _sha256(training_root / "summary_manifest.json"),
             },
             "training_run_table": {
                 "path": _portable_path(training_table, repository_root),
+                "bytes": training_table.stat().st_size,
                 "sha256": _sha256(training_table),
             },
             "evaluation_results": [

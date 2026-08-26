@@ -75,3 +75,11 @@ def test_coverage_uses_its_exact_legacy_contract(tmp_path: Path):
     payload["missing"] = ["dense/example/1/task"]
     path.write_text(json.dumps(payload), encoding="utf-8")
     assert _complete_manifest(path) is False
+
+
+def test_retrieval_dynamics_manifest_requires_full_hashed_contract(tmp_path: Path):
+    path = tmp_path / "reports" / "retrieval-dynamics" / "summary_manifest.json"
+    path.parent.mkdir(parents=True)
+    path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
+
+    assert _complete_manifest(path) is False

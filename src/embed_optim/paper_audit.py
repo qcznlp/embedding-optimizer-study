@@ -221,7 +221,114 @@ def _complete_manifest(path: Path) -> bool:
             and payload.get("missing") == []
             and payload.get("unexpected") == []
         )
+    if path.name == "summary_manifest.json" and path.parent.name == "retrieval-dynamics":
+        return _retrieval_dynamics_complete(path, payload)
     return payload.get("schema_version") == SCHEMA_VERSION and payload.get("complete") is True
+
+
+def _declared_path(root: Path, record: Any) -> Path | None:
+    if not isinstance(record, dict) or not isinstance(record.get("path"), str):
+        return None
+    declared = Path(record["path"])
+    return declared.resolve() if declared.is_absolute() else (root / declared).resolve()
+
+
+def _hashed_file_complete(
+    root: Path,
+    record: Any,
+    *,
+    expected_path: Path | None = None,
+    expected_rows: int | None = None,
+) -> bool:
+    path = _declared_path(root, record)
+    return bool(
+        path is not None
+        and (expected_path is None or path == expected_path.resolve())
+        and path.is_file()
+        and not isinstance(record.get("bytes"), bool)
+        and record.get("bytes") == path.stat().st_size
+        and record.get("sha256") == _sha256(path)
+        and (expected_rows is None or record.get("rows") == expected_rows)
+    )
+
+
+def _retrieval_dynamics_complete(path: Path, payload: dict[str, Any]) -> bool:
+    root = path.parents[2]
+    coverage = payload.get("coverage", {})
+    sources = payload.get("sources", {})
+    outputs = payload.get("outputs", {})
+    if (
+        payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("complete") is not True
+        or coverage
+        != {
+            "runs": 24,
+            "checkpoints": 120,
+            "tasks": 14,
+            "evaluation_units": 1_680,
+            "optimizer_family_groups": 6,
+        }
+        or not isinstance(sources, dict)
+        or not isinstance(outputs, dict)
+    ):
+        return False
+
+    expected_outputs = {
+        "checkpoint_dynamics": ("checkpoint_dynamics.csv", 120),
+        "run_first_passage": ("run_first_passage.csv", 24),
+        "optimizer_first_passage": ("optimizer_first_passage.csv", 6),
+        "quality_vs_useful_wall_time": ("quality_vs_useful_wall_time.svg", None),
+    }
+    if set(outputs) != set(expected_outputs) or any(
+        not _hashed_file_complete(
+            root,
+            outputs[name],
+            expected_path=path.parent / filename,
+            expected_rows=rows,
+        )
+        for name, (filename, rows) in expected_outputs.items()
+    ):
+        return False
+
+    expected_sources = {
+        "frozen_protocol": root / "configs/retrieval_dynamics_protocol.json",
+        "matrix": root / "configs/experiment.yaml",
+        "strict_coverage": root / "reports/coverage.json",
+        "training_summary": root / "reports/training-dynamics/summary_manifest.json",
+        "training_run_table": root / "reports/training-dynamics/run_summary.csv",
+    }
+    if any(
+        not _hashed_file_complete(root, sources.get(name), expected_path=expected)
+        for name, expected in expected_sources.items()
+    ):
+        return False
+    if not _complete_manifest(expected_sources["strict_coverage"]):
+        return False
+
+    try:
+        protocol = _json(expected_sources["frozen_protocol"])
+    except (OSError, json.JSONDecodeError, TypeError, ValueError):
+        return False
+    if (
+        protocol.get("status") != "prospective_completion_lock"
+        or protocol.get("freeze_context", {}).get("strict_beir_valid_units") != 160
+        or protocol.get("freeze_context", {}).get("strict_beir_expected_units") != 1_680
+        or protocol.get("freeze_context", {}).get("complete_retrieval_matrix_visible") is not False
+        or protocol.get("reference_target", {}).get("uses_muon_or_normuon_outcomes") is not False
+        or protocol.get("reference_target", {}).get("uses_confirmation_outcomes") is not False
+        or protocol.get("matrix", {}).get("sha256") != sources["matrix"].get("sha256")
+        or protocol.get("training_summary", {}).get("sha256")
+        != sources["training_summary"].get("sha256")
+    ):
+        return False
+
+    result_records = sources.get("evaluation_results")
+    if not isinstance(result_records, list) or len(result_records) != 1_680:
+        return False
+    result_paths = [_declared_path(root, record) for record in result_records]
+    return len(set(result_paths)) == 1_680 and all(
+        _hashed_file_complete(root, record) for record in result_records
+    )
 
 
 def audit_paper(
