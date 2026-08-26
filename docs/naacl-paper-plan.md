@@ -279,6 +279,13 @@ seed, source-manifest digest, exact selected-ID/ledger digests, and output Datas
 tier is explicitly training-seen and cannot support a held-out generalization claim. A separately
 versioned unseen-BEIR probe remains required for the functional bridge and recipe selection.
 
+`embed-optim-export-probe` supplies the checkpoint-encoding half of the contract. It uses the exact
+Dense query/document prefixes or the pinned PyLate query/document/skiplist behavior, then writes
+positive-first fp16 arrays and explicit LateOn masks. A sidecar binds the archive to all model
+JSON/safetensors inputs, the frozen probe manifest/spec, package versions, context length, prompts,
+and encoding hardware. This makes representation metrics comparable across checkpoints without
+trusting filenames or an implicit tokenizer/model state.
+
 ## Causal controls and additional runs
 
 ### Required fairness control

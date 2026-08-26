@@ -17,6 +17,39 @@ SCHEMA_VERSION = 1
 ModelFamily = Literal["dense", "late"]
 
 
+def _export_manifest_identity(
+    source: Path,
+    *,
+    source_sha256: str,
+    family: ModelFamily,
+    array_metadata: dict[str, Any],
+    required: bool,
+) -> dict[str, str] | None:
+    manifest_path = source.with_suffix(source.suffix + ".manifest.json")
+    if not manifest_path.is_file():
+        if required:
+            raise FileNotFoundError(f"Required probe export manifest is missing: {manifest_path}")
+        return None
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("schema_version") != SCHEMA_VERSION:
+        raise ValueError(f"Unsupported probe export manifest schema in {manifest_path}")
+    if manifest.get("family") != family:
+        raise ValueError(
+            f"Probe export manifest family is {manifest.get('family')!r}, expected {family!r}"
+        )
+    declared_output = manifest.get("output")
+    if not isinstance(declared_output, dict):
+        raise ValueError(f"Probe export manifest lacks output provenance: {manifest_path}")
+    if declared_output.get("sha256") != source_sha256:
+        raise ValueError("Probe archive SHA-256 disagrees with its export manifest")
+    if declared_output.get("arrays") != array_metadata:
+        raise ValueError("Probe archive arrays disagree with their export manifest")
+    encoding = manifest.get("encoding")
+    if not isinstance(encoding, dict) or encoding.get("positive_candidate_index") != 0:
+        raise ValueError("Probe export manifest does not preserve the positive-first convention")
+    return {"path": str(manifest_path), "sha256": _sha256(manifest_path)}
+
+
 def _as_float_tensor(array: np.ndarray, name: str) -> Tensor:
     if array.dtype.kind not in "fiu":
         raise ValueError(f"{name} must be numeric, got dtype={array.dtype}")
@@ -424,10 +457,12 @@ def analyze_probe(
     max_representation_vectors: int = 10_000,
     seed: int = 42,
     top_k: int = 3,
+    require_export_manifest: bool = False,
 ) -> dict[str, Any]:
     source = source.resolve()
     if not source.is_file():
         raise FileNotFoundError(source)
+    source_sha256 = _sha256(source)
     with np.load(source, allow_pickle=False) as archive:
         required = {"sample_ids", "query_embeddings", "document_embeddings"}
         if family == "late":
@@ -506,11 +541,24 @@ def analyze_probe(
         else:
             raise ValueError(f"Unsupported family {family!r}")
 
+    export_manifest = _export_manifest_identity(
+        source,
+        source_sha256=source_sha256,
+        family=family,
+        array_metadata=array_metadata,
+        required=require_export_manifest,
+    )
+
     payload = {
         "schema_version": SCHEMA_VERSION,
         "family": family,
         "label": label,
-        "input": {"path": str(source), "sha256": _sha256(source), "arrays": array_metadata},
+        "input": {
+            "path": str(source),
+            "sha256": source_sha256,
+            "arrays": array_metadata,
+            "export_manifest": export_manifest,
+        },
         "parameters": {
             "batch_size": batch_size,
             "max_representation_vectors": max_representation_vectors,
@@ -518,6 +566,7 @@ def analyze_probe(
             "top_k": top_k,
             "positive_candidate_index": 0,
             "token_evidence_distribution": "minimum-shifted-positive-normalized",
+            "require_export_manifest": require_export_manifest,
         },
         "metrics": metrics,
     }
@@ -537,6 +586,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--max-representation-vectors", type=int, default=10_000)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--top-k", type=int, default=3)
+    parser.add_argument("--require-export-manifest", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -551,6 +601,7 @@ def main(argv: list[str] | None = None) -> None:
         max_representation_vectors=args.max_representation_vectors,
         seed=args.seed,
         top_k=args.top_k,
+        require_export_manifest=args.require_export_manifest,
     )
     print(json.dumps(payload, indent=2, sort_keys=True, allow_nan=False))
 

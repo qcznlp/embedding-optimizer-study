@@ -389,6 +389,27 @@ This canonical probe is a **training-distribution mechanism probe**: all 1,024 g
 diagnostics, but it is not held-out evidence. Any source-validation or unseen-BEIR probe must have a
 separate frozen manifest and must not be selected using the 14-task test scores.
 
+Encode the same probe with a selected checkpoint:
+
+```bash
+embed-optim-export-probe \
+  --checkpoint outputs/dense/muon-lr1e-4/checkpoint-782 \
+  --probe data/probes/training-1024-seed1729 \
+  --probe-spec configs/representation_probe.json \
+  --family dense \
+  --output results/representation-space/exports/dense-muon-lr1e-4-step782.npz
+```
+
+The exporter applies the exact training-side DenseOn query/document prefixes or PyLate's
+query/document encoding and document skiplist, preserves positive-first candidate order, normalizes
+embeddings, and pads only the exported LateOn token arrays while retaining boolean masks. The
+adjacent `.npz.manifest.json` hashes every checkpoint JSON/safetensors input, the frozen probe spec
+and manifest, and the final archive; it also records array shapes/dtypes, package/CUDA versions,
+context length, prompts, query-expansion state, device, and GPU. The default archive is uncompressed
+to avoid wasting CPU on nearly incompressible fp16 vectors. `--allow-unfrozen-probe` is available for
+exploratory inputs, but such outputs retain their own hashes and are not part of the preregistered
+tier.
+
 `embed-optim-analyze-probe` turns a versioned embedding export into a provenance-checked JSON report.
 The `.npz` contract is deliberately model-independent so the same fixed sample IDs can be encoded by
 the pretrained model and any selected checkpoint:
@@ -409,6 +430,7 @@ embed-optim-analyze-probe \
   --input probes/dense/muon-lr1e-4-checkpoint-782.npz \
   --output results/representation-space/dense/muon-lr1e-4-checkpoint-782.json \
   --family dense \
+  --require-export-manifest \
   --label dense/muon-lr1e-4/checkpoint-782
 ```
 
@@ -421,6 +443,8 @@ subsampled with a recorded deterministic seed; scoring itself is exact and batch
 SHA-256, every array shape/dtype, metric settings, and positive-index convention are written with the
 result. This command analyzes exported representations; the checkpoint encoder and probe-selection
 manifest remain separate so sample selection cannot be silently changed during metric computation.
+When the adjacent export sidecar is present it is always validated; `--require-export-manifest`
+makes its absence a hard error for the canonical analysis tier.
 
 ## Performance engineering
 
