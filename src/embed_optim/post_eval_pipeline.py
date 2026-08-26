@@ -164,6 +164,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 ),
             ),
             PipelineStep(
+                "short-branch-matrix-generation",
+                _module(args.python, "embed_optim.short_branch"),
+            ),
+            PipelineStep(
                 "common-state-exact-spectra",
                 _module(
                     args.python,

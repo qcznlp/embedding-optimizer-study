@@ -472,9 +472,19 @@ shared-gradient comparison; the per-shard RNG sequence is fixed and recorded.
 
 ### Short counterfactual branches
 
-From the same pretrained, 20%, and 60% checkpoints, train each optimizer for a short fixed sequence
-of batches. Include optimizer switches in both directions. Evaluate held-out loss, margin, feature
-drift, and a small retrieval probe before any full BEIR run.
+The minimum long-horizon intervention is now frozen in `configs/short_branch_protocol.json`. Both
+families start from the 60% `adamw-lr1e-5` checkpoint (step 2,345), independently of retrieval
+quality. A deterministic proportional 50,000-group subset preserves every query, positive, and
+seven-negative group. AdamW uses hybrid hidden/auxiliary routing; AdamW, Muon, and NorMuon hidden
+learning rates are derived from their common-state raw direction norms so that the calibration
+condition has one shared global hidden update/weight target of `5e-4`. Each operator is then trained
+for one 50K-subset epoch under order seeds `314159`, `271828`, and `161803` (18 runs total).
+
+Evaluate all five branch checkpoints on the frozen query-disjoint validation and 224-query unseen
+retrieval probes, including LateOn token utilization, but do not spend another full-corpus BEIR
+matrix on this mechanism control. This tests whether the scale-matched local direction survives
+repeated updates. Bidirectional optimizer switches from other trajectory checkpoints remain an
+extension rather than a main-paper gate.
 
 ### Component ablations
 

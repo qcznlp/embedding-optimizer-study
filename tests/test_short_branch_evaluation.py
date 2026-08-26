@@ -1,0 +1,77 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from embed_optim.config import OptimizerConfig, RunConfig
+from embed_optim.short_branch_evaluation import (
+    build_short_branch_probe_jobs,
+    build_short_branch_validation_jobs,
+)
+
+
+def _configs(tmp_path: Path) -> dict[int, list[RunConfig]]:
+    result = {}
+    for seed in (314159, 271828, 161803):
+        runs = []
+        for family in ("dense", "late"):
+            for algorithm in ("adamw", "muon", "normuon"):
+                run_id = f"{algorithm}-scale-matched"
+                config = RunConfig(
+                    run_id=run_id,
+                    model_family=family,
+                    optimizer=OptimizerConfig(
+                        name="hybrid_adamw" if algorithm == "adamw" else algorithm,
+                        lr=1e-4,
+                    ),
+                    model_name="unused",
+                    dataset_path="unused",
+                    output_root=str(tmp_path / "outputs" / f"seed{seed}"),
+                    seed=seed,
+                )
+                config.output_dir.mkdir(parents=True)
+                steps = [10, 20, 30, 40, 50]
+                (config.output_dir / "checkpoint_schedule.json").write_text(
+                    json.dumps(
+                        {
+                            "steps": steps,
+                            "fractions": [0.2, 0.4, 0.6, 0.8, 1.0],
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                for step in steps:
+                    (config.output_dir / f"checkpoint-{step}").mkdir()
+                runs.append(config)
+        result[seed] = runs
+    return result
+
+
+def test_short_branch_validation_covers_all_seed_checkpoint_pairs(tmp_path: Path):
+    jobs = build_short_branch_validation_jobs(_configs(tmp_path), tmp_path / "validation")
+
+    assert len(jobs) == 90
+    assert len({job.label for job in jobs}) == 90
+    assert {job.seed for job in jobs} == {314159, 271828, 161803}
+    assert {job.step for job in jobs} == {10, 20, 30, 40, 50}
+    assert all(f"seed{job.seed}" in str(job.output_dir) for job in jobs)
+
+
+def test_short_branch_unseen_probe_adds_two_shared_references(tmp_path: Path):
+    references = {"dense": tmp_path / "dense-base", "late": tmp_path / "late-base"}
+    jobs = build_short_branch_probe_jobs(
+        _configs(tmp_path),
+        references,
+        tmp_path / "unseen",
+        ("probe-manifest", "probe-spec"),
+    )
+
+    reference_jobs = [job for job in jobs if job.kind == "reference"]
+    checkpoint_jobs = [job for job in jobs if job.kind == "checkpoint"]
+    assert len(jobs) == 92
+    assert len(reference_jobs) == 2
+    assert len(checkpoint_jobs) == 90
+    assert len({job.label for job in jobs}) == 92
+    assert all(job.probe_manifest_sha256 == "probe-manifest" for job in jobs)
+    assert all(job.probe_spec_sha256 == "probe-spec" for job in jobs)
+    assert all(job.reference_export is not None for job in checkpoint_jobs)

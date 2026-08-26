@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "status": "prospective_completion_lock",
+  "source": {
+    "training_data": "data/denseon-sft-500k-seed42",
+    "manifest_sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8",
+    "row_ledger_sha256": "113cc571cfe30d458474c85e3237e6b34d292fffebfeda8d0d7b9b790b86f52a",
+    "queries": 500000
+  },
+  "subset": {
+    "selection_seed": 20260826,
+    "count": 50000,
+    "allocation": "proportional largest remainder over the frozen seven source quotas",
+    "order": "ascending original sample_id after deterministic within-source selection",
+    "preserve_query_positive_and_negative_groups": true,
+    "output": "data/short-branch-50k-seed20260826"
+  },
+  "shared_start": {
+    "fraction": 0.6,
+    "run_id": "adamw-lr1e-5",
+    "checkpoint_step": 2345,
+    "checkpoints": {
+      "dense": "outputs/dense/adamw-lr1e-5/checkpoint-2345",
+      "late": "outputs/late/adamw-lr1e-5/checkpoint-2345"
+    },
+    "selection_basis": "The common 60% interior AdamW trajectory anchor was fixed independently of retrieval quality."
+  },
+  "scale_calibration": {
+    "common_state_spec": "configs/common_state_probe.json",
+    "gradient_history_steps": 8,
+    "target_global_hidden_update_to_weight": 0.0005,
+    "weight_decay_included": false,
+    "rule": "For each family and optimizer, hidden_lr = target / sqrt(sum_tensor ||D||_F^2 / sum_tensor ||W||_F^2), using the frozen common-state raw direction after eight shared gradients at the shared start.",
+    "update_metrics": {
+      "dense": "results/common-state/dense/adamw-lr1e-5/checkpoint-2345/updates/metrics.jsonl",
+      "late": "results/common-state/late/adamw-lr1e-5/checkpoint-2345/updates/metrics.jsonl"
+    }
+  },
+  "training": {
+    "order_seeds": [314159, 271828, 161803],
+    "optimizer_operators": ["adamw", "muon", "normuon"],
+    "adamw_operator_uses_hybrid_routing": true,
+    "auxiliary_adamw_lr": 0.000003,
+    "runs_per_seed": 6,
+    "expected_runs": 18,
+    "epochs": 1.0,
+    "checkpoint_fractions": [0.2, 0.4, 0.6, 0.8, 1.0],
+    "output_root": "outputs/short-branch",
+    "matrix_output_dir": "configs/generated/short-branch"
+  },
+  "evaluation": {
+    "query_disjoint_probe": "data/validation-4096-seed20260826",
+    "unseen_retrieval_probe": "data/probes/decontaminated-beir-224-seed4242",
+    "evaluate_all_five_branch_checkpoints": true,
+    "full_corpus_beir": false,
+    "primary_metrics": [
+      "eight-way contrastive loss",
+      "positive margin",
+      "reciprocal rank",
+      "top-1 accuracy",
+      "pretrained ranking agreement",
+      "LateOn MaxSim token utilization"
+    ]
+  },
+  "freeze_context": {
+    "frozen_at_utc": "2026-08-26T15:24:39Z",
+    "strict_beir_valid_units": 154,
+    "strict_beir_expected_units": 1680,
+    "completed_weight_trajectories_visible": true,
+    "common_state_outputs_visible": false,
+    "short_branch_data_or_model_outputs_exist": false,
+    "note": "The shared start, 50K selection rule, update-scale target, order seeds, branch length, and probe-only evaluation were locked before common-state or short-branch outputs existed."
+  }
+}

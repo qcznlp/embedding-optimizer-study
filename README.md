@@ -674,6 +674,41 @@ They retain five training checkpoints for artifact/resume auditing, but only the
 part of the confirmatory BEIR claim: `18 × 14 = 252` formal retrieval units. This yields seed-level
 uncertainty without reusing the discovery seed or selecting a learning rate on BEIR test outcomes.
 
+### Shared-checkpoint scale-matched short branch
+
+The local virtual-step intervention is complemented by one accumulated-trajectory control frozen in
+[`short_branch_protocol.json`](configs/short_branch_protocol.json). It selects an exact proportional
+50,000-group subset from the original data and starts both families from the fixed 60% AdamW
+checkpoint at step 2,345. Prepare or audit the shared subset with:
+
+```bash
+embed-optim-short-branch --subset-only
+embed-optim-short-branch --subset-only --audit-only
+```
+
+After the formal common-state matrix exists, run `embed-optim-short-branch` to derive each
+family/operator hidden learning rate from the raw update norms at that shared state. The fixed rule
+targets global hidden `||ΔW||F / ||W||F = 5e-4`; AdamW uses the same hidden/auxiliary routing as
+Muon, and auxiliary AdamW remains `3e-6`. The command emits three explicit matrices with six runs
+each:
+
+```bash
+embed-optim-short-branch
+embed-optim-short-branch --audit-only
+
+embed-optim-matrix --matrix configs/generated/short-branch/seed314159.yaml
+embed-optim-matrix --matrix configs/generated/short-branch/seed271828.yaml
+embed-optim-matrix --matrix configs/generated/short-branch/seed161803.yaml
+
+# After all 18 branches finish, score every retained checkpoint on both frozen probes.
+embed-optim-short-branch-evaluate --gpus 0,1,2,3,4,5,6,7
+embed-optim-short-branch-evaluate --audit-only
+```
+
+All five branch checkpoints are evaluated on the frozen query-disjoint validation and 224-query
+unseen functional probes, not another full-corpus BEIR sweep. This 18-run branch tests whether an
+immediate scale-matched directional effect accumulates under three different example orders.
+
 ### Hybrid AdamW routing control
 
 The prospectively locked NAACL fairness control is separate from the 24-run discovery matrix:

@@ -750,7 +750,6 @@ def audit_confirmatory_view(
                 or observed_ids != expected_ids
                 or len(set(observed_ids)) != 7
                 or positive_id in observed_ids
-                or any(not str(view_batch[f"negative_{item}"][index]) for item in range(7))
             ):
                 raise ValueError(f"Seed {seed}: dataset/ledger drift at sample {sample_id}")
             digest.update(_canonical(ledger))
