@@ -16,7 +16,8 @@ the authoritative artifact and the command that must validate its full scope.
 | Common-state mechanism | `reports/common-state/summary_manifest.json` and `results/common-state-spectra/summary/summary_manifest.json` | All 20 frozen anchors, 1,760 gradient tensors, 5,280 optimizer-update tensors, and 360 prespecified exact spectra pass strict source-hash aggregation. |
 | Representation bridge | Both representation-tier `summary_manifest.json` files and the two manifests under `reports/representation-space/` | Each tier contains exactly two pretrained plus 120 checkpoint reports with the frozen probe identity, sample groups, representation roles, and ranking-reference contract; the shared and LateOn-specific plotted dynamics rehash both strict summaries. |
 | Cross-space join | `reports/mechanism-bridge/summary_manifest.json` | Exactly 120 checkpoint rows and 96 within-run transitions join the strict weight, representation, and 1,680-unit BEIR sources; correlations remain labeled descriptive. |
-| Blog | [`docs/blog.md`](blog.md) | Strict aggregation replaces both marked sections and the in-progress sentinel; every reported number derives from checked-in aggregate artifacts. |
+| Mechanism report | `reports/mechanism-summary.manifest.json` | The common-state, 360-spectrum, two-tier representation, figures, and 120-checkpoint bridge sources are rehashed before the fixed mechanism tables are rendered. |
+| Blog | [`docs/blog.md`](blog.md) | Strict aggregation replaces the retrieval/system sections and in-progress sentinel, then strict mechanism rendering replaces its marked section; every reported number derives from audited aggregate artifacts. |
 | Unattended handoff | `logs/post-eval-pipeline/pipeline-ledger.json` | The strict evaluation, W&B, mechanism, representation, bridge, test, formatting, and build steps all record successful terminal attempts. |
 | Reproducible distribution | Wheel, sdist, repository tests, and CI | Package build succeeds; configs, workers, docs, report tables/figures/manifests, citation, license, and notices are present with working local links. |
 | Publication hygiene | Git tracked tree/history and GitHub settings | No credential material is tracked; the repository remains private until the user explicitly requests publication. |
@@ -44,6 +45,7 @@ embed-optim-plot-representation-dynamics
 embed-optim-plot-late-token-dynamics
 embed-optim-aggregate --matrix configs/experiment.yaml --strict
 embed-optim-build-mechanism-bridge
+embed-optim-render-mechanism-report
 
 uv build
 uv run pytest

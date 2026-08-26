@@ -562,6 +562,32 @@ updates to weight spectra, embedding geometry, token-level interaction patterns,
 retrieval dynamics, with causal controls that separate update geometry from learning rate,
 parameter routing, and optimizer-pretraining mismatch.
 
+## Abstract skeleton
+
+Neural retrievers are usually fine-tuned with AdamW, while matrix-aware optimizers such as Muon
+promise faster and more robust optimization by changing the geometry of matrix updates. Whether
+that inductive bias transfers to Adam-pretrained embedding models—and whether it affects dense and
+late-interaction retrievers through the same mechanism—remains unclear. We compare AdamW, Muon, and
+NorMuon in a controlled 24-run study over two retriever architectures, four learning rates, five
+training stages, and 14 decontaminated zero-shot retrieval tasks. We then evaluate every optimizer
+at common weight states and on common gradient histories, connect update spectra and row balance to
+representation rank, margins, ranking drift, and MaxSim token utilization, and test the resulting
+links with scale-matched short branches and routing controls. The final two sentences should be
+filled only after confirmatory results exist: one sentence stating the strongest supported empirical
+result and one stating the strongest supported mechanism or negative-mechanism conclusion.
+
+## Reviewer-question map
+
+| Likely reviewer question | Evidence placed in the paper |
+|---|---|
+| Is this only a hyperparameter sweep? | Common-state transforms, exact spectra, and intervention branches identify optimizer-specific mechanisms. |
+| Is the AdamW comparison unfair? | Hybrid AdamW uses Muon's hidden/auxiliary parameter routing, plus compute- and update-scale-matched comparisons. |
+| Were learning rates chosen on BEIR test data? | The full grid is exploratory; recipes are frozen on non-BEIR validation before multi-seed confirmation. |
+| Do intrinsic geometry metrics matter for retrieval? | Weight/update changes are linked to margins, rankings, hubness, and LateOn token evidence, then tested by short branches. |
+| Are correlations being called causal? | Checkpoint correlations remain descriptive; causal wording is reserved for common-state and intervention evidence. |
+| Does Muon simply balance neuron rows? | Muon's spectral hypothesis and NorMuon's row-balancing hypothesis are explicitly separated. |
+| Is a win just faster kernels or lower optimizer memory? | Quality is reported against steps and wall time alongside throughput, peak memory, and optimizer-state size. |
+
 ## Novelty boundary
 
 Prior work already argues that Muon acts under spectral-norm constraints, that NorMuon balances

@@ -589,6 +589,19 @@ family and optimizer-within-family levels. The manifest explicitly marks these o
 associations as observational; common-state and short-branch interventions remain necessary for a
 causal claim.
 
+After the bridge and all three strict figures exist, render the fixed mechanism section into the
+final Markdown blog:
+
+```bash
+embed-optim-render-mechanism-report
+```
+
+The renderer rehashes the 20-anchor common-state summary, 360 exact spectra, 120-checkpoint bridge,
+and each figure sidecar before replacing the blog's mechanism markers. Its tables use frozen
+aggregations—ten anchors per family/operator, four learning rates at the final stage, and seven
+prespecified within-run associations—so it cannot silently select favorable layers, learning rates,
+or correlations after seeing the results.
+
 ### 7. Compare common-state optimizer updates
 
 The checkpoint trajectories above cannot isolate an optimizer rule because each completed run visits

@@ -230,6 +230,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 "mechanism-bridge",
                 _module(args.python, "embed_optim.mechanism_bridge", *shared),
             ),
+            PipelineStep(
+                "mechanism-blog-render",
+                _module(args.python, "embed_optim.mechanism_report"),
+            ),
         ]
     )
     if not args.skip_validation:

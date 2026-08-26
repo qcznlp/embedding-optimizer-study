@@ -863,6 +863,15 @@ that the completed weight trajectories and exploratory representation smoke test
 visible. This subset will support representative singular-value curves without choosing favorable
 layers after inspecting the common-state spectra.
 
+## From update geometry to retrieval geometry
+
+<!-- MECHANISM:BEGIN -->
+
+Formal common-state, exact-spectrum, representation, and cross-space results will be inserted here
+only after all corresponding strict manifests and the complete 1,680-unit BEIR matrix pass.
+
+<!-- MECHANISM:END -->
+
 ## Limitations
 
 - This is one epoch on one pretrained backbone family; it does not establish a universal optimizer
