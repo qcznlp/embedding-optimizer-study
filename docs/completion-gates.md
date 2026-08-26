@@ -40,6 +40,8 @@ embed-optim-validation-matrix --audit-only --verify-hashes
 embed-optim-summarize-validation
 embed-optim-prepare-confirmatory-data --audit-only --verify-source
 embed-optim-generate-confirmatory-matrices --audit-only
+embed-optim-evaluate-confirmatory --audit-only
+embed-optim-summarize-confirmatory
 embed-optim-short-branch --subset-only --audit-only
 embed-optim-short-branch --audit-only
 embed-optim-short-branch-evaluate --audit-only

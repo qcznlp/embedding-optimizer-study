@@ -674,6 +674,18 @@ They retain five training checkpoints for artifact/resume auditing, but only the
 part of the confirmatory BEIR claim: `18 × 14 = 252` formal retrieval units. This yields seed-level
 uncertainty without reusing the discovery seed or selecting a learning rate on BEIR test outcomes.
 
+After the 18 validation-selected runs complete, evaluate and summarize only their final checkpoints:
+
+```bash
+embed-optim-evaluate-confirmatory --gpus-a 0,1,2,3 --gpus-b 4,5,6,7
+embed-optim-evaluate-confirmatory --audit-only
+embed-optim-summarize-confirmatory
+```
+
+The confirmatory report requires all 252 seed/run/task units and reports the three frozen paired
+contrasts with deterministic two-level seed×task bootstrap intervals. Aggregate MTEB result JSON
+does not contain per-query rankings, so this table explicitly does not claim query-level inference.
+
 ### Shared-checkpoint scale-matched short branch
 
 The local virtual-step intervention is complemented by one accumulated-trajectory control frozen in
