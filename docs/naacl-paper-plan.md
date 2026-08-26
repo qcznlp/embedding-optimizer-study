@@ -416,3 +416,31 @@ effective-rank or isotropy measurements alone are new.
 The defensible novelty is their **retrieval-specific causal connection**: two retriever families,
 full training dynamics, common-state interventions, token-level MaxSim evidence, decontaminated
 zero-shot retrieval, and a fairness control for hybrid parameter routing.
+
+### Related-work anchors
+
+The paper should organize related work by the claim each source already establishes, rather than by
+chronology:
+
+- [Muon](https://kellerjordan.github.io/posts/muon/) introduces orthogonalized momentum for hidden
+  matrix parameters. [Muon is Scalable for LLM Training](https://arxiv.org/abs/2502.16982) provides
+  large-scale language-model evidence and emphasizes weight decay and per-parameter update scaling.
+  Neither study establishes transfer to contrastive neural retrieval.
+- [NorMuon](https://arxiv.org/abs/2510.05491) identifies non-uniform neuron norms after Muon
+  orthogonalization and adds neuron-wise second-moment normalization. Our row-balance measurements
+  are therefore a test of an existing mechanism in a new retrieval regime, not a new optimizer
+  principle.
+- [Can Muon Fine-tune Adam-Pretrained Models?](https://arxiv.org/abs/2605.10468) reports that
+  optimizer mismatch can disrupt Adam-pretrained knowledge and that the effect grows with update
+  strength. Our contribution is to test this issue in full-rank embedding adaptation and connect it
+  to retrieval margins, rankings, and architecture-specific representations.
+- [HIL](https://aclanthology.org/2024.naacl-long.437/) connects representation
+  isotropy/anisotropy to zero-shot dense retrieval. Isotropy is consequently an explanatory variable
+  here, not a standalone novelty claim; optimizer interventions must connect it to downstream
+  rankings.
+
+The introduction should cite these sources before stating the gap. The strongest gap statement is:
+
+> Existing work studies matrix-aware optimization in language-model training, optimizer mismatch in
+> general fine-tuning, or embedding geometry in retrieval separately; no controlled study traces the
+> causal path from matrix update geometry to dense and token-level retrieval behavior.
