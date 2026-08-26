@@ -402,8 +402,11 @@ embed-optim-export-probe \
 
 The exporter applies the exact training-side DenseOn query/document prefixes or PyLate's
 query/document encoding and document skiplist, preserves positive-first candidate order, normalizes
-embeddings, and pads only the exported LateOn token arrays while retaining boolean masks. The
-adjacent `.npz.manifest.json` hashes every checkpoint JSON/safetensors input, the frozen probe spec
+embeddings, and stores LateOn token arrays as packed vectors plus integer offsets instead of padding
+every document to the longest item in the probe. On the frozen 1,024-row probe this reduces the
+tokenizer-side document payload estimate from 7.19 GiB to 0.29 GiB per checkpoint (25.2x before
+container overhead); the exact encoded size is recorded per export. The adjacent
+`.npz.manifest.json` hashes every checkpoint JSON/safetensors input, the frozen probe spec
 and manifest, and the final archive; it also records array shapes/dtypes, package/CUDA versions,
 context length, prompts, query-expansion state, device, and GPU. The default archive is uncompressed
 to avoid wasting CPU on nearly incompressible fp16 vectors. `--allow-unfrozen-probe` is available for
@@ -416,10 +419,12 @@ the pretrained model and any selected checkpoint:
 
 - `sample_ids`: unique `[samples]` identifiers;
 - `sample_groups`: optional pickle-free string/integer source labels for per-group ranking metrics;
-- `query_embeddings`: `[samples, dim]` for DenseOn or `[samples, query_tokens, dim]` for LateOn;
+- `query_embeddings`: `[samples, dim]` for DenseOn or packed `[query_tokens_total, dim]` for
+  LateOn;
 - `document_embeddings`: `[samples, candidates, dim]` for DenseOn or
-  `[samples, candidates, document_tokens, dim]` for LateOn;
-- `query_mask` and `document_mask`: required for LateOn, with one or more valid tokens per item;
+  packed `[document_tokens_total, dim]` for LateOn;
+- `query_offsets` and `document_offsets`: required for new LateOn exports and strictly increasing;
+  the analyzer also accepts legacy padded arrays with `query_mask` and `document_mask`;
 - `reference_scores`: optional `[samples, candidates]` scores from a declared reference checkpoint.
 
 Candidate index zero is always the positive; the remaining candidates are the seven explicit hard

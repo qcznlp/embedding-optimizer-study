@@ -9,6 +9,7 @@ from embed_optim.representation_geometry import (
     analyze_probe,
     dense_probe_metrics,
     late_probe_metrics,
+    late_ragged_probe_metrics,
     representation_summary,
 )
 
@@ -90,6 +91,21 @@ def test_late_probe_reports_mean_maxsim_and_token_utilization():
     assert utilization["positive_document_token_repeated_selection_dominance"][
         "mean"
     ] == pytest.approx(0.5)
+
+    ragged = late_ragged_probe_metrics(
+        queries.reshape(-1, 2),
+        documents[:, :, :2].reshape(-1, 2),
+        torch.tensor([0, 2]),
+        torch.tensor([0, 2, 4]),
+        samples=1,
+        batch_size=1,
+        max_representation_vectors=100,
+        seed=42,
+        top_k=2,
+    )
+    assert ragged["storage"] == "ragged_offsets"
+    assert ragged["score_geometry"] == result["score_geometry"]
+    assert ragged["token_utilization"] == result["token_utilization"]
 
 
 def test_analyze_probe_hashes_input_and_writes_atomic_json(tmp_path: Path):

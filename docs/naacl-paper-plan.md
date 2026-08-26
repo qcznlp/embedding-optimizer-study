@@ -281,10 +281,14 @@ versioned unseen-BEIR probe remains required for the functional bridge and recip
 
 `embed-optim-export-probe` supplies the checkpoint-encoding half of the contract. It uses the exact
 Dense query/document prefixes or the pinned PyLate query/document/skiplist behavior, then writes
-positive-first fp16 arrays and explicit LateOn masks. A sidecar binds the archive to all model
-JSON/safetensors inputs, the frozen probe manifest/spec, package versions, context length, prompts,
-and encoding hardware. This makes representation metrics comparable across checkpoints without
-trusting filenames or an implicit tokenizer/model state.
+positive-first fp16 arrays. LateOn uses packed ragged token arrays with explicit offsets: the frozen
+probe's pre-encoding tokenizer audit found 1,196,149 document tokens but a 3,683-token maximum, so
+global padding would inflate each estimated checkpoint payload from 0.29 GiB to 7.19 GiB (25.2x)
+before container overhead. The exact post-skiplist arrays are recorded in every export manifest.
+The analyzer retains legacy padded-mask compatibility while canonical exports use the packed layout.
+A sidecar binds the archive to all model JSON/safetensors inputs, the frozen probe manifest/spec,
+package versions, context length, prompts, and encoding hardware. This makes representation metrics
+comparable across checkpoints without trusting filenames or an implicit tokenizer/model state.
 
 ## Causal controls and additional runs
 

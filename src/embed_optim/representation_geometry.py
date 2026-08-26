@@ -78,6 +78,43 @@ def _as_mask(array: np.ndarray, name: str, shape: tuple[int, ...]) -> Tensor:
     return mask
 
 
+def _as_offsets(array: np.ndarray, name: str, *, items: int, total_tokens: int) -> Tensor:
+    if array.dtype.kind not in "iu":
+        raise ValueError(f"{name} must be integer, got dtype={array.dtype}")
+    offsets = torch.from_numpy(np.asarray(array)).long()
+    expected_shape = (items + 1,)
+    if tuple(offsets.shape) != expected_shape:
+        raise ValueError(f"{name} must have shape {expected_shape}, got {tuple(offsets.shape)}")
+    if offsets[0].item() != 0 or offsets[-1].item() != total_tokens:
+        raise ValueError(
+            f"{name} must span [0, {total_tokens}], got [{offsets[0].item()}, {offsets[-1].item()}]"
+        )
+    if not bool((offsets[1:] > offsets[:-1]).all()):
+        raise ValueError(f"{name} must be strictly increasing")
+    return offsets
+
+
+def _pad_ragged_batch(
+    values: Tensor,
+    offsets: Tensor,
+    start: int,
+    stop: int,
+) -> tuple[Tensor, Tensor]:
+    if start < 0 or stop <= start or stop >= offsets.numel():
+        raise ValueError(f"Invalid ragged slice [{start}, {stop}) for {offsets.numel() - 1} items")
+    lengths = offsets[start + 1 : stop + 1] - offsets[start:stop]
+    maximum = int(lengths.max().item())
+    result = values.new_zeros((stop - start, maximum, values.size(1)))
+    mask = torch.zeros((stop - start, maximum), dtype=torch.bool)
+    for local_index, item_index in enumerate(range(start, stop)):
+        begin = int(offsets[item_index].item())
+        end = int(offsets[item_index + 1].item())
+        length = end - begin
+        result[local_index, :length] = values[begin:end]
+        mask[local_index, :length] = True
+    return result, mask
+
+
 def _gini(values: Tensor) -> float:
     values = values.detach().double().flatten()
     if values.numel() == 0:
@@ -459,6 +496,7 @@ def late_probe_metrics(
     )
     return {
         "scorer": "mean_maxsim_cosine",
+        "storage": "padded_masks",
         "score_geometry": ranking_summary(
             scores,
             top_k=min(top_k, candidates),
@@ -502,6 +540,206 @@ def late_probe_metrics(
     }
 
 
+def _late_ragged_layout(
+    query_embeddings: Tensor,
+    document_embeddings: Tensor,
+    query_offsets: Tensor,
+    document_offsets: Tensor,
+    *,
+    samples: int,
+) -> tuple[int, int]:
+    if query_embeddings.ndim != 2 or document_embeddings.ndim != 2:
+        raise ValueError("Ragged Late probes require 2-D packed query/document embeddings")
+    if query_embeddings.size(1) != document_embeddings.size(1):
+        raise ValueError(
+            "Ragged Late query/document dimensions disagree: "
+            f"queries={tuple(query_embeddings.shape)}, documents={tuple(document_embeddings.shape)}"
+        )
+    if query_offsets.numel() != samples + 1:
+        raise ValueError(
+            f"query_offsets must describe {samples} samples, got {query_offsets.numel() - 1}"
+        )
+    document_items = document_offsets.numel() - 1
+    if document_items % samples:
+        raise ValueError(
+            f"document_offsets describes {document_items} items, not a multiple of {samples} samples"
+        )
+    candidates = document_items // samples
+    if candidates < 2:
+        raise ValueError(f"Late probes require at least two candidates, got {candidates}")
+    return candidates, query_embeddings.size(1)
+
+
+def late_ragged_probe_scores(
+    query_embeddings: Tensor,
+    document_embeddings: Tensor,
+    query_offsets: Tensor,
+    document_offsets: Tensor,
+    *,
+    samples: int,
+    batch_size: int,
+) -> Tensor:
+    if batch_size <= 0:
+        raise ValueError(f"batch_size must be positive, got {batch_size}")
+    candidates, dimension = _late_ragged_layout(
+        query_embeddings,
+        document_embeddings,
+        query_offsets,
+        document_offsets,
+        samples=samples,
+    )
+    score_batches = []
+    for start in range(0, samples, batch_size):
+        stop = min(samples, start + batch_size)
+        queries, query_mask = _pad_ragged_batch(query_embeddings, query_offsets, start, stop)
+        documents, document_mask = _pad_ragged_batch(
+            document_embeddings,
+            document_offsets,
+            start * candidates,
+            stop * candidates,
+        )
+        documents = documents.reshape(stop - start, candidates, documents.size(1), dimension)
+        document_mask = document_mask.reshape(stop - start, candidates, document_mask.size(1))
+        scores, _, _ = _late_batch_scores(
+            F.normalize(queries.float(), p=2, dim=-1),
+            F.normalize(documents.float(), p=2, dim=-1),
+            query_mask,
+            document_mask,
+        )
+        score_batches.append(scores)
+    return torch.cat(score_batches, dim=0)
+
+
+def late_ragged_probe_metrics(
+    query_embeddings: Tensor,
+    document_embeddings: Tensor,
+    query_offsets: Tensor,
+    document_offsets: Tensor,
+    *,
+    samples: int,
+    batch_size: int,
+    max_representation_vectors: int,
+    seed: int,
+    top_k: int,
+    reference_scores: Tensor | None = None,
+    sample_groups: list[str] | None = None,
+) -> dict[str, Any]:
+    if batch_size <= 0:
+        raise ValueError(f"batch_size must be positive, got {batch_size}")
+    candidates, dimension = _late_ragged_layout(
+        query_embeddings,
+        document_embeddings,
+        query_offsets,
+        document_offsets,
+        samples=samples,
+    )
+    score_batches: list[Tensor] = []
+    pooled_query_batches: list[Tensor] = []
+    pooled_document_batches: list[Tensor] = []
+    contribution_entropies: list[float] = []
+    contribution_ginis: list[float] = []
+    selected_document_fractions: list[float] = []
+    repeated_selection_dominance: list[float] = []
+
+    for start in range(0, samples, batch_size):
+        stop = min(samples, start + batch_size)
+        queries, query_mask = _pad_ragged_batch(query_embeddings, query_offsets, start, stop)
+        documents, document_mask = _pad_ragged_batch(
+            document_embeddings,
+            document_offsets,
+            start * candidates,
+            stop * candidates,
+        )
+        document_tokens = documents.size(1)
+        documents = documents.reshape(stop - start, candidates, document_tokens, dimension)
+        document_mask = document_mask.reshape(stop - start, candidates, document_tokens)
+        batch_scores, contributions, selections = _late_batch_scores(
+            F.normalize(queries.float(), p=2, dim=-1),
+            F.normalize(documents.float(), p=2, dim=-1),
+            query_mask,
+            document_mask,
+        )
+        score_batches.append(batch_scores)
+        pooled_query_batches.append(_masked_mean(queries, query_mask, dimension=1))
+        pooled_document_batches.append(
+            _masked_mean(documents, document_mask, dimension=2).reshape(-1, dimension)
+        )
+        for local_index, (evidence, selected) in enumerate(zip(contributions, selections)):
+            shifted = evidence.double() - evidence.double().min() + torch.finfo(torch.float64).eps
+            probabilities = shifted / shifted.sum()
+            if probabilities.numel() > 1:
+                entropy = -(probabilities * probabilities.log()).sum() / math.log(
+                    probabilities.numel()
+                )
+            else:
+                entropy = torch.ones((), dtype=torch.float64)
+            contribution_entropies.append(float(entropy.item()))
+            contribution_ginis.append(_gini(shifted))
+            valid_document_tokens = int(document_mask[local_index, 0].sum().item())
+            counts = torch.bincount(selected, minlength=document_tokens)
+            selected_document_fractions.append(
+                float((counts > 0).sum().item() / valid_document_tokens)
+            )
+            repeated_selection_dominance.append(float(counts.max().item() / selected.numel()))
+
+    scores = torch.cat(score_batches, dim=0)
+    return {
+        "scorer": "mean_maxsim_cosine",
+        "storage": "ragged_offsets",
+        "score_geometry": ranking_summary(
+            scores,
+            top_k=min(top_k, candidates),
+            reference_scores=reference_scores,
+            sample_groups=sample_groups,
+        ),
+        "token_utilization": {
+            "positive_query_token_evidence_normalized_entropy": _quantiles(
+                torch.tensor(contribution_entropies)
+            ),
+            "positive_query_token_evidence_gini": _quantiles(torch.tensor(contribution_ginis)),
+            "positive_document_token_coverage": _quantiles(
+                torch.tensor(selected_document_fractions)
+            ),
+            "positive_document_token_repeated_selection_dominance": _quantiles(
+                torch.tensor(repeated_selection_dominance)
+            ),
+        },
+        "representations": {
+            "query_tokens": representation_summary(
+                query_embeddings,
+                max_vectors=max_representation_vectors,
+                seed=seed,
+            ),
+            "document_tokens": representation_summary(
+                document_embeddings,
+                max_vectors=max_representation_vectors,
+                seed=seed + 1,
+            ),
+            "pooled_queries": representation_summary(
+                torch.cat(pooled_query_batches, dim=0),
+                max_vectors=max_representation_vectors,
+                seed=seed + 2,
+            ),
+            "pooled_documents": representation_summary(
+                torch.cat(pooled_document_batches, dim=0),
+                max_vectors=max_representation_vectors,
+                seed=seed + 3,
+            ),
+        },
+    }
+
+
+def _late_archive_layout(files: set[str], label: str) -> Literal["padded_masks", "ragged_offsets"]:
+    padded = {"query_mask", "document_mask"}.issubset(files)
+    ragged = {"query_offsets", "document_offsets"}.issubset(files)
+    if padded == ragged:
+        raise ValueError(
+            f"{label} must contain exactly one Late storage layout: "
+            "query_mask/document_mask or query_offsets/document_offsets"
+        )
+    return "padded_masks" if padded else "ragged_offsets"
+
+
 def analyze_probe(
     source: Path,
     output: Path,
@@ -521,11 +759,14 @@ def analyze_probe(
     source_sha256 = _sha256(source)
     with np.load(source, allow_pickle=False) as archive:
         required = {"sample_ids", "query_embeddings", "document_embeddings"}
-        if family == "late":
-            required.update({"query_mask", "document_mask"})
         missing = required.difference(archive.files)
         if missing:
             raise ValueError(f"Probe archive is missing arrays: {sorted(missing)}")
+        late_layout = (
+            _late_archive_layout(set(archive.files), "Late probe archive")
+            if family == "late"
+            else None
+        )
         sample_ids = np.asarray(archive["sample_ids"])
         if sample_ids.ndim != 1 or sample_ids.size == 0:
             raise ValueError(f"sample_ids must be non-empty 1-D, got {sample_ids.shape}")
@@ -533,7 +774,13 @@ def analyze_probe(
             raise ValueError("sample_ids must be unique")
         queries = _as_float_tensor(archive["query_embeddings"], "query_embeddings")
         documents = _as_float_tensor(archive["document_embeddings"], "document_embeddings")
-        if queries.size(0) != sample_ids.size or documents.size(0) != sample_ids.size:
+        if family == "dense" or late_layout == "padded_masks":
+            counts_match = (
+                queries.size(0) == sample_ids.size and documents.size(0) == sample_ids.size
+            )
+        else:
+            counts_match = True
+        if not counts_match:
             raise ValueError(
                 "sample_ids/query/document counts disagree: "
                 f"{sample_ids.size}, {queries.size(0)}, {documents.size(0)}"
@@ -580,7 +827,7 @@ def analyze_probe(
                 reference_scores=reference_scores,
                 sample_groups=sample_groups,
             )
-        elif family == "late":
+        elif family == "late" and late_layout == "padded_masks":
             if queries.ndim != 3 or documents.ndim != 4:
                 raise ValueError("late probes require 3-D queries and 4-D documents")
             query_mask = _as_mask(
@@ -598,6 +845,40 @@ def analyze_probe(
                 documents,
                 query_mask,
                 document_mask,
+                batch_size=batch_size,
+                max_representation_vectors=max_representation_vectors,
+                seed=seed,
+                top_k=top_k,
+                reference_scores=reference_scores,
+                sample_groups=sample_groups,
+            )
+        elif family == "late" and late_layout == "ragged_offsets":
+            query_offsets = _as_offsets(
+                archive["query_offsets"],
+                "query_offsets",
+                items=sample_ids.size,
+                total_tokens=queries.size(0),
+            )
+            document_offset_array = np.asarray(archive["document_offsets"])
+            if (
+                document_offset_array.ndim != 1
+                or document_offset_array.size < sample_ids.size * 2 + 1
+            ):
+                raise ValueError(
+                    "document_offsets does not describe at least two candidates per sample"
+                )
+            document_offsets = _as_offsets(
+                document_offset_array,
+                "document_offsets",
+                items=document_offset_array.size - 1,
+                total_tokens=documents.size(0),
+            )
+            metrics = late_ragged_probe_metrics(
+                queries,
+                documents,
+                query_offsets,
+                document_offsets,
+                samples=sample_ids.size,
                 batch_size=batch_size,
                 max_representation_vectors=max_representation_vectors,
                 seed=seed,
@@ -662,11 +943,14 @@ def _reference_probe_scores(
     source_sha256 = _sha256(source)
     with np.load(source, allow_pickle=False) as archive:
         required = {"sample_ids", "query_embeddings", "document_embeddings"}
-        if family == "late":
-            required.update({"query_mask", "document_mask"})
         missing = required.difference(archive.files)
         if missing:
             raise ValueError(f"Reference probe archive is missing arrays: {sorted(missing)}")
+        late_layout = (
+            _late_archive_layout(set(archive.files), "Late reference probe archive")
+            if family == "late"
+            else None
+        )
         reference_ids = np.asarray(archive["sample_ids"])
         if not np.array_equal(reference_ids, sample_ids):
             raise ValueError("Current and reference probe sample_ids differ or are reordered")
@@ -680,7 +964,7 @@ def _reference_probe_scores(
         }
         if family == "dense":
             scores = dense_probe_scores(queries, documents)
-        else:
+        elif late_layout == "padded_masks":
             if queries.ndim != 3 or documents.ndim != 4:
                 raise ValueError("Late reference probes require 3-D queries and 4-D documents")
             query_mask = _as_mask(
@@ -698,6 +982,35 @@ def _reference_probe_scores(
                 documents,
                 query_mask,
                 document_mask,
+                batch_size=batch_size,
+            )
+        else:
+            query_offsets = _as_offsets(
+                archive["query_offsets"],
+                "reference query_offsets",
+                items=sample_ids.size,
+                total_tokens=queries.size(0),
+            )
+            document_offset_array = np.asarray(archive["document_offsets"])
+            if (
+                document_offset_array.ndim != 1
+                or document_offset_array.size < sample_ids.size * 2 + 1
+            ):
+                raise ValueError(
+                    "reference document_offsets does not describe at least two candidates per sample"
+                )
+            document_offsets = _as_offsets(
+                document_offset_array,
+                "reference document_offsets",
+                items=document_offset_array.size - 1,
+                total_tokens=documents.size(0),
+            )
+            scores = late_ragged_probe_scores(
+                queries,
+                documents,
+                query_offsets,
+                document_offsets,
+                samples=sample_ids.size,
                 batch_size=batch_size,
             )
     export_manifest = _export_manifest_identity(

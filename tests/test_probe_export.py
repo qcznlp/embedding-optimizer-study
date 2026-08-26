@@ -10,6 +10,7 @@ from embed_optim.geometry import _sha256
 from embed_optim.probe_export import (
     encode_late_probe,
     export_probe,
+    pack_variable_embeddings,
     pad_variable_embeddings,
 )
 from embed_optim.representation_geometry import analyze_probe
@@ -88,7 +89,17 @@ def test_pad_variable_embeddings_preserves_lengths_and_dtype():
     np.testing.assert_array_equal(embeddings[1, 1], np.zeros(3))
 
 
-def test_late_encoder_keeps_positive_first_and_emits_masks():
+def test_pack_variable_embeddings_preserves_lengths_without_padding():
+    values = [np.ones((2, 3)), np.full((1, 3), 2)]
+    embeddings, offsets = pack_variable_embeddings(values, storage_dtype=np.dtype("float16"))
+
+    assert embeddings.shape == (3, 3)
+    assert embeddings.dtype == np.float16
+    assert offsets.tolist() == [0, 2, 3]
+    np.testing.assert_array_equal(embeddings[2], np.full(3, 2))
+
+
+def test_late_encoder_keeps_positive_first_and_emits_offsets():
     dataset = Dataset.from_list(_rows())
     model = FakeLate()
 
@@ -99,10 +110,10 @@ def test_late_encoder_keeps_positive_first_and_emits_masks():
         storage_dtype=np.dtype("float16"),
     )
 
-    assert arrays["query_embeddings"].shape == (2, 2, 128)
-    assert arrays["query_mask"].sum(axis=1).tolist() == [1, 2]
-    assert arrays["document_embeddings"].shape == (2, 8, 4, 128)
-    assert arrays["document_mask"].sum(axis=2)[0].tolist() == [2, 3, 4, 2, 3, 4, 2, 3]
+    assert arrays["query_embeddings"].shape == (3, 128)
+    assert arrays["query_offsets"].tolist() == [0, 1, 3]
+    assert arrays["document_embeddings"].shape == (47, 128)
+    assert np.diff(arrays["document_offsets"][:9]).tolist() == [2, 3, 4, 2, 3, 4, 2, 3]
     assert model.calls[0][1]["is_query"] is True
     assert model.calls[1][1]["is_query"] is False
     assert model.calls[1][0][0] == "positive 11"
@@ -202,3 +213,43 @@ def test_dense_export_is_atomic_hashed_and_analyzer_compatible(tmp_path: Path, m
     manifest_path.write_text(json.dumps(manifest) + "\n")
     with pytest.raises(ValueError, match="SHA-256"):
         analyze_probe(exported, tmp_path / "corrupt.json", family="dense")
+
+
+def test_late_export_uses_ragged_storage_and_is_analyzer_compatible(tmp_path: Path, monkeypatch):
+    probe = _probe_fixture(tmp_path)
+    checkpoint = tmp_path / "outputs" / "late-run" / "checkpoint-1"
+    checkpoint.mkdir(parents=True)
+    (checkpoint / "model.safetensors").write_bytes(b"fixture weights")
+    (checkpoint / "config.json").write_text('{"hidden_size": 768}\n')
+    (checkpoint.parent / "run_config.json").write_text('{"model_family": "late"}\n')
+    monkeypatch.setattr("embed_optim.probe_export._load_model", lambda *args, **kwargs: FakeLate())
+
+    exported, manifest_path = export_probe(
+        checkpoint,
+        probe,
+        tmp_path / "exports" / "late.npz",
+        family="late",
+        batch_size=2,
+        model_dtype="float32",
+        storage_dtype="float32",
+        device="cpu",
+        flash_attention=False,
+    )
+
+    with np.load(exported, allow_pickle=False) as archive:
+        assert "query_offsets" in archive.files
+        assert "document_offsets" in archive.files
+        assert "query_mask" not in archive.files
+        assert archive["document_embeddings"].shape == (47, 128)
+    manifest = json.loads(manifest_path.read_text())
+    assert manifest["encoding"]["late_storage"] == "ragged_offsets"
+
+    metrics = analyze_probe(
+        exported,
+        tmp_path / "late-metrics.json",
+        family="late",
+        require_export_manifest=True,
+        reference_source=exported,
+    )
+    assert metrics["metrics"]["storage"] == "ragged_offsets"
+    assert metrics["metrics"]["score_geometry"]["reference_ranking"]["top1_agreement"] == 1.0

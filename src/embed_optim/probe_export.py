@@ -251,6 +251,30 @@ def pad_variable_embeddings(
     return embeddings, mask
 
 
+def pack_variable_embeddings(
+    values: list[np.ndarray],
+    *,
+    storage_dtype: np.dtype,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Pack variable-length token embeddings without global-max padding."""
+
+    if not values:
+        raise ValueError("Cannot pack an empty embedding list")
+    dimension = values[0].shape[1]
+    lengths = np.asarray([value.shape[0] for value in values], dtype=np.int64)
+    if np.any(lengths <= 0):
+        raise ValueError("Packed token embeddings must contain at least one token per item")
+    if any(value.shape[1] != dimension for value in values):
+        raise ValueError("Variable token embeddings have inconsistent dimensions")
+    offsets = np.empty(len(values) + 1, dtype=np.int64)
+    offsets[0] = 0
+    np.cumsum(lengths, out=offsets[1:])
+    embeddings = np.empty((int(offsets[-1]), dimension), dtype=storage_dtype)
+    for index, value in enumerate(values):
+        embeddings[offsets[index] : offsets[index + 1]] = value.astype(storage_dtype, copy=False)
+    return embeddings, offsets
+
+
 def encode_late_probe(
     model: Any,
     dataset: Dataset,
@@ -293,21 +317,17 @@ def encode_late_probe(
         raise ValueError(
             f"Late encoder returned {len(document_values)} documents, expected {expected_documents}"
         )
-    query_embeddings, query_mask = pad_variable_embeddings(
+    query_embeddings, query_offsets = pack_variable_embeddings(
         query_values, storage_dtype=storage_dtype
     )
-    document_embeddings, document_mask = pad_variable_embeddings(
+    document_embeddings, document_offsets = pack_variable_embeddings(
         document_values, storage_dtype=storage_dtype
     )
-    document_embeddings = document_embeddings.reshape(
-        len(dataset), len(TEXT_COLUMNS), document_embeddings.shape[1], dimension
-    )
-    document_mask = document_mask.reshape(len(dataset), len(TEXT_COLUMNS), document_mask.shape[1])
     return {
         "query_embeddings": query_embeddings,
         "document_embeddings": document_embeddings,
-        "query_mask": query_mask,
-        "document_mask": document_mask,
+        "query_offsets": query_offsets,
+        "document_offsets": document_offsets,
     }
 
 
@@ -427,6 +447,7 @@ def export_probe(
                 "dense_document_prompt": "document: " if family == "dense" else None,
                 "late_query_expansion": False if family == "late" else None,
                 "late_document_skiplist": True if family == "late" else None,
+                "late_storage": "ragged_offsets" if family == "late" else None,
                 "positive_candidate_index": 0,
             },
             "runtime": {
