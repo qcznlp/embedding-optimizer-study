@@ -11,6 +11,23 @@ from typing import Any
 from .config import RunConfig, load_matrix
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 
+PAIR_CONTRAST_FIELDS = [
+    "model_family",
+    "learning_rate",
+    "step",
+    "muon_run_id",
+    "normuon_run_id",
+    "muon_reference_displacement_frobenius_norm",
+    "normuon_reference_displacement_frobenius_norm",
+    "normuon_to_muon_displacement_ratio",
+    "muon_reference_delta_row_cv_parameter_weighted",
+    "normuon_reference_delta_row_cv_parameter_weighted",
+    "normuon_to_muon_row_cv_ratio",
+    "muon_reference_delta_top_1pct_row_energy_parameter_weighted",
+    "normuon_reference_delta_top_1pct_row_energy_parameter_weighted",
+    "normuon_to_muon_top_1pct_row_energy_ratio",
+]
+
 
 def _atomic_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -85,6 +102,80 @@ def _weighted_mean(records: list[dict[str, Any]], section: str, *path: str) -> f
             value = value[key]
         total += record["parameters"] * value
     return total / parameters
+
+
+def _optimizer_pair_contrasts(
+    checkpoint_rows: list[dict[str, Any]], *, allow_partial: bool
+) -> list[dict[str, Any]]:
+    final_rows: dict[tuple[str, str, float], dict[str, Any]] = {}
+    for row in checkpoint_rows:
+        key = (row["model_family"], row["optimizer"], row["learning_rate"])
+        previous = final_rows.get(key)
+        if previous is None or row["step"] > previous["step"]:
+            final_rows[key] = row
+
+    muon_keys = {
+        (family, learning_rate)
+        for family, optimizer, learning_rate in final_rows
+        if optimizer == "muon"
+    }
+    normuon_keys = {
+        (family, learning_rate)
+        for family, optimizer, learning_rate in final_rows
+        if optimizer == "normuon"
+    }
+    if not allow_partial and muon_keys and normuon_keys and muon_keys != normuon_keys:
+        raise ValueError(
+            "Muon and NorMuon final rows do not have the same family/learning-rate coverage"
+        )
+
+    contrasts: list[dict[str, Any]] = []
+    for family, learning_rate in sorted(muon_keys & normuon_keys):
+        muon = final_rows[(family, "muon", learning_rate)]
+        normuon = final_rows[(family, "normuon", learning_rate)]
+        if muon["step"] != normuon["step"]:
+            raise ValueError(
+                f"Muon and NorMuon final steps differ for {family} at lr={learning_rate}"
+            )
+        displacement_muon = muon["reference_displacement_frobenius_norm"]
+        row_cv_muon = muon["reference_delta_row_cv_parameter_weighted"]
+        top_energy_muon = muon["reference_delta_top_1pct_row_energy_parameter_weighted"]
+        if min(displacement_muon, row_cv_muon, top_energy_muon) <= 0:
+            raise ValueError(
+                f"Muon contrast denominators must be positive for {family} at lr={learning_rate}"
+            )
+        contrasts.append(
+            {
+                "model_family": family,
+                "learning_rate": learning_rate,
+                "step": muon["step"],
+                "muon_run_id": muon["run_id"],
+                "normuon_run_id": normuon["run_id"],
+                "muon_reference_displacement_frobenius_norm": displacement_muon,
+                "normuon_reference_displacement_frobenius_norm": normuon[
+                    "reference_displacement_frobenius_norm"
+                ],
+                "normuon_to_muon_displacement_ratio": normuon[
+                    "reference_displacement_frobenius_norm"
+                ]
+                / displacement_muon,
+                "muon_reference_delta_row_cv_parameter_weighted": row_cv_muon,
+                "normuon_reference_delta_row_cv_parameter_weighted": normuon[
+                    "reference_delta_row_cv_parameter_weighted"
+                ],
+                "normuon_to_muon_row_cv_ratio": normuon["reference_delta_row_cv_parameter_weighted"]
+                / row_cv_muon,
+                "muon_reference_delta_top_1pct_row_energy_parameter_weighted": top_energy_muon,
+                "normuon_reference_delta_top_1pct_row_energy_parameter_weighted": normuon[
+                    "reference_delta_top_1pct_row_energy_parameter_weighted"
+                ],
+                "normuon_to_muon_top_1pct_row_energy_ratio": normuon[
+                    "reference_delta_top_1pct_row_energy_parameter_weighted"
+                ]
+                / top_energy_muon,
+            }
+        )
+    return contrasts
 
 
 def _validate_run_manifest(
@@ -247,8 +338,11 @@ def summarize_geometry(
 
     checkpoint_path = output_dir / "checkpoint_trajectory.csv"
     run_path = output_dir / "run_trajectory_summary.csv"
+    contrast_path = output_dir / "optimizer_pair_contrasts.csv"
+    contrast_rows = _optimizer_pair_contrasts(checkpoint_rows, allow_partial=allow_partial)
     _atomic_csv(checkpoint_path, checkpoint_rows, list(checkpoint_rows[0]))
     _atomic_csv(run_path, run_rows, list(run_rows[0]))
+    _atomic_csv(contrast_path, contrast_rows, PAIR_CONTRAST_FIELDS)
     summary = {
         "schema_version": SCHEMA_VERSION,
         "complete": len(run_rows) == len(configs),
@@ -269,10 +363,19 @@ def summarize_geometry(
                 "bytes": run_path.stat().st_size,
                 "sha256": _sha256(run_path),
             },
+            contrast_path.name: {
+                "rows": len(contrast_rows),
+                "bytes": contrast_path.stat().st_size,
+                "sha256": _sha256(contrast_path),
+            },
         },
         "interpretation": (
             "coarse_checkpoint_path_length joins only saved checkpoints and is not the optimizer's "
             "per-step path length"
+        ),
+        "contrast_interpretation": (
+            "optimizer_pair_contrasts are matched-learning-rate, one-seed integrated trajectories; "
+            "they are not individual optimizer updates or causal effects"
         ),
     }
     if not allow_partial and not summary["complete"]:

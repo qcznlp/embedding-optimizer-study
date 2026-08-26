@@ -5,12 +5,27 @@ These tables summarize the exact-statistics tier of the weight-space analysis ov
 
 - `checkpoint_trajectory.csv`: one row per run/checkpoint;
 - `run_trajectory_summary.csv`: final displacement and the five-checkpoint coarse path per run;
+- `optimizer_pair_contrasts.csv`: matched-learning-rate final Muon/NorMuon displacement and row-energy
+  ratios;
 - `summary_manifest.json`: coverage, shared data fingerprint, source-manifest hashes, and output
   hashes.
 
 The source records used `--sketch-rank 0`: Frobenius norms, row/column balance, Gini coefficients,
 energy concentration, and checkpoint displacements are exact, while singular-spectrum fields are
 disabled. Full or randomized spectra are a separate analysis tier.
+
+## Descriptive Muon/NorMuon signal
+
+Across all eight same-learning-rate pairs at step 3,907 (two model families by four learning
+rates), the NorMuon-to-Muon pretrained-reference displacement ratio is 1.000668–1.003879. At nearly
+the same displacement scale, the parameter-weighted row-norm CV ratio is 0.232758–0.463783 and the
+top-1%-row energy ratio is 0.659264–0.730320. Both model families show the same direction. This is
+consistent with NorMuon redistributing trajectory energy across rows rather than merely shrinking
+the overall displacement.
+
+These are one-seed, integrated checkpoint trajectories, not individual optimizer updates or causal
+effects. The common-state virtual updates, matched-scale controls, short branches, and confirmatory
+seeds in the paper plan are required before turning this pattern into a mechanism claim.
 
 `coarse_checkpoint_path_length` joins the pretrained initialization and five saved checkpoints. It
 is not the optimizer's per-step path length, and checkpoint displacement is not an optimizer update.
