@@ -1,5 +1,53 @@
 # From Update Geometry to Retrieval Geometry
 
+## Executive narrative
+
+The paper's thesis is not that one optimizer always wins. It is that an optimizer is an inductive
+bias on the retrieval function: its matrix transform determines which directions and neurons move,
+those movements reshape single-vector or token-level representations, and the resulting score
+geometry controls retrieval efficiency and out-of-domain ranking quality.
+
+The story should unfold in five beats:
+
+1. **Empirical tension.** Muon is reported to improve language-model pretraining efficiency, but an
+   embedding model is an Adam-pretrained model being adapted with a contrastive ranking objective.
+   It is not known whether Muon's pretraining advantage transfers to this regime.
+2. **Controlled observation.** On identical data, negatives, architectures, and checkpoint
+   fractions, compare AdamW, Muon, and NorMuon in quality, time-to-quality, memory, learning-rate
+   tolerance, and failures. This establishes what happens without yet claiming why.
+3. **Geometric fingerprint.** At common weights and on common batches, separate three mechanisms:
+   AdamW's coordinate-wise adaptation, Muon's singular-direction equalization, and NorMuon's added
+   row-wise adaptation. Show the fingerprints in actual updates rather than inferring them only from
+   distant checkpoint displacements.
+4. **Functional bridge.** Test whether an update fingerprint predicts later representation rank,
+   hubness, positive-negative margins, ranking stability, and—only for LateOn—MaxSim token
+   utilization. This is where the paper becomes retrieval research rather than a generic optimizer
+   benchmark.
+5. **Intervention and prescription.** Use scale-matched virtual updates, short common-checkpoint
+   branches, component ablations, and optimizer switches to test causality. End with a decision rule
+   for when AdamW, Muon, or NorMuon should be used to adapt an embedding model.
+
+The cleanest one-sentence claim, if supported, is:
+
+> Matrix-aware optimizers do not merely change convergence speed; they impose distinct update
+> geometries whose transmission into representation and score geometry explains when they help—or
+> disrupt—Adam-pretrained neural retrievers.
+
+### Result-contingent story map
+
+The experimental plan should remain publishable under all plausible outcomes:
+
+| Final observation | Defensible main story |
+|---|---|
+| Muon improves time-to-quality and final retrieval | Spectral update conditioning transfers from language-model training to retrieval, subject to optimizer-mismatch controls. |
+| Muon converges faster but ties final retrieval | Muon is a systems/optimization win, while the retrieval function is insensitive to much of the changed weight geometry. |
+| Muon lowers loss but hurts zero-shot retrieval | Optimizer mismatch causes excessive functional drift; training loss is a poor proxy for retained retrieval knowledge. |
+| NorMuon consistently beats Muon, especially for LateOn | Row-wise adaptation complements orthogonalization and improves token utilization in late interaction. |
+| Weight geometry changes but margins/rankings do not | Parameter-space differences are largely functionally redundant; the negative mechanistic result constrains optimizer claims. |
+
+This map must be fixed before the final BEIR matrix is inspected. It prevents selecting a causal
+narrative post hoc.
+
 ## Proposed NAACL story
 
 This paper should not be framed as an optimizer leaderboard. Its central question is:
