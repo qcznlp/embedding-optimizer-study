@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "status": "prospective_completion_lock",
+  "frozen_at_utc": "2026-08-26T12:49:27Z",
+  "purpose": "Separate AdamW versus matrix-update-rule effects from hidden/auxiliary parameter routing.",
+  "selection": {
+    "families": ["dense", "late"],
+    "optimizer": "hybrid_adamw",
+    "hidden_learning_rates": [1e-06, 3e-06, 1e-05, 3e-05],
+    "aux_learning_rate": 3e-06,
+    "expected_runs": 8,
+    "checkpoint_fractions": [0.2, 0.4, 0.6, 0.8, 1.0],
+    "formal_beir_stages": [5],
+    "formal_beir_tasks": 14,
+    "expected_beir_units": 112
+  },
+  "observed_before_freeze": {
+    "strict_beir": {
+      "audited_at": "2026-08-26T12:44:41.743553Z",
+      "valid_units": 140,
+      "expected_units": 1680,
+      "unexpected_units": 0
+    },
+    "weight_space_trajectories_complete": true,
+    "formal_common_state_outputs_exist": false,
+    "formal_representation_outputs_exist": false,
+    "hybrid_training_outputs_exist": false
+  },
+  "selection_rule": "Use the four AdamW learning rates from the original frozen sweep without inspecting hybrid outcomes; preserve the Muon/NorMuon hidden-versus-auxiliary partition and auxiliary recipe exactly.",
+  "sources": {
+    "discovery_matrix": {
+      "path": "configs/experiment.yaml",
+      "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+    },
+    "control_matrix": {
+      "path": "configs/hybrid_adamw.yaml",
+      "sha256": "d512ff3fb9ab86a1f1c27408a3672e819a6dcf3538aa4c1897a1f06afd1d457c"
+    },
+    "training_data_manifest": {
+      "path": "data/denseon-sft-500k-seed42/manifest.json",
+      "sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8"
+    },
+    "visible_weight_summary": {
+      "path": "reports/weight-space/summary_manifest.json",
+      "sha256": "faf71a73f2f21a22cff471b436654ec9fdda9cc95aef9a416186d1eb8243d6a9"
+    }
+  },
+  "interpretation": "This is a prospective completion lock created after partial discovery outcomes were visible; it is not a preregistration."
+}

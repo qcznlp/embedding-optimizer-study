@@ -602,6 +602,31 @@ aggregations—ten anchors per family/operator, four learning rates at the final
 prespecified within-run associations—so it cannot silently select favorable layers, learning rates,
 or correlations after seeing the results.
 
+### Hybrid AdamW routing control
+
+The prospectively locked NAACL fairness control is separate from the 24-run discovery matrix:
+
+```bash
+embed-optim-matrix \
+  --matrix configs/hybrid_adamw.yaml \
+  --log-dir logs/hybrid-adamw
+
+embed-optim-evaluate \
+  --matrix configs/hybrid_adamw.yaml \
+  --stages 5 \
+  --results-root results/hybrid-adamw-beir \
+  --log-dir logs/hybrid-adamw-evaluation
+```
+
+It contains eight runs: both model families crossed with the four original AdamW learning rates.
+Every parameter still uses AdamW, but the 88 hidden matrices receive the swept rate while auxiliary
+parameters receive the same fixed `3e-6` AdamW recipe used by Muon/NorMuon. This isolates parameter
+routing from the matrix update rule. Only the final checkpoint is assigned formal BEIR evaluation
+(8 runs × 14 tasks = 112 units); the original matrix remains the source of five-stage dynamics.
+[`configs/hybrid_adamw_control.json`](configs/hybrid_adamw_control.json) records that 140/1,680
+discovery evaluations and the completed weight trajectories were visible when this protocol was
+frozen, so it is a prospective completion lock rather than a preregistration claim.
+
 ### 7. Compare common-state optimizer updates
 
 The checkpoint trajectories above cannot isolate an optimizer rule because each completed run visits

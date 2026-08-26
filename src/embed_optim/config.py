@@ -9,7 +9,7 @@ from typing import Any, Literal
 import yaml
 
 ModelFamily = Literal["dense", "late"]
-OptimizerName = Literal["adamw", "muon", "normuon"]
+OptimizerName = Literal["adamw", "hybrid_adamw", "muon", "normuon"]
 MUON_NS_IMPLEMENTATION = "unfused-bfloat16-v1"
 
 
@@ -148,6 +148,11 @@ def save_resolved_config(config: RunConfig, path: str | Path) -> None:
 
 
 def source_wandb_run_id(config: RunConfig) -> str:
-    version = "v3" if config.optimizer.name in {"muon", "normuon"} else "v2"
+    if config.optimizer.name in {"muon", "normuon"}:
+        version = "v3"
+    elif config.optimizer.name == "hybrid_adamw":
+        version = "v4"
+    else:
+        version = "v2"
     suffix = f"-{MUON_NS_IMPLEMENTATION}" if version == "v3" else ""
     return f"study-{version}-{config.model_family}-{config.run_id}-seed{config.seed}{suffix}"

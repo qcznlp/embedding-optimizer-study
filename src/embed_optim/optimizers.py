@@ -255,6 +255,35 @@ def build_optimizer(
                 "weight_decay": 0.0,
             },
         ]
+    elif config.name == "hybrid_adamw":
+        if not partition["hidden"]:
+            raise ValueError("No transformer hidden matrices matched the hybrid AdamW partition")
+        groups = [
+            {
+                "params": [parameter for _, parameter in partition["hidden"]],
+                "algorithm": "adamw",
+                "lr": config.lr,
+                "betas": (config.beta1, config.beta2),
+                "eps": config.eps,
+                "weight_decay": config.weight_decay,
+            },
+            {
+                "params": [parameter for _, parameter in partition["aux_decay"]],
+                "algorithm": "adamw",
+                "lr": config.aux_lr,
+                "betas": (config.aux_beta1, config.aux_beta2),
+                "eps": config.aux_eps,
+                "weight_decay": config.weight_decay,
+            },
+            {
+                "params": [parameter for _, parameter in partition["aux_no_decay"]],
+                "algorithm": "adamw",
+                "lr": config.aux_lr,
+                "betas": (config.aux_beta1, config.aux_beta2),
+                "eps": config.aux_eps,
+                "weight_decay": 0.0,
+            },
+        ]
     else:
         if not partition["hidden"]:
             raise ValueError("No transformer hidden matrices matched the Muon partition")

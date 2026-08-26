@@ -333,6 +333,14 @@ apply the swept rate only to hidden matrices and use AdamW at `3e-6` for embeddi
 and biases. Add a **hybrid AdamW** control with exactly the Muon parameter partition and auxiliary
 rate. Tune only its hidden-matrix rate. This separates matrix update rule from parameter grouping.
 
+The repository implements this as the separate eight-run matrix in
+`configs/hybrid_adamw.yaml`, with its immutable visibility and selection ledger in
+`configs/hybrid_adamw_control.json`. It reuses the four original AdamW hidden learning rates and
+fixes the auxiliary rate to `3e-6`; only final checkpoints receive the formal 14-task BEIR suite.
+The ledger discloses that 140/1,680 discovery evaluation units and all weight trajectories were
+visible at freeze time, while no hybrid, formal common-state, or formal representation output
+existed. The control is therefore prospectively locked but not preregistered.
+
 ### Common-state virtual updates
 
 At the pretrained model and selected 20%, 60%, and 100% checkpoints:

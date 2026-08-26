@@ -209,7 +209,10 @@ def test_wrapped_adamw_matches_pytorch_reference_for_multiple_steps():
         )
 
 
-@pytest.mark.parametrize("name,lr", [("adamw", 1e-3), ("muon", 1e-3), ("normuon", 1e-3)])
+@pytest.mark.parametrize(
+    "name,lr",
+    [("adamw", 1e-3), ("hybrid_adamw", 1e-3), ("muon", 1e-3), ("normuon", 1e-3)],
+)
 def test_optimizer_steps_and_round_trips(name, lr):
     torch.manual_seed(7)
     model = TinyEncoder()
@@ -225,3 +228,33 @@ def test_optimizer_steps_and_round_trips(name, lr):
     restored, _ = build_optimizer(model, OptimizerConfig(name=name, lr=lr, aux_lr=1e-3))
     restored.load_state_dict(state)
     assert len(restored.state) == len(optimizer.state)
+
+
+def test_hybrid_adamw_matches_muon_parameter_routing():
+    model = TinyEncoder()
+    optimizer, summary = build_optimizer(
+        model,
+        OptimizerConfig(name="hybrid_adamw", lr=1e-5, aux_lr=3e-6),
+    )
+    partition = parameter_partition(model)
+    parameter_groups = {
+        id(parameter): group for group in optimizer.param_groups for parameter in group["params"]
+    }
+
+    assert summary["hidden"]["tensors"] == 2
+    assert all(
+        parameter_groups[id(parameter)]["lr"] == 1e-5 for _, parameter in partition["hidden"]
+    )
+    assert all(
+        parameter_groups[id(parameter)]["lr"] == 3e-6
+        for _, parameter in partition["aux_decay"] + partition["aux_no_decay"]
+    )
+    assert all(
+        parameter_groups[id(parameter)]["algorithm"] == "adamw"
+        for values in partition.values()
+        for _, parameter in values
+    )
+    assert all(
+        parameter_groups[id(parameter)]["weight_decay"] == 0.0
+        for _, parameter in partition["aux_no_decay"]
+    )
