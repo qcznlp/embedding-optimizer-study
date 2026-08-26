@@ -16,6 +16,10 @@ make
 macro containing `\ResultPending` marks an unresolved completion gate and renders visibly in red.
 The paper is not submission-ready while any such marker remains.
 
+Audit the checked-in constants against the frozen matrix, materialized dataset, and strict
+weight-space manifest with `embed-optim-audit-paper`. The command reports unresolved evidence during
+drafting; `embed-optim-audit-paper --strict` becomes a hard final-submission gate.
+
 ## Evidence contract
 
 | Claim family | Authoritative evidence | Required gate |

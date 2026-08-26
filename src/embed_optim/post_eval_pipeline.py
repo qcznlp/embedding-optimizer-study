@@ -459,6 +459,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 "short-branch-summary",
                 _module(args.python, "embed_optim.short_branch_summary"),
             ),
+            PipelineStep(
+                "paper-evidence-audit",
+                _module(args.python, "embed_optim.paper_audit"),
+            ),
             PipelineStep("paper-draft-build", ("make", "-C", "paper")),
         ]
     )
