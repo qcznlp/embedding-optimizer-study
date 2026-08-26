@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 import json
+import shutil
 from pathlib import Path
 
 import pytest
 
-from embed_optim.paper_audit import _complete_manifest, _macros, audit_paper
+from embed_optim.paper_audit import (
+    _complete_manifest,
+    _macros,
+    audit_paper,
+    expected_constant_macros,
+)
 
 
 def test_macro_parser_rejects_duplicate_definition(tmp_path: Path):
@@ -34,6 +40,12 @@ def test_current_paper_constants_match_strict_sources():
     assert result["constant_macros"]["NumWeightPairs"] == "40"
     assert result["constant_macros"]["MuonFamilyThroughputRatioRange"] == "0.9348--0.9946"
     assert result["constant_macros"]["MuonFamilyStateRatioRange"] == "0.6299--0.6420"
+    assert result["constant_sources"]["dataset_manifest"]["sha256"] == (
+        "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8"
+    )
+    assert result["constant_sources"]["dataset_contract"]["path"].endswith(
+        "configs/training_data_contract.json"
+    )
     discovery_evidence = result["evidence"]["DiscoveryHeadline"]
     assert len(discovery_evidence) == 4
     assert discovery_evidence[1]["complete"] is True
@@ -44,6 +56,37 @@ def test_current_paper_constants_match_strict_sources():
 def test_strict_paper_audit_rejects_pending_headlines():
     with pytest.raises(ValueError, match="Paper is not final"):
         audit_paper(strict=True)
+
+
+def test_paper_constants_use_distributable_receipt_without_local_500k_data(tmp_path: Path):
+    files = [
+        "configs/experiment.yaml",
+        "configs/training_data_contract.json",
+        "configs/confirmatory_protocol.json",
+        "configs/hybrid_adamw_control.json",
+        "configs/representation_probe.json",
+        "configs/short_branch_protocol.json",
+        "configs/validation_probe.json",
+        "reports/training-dynamics/summary_manifest.json",
+        "reports/training-dynamics/optimizer_system_summary.csv",
+        "reports/weight-space/summary_manifest.json",
+        "reports/weight-space/optimizer_pair_contrast_trajectory.csv",
+    ]
+    for relative in files:
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(relative, destination)
+
+    constants, sources = expected_constant_macros(
+        tmp_path / "configs/experiment.yaml",
+        tmp_path / "reports/weight-space",
+        tmp_path / "reports/training-dynamics",
+        repo_root=tmp_path,
+    )
+
+    assert constants["NumTrainingQueries"] == "500{,}000"
+    assert constants["NumHardNegatives"] == "7"
+    assert sources["dataset_manifest"]["local_byte_verification"] is False
 
 
 def test_strict_evidence_requires_boolean_complete(tmp_path: Path):

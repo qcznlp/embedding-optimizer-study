@@ -122,6 +122,11 @@ contains:
 - a SHA-256 over the canonical row manifest.
 
 Re-running with the same inputs produces the same query ordering and negative selections.
+The Arrow directory is intentionally excluded from Git. The small distributable
+`configs/training_data_contract.json` receipt locks its manifest hash and paper-relevant constants;
+five independently frozen downstream protocols bind the same hash. Formal experiment commands still
+require and byte-verify the original local manifest and row ledger, while a clean source checkout can
+audit static documentation without pretending the full training data is packaged.
 
 ### 2. Run all training jobs
 

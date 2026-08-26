@@ -69,6 +69,80 @@ def _json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _count_value(value: Any, target: Any) -> int:
+    if isinstance(value, dict):
+        return sum(_count_value(item, target) for item in value.values())
+    if isinstance(value, list):
+        return sum(_count_value(item, target) for item in value)
+    return int(value == target)
+
+
+def _training_data_contract(
+    root: Path,
+    dataset_manifest_path: Path,
+    contract_path: Path,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    contract = _json(contract_path)
+    bindings = contract.get("independent_protocol_bindings")
+    expected_bindings = [
+        "configs/confirmatory_protocol.json",
+        "configs/hybrid_adamw_control.json",
+        "configs/representation_probe.json",
+        "configs/short_branch_protocol.json",
+        "configs/validation_probe.json",
+    ]
+    declared_manifest = (root / str(contract.get("manifest_path", ""))).resolve()
+    if (
+        contract.get("schema_version") != SCHEMA_VERSION
+        or contract.get("status") != "materialized_training_view_receipt"
+        or declared_manifest != dataset_manifest_path
+        or contract.get("total_queries") != 500_000
+        or contract.get("sampled_negatives") != 7
+        or contract.get("seed") != 42
+        or contract.get("source_repo") != "lightonai/embeddings-fine-tuning"
+        or contract.get("source_revision") != "1ca463331ed637d25c1058567e932e0d3bad2983"
+        or not isinstance(contract.get("manifest_sha256"), str)
+        or not isinstance(contract.get("row_manifest_sha256"), str)
+        or bindings != expected_bindings
+    ):
+        raise ValueError("Training-data paper receipt differs from the frozen materialized view")
+    for relative in expected_bindings:
+        binding_path = (root / relative).resolve()
+        binding = _json(binding_path)
+        if _count_value(binding, contract["manifest_sha256"]) != 1:
+            raise ValueError(f"Training-data manifest hash is not bound exactly once by {relative}")
+
+    local_available = dataset_manifest_path.is_file()
+    if local_available:
+        dataset = _json(dataset_manifest_path)
+        expected_fields = {
+            "total_queries": contract["total_queries"],
+            "sampled_negatives": contract["sampled_negatives"],
+            "seed": contract["seed"],
+            "source_repo": contract["source_repo"],
+            "source_revision": contract["source_revision"],
+            "row_manifest_sha256": contract["row_manifest_sha256"],
+            "dataset_fingerprint": contract["dataset_fingerprint"],
+            "materialized_dataset_fingerprint": contract["materialized_dataset_fingerprint"],
+        }
+        if _sha256(dataset_manifest_path) != contract["manifest_sha256"] or any(
+            dataset.get(name) != value for name, value in expected_fields.items()
+        ):
+            raise ValueError("Local training-data manifest differs from its distributable receipt")
+    sources = {
+        "dataset_contract": {
+            "path": str(contract_path),
+            "sha256": _sha256(contract_path),
+        },
+        "dataset_manifest": {
+            "path": str(dataset_manifest_path),
+            "sha256": contract["manifest_sha256"],
+            "local_byte_verification": local_available,
+        },
+    }
+    return contract, sources
+
+
 def _weight_constants(weight_dir: Path) -> dict[str, str]:
     manifest_path = weight_dir / "summary_manifest.json"
     manifest = _json(manifest_path)
@@ -151,6 +225,7 @@ def expected_constant_macros(
     matrix: str | Path = "configs/experiment.yaml",
     weight_dir: str | Path = "reports/weight-space",
     training_dir: str | Path = "reports/training-dynamics",
+    dataset_contract: str | Path = "configs/training_data_contract.json",
     *,
     repo_root: str | Path = ".",
 ) -> tuple[dict[str, str], dict[str, Any]]:
@@ -174,9 +249,11 @@ def expected_constant_macros(
             "Paper constants differ from the frozen dataset/context/checkpoint contract"
         )
     dataset_manifest_path = next(iter(datasets)) / "manifest.json"
-    dataset = _json(dataset_manifest_path)
-    if dataset.get("total_queries") != 500_000 or dataset.get("sampled_negatives") != 7:
-        raise ValueError("Paper constants differ from the materialized dataset manifest")
+    dataset, dataset_sources = _training_data_contract(
+        root,
+        dataset_manifest_path,
+        (root / dataset_contract).resolve(),
+    )
     expected = {
         "NumDiscoveryRuns": str(len(configs)),
         "NumDiscoveryCheckpoints": str(sum(len(c.checkpoint_fractions) for c in configs)),
@@ -194,10 +271,7 @@ def expected_constant_macros(
     }
     sources = {
         "matrix": {"path": str(matrix_path), "sha256": _sha256(matrix_path)},
-        "dataset_manifest": {
-            "path": str(dataset_manifest_path),
-            "sha256": _sha256(dataset_manifest_path),
-        },
+        **dataset_sources,
         "weight_manifest": {
             "path": str((Path(weight_dir).resolve() / "summary_manifest.json")),
             "sha256": _sha256(Path(weight_dir).resolve() / "summary_manifest.json"),
