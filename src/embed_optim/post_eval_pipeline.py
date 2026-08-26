@@ -489,6 +489,12 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 PipelineStep("distribution-build", _module(args.python, "build")),
             ]
         )
+    steps.append(
+        PipelineStep(
+            "paper-final-strict-audit",
+            _module(args.python, "embed_optim.paper_audit", "--strict"),
+        )
+    )
     return steps
 
 
