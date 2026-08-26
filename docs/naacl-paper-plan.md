@@ -99,7 +99,9 @@ optimizer without committing it. Measure layer-wise update spectra, row balance,
 relative scale. Track the same quantities along actual trajectories.
 
 **H2.** Muon produces better-conditioned, higher-effective-rank matrix updates than AdamW, while
-NorMuon reduces the dispersion of per-row update norms relative to Muon.
+NorMuon reduces the dispersion of per-row update norms relative to Muon. This is a directional
+hypothesis, not an assumption that a flatter spectrum is always beneficial: the competing outcome is
+that orthogonalization overweights noise-dominated directions or suppresses a useful heavy tail.
 
 ### RQ3: Which weight-space differences reach the retrieval function?
 
@@ -222,7 +224,8 @@ For each layer, checkpoint, and common-batch probe, record:
 1. Singular-value spectrum of the raw gradient, momentum, optimizer update, weight delta, and
    current weight.
 2. Stable rank, entropy effective rank, numerical rank, condition number on non-negligible singular
-   values, and spectral/Frobenius/nuclear norms.
+   values, spectral/Frobenius/nuclear norms, and—only where the full spectrum is computed—spectral
+   tail/heavy-tail diagnostics with their fitted range and goodness of fit.
 3. Row- and column-norm coefficient of variation, Gini coefficient, maximum-to-median ratio, and
    fraction of update energy carried by the largest 1% and 10% of rows.
 4. Update-to-weight ratios in both Frobenius and spectral norms.
@@ -498,6 +501,18 @@ chronology:
   optimizer mismatch can disrupt Adam-pretrained knowledge and that the effect grows with update
   strength. Our contribution is to test this issue in full-rank embedding adaptation and connect it
   to retrieval margins, rankings, and architecture-specific representations.
+- [HTMuon](https://aclanthology.org/2026.findings-acl.1819/) argues that Muon can suppress
+  heavy-tailed weight spectra and overemphasize noise-dominated update directions. This gives our
+  spectrum analysis a genuine competing hypothesis: higher update effective rank need not imply
+  better retrieval, and tail fits should be reported only for the preregistered full-spectrum tier.
+- [The Newton-Muon Optimizer](https://arxiv.org/abs/2604.01472) interprets standard Muon as omitting
+  right preconditioning by the layer-input second moment. Dense versus late-interaction retrieval
+  may expose different input-covariance regimes, so activation covariance is a useful explanatory
+  measurement rather than evidence that orthogonalization alone is sufficient.
+- [Adaptive Optimization via Schatten-p Norms](https://arxiv.org/abs/2605.19781) places SGD, Muon,
+  and Adam-like rules inside a broader family of layer-dependent matrix geometries. It narrows our
+  novelty claim from “geometry matters” to the retrieval-specific causal bridge and motivates
+  reporting which layers favor which update geometry instead of seeking one universal winner.
 - [HIL](https://aclanthology.org/2024.naacl-long.437/) connects representation
   isotropy/anisotropy to zero-shot dense retrieval. Isotropy is consequently an explanatory variable
   here, not a standalone novelty claim; optimizer interventions must connect it to downstream
