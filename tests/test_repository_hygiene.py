@@ -4,10 +4,14 @@ import re
 import subprocess
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).parents[1]
 
 
 def _tracked_files() -> list[Path]:
+    if not (ROOT / ".git").exists():
+        pytest.skip("credential hygiene requires a Git repository checkout")
     completed = subprocess.run(
         ["git", "ls-files", "-z"],
         cwd=ROOT,
