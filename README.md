@@ -616,6 +616,8 @@ embed-optim-evaluate \
   --stages 5 \
   --results-root results/hybrid-adamw-beir \
   --log-dir logs/hybrid-adamw-evaluation
+
+embed-optim-summarize-hybrid-control
 ```
 
 It contains eight runs: both model families crossed with the four original AdamW learning rates.
@@ -626,6 +628,9 @@ routing from the matrix update rule. Only the final checkpoint is assigned forma
 [`configs/hybrid_adamw_control.json`](configs/hybrid_adamw_control.json) records that 140/1,680
 discovery evaluations and the completed weight trajectories were visible when this protocol was
 frozen, so it is a prospective completion lock rather than a preregistration claim.
+The summarizer independently deep-audits all 40 control checkpoints, requires the complete native
+AdamW five-stage source plus exactly 112 hybrid final-stage units, and emits paired task, aggregate,
+and system tables under `reports/hybrid-adamw/` with a content-hashed manifest.
 
 ### 7. Compare common-state optimizer updates
 

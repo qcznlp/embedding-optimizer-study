@@ -45,6 +45,7 @@ embed-optim-plot-common-state-spectra
 embed-optim-plot-representation-dynamics
 embed-optim-plot-late-token-dynamics
 embed-optim-aggregate --matrix configs/experiment.yaml --strict
+embed-optim-summarize-hybrid-control
 embed-optim-build-mechanism-bridge
 embed-optim-render-mechanism-report
 
