@@ -71,7 +71,7 @@ embed-optim-summarize-geometry \
   --verify-inputs
 ```
 
-For the preregistered high-resolution spectrum tier, select exact checkpoints and tensors instead
+For the prespecified high-resolution spectrum tier, select exact checkpoints and tensors instead
 of materializing every matrix. The following example computes full singular spectra because rank 768
 reaches the smaller dimension of every selected matrix. Within this selected sequence,
 `delta_from_previous` means displacement from the previous selected checkpoint.
