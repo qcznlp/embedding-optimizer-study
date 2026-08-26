@@ -62,6 +62,7 @@ def test_frozen_common_state_protocol_is_self_consistent():
     assert anchor["expected_total_anchors"] == 20
     assert anchor["freeze_context"]["strict_beir_valid_units"] == 98
     assert anchor["freeze_context"]["partial_results_already_observed"] is True
+    assert "before any common-state GPU output" in anchor["freeze_context"]["protocol_amendment"]
 
 
 def test_build_common_state_jobs_covers_preregistered_anchor_grid(tmp_path: Path):

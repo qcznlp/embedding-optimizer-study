@@ -24,7 +24,7 @@
     "model_dtype": "float32",
     "forward_dtype": "bfloat16",
     "storage_dtype": "float32",
-    "model_mode": "eval",
+    "model_mode": "train",
     "gradient_checkpointing": true,
     "weights_advanced": false
   },
@@ -69,7 +69,9 @@
       "frozen_at_utc": "2026-08-26T08:31:00Z",
       "strict_beir_valid_units": 98,
       "strict_beir_expected_units": 1680,
-      "partial_results_already_observed": true
+      "partial_results_already_observed": true,
+      "protocol_amended_at_utc": "2026-08-26T08:40:00Z",
+      "protocol_amendment": "Changed model_mode from eval to train before any common-state GPU output so Transformers non-reentrant gradient checkpointing is operational; per-shard RNG remains fixed."
     }
   }
 }

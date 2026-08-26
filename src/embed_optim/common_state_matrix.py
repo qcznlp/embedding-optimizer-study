@@ -126,8 +126,13 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any]]:
             "strict_beir_valid_units",
             "strict_beir_expected_units",
             "partial_results_already_observed",
+            "protocol_amended_at_utc",
+            "protocol_amendment",
         }
         or not isinstance(freeze_context["frozen_at_utc"], str)
+        or not isinstance(freeze_context["protocol_amended_at_utc"], str)
+        or not isinstance(freeze_context["protocol_amendment"], str)
+        or not freeze_context["protocol_amendment"]
         or isinstance(valid_units, bool)
         or not isinstance(valid_units, int)
         or isinstance(expected_units, bool)

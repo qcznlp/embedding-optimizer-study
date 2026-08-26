@@ -489,7 +489,9 @@ the pretrained state plus the 20%, 60%, and 100% checkpoints from the nominal in
 mechanism anchors, not configurations selected as BEIR winners. The spec transparently records that
 98 of 1,680 strict BEIR units and partial scores had already been observed when this anchor grid was
 frozen, so this is a prospective completion lock rather than a claim of preregistration before all
-outcome inspection. Inspect the exact 20-job matrix without using a GPU:
+outcome inspection. It also records a pre-execution amendment from evaluation to training mode so
+the declared gradient-checkpointing policy is operational; no common-state GPU artifact existed at
+that amendment. Inspect the exact 20-job matrix without using a GPU:
 
 ```bash
 embed-optim-common-state-matrix --dry-run
@@ -519,19 +521,21 @@ embed-optim-export-gradients \
   --probe-spec configs/representation_probe.json \
   --common-state-spec configs/common_state_probe.json \
   --family dense \
+  --train-mode \
   --output-dir results/common-state/dense/muon-lr1e-3/checkpoint-2345/gradients
 ```
 
 The frozen specification selects 32 probe examples with a seeded, source-balanced round robin and
 forms eight ordered four-example gradients using micro-batches of one. Like formal training, model
 parameters and accumulated gradients remain float32 while forward operations use bfloat16 autocast.
-Non-reentrant gradient checkpointing preserves the formal memory policy. Every gradient is computed
-in evaluation mode at the identical weights, clipped at the training threshold of 1.0 across all
-model parameters, and then saves only the exact hidden-matrix partition used by Muon. The
-runtime-to-safetensors name mapping is required to be a complete one-to-one match and is recorded
-explicitly. The checkpoint, probe, selection, clipping factor, loss, tensor partition, runtime, and
-every shard are content-hashed. A partially completed export resumes only after validating every
-committed shard.
+The model remains in training mode so non-reentrant gradient checkpointing is actually active;
+dropout is deterministic because every shard resets its recorded RNG seed, and each cached gradient
+is shared by all three optimizer replays. Every gradient is computed at identical weights, clipped
+at the training threshold of 1.0 across all model parameters, and then saves only the exact
+hidden-matrix partition used by Muon. The runtime-to-safetensors name mapping is required to be a
+complete one-to-one match and is recorded explicitly. The checkpoint, probe, selection, clipping
+factor, loss, tensor partition, runtime, and every shard are content-hashed. A partially completed
+export resumes only after validating every committed shard.
 
 Replay that shared gradient history through the three optimizer state machines with:
 

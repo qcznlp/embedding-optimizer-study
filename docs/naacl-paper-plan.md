@@ -338,7 +338,9 @@ The repository implements the frozen-weight state-warm-up protocol with
 gradient states, use micro-batches of one, apply the formal global gradient-clipping threshold, and
 never advance the checkpoint weights. Parameters and accumulated gradients remain float32 while the
 forward pass uses the same bfloat16 autocast and non-reentrant gradient-checkpointing policy as
-training. Shards are committed and hashed
+training. The model remains in training mode so checkpointing is operational; each shard resets a
+fixed RNG seed, and the resulting cached dropout realization is shared by every optimizer replay.
+Shards are committed and hashed
 independently so interrupted GPU exports resume without changing their sample/RNG sequence. The
 analyzer replays the exact AdamW, Muon, and NorMuon state equations used by training, including CUDA
 bfloat16 Newton–Schulz, records raw direction geometry, and exports per-layer Frobenius-matched
@@ -358,6 +360,11 @@ only provenance-compatible gradient shards, and runs an independent hash audit o
 metric, and matched-direction artifacts. The matrix intentionally samples states visited by all
 three optimizer families; every counterfactual transform at an anchor still receives the same
 weights and the same ordered gradient history.
+
+The spec also preserves one pre-execution amendment: `model_mode` changed from evaluation to
+training before any common-state GPU artifact existed, because Transformers gates gradient
+checkpointing on `module.training`. This correction changes the dropout realization but not the
+shared-gradient comparison; the per-shard RNG sequence is fixed and recorded.
 
 ### Short counterfactual branches
 
