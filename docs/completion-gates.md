@@ -37,6 +37,7 @@ embed-optim-summarize-common-state \
   --output-dir reports/common-state
 embed-optim-common-state-spectra --audit-only --verify-hashes
 embed-optim-common-state-spectra --summarize-only
+embed-optim-plot-common-state-spectra
 embed-optim-aggregate --matrix configs/experiment.yaml --strict
 
 uv build

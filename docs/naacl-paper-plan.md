@@ -393,6 +393,9 @@ trajectories were already visible, but no formal common-state or representation 
 `embed-optim-common-state-spectra` computes all 360 exact spectra, content-hashes every source and
 output, and emits both per-spectrum summaries and normalized long-form singular-value curves. This
 prevents choosing visually favorable layers after inspecting the update spectra.
+`embed-optim-plot-common-state-spectra` then renders the main mechanism panel as medians and
+interquartile bands over all ten anchors per family; no individual checkpoint is selected for visual
+convenience.
 
 The spec also preserves one pre-execution amendment: `model_mode` changed from evaluation to
 training before any common-state GPU artifact existed, because Transformers gates gradient

@@ -617,6 +617,19 @@ resumes only matching outputs, and automatically writes `spectrum_metrics.csv`, 
 summary manifest. Reaggregate without GPU work using `--summarize-only`; add `--audit-only
 --verify-hashes` to validate the per-anchor tier itself.
 
+Render the deterministic 12-panel publication figure only from a complete summary:
+
+```bash
+embed-optim-plot-common-state-spectra \
+  --summary-dir results/common-state-spectra/summary \
+  --output reports/common-state/exact-update-spectra.svg
+```
+
+Each panel shows the median and interquartile range over all ten frozen anchors in one model family,
+not a visually selected checkpoint. Rows separate DenseOn/LateOn and attention/MLP matrices;
+columns are layers 0, 10, and 21. The plotter rehashes its source CSV and frozen protocol, requires
+all 360 spectra, and writes a content-addressed sidecar next to the SVG.
+
 For a single ad hoc checkpoint, the equivalent first stage is:
 
 ```bash
