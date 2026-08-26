@@ -418,6 +418,89 @@ def _validate_figure(path: Path, *, spectra: bool = False) -> dict[str, Any]:
     return {"path": str(path), "sha256": _sha256(path), "manifest_sha256": _sha256(sidecar)}
 
 
+def _retrieval_rows(
+    retrieval_dir: Path,
+) -> tuple[list[list[str]], dict[str, Any], Path, dict[str, Any]]:
+    retrieval_dir = retrieval_dir.resolve()
+    repository_root = retrieval_dir.parents[1]
+    manifest_path = retrieval_dir / "summary_manifest.json"
+    manifest = _load_manifest(manifest_path)
+    if (
+        manifest.get("complete") is not True
+        or manifest.get("coverage")
+        != {
+            "runs": 24,
+            "checkpoints": 120,
+            "tasks": 14,
+            "evaluation_units": 1_680,
+            "optimizer_family_groups": 6,
+        }
+        or _rehash_references(manifest.get("sources"), context="retrieval_dynamics.sources") < 1_685
+    ):
+        raise ValueError("Retrieval dynamics is not the strict 1,680-unit completion report")
+    fields = {
+        "model_family",
+        "optimizer",
+        "learning_rate_points",
+        "adamw_median_final_target",
+        "points_reaching_target",
+        "points_right_censored",
+        "fastest_observed_useful_wall_time_hours",
+        "median_observed_useful_wall_time_hours",
+        "target_definition",
+        "interpolation",
+    }
+    rows, table = _read_declared_csv(
+        repository_root,
+        manifest,
+        "optimizer_first_passage",
+        required_fields=fields,
+    )
+    indexed = {(row.get("model_family", ""), row.get("optimizer", "")): row for row in rows}
+    expected = {(family, optimizer) for family in FAMILIES for optimizer in OPTIMIZERS}
+    if len(rows) != 6 or set(indexed) != expected:
+        raise ValueError("Retrieval first-passage table does not cover six optimizer/family groups")
+    output = []
+    for family in FAMILIES:
+        for optimizer in OPTIMIZERS:
+            row = indexed[(family, optimizer)]
+            learning_rates = int(row["learning_rate_points"])
+            reached = int(row["points_reaching_target"])
+            censored = int(row["points_right_censored"])
+            target = _finite(row, "adamw_median_final_target")
+            fastest = _finite(row, "fastest_observed_useful_wall_time_hours", allow_empty=True)
+            median = _finite(row, "median_observed_useful_wall_time_hours", allow_empty=True)
+            if (
+                learning_rates != 4
+                or reached + censored != 4
+                or row["target_definition"] != "within-family-median-of-four-adamw-final-points"
+                or row["interpolation"] != "none-five-observed-checkpoints-only"
+            ):
+                raise ValueError(f"Invalid retrieval first-passage group: {(family, optimizer)}")
+            output.append(
+                [
+                    FAMILY_LABELS[family],
+                    OPTIMIZER_LABELS[optimizer],
+                    _format(target),
+                    f"{reached}/4",
+                    _format(fastest, 3),
+                    _format(median, 3),
+                    str(censored),
+                ]
+            )
+    figure_item = manifest.get("outputs", {}).get("quality_vs_useful_wall_time", {})
+    figure_path = _resolve_declared(repository_root, str(figure_item.get("path", "")))
+    if (
+        figure_path != retrieval_dir / "quality_vs_useful_wall_time.svg"
+        or not figure_path.is_file()
+        or figure_path.stat().st_size != figure_item.get("bytes")
+        or _sha256(figure_path) != figure_item.get("sha256")
+    ):
+        raise ValueError("Retrieval dynamics figure differs from its strict manifest")
+    figure = {"path": str(figure_path), "sha256": _sha256(figure_path)}
+    return output, manifest, table, figure
+
+
 def _replace_marked(text: str, content: str) -> str:
     begin, end = MECHANISM_MARKERS
     if text.count(begin) != 1 or text.count(end) != 1:
@@ -438,6 +521,7 @@ def render_mechanism_report(
     common_state_dir: Path,
     spectrum_dir: Path,
     bridge_dir: Path,
+    retrieval_dir: Path,
     blog_path: Path,
     output_path: Path,
     *,
@@ -448,7 +532,11 @@ def render_mechanism_report(
     common_rows, common_manifest, common_table = _common_state_rows(common_state_dir)
     spectrum_rows, spectrum_manifest, spectrum_table = _spectrum_rows(spectrum_dir)
     representation_rows, correlation_rows, bridge_manifest, bridge_tables = _bridge_rows(bridge_dir)
+    retrieval_rows, retrieval_manifest, retrieval_table, retrieval_figure = _retrieval_rows(
+        retrieval_dir
+    )
     figures = {
+        "retrieval_dynamics": retrieval_figure,
         "exact_spectra": _validate_figure(spectrum_figure, spectra=True),
         "representation_dynamics": _validate_figure(representation_figure),
         "late_token_dynamics": _validate_figure(late_token_figure),
@@ -459,6 +547,27 @@ def render_mechanism_report(
             "and on the same ordered eight-gradient history. The values below are generated only after "
             "the complete 20-anchor matrix, 360 exact spectra, both 122-job representation tiers, and "
             "the 1,680-unit retrieval matrix pass their content-hash audits.",
+            "### Retrieval time to an AdamW reference\n\n"
+            "![Retrieval quality versus useful wall time]"
+            "(../reports/retrieval-dynamics/quality_vs_useful_wall_time.svg)\n\n"
+            + _table(
+                [
+                    "Family",
+                    "Optimizer",
+                    "AdamW reference",
+                    "LR points reaching",
+                    "fastest hours",
+                    "median hours",
+                    "right-censored",
+                ],
+                retrieval_rows,
+            )
+            + "\n\nThe reference is the within-family median final nDCG@10 of the four AdamW "
+            "learning-rate points. Passage is observed only at the five saved checkpoints; no "
+            "interpolation is used, and non-reaching points remain right-censored. Checkpoint time "
+            "is a step-proportional estimate from audited useful terminal wall time. The rule was "
+            "locked after 160/1,680 discovery units were visible, so this is exploratory rather "
+            "than a preregistration or a substitute for the three-seed confirmation.",
             "### Same-state optimizer fingerprints\n\n"
             + _table(
                 [
@@ -537,6 +646,11 @@ def render_mechanism_report(
             "sha256": _sha256((common_state_dir / "summary_manifest.json").resolve()),
             "anchors": common_manifest["valid_anchors"],
         },
+        "retrieval_dynamics": {
+            "path": str((retrieval_dir / "summary_manifest.json").resolve()),
+            "sha256": _sha256((retrieval_dir / "summary_manifest.json").resolve()),
+            "evaluation_units": retrieval_manifest["coverage"]["evaluation_units"],
+        },
         "exact_spectra": {
             "path": str((spectrum_dir / "summary_manifest.json").resolve()),
             "sha256": _sha256((spectrum_dir / "summary_manifest.json").resolve()),
@@ -554,7 +668,7 @@ def render_mechanism_report(
         "sources": source_manifests,
         "source_tables": [
             {"path": str(path), "sha256": _sha256(path)}
-            for path in [common_table, spectrum_table, *bridge_tables]
+            for path in [retrieval_table, common_table, spectrum_table, *bridge_tables]
         ],
         "figures": figures,
         "output": {
@@ -569,6 +683,7 @@ def render_mechanism_report(
             "markers": list(MECHANISM_MARKERS),
         },
         "aggregation": {
+            "retrieval_dynamics": "six-family-optimizer-groups-over-four-learning-rate-points",
             "common_state": "median-over-ten-frozen-anchors-per-family-operator",
             "exact_spectra": "median-over-sixty-prespecified-spectra-per-family-operator",
             "representation": "final-stage-median-over-four-frozen-learning-rates",
@@ -592,6 +707,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--spectrum-dir", type=Path, default=Path("results/common-state-spectra/summary")
     )
     parser.add_argument("--bridge-dir", type=Path, default=Path("reports/mechanism-bridge"))
+    parser.add_argument("--retrieval-dir", type=Path, default=Path("reports/retrieval-dynamics"))
     parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument("--output", type=Path, default=Path("reports/mechanism-summary.md"))
     parser.add_argument(
@@ -618,6 +734,7 @@ def main(argv: list[str] | None = None) -> None:
         args.common_state_dir,
         args.spectrum_dir,
         args.bridge_dir,
+        args.retrieval_dir,
         args.blog,
         args.output,
         spectrum_figure=args.spectrum_figure,

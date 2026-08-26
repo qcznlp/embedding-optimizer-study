@@ -39,8 +39,12 @@ STRICT_EVIDENCE = {
         Path("reports/functional-intervention/manifest.json"),
         Path("reports/hybrid-adamw/summary_manifest.json"),
         Path("reports/short-branch/summary_manifest.json"),
+        Path("reports/outcome-summary.manifest.json"),
     ),
-    "ConfirmationHeadline": (Path("reports/confirmatory/summary_manifest.json"),),
+    "ConfirmationHeadline": (
+        Path("reports/confirmatory/summary_manifest.json"),
+        Path("reports/outcome-summary.manifest.json"),
+    ),
 }
 MACRO_PATTERN = re.compile(r"^\\newcommand\{\\([A-Za-z]+)\}\{(.*)\}$")
 

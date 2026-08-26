@@ -267,6 +267,12 @@ atomic JSON ledger under `logs/post-eval-pipeline/`; failed steps retry and leav
 diagnosis. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit,
 and `--dry-run` prints the complete command plan without waiting or launching work.
 
+The final blog has two independent generated sections. `embed-optim-render-mechanism-report` binds
+retrieval dynamics, common-state spectra, representation geometry, and the descriptive temporal
+bridge. `embed-optim-render-outcome-report` then binds hybrid AdamW routing, scale-matched virtual
+steps, shared-start short branches, and the validation-frozen three-seed BEIR confirmation. Both
+sections are content-hashed and idempotently replace only their declared Markdown marker regions.
+
 Dataset revisions for all 14 LightOn decontaminated BEIR repositories are pinned in
 [`decontamination.py`](src/embed_optim/decontamination.py). Dense evaluation runs independent tasks
 across four GPUs. Late-interaction evaluation uses PyLate for multivector encoding, the fused

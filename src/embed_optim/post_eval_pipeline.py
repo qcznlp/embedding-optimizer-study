@@ -472,6 +472,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(args.python, "embed_optim.short_branch_summary"),
             ),
             PipelineStep(
+                "outcome-blog-render",
+                _module(args.python, "embed_optim.outcome_report"),
+            ),
+            PipelineStep(
                 "paper-evidence-audit",
                 _module(args.python, "embed_optim.paper_audit"),
             ),

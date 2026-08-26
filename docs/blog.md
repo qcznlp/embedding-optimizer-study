@@ -883,6 +883,13 @@ only after all corresponding strict manifests and the complete 1,680-unit BEIR m
 
 <!-- MECHANISM:END -->
 
+<!-- OUTCOMES:BEGIN -->
+
+Hybrid-routing, scale-matched intervention, shared-start branch, and three-seed confirmation tables
+will be inserted here only after all four strict reports pass their declared coverage and hash gates.
+
+<!-- OUTCOMES:END -->
+
 ## Limitations
 
 - This is one epoch on one pretrained backbone family; it does not establish a universal optimizer

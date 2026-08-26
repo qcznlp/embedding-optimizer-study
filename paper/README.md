@@ -34,6 +34,7 @@ drafting; `embed-optim-audit-paper --strict` becomes a hard final-submission gat
 | Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 18 runs, 90 checkpoints on both frozen probes |
 | Routing fairness | `reports/hybrid-adamw/summary_manifest.json` | eight hybrid runs and 112 final BEIR units |
 | Confirmatory retrieval claims | `reports/confirmatory/summary_manifest.json` | three new seeds, 18 runs, 252 final BEIR units |
+| Final outcome rendering | `reports/outcome-summary.manifest.json` | all routing, immediate-direction, accumulated-branch, and confirmatory tables are source-hashed into the final blog marker region |
 
 Checkpoint correlations are always described as observational. Causal language is reserved for
 same-state interventions and shared-start branches. The exploratory seed is never pooled with the
