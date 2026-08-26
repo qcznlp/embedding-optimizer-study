@@ -143,6 +143,8 @@ contains all 40 checkpoint pairs: displacement ratios remain 0.995607–1.003879
 remain 0.166608–0.463783, and top-1%-row energy ratios remain 0.585108–0.730320. Thus the direction
 does not emerge only at the final checkpoint.
 
+![Matched Muon and NorMuon checkpoint geometry](../reports/weight-space/optimizer_pair_contrast_trajectory.svg)
+
 This pattern supports a precise working hypothesis: NorMuon changes how trajectory energy is
 distributed across neurons without primarily changing total displacement. It is still one-seed,
 integrated-trajectory evidence. The paper must test the same signature on individual common-state
