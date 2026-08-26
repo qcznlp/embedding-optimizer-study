@@ -152,6 +152,15 @@ updates and connect it to token utilization or retrieval behavior before using c
 AdamW uses a different native learning-rate range, so a post-hoc nearest-displacement comparison is
 not an adequate control; use matched-scale virtual updates and hybrid AdamW instead.
 
+The overlapping observed displacement range also prevents an overly simple Muon story. For DenseOn,
+the final Muon `1e-4` point has displacement/weight 0.007359 and row CV 0.1972; the nearest AdamW
+point (`3e-5`, stage 2) has 0.008040 and 0.0951, while NorMuon `1e-4` has 0.007365 and 0.0894. LateOn
+shows the same descriptive pattern: 0.007895/0.2012 for Muon, 0.008193/0.1011 for the nearest AdamW
+point, and 0.007917/0.0933 for NorMuon. These are post-hoc checkpoint matches, not fair causal
+comparisons, but they rule out framing Muon's expected benefit as neuron-wise row balancing. The
+Muon hypothesis should instead be tested in singular-spectrum conditioning; row balancing is the
+specific NorMuon hypothesis.
+
 ## Weight- and update-space analysis
 
 Use only hidden 2-D matrices for direct Muon/AdamW geometry comparisons, and report attention and

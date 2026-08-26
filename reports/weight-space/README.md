@@ -28,6 +28,12 @@ The five-checkpoint table contains 40 matched pairs. Across the complete traject
 ratios stay within 0.995607–1.003879, row-norm CV ratios within 0.166608–0.463783, and top-1%-row
 energy ratios within 0.585108–0.730320; the direction never reverses.
 
+In the narrow displacement range shared with AdamW, Muon is not more row-balanced: the nearest
+descriptive DenseOn points have row CV 0.1972 (Muon) versus 0.0951 (AdamW), and LateOn has 0.2012
+versus 0.1011. NorMuon is 0.0894 and 0.0933, respectively, at almost the same displacement as its
+Muon counterpart. These post-hoc checkpoint matches are not causal comparisons. They motivate
+separating Muon's singular-spectrum hypothesis from NorMuon's row-balancing hypothesis.
+
 ![Matched Muon and NorMuon checkpoint geometry](optimizer_pair_contrast_trajectory.svg)
 
 Regenerate the vector figure with:
