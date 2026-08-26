@@ -98,6 +98,24 @@ These checkpoints support most retrospective geometry analyses without retrainin
 should be described as the discovery phase; selected configurations must be confirmed with new
 seeds rather than treating learning-rate-selected test scores as unbiased estimates.
 
+### Artifact-aware implementation boundary
+
+The audited DenseOn and LateOn checkpoints each contain 134 model tensors. Eighty-nine are
+two-dimensional, but the training-time optimizer partition identifies exactly 88 transformer hidden
+matrices (110,297,088 parameters) in both families; the remaining 2-D tensor is the token embedding
+matrix and was routed to auxiliary AdamW. Geometry tooling must reconstruct and verify this declared
+partition rather than selecting every 2-D tensor. This prevents an embedding matrix that Muon never
+updated from dominating a nominal “Muon weight spectrum” comparison.
+
+Run the retrospective checkpoint analysis in two tiers. Stream every selected tensor from
+`model.safetensors` and compute inexpensive exact quantities (Frobenius norm, row/column balance,
+checkpoint displacement, and trajectory length) for all 120 checkpoints. Compute full singular
+spectra only for a preregistered layer/checkpoint subset; use a deterministic low-rank sketch for the
+remaining tensors and report its captured Frobenius-energy fraction. Store one record per tensor and
+checkpoint with the input model digest, tensor name, optimizer partition, shape, algorithm, seed, and
+approximation settings. A difference between distant checkpoints is a trajectory displacement, not
+an optimizer step; raw gradients and actual single-step updates require the common-state probes below.
+
 ## Weight- and update-space analysis
 
 Use only hidden 2-D matrices for direct Muon/AdamW geometry comparisons, and report attention and
@@ -274,4 +292,3 @@ effective-rank or isotropy measurements alone are new.
 The defensible novelty is their **retrieval-specific causal connection**: two retriever families,
 full training dynamics, common-state interventions, token-level MaxSim evidence, decontaminated
 zero-shot retrieval, and a fairness control for hybrid parameter routing.
-
