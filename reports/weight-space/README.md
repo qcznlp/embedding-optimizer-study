@@ -28,6 +28,14 @@ The five-checkpoint table contains 40 matched pairs. Across the complete traject
 ratios stay within 0.995607–1.003879, row-norm CV ratios within 0.166608–0.463783, and top-1%-row
 energy ratios within 0.585108–0.730320; the direction never reverses.
 
+![Matched Muon and NorMuon checkpoint geometry](optimizer_pair_contrast_trajectory.svg)
+
+Regenerate the vector figure with:
+
+```bash
+embed-optim-plot-geometry
+```
+
 These are one-seed, integrated checkpoint trajectories, not individual optimizer updates or causal
 effects. The common-state virtual updates, matched-scale controls, short branches, and confirmatory
 seeds in the paper plan are required before turning this pattern into a mechanism claim.
