@@ -414,6 +414,31 @@ Treat BEIR datasets and random seeds as sampling levels. Report the per-task tab
 aggregate is favorable; optimizer benefits that come from only one large dataset are not a robust
 result.
 
+## Minimum publishable package versus extensions
+
+The paper should have a hard core so the mechanism story does not expand indefinitely.
+
+**Main-paper completion gates:**
+
+1. Complete the current 24-run, 1,680-unit exploratory matrix and report all learning rates rather
+   than only winners.
+2. Complete the frozen 20-anchor common-state matrix and show at least one spectral signature that
+   distinguishes AdamW/Muon plus the row-balance signature that distinguishes Muon/NorMuon.
+3. Connect those signatures to fixed representation/score probes in both model families; a weight
+   metric with no margin, ranking, or token-utilization consequence is a negative mechanism result.
+4. Run the hybrid-AdamW routing control and at least one scale-matched short branch from a shared
+   checkpoint. This is the minimum evidence needed to separate update rule, parameter grouping, and
+   update magnitude.
+5. Freeze recipes using non-BEIR validation, then confirm the headline comparison with at least three
+   independent seeds. The exploratory seed may be shown but should not silently become one of the
+   confirmatory seeds after its test results influenced recipe choice.
+
+Optimizer switches in both directions, perturbation robustness, complete activation-covariance
+maps, heavy-tail fits for every layer, and five confirmatory seeds are valuable extensions. They
+belong in the appendix or follow-up work unless one is needed to resolve the main causal result.
+Confirmatory runs need only the final BEIR checkpoint unless the paper makes a seed-level claim about
+training dynamics; the existing sweep already supplies the exploratory five-stage trajectories.
+
 ## Claim-evidence firewall
 
 | Intended claim | Minimum supporting evidence | Evidence that is insufficient by itself |
