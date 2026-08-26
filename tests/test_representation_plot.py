@@ -12,6 +12,7 @@ from embed_optim.representation_plot import (
     CHECKPOINT_FIELDS,
     REPRESENTATION_TABLE_FIELDS,
     TOKEN_FIELDS,
+    plot_late_token_dynamics,
     plot_representation_dynamics,
 )
 from embed_optim.representation_summary import IDENTITY_FIELDS, SCORE_FIELDS
@@ -209,6 +210,26 @@ def test_representation_plot_is_complete_and_deterministic(tmp_path: Path):
     sidecar = json.loads(output.with_suffix(".manifest.json").read_text())
     assert sidecar == first
     assert sidecar["output"]["sha256"] == _sha256(output)
+
+    late_output = tmp_path / "late-token-dynamics.svg"
+    late_first = plot_late_token_dynamics(
+        Path("configs/experiment.yaml"), training, unseen, late_output
+    )
+    late_bytes = late_output.read_bytes()
+    late_second = plot_late_token_dynamics(
+        Path("configs/experiment.yaml"), training, unseen, late_output
+    )
+    assert late_first == late_second
+    assert late_output.read_bytes() == late_bytes
+    assert late_first["family"] == "late"
+    assert late_first["jobs"] == 244
+    assert late_first["metrics"] == [
+        "token_evidence_entropy_mean",
+        "token_evidence_gini_mean",
+        "document_token_coverage_mean",
+        "repeated_token_dominance_mean",
+    ]
+    assert json.loads(late_output.with_suffix(".manifest.json").read_text()) == late_first
 
 
 def test_representation_plot_rejects_tampered_summary(tmp_path: Path):

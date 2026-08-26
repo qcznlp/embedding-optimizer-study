@@ -314,6 +314,9 @@ figure through manual JSON collection.
 shared DenseOn/LateOn panel for margin, query effective rank, and pretrained-ranking agreement. It
 uses every learning-rate trajectory, shows the common pretrained point, and records the exact source
 hashes in a sidecar instead of selecting a visually favorable configuration.
+The companion `embed-optim-plot-late-token-dynamics` panel exposes all four prespecified MaxSim
+token-utilization summaries on both tiers. Keeping this panel separate prevents LateOn-only evidence
+from changing the shared cross-architecture plot definition after results are visible.
 
 ## Causal controls and additional runs
 

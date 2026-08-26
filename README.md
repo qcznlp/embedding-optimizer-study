@@ -545,6 +545,7 @@ After both formal tiers pass strict aggregation, render their shared dynamics pa
 
 ```bash
 embed-optim-plot-representation-dynamics
+embed-optim-plot-late-token-dynamics
 ```
 
 The plotter rehashes both complete 122-job summaries, their three source tables, and both frozen
@@ -553,6 +554,10 @@ agreement with the pretrained ranking for DenseOn/LateOn on both the training-di
 unseen-BEIR probes. Lines are medians and bands are interquartile ranges over all four learning-rate
 runs; the shared pretrained state is shown explicitly at training fraction zero. The deterministic
 SVG and its content-hashed manifest are written under `reports/representation-space/`.
+The second command uses the same strict inputs to render LateOn-specific query-token evidence
+entropy/Gini, document-token coverage, and repeated-token dominance. These are kept in a separate
+panel so architecture-specific MaxSim evidence is not visually conflated with the shared Dense/Late
+metrics.
 
 ### 7. Compare common-state optimizer updates
 

@@ -294,12 +294,11 @@ def _reference_value(
     return float(selected[0][metric])
 
 
-def plot_representation_dynamics(
+def _load_plot_inputs(
     matrix_path: Path,
     training_summary: Path,
     unseen_summary: Path,
-    output_path: Path,
-) -> dict[str, Any]:
+) -> tuple[Path, dict[str, tuple[list[dict[str, str]], list[dict[str, str]], dict[str, Any]]]]:
     matrix_path = resolve_matrix_path(matrix_path).resolve()
     configs = load_matrix(matrix_path)
     audit = audit_experiment_contract(configs)
@@ -311,7 +310,10 @@ def plot_representation_dynamics(
     }
     if tiers["training"][2]["probe"]["spec_sha256"] == tiers["unseen"][2]["probe"]["spec_sha256"]:
         raise ValueError("Training and unseen summaries point to the same probe specification")
+    return matrix_path, tiers
 
+
+def _plotting_modules():
     try:
         import matplotlib
 
@@ -319,6 +321,17 @@ def plot_representation_dynamics(
         import matplotlib.pyplot as plt
     except ModuleNotFoundError as error:
         raise RuntimeError("Install the analysis extra to plot representation dynamics") from error
+    return matplotlib, plt
+
+
+def plot_representation_dynamics(
+    matrix_path: Path,
+    training_summary: Path,
+    unseen_summary: Path,
+    output_path: Path,
+) -> dict[str, Any]:
+    matrix_path, tiers = _load_plot_inputs(matrix_path, training_summary, unseen_summary)
+    matplotlib, plt = _plotting_modules()
 
     row_grid = [
         ("training", "dense", "DenseOn · training probe"),
@@ -461,6 +474,154 @@ def plot_representation_dynamics(
     return result
 
 
+def plot_late_token_dynamics(
+    matrix_path: Path,
+    training_summary: Path,
+    unseen_summary: Path,
+    output_path: Path,
+) -> dict[str, Any]:
+    matrix_path, tiers = _load_plot_inputs(matrix_path, training_summary, unseen_summary)
+    matplotlib, plt = _plotting_modules()
+    row_grid = [
+        ("training", "LateOn · training probe"),
+        ("unseen", "LateOn · unseen BEIR probe"),
+    ]
+    metrics = [
+        ("token_evidence_entropy_mean", "Query-token evidence entropy"),
+        ("token_evidence_gini_mean", "Query-token evidence Gini"),
+        ("document_token_coverage_mean", "Document-token coverage"),
+        ("repeated_token_dominance_mean", "Repeated-token dominance"),
+    ]
+    fractions = [stage / 5 for stage in range(1, 6)]
+    with matplotlib.rc_context(
+        {
+            "font.family": "DejaVu Sans",
+            "font.size": 8,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "svg.hashsalt": "embedding-optimizer-study-late-token-dynamics",
+        }
+    ):
+        figure, axes = plt.subplots(
+            len(row_grid),
+            len(metrics),
+            figsize=(12.8, 5.15),
+            squeeze=False,
+            sharex=True,
+        )
+        for row_index, (tier, row_label) in enumerate(row_grid):
+            checkpoint_rows, representation_rows, _ = tiers[tier]
+            for column_index, (metric, title) in enumerate(metrics):
+                axis = axes[row_index][column_index]
+                reference = _reference_value(
+                    checkpoint_rows,
+                    representation_rows,
+                    family="late",
+                    metric=metric,
+                )
+                for optimizer in OPTIMIZERS:
+                    medians = [reference]
+                    lowers = [reference]
+                    uppers = [reference]
+                    for fraction in fractions:
+                        values = _metric_values(
+                            checkpoint_rows,
+                            representation_rows,
+                            family="late",
+                            optimizer=optimizer,
+                            fraction=fraction,
+                            metric=metric,
+                        )
+                        medians.append(_percentile(values, 0.5))
+                        lowers.append(_percentile(values, 0.25))
+                        uppers.append(_percentile(values, 0.75))
+                    x_values = [0.0, *fractions]
+                    axis.plot(
+                        x_values,
+                        medians,
+                        color=COLORS[optimizer],
+                        marker="o",
+                        markersize=3,
+                        linewidth=1.45,
+                        label=LABELS[optimizer],
+                    )
+                    axis.fill_between(
+                        x_values,
+                        lowers,
+                        uppers,
+                        color=COLORS[optimizer],
+                        alpha=0.13,
+                        linewidth=0,
+                    )
+                axis.set_xlim(-0.025, 1.025)
+                axis.set_xticks([0, *fractions])
+                axis.grid(color="#cccccc", linewidth=0.55, alpha=0.6)
+                if row_index == 0:
+                    axis.set_title(title, fontweight="bold")
+                if column_index == 0:
+                    axis.set_ylabel(row_label)
+                if row_index == len(row_grid) - 1:
+                    axis.set_xlabel("Training fraction (0 = pretrained)")
+        handles, labels = axes[0][0].get_legend_handles_labels()
+        figure.legend(
+            handles,
+            labels,
+            loc="upper center",
+            bbox_to_anchor=(0.5, 0.945),
+            ncol=3,
+            frameon=False,
+        )
+        figure.suptitle(
+            "LateOn MaxSim token-utilization dynamics",
+            fontsize=13,
+            fontweight="bold",
+            y=0.997,
+        )
+        figure.text(
+            0.5,
+            0.012,
+            "Lines are medians and bands are interquartile ranges across four learning rates. "
+            "These intrinsic probe metrics are explanatory variables, not substitutes for "
+            "full-corpus retrieval evaluation.",
+            ha="center",
+            fontsize=7.4,
+            color="#444444",
+        )
+        figure.tight_layout(rect=(0.025, 0.06, 0.995, 0.9))
+        output_path = output_path.resolve()
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = output_path.with_name(
+            f".{output_path.stem}.tmp.{os.getpid()}{output_path.suffix}"
+        )
+        figure.savefig(
+            temporary,
+            format=output_path.suffix.lstrip("."),
+            metadata={"Date": None, "Creator": "embedding-optimizer-study"},
+        )
+        plt.close(figure)
+        os.replace(temporary, output_path)
+
+    result = {
+        "schema_version": SCHEMA_VERSION,
+        "complete": True,
+        "matrix": {"path": str(matrix_path), "sha256": _sha256(matrix_path)},
+        "sources": {tier: values[2] for tier, values in tiers.items()},
+        "output": {
+            "path": str(output_path),
+            "bytes": output_path.stat().st_size,
+            "sha256": _sha256(output_path),
+        },
+        "jobs": sum(len(values[0]) for values in tiers.values()),
+        "family": "late",
+        "optimizers": list(OPTIMIZERS),
+        "metrics": [metric for metric, _ in metrics],
+        "aggregation": "median-and-interquartile-range-over-four-learning-rates",
+        "pretrained_reference_fraction": 0.0,
+    }
+    _atomic_json(output_path.with_suffix(".manifest.json"), result)
+    return result
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Plot strict training and unseen representation-probe dynamics"
@@ -489,6 +650,44 @@ def main(argv: list[str] | None = None) -> None:
     print(
         json.dumps(
             plot_representation_dynamics(
+                args.matrix,
+                args.training_summary,
+                args.unseen_summary,
+                args.output,
+            ),
+            sort_keys=True,
+        )
+    )
+
+
+def parse_late_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Plot strict LateOn token-utilization dynamics on both formal probes"
+    )
+    parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
+    parser.add_argument(
+        "--training-summary",
+        type=Path,
+        default=Path("results/representation-space/training/summary"),
+    )
+    parser.add_argument(
+        "--unseen-summary",
+        type=Path,
+        default=Path("results/representation-space/decontaminated-beir/summary"),
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=Path("reports/representation-space/late-token-dynamics.svg"),
+    )
+    return parser.parse_args(argv)
+
+
+def late_main(argv: list[str] | None = None) -> None:
+    args = parse_late_args(argv)
+    print(
+        json.dumps(
+            plot_late_token_dynamics(
                 args.matrix,
                 args.training_summary,
                 args.unseen_summary,
