@@ -29,6 +29,11 @@ the five headline macros, writes `reports/paper-results.manifest.json`, and bind
 `results.tex` bytes to the claim protocol, all evidence manifests, and all source tables. The strict
 paper audit rejects a manual headline edit or a stale generated manifest.
 
+`make -C paper` also invokes this renderer with `--if-ready`: an incomplete experiment retains the
+visible audited draft placeholders, while a complete evidence matrix renders the frozen headlines
+before LaTeX compilation. This keeps an already-running final handoff compatible with the same
+completion gate without weakening failures caused by malformed or stale complete evidence.
+
 ## Evidence contract
 
 | Claim family | Authoritative evidence | Required gate |

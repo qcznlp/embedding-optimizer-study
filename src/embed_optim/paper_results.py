@@ -37,6 +37,10 @@ OPTIMIZERS = ("adamw", "muon", "normuon")
 CONTRAST_LABELS = ("Muon - AdamW", "NorMuon - AdamW", "NorMuon - Muon")
 
 
+class IncompletePaperEvidenceError(ValueError):
+    """Raised when the frozen evidence tiers are not all available yet."""
+
+
 def _finite(value: str) -> float:
     try:
         parsed = float(value)
@@ -251,7 +255,7 @@ def render_paper_results(
     root = repo_root.resolve()
     current_audit = audit_paper(repo_root=root)
     if current_audit["incomplete_evidence"]:
-        raise ValueError(
+        raise IncompletePaperEvidenceError(
             "Paper headlines require every frozen evidence tier: "
             f"{current_audit['incomplete_evidence']}"
         )
@@ -357,16 +361,27 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--results", type=Path, default=Path("paper/results.tex"))
     parser.add_argument("--output", type=Path, default=Path("reports/paper-results.manifest.json"))
+    parser.add_argument(
+        "--if-ready",
+        action="store_true",
+        help="Exit successfully without mutation when frozen evidence is still incomplete",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
-    manifest = render_paper_results(
-        repo_root=args.repo_root,
-        results_path=args.results,
-        output_manifest=args.output,
-    )
+    try:
+        manifest = render_paper_results(
+            repo_root=args.repo_root,
+            results_path=args.results,
+            output_manifest=args.output,
+        )
+    except IncompletePaperEvidenceError as error:
+        if not args.if_ready:
+            raise
+        print(f"Paper evidence is incomplete; retaining audited draft headlines: {error}")
+        return
     print(json.dumps(manifest, indent=2, sort_keys=True))
 
 

@@ -5,12 +5,16 @@ ACL_STYLE_BASE := https://raw.githubusercontent.com/acl-org/acl-style-files/$(AC
 VENDOR := vendor
 BUILD := build
 STYLE_FILES := $(VENDOR)/acl.sty $(VENDOR)/acl_natbib.bst
+PYTHON ?= python3
 
-.PHONY: all vendor clean distclean
+.PHONY: all vendor headlines clean distclean
 
-all: $(BUILD)/main.pdf
+all: headlines $(BUILD)/main.pdf
 
 vendor: $(STYLE_FILES)
+
+headlines:
+	$(PYTHON) -m embed_optim.paper_results --repo-root .. --if-ready
 
 $(VENDOR)/.ready:
 	mkdir -p $(VENDOR)

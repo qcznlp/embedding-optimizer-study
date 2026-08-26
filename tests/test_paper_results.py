@@ -3,9 +3,11 @@ from __future__ import annotations
 import pytest
 
 from embed_optim.paper_results import (
+    IncompletePaperEvidenceError,
     _ci_classification,
     _replace_headlines,
     build_headline_macros,
+    main,
 )
 
 
@@ -132,3 +134,30 @@ def test_interval_classification_uses_the_frozen_zero_boundary():
     assert _ci_classification("[0.0000, 0.1000]") == "inconclusive"
     with pytest.raises(ValueError, match="Reversed"):
         _ci_classification("[0.1000, -0.1000]")
+
+
+def test_if_ready_only_suppresses_incomplete_evidence(monkeypatch, capsys):
+    def incomplete(**_kwargs):
+        raise IncompletePaperEvidenceError("missing frozen tier")
+
+    monkeypatch.setattr("embed_optim.paper_results.render_paper_results", incomplete)
+
+    main(["--if-ready"])
+
+    assert "retaining audited draft headlines" in capsys.readouterr().out
+
+
+def test_default_cli_and_if_ready_do_not_suppress_other_failures(monkeypatch):
+    def incomplete(**_kwargs):
+        raise IncompletePaperEvidenceError("missing frozen tier")
+
+    monkeypatch.setattr("embed_optim.paper_results.render_paper_results", incomplete)
+    with pytest.raises(IncompletePaperEvidenceError, match="missing frozen tier"):
+        main([])
+
+    def malformed(**_kwargs):
+        raise ValueError("stale complete evidence")
+
+    monkeypatch.setattr("embed_optim.paper_results.render_paper_results", malformed)
+    with pytest.raises(ValueError, match="stale complete evidence"):
+        main(["--if-ready"])
