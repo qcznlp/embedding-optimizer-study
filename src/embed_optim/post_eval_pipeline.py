@@ -92,6 +92,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 ),
             ),
             PipelineStep(
+                "training-dynamics-summary",
+                _module(args.python, "embed_optim.training_dynamics", *shared),
+            ),
+            PipelineStep(
                 "validation-data-audit",
                 _module(args.python, "embed_optim.validation_data", "--audit-only"),
             ),

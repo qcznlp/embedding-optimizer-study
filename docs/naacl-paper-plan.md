@@ -195,6 +195,25 @@ These checkpoints support most retrospective geometry analyses without retrainin
 should be described as the discovery phase; selected configurations must be confirmed with new
 seeds rather than treating learning-rate-selected test scores as unbiased estimates.
 
+### Initial systems signal and narrative consequence
+
+The audited training-only tables already rule out one tempting headline. Across the four learning
+rate sweep points, DenseOn median throughput relative to AdamW is 0.9489 for Muon and 0.9348 for
+NorMuon; LateOn ratios are 0.9946 and 0.9860. Native end-to-end fine-tuning is therefore not faster
+in these runs. The optimizer-state footprint is nevertheless materially smaller: Muon/NorMuon use
+0.6299/0.6304 of AdamW's state size for DenseOn and 0.6415/0.6420 for LateOn. These are descriptive
+matched-hardware measurements from
+[`optimizer_system_summary.csv`](../reports/training-dynamics/optimizer_system_summary.csv), not
+independent-seed estimates.
+
+This sharpens the paper's empirical tension. The question is not whether a language-model
+pretraining speed claim automatically transfers to retriever adaptation; it demonstrably does not
+at the raw throughput level here. The remaining efficiency claim must be earned through
+time-to-retrieval-quality: a slightly slower step can still be useful if its update geometry reaches
+a target retrieval score in sufficiently fewer steps, while lower optimizer-state memory is a
+separate systems benefit. Operator efficiency, realized throughput, state memory, and
+time-to-quality must therefore remain four distinct quantities throughout the paper.
+
 ### Artifact-aware implementation boundary
 
 The audited DenseOn and LateOn checkpoints each contain 134 model tensors. Eighty-nine are
@@ -713,6 +732,10 @@ chronology:
   optimizer mismatch can disrupt Adam-pretrained knowledge and that the effect grows with update
   strength. Our contribution is to test this issue in full-rank embedding adaptation and connect it
   to retrieval margins, rankings, and architecture-specific representations.
+- [Optimizer-Model Consistency](https://arxiv.org/abs/2605.06654) argues that using the pretraining
+  optimizer during full fine-tuning can improve the learning--forgetting tradeoff. This makes
+  pretrained-ranking retention and query-disjoint loss complementary outcomes in our study: a new
+  optimizer can fit the retrieval objective while still erasing useful pretrained behavior.
 - [HTMuon](https://aclanthology.org/2026.findings-acl.1819/) argues that Muon can suppress
   heavy-tailed weight spectra and overemphasize noise-dominated update directions. This gives our
   spectrum analysis a genuine competing hypothesis: higher update effective rank need not imply

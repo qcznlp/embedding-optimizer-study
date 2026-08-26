@@ -19,7 +19,10 @@ HEADLINE_MACROS = (
     "ConfirmationHeadline",
 )
 STRICT_EVIDENCE = {
-    "DiscoveryHeadline": (Path("reports/coverage.json"),),
+    "DiscoveryHeadline": (
+        Path("reports/coverage.json"),
+        Path("reports/training-dynamics/summary_manifest.json"),
+    ),
     "CommonStateHeadline": (
         Path("reports/common-state/summary_manifest.json"),
         Path("results/common-state-spectra/summary/summary_manifest.json"),

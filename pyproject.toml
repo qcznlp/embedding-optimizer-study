@@ -56,6 +56,7 @@ embed-optim-short-branch = "embed_optim.short_branch:main"
 embed-optim-short-branch-evaluate = "embed_optim.short_branch_evaluation:main"
 embed-optim-summarize-short-branch = "embed_optim.short_branch_summary:main"
 embed-optim-audit-paper = "embed_optim.paper_audit:main"
+embed-optim-summarize-training = "embed_optim.training_dynamics:main"
 embed-optim-validation-matrix = "embed_optim.validation_matrix:main"
 embed-optim-summarize-validation = "embed_optim.validation_summary:main"
 embed-optim-export-probe = "embed_optim.probe_export:main"
@@ -147,6 +148,12 @@ where = ["src"]
   "reports/weight-space/optimizer_pair_contrast_trajectory.svg",
   "reports/weight-space/run_trajectory_summary.csv",
   "reports/weight-space/summary_manifest.json",
+]
+"share/doc/embedding-optimizer-study/reports/training-dynamics" = [
+  "reports/training-dynamics/optimizer_system_summary.csv",
+  "reports/training-dynamics/run_summary.csv",
+  "reports/training-dynamics/stage_dynamics.csv",
+  "reports/training-dynamics/summary_manifest.json",
 ]
 "share/doc/embedding-optimizer-study/reports/confirmatory-data" = [
   "reports/confirmatory-data/receipt.json",

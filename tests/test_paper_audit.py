@@ -31,6 +31,9 @@ def test_current_paper_constants_match_strict_sources():
     assert result["constant_macros"]["NumDiscoveryRuns"] == "24"
     assert result["constant_macros"]["NumDiscoveryUnits"] == "1680"
     assert result["constant_macros"]["NumWeightPairs"] == "40"
+    discovery_evidence = result["evidence"]["DiscoveryHeadline"]
+    assert len(discovery_evidence) == 2
+    assert discovery_evidence[1]["complete"] is True
 
 
 def test_strict_paper_audit_rejects_pending_headlines():

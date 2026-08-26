@@ -13,6 +13,10 @@ in [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md). The result-safe, ACL-fo
 source is under [paper/](paper/README.md); unresolved evidence gates render as visible placeholders
 rather than silently becoming prose claims.
 
+The complete training-only systems and loss-dynamics tables can be regenerated independently of
+retrieval evaluation with `embed-optim-summarize-training`; its manifest binds all 24 completion,
+checkpoint-schedule, and canonical Trainer-history sources.
+
 ## Experimental contract
 
 | Variable | Value |
