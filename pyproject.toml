@@ -53,6 +53,9 @@ embed-optim-common-state-matrix = "embed_optim.common_state_matrix:main"
 embed-optim-common-state-spectra = "embed_optim.common_state_spectra:main"
 embed-optim-plot-common-state-spectra = "embed_optim.common_state_spectrum_plot:main"
 embed-optim-summarize-common-state = "embed_optim.common_state_summary:main"
+embed-optim-functional-intervention = "embed_optim.functional_intervention:main"
+embed-optim-functional-intervention-matrix = "embed_optim.functional_intervention_matrix:main"
+embed-optim-summarize-functional-interventions = "embed_optim.functional_intervention_summary:main"
 embed-optim-probe-matrix = "embed_optim.probe_matrix:main"
 embed-optim-summarize-probes = "embed_optim.representation_summary:main"
 embed-optim-plot-representation-dynamics = "embed_optim.representation_plot:main"
@@ -98,6 +101,7 @@ where = ["src"]
   "configs/experiment.yaml",
   "configs/common_state_probe.json",
   "configs/common_state_spectrum_probe.json",
+  "configs/functional_intervention.json",
   "configs/formal_runtime.json",
   "configs/hybrid_adamw_control.json",
   "configs/hybrid_adamw.yaml",

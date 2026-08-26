@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "common_state": {
+    "spec": "configs/common_state_probe.json",
+    "spec_sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60",
+    "matched_update_normalization": "per-tensor-frobenius-equals-weight-frobenius",
+    "weight_decay_included": false,
+    "expected_anchors": 20,
+    "expected_hidden_partition": {
+      "tensors": 88,
+      "parameters": 110297088
+    }
+  },
+  "evaluation_probe": {
+    "path": "data/probes/decontaminated-beir-224-seed4242",
+    "spec": "configs/beir_representation_probe.json",
+    "spec_sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50",
+    "manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+    "count": 224,
+    "groups": 14,
+    "examples_per_group": 16,
+    "positive_candidate_index": 0,
+    "negative_candidates": 7,
+    "relationship_to_gradient_probe": "A separately frozen, decontaminated BEIR probe; none of its examples is used to construct the common-state gradients."
+  },
+  "intervention": {
+    "algorithms": ["adamw", "muon", "normuon"],
+    "descent_relative_scales": [0.0001, 0.0003, 0.001],
+    "sign_reversal_control_scale": 0.001,
+    "parameter_rule": "W_intervened = W_checkpoint - signed_scale * D_matched",
+    "expected_conditions_per_anchor": 13,
+    "expected_sample_records_per_anchor": 2912
+  },
+  "evaluation": {
+    "model_dtype": "float32",
+    "forward_dtype": "bfloat16",
+    "model_mode": "eval",
+    "flash_attention": true,
+    "dense_batch_size": 16,
+    "late_batch_size": 4,
+    "normalized_embeddings": true,
+    "dense_score": "cosine_similarity",
+    "late_score": "mean_maxsim",
+    "metrics": [
+      "contrastive_loss",
+      "positive_score",
+      "hardest_negative_score",
+      "positive_margin",
+      "reciprocal_rank",
+      "top1_accuracy"
+    ]
+  },
+  "freeze_context": {
+    "frozen_at_utc": "2026-08-26T13:25:06Z",
+    "strict_beir_valid_units": 144,
+    "strict_beir_expected_units": 1680,
+    "completed_weight_trajectories_visible": true,
+    "formal_common_state_outputs_visible": false,
+    "formal_representation_outputs_visible": false,
+    "formal_functional_intervention_outputs_visible": false,
+    "note": "This is a prospective completion lock after partial retrieval results, not a preregistration before outcome inspection. Scales were fixed before any common-state direction or intervention output existed."
+  },
+  "claim_boundary": "This experiment identifies immediate, scale-matched directional effects at fixed weights. It does not by itself establish that a virtual step reproduces long-horizon native optimizer training."
+}

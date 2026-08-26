@@ -151,6 +151,36 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 "common-state-spectra-plot",
                 _module(args.python, "embed_optim.common_state_spectrum_plot"),
             ),
+            PipelineStep(
+                "functional-intervention-matrix",
+                _module(
+                    args.python,
+                    "embed_optim.functional_intervention_matrix",
+                    *shared,
+                    "--gpus",
+                    args.gpus,
+                    "--max-retries",
+                    str(args.worker_retries),
+                ),
+            ),
+            PipelineStep(
+                "functional-intervention-audit",
+                _module(
+                    args.python,
+                    "embed_optim.functional_intervention_matrix",
+                    *shared,
+                    "--audit-only",
+                    "--verify-hashes",
+                ),
+            ),
+            PipelineStep(
+                "functional-intervention-summary",
+                _module(
+                    args.python,
+                    "embed_optim.functional_intervention_summary",
+                    *shared,
+                ),
+            ),
         ]
     )
     probe_tiers = (

@@ -771,6 +771,40 @@ kernel backend rather than substituting a CPU matrix product. This protocol isol
 transform; it does not claim that the cached fixed-weight gradients reproduce an optimizer's native
 training trajectory.
 
+### 8. Run scale-matched functional interventions
+
+Update geometry is only mechanistically useful if it changes the retriever's function. The frozen
+[`functional_intervention.json`](configs/functional_intervention.json) protocol applies each
+common-state AdamW, Muon, and NorMuon direction at the *same checkpoint* and with the *same
+per-layer relative Frobenius budget*. It uses three fixed descent scales (`1e-4`, `3e-4`, `1e-3`)
+and a sign-reversed `1e-3` control. The baseline plus 12 conditions are scored on the separately
+frozen 224-query decontaminated-BEIR probe, which was never used to construct the gradients.
+
+Preview or run the 20-anchor matrix after the common-state jobs finish:
+
+```bash
+embed-optim-functional-intervention-matrix --dry-run
+embed-optim-functional-intervention-matrix \
+  --matrix configs/experiment.yaml \
+  --gpus 0,1,2,3,4,5,6,7
+```
+
+Then perform the independent content audit and paired aggregation:
+
+```bash
+embed-optim-functional-intervention-matrix --audit-only --verify-hashes
+embed-optim-summarize-functional-interventions
+```
+
+Each anchor writes 2,912 paired sample records and 13 condition summaries; the formal aggregate
+therefore requires exactly 58,240 sample records. It reports change from the unmodified checkpoint
+and Muon/NorMuon-versus-AdamW contrasts at the same scale. The metrics are contrastive loss,
+positive and hardest-negative scores, positive margin, reciprocal rank, and top-1 accuracy under the
+exact positive-first eight-way DenseOn/LateOn scorer. Every checkpoint, common-state direction,
+probe, protocol, record table, and summary is content-hashed. This is a local fixed-weight causal
+intervention—not evidence that one virtual step reproduces a complete native optimizer trajectory;
+the NAACL plan retains a short shared-checkpoint branch for that stronger claim.
+
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.

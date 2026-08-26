@@ -14,6 +14,7 @@ the authoritative artifact and the command that must validate its full scope.
 | Final statistics | `reports/coverage.json`, long-form tables, summaries, paired effects, and figures | `embed-optim-aggregate --strict` exits zero; no partial or best-effort report is accepted. |
 | Weight-space analysis | [`reports/weight-space/summary_manifest.json`](../reports/weight-space/summary_manifest.json) | 24 runs and 120 checkpoint rows pass record-hash, finite-value, partition, and source-input revalidation. |
 | Common-state mechanism | `reports/common-state/summary_manifest.json` and `results/common-state-spectra/summary/summary_manifest.json` | All 20 frozen anchors, 1,760 gradient tensors, 5,280 optimizer-update tensors, and 360 prespecified exact spectra pass strict source-hash aggregation. |
+| Scale-matched functional intervention | `configs/functional_intervention.json` and `reports/functional-intervention/manifest.json` | All 20 anchors contain the baseline plus 12 optimizer/direction/scale conditions on the frozen 224-query unseen probe; 58,240 paired sample records and all source hashes pass audit. |
 | Hybrid AdamW fairness control | `configs/hybrid_adamw_control.json`, eight audited training completions, and `reports/hybrid-adamw/summary_manifest.json` | Both families × four frozen hidden learning rates use the Muon parameter routing and fixed auxiliary recipe; all 112 final-checkpoint BEIR units pass provenance checks. |
 | Representation bridge | Both representation-tier `summary_manifest.json` files and the two manifests under `reports/representation-space/` | Each tier contains exactly two pretrained plus 120 checkpoint reports with the frozen probe identity, sample groups, representation roles, and ranking-reference contract; the shared and LateOn-specific plotted dynamics rehash both strict summaries. |
 | Cross-space join | `reports/mechanism-bridge/summary_manifest.json` | Exactly 120 checkpoint rows and 96 within-run transitions join the strict weight, representation, and 1,680-unit BEIR sources; correlations remain labeled descriptive. |
@@ -42,6 +43,8 @@ embed-optim-summarize-common-state \
 embed-optim-common-state-spectra --audit-only --verify-hashes
 embed-optim-common-state-spectra --summarize-only
 embed-optim-plot-common-state-spectra
+embed-optim-functional-intervention-matrix --audit-only --verify-hashes
+embed-optim-summarize-functional-interventions
 embed-optim-plot-representation-dynamics
 embed-optim-plot-late-token-dynamics
 embed-optim-aggregate --matrix configs/experiment.yaml --strict

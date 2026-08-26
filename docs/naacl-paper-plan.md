@@ -19,7 +19,8 @@ The story should unfold in five beats:
    AdamW's coordinate-wise adaptation, Muon's singular-direction equalization, and NorMuon's added
    row-wise adaptation. Show the fingerprints in actual updates rather than inferring them only from
    distant checkpoint displacements.
-4. **Functional bridge.** Test whether an update fingerprint predicts later representation rank,
+4. **Functional bridge.** Intervene locally at fixed weights along Frobenius-matched optimizer
+   directions, then test whether the same update fingerprint predicts later representation rank,
    hubness, positive-negative margins, ranking stability, and—only for LateOn—MaxSim token
    utilization. This is where the paper becomes retrieval research rather than a generic optimizer
    benchmark.
@@ -481,6 +482,18 @@ Report three complementary comparisons:
 3. **Geometry-matched comparison:** common-state updates matched by update norm or predicted loss
    decrease.
 
+The first geometry-matched causal test is frozen in `configs/functional_intervention.json`. At each
+of the 20 common-state anchors it applies `W - alpha D` for AdamW, Muon, and NorMuon, where every
+hidden tensor in `D` has the same Frobenius norm as its corresponding checkpoint tensor. The fixed
+relative scales are `1e-4`, `3e-4`, and `1e-3`; a sign-reversed `1e-3` condition tests
+directionality. Baseline plus 12 interventions are evaluated on all 224 examples in the separately
+frozen decontaminated-BEIR probe, yielding 58,240 paired sample records. Loss, positive margin,
+reciprocal rank, and top-1 accuracy use the exact eight-way DenseOn/LateOn training scorer. The lock
+records that 144/1,680 retrieval units and all weight trajectories were visible, but no formal
+common-state, representation, or intervention output existed. This supports only an immediate
+fixed-weight causal claim; a shared-checkpoint short branch is still required before making a
+long-horizon optimization claim.
+
 Treat BEIR datasets and random seeds as sampling levels. Report the per-task table even when an
 aggregate is favorable; optimizer benefits that come from only one large dataset are not a robust
 result.
@@ -497,9 +510,9 @@ The paper should have a hard core so the mechanism story does not expand indefin
    distinguishes AdamW/Muon plus the row-balance signature that distinguishes Muon/NorMuon.
 3. Connect those signatures to fixed representation/score probes in both model families; a weight
    metric with no margin, ranking, or token-utilization consequence is a negative mechanism result.
-4. Run the hybrid-AdamW routing control and at least one scale-matched short branch from a shared
-   checkpoint. This is the minimum evidence needed to separate update rule, parameter grouping, and
-   update magnitude.
+4. Run the hybrid-AdamW routing control, the frozen scale-matched one-step intervention, and at least
+   one scale-matched short branch from a shared checkpoint. Together these separate update rule,
+   parameter grouping, immediate directional efficacy, and accumulated trajectory effects.
 5. Freeze recipes using non-BEIR validation, then confirm the headline comparison with at least three
    independent seeds. The exploratory seed may be shown but should not silently become one of the
    confirmatory seeds after its test results influenced recipe choice.
