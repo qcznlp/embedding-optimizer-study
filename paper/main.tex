@@ -47,6 +47,15 @@ will improve retrieval fine-tuning: the starting model was pretrained with an Ad
 the contrastive objective depends on rankings rather than next-token likelihood, and dense and
 late-interaction models expose different functional bottlenecks.
 
+Recent full-fine-tuning studies sharpen this uncertainty into a competing hypothesis. Switching an
+Adam-pretrained model to Muon can degrade downstream performance, with the gap increasing as the
+update grows, while preserving the pretraining optimizer can improve the learning--forgetting
+tradeoff \citep{qu2026finetune,liu2026consistency}. Retrieval is a useful stress test of that claim:
+adaptation must separate new query--document pairs while preserving broadly useful zero-shot
+rankings. We therefore do not assume that Muon's better-conditioned updates are beneficial. We test
+whether faster acquisition and pretrained-function preservation can coexist, and whether any
+tradeoff differs between a single-vector bottleneck and token-level MaxSim.
+
 This paper therefore asks a mechanism question rather than staging another optimizer leaderboard:
 \emph{how does matrix-aware optimization change the path from an Adam-pretrained encoder to a
 retrieval function, and when are those changes useful?} We separate four spaces that are often
@@ -96,6 +105,19 @@ specifically reduces dispersion and concentration of row energy relative to Muon
 spectrum is not assumed to be beneficial: it may amplify noise-dominated directions or disrupt
 useful Adam-pretrained features \citep{qu2026finetune}.
 
+\subsection{Optimizer mismatch as a competing hypothesis}
+
+The update-conditioning and optimizer-mismatch accounts make different predictions. If Muon's
+matrix preconditioner primarily improves optimization, it should reach a fixed retrieval quality in
+fewer examples or less useful wall time without necessarily moving farther from the pretrained
+function. If optimizer mismatch dominates, stronger Muon updates may lower supervised loss while
+increasing drift from pretrained rankings and degrading zero-shot retrieval. We distinguish these
+possibilities by reporting learning and preservation signals separately: contrastive loss and
+validation margins measure acquisition, while decontaminated BEIR, pretrained top-$k$ agreement,
+and score drift measure retained retrieval behavior. Common-state scale matching and shared-start
+branches then separate direction from update magnitude; parameter distance alone cannot adjudicate
+between the two accounts.
+
 \subsection{From update geometry to retrieval geometry}
 
 The hypothesized chain is
@@ -133,8 +155,12 @@ non-uniform row norms after orthogonalization and adds neuron-wise second-moment
 \citep{li2025normuon}. Concurrent analyses of Adam-pretrained model adaptation report that a naive
 optimizer switch can disrupt pretrained knowledge as update strength grows, and that
 optimizer--model consistency can improve the learning--forgetting tradeoff
-\citep{qu2026finetune,liu2026consistency}. These works motivate our hypotheses, but none traces the complete path from
-same-state matrix updates through dense and token-level retrieval rankings.
+\citep{qu2026finetune,liu2026consistency}. These works motivate our hypotheses, but none traces the
+complete path from same-state matrix updates through dense and token-level retrieval rankings. Our
+study is therefore not a generic replication of optimizer mismatch: it tests whether that
+phenomenon transfers to full-parameter contrastive adaptation, where the target and retained
+capabilities are both ranking functions and where late interaction exposes token-level evidence
+allocation.
 
 \section{Controlled Retrieval Study}
 
@@ -278,8 +304,10 @@ desired compute/quality operating point rather than naming a universal winner. \
 The study uses two related 149M-parameter base models and one English supervised corpus, so it does
 not establish behavior at substantially different scales, languages, or objectives. Both starting
 models were pretrained with an Adam-family optimizer, making the conclusions directly relevant to
-optimizer switching but not to Muon-from-scratch pretraining. Four learning rates provide a broad
-but finite search, and three confirmation seeds may leave small effects uncertain. Intrinsic
+optimizer switching but not to Muon-from-scratch pretraining. Without otherwise matched
+Muon-pretrained DenseOn/LateOn checkpoints, the study can measure the consequences of switching but
+cannot estimate a pretraining-optimizer-by-fine-tuning-optimizer interaction. Four learning rates
+provide a broad but finite search, and three confirmation seeds may leave small effects uncertain. Intrinsic
 geometry metrics are not causal by themselves; causal language is restricted to fixed-state
 interventions and shared-start branches. Finally, decontamination reduces known overlap but cannot
 prove the absence of every semantic duplicate.
