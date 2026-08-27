@@ -22,28 +22,6 @@ from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
 CHECKPOINT_PATTERN = re.compile(r"checkpoint-(\d+)")
 RESULTS_MARKERS = ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->")
 SYSTEMS_MARKERS = ("<!-- SYSTEMS:BEGIN -->", "<!-- SYSTEMS:END -->")
-COMPLETE_EXPERIMENT_STATUS = (
-    "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
-    "checkpoint/task evaluations."
-)
-PENDING_EXPERIMENT_STATUSES = (
-    (
-        "**Experiment status:** training matrix in progress. This document already records the "
-        "frozen protocol;\n"
-        "the results sections are populated only from strictly validated aggregation artifacts "
-        "after coverage reaches\n"
-        "1,680/1,680."
-    ),
-    (
-        "**Experiment status:** the 24-run training matrix and all 120 retained checkpoints are "
-        "complete;\n"
-        "strict decontaminated-BEIR evaluation is in progress. This document already records the "
-        "frozen\n"
-        "protocol, and the retrieval result sections are populated only from strictly validated "
-        "aggregation\n"
-        "artifacts after coverage reaches 1,680/1,680."
-    ),
-)
 EVALUATION_PACKAGES = {
     "mteb",
     "torch",
@@ -2173,14 +2151,11 @@ def _render_results(
 
 
 def _render_systems(rows: list[dict]) -> str:
-    family_labels = {"dense": "DenseOn", "late": "LateOn"}
-    optimizer_labels = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
-    indexed = {(row["model_family"], row["optimizer"]): row for row in rows}
     table = _markdown_table(
         [
             "Family",
             "Optimizer",
-            "Useful hours",
+            "Median hours",
             "Samples/s",
             "Throughput vs AdamW",
             "Peak allocated GiB",
@@ -2189,44 +2164,20 @@ def _render_systems(rows: list[dict]) -> str:
         ],
         [
             [
-                family_labels.get(row["model_family"], row["model_family"]),
-                optimizer_labels.get(row["optimizer"], row["optimizer"]),
+                row["model_family"],
+                row["optimizer"],
                 f"{row['median_wall_time_hours']:.2f}",
                 f"{row['median_samples_per_second']:.2f}",
-                f"{row['throughput_vs_adamw']:.4f}×",
+                f"{row['throughput_vs_adamw']:.2f}×",
                 f"{row['median_peak_allocated_gib']:.2f}",
-                f"{row['median_optimizer_state_gib']:.3f}",
-                f"{row['median_checkpoint_gib']:.3f}",
+                f"{row['median_optimizer_state_gib']:.2f}",
+                f"{row['median_checkpoint_gib']:.2f}",
             ]
             for row in rows
         ],
     )
     gpu = rows[0]["gpu_name"] if rows else "unknown GPU"
     world_size = rows[0]["world_size"] if rows else 4
-    comparisons = []
-    for family in ("dense", "late"):
-        baseline = indexed.get((family, "adamw"))
-        alternatives = [
-            indexed[(family, optimizer)]
-            for optimizer in ("muon", "normuon")
-            if (family, optimizer) in indexed
-        ]
-        if baseline is None or not alternatives:
-            continue
-
-        def changes(field: str) -> str:
-            baseline_value = float(baseline[field])
-            return "/".join(
-                f"{100 * (float(row[field]) / baseline_value - 1):+.2f}%" for row in alternatives
-            )
-
-        labels = "/".join(optimizer_labels[row["optimizer"]] for row in alternatives)
-        comparisons.append(
-            f"Relative to AdamW on {family_labels[family]}, {labels} respectively changed "
-            f"throughput by {changes('median_samples_per_second')}, optimizer-state size by "
-            f"{changes('median_optimizer_state_gib')}, and complete checkpoint size by "
-            f"{changes('median_checkpoint_gib')}."
-        )
     return (
         f"Every run used {world_size} × {gpu}. Values are medians over the four learning-rate "
         "configurations for that optimizer and family; CUDA memory is the maximum per rank, not "
@@ -2238,11 +2189,7 @@ def _render_systems(rows: list[dict]) -> str:
         "from the sum of non-overlapping useful training segments rather than Trainer's resume-local "
         "runtime; the segment adjustment and original Trainer fields remain in the audit table. "
         "Exact per-run measurements are in "
-        "`reports/system_metrics.csv`.\n\n"
-        + " ".join(comparisons)
-        + ("\n\n" if comparisons else "")
-        + "These are native-recipe system measurements. Retrieval time-to-quality is reported "
-        "separately, so per-step throughput is not used as a proxy for convergence."
+        "`reports/system_metrics.csv`."
     )
 
 
@@ -2253,16 +2200,6 @@ def _replace_marked(text: str, markers: tuple[str, str], content: str) -> str:
     before, remainder = text.split(begin)
     _, after = remainder.split(end)
     return f"{before}{begin}\n\n{content}\n\n{end}{after}"
-
-
-def _replace_experiment_status(text: str) -> str:
-    complete_count = text.count(COMPLETE_EXPERIMENT_STATUS)
-    pending = [status for status in PENDING_EXPERIMENT_STATUSES if status in text]
-    if complete_count == 1 and not pending:
-        return text
-    if complete_count != 0 or len(pending) != 1 or text.count(pending[0]) != 1:
-        raise ValueError("Expected exactly one known experiment-status block in the blog")
-    return text.replace(pending[0], COMPLETE_EXPERIMENT_STATUS)
 
 
 def render_blog(
@@ -2280,7 +2217,12 @@ def render_blog(
         _render_results(optimizer_rows, best_dynamics, task_rows, paired_rows),
     )
     text = _replace_marked(text, SYSTEMS_MARKERS, _render_systems(system_rows))
-    text = _replace_experiment_status(text)
+    text = text.replace(
+        "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
+        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
+        "1,680/1,680.",
+        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 checkpoint/task evaluations.",
+    )
     blog_path.write_text(text)
 
 
