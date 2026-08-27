@@ -138,6 +138,15 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(args.python, "embed_optim.confirmatory_data"),
             ),
             PipelineStep(
+                "confirmatory-data-source-audit",
+                _module(
+                    args.python,
+                    "embed_optim.confirmatory_data",
+                    "--audit-only",
+                    "--verify-source",
+                ),
+            ),
+            PipelineStep(
                 "confirmatory-matrix-generation",
                 _module(args.python, "embed_optim.confirmatory_matrix"),
             ),
@@ -494,7 +503,7 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 PipelineStep(
                     "ruff-format-check", _module(args.python, "ruff", "format", "--check", ".")
                 ),
-                PipelineStep("distribution-build", _module(args.python, "build")),
+                PipelineStep("distribution-build", ("uv", "build")),
             ]
         )
     steps.append(
