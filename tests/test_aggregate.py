@@ -294,7 +294,12 @@ def test_system_summary_reports_speedup_against_family_adamw():
     assert by_optimizer["adamw"]["throughput_vs_adamw"] == 1.0
     assert by_optimizer["muon"]["throughput_vs_adamw"] == 2.0
     assert by_optimizer["muon"]["wall_time_speedup_vs_adamw"] == 2.0
-    assert "2.00×" in _render_systems(list(by_optimizer.values()))
+    rendered = _render_systems(list(by_optimizer.values()))
+    assert "DenseOn" in rendered
+    assert "AdamW" in rendered
+    assert "2.0000×" in rendered
+    assert "throughput by +100.00%" in rendered
+    assert "per-step throughput is not used as a proxy for convergence" in rendered
 
 
 def test_result_render_reports_auc_paired_task_counts_and_figure_paths():

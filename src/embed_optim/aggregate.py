@@ -2173,11 +2173,14 @@ def _render_results(
 
 
 def _render_systems(rows: list[dict]) -> str:
+    family_labels = {"dense": "DenseOn", "late": "LateOn"}
+    optimizer_labels = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
+    indexed = {(row["model_family"], row["optimizer"]): row for row in rows}
     table = _markdown_table(
         [
             "Family",
             "Optimizer",
-            "Median hours",
+            "Useful hours",
             "Samples/s",
             "Throughput vs AdamW",
             "Peak allocated GiB",
@@ -2186,20 +2189,44 @@ def _render_systems(rows: list[dict]) -> str:
         ],
         [
             [
-                row["model_family"],
-                row["optimizer"],
+                family_labels.get(row["model_family"], row["model_family"]),
+                optimizer_labels.get(row["optimizer"], row["optimizer"]),
                 f"{row['median_wall_time_hours']:.2f}",
                 f"{row['median_samples_per_second']:.2f}",
-                f"{row['throughput_vs_adamw']:.2f}×",
+                f"{row['throughput_vs_adamw']:.4f}×",
                 f"{row['median_peak_allocated_gib']:.2f}",
-                f"{row['median_optimizer_state_gib']:.2f}",
-                f"{row['median_checkpoint_gib']:.2f}",
+                f"{row['median_optimizer_state_gib']:.3f}",
+                f"{row['median_checkpoint_gib']:.3f}",
             ]
             for row in rows
         ],
     )
     gpu = rows[0]["gpu_name"] if rows else "unknown GPU"
     world_size = rows[0]["world_size"] if rows else 4
+    comparisons = []
+    for family in ("dense", "late"):
+        baseline = indexed.get((family, "adamw"))
+        alternatives = [
+            indexed[(family, optimizer)]
+            for optimizer in ("muon", "normuon")
+            if (family, optimizer) in indexed
+        ]
+        if baseline is None or not alternatives:
+            continue
+
+        def changes(field: str) -> str:
+            baseline_value = float(baseline[field])
+            return "/".join(
+                f"{100 * (float(row[field]) / baseline_value - 1):+.2f}%" for row in alternatives
+            )
+
+        labels = "/".join(optimizer_labels[row["optimizer"]] for row in alternatives)
+        comparisons.append(
+            f"Relative to AdamW on {family_labels[family]}, {labels} respectively changed "
+            f"throughput by {changes('median_samples_per_second')}, optimizer-state size by "
+            f"{changes('median_optimizer_state_gib')}, and complete checkpoint size by "
+            f"{changes('median_checkpoint_gib')}."
+        )
     return (
         f"Every run used {world_size} × {gpu}. Values are medians over the four learning-rate "
         "configurations for that optimizer and family; CUDA memory is the maximum per rank, not "
@@ -2211,7 +2238,11 @@ def _render_systems(rows: list[dict]) -> str:
         "from the sum of non-overlapping useful training segments rather than Trainer's resume-local "
         "runtime; the segment adjustment and original Trainer fields remain in the audit table. "
         "Exact per-run measurements are in "
-        "`reports/system_metrics.csv`."
+        "`reports/system_metrics.csv`.\n\n"
+        + " ".join(comparisons)
+        + ("\n\n" if comparisons else "")
+        + "These are native-recipe system measurements. Retrieval time-to-quality is reported "
+        "separately, so per-step throughput is not used as a proxy for convergence."
     )
 
 
