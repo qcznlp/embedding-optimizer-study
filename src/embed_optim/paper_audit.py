@@ -21,6 +21,7 @@ HEADLINE_MACROS = (
 )
 PAPER_RESULT_TABLE_PATHS = (
     Path("paper/generated/discovery.tex"),
+    Path("paper/generated/per-task.tex"),
     Path("paper/generated/common-state.tex"),
     Path("paper/generated/representation.tex"),
     Path("paper/generated/intervention.tex"),
@@ -473,6 +474,7 @@ def _retrieval_dynamics_complete(path: Path, payload: dict[str, Any]) -> bool:
         "checkpoint_dynamics": ("checkpoint_dynamics.csv", 120),
         "run_first_passage": ("run_first_passage.csv", 24),
         "optimizer_first_passage": ("optimizer_first_passage.csv", 6),
+        "best_config_task_comparison": ("best_config_task_comparison.csv", 28),
         "quality_vs_useful_wall_time": ("quality_vs_useful_wall_time.svg", None),
     }
     if set(outputs) != set(expected_outputs) or any(
@@ -620,7 +622,7 @@ def _paper_results_complete(path: Path, payload: dict[str, Any]) -> bool:
         or {_declared_path(root, record) for record in evidence} != expected_evidence
         or any(not _hashed_file_complete(root, record) for record in evidence)
         or not isinstance(tables, list)
-        or len(tables) != 10
+        or len(tables) != 11
         or any(not _hashed_file_complete(root, record) for record in tables)
         or not _paper_result_tables_complete(root, result_tables)
         or not isinstance(headlines, dict)

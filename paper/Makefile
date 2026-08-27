@@ -5,7 +5,7 @@ ACL_STYLE_BASE := https://raw.githubusercontent.com/acl-org/acl-style-files/$(AC
 VENDOR := vendor
 BUILD := build
 STYLE_FILES := $(VENDOR)/acl.sty $(VENDOR)/acl_natbib.bst
-RESULT_TABLES := generated/discovery.tex generated/common-state.tex \
+RESULT_TABLES := generated/discovery.tex generated/per-task.tex generated/common-state.tex \
 	generated/representation.tex generated/intervention.tex generated/confirmation.tex
 PYTHON ?= python3
 

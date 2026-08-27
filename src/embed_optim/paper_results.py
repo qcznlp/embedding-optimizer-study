@@ -7,6 +7,7 @@ import statistics
 from pathlib import Path
 from typing import Any
 
+from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .mechanism_report import (
     OPTIMIZER_LABELS,
@@ -92,6 +93,65 @@ def _discovery_final_medians(
     ):
         raise ValueError("Discovery headline requires four final points for all six family groups")
     return {key: float(statistics.median(values)) for key, values in grouped.items()}, table
+
+
+def _discovery_task_rows(
+    retrieval_dir: Path,
+    manifest: dict[str, Any],
+) -> tuple[list[list[str]], Path]:
+    repository_root = retrieval_dir.resolve().parents[1]
+    required = {
+        "model_family",
+        "task",
+        "adamw",
+        "muon",
+        "normuon",
+        "muon_minus_adamw",
+        "normuon_minus_adamw",
+    }
+    rows, table = _read_declared_csv(
+        repository_root,
+        manifest,
+        "best_config_task_comparison",
+        required_fields=required,
+    )
+    indexed: dict[tuple[str, str], dict[str, str]] = {}
+    for row in rows:
+        identity = (row.get("model_family", ""), row.get("task", ""))
+        if identity in indexed:
+            raise ValueError(f"Duplicate discovery per-task identity: {identity}")
+        indexed[identity] = row
+    expected = {(family, task) for family in FAMILIES for task in DECONTAMINATED_TASK_NAMES}
+    if len(rows) != 28 or set(indexed) != expected:
+        raise ValueError("Discovery per-task table requires both families and all 14 tasks")
+
+    output: list[list[str]] = []
+    for family in FAMILIES:
+        for task in DECONTAMINATED_TASK_NAMES:
+            row = indexed[(family, task)]
+            adamw = _finite(row["adamw"])
+            muon = _finite(row["muon"])
+            normuon = _finite(row["normuon"])
+            muon_delta = _finite(row["muon_minus_adamw"])
+            normuon_delta = _finite(row["normuon_minus_adamw"])
+            if (
+                not all(0 <= score <= 1 for score in (adamw, muon, normuon))
+                or abs((muon - adamw) - muon_delta) > 5e-12
+                or abs((normuon - adamw) - normuon_delta) > 5e-12
+            ):
+                raise ValueError(f"Invalid discovery per-task values: {(family, task)}")
+            output.append(
+                [
+                    FAMILY_LABELS[family],
+                    task,
+                    f"{adamw:.4f}",
+                    f"{muon:.4f}",
+                    f"{normuon:.4f}",
+                    f"{muon_delta:+.4f}",
+                    f"{normuon_delta:+.4f}",
+                ]
+            )
+    return output, table
 
 
 def _ci_classification(cell: str) -> str:
@@ -277,6 +337,7 @@ def build_result_tables(
     *,
     final_medians: dict[tuple[str, str], float],
     retrieval_rows: list[list[str]],
+    task_rows: list[list[str]],
     common_rows: list[list[str]],
     spectrum_rows: list[list[str]],
     representation_rows: list[list[str]],
@@ -293,6 +354,15 @@ def build_result_tables(
     short = _indexed(short_rows, context="short-branch table")
     confirmation = _indexed(confirmation_rows, context="confirmation table")
     optimizer_labels = tuple(OPTIMIZER_LABELS[name] for name in OPTIMIZERS)
+
+    expected_task_identities = {
+        (family_label, task)
+        for family_label in FAMILY_LABELS.values()
+        for task in DECONTAMINATED_TASK_NAMES
+    }
+    indexed_tasks = {(row[0], row[1]): row for row in task_rows if len(row) == 7}
+    if len(task_rows) != 28 or set(indexed_tasks) != expected_task_identities:
+        raise ValueError("Paper per-task table requires both families and all 14 tasks")
 
     discovery_rows = [
         (
@@ -354,6 +424,31 @@ def build_result_tables(
         for contrast in CONTRAST_LABELS
     ]
 
+    per_task_tables = "\n".join(
+        _latex_table(
+            environment="table*",
+            columns="lccccc",
+            headers=(
+                "Task",
+                "AdamW",
+                "Muon",
+                "NorMuon",
+                "Muon $-$ AdamW",
+                "NorMuon $-$ AdamW",
+            ),
+            rows=[
+                tuple(indexed_tasks[(family_label, task)][1:]) for task in DECONTAMINATED_TASK_NAMES
+            ],
+            caption=(
+                f"{family_label} discovery per-task final nDCG@10 for each optimizer's best "
+                "learning-rate point on this same BEIR suite. These are exploratory, "
+                "test-selected comparisons rather than an unbiased recipe estimate."
+            ),
+            label=f"tab:{family_label.lower()}-per-task-results",
+        )
+        for family_label in FAMILY_LABELS.values()
+    )
+
     table_contents = (
         _latex_table(
             environment="table*",
@@ -366,6 +461,7 @@ def build_result_tables(
             ),
             label="tab:discovery-results",
         ),
+        per_task_tables,
         _latex_table(
             environment="table*",
             columns="llcc",
@@ -488,6 +584,7 @@ def render_paper_results(
         retrieval_dir
     )
     final_medians, checkpoint_table = _discovery_final_medians(retrieval_dir, retrieval_manifest)
+    task_rows, task_table = _discovery_task_rows(retrieval_dir, retrieval_manifest)
     common_rows, _common_manifest, common_table = _common_state_rows(root / "reports/common-state")
     spectrum_rows, _spectrum_manifest, spectrum_table = _spectrum_rows(
         root / "results/common-state-spectra/summary"
@@ -518,6 +615,7 @@ def render_paper_results(
     result_tables = build_result_tables(
         final_medians=final_medians,
         retrieval_rows=retrieval_rows,
+        task_rows=task_rows,
         common_rows=common_rows,
         spectrum_rows=spectrum_rows,
         representation_rows=representation_rows,
@@ -550,6 +648,7 @@ def render_paper_results(
     source_tables = [
         checkpoint_table,
         retrieval_table,
+        task_table,
         common_table,
         spectrum_table,
         *bridge_tables,

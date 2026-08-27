@@ -9,7 +9,13 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
-from .aggregate import DECONTAMINATED_TASK_NAMES, _checkpoint_summaries, collect_evaluations
+from .aggregate import (
+    DECONTAMINATED_TASK_NAMES,
+    _checkpoint_summaries,
+    _optimizer_summaries,
+    _task_comparison,
+    collect_evaluations,
+)
 from .config import RunConfig, load_matrix, resolve_matrix_path
 from .confirmatory_summary import _atomic_csv
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
@@ -377,6 +383,10 @@ def build_retrieval_dynamics(
     if len(evaluation_rows) != 1_680:
         raise ValueError("Retrieval dynamics requires exactly 1,680 provenance-valid results")
     checkpoint_rows = _checkpoint_summaries(evaluation_rows)
+    optimizer_rows, _best_dynamics = _optimizer_summaries(checkpoint_rows)
+    task_rows = _task_comparison(evaluation_rows, optimizer_rows)
+    if len(task_rows) != len(FAMILIES) * len(DECONTAMINATED_TASK_NAMES):
+        raise ValueError("Retrieval dynamics requires 28 best-config per-task rows")
     training_root = Path(training_dir).resolve()
     frozen_training = protocol["training_summary"]
     frozen_training_path = (repository_root / frozen_training["path"]).resolve()
@@ -397,6 +407,9 @@ def build_retrieval_dynamics(
         "run_first_passage": _atomic_csv(output / "run_first_passage.csv", first_passage),
         "optimizer_first_passage": _atomic_csv(
             output / "optimizer_first_passage.csv", group_summary
+        ),
+        "best_config_task_comparison": _atomic_csv(
+            output / "best_config_task_comparison.csv", task_rows
         ),
         "quality_vs_useful_wall_time": _quality_figure(
             dynamics, output / "quality_vs_useful_wall_time.svg"

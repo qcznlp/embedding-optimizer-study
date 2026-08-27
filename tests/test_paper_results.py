@@ -10,6 +10,7 @@ from embed_optim.paper_results import (
     build_headline_macros,
     build_result_tables,
     main,
+    render_paper_results,
 )
 
 
@@ -78,6 +79,37 @@ def _rows():
     }
 
 
+def _task_rows():
+    return [
+        [
+            family,
+            task,
+            "0.4000",
+            "0.4100",
+            "0.4200",
+            "+0.0100",
+            "+0.0200",
+        ]
+        for family in ("DenseOn", "LateOn")
+        for task in (
+            "ClimateFEVER",
+            "FEVER",
+            "MSMARCO",
+            "HotpotQA",
+            "DBPedia",
+            "QuoraRetrieval",
+            "Touche2020",
+            "NQ",
+            "TRECCOVID",
+            "FiQA2018",
+            "ArguAna",
+            "SCIDOCS",
+            "NFCorpus",
+            "SciFact",
+        )
+    ]
+
+
 def test_headlines_report_every_frozen_evidence_tier_without_sign_overreach():
     final = {
         (family, optimizer): 0.4 + 0.01 * index
@@ -138,16 +170,18 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     rows = _rows()
     rows.pop("correlation_rows")
 
-    tables = build_result_tables(final_medians=final, **rows)
+    tables = build_result_tables(final_medians=final, task_rows=_task_rows(), **rows)
 
     assert set(tables) == {
         "paper/generated/discovery.tex",
+        "paper/generated/per-task.tex",
         "paper/generated/common-state.tex",
         "paper/generated/representation.tex",
         "paper/generated/intervention.tex",
         "paper/generated/confirmation.tex",
     }
     discovery = tables["paper/generated/discovery.tex"]
+    per_task = tables["paper/generated/per-task.tex"]
     confirmation = tables["paper/generated/confirmation.tex"]
     assert (
         sum(
@@ -157,6 +191,8 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
         )
         == 6
     )
+    assert per_task.count("0.4000 & 0.4100 & 0.4200") == 28
+    assert "test-selected comparisons" in per_task
     assert (
         sum(
             f"{family} & {contrast}" in confirmation
@@ -166,6 +202,109 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
         == 6
     )
     assert all("ResultPending" not in content for content in tables.values())
+
+
+def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, monkeypatch):
+    headline_names = (
+        "DiscoveryHeadline",
+        "CommonStateHeadline",
+        "RepresentationHeadline",
+        "InterventionHeadline",
+        "ConfirmationHeadline",
+    )
+    results = tmp_path / "paper/results.tex"
+    results.parent.mkdir(parents=True)
+    results.write_text(
+        "\n".join(f"\\newcommand{{\\{name}}}{{pending}}" for name in headline_names) + "\n"
+    )
+    (tmp_path / "reports").mkdir()
+    claim = tmp_path / "claim.json"
+    claim.write_text("{}")
+    source = tmp_path / "source.csv"
+    source.write_text("value\n1\n")
+    task_rows = _task_rows()
+    captured = {}
+
+    monkeypatch.setattr(
+        "embed_optim.paper_results.audit_paper",
+        lambda **_kwargs: {"incomplete_evidence": [], "evidence": {}},
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.load_paper_claim_protocol",
+        lambda **_kwargs: (claim, {"status": "frozen", "frozen_at": "now"}, []),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.expected_constant_macros",
+        lambda *_args, **_kwargs: ({}, []),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._retrieval_rows",
+        lambda *_args: ([], {}, source, source),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._discovery_final_medians",
+        lambda *_args: ({}, source),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._discovery_task_rows",
+        lambda *_args: (task_rows, source),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._common_state_rows",
+        lambda *_args: ([], {}, source),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._spectrum_rows",
+        lambda *_args: ([], {}, source),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._bridge_rows",
+        lambda *_args: ([], [], {}, [source, source]),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._functional_rows",
+        lambda *_args: ([], source, {}),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._hybrid_rows",
+        lambda *_args: ([], source, {}),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._short_branch_rows",
+        lambda *_args: ([], source, {}),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._confirmation_rows",
+        lambda *_args: ([], source, {}),
+    )
+
+    def headlines(**kwargs):
+        captured["headline_keys"] = set(kwargs)
+        return {name: f"rendered {name}" for name in headline_names}
+
+    def tables(**kwargs):
+        captured["table_task_rows"] = kwargs["task_rows"]
+        return {
+            path: f"generated {path}\n"
+            for path in (
+                "paper/generated/discovery.tex",
+                "paper/generated/per-task.tex",
+                "paper/generated/common-state.tex",
+                "paper/generated/representation.tex",
+                "paper/generated/intervention.tex",
+                "paper/generated/confirmation.tex",
+            )
+        }
+
+    monkeypatch.setattr("embed_optim.paper_results.build_headline_macros", headlines)
+    monkeypatch.setattr("embed_optim.paper_results.build_result_tables", tables)
+
+    manifest = render_paper_results(repo_root=tmp_path)
+
+    assert "task_rows" not in captured["headline_keys"]
+    assert captured["table_task_rows"] is task_rows
+    assert len(manifest["source_tables"]) == 11
+    assert len(manifest["result_tables"]) == 6
 
 
 def test_latex_escape_protects_generated_data_cells():

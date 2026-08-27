@@ -28,7 +28,8 @@ weight-space manifest with `embed-optim-audit-paper`. The command reports unreso
 drafting; `embed-optim-audit-paper --strict` becomes a hard final-submission gate.
 
 After every strict evidence report exists, run `embed-optim-render-paper-results`. It replaces only
-the five headline macros and the five result tables under `generated/`, writes
+the five headline macros and the six result-table files under `generated/` (including the two-panel
+per-task appendix), writes
 `reports/paper-results.manifest.json`, and binds the resulting `results.tex` and table bytes to the
 claim protocol, all evidence manifests, and all source tables. The strict paper audit rejects a
 manual headline/table edit, a stale generated manifest, or a final table that still contains a

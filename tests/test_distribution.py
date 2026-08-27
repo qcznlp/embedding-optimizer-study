@@ -147,6 +147,7 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         "paper/generated/confirmation.tex",
         "paper/generated/discovery.tex",
         "paper/generated/intervention.tex",
+        "paper/generated/per-task.tex",
         "paper/generated/representation.tex",
     )
     for source in paper_files:
