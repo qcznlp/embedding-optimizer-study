@@ -5,21 +5,30 @@ import pytest
 
 from embed_optim.config import OptimizerConfig, RunConfig
 from embed_optim.wandb_sync import (
+    CanonicalRun,
     _mark_canonical_current,
     build_canonical_run,
     canonical_history,
     history_sha256,
+    parse_args,
+    verify_remote_canonical_history,
+    verify_remote_current_matrix,
 )
 
 
 class _RemoteRun:
-    def __init__(self, tags, status=None):
+    def __init__(self, tags, status=None, history=()):
         self.tags = tags
         self.summary = {} if status is None else {"canonical_status": status}
+        self.history = tuple(history)
         self.updates = 0
 
     def update(self):
         self.updates += 1
+
+    def scan_history(self, page_size):
+        assert page_size == 1000
+        return iter(self.history)
 
 
 def test_canonical_history_is_sorted_and_merges_duplicate_steps():
@@ -147,3 +156,110 @@ def test_current_canonical_marker_is_non_destructive_and_idempotent():
 
     assert _mark_canonical_current(run) is False
     assert run.updates == 1
+
+
+def _canonical_spec(history):
+    config = RunConfig(
+        run_id="adamw-test",
+        model_family="dense",
+        optimizer=OptimizerConfig(name="adamw", lr=1e-6),
+        model_name="model",
+        dataset_path="data",
+        wandb_entity="entity",
+    )
+    history = tuple(history)
+    return CanonicalRun(config, history, history_sha256(history), "canonical-test", "source-test")
+
+
+def test_remote_canonical_history_is_read_back_and_rehashed():
+    expected = _canonical_spec(
+        (
+            {"global_step": 10, "train/loss": 0.8, "train/epoch": 0.5},
+            {
+                "global_step": 20,
+                "train/epoch": 1.0,
+                "system/useful_training_wall_time_seconds": 10.0,
+                "system/useful_samples_per_second": 100.0,
+                "system/useful_steps_per_second": 2.0,
+            },
+        )
+    )
+    remote = _RemoteRun(
+        ["canonical-current"],
+        history=(
+            {
+                "_step": 0,
+                "_timestamp": 123.0,
+                "global_step": 10.0,
+                "train/loss": 0.8,
+                "train/epoch": 0.5,
+            },
+            {
+                "_step": 1,
+                "global_step": 20,
+                "train/epoch": 1,
+                "system/useful_training_wall_time_seconds": 10,
+                "system/useful_samples_per_second": 100,
+                "system/useful_steps_per_second": 2,
+            },
+        ),
+    )
+
+    assert verify_remote_canonical_history(remote, expected) == 2
+
+
+def test_remote_canonical_history_rejects_changed_or_duplicate_rows():
+    expected = _canonical_spec(({"global_step": 10, "train/loss": 0.8},))
+    changed = _RemoteRun(["canonical-current"], history=({"global_step": 10, "train/loss": 0.7},))
+    duplicate = _RemoteRun(
+        ["canonical-current"],
+        history=(
+            {"global_step": 10, "train/loss": 0.8},
+            {"global_step": 10, "train/loss": 0.8},
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="does not match"):
+        verify_remote_canonical_history(changed, expected)
+    with pytest.raises(RuntimeError, match="duplicated"):
+        verify_remote_canonical_history(duplicate, expected)
+
+
+def test_remote_history_verification_is_enabled_by_default():
+    assert parse_args([]).skip_remote_history_verification is False
+    assert (
+        parse_args(["--skip-remote-history-verification"]).skip_remote_history_verification is True
+    )
+
+
+def test_remote_current_matrix_requires_one_exact_run_per_identity():
+    dense = _canonical_spec(({"global_step": 10, "train/loss": 0.8},))
+    late_config = replace(dense.config, model_family="late")
+    late = replace(dense, config=late_config, wandb_run_id="canonical-late-test")
+
+    class CurrentRun:
+        def __init__(self, spec, *, status="current"):
+            self.id = spec.wandb_run_id
+            self.tags = ["canonical", "canonical-current"]
+            self.config = {
+                "model_family": spec.config.model_family,
+                "run_id": spec.config.run_id,
+            }
+            self.summary = {"canonical_status": status}
+
+    unrelated = CurrentRun(dense)
+    unrelated.config = {"model_family": "dense", "run_id": "unrelated"}
+    audit = verify_remote_current_matrix(
+        [CurrentRun(dense), CurrentRun(late), unrelated], [dense, late]
+    )
+
+    assert audit == {
+        "selected_runs": 2,
+        "selected_current_runs": 2,
+        "project_current_runs": 3,
+    }
+
+    with pytest.raises(RuntimeError, match="has 2 current runs"):
+        verify_remote_current_matrix([CurrentRun(dense), CurrentRun(dense)], [dense])
+    with pytest.raises(RuntimeError, match="identity/status differs"):
+        verify_remote_current_matrix([CurrentRun(dense, status="superseded")], [dense])

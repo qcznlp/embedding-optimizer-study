@@ -17,6 +17,12 @@ SCALAR_HISTORY_KEYS = {
     "learning_rate": "train/learning_rate",
     "loss": "train/loss",
 }
+SYSTEM_HISTORY_KEYS = (
+    "system/useful_training_wall_time_seconds",
+    "system/useful_samples_per_second",
+    "system/useful_steps_per_second",
+)
+REMOTE_HISTORY_KEYS = ("global_step", *SCALAR_HISTORY_KEYS.values(), *SYSTEM_HISTORY_KEYS)
 
 
 @dataclass(frozen=True)
@@ -151,7 +157,94 @@ def _mark_canonical_current(run: Any) -> bool:
     return changed
 
 
-def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
+def _remote_canonical_history(run: Any) -> tuple[dict[str, int | float], ...]:
+    """Read and normalize every canonical history row from the W&B backend."""
+
+    history: list[dict[str, int | float]] = []
+    for index, raw in enumerate(run.scan_history(page_size=1000)):
+        step = raw.get("global_step")
+        if (
+            isinstance(step, bool)
+            or not isinstance(step, (int, float))
+            or not math.isfinite(float(step))
+            or not float(step).is_integer()
+        ):
+            raise RuntimeError(f"Remote canonical history row {index} has an invalid global_step")
+        normalized: dict[str, int | float] = {"global_step": int(step)}
+        for key in REMOTE_HISTORY_KEYS[1:]:
+            value = raw.get(key)
+            if value is None:
+                continue
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(float(value))
+            ):
+                raise RuntimeError(f"Remote canonical history row {index} has invalid {key}")
+            normalized[key] = float(value)
+        history.append(normalized)
+    steps = [int(row["global_step"]) for row in history]
+    if not history or steps != sorted(set(steps)):
+        raise RuntimeError("Remote canonical history is empty, duplicated, or out of order")
+    return tuple(history)
+
+
+def verify_remote_canonical_history(run: Any, expected: CanonicalRun) -> int:
+    """Re-read remote rows and require byte-equivalent normalized history content."""
+
+    observed = _remote_canonical_history(run)
+    observed_digest = history_sha256(observed)
+    if observed_digest != expected.history_sha256 or observed != expected.history:
+        raise RuntimeError(
+            "Remote canonical history does not match local history: "
+            f"rows={len(observed)}, sha256={observed_digest}, "
+            f"expected_rows={len(expected.history)}, expected_sha256={expected.history_sha256}"
+        )
+    return len(observed)
+
+
+def verify_remote_current_matrix(runs: list[Any], expected: list[CanonicalRun]) -> dict[str, int]:
+    """Require exactly one current remote run for every selected matrix identity."""
+
+    expected_by_identity = {
+        (spec.config.model_family, spec.config.run_id): spec.wandb_run_id for spec in expected
+    }
+    if len(expected_by_identity) != len(expected):
+        raise ValueError("Selected canonical matrix contains duplicate run identities")
+    observed: dict[tuple[str, str], list[Any]] = {identity: [] for identity in expected_by_identity}
+    project_current = 0
+    for run in runs:
+        tags = {str(tag) for tag in (run.tags or [])}
+        if "canonical-current" not in tags:
+            continue
+        project_current += 1
+        identity = (run.config.get("model_family"), run.config.get("run_id"))
+        if identity in observed:
+            observed[identity].append(run)
+    problems = []
+    for identity, expected_id in expected_by_identity.items():
+        matches = observed[identity]
+        if len(matches) != 1:
+            problems.append(f"{identity[0]}/{identity[1]} has {len(matches)} current runs")
+            continue
+        run = matches[0]
+        if run.id != expected_id or run.summary.get("canonical_status") != "current":
+            problems.append(f"{identity[0]}/{identity[1]} current run identity/status differs")
+    if problems:
+        raise RuntimeError("Remote canonical-current matrix is invalid: " + "; ".join(problems))
+    return {
+        "selected_runs": len(expected),
+        "selected_current_runs": sum(len(matches) for matches in observed.values()),
+        "project_current_runs": project_current,
+    }
+
+
+def publish_canonical_run(
+    spec: CanonicalRun,
+    dry_run: bool = False,
+    *,
+    verify_remote_history: bool = False,
+) -> str:
     """Publish one immutable history, or verify and skip an identical existing run."""
 
     config = spec.config
@@ -165,11 +258,20 @@ def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
     if existing is not None:
         remote_digest = existing.config.get("canonical_history_sha256")
         remote_step = existing.summary.get("final_global_step")
+        remote_rows = existing.summary.get("history_rows")
         expected_step = int(spec.history[-1]["global_step"])
-        if remote_digest != spec.history_sha256 or int(remote_step or -1) != expected_step:
+        if (
+            remote_digest != spec.history_sha256
+            or int(remote_step or -1) != expected_step
+            or int(remote_rows or -1) != len(spec.history)
+        ):
             raise RuntimeError(f"Existing canonical run does not match local history: {run_path}")
+        verified_rows = (
+            verify_remote_canonical_history(existing, spec) if verify_remote_history else None
+        )
         marked = _mark_canonical_current(existing)
-        return f"verified{'-and-marked-current' if marked else ''} {run_path}"
+        detail = f" rows={verified_rows} sha256={spec.history_sha256}" if verified_rows else ""
+        return f"verified{'-and-marked-current' if marked else ''} {run_path}{detail}"
 
     import wandb
 
@@ -216,6 +318,14 @@ def publish_canonical_run(spec: CanonicalRun, dry_run: bool = False) -> str:
         )
     finally:
         run.finish()
+    if verify_remote_history:
+        remote = _existing_run(run_path)
+        if remote is None:
+            raise RuntimeError(f"Published canonical run is not readable: {run_path}")
+        verified_rows = verify_remote_canonical_history(remote, spec)
+        return (
+            f"published-and-verified {run_path} rows={verified_rows} sha256={spec.history_sha256}"
+        )
     return f"published {run_path}"
 
 
@@ -227,6 +337,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--skip-remote-history-verification",
+        action="store_true",
+        help=(
+            "Trust a matching remote summary instead of reading and rehashing every history row; "
+            "the formal completion pipeline never uses this shortcut"
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -240,9 +358,29 @@ def main(argv: list[str] | None = None) -> None:
     ]
     if not configs:
         raise SystemExit("No runs selected")
+    specs = []
     for config in configs:
         spec = build_canonical_run(config)
-        print(publish_canonical_run(spec, dry_run=args.dry_run), flush=True)
+        specs.append(spec)
+        print(
+            publish_canonical_run(
+                spec,
+                dry_run=args.dry_run,
+                verify_remote_history=not args.skip_remote_history_verification,
+            ),
+            flush=True,
+        )
+    if not args.dry_run and not args.skip_remote_history_verification:
+        projects = {(spec.config.wandb_entity, spec.config.wandb_project) for spec in specs}
+        if len(projects) != 1:
+            raise RuntimeError("Selected canonical runs do not share one W&B project")
+        entity, project = projects.pop()
+        if not entity:
+            raise RuntimeError("Selected canonical runs do not declare a W&B entity")
+        import wandb
+
+        audit = verify_remote_current_matrix(list(wandb.Api().runs(f"{entity}/{project}")), specs)
+        print(json.dumps({"remote_current_matrix": audit}, sort_keys=True), flush=True)
 
 
 if __name__ == "__main__":

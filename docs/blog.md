@@ -988,10 +988,13 @@ also checks expected matrix coverage before the results section is generated.
 
 Checkpoint resumes can make an SDK run contain repeated optimizer steps even when the local Trainer
 state is correct. For the final dashboard, `embed-optim-sync-wandb` therefore publishes one immutable,
-content-addressed canonical history from every completed Trainer state. The content-verified 24-run
-discovery matrix carries the `canonical-current` tag; earlier content-addressed revisions remain
-available for provenance. Raw resume segments are kept for system telemetry, and no source run is
-deleted.
+content-addressed canonical history from every completed Trainer state. It then reads back every
+remote row and requires the normalized history hash to match locally, rather than trusting the hash
+stored in the remote summary, and it verifies exactly one current run for every matrix identity. The
+9,384 local loss records become 9,408 dashboard rows because each
+of the 24 runs adds an explicit step-3,907 terminal/system record. The content-verified discovery
+matrix carries the `canonical-current` tag; earlier content-addressed revisions remain available for
+provenance. Raw resume segments are kept for system telemetry, and no source run is deleted.
 
 During training, the CPU-only `embed-optim-watch-checkpoints` sidecar waits for each atomic checkpoint
 payload, performs the same deep model/optimizer/scheduler/argument/RNG audit, rejects unchanged model

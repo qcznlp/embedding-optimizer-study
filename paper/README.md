@@ -44,7 +44,7 @@ completion gate without weakening failures caused by malformed or stale complete
 
 | Claim family | Authoritative evidence | Required gate |
 |---|---|---|
-| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and both manifests under `reports/training-dynamics/` | 24 runs, 120 checkpoints, 9,384 history rows, six systems summaries, and two source-bound figures pass audit |
+| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and both manifests under `reports/training-dynamics/` | 24 runs, 120 checkpoints, 9,384 finite loss rows plus 24 explicit terminal/system rows in the rehashed remote histories, six systems summaries, and two source-bound figures pass audit |
 | Discovery retrieval behavior | `reports/coverage.json`, strict aggregate tables and plot sidecars | exactly 1,680 decontaminated-BEIR units |
 | Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics/summary_manifest.json` | 120 checkpoint means and all 1,680 source task files pass hashes; first passage uses the prospectively locked AdamW-median rule with right censoring and discloses its 160/1,680-unit freeze timing |
 | Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 24 runs, 120 checkpoints, verified model inputs |

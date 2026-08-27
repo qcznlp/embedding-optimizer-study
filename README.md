@@ -7,8 +7,10 @@ shared 500,000-query training set, runs 24 controlled training jobs, evaluates f
 every job on 14 pinned decontaminated BEIR datasets, and produces publication-ready tables and plots.
 
 The live experiment dashboard is [Weights & Biases: embedding-optimizer-study](https://wandb.ai/stevezenguom/embedding-optimizer-study).
-The final sync marks the content-verified 24-run discovery matrix with the `canonical-current` tag;
-historical retries and superseded content-addressed histories remain visible for provenance.
+The final sync reads back and rehashes every remote history row, verifies exactly one current run per
+matrix identity, then marks the content-verified 24-run discovery matrix with the
+`canonical-current` tag; historical retries and superseded content-addressed histories remain
+visible for provenance.
 The full research write-up is in [docs/blog.md](docs/blog.md). A follow-on NAACL study connecting
 optimizer updates, weight trajectories, representation geometry, and retrieval behavior is specified
 in [docs/naacl-paper-plan.md](docs/naacl-paper-plan.md). The result-safe, ACL-formatted manuscript
@@ -219,12 +221,16 @@ Trainer state:
 embed-optim-sync-wandb --matrix configs/experiment.yaml
 ```
 
-The canonical run ID is content-addressed by the normalized history. Re-running the command verifies
-and skips an identical remote run, while checkpoint-resume segments remain available as raw system
-telemetry. This avoids backward or duplicated optimizer steps in the comparison dashboard without
-deleting source runs. Resume-local Trainer terminal summaries are excluded; canonical system
-summaries use useful wall time and throughput reconstructed from the audited non-overlapping timing
-ledger.
+The canonical run ID is content-addressed by the normalized history. Re-running the command reads
+all remote rows, normalizes and rehashes them, audits current-run uniqueness, and skips only an
+exactly matching run; use
+`--skip-remote-history-verification` only for an explicitly non-formal availability check. The local
+training-dynamics report contains 9,384 finite loss rows (391 per run), while each canonical W&B
+history adds one explicit step-3,907 terminal/system row, for 9,408 remote rows in total. Raw
+checkpoint-resume segments remain available as system telemetry. This avoids backward or duplicated
+optimizer steps in the comparison dashboard without deleting source runs. Resume-local Trainer
+terminal summaries are excluded; canonical system summaries use useful wall time and throughput
+reconstructed from the audited non-overlapping timing ledger.
 
 ### 3. Evaluate every checkpoint
 
