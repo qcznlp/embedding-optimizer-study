@@ -103,7 +103,7 @@ row-wise second-moment normalization. Consequently, we predict that Muon increas
 rank and improves the conditioning of individual matrix updates relative to AdamW, while NorMuon
 specifically reduces dispersion and concentration of row energy relative to Muon. A flatter update
 spectrum is not assumed to be beneficial: it may amplify noise-dominated directions or disrupt
-useful Adam-pretrained features \citep{qu2026finetune}.
+useful Adam-pretrained features \citep{pang2026htmuon,qu2026finetune}.
 
 \subsection{Optimizer mismatch as a competing hypothesis}
 
@@ -155,12 +155,16 @@ non-uniform row norms after orthogonalization and adds neuron-wise second-moment
 \citep{li2025normuon}. Concurrent analyses of Adam-pretrained model adaptation report that a naive
 optimizer switch can disrupt pretrained knowledge as update strength grows, and that
 optimizer--model consistency can improve the learning--forgetting tradeoff
-\citep{qu2026finetune,liu2026consistency}. These works motivate our hypotheses, but none traces the
-complete path from same-state matrix updates through dense and token-level retrieval rankings. Our
-study is therefore not a generic replication of optimizer mismatch: it tests whether that
-phenomenon transfers to full-parameter contrastive adaptation, where the target and retained
-capabilities are both ranking functions and where late interaction exposes token-level evidence
-allocation.
+\citep{qu2026finetune,liu2026consistency}. Other concurrent work supplies competing explanations:
+Muon-pretrained features can have larger margins and effective rank \citep{ruan2026features}, while
+heavy-tailed spectral analyses warn that orthogonalization can overemphasize noise directions
+\citep{pang2026htmuon}. Newton--Muon interprets standard Muon as omitting input-covariance
+preconditioning \citep{du2026newtonmuon}, and adaptive Schatten geometry argues against one fixed
+matrix rule for every layer \citep{massena2026schatten}. These works motivate our hypotheses, but
+none traces the complete path from same-state updates through dense and token-level retrieval
+rankings. Our study instead tests that path during full-parameter contrastive adaptation, where the
+target and retained capabilities are both ranking functions and late interaction exposes
+token-level evidence allocation.
 
 \section{Controlled Retrieval Study}
 
@@ -265,7 +269,8 @@ attention logit; we verify this numerically in float64 at both model rope bases.
 common-state anchors, we replay original and transformed gradient histories for QKV matrices at
 layers 0, 10, and 21, inverse-map the prescribed updates, and measure direction, norm,
 predicted-descent, and selected-head spectrum error. This appendix diagnostic tests coordinate
-equivariance of the implemented optimizer and is not treated as a retrieval intervention.
+equivariance of the implemented optimizer \citep{singh2026basis} and is not treated as a retrieval
+intervention.
 
 \input{generated/common-state}
 
