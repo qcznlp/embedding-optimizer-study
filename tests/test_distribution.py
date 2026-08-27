@@ -95,6 +95,19 @@ def test_distribution_bundles_frozen_common_state_spectrum_protocol() -> None:
     assert spec["freeze_context"]["partial_beir_results_already_observed"] is True
 
 
+def test_distribution_bundles_prospective_basis_sensitivity_protocol() -> None:
+    installed = _installed_data_paths()
+    source = "configs/basis_sensitivity.json"
+    assert installed[source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/basis_sensitivity.json"
+    )
+    spec = json.loads((ROOT / source).read_text())
+    assert spec["selection"]["expected_records"] == 540
+    assert spec["selection"]["expected_head_records"] == 3240
+    assert spec["architecture"]["qkv_tensor_template"] == ("0.layers.{layer}.attn.Wqkv.weight")
+    assert spec["freeze_context"]["formal_basis_output_visible"] is False
+
+
 def test_distribution_bundles_training_receipt_and_retrieval_dynamics_protocol() -> None:
     installed = _installed_data_paths()
     training_source = "configs/training_data_contract.json"
@@ -123,7 +136,7 @@ def test_distribution_bundles_frozen_paper_claim_protocol() -> None:
     protocol = json.loads((ROOT / source).read_text())
     assert protocol["freeze_context"]["strict_beir_valid_units"] == 168
     assert protocol["freeze_context"]["complete_retrieval_matrix_visible"] is False
-    assert len(protocol["source_bindings"]) == 10
+    assert len(protocol["source_bindings"]) == 11
     assert set(protocol["headline_contract"]) == {
         "DiscoveryHeadline",
         "CommonStateHeadline",

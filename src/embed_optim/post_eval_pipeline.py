@@ -185,6 +185,24 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 ),
             ),
             PipelineStep(
+                "basis-sensitivity-analysis",
+                _module(
+                    args.python,
+                    "embed_optim.basis_sensitivity",
+                    "--device",
+                    "cuda:0",
+                ),
+            ),
+            PipelineStep(
+                "basis-sensitivity-audit",
+                _module(
+                    args.python,
+                    "embed_optim.basis_sensitivity",
+                    "--audit-only",
+                    "--verify-inputs",
+                ),
+            ),
+            PipelineStep(
                 "short-branch-matrix-generation",
                 _module(args.python, "embed_optim.short_branch"),
             ),

@@ -49,6 +49,7 @@ completion gate without weakening failures caused by malformed or stale complete
 | Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics/summary_manifest.json` | 120 checkpoint means and all 1,680 source task files pass hashes; first passage uses the prospectively locked AdamW-median rule with right censoring and discloses its 160/1,680-unit freeze timing |
 | Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 24 runs, 120 checkpoints, verified model inputs |
 | Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | 20 anchors, 1,760 gradients, 5,280 transforms, 360 spectra |
+| Function-preserving basis diagnostic | `configs/basis_sensitivity.json` and `reports/basis-sensitivity/summary_manifest.json` | 540 RoPE-commuting QKV comparisons and 3,240 selected-head records pass functional-invariance, Cartesian-coverage, and source-hash audits |
 | Representation and score geometry | strict manifests under `reports/representation-space/` | two pretrained references plus 120 checkpoints per probe tier |
 | Immediate causal intervention | `reports/functional-intervention/manifest.json` | 20 anchors and 58,240 paired sample records |
 | Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 18 runs, 90 checkpoints on both frozen probes |

@@ -10,6 +10,7 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+from .basis_sensitivity import audit_basis_sensitivity
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 
 MECHANISM_MARKERS = ("<!-- MECHANISM:BEGIN -->", "<!-- MECHANISM:END -->")
@@ -181,6 +182,61 @@ def _common_state_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, An
                     FAMILY_LABELS[family],
                     OPTIMIZER_LABELS[optimizer],
                     *[_format(value, 3) for value in medians],
+                ]
+            )
+    return output, manifest, path
+
+
+def _basis_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], Path]:
+    summary_dir = summary_dir.resolve()
+    manifest_path = summary_dir / "summary_manifest.json"
+    manifest = _load_manifest(manifest_path)
+    if (
+        manifest.get("coverage")
+        != {
+            "anchors": 20,
+            "tensor_sequences": 60,
+            "records": 540,
+            "head_records": 3_240,
+            "summary_rows": 6,
+        }
+        or manifest.get("complete") is not True
+    ):
+        raise ValueError("Basis diagnostic is not the complete frozen Cartesian grid")
+    protocol_path = Path(str(manifest.get("protocol", {}).get("path", "")))
+    audited = audit_basis_sensitivity(protocol_path, output_dir=summary_dir)
+    if audited != manifest:
+        raise ValueError("Basis diagnostic changed during its strict audit")
+    fields = {
+        "family",
+        "optimizer",
+        "records",
+        "median_mapped_direction_cosine",
+        "median_mapped_relative_frobenius_error",
+        "median_absolute_norm_ratio_error",
+        "median_predicted_descent_relative_error",
+        "median_head_spectrum_relative_l2_error",
+    }
+    rows, path = _read_declared_csv(summary_dir, manifest, "summary", required_fields=fields)
+    indexed = {(row.get("family", ""), row.get("optimizer", "")): row for row in rows}
+    expected = {(family, optimizer) for family in FAMILIES for optimizer in OPTIMIZERS}
+    if len(rows) != 6 or set(indexed) != expected:
+        raise ValueError("Basis summary does not cover every family/optimizer group")
+    output = []
+    for family in FAMILIES:
+        for optimizer in OPTIMIZERS:
+            row = indexed[(family, optimizer)]
+            if int(row["records"]) != 90:
+                raise ValueError("Basis summary must contain 90 records per family/operator")
+            output.append(
+                [
+                    FAMILY_LABELS[family],
+                    OPTIMIZER_LABELS[optimizer],
+                    _format(_finite(row, "median_mapped_direction_cosine"), 5),
+                    _format(_finite(row, "median_mapped_relative_frobenius_error"), 5),
+                    _format(_finite(row, "median_absolute_norm_ratio_error"), 5),
+                    _format(_finite(row, "median_predicted_descent_relative_error"), 5),
+                    _format(_finite(row, "median_head_spectrum_relative_l2_error"), 5),
                 ]
             )
     return output, manifest, path
@@ -544,11 +600,13 @@ def render_mechanism_report(
     blog_path: Path,
     output_path: Path,
     *,
+    basis_dir: Path,
     spectrum_figure: Path,
     representation_figure: Path,
     late_token_figure: Path,
 ) -> dict[str, Any]:
     common_rows, common_manifest, common_table = _common_state_rows(common_state_dir)
+    basis_rows, basis_manifest, basis_table = _basis_rows(basis_dir)
     spectrum_rows, spectrum_manifest, spectrum_table = _spectrum_rows(spectrum_dir)
     representation_rows, correlation_rows, bridge_manifest, bridge_tables = _bridge_rows(bridge_dir)
     retrieval_rows, retrieval_manifest, retrieval_table, retrieval_figure = _retrieval_rows(
@@ -564,8 +622,8 @@ def render_mechanism_report(
         [
             "The formal mechanism tier evaluates every optimizer transform at the same frozen weights "
             "and on the same ordered eight-gradient history. The values below are generated only after "
-            "the complete 20-anchor matrix, 360 exact spectra, both 122-job representation tiers, and "
-            "the 1,680-unit retrieval matrix pass their content-hash audits.",
+            "the complete 20-anchor matrix, 540 basis comparisons, 360 exact spectra, both 122-job "
+            "representation tiers, and the 1,680-unit retrieval matrix pass their content-hash audits.",
             "### Retrieval time to an AdamW reference\n\n"
             "![Retrieval quality versus useful wall time]"
             "(../reports/retrieval-dynamics/quality_vs_useful_wall_time.svg)\n\n"
@@ -604,6 +662,25 @@ def render_mechanism_report(
             "directions but are scale-invariant except for the explicitly reported spectral-norm ratio; "
             "the exact-spectrum intervention below uses per-tensor Frobenius-matched directions. Weight "
             "decay is excluded from this comparison.",
+            "### Function-preserving basis sensitivity\n\n"
+            + _table(
+                [
+                    "Family",
+                    "Operator",
+                    "mapped cosine",
+                    "relative direction error",
+                    "absolute norm-ratio error",
+                    "predicted-descent error",
+                    "Q/K spectrum error",
+                ],
+                basis_rows,
+            )
+            + "\n\nEach row is the median over 90 fixed comparisons: ten common-state anchors, "
+            "three QKV layers, and three seeded RoPE-commuting rotations. Query and key share "
+            "each split-half plane rotation, value rows are unchanged, and every direction is "
+            "inverse-mapped before comparison. The transform preserves attention logits, so this "
+            "table measures implementation-level coordinate dependence rather than retrieval "
+            "quality; bfloat16 Newton--Schulz rounding is retained as part of the Muon runtime.",
             "### Exact update spectra\n\n"
             "![Exact common-state update spectra](../reports/common-state/exact-update-spectra.svg)\n\n"
             + _table(
@@ -675,6 +752,12 @@ def render_mechanism_report(
             "sha256": _sha256((spectrum_dir / "summary_manifest.json").resolve()),
             "spectra": spectrum_manifest["valid_spectra"],
         },
+        "basis_sensitivity": {
+            "path": str((basis_dir / "summary_manifest.json").resolve()),
+            "sha256": _sha256((basis_dir / "summary_manifest.json").resolve()),
+            "records": basis_manifest["coverage"]["records"],
+            "head_records": basis_manifest["coverage"]["head_records"],
+        },
         "mechanism_bridge": {
             "path": str((bridge_dir / "summary_manifest.json").resolve()),
             "sha256": _sha256((bridge_dir / "summary_manifest.json").resolve()),
@@ -687,7 +770,7 @@ def render_mechanism_report(
         "sources": source_manifests,
         "source_tables": [
             {"path": str(path), "sha256": _sha256(path)}
-            for path in [retrieval_table, common_table, spectrum_table, *bridge_tables]
+            for path in [retrieval_table, common_table, basis_table, spectrum_table, *bridge_tables]
         ],
         "figures": figures,
         "output": {
@@ -704,6 +787,7 @@ def render_mechanism_report(
         "aggregation": {
             "retrieval_dynamics": "six-family-optimizer-groups-over-four-learning-rate-points",
             "common_state": "median-over-ten-frozen-anchors-per-family-operator",
+            "basis_sensitivity": "median-over-ninety-fixed-comparisons-per-family-operator",
             "exact_spectra": "median-over-sixty-prespecified-spectra-per-family-operator",
             "representation": "final-stage-median-over-four-frozen-learning-rates",
             "bridge": "seven-prespecified-within-run-first-difference-spearman-associations",
@@ -722,6 +806,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Render the strict update-to-retrieval mechanism section into the final blog"
     )
     parser.add_argument("--common-state-dir", type=Path, default=Path("reports/common-state"))
+    parser.add_argument("--basis-dir", type=Path, default=Path("reports/basis-sensitivity"))
     parser.add_argument(
         "--spectrum-dir", type=Path, default=Path("results/common-state-spectra/summary")
     )
@@ -757,6 +842,7 @@ def main(argv: list[str] | None = None) -> None:
         args.retrieval_dir,
         args.blog,
         args.output,
+        basis_dir=args.basis_dir,
         spectrum_figure=args.spectrum_figure,
         representation_figure=args.representation_figure,
         late_token_figure=args.late_token_figure,

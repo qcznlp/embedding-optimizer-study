@@ -257,6 +257,16 @@ than pooled with it. We keep weight decay separate and evaluate raw and per-tens
 directions. The primary measurements are effective rank, condition number, row-energy concentration,
 layer allocation, and pairwise update angle. \CommonStateHeadline.
 
+\paragraph{Function-preserving basis diagnostic.}
+An arbitrary head rotation is not generally a symmetry of rotary position embeddings. We instead
+apply seeded SO(2) rotations within each split-half RoPE plane, using the same rotation for query and
+key and leaving value coordinates fixed. These transforms commute with RoPE and preserve every
+attention logit; we verify this numerically in float64 at both model rope bases. At all 20
+common-state anchors, we replay original and transformed gradient histories for QKV matrices at
+layers 0, 10, and 21, inverse-map the prescribed updates, and measure direction, norm,
+predicted-descent, and selected-head spectrum error. This appendix diagnostic tests coordinate
+equivariance of the implemented optimizer and is not treated as a retrieval intervention.
+
 \input{generated/common-state}
 
 \section{How Does Geometry Reach the Retrieval Function?}

@@ -121,6 +121,51 @@ def _spectra(root: Path) -> Path:
     return root
 
 
+def _basis(root: Path) -> Path:
+    root.mkdir(parents=True)
+    rows = [
+        {
+            "family": family,
+            "optimizer": optimizer,
+            "records": 90,
+            "median_mapped_direction_cosine": 0.99 - optimizer_index * 0.01,
+            "median_mapped_relative_frobenius_error": 0.01 + optimizer_index * 0.01,
+            "maximum_mapped_relative_frobenius_error": 0.02 + optimizer_index * 0.01,
+            "median_absolute_norm_ratio_error": 0.001 + optimizer_index * 0.001,
+            "median_predicted_descent_relative_error": 0.003 + optimizer_index * 0.001,
+            "median_head_spectrum_relative_l2_error": 0.004 + optimizer_index * 0.001,
+            "maximum_functional_invariance_error": 1e-14,
+        }
+        for family in ("dense", "late")
+        for optimizer_index, optimizer in enumerate(("adamw", "muon", "normuon"))
+    ]
+    table = root / "summary.csv"
+    _write_csv(table, rows)
+    protocol = root / "basis.json"
+    protocol.write_text("{}\n", encoding="utf-8")
+    (root / "summary_manifest.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "complete": True,
+                "protocol": {"path": str(protocol.resolve()), "sha256": _sha256(protocol)},
+                "coverage": {
+                    "anchors": 20,
+                    "tensor_sequences": 60,
+                    "records": 540,
+                    "head_records": 3_240,
+                    "summary_rows": 6,
+                },
+                "outputs": {"summary": _declared(table, len(rows))},
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return root
+
+
 def _bridge(root: Path) -> Path:
     root.mkdir(parents=True)
     checkpoints = []
@@ -310,6 +355,7 @@ def _retrieval(root: Path) -> Path:
 
 def _inputs(tmp_path: Path):
     common = _common_state(tmp_path / "common")
+    basis = _basis(tmp_path / "basis")
     spectra = _spectra(tmp_path / "spectra")
     bridge = _bridge(tmp_path / "bridge")
     retrieval = _retrieval(tmp_path / "reports" / "retrieval-dynamics")
@@ -323,11 +369,19 @@ def _inputs(tmp_path: Path):
         "before\n<!-- MECHANISM:BEGIN -->\nold\n<!-- MECHANISM:END -->\nafter\n",
         encoding="utf-8",
     )
-    return common, spectra, bridge, retrieval, figures, blog
+    return common, basis, spectra, bridge, retrieval, figures, blog
+
+
+@pytest.fixture(autouse=True)
+def _accept_fixture_basis_audit(monkeypatch):
+    def audit(_protocol, *, output_dir, **_kwargs):
+        return json.loads((Path(output_dir) / "summary_manifest.json").read_text())
+
+    monkeypatch.setattr("embed_optim.mechanism_report.audit_basis_sensitivity", audit)
 
 
 def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
-    common, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
+    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
     output = tmp_path / "reports" / "mechanism-summary.md"
 
     manifest = render_mechanism_report(
@@ -337,6 +391,7 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
         retrieval,
         blog,
         output,
+        basis_dir=basis,
         spectrum_figure=figures[0],
         representation_figure=figures[1],
         late_token_figure=figures[2],
@@ -349,6 +404,7 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
         retrieval,
         blog,
         output,
+        basis_dir=basis,
         spectrum_figure=figures[0],
         representation_figure=figures[1],
         late_token_figure=figures[2],
@@ -358,6 +414,7 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
     assert repeated == manifest
     assert (output.read_bytes(), blog.read_bytes()) == first
     assert "Same-state optimizer fingerprints" in output.read_text()
+    assert "Function-preserving basis sensitivity" in output.read_text()
     assert "Retrieval time to an AdamW reference" in output.read_text()
     assert "seven associations were fixed" in output.read_text()
     assert "old" not in blog.read_text()
@@ -365,7 +422,7 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
 
 
 def test_mechanism_report_rejects_figure_hash_drift(tmp_path: Path):
-    common, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
+    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
     figures[1].write_text("changed\n", encoding="utf-8")
 
     with pytest.raises(ValueError, match="figure differs"):
@@ -376,6 +433,7 @@ def test_mechanism_report_rejects_figure_hash_drift(tmp_path: Path):
             retrieval,
             blog,
             tmp_path / "mechanism.md",
+            basis_dir=basis,
             spectrum_figure=figures[0],
             representation_figure=figures[1],
             late_token_figure=figures[2],
@@ -383,7 +441,7 @@ def test_mechanism_report_rejects_figure_hash_drift(tmp_path: Path):
 
 
 def test_mechanism_report_rejects_partial_common_state(tmp_path: Path):
-    common, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
+    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
     manifest_path = common / "summary_manifest.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["complete"] = False
@@ -397,6 +455,7 @@ def test_mechanism_report_rejects_partial_common_state(tmp_path: Path):
             retrieval,
             blog,
             tmp_path / "mechanism.md",
+            basis_dir=basis,
             spectrum_figure=figures[0],
             representation_figure=figures[1],
             late_token_figure=figures[2],

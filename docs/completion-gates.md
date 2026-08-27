@@ -19,6 +19,7 @@ the authoritative artifact and the command that must validate its full scope.
 | Retrieval time-to-reference | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics/summary_manifest.json` | The protocol hash and its 160/1,680-unit visibility disclosure pass audit; all 1,680 result files rehash into 120 checkpoint rows, and every run reports its first observed crossing of the within-family median AdamW final quality or remains explicitly right-censored, using step-proportional audited useful wall time and no interpolation. |
 | Weight-space analysis | [`reports/weight-space/summary_manifest.json`](../reports/weight-space/summary_manifest.json) | 24 runs and 120 checkpoint rows pass record-hash, finite-value, partition, and source-input revalidation. |
 | Common-state mechanism | `reports/common-state/summary_manifest.json` and `results/common-state-spectra/summary/summary_manifest.json` | All 20 frozen anchors, 1,760 gradient tensors, 5,280 optimizer-update tensors, and 360 prespecified exact spectra pass strict source-hash aggregation. |
+| Function-preserving basis diagnostic | `configs/basis_sensitivity.json` and `reports/basis-sensitivity/summary_manifest.json` | All 20 common-state anchors × three QKV layers × three rotation seeds × three optimizers produce 540 full-tensor and 3,240 selected-head rows; both RoPE bases pass float64 logit-invariance calibration, the Cartesian identities are exact, and every source/output hash revalidates. |
 | Scale-matched functional intervention | `configs/functional_intervention.json` and `reports/functional-intervention/manifest.json` | All 20 anchors contain the baseline plus 12 optimizer/direction/scale conditions on the frozen 224-query unseen probe; 58,240 paired sample records and all source hashes pass audit. |
 | Final causal/confirmation blog section | `reports/outcome-summary.manifest.json` | Hybrid routing, common-scale local directions, final-stage three-seed shared-start contrasts, and all six confirmatory optimizer contrasts are rendered from strict hashed tables into the dedicated blog marker region; the mechanism marker is revalidated before the final whole-blog hash is signed. |
 | Shared-checkpoint short branch | `configs/short_branch_protocol.json`, `reports/short-branch/subset-receipt.json`, and `reports/short-branch/summary_manifest.json` | Both families start from the same fixed AdamW 60% checkpoint; three operators use common-state-derived hidden LRs at the frozen `5e-4` global update/weight target and three order seeds on one exact 50K subset. All five branch checkpoints pass the two frozen functional probes and the 90-row cross-probe bridge. |
@@ -62,6 +63,7 @@ embed-optim-summarize-common-state \
 embed-optim-common-state-spectra --audit-only --verify-hashes
 embed-optim-common-state-spectra --summarize-only
 embed-optim-plot-common-state-spectra
+embed-optim-basis-sensitivity --audit-only --verify-inputs
 embed-optim-functional-intervention-matrix --audit-only --verify-hashes
 embed-optim-summarize-functional-interventions
 embed-optim-plot-representation-dynamics

@@ -960,6 +960,35 @@ kernel backend rather than substituting a CPU matrix product. This protocol isol
 transform; it does not claim that the cached fixed-weight gradients reproduce an optimizer's native
 training trajectory.
 
+### 7b. Audit optimizer basis sensitivity
+
+The frozen [`basis_sensitivity.json`](configs/basis_sensitivity.json) protocol reuses the 20
+common-state gradient histories to test a function-preserving ModernBERT attention symmetry. It
+applies identical seeded SO(2) rotations to query and key coordinates within each split-half RoPE
+plane, leaves value coordinates unchanged, and inverse-maps every optimizer direction before
+comparison. Arbitrary orthogonal head rotations are not used because they do not generally commute
+with RoPE.
+
+Run the 540 full-tensor comparisons and 3,240 selected-head comparisons after the common-state grid
+is complete, then rehash every input and output independently:
+
+```bash
+embed-optim-basis-sensitivity \
+  --protocol configs/basis_sensitivity.json \
+  --device cuda:0
+embed-optim-basis-sensitivity \
+  --protocol configs/basis_sensitivity.json \
+  --audit-only \
+  --verify-inputs
+```
+
+The analysis covers layers 0, 10, and 21; heads 0, 5, and 11; three rotation seeds; both model
+families; and AdamW, Muon, and NorMuon. Before replay, a float64 calibration verifies attention-logit
+invariance at both model rope bases and multiple position pairs. The outputs report inverse-mapped
+direction cosine and error, norm preservation, predicted-descent preservation, and Q/K head
+singular-spectrum drift. This isolates coordinate dependence in the actual optimizer implementation;
+it is not a retrieval-quality intervention.
+
 ### 8. Run scale-matched functional interventions
 
 Update geometry is only mechanistically useful if it changes the retriever's function. The frozen

@@ -57,7 +57,7 @@ def test_current_paper_constants_match_strict_sources():
     assert discovery_evidence[3]["complete"] is False
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
-    assert len(result["claim_protocol"]["source_bindings"]) == 10
+    assert len(result["claim_protocol"]["source_bindings"]) == 11
     assert result["paper_results"]["complete"] is False
 
 
@@ -122,6 +122,34 @@ def test_paper_claim_protocol_freezes_result_contingent_language_before_completi
             "headline_contract_changed": True,
             "result_contingent_story_map_changed": False,
         },
+        {
+            "amended_at": "2026-08-27T06:37:30Z",
+            "scope": "prospective_rope_basis_symmetry_correction",
+            "reason": (
+                "Correct the bound paper plan so the attention basis diagnostic uses only "
+                "split-half SO(2) rotations that commute with ModernBERT RoPE, bind the exact "
+                "prospective diagnostic protocol, and reject the invalid claim that arbitrary "
+                "orthogonal head rotations preserve post-RoPE logits."
+            ),
+            "previous_source_sha256": (
+                "f77c22170144adcab3364f9e19167984727ba6edf8899dcf421158ef0588cdf0"
+            ),
+            "updated_source_sha256": (
+                "3296f4882f1a68e96a0ee4a1608bc47155b776d5078dc40d6cfb654e096cc0c3"
+            ),
+            "strict_beir_valid_units": 340,
+            "strict_beir_expected_units": 1680,
+            "complete_retrieval_matrix_visible": False,
+            "formal_common_state_output_visible": False,
+            "formal_basis_output_visible": False,
+            "formal_representation_output_visible": False,
+            "formal_functional_intervention_output_visible": False,
+            "hybrid_adamw_output_visible": False,
+            "short_branch_output_visible": False,
+            "confirmatory_output_visible": False,
+            "headline_contract_changed": False,
+            "result_contingent_story_map_changed": False,
+        },
     ]
     assert set(protocol["headline_contract"]) == {
         "DiscoveryHeadline",
@@ -138,7 +166,7 @@ def test_paper_claim_protocol_freezes_result_contingent_language_before_completi
         "familywise interval for headline sign language"
         in protocol["headline_contract"]["ConfirmationHeadline"]["selection_rule"]
     )
-    assert len(sources) == 10
+    assert len(sources) == 11
 
 
 def test_strict_paper_audit_rejects_pending_headlines():

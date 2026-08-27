@@ -544,18 +544,32 @@ tests which effect comes from orthogonalization and which from neuron-wise adapt
 
 Treat optimizer geometry at three distinct granularities: AdamW is coordinate-wise, Muon is
 matrix/singular-direction aware, and NorMuon additionally privileges the output-neuron row basis.
-This suggests a compact diagnostic that does not require another full training sweep. For selected
-attention heads, apply a fixed seeded orthogonal rotation `R` to the query and key output coordinates
-so that the attention logits are unchanged, replay the same frozen gradient history in the original
-and rotated parameterizations, map each prescribed update back to the original basis, and compare
-update cosine, norm, spectrum, and one-step function drift. Use the fused QKV layout only after
-splitting and independently validating the Q/K slices.
+This suggests a compact diagnostic that does not require another full training sweep, but the
+allowable transform must respect ModernBERT's rotary position embeddings. An arbitrary orthogonal
+head rotation is generally **not** a symmetry of RoPE. The prospectively frozen transform instead
+uses an independent SO(2) rotation in every split-half rotary plane, pairing coordinates `i` and
+`i + head_dim/2`. Query and key use the same angles for a given head; value rows remain unchanged.
+These plane rotations commute with every positional RoPE rotation, so for all positions `p,s`,
+`(RoPE_p U q)^T (RoPE_s U k) = (RoPE_p q)^T (RoPE_s k)`. Float64 calibration checks this identity
+at both ModernBERT rope bases and at short and long position pairs before any optimizer metric is
+accepted.
 
-This is a symmetry diagnostic, not a retrieval-quality result. It tests whether the optimizer reacts
-to an arbitrary coordinate representation of the same attention function. Exact polar Muon should
-be orthogonally equivariant up to numerical approximation; coordinate-wise AdamW and NorMuon's
-row-specific state can retain basis sensitivity. Keep this experiment in the appendix unless its
-effect predicts the main representation or retrieval results.
+The frozen grid in `configs/basis_sensitivity.json` selects fused QKV matrices at layers 0, 10, and
+21; heads 0, 5, and 11; all 20 common-state anchors; and three independent rotation seeds. The
+SentenceTransformers canonical tensor namespace and contiguous Q/K/V layout are validated against
+both model families. For each of 60 tensor sequences, replay the same eight frozen gradients in the
+original and transformed coordinates, inverse-map each final direction, and compare direction
+cosine, relative Frobenius error, norm ratio, predicted descent, and selected-head singular spectra.
+The strict result has 540 full-tensor rows and 3,240 head rows, with source hashes and exact Cartesian
+coverage audited independently.
+
+This is a function-preserving coordinate diagnostic, not a retrieval-quality intervention. The exact
+polar map underlying Muon is left-orthogonally equivariant; the actual bfloat16 Newton--Schulz
+implementation can deviate slightly through rounding. AdamW's coordinate-wise moments and
+NorMuon's output-row second moments need not commute with this rotation. The result therefore
+measures implementation-level basis dependence under a narrow, valid attention symmetry; it does
+not establish that an optimizer is better, and it must not be generalized to every Transformer
+reparameterization without evidence.
 
 ### Confirmatory multi-seed runs
 

@@ -27,7 +27,7 @@ PAPER_RESULT_TABLE_PATHS = (
     Path("paper/generated/intervention.tex"),
     Path("paper/generated/confirmation.tex"),
 )
-PAPER_CLAIM_PROTOCOL_SHA256 = "b62750dac7aafcb02dd4e2c5867448681b9c5713dd9b33e6c9e17edfcd71ebf9"
+PAPER_CLAIM_PROTOCOL_SHA256 = "0ddff916eccedbe493b41a07538d0e4e9e058a784f5440e10d688f5270609949"
 PAPER_CLAIM_SOURCE_PATHS = (
     "configs/experiment.yaml",
     "configs/common_state_probe.json",
@@ -38,6 +38,7 @@ PAPER_CLAIM_SOURCE_PATHS = (
     "configs/hybrid_adamw_control.json",
     "configs/short_branch_protocol.json",
     "configs/confirmatory_protocol.json",
+    "configs/basis_sensitivity.json",
     "docs/naacl-paper-plan.md",
 )
 STRICT_EVIDENCE = {
@@ -50,6 +51,7 @@ STRICT_EVIDENCE = {
     "CommonStateHeadline": (
         Path("reports/common-state/summary_manifest.json"),
         Path("results/common-state-spectra/summary/summary_manifest.json"),
+        Path("reports/basis-sensitivity/summary_manifest.json"),
     ),
     "RepresentationHeadline": (
         Path("results/representation-space/training/summary/summary_manifest.json"),
@@ -101,9 +103,9 @@ def load_paper_claim_protocol(
     protocol = _json(protocol_path)
     freeze = protocol.get("freeze_context", {})
     amendments = protocol.get("amendments")
-    if not isinstance(amendments, list) or len(amendments) != 2:
+    if not isinstance(amendments, list) or len(amendments) != 3:
         raise ValueError("Paper claim protocol differs from its prospective completion lock")
-    documentation_amendment, inference_amendment = amendments
+    documentation_amendment, inference_amendment, basis_amendment = amendments
     headlines = protocol.get("headline_contract", {})
     bindings = protocol.get("source_bindings")
     if (
@@ -171,6 +173,28 @@ def load_paper_claim_protocol(
             )
         )
         or inference_amendment.get("headline_contract_changed") is not True
+        or basis_amendment.get("scope") != "prospective_rope_basis_symmetry_correction"
+        or basis_amendment.get("previous_source_sha256")
+        != "f77c22170144adcab3364f9e19167984727ba6edf8899dcf421158ef0588cdf0"
+        or basis_amendment.get("updated_source_sha256")
+        != "3296f4882f1a68e96a0ee4a1608bc47155b776d5078dc40d6cfb654e096cc0c3"
+        or basis_amendment.get("strict_beir_valid_units") != 340
+        or basis_amendment.get("strict_beir_expected_units") != 1_680
+        or basis_amendment.get("complete_retrieval_matrix_visible") is not False
+        or basis_amendment.get("formal_basis_output_visible") is not False
+        or any(
+            basis_amendment.get(field) is not False
+            for field in (
+                "formal_common_state_output_visible",
+                "formal_representation_output_visible",
+                "formal_functional_intervention_output_visible",
+                "hybrid_adamw_output_visible",
+                "short_branch_output_visible",
+                "confirmatory_output_visible",
+                "headline_contract_changed",
+                "result_contingent_story_map_changed",
+            )
+        )
         or not isinstance(bindings, list)
         or len(bindings) != len(PAPER_CLAIM_SOURCE_PATHS)
         or [item.get("path") for item in bindings if isinstance(item, dict)]

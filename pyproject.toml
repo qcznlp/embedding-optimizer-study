@@ -96,6 +96,7 @@ embed-optim-plot-geometry = "embed_optim.geometry_plot:main"
 embed-optim-plot-geometry-phase = "embed_optim.geometry_plot:phase_main"
 embed-optim-analyze-probe = "embed_optim.representation_geometry:main"
 embed-optim-analyze-updates = "embed_optim.update_geometry:main"
+embed-optim-basis-sensitivity = "embed_optim.basis_sensitivity:main"
 
 [project.urls]
 Repository = "https://github.com/qcznlp/embedding-optimizer-study"
@@ -118,6 +119,7 @@ where = ["src"]
 [tool.setuptools.data-files]
 "share/embedding-optimizer-study/configs" = [
   "configs/beir_representation_probe.json",
+  "configs/basis_sensitivity.json",
   "configs/experiment.yaml",
   "configs/common_state_probe.json",
   "configs/common_state_spectrum_probe.json",

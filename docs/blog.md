@@ -911,6 +911,17 @@ that the completed weight trajectories and exploratory representation smoke test
 visible. This subset will support representative singular-value curves without choosing favorable
 layers after inspecting the common-state spectra.
 
+A separate coordinate diagnostic was frozen at 336/1,680 strict BEIR units and before any
+common-state or basis-sensitivity output existed. ModernBERT's RoPE means that an arbitrary
+orthogonal head rotation is not function preserving. The frozen protocol therefore rotates each
+split-half rotary coordinate pair by a seeded SO(2) angle, applies the same angles to query and key,
+and leaves value rows unchanged. These rotations commute with RoPE and preserve post-RoPE attention
+logits; a float64 calibration checks both model rope bases and multiple position pairs before the
+optimizer replay runs. Across all 20 common-state anchors, layers 0/10/21, three rotation seeds, and
+all three optimizers, the diagnostic inverse-maps the transformed update and measures direction,
+norm, predicted-descent, and selected-head spectrum error. Its 540 full-tensor and 3,240 head rows
+are an appendix test of implementation-level basis dependence, not a retrieval-quality result.
+
 ## From update geometry to retrieval geometry
 
 <!-- MECHANISM:BEGIN -->

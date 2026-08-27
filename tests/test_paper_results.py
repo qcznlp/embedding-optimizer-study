@@ -123,6 +123,14 @@ def _task_rows():
     ]
 
 
+def _basis_result_rows():
+    return [
+        [family, optimizer, "0.99000", "0.01000", "0.00100", "0.00200", "0.00300"]
+        for family in ("DenseOn", "LateOn")
+        for optimizer in ("AdamW", "Muon", "NorMuon")
+    ]
+
+
 def test_headlines_report_every_frozen_evidence_tier_without_sign_overreach():
     final = {
         (family, optimizer): 0.4 + 0.01 * index
@@ -201,7 +209,12 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     rows = _rows()
     rows.pop("correlation_rows")
 
-    tables = build_result_tables(final_medians=final, task_rows=_task_rows(), **rows)
+    tables = build_result_tables(
+        final_medians=final,
+        task_rows=_task_rows(),
+        basis_rows=_basis_result_rows(),
+        **rows,
+    )
 
     assert set(tables) == {
         "paper/generated/discovery.tex",
@@ -214,6 +227,7 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     discovery = tables["paper/generated/discovery.tex"]
     per_task = tables["paper/generated/per-task.tex"]
     confirmation = tables["paper/generated/confirmation.tex"]
+    common = tables["paper/generated/common-state.tex"]
     assert (
         sum(
             f"{family} & {optimizer}" in discovery
@@ -234,6 +248,8 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     )
     assert "FWER 95\\% CI" in confirmation
     assert "Bonferroni correction" in confirmation
+    assert "Function-preserving basis sensitivity" in common
+    assert "0.99000 & 0.01000 & 0.00100 & 0.00200 & 0.00300" in common
     assert all("ResultPending" not in content for content in tables.values())
 
 
@@ -287,6 +303,10 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
         lambda *_args: ([], {}, source),
     )
     monkeypatch.setattr(
+        "embed_optim.paper_results._basis_rows",
+        lambda *_args: (_basis_result_rows(), {}, source),
+    )
+    monkeypatch.setattr(
         "embed_optim.paper_results._spectrum_rows",
         lambda *_args: ([], {}, source),
     )
@@ -336,7 +356,7 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
 
     assert "task_rows" not in captured["headline_keys"]
     assert captured["table_task_rows"] is task_rows
-    assert len(manifest["source_tables"]) == 11
+    assert len(manifest["source_tables"]) == 12
     assert len(manifest["result_tables"]) == 6
 
 

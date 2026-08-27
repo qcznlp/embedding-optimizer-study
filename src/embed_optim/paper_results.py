@@ -12,6 +12,7 @@ from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .mechanism_report import (
     OPTIMIZER_LABELS,
     _atomic_text,
+    _basis_rows,
     _bridge_rows,
     _common_state_rows,
     _read_declared_csv,
@@ -339,6 +340,7 @@ def build_result_tables(
     retrieval_rows: list[list[str]],
     task_rows: list[list[str]],
     common_rows: list[list[str]],
+    basis_rows: list[list[str]],
     spectrum_rows: list[list[str]],
     representation_rows: list[list[str]],
     functional_rows: list[list[str]],
@@ -348,6 +350,7 @@ def build_result_tables(
 ) -> dict[str, str]:
     retrieval = _indexed(retrieval_rows, context="retrieval table")
     common = _indexed(common_rows, context="common-state table")
+    basis = _indexed(basis_rows, context="basis-sensitivity table")
     spectra = _indexed(spectrum_rows, context="spectrum table")
     representation = _indexed(representation_rows, context="representation table")
     functional = {(row[0], row[1], row[2]): row for row in functional_rows if len(row) >= 8}
@@ -383,6 +386,11 @@ def build_result_tables(
         )
         for family_label in FAMILY_LABELS.values()
         for operator in ("Muon", "NorMuon")
+    ]
+    basis_table_rows = [
+        tuple(basis[(family_label, optimizer)])
+        for family_label in FAMILY_LABELS.values()
+        for optimizer in optimizer_labels
     ]
     representation_table_rows = [
         (
@@ -449,6 +457,39 @@ def build_result_tables(
         for family_label in FAMILY_LABELS.values()
     )
 
+    common_tables = "\n".join(
+        (
+            _latex_table(
+                environment="table*",
+                columns="llcc",
+                headers=("Model", "Rule", "Row-CV / AdamW", "Normalized stable rank"),
+                rows=common_table_rows,
+                caption="Same-state update fingerprints under shared gradients.",
+                label="tab:common-state-results",
+            ),
+            _latex_table(
+                environment="table*",
+                columns="llccccc",
+                headers=(
+                    "Model",
+                    "Rule",
+                    "Mapped cosine",
+                    "Direction error",
+                    "Norm-ratio error",
+                    "Descent error",
+                    "Q/K spectrum error",
+                ),
+                rows=basis_table_rows,
+                caption=(
+                    "Function-preserving basis sensitivity under the frozen RoPE-commuting Q/K "
+                    "rotation grid. Values are medians over 90 comparisons per model and rule; "
+                    "this coordinate diagnostic is not a retrieval intervention."
+                ),
+                label="tab:basis-sensitivity-results",
+            ),
+        )
+    )
+
     table_contents = (
         _latex_table(
             environment="table*",
@@ -462,14 +503,7 @@ def build_result_tables(
             label="tab:discovery-results",
         ),
         per_task_tables,
-        _latex_table(
-            environment="table*",
-            columns="llcc",
-            headers=("Model", "Rule", "Row-CV / AdamW", "Normalized stable rank"),
-            rows=common_table_rows,
-            caption="Same-state update fingerprints under shared gradients.",
-            label="tab:common-state-results",
-        ),
+        common_tables,
         _latex_table(
             environment="table*",
             columns="llccc",
@@ -591,6 +625,7 @@ def render_paper_results(
     final_medians, checkpoint_table = _discovery_final_medians(retrieval_dir, retrieval_manifest)
     task_rows, task_table = _discovery_task_rows(retrieval_dir, retrieval_manifest)
     common_rows, _common_manifest, common_table = _common_state_rows(root / "reports/common-state")
+    basis_rows, _basis_manifest, basis_table = _basis_rows(root / "reports/basis-sensitivity")
     spectrum_rows, _spectrum_manifest, spectrum_table = _spectrum_rows(
         root / "results/common-state-spectra/summary"
     )
@@ -622,6 +657,7 @@ def render_paper_results(
         retrieval_rows=retrieval_rows,
         task_rows=task_rows,
         common_rows=common_rows,
+        basis_rows=basis_rows,
         spectrum_rows=spectrum_rows,
         representation_rows=representation_rows,
         functional_rows=functional_rows,
@@ -655,6 +691,7 @@ def render_paper_results(
         retrieval_table,
         task_table,
         common_table,
+        basis_table,
         spectrum_table,
         *bridge_tables,
         functional_table,
