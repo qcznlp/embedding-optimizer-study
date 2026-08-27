@@ -15,6 +15,7 @@ from embed_optim.paper_audit import (
     audit_paper,
     expected_constant_macros,
     load_paper_claim_protocol,
+    main,
 )
 
 
@@ -172,6 +173,22 @@ def test_paper_claim_protocol_freezes_result_contingent_language_before_completi
 def test_strict_paper_audit_rejects_pending_headlines():
     with pytest.raises(ValueError, match="Paper is not final"):
         audit_paper(strict=True)
+
+
+def test_strict_paper_audit_cli_reports_pending_evidence(capsys):
+    with pytest.raises(SystemExit, match="1"):
+        main(["--strict"])
+
+    result = json.loads(capsys.readouterr().out)
+    assert result["complete"] is False
+    assert result["strict"] is True
+    assert result["pending_headlines"] == [
+        "CommonStateHeadline",
+        "ConfirmationHeadline",
+        "DiscoveryHeadline",
+        "InterventionHeadline",
+        "RepresentationHeadline",
+    ]
 
 
 def test_paper_constants_use_distributable_receipt_without_local_500k_data(tmp_path: Path):

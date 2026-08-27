@@ -822,9 +822,12 @@ def main(argv: list[str] | None = None) -> None:
         matrix=args.matrix,
         weight_dir=args.weight_dir,
         training_dir=args.training_dir,
-        strict=args.strict,
+        strict=False,
     )
+    result["strict"] = args.strict
     print(json.dumps(result, indent=2, sort_keys=True))
+    if args.strict and not result["complete"]:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
