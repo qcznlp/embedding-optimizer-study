@@ -268,9 +268,12 @@ is used in the reported scores. During the repaired replay, both independent two
 exactly one adaptive-split warning at local document 1,892,742 (74%) for a packed batch of 2,048
 texts. Both then completed the next distributed gather and advanced beyond the original failure
 point without an OOM or worker failure. They subsequently encoded all 5,117,453 ClimateFEVER
-documents, built their approximately 45 GiB-per-worker temporary PLAID indexes (about 90 GiB
-combined) in 1,656.8 and 1,645.2 seconds,
-and searched all 969 queries in 50.9 and 49.3 seconds. Both task files and model metadata were
+documents, built their approximately 45 GiB-per-worker searchable PLAID indexes (about 90 GiB
+combined after construction) in 1,656.8 and 1,645.2 seconds. Because FastPLAID materializes the
+merged residual arrays before deleting their input shards, each worker's temporary directory
+briefly approached 92 GiB during the merge; that transient scratch peak is distinct from the final
+index size. The two workers then searched all 969 queries in 50.9 and 49.3 seconds. Both task files
+and model metadata were
 atomically published, both temporary indexes were removed, and the strict collector accepted the
 two results as the first formal LateOn units. This validates the intended recovery across the full
 encoding, indexing, search, publication, cleanup, and provenance-checking path.
