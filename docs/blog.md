@@ -944,8 +944,9 @@ will be inserted here only after all four strict reports pass their declared cov
   ranking.
 - Muon and NorMuon necessarily use AdamW for non-matrix parameters, so the comparison is between
   practical optimizer recipes rather than mathematically pure single-optimizer systems.
-- Four learning rates improve robustness but do not guarantee that every optimizer's global optimum is
-  inside the sweep.
+- Four learning rates expose learning-rate sensitivity and reduce dependence on a single operating
+  point, but they neither establish optimizer robustness nor guarantee that every optimizer's global
+  optimum is inside the sweep.
 - PyLate 1.6 uses Late Interaction Kernels 0.4.5's reduced-precision KD backward. An adversarial
   masking test returned the exact expected score and zero gradients for masked query/document tokens,
   but random bfloat16 near-ties differed from eager PyTorch by up to 0.00252 in score and could choose
