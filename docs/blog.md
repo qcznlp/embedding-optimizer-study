@@ -16,11 +16,22 @@ moment normalizer to Muon's orthogonalized update while preserving its overall u
 model results are promising, but they do not answer whether the optimizers behave well under retrieval
 losses, where temperatures are low and representation geometry matters directly.
 
-This study asks three questions:
+There is also a genuine competing hypothesis. Recent work on
+[fine-tuning Adam-pretrained models with Muon](https://arxiv.org/abs/2605.10468) reports that an
+optimizer switch can hurt downstream performance as update strength grows, while
+[optimizer--model consistency](https://arxiv.org/abs/2605.06654) can improve the balance between
+learning a new task and preserving pretrained behavior. Retrieval makes that tension unusually
+visible: the model must learn new query--document distinctions without damaging broad zero-shot
+rankings. We therefore test both acquisition and preservation rather than treating a lower training
+loss or a larger weight-space change as sufficient evidence for a better retriever.
+
+This study asks four questions:
 
 1. Do Muon or NorMuon reach useful retrieval quality earlier in training?
 2. Are they competitive with a well-tuned AdamW after one epoch?
 3. Is the conclusion stable across dense and late-interaction architectures and across learning rates?
+4. Do matrix-aware updates improve retrieval without excessive drift from the pretrained ranking
+   function, or does optimizer mismatch dominate as update strength grows?
 
 ## Frozen protocol
 
