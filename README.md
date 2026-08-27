@@ -282,7 +282,9 @@ If retrieval evaluation is already running, arm the resumable post-evaluation ha
 starting a second coordinator:
 
 ```bash
-embed-optim-post-eval-pipeline
+embed-optim-post-eval-pipeline \
+  --wait-for-command scripts/eval/dense_parallel.py \
+  --wait-for-command scripts/eval/late_interaction.py
 ```
 
 It waits for the strict progress snapshot to reach 1,680/1,680, allows evaluator processes to settle,
@@ -296,8 +298,11 @@ evidence manifest is incomplete. Dense and LateOn probe
 exports run separately with conservative
 family-specific batch sizes while using all declared GPUs. Every step has an isolated log and an
 atomic JSON ledger under `logs/post-eval-pipeline/`; failed steps retry and leave an exact restart
-diagnosis. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit,
-and `--dry-run` prints the complete command plan without waiting or launching work.
+diagnosis. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit.
+Repeatable `--wait-for-command` fragments also cover replacement or orphan workers, preventing the
+first mechanism job from sharing GPUs with an evaluator whose coordinator PID changed. The matcher
+ignores fragments appearing only as another supervisor's adoption declaration. `--dry-run` prints
+the complete command plan without waiting or launching work.
 
 The final blog has two independent generated sections. `embed-optim-render-mechanism-report` binds
 retrieval dynamics, common-state spectra, representation geometry, and the descriptive temporal

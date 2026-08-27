@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from .config import resolve_matrix_path
+from .evaluation_supervisor import _matching_command_pids
 from .geometry import SCHEMA_VERSION, _atomic_json
 
 
@@ -578,6 +579,7 @@ def supervise_post_eval(
     run_command: Callable[..., subprocess.CompletedProcess] = subprocess.run,
     sleeper: Callable[[float], None] = time.sleep,
     pid_exists: Callable[[int], bool] = _pid_exists,
+    matching_command_pids: Callable[[str], list[int]] = _matching_command_pids,
 ) -> int:
     steps = pipeline_steps(args)
     if args.dry_run:
@@ -592,13 +594,17 @@ def supervise_post_eval(
             complete, valid, expected = _strict_progress(progress_path)
         except TransientProgressAuditError as error:
             live = [pid for pid in args.wait_pids if pid_exists(pid)]
-            if not live:
+            command_matches = {
+                fragment: matching_command_pids(fragment) for fragment in args.wait_for_commands
+            }
+            command_matches = {fragment: pids for fragment, pids in command_matches.items() if pids}
+            if not live and not command_matches:
                 raise
             message = str(error)
             if message != previous_progress_error:
                 print(
-                    "Strict coverage audit is temporarily unavailable while evaluator PIDs "
-                    f"remain live {live}: {message}",
+                    "Strict coverage audit is temporarily unavailable while evaluators remain "
+                    f"live: pids={live}, command_matches={command_matches}: {message}",
                     flush=True,
                 )
                 previous_progress_error = message
@@ -612,8 +618,19 @@ def supervise_post_eval(
             break
         sleeper(args.poll_seconds)
 
-    while live := [pid for pid in args.wait_pids if pid_exists(pid)]:
-        print(f"Coverage is complete; waiting for evaluator PIDs to exit: {live}", flush=True)
+    while True:
+        live = [pid for pid in args.wait_pids if pid_exists(pid)]
+        command_matches = {
+            fragment: matching_command_pids(fragment) for fragment in args.wait_for_commands
+        }
+        command_matches = {fragment: pids for fragment, pids in command_matches.items() if pids}
+        if not live and not command_matches:
+            break
+        print(
+            "Coverage is complete; waiting for evaluators to exit: "
+            f"pids={live}, command_matches={command_matches}",
+            flush=True,
+        )
         sleeper(args.poll_seconds)
     if args.settle_seconds:
         print(f"Evaluator complete; settling for {args.settle_seconds:g}s", flush=True)
@@ -628,6 +645,7 @@ def supervise_post_eval(
         "started_at": _timestamp(),
         "progress": str(progress_path),
         "wait_pids": args.wait_pids,
+        "wait_for_commands": args.wait_for_commands,
         "steps": [],
     }
     _write_ledger(ledger_path, ledger)
@@ -704,6 +722,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--workdir", default=str(Path.cwd()))
     parser.add_argument("--log-dir", default="logs/post-eval-pipeline")
     parser.add_argument("--wait-pids", type=int, nargs="*", default=[])
+    parser.add_argument(
+        "--wait-for-command",
+        dest="wait_for_commands",
+        action="append",
+        default=[],
+        help=(
+            "Also wait for external evaluator argv containing this fragment after strict "
+            "coverage; repeat to cover replacement or orphan workers"
+        ),
+    )
     parser.add_argument("--poll-seconds", type=float, default=300.0)
     parser.add_argument("--settle-seconds", type=float, default=60.0)
     parser.add_argument("--retry-delay", type=float, default=300.0)
@@ -724,8 +752,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         or args.dense_probe_batch_size <= 0
         or args.late_probe_batch_size <= 0
         or any(pid <= 0 for pid in args.wait_pids)
+        or any(not fragment.strip() for fragment in args.wait_for_commands)
     ):
-        parser.error("poll/retry intervals, retries, batch sizes, or wait PIDs are invalid")
+        parser.error(
+            "poll/retry intervals, retries, batch sizes, wait PIDs, or command fragments are "
+            "invalid"
+        )
     return args
 
 

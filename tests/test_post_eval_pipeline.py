@@ -166,7 +166,13 @@ def test_distribution_build_uses_uv_instead_of_shadowable_python_module(tmp_path
 
 
 def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
-    args = _args(tmp_path, "--wait-pids", "12345")
+    args = _args(
+        tmp_path,
+        "--wait-pids",
+        "12345",
+        "--wait-for-command",
+        "scripts/eval/dense_parallel.py",
+    )
     _progress(Path(args.progress))
     commands = []
 
@@ -175,11 +181,20 @@ def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
         kwargs["stdout"].write("fixture command output\n")
         return subprocess.CompletedProcess(command, 0)
 
-    assert supervise_post_eval(args, run_command=run, pid_exists=lambda pid: False) == 0
+    assert (
+        supervise_post_eval(
+            args,
+            run_command=run,
+            pid_exists=lambda pid: False,
+            matching_command_pids=lambda fragment: [],
+        )
+        == 0
+    )
     assert len(commands) == 56
     ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
     assert ledger["complete"] is True
     assert ledger["wait_pids"] == [12345]
+    assert ledger["wait_for_commands"] == ["scripts/eval/dense_parallel.py"]
     assert len(ledger["steps"]) == 56
     assert all(step["complete"] for step in ledger["steps"])
     assert all(len(step["attempts"]) == 1 for step in ledger["steps"])
@@ -237,8 +252,39 @@ def test_pipeline_waits_through_transient_audit_error_while_evaluator_is_live(
     assert "temporarily unavailable" in capsys.readouterr().out
 
 
+def test_pipeline_waits_for_replacement_evaluator_commands_after_complete_coverage(
+    tmp_path: Path, capsys
+):
+    fragment = "scripts/eval/late_interaction.py"
+    args = _args(tmp_path, "--wait-for-command", fragment)
+    _progress(Path(args.progress))
+    matches = iter(([301, 302], [302], []))
+    sleeps = []
+
+    def run(command, **kwargs):
+        kwargs["stdout"].write("fixture command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert (
+        supervise_post_eval(
+            args,
+            run_command=run,
+            sleeper=sleeps.append,
+            matching_command_pids=lambda observed: next(matches),
+        )
+        == 0
+    )
+    assert sleeps == [args.poll_seconds, args.poll_seconds]
+    assert "command_matches" in capsys.readouterr().out
+
+
 def test_strict_progress_exposes_transient_watcher_error(tmp_path: Path):
     progress = tmp_path / "progress.json"
     _progress(progress, error="audit failed")
     with pytest.raises(TransientProgressAuditError, match="audit failed"):
         _strict_progress(progress)
+
+
+def test_post_eval_cli_rejects_empty_command_fragment():
+    with pytest.raises(SystemExit):
+        parse_args(["--wait-for-command", ""])

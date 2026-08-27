@@ -4,11 +4,25 @@ import pytest
 
 from embed_optim.evaluation_supervisor import (
     _aggregate_command,
+    _argv_contains_command_fragment,
     _evaluation_command,
     _wandb_command,
     parse_args,
     supervise,
 )
+
+
+def test_command_match_ignores_adoption_declaration_values():
+    fragment = "scripts/eval/late_interaction.py"
+
+    assert _argv_contains_command_fragment(
+        ["python", "/repo/scripts/eval/late_interaction.py", "--models", "checkpoint"],
+        fragment,
+    )
+    assert not _argv_contains_command_fragment(
+        ["python", "-m", "supervisor", "--wait-for-command", fragment],
+        fragment,
+    )
 
 
 def _args(**overrides):

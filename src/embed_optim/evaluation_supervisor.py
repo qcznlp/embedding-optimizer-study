@@ -42,6 +42,16 @@ def _ancestor_pids(pid: int) -> set[int]:
     return ancestors
 
 
+def _argv_contains_command_fragment(argv: list[str], fragment: str) -> bool:
+    """Match an executed command while ignoring command-adoption declarations."""
+
+    return any(
+        fragment in argument
+        for index, argument in enumerate(argv)
+        if index == 0 or argv[index - 1] != "--wait-for-command"
+    )
+
+
 def _matching_command_pids(fragment: str) -> list[int]:
     """Return live external PIDs whose argv contains ``fragment``.
 
@@ -58,10 +68,12 @@ def _matching_command_pids(fragment: str) -> list[int]:
         if pid in excluded:
             continue
         try:
-            command = path.read_bytes().replace(b"\0", b" ").decode(errors="replace")
+            argv = [
+                item.decode(errors="replace") for item in path.read_bytes().split(b"\0") if item
+            ]
         except (FileNotFoundError, PermissionError, ProcessLookupError):
             continue
-        if fragment in command:
+        if _argv_contains_command_fragment(argv, fragment):
             matches.append(pid)
     return sorted(matches)
 
