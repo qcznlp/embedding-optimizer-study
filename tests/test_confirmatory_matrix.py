@@ -3,10 +3,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from embed_optim.config import load_matrix
 from embed_optim.confirmatory_matrix import (
     audit_confirmatory_matrices,
     generate_confirmatory_matrices,
+    main,
 )
 from embed_optim.geometry import _sha256
 
@@ -124,3 +127,30 @@ def test_generate_and_audit_three_family_specific_seed_matrices(tmp_path: Path, 
                 if run.model_family == "late" and run.optimizer.name == optimizer
             )
             assert dense.optimizer.lr != late.optimizer.lr
+
+
+def test_audit_cli_reports_missing_manifest_as_pending(tmp_path: Path, monkeypatch, capsys):
+    protocol, discovery, validation, output = _fixture(tmp_path, monkeypatch)
+
+    with pytest.raises(SystemExit, match="1"):
+        main(
+            [
+                "--audit-only",
+                "--protocol",
+                str(protocol),
+                "--experiment-matrix",
+                str(discovery),
+                "--validation-spec",
+                str(validation),
+                "--output-dir",
+                str(output),
+            ]
+        )
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload == {
+        "error": f"[Errno 2] No such file or directory: '{output / 'manifest.json'}'",
+        "error_type": "FileNotFoundError",
+        "mode": "audit",
+        "status": "pending",
+    }

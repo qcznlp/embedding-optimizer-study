@@ -293,12 +293,28 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     function = audit_confirmatory_matrices if args.audit_only else generate_confirmatory_matrices
-    result = function(
-        args.protocol,
-        experiment_matrix=args.experiment_matrix,
-        validation_spec=args.validation_spec,
-        output_dir=args.output_dir,
-    )
+    try:
+        result = function(
+            args.protocol,
+            experiment_matrix=args.experiment_matrix,
+            validation_spec=args.validation_spec,
+            output_dir=args.output_dir,
+        )
+    except (OSError, ValueError, KeyError, TypeError, yaml.YAMLError) as error:
+        status = "pending" if isinstance(error, FileNotFoundError) else "invalid"
+        print(
+            json.dumps(
+                {
+                    "error": str(error),
+                    "error_type": type(error).__name__,
+                    "mode": "audit" if args.audit_only else "generate",
+                    "status": status,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        raise SystemExit(1) from None
     print(json.dumps(result, indent=2, sort_keys=True))
 
 
