@@ -27,7 +27,7 @@ PAPER_RESULT_TABLE_PATHS = (
     Path("paper/generated/intervention.tex"),
     Path("paper/generated/confirmation.tex"),
 )
-PAPER_CLAIM_PROTOCOL_SHA256 = "873e741bafad1bc0b2f8650e3614be1e7bb4af12e92c2d69c79045dad28937bb"
+PAPER_CLAIM_PROTOCOL_SHA256 = "b62750dac7aafcb02dd4e2c5867448681b9c5713dd9b33e6c9e17edfcd71ebf9"
 PAPER_CLAIM_SOURCE_PATHS = (
     "configs/experiment.yaml",
     "configs/common_state_probe.json",
@@ -101,7 +101,9 @@ def load_paper_claim_protocol(
     protocol = _json(protocol_path)
     freeze = protocol.get("freeze_context", {})
     amendments = protocol.get("amendments")
-    amendment = amendments[0] if isinstance(amendments, list) and len(amendments) == 1 else {}
+    if not isinstance(amendments, list) or len(amendments) != 2:
+        raise ValueError("Paper claim protocol differs from its prospective completion lock")
+    documentation_amendment, inference_amendment = amendments
     headlines = protocol.get("headline_contract", {})
     bindings = protocol.get("source_bindings")
     if (
@@ -126,16 +128,17 @@ def load_paper_claim_protocol(
             )
         )
         or set(headlines) != set(HEADLINE_MACROS)
-        or amendment.get("scope") != "documentation_only_weight_spectrum_tier_correction"
-        or amendment.get("previous_source_sha256")
+        or documentation_amendment.get("scope")
+        != "documentation_only_weight_spectrum_tier_correction"
+        or documentation_amendment.get("previous_source_sha256")
         != "2d61c1c1a150269986dbc41786f5b10c7304b45d23148278959ef3d75b72c888"
-        or amendment.get("updated_source_sha256")
+        or documentation_amendment.get("updated_source_sha256")
         != "adf12c547e4c337a5acb94657b7f6c4207da550c9f2f46ea3ea5098f3e418ce4"
-        or amendment.get("strict_beir_valid_units") != 196
-        or amendment.get("strict_beir_expected_units") != 1_680
-        or amendment.get("complete_retrieval_matrix_visible") is not False
+        or documentation_amendment.get("strict_beir_valid_units") != 196
+        or documentation_amendment.get("strict_beir_expected_units") != 1_680
+        or documentation_amendment.get("complete_retrieval_matrix_visible") is not False
         or any(
-            amendment.get(field) is not False
+            documentation_amendment.get(field) is not False
             for field in (
                 "formal_common_state_output_visible",
                 "formal_representation_output_visible",
@@ -147,6 +150,27 @@ def load_paper_claim_protocol(
                 "result_contingent_story_map_changed",
             )
         )
+        or inference_amendment.get("scope") != "prospective_confirmatory_inference_correction"
+        or inference_amendment.get("previous_source_sha256")
+        != "adf12c547e4c337a5acb94657b7f6c4207da550c9f2f46ea3ea5098f3e418ce4"
+        or inference_amendment.get("updated_source_sha256")
+        != "f77c22170144adcab3364f9e19167984727ba6edf8899dcf421158ef0588cdf0"
+        or inference_amendment.get("strict_beir_valid_units") != 322
+        or inference_amendment.get("strict_beir_expected_units") != 1_680
+        or inference_amendment.get("complete_retrieval_matrix_visible") is not False
+        or any(
+            inference_amendment.get(field) is not False
+            for field in (
+                "formal_common_state_output_visible",
+                "formal_representation_output_visible",
+                "formal_functional_intervention_output_visible",
+                "hybrid_adamw_output_visible",
+                "short_branch_output_visible",
+                "confirmatory_output_visible",
+                "result_contingent_story_map_changed",
+            )
+        )
+        or inference_amendment.get("headline_contract_changed") is not True
         or not isinstance(bindings, list)
         or len(bindings) != len(PAPER_CLAIM_SOURCE_PATHS)
         or [item.get("path") for item in bindings if isinstance(item, dict)]
@@ -158,8 +182,12 @@ def load_paper_claim_protocol(
     confirmation = headlines["ConfirmationHeadline"]
     representation = headlines["RepresentationHeadline"]
     if (
-        "interval lower bound is above zero" not in str(confirmation.get("selection_rule", ""))
+        "familywise interval for headline sign language"
+        not in str(confirmation.get("selection_rule", ""))
+        or "lower bound is above zero" not in str(confirmation.get("selection_rule", ""))
         or "otherwise inconclusive" not in str(confirmation.get("selection_rule", ""))
+        or "both nominal and familywise intervals"
+        not in str(confirmation.get("selection_rule", ""))
         or "descriptive" not in str(representation.get("selection_rule", ""))
     ):
         raise ValueError("Paper claim language no longer respects the frozen evidence boundary")

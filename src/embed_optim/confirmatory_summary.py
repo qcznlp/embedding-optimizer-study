@@ -29,6 +29,7 @@ from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 FAMILIES = ("dense", "late")
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CONTRASTS = (("muon", "adamw"), ("normuon", "adamw"), ("normuon", "muon"))
+FAMILYWISE_CONTRASTS = len(FAMILIES) * len(CONTRASTS)
 
 
 def _atomic_csv(path: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -77,11 +78,20 @@ def hierarchical_seed_task_bootstrap(
     task_indices = generator.integers(0, values.shape[1], size=(samples, values.shape[1]))
     draws = values[seed_indices[:, :, None], task_indices[:, None, :]].mean(axis=(1, 2))
     lower, upper = np.quantile(draws, [0.025, 0.975])
+    familywise_alpha = 0.05 / FAMILYWISE_CONTRASTS
+    familywise_lower, familywise_upper = np.quantile(
+        draws,
+        [familywise_alpha / 2, 1 - familywise_alpha / 2],
+    )
     return {
         "bootstrap_samples": samples,
         "bootstrap_seed": seed,
         "bootstrap_ci_95_lower": float(lower),
         "bootstrap_ci_95_upper": float(upper),
+        "familywise_method": "bonferroni",
+        "familywise_contrasts": FAMILYWISE_CONTRASTS,
+        "familywise_ci_95_lower": float(familywise_lower),
+        "familywise_ci_95_upper": float(familywise_upper),
         "bootstrap_probability_positive": float(np.mean(draws > 0)),
         "bootstrap_probability_negative": float(np.mean(draws < 0)),
     }
@@ -283,10 +293,20 @@ def build_confirmatory_report(
             "levels": ["seed", "task"],
             "bootstrap_samples": bootstrap_samples,
             "bootstrap_seed": bootstrap_seed,
+            "nominal_interval": "hierarchical seed-by-task bootstrap 95% interval",
+            "familywise_method": "bonferroni",
+            "familywise_contrasts": FAMILYWISE_CONTRASTS,
+            "familywise_interval": (
+                "simultaneous familywise 95% interval over all six frozen "
+                "family-by-optimizer contrasts"
+            ),
+            "headline_interval": "familywise_ci_95",
             "query_level_inference": False,
             "note": (
                 "Intervals resample seeds and tasks independently. Aggregate MTEB JSON does not "
-                "contain per-query rankings, so this report makes no query-level significance claim."
+                "contain per-query rankings, so this report makes no query-level significance claim. "
+                "Both nominal and Bonferroni familywise intervals are reported; only the familywise "
+                "interval can determine positive, negative, or inconclusive headline language."
             ),
         },
         "outputs": tables,

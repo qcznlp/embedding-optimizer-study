@@ -261,7 +261,7 @@ def build_headline_macros(
         for contrast in CONTRAST_LABELS:
             row = confirmation[(family_label, contrast)]
             cells.append(
-                f"{contrast.replace(' - ', '--')} {row[2]} {row[3]} ({_ci_classification(row[3])})"
+                f"{contrast.replace(' - ', '--')} {row[2]} {row[4]} ({_ci_classification(row[4])})"
             )
         confirmation_parts.append(f"{family_label}: " + ", ".join(cells))
     confirmation_headline = (
@@ -418,7 +418,7 @@ def build_result_tables(
         (
             family_label,
             contrast,
-            *confirmation[(family_label, contrast)][2:6],
+            *confirmation[(family_label, contrast)][2:7],
         )
         for family_label in FAMILY_LABELS.values()
         for contrast in CONTRAST_LABELS
@@ -502,17 +502,22 @@ def build_result_tables(
         ),
         _latex_table(
             environment="table*",
-            columns="llcccc",
+            columns="llccccc",
             headers=(
                 "Model",
                 "Contrast",
                 r"Mean $\Delta$ nDCG@10",
-                r"95\% CI",
+                r"Nominal 95\% CI",
+                r"FWER 95\% CI",
                 "Seed W/T/L",
                 "Task W/T/L",
             ),
             rows=confirmation_table_rows,
-            caption="Validation-frozen, three-seed confirmatory retrieval contrasts.",
+            caption=(
+                "Validation-frozen, three-seed confirmatory retrieval contrasts. The FWER "
+                "interval applies a Bonferroni correction over all six prespecified comparisons "
+                "and governs headline sign language."
+            ),
             label="tab:confirmation-results",
         ),
     )

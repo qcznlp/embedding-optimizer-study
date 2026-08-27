@@ -745,9 +745,12 @@ embed-optim-evaluate-confirmatory --audit-only
 embed-optim-summarize-confirmatory
 ```
 
-The confirmatory report requires all 252 seed/run/task units and reports the three frozen paired
-contrasts with deterministic two-level seed×task bootstrap intervals. Aggregate MTEB result JSON
-does not contain per-query rankings, so this table explicitly does not claim query-level inference.
+The confirmatory report requires all 252 seed/run/task units and reports all six frozen
+family-by-optimizer contrasts with deterministic two-level seed×task bootstrap intervals. It emits
+both nominal 95% intervals and Bonferroni familywise 95% intervals across those six comparisons;
+only the latter govern positive, negative, or inconclusive headline language. Aggregate MTEB result
+JSON does not contain per-query rankings, so this table explicitly does not claim query-level
+inference.
 
 ### Shared-checkpoint scale-matched short branch
 

@@ -94,7 +94,34 @@ def test_paper_claim_protocol_freezes_result_contingent_language_before_completi
             "confirmatory_output_visible": False,
             "headline_contract_changed": False,
             "result_contingent_story_map_changed": False,
-        }
+        },
+        {
+            "amended_at": "2026-08-27T05:54:04Z",
+            "scope": "prospective_confirmatory_inference_correction",
+            "reason": (
+                "Correct the bound paper plan to match the retained aggregate MTEB evidence, "
+                "which supports seed-by-task but not query-level inference, and prospectively "
+                "fix Bonferroni familywise intervals over all six prespecified contrasts before "
+                "any confirmatory output exists."
+            ),
+            "previous_source_sha256": (
+                "adf12c547e4c337a5acb94657b7f6c4207da550c9f2f46ea3ea5098f3e418ce4"
+            ),
+            "updated_source_sha256": (
+                "f77c22170144adcab3364f9e19167984727ba6edf8899dcf421158ef0588cdf0"
+            ),
+            "strict_beir_valid_units": 322,
+            "strict_beir_expected_units": 1680,
+            "complete_retrieval_matrix_visible": False,
+            "formal_common_state_output_visible": False,
+            "formal_representation_output_visible": False,
+            "formal_functional_intervention_output_visible": False,
+            "hybrid_adamw_output_visible": False,
+            "short_branch_output_visible": False,
+            "confirmatory_output_visible": False,
+            "headline_contract_changed": True,
+            "result_contingent_story_map_changed": False,
+        },
     ]
     assert set(protocol["headline_contract"]) == {
         "DiscoveryHeadline",
@@ -105,6 +132,10 @@ def test_paper_claim_protocol_freezes_result_contingent_language_before_completi
     }
     assert (
         "otherwise inconclusive"
+        in protocol["headline_contract"]["ConfirmationHeadline"]["selection_rule"]
+    )
+    assert (
+        "familywise interval for headline sign language"
         in protocol["headline_contract"]["ConfirmationHeadline"]["selection_rule"]
     )
     assert len(sources) == 10

@@ -204,6 +204,12 @@ with the smaller learning rate as the final tie-breaker. Three new seeds preserv
 identities while independently resampling negatives from the reconstructed candidate pools. Only
 these new-seed runs support the confirmatory optimizer comparison.
 
+For confirmation, we independently resample seeds and tasks in a deterministic 20,000-draw
+hierarchical bootstrap. We report both nominal 95\% intervals and Bonferroni familywise 95\%
+intervals over the six prespecified family-by-optimizer contrasts. Positive, negative, and
+inconclusive headline language is determined only by the familywise interval. The retained aggregate
+MTEB outputs do not contain per-query rankings, so we make no query-level significance claim.
+
 \section{What Happens During Retrieval Training?}
 
 \DiscoveryHeadline.

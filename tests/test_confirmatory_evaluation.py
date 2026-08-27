@@ -44,7 +44,20 @@ def test_hierarchical_bootstrap_is_deterministic_and_contains_constant_effect():
     assert first == second
     assert first["bootstrap_ci_95_lower"] == pytest.approx(0.002)
     assert first["bootstrap_ci_95_upper"] == pytest.approx(0.002)
+    assert first["familywise_method"] == "bonferroni"
+    assert first["familywise_contrasts"] == 6
+    assert first["familywise_ci_95_lower"] == pytest.approx(0.002)
+    assert first["familywise_ci_95_upper"] == pytest.approx(0.002)
     assert first["bootstrap_probability_positive"] == 1.0
+
+
+def test_familywise_bootstrap_interval_contains_the_nominal_interval():
+    effects = np.linspace(-0.01, 0.02, 42).reshape(3, 14)
+
+    interval = hierarchical_seed_task_bootstrap(effects, samples=5_000, seed=11)
+
+    assert interval["familywise_ci_95_lower"] < interval["bootstrap_ci_95_lower"]
+    assert interval["familywise_ci_95_upper"] > interval["bootstrap_ci_95_upper"]
 
 
 def test_confirmatory_summary_covers_three_fixed_contrasts():
@@ -70,6 +83,12 @@ def test_confirmatory_summary_covers_three_fixed_contrasts():
     assert by_pair[("muon", "adamw")]["mean_delta_ndcg_at_10"] == pytest.approx(0.002)
     assert by_pair[("normuon", "adamw")]["mean_delta_ndcg_at_10"] == pytest.approx(0.004)
     assert by_pair[("normuon", "muon")]["mean_delta_ndcg_at_10"] == pytest.approx(0.002)
+    assert all(row["familywise_contrasts"] == 6 for row in summaries)
+    assert all(
+        row["familywise_ci_95_lower"] <= row["bootstrap_ci_95_lower"]
+        and row["familywise_ci_95_upper"] >= row["bootstrap_ci_95_upper"]
+        for row in summaries
+    )
 
 
 def test_confirmatory_summary_rejects_partial_coverage():

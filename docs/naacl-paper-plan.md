@@ -578,11 +578,15 @@ new/new seed pair.
 After query-disjoint validation selects one recipe for each family/optimizer, generate exactly six
 runs per new seed (18 total). Retain five checkpoints for restart/artifact integrity but formally
 evaluate only the final checkpoint on BEIR, adding 252 confirmatory retrieval units. Report
-hierarchical bootstrap confidence intervals over seeds, tasks, and queries. Use paired
-randomization/bootstrap tests at query level and correct the small set of frozen optimizer
-comparisons. The original exploratory seed must not be silently counted as a confirmatory seed after
-its BEIR results were visible. Five seeds remain a useful extension if the three-seed intervals are
-too wide, not a post-hoc way to reverse an unfavorable conclusion.
+deterministic hierarchical bootstrap intervals that independently resample seeds and tasks. The
+aggregate MTEB outputs retain task scores but not per-query rankings, so no query-level test or
+significance claim is available. For all six frozen family-by-optimizer contrasts, report both the
+nominal 95% interval and a simultaneous familywise 95% interval obtained by applying a Bonferroni
+correction across the six comparisons. Only the familywise interval may determine positive,
+negative, or inconclusive headline language. The original exploratory seed must not be silently
+counted as a confirmatory seed after its BEIR results were visible. Five seeds remain a useful
+extension if the three-seed intervals are too wide, not a post-hoc way to reverse an unfavorable
+conclusion.
 
 ## Selection protocol and statistical claims
 

@@ -269,6 +269,10 @@ def _confirmation_rows(root: Path) -> tuple[list[list[str]], Path, dict[str, Any
         "mean_delta_ndcg_at_10",
         "bootstrap_ci_95_lower",
         "bootstrap_ci_95_upper",
+        "familywise_method",
+        "familywise_contrasts",
+        "familywise_ci_95_lower",
+        "familywise_ci_95_upper",
         "seed_wins",
         "seed_ties",
         "seed_losses",
@@ -301,12 +305,22 @@ def _confirmation_rows(root: Path) -> tuple[list[list[str]], Path, dict[str, Any
             raise ValueError("Confirmatory seed/task counts are invalid")
         lower = _finite(row, "bootstrap_ci_95_lower")
         upper = _finite(row, "bootstrap_ci_95_upper")
+        familywise_lower = _finite(row, "familywise_ci_95_lower")
+        familywise_upper = _finite(row, "familywise_ci_95_upper")
+        if (
+            row["familywise_method"] != "bonferroni"
+            or int(row["familywise_contrasts"]) != 6
+            or familywise_lower > lower
+            or familywise_upper < upper
+        ):
+            raise ValueError("Confirmatory familywise interval contract is invalid")
         output.append(
             [
                 FAMILY_LABELS[family],
                 f"{OPTIMIZER_LABELS[treatment]} - {OPTIMIZER_LABELS[baseline]}",
                 _format(_finite(row, "mean_delta_ndcg_at_10")),
                 f"[{_format(lower)}, {_format(upper)}]",
+                f"[{_format(familywise_lower)}, {_format(familywise_upper)}]",
                 "/".join(map(str, seed_counts)),
                 "/".join(map(str, task_counts)),
             ]
@@ -381,6 +395,7 @@ def render_outcome_report(
                     "Contrast",
                     "mean delta nDCG@10",
                     "hierarchical 95% CI",
+                    "familywise 95% CI",
                     "seed W/T/L",
                     "task W/T/L",
                 ],
@@ -388,8 +403,10 @@ def render_outcome_report(
             )
             + "\n\nRecipes were selected on the query-disjoint validation set before these runs. "
             "Intervals independently resample seeds and tasks; aggregate MTEB files do not support "
-            "a query-level significance claim. The renderer reports every prespecified contrast and "
-            "does not convert an interval or win count into an automatic narrative conclusion.",
+            "a query-level significance claim. The nominal interval is shown beside a Bonferroni "
+            "familywise 95% interval over all six prespecified comparisons. Only the familywise "
+            "interval determines positive, negative, or inconclusive headline language; every "
+            "contrast and all win counts remain visible.",
         ]
     )
     output_path = output_path.resolve()

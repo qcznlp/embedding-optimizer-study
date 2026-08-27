@@ -61,8 +61,21 @@ def _rows():
         "NorMuon - AdamW": "[-0.0010, 0.0210]",
         "NorMuon - Muon": "[-0.0190, -0.0010]",
     }
+    familywise_intervals = {
+        "Muon - AdamW": "[0.0005, 0.0200]",
+        "NorMuon - AdamW": "[-0.0050, 0.0250]",
+        "NorMuon - Muon": "[-0.0200, -0.0005]",
+    }
     confirmation = [
-        [family, contrast, "0.0100", intervals[contrast], "3/0/0", "9/0/5"]
+        [
+            family,
+            contrast,
+            "0.0100",
+            intervals[contrast],
+            familywise_intervals[contrast],
+            "3/0/0",
+            "9/0/5",
+        ]
         for family in families
         for contrast in contrasts
     ]
@@ -136,6 +149,24 @@ def test_headlines_report_every_frozen_evidence_tier_without_sign_overreach():
     assert all("ResultPending" not in value for value in headlines.values())
 
 
+def test_confirmation_headline_uses_familywise_not_nominal_interval():
+    final = {
+        (family, optimizer): 0.4
+        for family in ("dense", "late")
+        for optimizer in ("adamw", "muon", "normuon")
+    }
+    rows = _rows()
+    muon_adamw = next(
+        row for row in rows["confirmation_rows"] if row[0] == "DenseOn" and row[1] == "Muon - AdamW"
+    )
+    muon_adamw[3] = "[0.0010, 0.0190]"
+    muon_adamw[4] = "[-0.0010, 0.0210]"
+
+    headline = build_headline_macros(final_medians=final, **rows)["ConfirmationHeadline"]
+
+    assert "Muon--AdamW 0.0100 [-0.0010, 0.0210] (inconclusive)" in headline
+
+
 def test_headline_replacement_changes_only_the_five_declared_macros():
     headlines = {
         name: f"generated {name}"
@@ -201,6 +232,8 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
         )
         == 6
     )
+    assert "FWER 95\\% CI" in confirmation
+    assert "Bonferroni correction" in confirmation
     assert all("ResultPending" not in content for content in tables.values())
 
 

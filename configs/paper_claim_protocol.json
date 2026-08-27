@@ -35,6 +35,24 @@
       "confirmatory_output_visible": false,
       "headline_contract_changed": false,
       "result_contingent_story_map_changed": false
+    },
+    {
+      "amended_at": "2026-08-27T05:54:04Z",
+      "scope": "prospective_confirmatory_inference_correction",
+      "reason": "Correct the bound paper plan to match the retained aggregate MTEB evidence, which supports seed-by-task but not query-level inference, and prospectively fix Bonferroni familywise intervals over all six prespecified contrasts before any confirmatory output exists.",
+      "previous_source_sha256": "adf12c547e4c337a5acb94657b7f6c4207da550c9f2f46ea3ea5098f3e418ce4",
+      "updated_source_sha256": "f77c22170144adcab3364f9e19167984727ba6edf8899dcf421158ef0588cdf0",
+      "strict_beir_valid_units": 322,
+      "strict_beir_expected_units": 1680,
+      "complete_retrieval_matrix_visible": false,
+      "formal_common_state_output_visible": false,
+      "formal_representation_output_visible": false,
+      "formal_functional_intervention_output_visible": false,
+      "hybrid_adamw_output_visible": false,
+      "short_branch_output_visible": false,
+      "confirmatory_output_visible": false,
+      "headline_contract_changed": true,
+      "result_contingent_story_map_changed": false
     }
   ],
   "source_bindings": [
@@ -76,7 +94,7 @@
     },
     {
       "path": "docs/naacl-paper-plan.md",
-      "sha256": "adf12c547e4c337a5acb94657b7f6c4207da550c9f2f46ea3ea5098f3e418ce4"
+      "sha256": "f77c22170144adcab3364f9e19167984727ba6edf8899dcf421158ef0588cdf0"
     }
   ],
   "headline_contract": {
@@ -122,10 +140,11 @@
       "required_scope": "all six family-by-optimizer contrasts over three new seeds and 14 tasks",
       "primary_outputs": [
         "mean paired nDCG@10 difference",
-        "hierarchical seed/task 95-percent bootstrap interval",
+        "nominal hierarchical seed/task 95-percent bootstrap interval",
+        "Bonferroni familywise 95-percent interval over all six frozen contrasts",
         "seed and task win/tie/loss counts"
       ],
-      "selection_rule": "Call a contrast positive only when the interval lower bound is above zero, negative only when the upper bound is below zero, and otherwise inconclusive. Report all three optimizer contrasts for both model families; do not infer query-level significance."
+      "selection_rule": "Use only the Bonferroni familywise interval for headline sign language: call a contrast positive only when its lower bound is above zero, negative only when its upper bound is below zero, and otherwise inconclusive. Report both nominal and familywise intervals for all three optimizer contrasts in both model families; do not infer query-level significance."
     }
   },
   "result_contingent_story_map": {

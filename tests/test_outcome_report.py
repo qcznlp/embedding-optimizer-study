@@ -173,6 +173,10 @@ def _confirmatory(root: Path) -> Path:
                     "mean_delta_ndcg_at_10": 0.01,
                     "bootstrap_ci_95_lower": 0.001,
                     "bootstrap_ci_95_upper": 0.019,
+                    "familywise_method": "bonferroni",
+                    "familywise_contrasts": 6,
+                    "familywise_ci_95_lower": -0.001,
+                    "familywise_ci_95_upper": 0.021,
                     "seed_wins": 3,
                     "seed_ties": 0,
                     "seed_losses": 0,
@@ -249,6 +253,8 @@ def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path
     assert "matched optimizer directions" in text
     assert "shared checkpoint" in text
     assert "validation-frozen recipe" in text
+    assert "familywise 95% CI" in text
+    assert "Only the familywise interval" in text
     assert "old" not in blog.read_text(encoding="utf-8")
 
 

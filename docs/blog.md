@@ -141,6 +141,14 @@ is selected on the same suite, and the 14 heterogeneous BEIR tasks are not indep
 report both the raw sign-test p-value and its Holm correction across the four family-by-optimizer
 comparisons.
 
+The separate confirmation stage uses three validation-frozen seeds and evaluates only task-level
+aggregate MTEB outputs. Its deterministic 20,000-resample hierarchical bootstrap independently
+resamples seeds and tasks. For each of the six prespecified family-by-optimizer contrasts, the final
+table reports a nominal 95% interval and a Bonferroni familywise 95% interval across all six
+comparisons. Only the familywise interval determines whether the headline calls a contrast positive,
+negative, or inconclusive. Because the retained MTEB JSON does not contain per-query rankings, no
+query-level significance claim is made.
+
 The exact evaluation inputs are frozen below. MTEB's standard `default` subset is used for every
 task. MS MARCO is scored on `dev`; the other thirteen tasks are scored on `test`. Corpus counts were
 read from the pinned Hub snapshots and are also used for longest-processing-time-first scheduling.
