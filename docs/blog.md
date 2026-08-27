@@ -922,8 +922,9 @@ will be inserted here only after all four strict reports pass their declared cov
   but random bfloat16 near-ties differed from eager PyTorch by up to 0.00252 in score and could choose
   a different sparse MaxSim argmax. Every LateOn run uses the same pinned kernel and hardware, so this
   is controlled within the study, but cross-backend bitwise equivalence is not claimed.
-- Every configuration uses the same single training/data seed (42). This controls the comparison but
-  does not quantify variance across independent seeds.
+- Every configuration in the 24-run discovery grid uses the same training/data seed (42). This
+  controls the sweep but does not quantify grid-wide variance; the validation-frozen recipes receive
+  three independent negative-resampling/order seeds in the separate confirmatory stage.
 - Seed 42 fixes data selection, negative choices, Trainer sampling, and model RNG state, but the
   high-throughput FlashAttention/TF32 CUDA path is not configured for bitwise deterministic replay.
 - No in-batch negatives makes the groups controlled and memory predictable, but the absolute scores are

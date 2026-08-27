@@ -22,6 +22,28 @@ from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
 CHECKPOINT_PATTERN = re.compile(r"checkpoint-(\d+)")
 RESULTS_MARKERS = ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->")
 SYSTEMS_MARKERS = ("<!-- SYSTEMS:BEGIN -->", "<!-- SYSTEMS:END -->")
+COMPLETE_EXPERIMENT_STATUS = (
+    "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
+    "checkpoint/task evaluations."
+)
+PENDING_EXPERIMENT_STATUSES = (
+    (
+        "**Experiment status:** training matrix in progress. This document already records the "
+        "frozen protocol;\n"
+        "the results sections are populated only from strictly validated aggregation artifacts "
+        "after coverage reaches\n"
+        "1,680/1,680."
+    ),
+    (
+        "**Experiment status:** the 24-run training matrix and all 120 retained checkpoints are "
+        "complete;\n"
+        "strict decontaminated-BEIR evaluation is in progress. This document already records the "
+        "frozen\n"
+        "protocol, and the retrieval result sections are populated only from strictly validated "
+        "aggregation\n"
+        "artifacts after coverage reaches 1,680/1,680."
+    ),
+)
 EVALUATION_PACKAGES = {
     "mteb",
     "torch",
@@ -2202,6 +2224,16 @@ def _replace_marked(text: str, markers: tuple[str, str], content: str) -> str:
     return f"{before}{begin}\n\n{content}\n\n{end}{after}"
 
 
+def _replace_experiment_status(text: str) -> str:
+    complete_count = text.count(COMPLETE_EXPERIMENT_STATUS)
+    pending = [status for status in PENDING_EXPERIMENT_STATUSES if status in text]
+    if complete_count == 1 and not pending:
+        return text
+    if complete_count != 0 or len(pending) != 1 or text.count(pending[0]) != 1:
+        raise ValueError("Expected exactly one known experiment-status block in the blog")
+    return text.replace(pending[0], COMPLETE_EXPERIMENT_STATUS)
+
+
 def render_blog(
     blog_path: Path,
     optimizer_rows: list[dict],
@@ -2217,12 +2249,7 @@ def render_blog(
         _render_results(optimizer_rows, best_dynamics, task_rows, paired_rows),
     )
     text = _replace_marked(text, SYSTEMS_MARKERS, _render_systems(system_rows))
-    text = text.replace(
-        "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
-        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
-        "1,680/1,680.",
-        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 checkpoint/task evaluations.",
-    )
+    text = _replace_experiment_status(text)
     blog_path.write_text(text)
 
 
