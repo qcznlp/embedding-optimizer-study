@@ -179,9 +179,17 @@ The training scorer uses the fused Late Interaction Kernels implementation. The 
 sum to 19,525,336 documents; evaluation schedules larger corpora first across the available workers
 and resumes only the missing split/subset pairs from validated MTEB result files. A launch preflight
 first reconstructs the exact shared training-data view and deep-validates every selected model,
-optimizer, scheduler, and per-rank RNG payload before any formal evaluation GPU work. It then uses one
-Python runtime for both model families and requires its core model-library versions to match the
-versions recorded during training. A runtime manifest also records PyLate, FastPLAID, Late Interaction
+optimizer, scheduler, and per-rank RNG payload before any formal evaluation GPU work. For the
+accepted LateOn execution, the remaining checkpoint queue was spread over four isolated two-GPU
+pools (`0,1`, `2,3`, `4,5`, and `6,7`) after DenseOn released the first four devices. Each pool ran
+one checkpoint at a time on a distinct distributed port (`29810`, `29820`, `29830`, or `29840`) with
+a 6,000,000-character encoding budget. This runtime-only partition increases checkpoint concurrency;
+it does not change task inputs, PyLate/FastPLAID settings, or result acceptance. Every pool used the
+same `late_interaction.py` worker whose SHA-256 is recorded in the immutable evaluation manifest,
+and final aggregation ignores scheduler state and revalidates each result against that manifest.
+The preflight then uses one Python runtime for both model families and requires its core
+model-library versions to match those recorded during training. A runtime manifest also records
+PyLate, FastPLAID, Late Interaction
 Kernels, MTEB, and FlashAttention. It additionally records SHA-256 identities for all eight
 evaluation/aggregation source files and verifies that the worker interpreter imports those same
 package sources. A family-scoped evaluator correction is allowed only before that family has any
