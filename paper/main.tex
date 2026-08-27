@@ -145,9 +145,13 @@ checkpoints have undergone unsupervised retrieval pretraining but not the superv
 studied here \citep{sourty2026denseon}. We select one deterministic view of
 \NumTrainingQueries{} queries from the released training corpus. Every group contains one positive
 and \NumHardNegatives{} distinct sampled negatives; all runs share the exact group identities and
-order. We optimize an eight-way contrastive objective without in-batch negatives, use a maximum
-context length of \ContextLength{}, a global batch size of 128, one epoch, bfloat16 forward passes,
-FlashAttention, and gradient checkpointing.
+order. We allocate queries proportionally over the seven source datasets, reject a mined candidate
+unless its score is below $0.95$ times the positive score, and sample seven without replacement from
+the first ten eligible candidates using stable seed-42 hashes. DenseOn uses cosine InfoNCE at
+temperature 0.02. LateOn uses normalized token vectors and MeanMaxSim at temperature 0.001. Neither
+objective uses in-batch or cross-device negatives. Both use a maximum query/document context length
+of \ContextLength{}, a global batch size of 128, one epoch, bfloat16 forward passes, FlashAttention,
+and gradient checkpointing.
 
 \subsection{Discovery matrix}
 
@@ -156,6 +160,9 @@ $\{10^{-6},3\!\times\!10^{-6},10^{-5},3\!\times\!10^{-5}\}$; Muon and NorMuon us
 $\{10^{-4},3\!\times\!10^{-4},10^{-3},3\!\times\!10^{-3}\}$. Muon-family optimizers route hidden
 two-dimensional Transformer matrices through the matrix rule and all auxiliary parameters through
 AdamW at $3\!\times\!10^{-6}$. We retain checkpoints at 20, 40, 60, 80, and 100\% of training.
+All runs use four GPUs, micro-batch 8 per GPU, four accumulation steps, a 10\% linear warmup followed
+by linear decay, and global gradient clipping at 1.0. The final partial accumulation is retained, so
+all 500K groups are consumed exactly once in 3,907 optimizer steps.
 
 All checkpoints are evaluated on the same \NumBEIRTasks-task decontaminated BEIR suite
 \citep{thakur2021beir}. We report nDCG@10 against steps, examples, useful wall time, and GPU-hours;
@@ -313,8 +320,9 @@ More robust optimization & frozen stability criteria across rates, seeds, and ba
 The discovery matrix contains two model families, three optimizer rules, four learning rates per
 rule, five checkpoints, and 14 tasks. Dataset rows preserve one query, one positive, seven explicit
 negatives, source identity, and deterministic order. Formal manifests bind all model and dataset
-revisions. Detailed configuration tables and complete per-task results will be generated from the
-strict aggregate rather than copied manually.
+revisions. The source-hashed \texttt{configs/experiment.yaml} records the complete optimizer,
+schedule, routing, precision, and seed configuration. The complete per-task comparison below is
+generated from the strict aggregate rather than copied manually.
 
 \input{generated/per-task}
 
