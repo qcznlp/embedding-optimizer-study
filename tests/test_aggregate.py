@@ -389,6 +389,7 @@ def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monk
     )
     assert "training matrix in progress" not in rendered
 
+
 def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
     summary = []
     for family in ("dense", "late"):
