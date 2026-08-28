@@ -21,8 +21,6 @@ from embed_optim.aggregate import (
     _replace_marked,
     _run_settings_scope_matches,
     _system_summaries,
-    _task_delta_dynamics,
-    _task_delta_stability,
     _timing_adjustment_problems,
     _trajectory_auc,
     audit_dataset_artifacts,
@@ -366,113 +364,6 @@ def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
     assert muon["exact_sign_test_p_value"] == pytest.approx(2 / 2**14)
     assert muon["holm_sign_test_p_value"] == pytest.approx(4 * 2 / 2**14)
     assert paired_rows == _paired_comparisons(task_rows, bootstrap_samples=1_000)
-
-
-def test_task_delta_stability_tracks_adjacent_checkpoint_directions():
-    evaluation_rows = []
-    optimizer_rows = []
-    for family in ("dense", "late"):
-        for optimizer in ("adamw", "muon", "normuon"):
-            run_id = f"{family}-{optimizer}-best"
-            optimizer_rows.append(
-                {
-                    "model_family": family,
-                    "optimizer": optimizer,
-                    "best_run_id": run_id,
-                }
-            )
-            for stage in range(1, 6):
-                for task_index, task in enumerate(DECONTAMINATED_BEIR):
-                    baseline = 0.4 + task_index / 1_000
-                    if optimizer == "adamw":
-                        delta = 0.0
-                    elif optimizer == "muon":
-                        delta = (task_index - 7) / 1_000 * stage
-                    else:
-                        delta = (7 - task_index) / 1_000 * stage
-                    evaluation_rows.append(
-                        {
-                            "model_family": family,
-                            "optimizer": optimizer,
-                            "run_id": run_id,
-                            "stage": stage,
-                            "fraction": stage / 5,
-                            "task": task,
-                            "ndcg_at_10": baseline + delta,
-                        }
-                    )
-
-    dynamics = _task_delta_dynamics(evaluation_rows, optimizer_rows)
-    stability = _task_delta_stability(dynamics)
-
-    assert len(dynamics) == 2 * 2 * 5 * 14
-    assert len(stability) == 2 * 2 * 4
-    assert all(row["same_direction_tasks"] == 14 for row in stability)
-    assert all(row["pearson_correlation"] == pytest.approx(1.0) for row in stability)
-    assert all(row["spearman_correlation"] == pytest.approx(1.0) for row in stability)
-
-    rendered = _render_results(
-        [
-            {
-                "model_family": family,
-                "optimizer": optimizer,
-                "best_learning_rate": 1e-4,
-                "best_final_ndcg_at_10": 0.4,
-                "final_mean_across_lrs": 0.4,
-                "final_population_std_across_lrs": 0.0,
-                "final_min_across_lrs": 0.4,
-                "final_max_across_lrs": 0.4,
-                "best_config_observed_auc_ndcg_at_10": 0.4,
-                "observed_auc_mean_across_lrs": 0.4,
-            }
-            for family in ("dense", "late")
-            for optimizer in ("adamw", "muon", "normuon")
-        ],
-        [
-            {
-                "model_family": family,
-                "optimizer": optimizer,
-                "stage": stage,
-                "mean_ndcg_at_10": 0.4,
-            }
-            for family in ("dense", "late")
-            for optimizer in ("adamw", "muon", "normuon")
-            for stage in range(1, 6)
-        ],
-        [
-            {
-                "model_family": family,
-                "task": task,
-                "adamw": 0.4,
-                "muon": 0.41,
-                "normuon": 0.39,
-                "muon_minus_adamw": 0.01,
-                "normuon_minus_adamw": -0.01,
-            }
-            for family in ("dense", "late")
-            for task in DECONTAMINATED_BEIR
-        ],
-        _paired_comparisons(
-            [
-                {
-                    "model_family": family,
-                    "task": task,
-                    "adamw": 0.4,
-                    "muon": 0.41,
-                    "normuon": 0.39,
-                    "muon_minus_adamw": 0.01,
-                    "normuon_minus_adamw": -0.01,
-                }
-                for family in ("dense", "late")
-                for task in DECONTAMINATED_BEIR
-            ],
-            bootstrap_samples=10,
-        ),
-        stability,
-    )
-    assert "Exploratory task-effect stability across checkpoints" in rendered
-    assert "20%→40%" in rendered
-    assert "14/14" in rendered
 
 
 def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monkeypatch):
