@@ -155,6 +155,85 @@ def _discovery_task_rows(
     return output, table
 
 
+def _discovery_task_stability_rows(
+    retrieval_dir: Path,
+    manifest: dict[str, Any],
+) -> tuple[list[list[str]], Path]:
+    repository_root = retrieval_dir.resolve().parents[1]
+    required = {
+        "model_family",
+        "optimizer",
+        "baseline",
+        "first_stage",
+        "second_stage",
+        "first_fraction",
+        "second_fraction",
+        "tasks",
+        "same_direction_tasks",
+        "pearson_correlation",
+        "spearman_correlation",
+    }
+    rows, table = _read_declared_csv(
+        repository_root,
+        manifest,
+        "task_delta_stability",
+        required_fields=required,
+    )
+    indexed: dict[tuple[str, str, int, int], dict[str, str]] = {}
+    for row in rows:
+        try:
+            identity = (
+                row["model_family"],
+                row["optimizer"],
+                int(row["first_stage"]),
+                int(row["second_stage"]),
+            )
+        except (KeyError, TypeError, ValueError) as error:
+            raise ValueError(f"Invalid discovery task-stability identity: {row}") from error
+        if identity in indexed:
+            raise ValueError(f"Duplicate discovery task-stability identity: {identity}")
+        indexed[identity] = row
+    expected = {
+        (family, optimizer, stage, stage + 1)
+        for family in FAMILIES
+        for optimizer in ("muon", "normuon")
+        for stage in range(1, 5)
+    }
+    if len(rows) != 16 or set(indexed) != expected:
+        raise ValueError("Discovery task-stability table requires all 16 adjacent-stage contrasts")
+
+    output = []
+    for family, optimizer, first_stage, second_stage in sorted(expected):
+        row = indexed[(family, optimizer, first_stage, second_stage)]
+        tasks = int(row["tasks"])
+        stable = int(row["same_direction_tasks"])
+        first_fraction = _finite(row["first_fraction"])
+        second_fraction = _finite(row["second_fraction"])
+        pearson = _finite(row["pearson_correlation"])
+        spearman = _finite(row["spearman_correlation"])
+        if (
+            row["baseline"] != "adamw"
+            or tasks != len(DECONTAMINATED_TASK_NAMES)
+            or not 0 <= stable <= tasks
+            or abs(first_fraction - first_stage / 5) > 1e-12
+            or abs(second_fraction - second_stage / 5) > 1e-12
+            or not -1 <= pearson <= 1
+            or not -1 <= spearman <= 1
+        ):
+            raise ValueError(f"Invalid discovery task-stability values: {row}")
+        output.append(
+            [
+                FAMILY_LABELS[family],
+                f"{OPTIMIZER_LABELS[optimizer]} - AdamW",
+                f"{int(round(first_fraction * 100))}--{int(round(second_fraction * 100))}%",
+                f"{stable}/{tasks}",
+                f"{pearson:.3f}",
+                f"{spearman:.3f}",
+            ]
+        )
+    return output, table
+
+
 def _ci_classification(cell: str) -> str:
     if not (cell.startswith("[") and cell.endswith("]") and "," in cell):
         raise ValueError(f"Invalid confirmatory interval cell: {cell!r}")
@@ -339,6 +418,7 @@ def build_result_tables(
     final_medians: dict[tuple[str, str], float],
     retrieval_rows: list[list[str]],
     task_rows: list[list[str]],
+    task_stability_rows: list[list[str]],
     common_rows: list[list[str]],
     basis_rows: list[list[str]],
     spectrum_rows: list[list[str]],
@@ -366,6 +446,17 @@ def build_result_tables(
     indexed_tasks = {(row[0], row[1]): row for row in task_rows if len(row) == 7}
     if len(task_rows) != 28 or set(indexed_tasks) != expected_task_identities:
         raise ValueError("Paper per-task table requires both families and all 14 tasks")
+    expected_stability = {
+        (family_label, f"{optimizer} - AdamW", f"{first * 20}--{(first + 1) * 20}%")
+        for family_label in FAMILY_LABELS.values()
+        for optimizer in ("Muon", "NorMuon")
+        for first in range(1, 5)
+    }
+    indexed_stability = {
+        (row[0], row[1], row[2]): row for row in task_stability_rows if len(row) == 6
+    }
+    if len(task_stability_rows) != 16 or set(indexed_stability) != expected_stability:
+        raise ValueError("Paper task-stability table requires all adjacent-stage contrasts")
 
     discovery_rows = [
         (
@@ -433,28 +524,53 @@ def build_result_tables(
     ]
 
     per_task_tables = "\n".join(
-        _latex_table(
-            environment="table*",
-            columns="lccccc",
-            headers=(
-                "Task",
-                "AdamW",
-                "Muon",
-                "NorMuon",
-                "Muon $-$ AdamW",
-                "NorMuon $-$ AdamW",
-            ),
-            rows=[
-                tuple(indexed_tasks[(family_label, task)][1:]) for task in DECONTAMINATED_TASK_NAMES
+        [
+            *[
+                _latex_table(
+                    environment="table*",
+                    columns="lccccc",
+                    headers=(
+                        "Task",
+                        "AdamW",
+                        "Muon",
+                        "NorMuon",
+                        "Muon $-$ AdamW",
+                        "NorMuon $-$ AdamW",
+                    ),
+                    rows=[
+                        tuple(indexed_tasks[(family_label, task)][1:])
+                        for task in DECONTAMINATED_TASK_NAMES
+                    ],
+                    caption=(
+                        f"{family_label} discovery per-task final nDCG@10 for each optimizer's "
+                        "best learning-rate point on this same BEIR suite. These are exploratory, "
+                        "test-selected comparisons rather than an unbiased recipe estimate."
+                    ),
+                    label=f"tab:{family_label.lower()}-per-task-results",
+                )
+                for family_label in FAMILY_LABELS.values()
             ],
-            caption=(
-                f"{family_label} discovery per-task final nDCG@10 for each optimizer's best "
-                "learning-rate point on this same BEIR suite. These are exploratory, "
-                "test-selected comparisons rather than an unbiased recipe estimate."
+            _latex_table(
+                environment="table*",
+                columns="lllccc",
+                headers=(
+                    "Model",
+                    "Comparison",
+                    "Stages",
+                    "Same direction",
+                    "Pearson $r$",
+                    "Spearman $\\rho$",
+                ),
+                rows=[tuple(row) for row in task_stability_rows],
+                caption=(
+                    "Post-hoc adjacent-checkpoint stability of the 14 task effects for each "
+                    "final-score-selected optimizer/LR run against the selected AdamW run. This "
+                    "exploratory diagnostic was added after heterogeneous LateOn directions "
+                    "became visible and is outside the confirmatory family."
+                ),
+                label="tab:task-delta-stability",
             ),
-            label=f"tab:{family_label.lower()}-per-task-results",
-        )
-        for family_label in FAMILY_LABELS.values()
+        ]
     )
 
     common_tables = "\n".join(
@@ -624,6 +740,9 @@ def render_paper_results(
     )
     final_medians, checkpoint_table = _discovery_final_medians(retrieval_dir, retrieval_manifest)
     task_rows, task_table = _discovery_task_rows(retrieval_dir, retrieval_manifest)
+    task_stability_rows, task_stability_table = _discovery_task_stability_rows(
+        retrieval_dir, retrieval_manifest
+    )
     common_rows, _common_manifest, common_table = _common_state_rows(root / "reports/common-state")
     basis_rows, _basis_manifest, basis_table = _basis_rows(root / "reports/basis-sensitivity")
     spectrum_rows, _spectrum_manifest, spectrum_table = _spectrum_rows(
@@ -656,6 +775,7 @@ def render_paper_results(
         final_medians=final_medians,
         retrieval_rows=retrieval_rows,
         task_rows=task_rows,
+        task_stability_rows=task_stability_rows,
         common_rows=common_rows,
         basis_rows=basis_rows,
         spectrum_rows=spectrum_rows,
@@ -690,6 +810,7 @@ def render_paper_results(
         checkpoint_table,
         retrieval_table,
         task_table,
+        task_stability_table,
         common_table,
         basis_table,
         spectrum_table,

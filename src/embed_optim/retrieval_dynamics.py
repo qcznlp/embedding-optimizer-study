@@ -25,6 +25,10 @@ FAMILIES = ("dense", "late")
 OPTIMIZERS = ("adamw", "muon", "normuon")
 FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
 OPTIMIZER_LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
+TASK_STABILITY_MARKERS = (
+    "<!-- TASK-DELTA-STABILITY:BEGIN -->",
+    "<!-- TASK-DELTA-STABILITY:END -->",
+)
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -304,6 +308,193 @@ def summarize_retrieval_dynamics(
     return dynamics, first_passage, group_summary
 
 
+def _average_ranks(values: list[float]) -> list[float]:
+    """Return one-based average ranks with deterministic tie handling."""
+
+    ordered = sorted(enumerate(values), key=lambda item: (item[1], item[0]))
+    ranks = [0.0] * len(values)
+    start = 0
+    while start < len(ordered):
+        end = start + 1
+        while end < len(ordered) and ordered[end][1] == ordered[start][1]:
+            end += 1
+        average = ((start + 1) + end) / 2
+        for index, _value in ordered[start:end]:
+            ranks[index] = average
+        start = end
+    return ranks
+
+
+def _finite_correlation(left: list[float], right: list[float]) -> float | None:
+    if len(left) != len(right) or len(left) < 2:
+        return None
+    if len(set(left)) < 2 or len(set(right)) < 2:
+        return None
+    return statistics.correlation(left, right)
+
+
+def task_delta_dynamics(
+    evaluation_rows: list[dict[str, Any]], optimizer_rows: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
+    """Collect post-hoc task deltas for final-score-selected runs at all checkpoints."""
+
+    best_runs = {
+        (str(row["model_family"]), str(row["optimizer"])): str(row["best_run_id"])
+        for row in optimizer_rows
+    }
+    expected_groups = {(family, optimizer) for family in FAMILIES for optimizer in OPTIMIZERS}
+    if set(best_runs) != expected_groups:
+        raise ValueError("Task-delta dynamics requires all six optimizer-family best runs")
+    lookup = {
+        (str(row["model_family"]), str(row["run_id"]), int(row["stage"]), str(row["task"])): row
+        for row in evaluation_rows
+    }
+    output = []
+    for family in FAMILIES:
+        baseline_run = best_runs[(family, "adamw")]
+        for optimizer in ("muon", "normuon"):
+            treatment_run = best_runs[(family, optimizer)]
+            for stage in range(1, 6):
+                for task in DECONTAMINATED_TASK_NAMES:
+                    treatment = lookup[(family, treatment_run, stage, task)]
+                    baseline = lookup[(family, baseline_run, stage, task)]
+                    treatment_fraction = _finite(treatment, "fraction")
+                    baseline_fraction = _finite(baseline, "fraction")
+                    if (
+                        abs(treatment_fraction - stage / 5) > 1e-12
+                        or abs(baseline_fraction - treatment_fraction) > 1e-12
+                    ):
+                        raise ValueError("Task-delta checkpoint fractions do not align")
+                    treatment_score = _finite(treatment, "ndcg_at_10")
+                    baseline_score = _finite(baseline, "ndcg_at_10")
+                    output.append(
+                        {
+                            "model_family": family,
+                            "optimizer": optimizer,
+                            "baseline": "adamw",
+                            "treatment_run_id": treatment_run,
+                            "baseline_run_id": baseline_run,
+                            "stage": stage,
+                            "fraction": treatment_fraction,
+                            "task": task,
+                            "treatment_ndcg_at_10": treatment_score,
+                            "baseline_ndcg_at_10": baseline_score,
+                            "delta": treatment_score - baseline_score,
+                        }
+                    )
+    expected_rows = len(FAMILIES) * 2 * 5 * len(DECONTAMINATED_TASK_NAMES)
+    if len(output) != expected_rows:
+        raise ValueError("Task-delta dynamics has incomplete best-run checkpoint coverage")
+    return output
+
+
+def summarize_task_delta_stability(
+    delta_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Summarize adjacent-checkpoint persistence of post-hoc per-task effects."""
+
+    grouped: dict[tuple[str, str, int], dict[str, float]] = defaultdict(dict)
+    for row in delta_rows:
+        identity = (str(row["model_family"]), str(row["optimizer"]), int(row["stage"]))
+        task = str(row["task"])
+        if task in grouped[identity]:
+            raise ValueError(f"Duplicate task-delta identity: {identity}/{task}")
+        grouped[identity][task] = _finite(row, "delta")
+
+    output = []
+    for family in FAMILIES:
+        for optimizer in ("muon", "normuon"):
+            for first_stage in range(1, 5):
+                second_stage = first_stage + 1
+                first = grouped.get((family, optimizer, first_stage), {})
+                second = grouped.get((family, optimizer, second_stage), {})
+                if set(first) != set(DECONTAMINATED_TASK_NAMES) or set(second) != set(first):
+                    raise ValueError(
+                        f"Task-delta stages do not align for {family}/{optimizer}: "
+                        f"{first_stage} versus {second_stage}"
+                    )
+                tasks = sorted(first)
+                left = [first[task] for task in tasks]
+                right = [second[task] for task in tasks]
+                tolerance = 1e-12
+
+                def direction(value: float) -> int:
+                    return 1 if value > tolerance else -1 if value < -tolerance else 0
+
+                stable = sum(direction(a) == direction(b) for a, b in zip(left, right))
+                output.append(
+                    {
+                        "model_family": family,
+                        "optimizer": optimizer,
+                        "baseline": "adamw",
+                        "first_stage": first_stage,
+                        "second_stage": second_stage,
+                        "first_fraction": first_stage / 5,
+                        "second_fraction": second_stage / 5,
+                        "tasks": len(tasks),
+                        "same_direction_tasks": stable,
+                        "direction_stability_fraction": stable / len(tasks),
+                        "pearson_correlation": _finite_correlation(left, right),
+                        "spearman_correlation": _finite_correlation(
+                            _average_ranks(left), _average_ranks(right)
+                        ),
+                        "mean_absolute_delta_change": statistics.mean(
+                            abs(a - b) for a, b in zip(left, right)
+                        ),
+                    }
+                )
+    if len(output) != len(FAMILIES) * 2 * 4:
+        raise ValueError("Task-delta stability summary has incomplete adjacent-stage coverage")
+    return output
+
+
+def _task_stability_markdown(rows: list[dict[str, Any]]) -> str:
+    lines = [
+        "### Exploratory task-effect stability across checkpoints",
+        "",
+        "| Family | Comparison | Stages | Same direction | Pearson r | Spearman rho |",
+        "| --- | --- | --- | ---: | ---: | ---: |",
+    ]
+    for row in rows:
+        pearson = row["pearson_correlation"]
+        spearman = row["spearman_correlation"]
+        pearson_text = "n/a" if pearson is None else f"{float(pearson):.3f}"
+        spearman_text = "n/a" if spearman is None else f"{float(spearman):.3f}"
+        lines.append(
+            "| "
+            f"{FAMILY_LABELS[str(row['model_family'])]} | "
+            f"{OPTIMIZER_LABELS[str(row['optimizer'])]} − AdamW | "
+            f"{int(round(float(row['first_fraction']) * 100))}%→"
+            f"{int(round(float(row['second_fraction']) * 100))}% | "
+            f"{row['same_direction_tasks']}/{row['tasks']} | "
+            f"{pearson_text} | {spearman_text} |"
+        )
+    lines.extend(
+        [
+            "",
+            "This post-hoc diagnostic applies each optimizer's final-score-selected learning-rate "
+            "run at every checkpoint and correlates its 14 paired task deltas against AdamW across "
+            "adjacent stages. It was added after heterogeneous LateOn task directions became "
+            "visible. It does not alter run selection, the primary aggregate, or the frozen "
+            "confirmatory family, and it carries no causal interpretation.",
+        ]
+    )
+    return "\n".join(lines)
+
+
+def render_task_stability_blog(path: Path, rows: list[dict[str, Any]]) -> None:
+    text = path.read_text(encoding="utf-8")
+    begin, end = TASK_STABILITY_MARKERS
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise ValueError("Blog requires exactly one task-delta stability marker pair")
+    before, remainder = text.split(begin)
+    _old, after = remainder.split(end)
+    rendered = f"{before}{begin}\n\n{_task_stability_markdown(rows)}\n\n{end}{after}"
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(rendered, encoding="utf-8")
+    temporary.replace(path)
+
+
 def _quality_figure(rows: list[dict[str, Any]], path: Path) -> dict[str, Any]:
     import matplotlib
 
@@ -364,6 +555,7 @@ def build_retrieval_dynamics(
     training_dir: str | Path = "reports/training-dynamics",
     output_dir: str | Path = "reports/retrieval-dynamics",
     protocol_path: str | Path = "configs/retrieval_dynamics_protocol.json",
+    blog_path: str | Path | None = None,
 ) -> dict[str, Any]:
     matrix_path = resolve_matrix_path(matrix).resolve()
     repository_root = matrix_path.parent.parent
@@ -387,6 +579,8 @@ def build_retrieval_dynamics(
     task_rows = _task_comparison(evaluation_rows, optimizer_rows)
     if len(task_rows) != len(FAMILIES) * len(DECONTAMINATED_TASK_NAMES):
         raise ValueError("Retrieval dynamics requires 28 best-config per-task rows")
+    task_delta_rows = task_delta_dynamics(evaluation_rows, optimizer_rows)
+    task_stability_rows = summarize_task_delta_stability(task_delta_rows)
     training_root = Path(training_dir).resolve()
     frozen_training = protocol["training_summary"]
     frozen_training_path = (repository_root / frozen_training["path"]).resolve()
@@ -411,6 +605,12 @@ def build_retrieval_dynamics(
         "best_config_task_comparison": _atomic_csv(
             output / "best_config_task_comparison.csv", task_rows
         ),
+        "best_config_task_delta_dynamics": _atomic_csv(
+            output / "best_config_task_delta_dynamics.csv", task_delta_rows
+        ),
+        "task_delta_stability": _atomic_csv(
+            output / "task_delta_stability.csv", task_stability_rows
+        ),
         "quality_vs_useful_wall_time": _quality_figure(
             dynamics, output / "quality_vs_useful_wall_time.svg"
         ),
@@ -429,6 +629,8 @@ def build_retrieval_dynamics(
             "tasks": len(DECONTAMINATED_TASK_NAMES),
             "evaluation_units": len(evaluation_rows),
             "optimizer_family_groups": len(group_summary),
+            "best_config_task_delta_rows": len(task_delta_rows),
+            "adjacent_stage_task_stability_rows": len(task_stability_rows),
         },
         "target_definition": (
             "Within each model family, use the median final nDCG@10 of the four AdamW learning-"
@@ -481,10 +683,15 @@ def build_retrieval_dynamics(
             "The four learning rates are sweep points rather than random seeds. First passage is "
             "an exploratory time-to-AdamW-reference diagnostic and does not replace the frozen "
             "three-seed confirmatory comparison. The rule was locked after 160 of 1,680 discovery "
-            "units were visible and is a prospective completion analysis, not a preregistration."
+            "units were visible and is a prospective completion analysis, not a preregistration. "
+            "The adjacent-checkpoint task-delta stability table is a separate post-hoc exploratory "
+            "diagnostic added after heterogeneous LateOn task directions became visible; it does "
+            "not alter selection or the confirmatory family and has no causal interpretation."
         ),
     }
     _atomic_json(output / "summary_manifest.json", manifest)
+    if blog_path is not None:
+        render_task_stability_blog(Path(blog_path).resolve(), task_stability_rows)
     return manifest
 
 
@@ -500,6 +707,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--protocol", type=Path, default=Path("configs/retrieval_dynamics_protocol.json")
     )
+    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     return parser.parse_args(argv)
 
 
@@ -512,6 +720,7 @@ def main(argv: list[str] | None = None) -> None:
         args.training_dir,
         args.output_dir,
         args.protocol,
+        args.blog,
     )
     print(json.dumps(manifest, indent=2, sort_keys=True))
 

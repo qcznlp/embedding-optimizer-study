@@ -4,10 +4,14 @@ from pathlib import Path
 
 import pytest
 
+from embed_optim.decontamination import DECONTAMINATED_TASK_NAMES
 from embed_optim.retrieval_dynamics import (
     _quality_figure,
     load_retrieval_dynamics_protocol,
+    render_task_stability_blog,
     summarize_retrieval_dynamics,
+    summarize_task_delta_stability,
+    task_delta_dynamics,
 )
 
 
@@ -104,3 +108,61 @@ def test_retrieval_dynamics_protocol_is_frozen_before_complete_beir():
     assert protocol["freeze_context"]["complete_retrieval_matrix_visible"] is False
     assert protocol["reference_target"]["uses_muon_or_normuon_outcomes"] is False
     assert "not a preregistration" in protocol["claim_boundary"]
+
+
+def test_posthoc_task_delta_stability_tracks_adjacent_checkpoint_directions(tmp_path: Path):
+    evaluation_rows = []
+    optimizer_rows = []
+    for family in ("dense", "late"):
+        for optimizer in ("adamw", "muon", "normuon"):
+            run_id = f"{family}-{optimizer}-best"
+            optimizer_rows.append(
+                {
+                    "model_family": family,
+                    "optimizer": optimizer,
+                    "best_run_id": run_id,
+                }
+            )
+            for stage in range(1, 6):
+                for task_index, task in enumerate(DECONTAMINATED_TASK_NAMES):
+                    baseline = 0.4 + task_index / 1_000
+                    if optimizer == "adamw":
+                        delta = 0.0
+                    elif optimizer == "muon":
+                        delta = (task_index - 7) / 1_000 * stage
+                    else:
+                        delta = (7 - task_index) / 1_000 * stage
+                    evaluation_rows.append(
+                        {
+                            "model_family": family,
+                            "optimizer": optimizer,
+                            "run_id": run_id,
+                            "stage": stage,
+                            "fraction": stage / 5,
+                            "task": task,
+                            "ndcg_at_10": baseline + delta,
+                        }
+                    )
+
+    dynamics = task_delta_dynamics(evaluation_rows, optimizer_rows)
+    stability = summarize_task_delta_stability(dynamics)
+
+    assert len(dynamics) == 2 * 2 * 5 * 14
+    assert len(stability) == 2 * 2 * 4
+    assert all(row["same_direction_tasks"] == 14 for row in stability)
+    assert all(row["pearson_correlation"] == pytest.approx(1.0) for row in stability)
+    assert all(row["spearman_correlation"] == pytest.approx(1.0) for row in stability)
+
+    blog = tmp_path / "blog.md"
+    blog.write_text(
+        "before\n<!-- TASK-DELTA-STABILITY:BEGIN -->\nold\n"
+        "<!-- TASK-DELTA-STABILITY:END -->\nafter\n",
+        encoding="utf-8",
+    )
+    render_task_stability_blog(blog, stability)
+    rendered = blog.read_text(encoding="utf-8")
+    assert "Exploratory task-effect stability across checkpoints" in rendered
+    assert "20%→40%" in rendered
+    assert "14/14" in rendered
+    assert "post-hoc" in rendered
+    assert "old" not in rendered

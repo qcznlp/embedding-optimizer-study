@@ -238,6 +238,13 @@ Results will be inserted here after `reports/coverage.json` confirms all 1,680 t
 
 <!-- RESULTS:END -->
 
+<!-- TASK-DELTA-STABILITY:BEGIN -->
+
+The post-hoc adjacent-checkpoint task-effect stability table will be inserted after strict retrieval
+dynamics aggregation completes.
+
+<!-- TASK-DELTA-STABILITY:END -->
+
 ## Systems observations
 
 <!-- SYSTEMS:BEGIN -->

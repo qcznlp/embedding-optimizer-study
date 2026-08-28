@@ -131,6 +131,22 @@ def _basis_result_rows():
     ]
 
 
+def _task_stability_rows():
+    return [
+        [
+            family,
+            f"{optimizer} - AdamW",
+            f"{first * 20}--{(first + 1) * 20}%",
+            "12/14",
+            "0.900",
+            "0.800",
+        ]
+        for family in ("DenseOn", "LateOn")
+        for optimizer in ("Muon", "NorMuon")
+        for first in range(1, 5)
+    ]
+
+
 def test_headlines_report_every_frozen_evidence_tier_without_sign_overreach():
     final = {
         (family, optimizer): 0.4 + 0.01 * index
@@ -212,6 +228,7 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     tables = build_result_tables(
         final_medians=final,
         task_rows=_task_rows(),
+        task_stability_rows=_task_stability_rows(),
         basis_rows=_basis_result_rows(),
         **rows,
     )
@@ -238,6 +255,8 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     )
     assert per_task.count("0.4000 & 0.4100 & 0.4200") == 28
     assert "test-selected comparisons" in per_task
+    assert "Post-hoc adjacent-checkpoint stability" in per_task
+    assert "12/14 & 0.900 & 0.800" in per_task
     assert (
         sum(
             f"{family} & {contrast}" in confirmation
@@ -298,6 +317,11 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
         "embed_optim.paper_results._discovery_task_rows",
         lambda *_args: (task_rows, source),
     )
+    task_stability_rows = _task_stability_rows()
+    monkeypatch.setattr(
+        "embed_optim.paper_results._discovery_task_stability_rows",
+        lambda *_args: (task_stability_rows, source),
+    )
     monkeypatch.setattr(
         "embed_optim.paper_results._common_state_rows",
         lambda *_args: ([], {}, source),
@@ -337,6 +361,7 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
 
     def tables(**kwargs):
         captured["table_task_rows"] = kwargs["task_rows"]
+        captured["table_task_stability_rows"] = kwargs["task_stability_rows"]
         return {
             path: f"generated {path}\n"
             for path in (
@@ -356,7 +381,8 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
 
     assert "task_rows" not in captured["headline_keys"]
     assert captured["table_task_rows"] is task_rows
-    assert len(manifest["source_tables"]) == 12
+    assert captured["table_task_stability_rows"] is task_stability_rows
+    assert len(manifest["source_tables"]) == 13
     assert len(manifest["result_tables"]) == 6
 
 

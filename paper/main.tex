@@ -371,7 +371,10 @@ rule, five checkpoints, and 14 tasks. Dataset rows preserve one query, one posit
 negatives, source identity, and deterministic order. Formal manifests bind all model and dataset
 revisions. The source-hashed \texttt{configs/experiment.yaml} records the complete optimizer,
 schedule, routing, precision, and seed configuration. The complete per-task comparison below is
-generated from the strict aggregate rather than copied manually.
+generated from the strict aggregate rather than copied manually. The same generated appendix also
+includes an explicitly post-hoc adjacent-checkpoint task-effect stability diagnostic. It was added
+after heterogeneous LateOn task directions became visible, does not enter model selection or the
+confirmatory family, and supports only a descriptive task-redistribution interpretation.
 
 \input{generated/per-task}
 
