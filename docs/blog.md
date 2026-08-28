@@ -25,6 +25,17 @@ visible: the model must learn new query--document distinctions without damaging 
 rankings. We therefore test both acquisition and preservation rather than treating a lower training
 loss or a larger weight-space change as sufficient evidence for a better retriever.
 
+Several concurrent results make the mechanism test sharper rather than predetermining its answer.
+[HTMuon](https://aclanthology.org/2026.findings-acl.1819/) argues that flattening update spectra can
+overemphasize noise directions; [Newton--Muon](https://arxiv.org/abs/2604.01472) interprets Muon as
+omitting right preconditioning by the layer-input covariance; and
+[adaptive Schatten geometry](https://arxiv.org/abs/2605.19781) suggests that no fixed matrix rule
+need be best for every layer. Conversely,
+[Muon-pretrained feature analyses](https://arxiv.org/abs/2606.09658) report larger margins,
+effective rank, robustness, and transfer. These are competing predictions for our frozen spectra,
+activation, margin, and representation probes—not post-hoc explanations selected after seeing the
+final retrieval matrix.
+
 This study asks four questions:
 
 1. Do Muon or NorMuon reach useful retrieval quality earlier in training?
