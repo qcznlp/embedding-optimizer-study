@@ -1850,6 +1850,124 @@ def _paired_comparisons(
     return output
 
 
+def _average_ranks(values: list[float]) -> list[float]:
+    """Return one-based average ranks with deterministic tie handling."""
+
+    ordered = sorted(enumerate(values), key=lambda item: (item[1], item[0]))
+    ranks = [0.0] * len(values)
+    start = 0
+    while start < len(ordered):
+        end = start + 1
+        while end < len(ordered) and ordered[end][1] == ordered[start][1]:
+            end += 1
+        average = ((start + 1) + end) / 2
+        for index, _value in ordered[start:end]:
+            ranks[index] = average
+        start = end
+    return ranks
+
+
+def _finite_correlation(left: list[float], right: list[float]) -> float | None:
+    if len(left) != len(right) or len(left) < 2:
+        return None
+    if len(set(left)) < 2 or len(set(right)) < 2:
+        return None
+    return statistics.correlation(left, right)
+
+
+def _task_delta_dynamics(rows: list[dict], optimizer_rows: list[dict]) -> list[dict]:
+    """Collect best-final-config task deltas at all five checkpoints.
+
+    The best learning-rate runs are selected exactly as in the final task table. This is a
+    post-hoc dynamics diagnostic, not an additional model-selection criterion.
+    """
+
+    best_runs = {
+        (row["model_family"], row["optimizer"]): row["best_run_id"] for row in optimizer_rows
+    }
+    lookup = {(row["model_family"], row["run_id"], row["stage"], row["task"]): row for row in rows}
+    output = []
+    families = sorted({family for family, optimizer in best_runs if optimizer == "adamw"})
+    for family in families:
+        baseline_run = best_runs[(family, "adamw")]
+        for optimizer in ("muon", "normuon"):
+            treatment_run = best_runs[(family, optimizer)]
+            for stage in range(1, 6):
+                for task in DECONTAMINATED_TASK_NAMES:
+                    treatment = lookup[(family, treatment_run, stage, task)]
+                    baseline = lookup[(family, baseline_run, stage, task)]
+                    output.append(
+                        {
+                            "model_family": family,
+                            "optimizer": optimizer,
+                            "baseline": "adamw",
+                            "treatment_run_id": treatment_run,
+                            "baseline_run_id": baseline_run,
+                            "stage": stage,
+                            "fraction": treatment["fraction"],
+                            "task": task,
+                            "treatment_ndcg_at_10": treatment["ndcg_at_10"],
+                            "baseline_ndcg_at_10": baseline["ndcg_at_10"],
+                            "delta": treatment["ndcg_at_10"] - baseline["ndcg_at_10"],
+                        }
+                    )
+    return output
+
+
+def _task_delta_stability(delta_rows: list[dict]) -> list[dict]:
+    """Summarize adjacent-checkpoint stability of the exploratory task deltas."""
+
+    grouped: dict[tuple[str, str, int], dict[str, float]] = defaultdict(dict)
+    for row in delta_rows:
+        grouped[(row["model_family"], row["optimizer"], row["stage"])][row["task"]] = float(
+            row["delta"]
+        )
+
+    output = []
+    comparisons = sorted({(family, optimizer) for family, optimizer, _stage in grouped})
+    for family, optimizer in comparisons:
+        for first_stage in range(1, 5):
+            second_stage = first_stage + 1
+            first = grouped[(family, optimizer, first_stage)]
+            second = grouped[(family, optimizer, second_stage)]
+            if set(first) != set(second):
+                raise ValueError(
+                    f"Task-delta stages do not align for {family}/{optimizer}: "
+                    f"{first_stage} versus {second_stage}"
+                )
+            tasks = sorted(first)
+            left = [first[task] for task in tasks]
+            right = [second[task] for task in tasks]
+            tolerance = 1e-12
+
+            def direction(value: float) -> int:
+                return 1 if value > tolerance else -1 if value < -tolerance else 0
+
+            stable = sum(direction(a) == direction(b) for a, b in zip(left, right))
+            output.append(
+                {
+                    "model_family": family,
+                    "optimizer": optimizer,
+                    "baseline": "adamw",
+                    "first_stage": first_stage,
+                    "second_stage": second_stage,
+                    "first_fraction": first_stage / 5,
+                    "second_fraction": second_stage / 5,
+                    "tasks": len(tasks),
+                    "same_direction_tasks": stable,
+                    "direction_stability_fraction": stable / len(tasks),
+                    "pearson_correlation": _finite_correlation(left, right),
+                    "spearman_correlation": _finite_correlation(
+                        _average_ranks(left), _average_ranks(right)
+                    ),
+                    "mean_absolute_delta_change": statistics.mean(
+                        abs(a - b) for a, b in zip(left, right)
+                    ),
+                }
+            )
+    return output
+
+
 def _system_summaries(rows: list[dict]) -> list[dict]:
     grouped: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for row in rows:
@@ -1993,6 +2111,7 @@ def _render_results(
     best_dynamics: list[dict],
     task_rows: list[dict],
     paired_rows: list[dict],
+    task_stability_rows: list[dict] | None = None,
 ) -> str:
     final_table = _markdown_table(
         [
@@ -2061,6 +2180,47 @@ def _render_results(
             for row in paired_rows
         ],
     )
+
+    stability_section = ""
+    if task_stability_rows:
+        stability_table = _markdown_table(
+            [
+                "Family",
+                "Comparison",
+                "Stages",
+                "Same direction",
+                "Pearson r",
+                "Spearman rho",
+            ],
+            [
+                [
+                    row["model_family"],
+                    f"{row['optimizer']} − AdamW",
+                    f"{int(round(row['first_fraction'] * 100))}%→"
+                    f"{int(round(row['second_fraction'] * 100))}%",
+                    f"{row['same_direction_tasks']}/{row['tasks']}",
+                    (
+                        f"{row['pearson_correlation']:.3f}"
+                        if row["pearson_correlation"] is not None
+                        else "n/a"
+                    ),
+                    (
+                        f"{row['spearman_correlation']:.3f}"
+                        if row["spearman_correlation"] is not None
+                        else "n/a"
+                    ),
+                ]
+                for row in task_stability_rows
+            ],
+        )
+        stability_section = (
+            "### Exploratory task-effect stability across checkpoints\n\n"
+            + stability_table
+            + "\n\nThis post-hoc diagnostic applies the final-score-selected learning-rate runs "
+            "at every checkpoint and correlates their 14 paired task deltas across adjacent "
+            "stages. It tests whether the observed task redistribution persists through training; "
+            "it is not part of the frozen confirmatory family and carries no causal interpretation."
+        )
 
     winners = []
     for family in ("dense", "late"):
@@ -2132,6 +2292,7 @@ def _render_results(
             "(../reports/figures/late-training-dynamics-by-run.png)",
             "### Dynamics of each optimizer's best final configuration\n\n" + dynamics_table,
             "### Paired best-config task effects\n\n" + paired_table,
+            stability_section,
             "![Dense learning-rate sensitivity](../reports/figures/dense-lr-sensitivity.png)\n\n"
             "![Late-interaction learning-rate sensitivity](../reports/figures/late-lr-sensitivity.png)",
             "### Per-task final scores for the best configuration of each optimizer",
@@ -2209,12 +2370,19 @@ def render_blog(
     task_rows: list[dict],
     paired_rows: list[dict],
     system_rows: list[dict],
+    task_stability_rows: list[dict] | None = None,
 ) -> None:
     text = blog_path.read_text()
     text = _replace_marked(
         text,
         RESULTS_MARKERS,
-        _render_results(optimizer_rows, best_dynamics, task_rows, paired_rows),
+        _render_results(
+            optimizer_rows,
+            best_dynamics,
+            task_rows,
+            paired_rows,
+            task_stability_rows,
+        ),
     )
     text = _replace_marked(text, SYSTEMS_MARKERS, _render_systems(system_rows))
     text = text.replace(
@@ -2297,6 +2465,8 @@ def aggregate(args: argparse.Namespace) -> None:
     coverage = _coverage(rows, summary, configs, contract_audit, dataset_audit, training_audit)
     task_rows = _task_comparison(rows, optimizer_rows) if coverage["complete"] else []
     paired_rows = _paired_comparisons(task_rows) if coverage["complete"] else []
+    task_delta_rows = _task_delta_dynamics(rows, optimizer_rows) if coverage["complete"] else []
+    task_stability_rows = _task_delta_stability(task_delta_rows) if coverage["complete"] else []
 
     output = Path(args.output_dir)
     _write_csv(output / "evaluation_long.csv", rows)
@@ -2305,6 +2475,8 @@ def aggregate(args: argparse.Namespace) -> None:
     _write_csv(output / "best_config_dynamics.csv", best_dynamics)
     _write_csv(output / "best_config_task_comparison.csv", task_rows)
     _write_csv(output / "paired_comparison.csv", paired_rows)
+    _write_csv(output / "best_config_task_delta_dynamics.csv", task_delta_rows)
+    _write_csv(output / "task_delta_stability.csv", task_stability_rows)
     _write_csv(output / "training_history.csv", collect_training_history(configs))
     _write_csv(output / "system_metrics.csv", system_metrics)
     _write_csv(output / "system_summary.csv", system_rows)
@@ -2314,7 +2486,13 @@ def aggregate(args: argparse.Namespace) -> None:
 
     if coverage["complete"] and not args.no_render_blog:
         render_blog(
-            Path(args.blog), optimizer_rows, best_dynamics, task_rows, paired_rows, system_rows
+            Path(args.blog),
+            optimizer_rows,
+            best_dynamics,
+            task_rows,
+            paired_rows,
+            system_rows,
+            task_stability_rows,
         )
     if args.strict and not coverage["complete"]:
         raise RuntimeError("Evaluation matrix is incomplete; see coverage.json")

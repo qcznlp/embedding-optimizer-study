@@ -160,6 +160,13 @@ comparisons. Only the familywise interval determines whether the headline calls 
 negative, or inconclusive. Because the retained MTEB JSON does not contain per-query rankings, no
 query-level significance claim is made.
 
+After partial LateOn evaluation exposed heterogeneous task directions, we added one explicitly
+post-hoc exploratory diagnostic: for each optimizer's final-score-selected learning-rate run, we
+correlate the 14 paired task deltas against AdamW across adjacent checkpoints and report how many
+task directions persist. This analysis does not alter run selection, the primary aggregate, or the
+frozen confirmatory family. Its purpose is to distinguish a persistent task redistribution from a
+single-checkpoint fluctuation; it is reported descriptively and cannot establish causality.
+
 The exact evaluation inputs are frozen below. MTEB's standard `default` subset is used for every
 task. MS MARCO is scored on `dev`; the other thirteen tasks are scored on `test`. Corpus counts were
 read from the pinned Hub snapshots and are also used for longest-processing-time-first scheduling.
