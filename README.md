@@ -1061,7 +1061,9 @@ ruff check src tests scripts/eval
 ruff format --check src tests scripts/eval
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for experiment-change and reporting requirements.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for experiment-change and reporting requirements,
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community expectations, and [SECURITY.md](SECURITY.md)
+for private vulnerability reporting.
 
 ## Provenance and license
 

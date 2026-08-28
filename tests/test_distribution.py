@@ -179,3 +179,18 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         assert f"\\input{{generated/{table}}}" in main
         assert f"generated/{table}.tex" in makefile
         assert "\\ResultPending" in (ROOT / source).read_text()
+
+
+def test_distribution_bundles_project_governance_documents() -> None:
+    installed = _installed_data_paths()
+    documents = (
+        "CITATION.cff",
+        "CODE_OF_CONDUCT.md",
+        "CONTRIBUTING.md",
+        "SECURITY.md",
+        "THIRD_PARTY_NOTICES.md",
+    )
+    for source in documents:
+        assert installed[source] == PurePosixPath(
+            "share/doc/embedding-optimizer-study"
+        ) / PurePosixPath(source)
