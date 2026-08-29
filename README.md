@@ -323,7 +323,10 @@ evidence manifest is incomplete. Dense and LateOn probe
 exports run separately with conservative
 family-specific batch sizes while using all declared GPUs. Every step has an isolated log and an
 atomic JSON ledger under `logs/post-eval-pipeline/`; failed steps retry and leave an exact restart
-diagnosis. The final validation builds both distribution artifacts and byte-audits the wheel and
+diagnosis. Rerun the identical command with `--resume` to skip only the contiguous completed prefix
+whose names and full commands still match; a changed step and everything after it execute again,
+while the prior ledger is archived before the canonical ledger is updated. The final validation
+builds both distribution artifacts and byte-audits the wheel and
 sdist against every declared command, package module, configuration, worker, document, and report
 data file. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit.
 Repeatable `--wait-for-command` fragments also cover replacement or orphan workers, preventing the

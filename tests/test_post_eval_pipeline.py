@@ -278,6 +278,78 @@ def test_pipeline_retries_then_records_failed_step(tmp_path: Path):
     assert len(ledger["steps"][0]["attempts"]) == 2
 
 
+def test_pipeline_resume_skips_only_matching_completed_prefix(tmp_path: Path):
+    args = _args(tmp_path, "--step-retries", "0")
+    _progress(Path(args.progress))
+    initial_calls = []
+
+    def fail_second(command, **kwargs):
+        initial_calls.append(command)
+        kwargs["stdout"].write("initial attempt\n")
+        return subprocess.CompletedProcess(command, 0 if len(initial_calls) == 1 else 17)
+
+    assert supervise_post_eval(args, run_command=fail_second) == 1
+    failed = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
+    assert failed["steps"][0]["complete"] is True
+    assert failed["failed_step"] == "strict-blog-render"
+
+    args.resume = True
+    resumed_calls = []
+
+    def succeed(command, **kwargs):
+        resumed_calls.append(command)
+        kwargs["stdout"].write("resumed attempt\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    assert len(resumed_calls) == 55
+    assert resumed_calls[0][2] == "embed_optim.aggregate"
+    ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
+    assert ledger["complete"] is True
+    assert ledger["resume_count"] == 1
+    assert len(ledger["steps"]) == 56
+    assert ledger["steps"][0] == failed["steps"][0]
+    assert ledger["resume_history"][0]["completed_prefix"] == 1
+    assert ledger["resume_history"][0]["failed_step"] == "strict-blog-render"
+    archive = Path(ledger["resume_history"][0]["source"])
+    assert json.loads(archive.read_text()) == failed
+    assert len(list(Path(args.log_dir).glob("*.resume-1.attempt-1.log"))) == 55
+
+
+def test_pipeline_resume_reexecutes_after_completed_command_drift(tmp_path: Path):
+    args = _args(tmp_path)
+    _progress(Path(args.progress))
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("fixture command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    ledger_path = Path(args.log_dir) / "pipeline-ledger.json"
+    ledger = json.loads(ledger_path.read_text())
+    ledger["complete"] = False
+    ledger["steps"][0]["command"][-1] = "changed-command"
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+    args.resume = True
+    calls = []
+
+    def rerun(command, **kwargs):
+        calls.append(command)
+        kwargs["stdout"].write("rerun\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=rerun) == 0
+    assert len(calls) == 56
+
+
+def test_pipeline_resume_requires_an_existing_valid_ledger(tmp_path: Path):
+    args = _args(tmp_path, "--resume")
+    _progress(Path(args.progress))
+
+    with pytest.raises(ValueError, match="Cannot resume invalid pipeline ledger"):
+        supervise_post_eval(args)
+
+
 def test_strict_progress_rejects_unexpected_results(tmp_path: Path):
     progress = tmp_path / "progress.json"
     _progress(progress, unexpected=1)

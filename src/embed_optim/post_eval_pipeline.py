@@ -587,6 +587,61 @@ def _write_ledger(path: Path, ledger: dict[str, Any]) -> None:
     _atomic_json(path, ledger)
 
 
+def _resume_prefix(
+    ledger_path: Path,
+    steps: list[PipelineStep],
+    progress_path: Path,
+) -> tuple[dict[str, Any], int]:
+    try:
+        previous = json.loads(ledger_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError) as error:
+        raise ValueError(f"Cannot resume invalid pipeline ledger: {ledger_path}") from error
+    records = previous.get("steps")
+    recorded_progress = previous.get("progress")
+    recorded_resume_count = previous.get("resume_count", 0)
+    resume_history = previous.get("resume_history", [])
+    if (
+        previous.get("schema_version") != SCHEMA_VERSION
+        or not isinstance(records, list)
+        or not isinstance(recorded_progress, str)
+        or Path(recorded_progress).resolve() != progress_path
+        or isinstance(recorded_resume_count, bool)
+        or not isinstance(recorded_resume_count, int)
+        or recorded_resume_count < 0
+        or not isinstance(resume_history, list)
+    ):
+        raise ValueError(f"Pipeline resume ledger differs from this handoff: {ledger_path}")
+    prefix = 0
+    for step, record in zip(steps, records, strict=False):
+        if (
+            not isinstance(record, dict)
+            or record.get("name") != step.name
+            or record.get("command") != list(step.command)
+            or record.get("complete") is not True
+        ):
+            break
+        prefix += 1
+    return previous, prefix
+
+
+def _archive_resume_source(
+    ledger_path: Path,
+    previous: dict[str, Any],
+    resume_count: int,
+) -> Path:
+    archive = ledger_path.with_name(f"pipeline-ledger.before-resume-{resume_count}.json")
+    if archive.exists():
+        try:
+            existing = json.loads(archive.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError) as error:
+            raise ValueError(f"Invalid existing pipeline resume archive: {archive}") from error
+        if existing != previous:
+            raise ValueError(f"Refusing to overwrite different pipeline resume archive: {archive}")
+    else:
+        _atomic_json(archive, previous)
+    return archive
+
+
 def supervise_post_eval(
     args: argparse.Namespace,
     *,
@@ -595,9 +650,11 @@ def supervise_post_eval(
     pid_exists: Callable[[int], bool] = _pid_exists,
     matching_command_pids: Callable[[str], list[int]] = _matching_command_pids,
 ) -> int:
-    steps = pipeline_steps(args)
+    all_steps = pipeline_steps(args)
     if args.dry_run:
-        print(json.dumps([{"name": step.name, "command": list(step.command)} for step in steps]))
+        print(
+            json.dumps([{"name": step.name, "command": list(step.command)} for step in all_steps])
+        )
         return 0
 
     progress_path = Path(args.progress).resolve()
@@ -653,17 +710,47 @@ def supervise_post_eval(
     log_dir = Path(args.log_dir).resolve()
     log_dir.mkdir(parents=True, exist_ok=True)
     ledger_path = log_dir / "pipeline-ledger.json"
+    previous: dict[str, Any] | None = None
+    completed_prefix = 0
+    resume_count = 0
+    archive: Path | None = None
+    if args.resume:
+        previous, completed_prefix = _resume_prefix(ledger_path, all_steps, progress_path)
+        if previous.get("complete") is True and completed_prefix == len(all_steps):
+            print("Post-evaluation pipeline ledger is already complete", flush=True)
+            return 0
+        resume_count = int(previous.get("resume_count", 0)) + 1
+        archive = _archive_resume_source(ledger_path, previous, resume_count)
+        print(
+            f"Resuming post-evaluation pipeline after {completed_prefix}/{len(all_steps)} "
+            f"matching completed steps",
+            flush=True,
+        )
+    steps = all_steps[completed_prefix:]
+    now = _timestamp()
     ledger: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "complete": False,
-        "started_at": _timestamp(),
+        "started_at": previous.get("started_at", now) if previous is not None else now,
         "progress": str(progress_path),
         "wait_pids": args.wait_pids,
         "wait_for_commands": args.wait_for_commands,
-        "steps": [],
+        "steps": list(previous["steps"][:completed_prefix]) if previous is not None else [],
     }
+    if previous is not None and archive is not None:
+        ledger["resume_count"] = resume_count
+        ledger["resumed_at"] = now
+        ledger["resume_history"] = [
+            *list(previous.get("resume_history", [])),
+            {
+                "source": str(archive),
+                "completed_prefix": completed_prefix,
+                "failed_step": previous.get("failed_step"),
+                "finished_at": previous.get("finished_at"),
+            },
+        ]
     _write_ledger(ledger_path, ledger)
-    for index, step in enumerate(steps, start=1):
+    for index, step in enumerate(steps, start=completed_prefix + 1):
         record: dict[str, Any] = {
             "index": index,
             "name": step.name,
@@ -674,9 +761,10 @@ def supervise_post_eval(
         ledger["steps"].append(record)
         _write_ledger(ledger_path, ledger)
         for attempt in range(1, args.step_retries + 2):
-            log_path = log_dir / f"{index:02d}-{step.name}.attempt-{attempt}.log"
+            resume_suffix = f".resume-{resume_count}" if resume_count else ""
+            log_path = log_dir / (f"{index:02d}-{step.name}{resume_suffix}.attempt-{attempt}.log")
             started = _timestamp()
-            print(f"Pipeline step {index}/{len(steps)} started: {step.name}", flush=True)
+            print(f"Pipeline step {index}/{len(all_steps)} started: {step.name}", flush=True)
             with log_path.open("w", encoding="utf-8") as handle:
                 completed = run_command(
                     list(step.command),
@@ -755,6 +843,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--late-probe-batch-size", type=int, default=8)
     parser.add_argument("--skip-wandb-sync", action="store_true")
     parser.add_argument("--skip-validation", action="store_true")
+    parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
     if (
