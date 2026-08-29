@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -46,3 +47,26 @@ def test_tracked_files_do_not_contain_high_confidence_credentials() -> None:
                 findings.append(f"{path.relative_to(ROOT)}: {label}")
 
     assert not findings, "Potential credentials in tracked files:\n" + "\n".join(findings)
+
+
+def test_distributable_receipts_do_not_embed_checkout_paths() -> None:
+    receipts = (
+        ROOT / "reports/confirmatory-data/receipt.json",
+        ROOT / "reports/short-branch/subset-receipt.json",
+    )
+
+    def paths(value):
+        if isinstance(value, dict):
+            for key, item in value.items():
+                if key == "path" and isinstance(item, str):
+                    yield item
+                yield from paths(item)
+        elif isinstance(value, list):
+            for item in value:
+                yield from paths(item)
+
+    for receipt in receipts:
+        payload = json.loads(receipt.read_text(encoding="utf-8"))
+        embedded = list(paths(payload))
+        assert embedded
+        assert not [path for path in embedded if Path(path).is_absolute()]

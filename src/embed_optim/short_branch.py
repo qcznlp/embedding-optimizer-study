@@ -17,7 +17,13 @@ import yaml
 from datasets import Dataset
 
 from .config import OptimizerConfig, load_matrix, resolve_matrix_path
-from .confirmatory_data import _canonical, _dataset_file_identities, _identity, _iter_jsonl
+from .confirmatory_data import (
+    _canonical,
+    _dataset_file_identities,
+    _identity,
+    _iter_jsonl,
+    _receipt_path,
+)
 from .data import SPLITS, _seed_for, allocate_quotas
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 
@@ -255,7 +261,7 @@ def audit_short_branch_subset(
         raise ValueError("Short-branch subset identities differ")
     return {
         "status": "complete",
-        "path": str(output),
+        "path": _receipt_path(output, resolved_protocol.parent.parent),
         "manifest_sha256": _sha256(manifest_path),
         "rows": row_index,
         "quotas": dict(counts),

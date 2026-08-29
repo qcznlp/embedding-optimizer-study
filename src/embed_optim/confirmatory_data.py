@@ -45,6 +45,16 @@ def _identity(path: Path, *, root: Path | None = None) -> dict[str, Any]:
     }
 
 
+def _receipt_path(path: Path, repository_root: Path) -> str:
+    """Render repository artifacts portably while preserving external absolute paths."""
+
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(repository_root.resolve()).as_posix()
+    except ValueError:
+        return str(resolved)
+
+
 def _iter_jsonl(path: Path) -> Iterator[dict[str, Any]]:
     with path.open(encoding="utf-8") as handle:
         for line_number, line in enumerate(handle, start=1):
@@ -402,7 +412,7 @@ def audit_negative_pool(
             if reconstructed != cached_by_split[split]:
                 raise ValueError(f"{split}: cached pools differ from the pinned source")
     return {
-        "path": str(root),
+        "path": _receipt_path(root, resolved_protocol.parent.parent),
         "manifest_sha256": _sha256(manifest_path),
         "ledger_sha256": _sha256(ledger_path),
         "rows": count,
@@ -790,7 +800,7 @@ def audit_confirmatory_view(
         raise ValueError(f"Seed {seed}: changed-negative fraction is below the frozen minimum")
     return {
         "seed": seed,
-        "path": str(root),
+        "path": _receipt_path(root, resolved_protocol.parent.parent),
         "manifest_sha256": _sha256(manifest_path),
         "row_ledger_sha256": _sha256(ledger_path),
         "dataset_fingerprint": dataset._fingerprint,
@@ -816,7 +826,10 @@ def audit_confirmatory_data(
     return {
         "schema_version": SCHEMA_VERSION,
         "status": "complete",
-        "protocol": _identity(resolved_protocol),
+        "protocol": _identity(
+            resolved_protocol,
+            root=resolved_protocol.parent.parent,
+        ),
         "negative_pool": pool,
         "views": views,
         "query_positive_identity_sha256": next(iter(query_positive)),

@@ -8,11 +8,21 @@ import pyarrow.parquet as pq
 import pytest
 
 from embed_optim.confirmatory_data import (
+    _receipt_path,
     _scan_negative_pools,
     _selected_pool_indices,
     load_confirmatory_protocol,
     main,
 )
+
+
+def test_receipt_paths_are_relative_inside_the_repository(tmp_path: Path):
+    repository = tmp_path / "checkout"
+    artifact = repository / "data" / "view"
+    external = tmp_path / "external" / "view"
+
+    assert _receipt_path(artifact, repository) == "data/view"
+    assert Path(_receipt_path(external, repository)).is_absolute()
 
 
 def _score_fixture(tmp_path: Path, *, duplicate_pool_id: bool = False):
