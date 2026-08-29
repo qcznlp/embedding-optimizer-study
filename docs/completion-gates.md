@@ -49,6 +49,7 @@ embed-optim-evaluate-confirmatory --audit-only
 embed-optim-summarize-confirmatory
 embed-optim-short-branch --subset-only --audit-only
 embed-optim-short-branch --audit-only
+embed-optim-short-branch-evaluate --training-audit-only
 embed-optim-short-branch-evaluate --audit-only
 embed-optim-summarize-short-branch
 embed-optim-summarize-geometry \

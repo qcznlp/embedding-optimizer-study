@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 import json
+from argparse import Namespace
 from types import SimpleNamespace
 
+import pytest
+
+from embed_optim import evaluate_matrix
 from embed_optim.geometry import _sha256
-from embed_optim.supplemental_training_audit import audit_derived_training_artifacts
+from embed_optim.supplemental_training_audit import (
+    audit_derived_training_artifacts,
+    run_evaluation_after_specialized_audit,
+)
 
 
 def _fixture(tmp_path, monkeypatch):
@@ -166,3 +173,60 @@ def test_derived_audit_never_accepts_an_unexplained_checkpoint_shortfall(tmp_pat
     assert result["verified_checkpoints"] == 4
     assert result["expected_checkpoints"] == 5
     assert result["errors"] == ["derived training deep audit verified 4 checkpoints, expected 5"]
+
+
+def test_specialized_evaluation_consumes_preflight_and_restores_validator(monkeypatch):
+    args = Namespace(matrix="derived.yaml")
+    original = evaluate_matrix._validate_training_inputs
+
+    def run(selected):
+        evaluate_matrix._validate_training_inputs(selected)
+        return 2
+
+    monkeypatch.setattr(evaluate_matrix, "run_evaluation", run)
+    audit = {
+        "complete": True,
+        "errors": [],
+        "verified_runs": 6,
+        "verified_checkpoints": 30,
+    }
+
+    assert run_evaluation_after_specialized_audit(args, audit, label="derived") == 2
+    assert evaluate_matrix._validate_training_inputs is original
+
+
+def test_specialized_evaluation_restores_validator_when_evaluator_raises(monkeypatch):
+    args = Namespace(matrix="derived.yaml")
+    original = evaluate_matrix._validate_training_inputs
+
+    def run(selected):
+        evaluate_matrix._validate_training_inputs(selected)
+        raise LookupError("worker launch failed")
+
+    monkeypatch.setattr(evaluate_matrix, "run_evaluation", run)
+
+    with pytest.raises(LookupError, match="worker launch failed"):
+        run_evaluation_after_specialized_audit(
+            args,
+            {"complete": True, "errors": []},
+            label="derived",
+        )
+    assert evaluate_matrix._validate_training_inputs is original
+
+
+def test_specialized_evaluation_refuses_incomplete_audit(monkeypatch):
+    called = False
+
+    def run(_args):
+        nonlocal called
+        called = True
+
+    monkeypatch.setattr(evaluate_matrix, "run_evaluation", run)
+
+    with pytest.raises(RuntimeError, match="bad checkpoint"):
+        run_evaluation_after_specialized_audit(
+            Namespace(matrix="derived.yaml"),
+            {"complete": False, "errors": ["bad checkpoint"]},
+            label="derived",
+        )
+    assert called is False

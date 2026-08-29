@@ -16,7 +16,12 @@ from .probe_matrix import (
     probe_job_complete,
     run_probe_matrix,
 )
-from .short_branch import audit_short_branch_matrices, load_short_branch_protocol
+from .short_branch import (
+    audit_short_branch_matrices,
+    audit_short_branch_subset,
+    load_short_branch_protocol,
+)
+from .supplemental_training_audit import audit_derived_training_artifacts
 from .validation_data import audit_validation_data, load_validation_spec
 from .validation_matrix import run_matrix as run_validation_matrix
 from .validation_matrix import validation_job_complete
@@ -66,6 +71,58 @@ def _load_branch_configs(
     if sum(map(len, configs.values())) != protocol["training"]["expected_runs"]:
         raise ValueError("Short-branch evaluation did not load exactly 18 runs")
     return resolved_protocol, protocol, configs, generated
+
+
+def audit_short_branch_training(
+    protocol_path: str | Path,
+    configs: dict[int, list[RunConfig]],
+) -> dict[str, Any]:
+    """Deep-audit the shared 50K subset and all 18 short-branch runs."""
+
+    resolved_protocol, protocol = load_short_branch_protocol(protocol_path)
+    expected_seeds = {int(seed) for seed in protocol["training"]["order_seeds"]}
+    if (
+        set(configs) != expected_seeds
+        or sum(map(len, configs.values())) != protocol["training"]["expected_runs"]
+    ):
+        raise ValueError("Short-branch training audit requires the frozen 18-run matrix")
+    dataset = audit_short_branch_subset(resolved_protocol)
+    per_seed: dict[str, Any] = {}
+    errors: list[str] = []
+    verified_runs = 0
+    verified_checkpoints = 0
+    for seed, runs in sorted(configs.items()):
+        audit = audit_derived_training_artifacts(runs, dataset, deep=True)
+        per_seed[str(seed)] = audit
+        verified_runs += int(audit.get("verified_runs", 0))
+        verified_checkpoints += int(audit.get("verified_checkpoints", 0))
+        errors.extend(f"seed {seed}: {error}" for error in audit.get("errors", []))
+    expected_runs = int(protocol["training"]["expected_runs"])
+    expected_checkpoints = expected_runs * 5
+    complete = (
+        not errors
+        and verified_runs == expected_runs
+        and verified_checkpoints == expected_checkpoints
+        and all(audit.get("complete") is True for audit in per_seed.values())
+    )
+    if not complete and not errors:
+        errors.append(
+            "short-branch training coverage is "
+            f"{verified_runs}/{expected_runs} runs and "
+            f"{verified_checkpoints}/{expected_checkpoints} checkpoints"
+        )
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "complete": complete,
+        "protocol_sha256": _sha256(resolved_protocol),
+        "dataset": dataset,
+        "verified_runs": verified_runs,
+        "expected_runs": expected_runs,
+        "verified_checkpoints": verified_checkpoints,
+        "expected_checkpoints": expected_checkpoints,
+        "per_seed": per_seed,
+        "errors": errors,
+    }
 
 
 def build_short_branch_validation_jobs(
@@ -223,14 +280,22 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--audit-only", action="store_true")
+    parser.add_argument("--training-audit-only", action="store_true")
     parser.add_argument("--verify-hashes", action="store_true")
     parser.add_argument("--no-flash-attention", action="store_true")
     parser.add_argument(
         "--receipt", type=Path, default=Path("reports/short-branch/evaluation-receipt.json")
     )
+    parser.add_argument(
+        "--training-audit-receipt",
+        type=Path,
+        default=Path("reports/short-branch/training-audit.json"),
+    )
     args = parser.parse_args(argv)
     if args.batch_size <= 0 or args.max_retries < 0:
         parser.error("--batch-size must be positive and --max-retries must be non-negative")
+    if sum((args.dry_run, args.audit_only, args.training_audit_only)) > 1:
+        parser.error("--dry-run, --audit-only, and --training-audit-only are mutually exclusive")
     return args
 
 
@@ -242,6 +307,15 @@ def main(argv: list[str] | None = None) -> None:
         matrix_dir=args.matrix_dir,
         audit_matrices=True,
     )
+    if args.training_audit_only or (not args.audit_only and not args.dry_run):
+        training_audit = audit_short_branch_training(protocol_path, configs)
+        if not training_audit["complete"]:
+            details = "; ".join(training_audit["errors"][:10])
+            raise RuntimeError(f"Short-branch training preflight failed: {details}")
+        _atomic_json(args.training_audit_receipt, training_audit)
+        if args.training_audit_only:
+            print(json.dumps(training_audit, indent=2, sort_keys=True))
+            return
     args.experiment_matrix = resolve_matrix_path(args.experiment_matrix).resolve()
     args.validation_spec, validation_spec = load_validation_spec(args.validation_spec)
     args.validation_probe = Path(

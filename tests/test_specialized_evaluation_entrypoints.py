@@ -1,0 +1,133 @@
+from __future__ import annotations
+
+from argparse import Namespace
+from types import SimpleNamespace
+
+from embed_optim import confirmatory_evaluation, hybrid_evaluation
+
+
+def test_hybrid_entrypoint_deep_audits_before_locked_evaluator(monkeypatch):
+    args = Namespace(matrix="configs/hybrid_adamw.yaml")
+    configs = [SimpleNamespace(run_id="hybrid")]
+    audit = {"complete": True, "errors": [], "verified_runs": 8}
+    calls = []
+    monkeypatch.setattr(hybrid_evaluation.evaluate_matrix, "parse_args", lambda _argv: args)
+    monkeypatch.setattr(
+        hybrid_evaluation.evaluate_matrix, "_selected_configs", lambda selected: configs
+    )
+    monkeypatch.setattr(
+        hybrid_evaluation,
+        "audit_hybrid_training",
+        lambda selected: calls.append(("audit", selected)) or audit,
+    )
+    monkeypatch.setattr(
+        hybrid_evaluation,
+        "run_evaluation_after_specialized_audit",
+        lambda selected_args, selected_audit, *, label: (
+            calls.append(("evaluate", selected_args, selected_audit, label)) or 0
+        ),
+    )
+
+    hybrid_evaluation.main([])
+
+    assert calls == [
+        ("audit", configs),
+        ("evaluate", args, audit, "hybrid AdamW control"),
+    ]
+
+
+def test_confirmatory_training_audit_binds_seed_view_to_six_runs(monkeypatch):
+    seed = 314159
+    configs = [SimpleNamespace(seed=seed) for _ in range(6)]
+    protocol = {
+        "confirmatory_data": {"seeds": [seed]},
+        "training": {"runs_per_seed": 6},
+    }
+    dataset = {"rows": 500_000, "training_view_fingerprint": "seed-view"}
+    expected = {"complete": True, "verified_runs": 6, "errors": []}
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "load_confirmatory_protocol",
+        lambda _path: ("protocol.json", protocol),
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_confirmatory_view",
+        lambda _path, selected_seed: dataset if selected_seed == seed else None,
+    )
+    calls = []
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_derived_training_artifacts",
+        lambda selected, receipt, *, deep: calls.append((selected, receipt, deep)) or expected,
+    )
+
+    result = confirmatory_evaluation.audit_confirmatory_training("protocol.json", seed, configs)
+
+    assert result is expected
+    assert calls == [(configs, dataset, True)]
+
+
+def test_confirmatory_entrypoint_uses_specialized_preflight_for_each_seed(tmp_path, monkeypatch):
+    seed = 314159
+    protocol_path = tmp_path / "protocol.json"
+    generated = tmp_path / "matrices"
+    args = Namespace(
+        protocol=protocol_path,
+        experiment_matrix=tmp_path / "experiment.yaml",
+        validation_spec=tmp_path / "validation.json",
+        matrix_dir=generated,
+        results_root=tmp_path / "results",
+        log_dir=tmp_path / "logs",
+        gpus_a="0,1,2,3",
+        gpus_b="4,5,6,7",
+        late_port_a=29710,
+        late_port=29720,
+        worker_python="/usr/bin/python3",
+        audit_only=False,
+        receipt=tmp_path / "receipt.json",
+    )
+    protocol = {
+        "confirmatory_data": {"seeds": [seed]},
+        "training": {"matrix_output_dir": str(generated)},
+    }
+    configs = [SimpleNamespace(seed=seed) for _ in range(6)]
+    training_audit = {"complete": True, "errors": [], "verified_runs": 6}
+    receipt = {"complete": True, "valid_units": 84}
+    monkeypatch.setattr(confirmatory_evaluation, "parse_args", lambda _argv: args)
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "load_confirmatory_protocol",
+        lambda _path: (protocol_path, protocol),
+    )
+    monkeypatch.setattr(confirmatory_evaluation, "audit_confirmatory_matrices", lambda *a, **k: {})
+    monkeypatch.setattr(confirmatory_evaluation, "load_matrix", lambda _path: configs)
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_confirmatory_training",
+        lambda _path, selected_seed, selected_configs: training_audit,
+    )
+    calls = []
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "run_evaluation_after_specialized_audit",
+        lambda worker_args, audit, *, label: calls.append((worker_args, audit, label)) or 0,
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_confirmatory_evaluations",
+        lambda *a, **k: receipt,
+    )
+    writes = []
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "_atomic_json",
+        lambda path, payload: writes.append((path, payload)),
+    )
+
+    confirmatory_evaluation.main([])
+
+    assert len(calls) == 1
+    assert calls[0][1:] == (training_audit, f"confirmatory seed {seed}")
+    assert calls[0][0].matrix == str((generated / f"seed{seed}.yaml").resolve())
+    assert writes == [(args.receipt, receipt)]

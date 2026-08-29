@@ -7,11 +7,15 @@ from pathlib import Path
 from typing import Any
 
 from .aggregate import collect_evaluations
-from .confirmatory_data import load_confirmatory_protocol
+from .config import RunConfig, load_matrix
+from .confirmatory_data import audit_confirmatory_view, load_confirmatory_protocol
 from .confirmatory_matrix import audit_confirmatory_matrices
 from .decontamination import DECONTAMINATED_TASK_NAMES
-from .evaluate_matrix import run_evaluation
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .supplemental_training_audit import (
+    audit_derived_training_artifacts,
+    run_evaluation_after_specialized_audit,
+)
 
 
 def _matrix_paths(protocol: dict[str, Any], matrix_dir: Path) -> dict[int, Path]:
@@ -19,6 +23,24 @@ def _matrix_paths(protocol: dict[str, Any], matrix_dir: Path) -> dict[int, Path]
         int(seed): (matrix_dir / f"seed{int(seed)}.yaml").resolve()
         for seed in protocol["confirmatory_data"]["seeds"]
     }
+
+
+def audit_confirmatory_training(
+    protocol_path: str | Path,
+    seed: int,
+    configs: list[RunConfig],
+) -> dict[str, Any]:
+    """Deep-audit one derived 500K view and all six runs trained from it."""
+
+    _, protocol = load_confirmatory_protocol(protocol_path)
+    if (
+        seed not in protocol["confirmatory_data"]["seeds"]
+        or len(configs) != protocol["training"]["runs_per_seed"]
+        or {config.seed for config in configs} != {seed}
+    ):
+        raise ValueError(f"Seed {seed}: confirmatory training selection differs")
+    dataset = audit_confirmatory_view(protocol_path, seed)
+    return audit_derived_training_artifacts(configs, dataset, deep=True)
 
 
 def audit_confirmatory_evaluations(
@@ -44,8 +66,6 @@ def audit_confirmatory_evaluations(
     sources: list[dict[str, Any]] = []
     total = 0
     for seed, matrix_path in matrices.items():
-        from .config import load_matrix
-
         configs = load_matrix(matrix_path)
         seed_root = root / f"seed{seed}"
         try:
@@ -140,6 +160,8 @@ def main(argv: list[str] | None = None) -> None:
     )
     if not args.audit_only:
         for seed, matrix_path in _matrix_paths(protocol, generated).items():
+            configs = load_matrix(matrix_path)
+            training_audit = audit_confirmatory_training(protocol_path, seed, configs)
             worker_args = argparse.Namespace(
                 matrix=str(matrix_path),
                 families=["dense", "late"],
@@ -154,7 +176,11 @@ def main(argv: list[str] | None = None) -> None:
                 log_dir=str((args.log_dir / f"seed{seed}").resolve()),
                 worker_python=args.worker_python or sys.executable,
             )
-            if failures := run_evaluation(worker_args):
+            if failures := run_evaluation_after_specialized_audit(
+                worker_args,
+                training_audit,
+                label=f"confirmatory seed {seed}",
+            ):
                 raise RuntimeError(f"Seed {seed}: {failures} evaluator subprocesses failed")
     receipt = audit_confirmatory_evaluations(
         protocol_path,

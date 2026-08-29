@@ -811,6 +811,7 @@ embed-optim-matrix --matrix configs/generated/short-branch/seed271828.yaml
 embed-optim-matrix --matrix configs/generated/short-branch/seed161803.yaml
 
 # After all 18 branches finish, score every retained checkpoint on both frozen probes.
+embed-optim-short-branch-evaluate --training-audit-only
 embed-optim-short-branch-evaluate --gpus 0,1,2,3,4,5,6,7
 embed-optim-short-branch-evaluate --audit-only
 embed-optim-summarize-short-branch
@@ -832,7 +833,7 @@ embed-optim-matrix \
   --matrix configs/hybrid_adamw.yaml \
   --log-dir logs/hybrid-adamw
 
-embed-optim-evaluate \
+embed-optim-evaluate-hybrid \
   --matrix configs/hybrid_adamw.yaml \
   --stages 5 \
   --results-root results/hybrid-adamw-beir \

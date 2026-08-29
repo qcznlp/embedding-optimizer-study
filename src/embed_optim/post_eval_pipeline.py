@@ -382,7 +382,7 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 "hybrid-adamw-evaluation",
                 _module(
                     args.python,
-                    "embed_optim.evaluate_matrix",
+                    "embed_optim.hybrid_evaluation",
                     "--matrix",
                     "configs/hybrid_adamw.yaml",
                     "--stages",
@@ -479,7 +479,11 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
         [
             PipelineStep(
                 "short-branch-training-audit",
-                _module(args.python, "embed_optim.short_branch", "--audit-only"),
+                _module(
+                    args.python,
+                    "embed_optim.short_branch_evaluation",
+                    "--training-audit-only",
+                ),
             ),
             PipelineStep(
                 "short-branch-evaluation",

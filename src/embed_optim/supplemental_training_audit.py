@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import gc
 import json
+from argparse import Namespace
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +17,54 @@ from .aggregate import (
 from .config import RunConfig
 from .geometry import _sha256
 from .hybrid_control import _hybrid_optimizer_contract_problem
+
+
+def run_evaluation_after_specialized_audit(
+    args: Namespace,
+    audit: dict[str, Any],
+    *,
+    label: str,
+) -> int:
+    """Run the locked evaluator after a stronger specialized training audit.
+
+    The locked evaluator owns all formal-runtime, worker-source, package-version,
+    checkpoint-selection, and subprocess checks. Its generic training preflight
+    predates hybrid AdamW and the derived-dataset manifest schema, so a caller
+    may replace *only* that preflight after proving the corresponding specialized
+    audit complete. The original validator is restored even if evaluation fails.
+    """
+
+    if audit.get("complete") is not True or audit.get("errors"):
+        details = "; ".join(str(error) for error in audit.get("errors", [])[:10])
+        raise RuntimeError(f"{label} training preflight failed: {details or 'incomplete audit'}")
+
+    from . import evaluate_matrix
+
+    original = evaluate_matrix._validate_training_inputs
+    preflight_consumed = False
+
+    def specialized_preflight(selected_args: Namespace) -> None:
+        nonlocal preflight_consumed
+        if selected_args is not args:
+            raise RuntimeError(f"{label} evaluator arguments changed after training audit")
+        if preflight_consumed:
+            raise RuntimeError(f"{label} specialized training preflight was consumed twice")
+        preflight_consumed = True
+        print(
+            f"{label} specialized training preflight: "
+            f"{audit.get('verified_runs', 0)} runs / "
+            f"{audit.get('verified_checkpoints', 0)} checkpoints deep-validated",
+            flush=True,
+        )
+
+    evaluate_matrix._validate_training_inputs = specialized_preflight
+    try:
+        result = evaluate_matrix.run_evaluation(args)
+    finally:
+        evaluate_matrix._validate_training_inputs = original
+    if not preflight_consumed:
+        raise RuntimeError(f"{label} evaluator did not consume its specialized training preflight")
+    return result
 
 
 def _load_json(path: Path, *, context: str, errors: list[str]) -> dict[str, Any] | None:

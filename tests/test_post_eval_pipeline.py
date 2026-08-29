@@ -118,6 +118,8 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     assert [step.name for step in steps].index("hybrid-adamw-training") < [
         step.name for step in steps
     ].index("hybrid-adamw-evaluation")
+    hybrid_evaluation = next(step for step in steps if step.name == "hybrid-adamw-evaluation")
+    assert hybrid_evaluation.command[2] == "embed_optim.hybrid_evaluation"
     assert [step.name for step in steps].index("confirmatory-matrix-generation") < [
         step.name for step in steps
     ].index("confirmatory-training-seed-314159")
@@ -128,6 +130,16 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
         step.name for step in steps
     ].index("short-branch-training-seed-314159")
     assert [step.name for step in steps].index("short-branch-training-seed-161803") < [
+        step.name for step in steps
+    ].index("short-branch-evaluation")
+    short_training_audit = next(
+        step for step in steps if step.name == "short-branch-training-audit"
+    )
+    assert short_training_audit.command[2:] == (
+        "embed_optim.short_branch_evaluation",
+        "--training-audit-only",
+    )
+    assert [step.name for step in steps].index("short-branch-training-audit") < [
         step.name for step in steps
     ].index("short-branch-evaluation")
     assert [step.name for step in steps].index("short-branch-evaluation-audit") < [
