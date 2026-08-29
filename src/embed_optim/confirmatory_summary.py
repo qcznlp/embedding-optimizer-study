@@ -14,7 +14,6 @@ from typing import Any
 import numpy as np
 
 from .aggregate import (
-    audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
 )
@@ -24,6 +23,7 @@ from .confirmatory_evaluation import audit_confirmatory_evaluations
 from .confirmatory_matrix import audit_confirmatory_matrices
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .supplemental_training_audit import audit_derived_training_artifacts
 
 FAMILIES = ("dense", "late")
 OPTIMIZERS = ("adamw", "muon", "normuon")
@@ -246,12 +246,7 @@ def build_confirmatory_report(
         matrix_path = generated / f"seed{seed}.yaml"
         configs = load_matrix(matrix_path)
         dataset = audit_confirmatory_view(resolved_protocol, seed)
-        training = audit_training_artifacts(
-            configs,
-            deep=True,
-            expected_dataset_fingerprint=dataset["training_view_fingerprint"],
-            expected_dataset_rows=dataset["rows"],
-        )
+        training = audit_derived_training_artifacts(configs, dataset, deep=True)
         if not training.get("complete"):
             raise ValueError(f"Seed {seed}: confirmatory training artifacts failed strict audit")
         training_audits[str(seed)] = {"dataset": dataset, "training": training}

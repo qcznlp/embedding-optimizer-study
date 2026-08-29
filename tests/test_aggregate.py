@@ -831,24 +831,6 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
         "dense/adamw-test: training dataset view fingerprint differs from audited dataset"
     ]
 
-    derived_manifest = dict(manifest)
-    derived_manifest["rows"] = derived_manifest.pop("total_queries")
-    (dataset / "manifest.json").write_text(json.dumps(derived_manifest))
-    (output / "dataset_manifest.json").write_text(json.dumps(derived_manifest))
-    derived_dataset = audit_training_artifacts(
-        [config],
-        expected_dataset_fingerprint="dataset-fingerprint",
-        expected_dataset_rows=10,
-    )
-    assert derived_dataset["complete"] is True
-    wrong_dataset_rows = audit_training_artifacts([config], expected_dataset_rows=11)
-    assert wrong_dataset_rows["complete"] is False
-    assert wrong_dataset_rows["errors"] == [
-        "dense/adamw-test: source dataset row count differs from audited dataset"
-    ]
-    (dataset / "manifest.json").write_text(json.dumps(manifest))
-    (output / "dataset_manifest.json").write_text(json.dumps(manifest))
-
     import torch
     from safetensors.torch import save_file
 
