@@ -120,6 +120,10 @@ huggingface-cli login
 wandb login
 ```
 
+CI uses a full-depth checkout and rejects high-confidence credentials in the tracked tree, every
+reachable Git revision and commit message, and every wheel/sdist member. Findings report only the
+location and credential class, never the matched value.
+
 ## Reproduce the study
 
 ### 1. Materialize the shared dataset

@@ -49,6 +49,53 @@ def test_tracked_files_do_not_contain_high_confidence_credentials() -> None:
     assert not findings, "Potential credentials in tracked files:\n" + "\n".join(findings)
 
 
+def test_complete_git_history_does_not_contain_high_confidence_credentials() -> None:
+    if not (ROOT / ".git").exists():
+        pytest.skip("credential history hygiene requires a Git repository checkout")
+    shallow = subprocess.run(
+        ["git", "rev-parse", "--is-shallow-repository"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert shallow == "false", "Credential history audit requires a complete clone"
+
+    findings: list[str] = []
+    for label, pattern in _credential_patterns().items():
+        extended_pattern = pattern.pattern.decode().replace("(?:", "(")
+        commits = subprocess.run(
+            [
+                "git",
+                "log",
+                "--all",
+                "--extended-regexp",
+                f"-G{extended_pattern}",
+                "--format=%H",
+                "--",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.splitlines()
+        if commits:
+            findings.append(f"{label}: {len(set(commits))} history commit(s)")
+
+    messages = subprocess.run(
+        ["git", "log", "--all", "--format=%B"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    ).stdout
+    findings.extend(
+        f"{label}: commit message"
+        for label, pattern in _credential_patterns().items()
+        if pattern.search(messages)
+    )
+    assert not findings, "Potential credentials in Git history:\n" + "\n".join(findings)
+
+
 def test_distributable_receipts_do_not_embed_checkout_paths() -> None:
     receipts = (
         ROOT / "reports/confirmatory-data/receipt.json",

@@ -19,6 +19,26 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _credential_patterns() -> dict[str, re.Pattern[bytes]]:
+    # Split high-confidence prefixes so the scanner's own source is safe to bundle.
+    return {
+        "Weights & Biases API token": re.compile(b"wandb" + b"_v1_" + rb"[A-Za-z0-9_-]{20,}"),
+        "GitHub personal access token": re.compile(b"gh" + rb"[pousr]_[A-Za-z0-9]{20,}"),
+        "GitHub fine-grained token": re.compile(b"github" + b"_pat_" + rb"[A-Za-z0-9_]{20,}"),
+        "AWS access key": re.compile(b"AK" + rb"IA[0-9A-Z]{16}"),
+        "OpenAI project key": re.compile(b"sk" + b"-proj-" + rb"[A-Za-z0-9_-]{20,}"),
+        "private key": re.compile(b"-----BEGIN " + rb"(?:RSA |EC |OPENSSH )?PRIVATE KEY-----"),
+    }
+
+
+def _credential_findings(scope: str, member: str, payload: bytes) -> list[str]:
+    return [
+        f"{scope} credential pattern: {member}: {label}"
+        for label, pattern in _credential_patterns().items()
+        if pattern.search(payload)
+    ]
+
+
 def _section(text: str, name: str) -> str:
     marker = f"[{name}]"
     if marker not in text:
@@ -103,6 +123,11 @@ def audit_distribution(
         corrupt = archive.testzip()
         if corrupt is not None:
             problems.append(f"wheel CRC failure: {corrupt}")
+        for member in archive.infolist():
+            if not member.is_dir():
+                problems.extend(
+                    _credential_findings("wheel", member.filename, archive.read(member))
+                )
         expected_package = set(package_members.values())
         expected_data = set(data_members.values())
         expected_metadata = {
@@ -140,6 +165,7 @@ def audit_distribution(
     }
     with tarfile.open(sdist, "r:gz") as archive:
         names = set(archive.getnames())
+        payloads: dict[str, bytes] = {}
         missing_sdist = sorted(
             source for source in expected_sdist_sources if f"{sdist_prefix}{source}" not in names
         )
@@ -151,14 +177,14 @@ def audit_distribution(
                 if extracted is None:
                     problems.append(f"sdist unreadable: {member.name}")
                     continue
-                while extracted.read(1024 * 1024):
-                    pass
+                payload = extracted.read()
+                payloads[member.name] = payload
+                problems.extend(_credential_findings("sdist", member.name, payload))
         for source in sorted(expected_sdist_sources):
             member = f"{sdist_prefix}{source}"
             if member not in names:
                 continue
-            extracted = archive.extractfile(member)
-            if extracted is None or extracted.read() != (root / source).read_bytes():
+            if payloads.get(member) != (root / source).read_bytes():
                 problems.append(f"sdist content mismatch: {source}")
 
     return {

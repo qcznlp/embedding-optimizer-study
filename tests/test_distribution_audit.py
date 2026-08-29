@@ -8,7 +8,9 @@ from pathlib import Path
 from embed_optim.distribution_audit import audit_distribution
 
 
-def _fixture_project(root: Path, *, include_wheel_data: bool = True) -> None:
+def _fixture_project(
+    root: Path, *, include_wheel_data: bool = True, include_credential: bool = False
+) -> None:
     (root / "src/embed_optim").mkdir(parents=True)
     (root / "docs").mkdir()
     (root / "dist").mkdir()
@@ -45,6 +47,8 @@ demo-command = "embed_optim:main"
             "[console_scripts]\ndemo-command = embed_optim:main\n",
         )
         archive.writestr(f"{prefix}.dist-info/licenses/LICENSE", "license\n")
+        if include_credential:
+            archive.writestr("unexpected/leak.txt", "wandb" + "_v1_" + "A" * 24)
 
     sources = {
         "README.md": "# Demo\n",
@@ -53,6 +57,8 @@ demo-command = "embed_optim:main"
         "src/embed_optim/__init__.py": "def main(): pass\n",
         "docs/blog.md": "# Result-safe blog\n",
     }
+    if include_credential:
+        sources["unexpected/leak.txt"] = "github" + "_pat_" + "B" * 24
     with tarfile.open(root / "dist/demo_project-1.2.3.tar.gz", "w:gz") as archive:
         for relative, content in sources.items():
             payload = content.encode()
@@ -97,3 +103,17 @@ def test_distribution_audit_rejects_stale_archive_content(tmp_path: Path):
         "wheel content mismatch: demo_project-1.2.3.data/data/share/demo/blog.md != docs/blog.md",
         "sdist content mismatch: docs/blog.md",
     ]
+
+
+def test_distribution_audit_rejects_credentials_without_echoing_them(tmp_path: Path):
+    _fixture_project(tmp_path, include_credential=True)
+
+    result = audit_distribution(tmp_path)
+
+    assert result["complete"] is False
+    assert result["problems"] == [
+        "wheel credential pattern: unexpected/leak.txt: Weights & Biases API token",
+        "sdist credential pattern: demo_project-1.2.3/unexpected/leak.txt: "
+        "GitHub fine-grained token",
+    ]
+    assert not any("A" * 24 in problem or "B" * 24 in problem for problem in result["problems"])
