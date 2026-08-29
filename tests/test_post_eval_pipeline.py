@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import importlib
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -154,6 +156,26 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     assert supervise_post_eval(args) == 0
     rendered = json.loads(capsys.readouterr().out)
     assert [item["name"] for item in rendered] == [step.name for step in steps]
+
+
+def test_full_pipeline_commands_have_importable_cli_contracts(tmp_path: Path):
+    args = _args(tmp_path)
+    args.skip_wandb_sync = False
+    args.skip_validation = False
+    steps = pipeline_steps(args)
+
+    assert len(steps) == 61
+    for step in steps:
+        command = list(step.command)
+        if len(command) >= 3 and command[1] == "-m":
+            module = importlib.import_module(command[2])
+            parser = getattr(module, "parse_args", None)
+            if parser is not None:
+                parser(command[3:])
+        elif len(command) >= 3 and command[1] == "-c":
+            compile(command[2], f"<pipeline:{step.name}>", "exec")
+        else:
+            assert shutil.which(command[0]) is not None, step
 
 
 def test_distribution_build_uses_uv_instead_of_shadowable_python_module(tmp_path: Path):
