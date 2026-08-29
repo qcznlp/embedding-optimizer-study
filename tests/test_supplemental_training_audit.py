@@ -25,6 +25,7 @@ def _fixture(tmp_path, monkeypatch):
         run_id="muon-derived",
         dataset_path=str(dataset),
         output_dir=output,
+        optimizer=SimpleNamespace(name="muon"),
     )
     generic = {
         "complete": False,
@@ -98,3 +99,70 @@ def test_derived_audit_preserves_unrelated_deep_errors(tmp_path, monkeypatch):
     assert result["complete"] is False
     assert result["errors"] == [checkpoint_error]
     assert result["verified_checkpoints"] == 4
+
+
+def test_hybrid_derived_run_uses_the_three_group_deep_auditor(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+    config.optimizer.name = "hybrid_adamw"
+    calls = []
+
+    def generic(*args, **kwargs):
+        calls.append(kwargs["deep"])
+        return {
+            "complete": False,
+            "verified_runs": 0,
+            "expected_runs": 1,
+            "verified_checkpoints": 5,
+            "expected_checkpoints": 5,
+            "deep_validation": False,
+            "errors": ["dense/muon-derived: completion dataset row count does not match manifest"],
+        }
+
+    hybrid_calls = []
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit.audit_training_artifacts",
+        generic,
+    )
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit._audit_hybrid_checkpoints",
+        lambda selected: (hybrid_calls.append(selected.run_id) or 5, []),
+    )
+
+    result = audit_derived_training_artifacts([config], receipt, deep=True)
+
+    assert calls == [False]
+    assert hybrid_calls == [config.run_id]
+    assert result["complete"] is True
+    assert result["verified_checkpoints"] == 5
+
+
+def test_hybrid_derived_run_preserves_optimizer_contract_errors(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+    config.optimizer.name = "hybrid_adamw"
+    optimizer_error = "dense/muon-derived/checkpoint-2: optimizer group 0 algorithm is not AdamW"
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit._audit_hybrid_checkpoints",
+        lambda _config: (4, [optimizer_error]),
+    )
+
+    result = audit_derived_training_artifacts([config], receipt, deep=True)
+
+    assert result["complete"] is False
+    assert result["errors"] == [optimizer_error]
+    assert result["verified_checkpoints"] == 4
+
+
+def test_derived_audit_never_accepts_an_unexplained_checkpoint_shortfall(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+    config.optimizer.name = "hybrid_adamw"
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit._audit_hybrid_checkpoints",
+        lambda _config: (4, []),
+    )
+
+    result = audit_derived_training_artifacts([config], receipt, deep=True)
+
+    assert result["complete"] is False
+    assert result["verified_checkpoints"] == 4
+    assert result["expected_checkpoints"] == 5
+    assert result["errors"] == ["derived training deep audit verified 4 checkpoints, expected 5"]

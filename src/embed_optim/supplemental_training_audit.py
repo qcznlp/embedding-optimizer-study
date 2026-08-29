@@ -1,12 +1,21 @@
 from __future__ import annotations
 
+import gc
 import json
 from pathlib import Path
 from typing import Any
 
-from .aggregate import audit_training_artifacts
+import torch
+
+from .aggregate import (
+    _deep_checkpoint_problems,
+    _scheduler_contract_problem,
+    _training_arguments_problem,
+    audit_training_artifacts,
+)
 from .config import RunConfig
 from .geometry import _sha256
+from .hybrid_control import _hybrid_optimizer_contract_problem
 
 
 def _load_json(path: Path, *, context: str, errors: list[str]) -> dict[str, Any] | None:
@@ -19,6 +28,69 @@ def _load_json(path: Path, *, context: str, errors: list[str]) -> dict[str, Any]
         errors.append(f"{context}: expected a JSON object")
         return None
     return payload
+
+
+def _audit_hybrid_checkpoints(config: RunConfig) -> tuple[int, list[str]]:
+    """Deep-audit one hybrid-routed AdamW run with its three-group contract."""
+
+    label = f"{config.model_family}/{config.run_id}"
+    schedule_path = config.output_dir / "checkpoint_schedule.json"
+    try:
+        steps = [int(step) for step in json.loads(schedule_path.read_text())["steps"]]
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+        return 0, [f"{label}: invalid checkpoint schedule for hybrid audit ({error})"]
+    if len(steps) != 5 or steps != sorted(set(steps)):
+        return 0, [f"{label}: hybrid audit requires five increasing checkpoint steps"]
+
+    errors: list[str] = []
+    verified = 0
+    final_step = steps[-1]
+    for step in steps:
+        checkpoint = config.output_dir / f"checkpoint-{step}"
+        problems = _deep_checkpoint_problems(checkpoint, step, world_size=4)
+        optimizer = None
+        try:
+            optimizer = torch.load(
+                checkpoint / "optimizer.pt",
+                map_location="cpu",
+                weights_only=True,
+                mmap=True,
+            )
+            if problem := _hybrid_optimizer_contract_problem(optimizer, config, step, final_step):
+                problems.append(problem)
+        except Exception as error:  # noqa: BLE001
+            problems.append(
+                f"hybrid optimizer contract load failed ({type(error).__name__}: {error})"
+            )
+        finally:
+            del optimizer
+            gc.collect()
+        try:
+            scheduler = torch.load(
+                checkpoint / "scheduler.pt", map_location="cpu", weights_only=True
+            )
+            if problem := _scheduler_contract_problem(scheduler, config, step, final_step):
+                problems.append(problem)
+        except Exception as error:  # noqa: BLE001
+            problems.append(f"scheduler contract load failed ({type(error).__name__}: {error})")
+        if problem := _training_arguments_problem(
+            checkpoint / "training_args.bin", config, world_size=4, final_step=final_step
+        ):
+            problems.append(problem)
+        checkpoint_label = f"{label}/checkpoint-{step}"
+        if problems:
+            errors.extend(f"{checkpoint_label}: {problem}" for problem in problems)
+        else:
+            verified += 1
+    return verified, errors
+
+
+def _append_unique(target: list[str], additions: list[str]) -> None:
+    seen = set(target)
+    for error in additions:
+        if error not in seen:
+            target.append(error)
+            seen.add(error)
 
 
 def audit_derived_training_artifacts(
@@ -61,10 +133,27 @@ def audit_derived_training_artifacts(
 
     generic = audit_training_artifacts(
         configs,
-        deep=deep,
+        deep=False,
         expected_dataset_fingerprint=fingerprint,
     )
     remaining = list(generic["errors"])
+    verified_checkpoints = int(generic.get("verified_checkpoints", 0))
+    if deep:
+        verified_checkpoints = 0
+        native = [config for config in configs if config.optimizer.name != "hybrid_adamw"]
+        if native:
+            native_audit = audit_training_artifacts(
+                native,
+                deep=True,
+                expected_dataset_fingerprint=fingerprint,
+            )
+            _append_unique(remaining, list(native_audit["errors"]))
+            verified_checkpoints += int(native_audit.get("verified_checkpoints", 0))
+        for config in configs:
+            if config.optimizer.name == "hybrid_adamw":
+                verified, hybrid_errors = _audit_hybrid_checkpoints(config)
+                verified_checkpoints += verified
+                _append_unique(remaining, hybrid_errors)
     for config in configs:
         label = f"{config.model_family}/{config.run_id}"
         source_manifest_path = Path(config.dataset_path) / "manifest.json"
@@ -107,6 +196,12 @@ def audit_derived_training_artifacts(
         errors.extend(local_errors)
 
     errors = [*remaining, *errors]
+    expected_checkpoints = len(configs) * 5
+    if verified_checkpoints != expected_checkpoints and not errors:
+        errors.append(
+            f"derived training deep audit verified {verified_checkpoints} checkpoints, "
+            f"expected {expected_checkpoints}"
+        )
     errored_runs = {
         f"{config.model_family}/{config.run_id}"
         for config in configs
@@ -120,6 +215,9 @@ def audit_derived_training_artifacts(
     result["errors"] = errors
     result["complete"] = not errors
     result["verified_runs"] = max(0, len(configs) - len(errored_runs))
+    result["verified_checkpoints"] = verified_checkpoints
+    result["expected_checkpoints"] = expected_checkpoints
+    result["deep_validation"] = deep
     result["derived_dataset_rows"] = rows
     result["derived_training_view_fingerprint"] = fingerprint
     return result
