@@ -27,6 +27,21 @@ PAPER_RESULT_TABLE_PATHS = (
     Path("paper/generated/intervention.tex"),
     Path("paper/generated/confirmation.tex"),
 )
+PAPER_SOURCE_TABLE_PATHS = (
+    Path("reports/retrieval-dynamics/checkpoint_dynamics.csv"),
+    Path("reports/retrieval-dynamics/optimizer_first_passage.csv"),
+    Path("reports/retrieval-dynamics/best_config_task_comparison.csv"),
+    Path("reports/retrieval-dynamics/task_delta_stability.csv"),
+    Path("reports/common-state/anchor_contrasts.csv"),
+    Path("reports/basis-sensitivity/summary.csv"),
+    Path("results/common-state-spectra/summary/spectrum_metrics.csv"),
+    Path("reports/mechanism-bridge/checkpoint_bridge.csv"),
+    Path("reports/mechanism-bridge/descriptive_correlations.csv"),
+    Path("reports/functional-intervention/family_summary.csv"),
+    Path("reports/hybrid-adamw/final_summary.csv"),
+    Path("reports/short-branch/paired_dynamics_summary.csv"),
+    Path("reports/confirmatory/paired_summary.csv"),
+)
 PAPER_CLAIM_PROTOCOL_SHA256 = "0ddff916eccedbe493b41a07538d0e4e9e058a784f5440e10d688f5270609949"
 PAPER_CLAIM_SOURCE_PATHS = (
     "configs/experiment.yaml",
@@ -70,6 +85,19 @@ STRICT_EVIDENCE = {
     ),
 }
 MACRO_PATTERN = re.compile(r"^\\newcommand\{\\([A-Za-z]+)\}\{(.*)\}$")
+FINAL_DOCUMENT_STALE_PHRASES = {
+    Path("docs/blog.md"): (
+        "**Experiment status:** training matrix in progress.",
+        "Results will be inserted here",
+        "will be inserted after strict retrieval",
+        "will be inserted here only after",
+        "Retrieval time-to-quality remains pending",
+    ),
+    Path("paper/main.tex"): (
+        "The final analysis will report",
+        "The practical recommendation will therefore",
+    ),
+}
 
 
 def _macros(path: Path) -> dict[str, str]:
@@ -673,9 +701,7 @@ def _paper_results_complete(path: Path, payload: dict[str, Any]) -> bool:
         or len(evidence) != len(expected_evidence)
         or {_declared_path(root, record) for record in evidence} != expected_evidence
         or any(not _hashed_file_complete(root, record) for record in evidence)
-        or not isinstance(tables, list)
-        or len(tables) != 11
-        or any(not _hashed_file_complete(root, record) for record in tables)
+        or not _paper_source_tables_complete(root, tables)
         or not _paper_result_tables_complete(root, result_tables)
         or not isinstance(headlines, dict)
         or set(headlines) != set(HEADLINE_MACROS)
@@ -712,6 +738,31 @@ def _paper_result_tables_complete(root: Path, records: Any) -> bool:
         return all("\\ResultPending" not in path.read_text(encoding="utf-8") for path in expected)
     except (OSError, UnicodeDecodeError):
         return False
+
+
+def _paper_source_tables_complete(root: Path, records: Any) -> bool:
+    expected = tuple((root / relative).resolve() for relative in PAPER_SOURCE_TABLE_PATHS)
+    return bool(
+        isinstance(records, list)
+        and len(records) == len(expected)
+        and all(
+            _hashed_file_complete(root, record, expected_path=path)
+            for record, path in zip(records, expected, strict=True)
+        )
+    )
+
+
+def _final_document_language_problems(root: Path) -> list[str]:
+    problems = []
+    for relative, phrases in FINAL_DOCUMENT_STALE_PHRASES.items():
+        path = root / relative
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+            problems.append(f"{relative}: unreadable ({type(error).__name__})")
+            continue
+        problems.extend(f"{relative}: {phrase}" for phrase in phrases if phrase in text)
+    return problems
 
 
 def audit_paper(
@@ -765,7 +816,13 @@ def audit_paper(
     )
     paper_results_path = root / "reports/paper-results.manifest.json"
     paper_results_complete = _complete_manifest(paper_results_path)
-    complete = not pending and not incomplete_evidence and paper_results_complete
+    document_language_problems = _final_document_language_problems(root)
+    complete = (
+        not pending
+        and not incomplete_evidence
+        and paper_results_complete
+        and not document_language_problems
+    )
     result = {
         "schema_version": SCHEMA_VERSION,
         "complete": complete,
@@ -791,12 +848,14 @@ def audit_paper(
             "complete": paper_results_complete,
             "sha256": _sha256(paper_results_path) if paper_results_path.is_file() else None,
         },
+        "document_language_problems": document_language_problems,
     }
     if strict and not complete:
         raise ValueError(
             "Paper is not final: "
             f"pending_headlines={pending}, incomplete_evidence={incomplete_evidence}, "
-            f"paper_results_complete={paper_results_complete}"
+            f"paper_results_complete={paper_results_complete}, "
+            f"document_language_problems={document_language_problems}"
         )
     return result
 

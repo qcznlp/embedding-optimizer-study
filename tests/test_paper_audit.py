@@ -9,9 +9,12 @@ import pytest
 
 from embed_optim.paper_audit import (
     PAPER_RESULT_TABLE_PATHS,
+    PAPER_SOURCE_TABLE_PATHS,
     _complete_manifest,
+    _final_document_language_problems,
     _macros,
     _paper_result_tables_complete,
+    _paper_source_tables_complete,
     audit_paper,
     expected_constant_macros,
     load_paper_claim_protocol,
@@ -60,6 +63,7 @@ def test_current_paper_constants_match_strict_sources():
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
     assert result["paper_results"]["complete"] is False
+    assert result["document_language_problems"]
 
 
 def test_paper_claim_protocol_freezes_result_contingent_language_before_completion():
@@ -298,3 +302,49 @@ def test_result_table_audit_requires_exact_hashes_and_no_pending_markers(tmp_pat
     records[0]["bytes"] = pending.stat().st_size
     records[0]["sha256"] = hashlib.sha256(pending.read_bytes()).hexdigest()
     assert _paper_result_tables_complete(tmp_path, records) is False
+
+
+def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_path: Path):
+    blog = tmp_path / "docs/blog.md"
+    paper = tmp_path / "paper/main.tex"
+    blog.parent.mkdir(parents=True)
+    paper.parent.mkdir(parents=True)
+    blog.write_text("Final prose.\n", encoding="utf-8")
+    paper.write_text("Final manuscript.\n", encoding="utf-8")
+
+    assert _final_document_language_problems(tmp_path) == []
+
+    blog.write_text("Results will be inserted here after evaluation.\n", encoding="utf-8")
+    paper.write_text("The final analysis will report everything.\n", encoding="utf-8")
+    problems = _final_document_language_problems(tmp_path)
+
+    assert problems == [
+        "docs/blog.md: Results will be inserted here",
+        "paper/main.tex: The final analysis will report",
+    ]
+
+
+def test_paper_source_table_audit_requires_all_thirteen_tables_in_declared_order(
+    tmp_path: Path,
+):
+    records = []
+    for relative in PAPER_SOURCE_TABLE_PATHS:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"source={relative}\n", encoding="utf-8")
+        records.append(
+            {
+                "path": str(path),
+                "bytes": path.stat().st_size,
+                "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            }
+        )
+
+    assert len(records) == 13
+    assert _paper_source_tables_complete(tmp_path, records) is True
+    assert _paper_source_tables_complete(tmp_path, records[:-1]) is False
+    assert _paper_source_tables_complete(tmp_path, list(reversed(records))) is False
+
+    first = tmp_path / PAPER_SOURCE_TABLE_PATHS[0]
+    first.write_text("changed\n", encoding="utf-8")
+    assert _paper_source_tables_complete(tmp_path, records) is False

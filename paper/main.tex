@@ -226,7 +226,7 @@ Across the four native learning-rate sweep points, Muon-family median training t
 advantage, although they do establish a smaller optimizer-state footprint. Whether fewer steps
 offset the per-step cost is evaluated only through retrieval time-to-quality.
 
-The final analysis will report (i) complete five-stage quality trajectories, (ii) observed first
+We report (i) complete five-stage quality trajectories, (ii) observed first
 passage to the within-family median final AdamW reference, (iii) the number and location of unstable
 configurations, (iv) peak memory and optimizer-state size, and (v) all per-task results. The
 first-passage rule was locked after 160 of 1,680 discovery units were visible and is disclosed as an
@@ -318,7 +318,7 @@ coverage, would support a retrieval-specific role for row adaptation. If update 
 change without consistent margin or ranking changes, the appropriate conclusion is that much of the
 parameter-space difference is functionally redundant.
 
-The practical recommendation will therefore condition on model family, update strength, and the
+The practical recommendation therefore conditions on model family, update strength, and the
 desired compute/quality operating point rather than naming a universal winner. \ConfirmationHeadline.
 
 \input{generated/confirmation}

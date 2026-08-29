@@ -225,8 +225,8 @@ archive; a merely non-empty or partially written checkpoint is not counted as co
 
 The figures below use all four learning-rate sweep points and all five retained training stages.
 The loss bands are the standard deviation over the ten trailing logged observations at each stage,
-not uncertainty across random seeds. Retrieval time-to-quality remains pending until the strict
-1,680-unit evaluation matrix completes.
+not uncertainty across random seeds. Retrieval time-to-quality is computed only from the strict
+1,680-unit evaluation matrix and is never inferred from training loss.
 
 ![All discovery training-loss trajectories](../reports/training-dynamics/training_loss_dynamics.svg)
 
@@ -562,7 +562,7 @@ checkpoints passed the same payload audit, bringing the matrix to 18/24 runs and
 A subsequent user stop arrived while DenseOn NorMuon `3e-3` and LateOn AdamW `3e-5` were still before
 their first durable checkpoint. Those partial attempts contributed no accepted timing or formal
 checkpoint. On resumption, both restarted from the common base and seed; canonical W&B reconstruction
-will use the final local Trainer histories rather than concatenate the discarded raw prefixes. The
+uses the final local Trainer histories rather than concatenating the discarded raw prefixes. The
 new DenseOn NorMuon `3e-3` run then wrote checkpoint 782. Its model digest is `c98490c78fa2`; the
 model, NorMuon/AdamW optimizer, scheduler, Trainer, and four RNG payloads all deep-validated with zero
 problems, raising coverage to 91/120 while training continued. The optimizer records the required
@@ -938,7 +938,7 @@ formal common-state output existed. It selects attention-input and MLP-expansion
 0, 10, and 21 by architecture position, then computes all three counterfactual update spectra at all
 20 anchors in both model families: 360 exact spectra total. The checked-in ledger also discloses
 that the completed weight trajectories and exploratory representation smoke tests were already
-visible. This subset will support representative singular-value curves without choosing favorable
+visible. This subset defines the representative singular-value curves without choosing favorable
 layers after inspecting the common-state spectra.
 
 A separate coordinate diagnostic was frozen at 336/1,680 strict BEIR units and before any
