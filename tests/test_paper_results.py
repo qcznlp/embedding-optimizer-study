@@ -38,7 +38,12 @@ def _rows():
         for index, optimizer in enumerate(optimizers)
     ]
     correlations = [
-        [family, "unseen margin", "mean BEIR nDCG@10", "48", "0.500"] for family in families
+        [family, predictor, "mean BEIR nDCG@10", "48", rho]
+        for family in families
+        for predictor, rho in (
+            ("unseen margin", "0.500"),
+            ("trailing training loss (post-hoc)", "-0.250"),
+        )
     ]
     functional = [
         [family, optimizer, "descent", "-0.0100", f"0.0{index + 1}00", "0.0200", "0.0300", "0.80"]
@@ -166,6 +171,8 @@ def test_headlines_report_every_frozen_evidence_tier_without_sign_overreach():
     assert "0.4000/0.4100/0.4200" in headlines["DiscoveryHeadline"]
     assert "shared-gradient common states" in headlines["CommonStateHeadline"]
     assert "descriptive" in headlines["RepresentationHeadline"]
+    assert "explicitly post-hoc loss diagnostic" in headlines["RepresentationHeadline"]
+    assert "-0.250/-0.250" in headlines["RepresentationHeadline"]
     assert "hybrid-routing" in headlines["InterventionHeadline"]
     assert "positive" in headlines["ConfirmationHeadline"]
     assert "negative" in headlines["ConfirmationHeadline"]

@@ -178,6 +178,7 @@ def _bridge(root: Path) -> Path:
                             "model_family": family,
                             "optimizer": optimizer,
                             "stage": stage,
+                            "mean_training_loss": 0.5 - stage * 0.01,
                             "training_margin_mean": 0.1 + optimizer_index * 0.01 + stage * 0.001,
                             "unseen_margin_mean": 0.2 + optimizer_index * 0.01 + stage * 0.001,
                             "unseen_query_normalized_effective_rank": 0.3 + optimizer_index * 0.01,
@@ -202,6 +203,9 @@ def _bridge(root: Path) -> Path:
         )
     ]
     selected.append(("late", "unseen_document_token_coverage_mean", "mean_beir_ndcg_at_10"))
+    selected.extend(
+        (family, "mean_training_loss", "mean_beir_ndcg_at_10") for family in ("dense", "late")
+    )
     correlations = [
         {
             "model_family": family,
@@ -215,7 +219,7 @@ def _bridge(root: Path) -> Path:
         }
         for family, predictor, outcome in selected
     ]
-    while len(correlations) < 200:
+    while len(correlations) < 216:
         index = len(correlations)
         correlations.append(
             {
@@ -241,14 +245,16 @@ def _bridge(root: Path) -> Path:
                 "complete": True,
                 "checkpoints": 120,
                 "within_run_transitions": 96,
-                "correlations": 200,
+                "correlations": 216,
                 "sources": {
                     "weight_space": {"manifest": reference, "table": reference},
+                    "training_dynamics": {"manifest": reference, "table": reference},
                     "representation": {
                         "training": {"summary_manifest": reference},
                         "unseen": {"summary_manifest": reference},
                     },
                     "evaluation": {"coverage": reference, "table": reference},
+                    "loss_retrieval_protocol": reference,
                 },
                 "outputs": {
                     "checkpoint_bridge": _declared(checkpoint_path, len(checkpoints)),
@@ -416,7 +422,9 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
     assert "Same-state optimizer fingerprints" in output.read_text()
     assert "Function-preserving basis sensitivity" in output.read_text()
     assert "Retrieval time to an AdamW reference" in output.read_text()
-    assert "seven associations were fixed" in output.read_text()
+    assert "first seven geometry associations were fixed" in output.read_text()
+    assert "trailing training loss (post-hoc)" in output.read_text()
+    assert "1,456/1,680" in output.read_text()
     assert "old" not in blog.read_text()
     assert json.loads(output.with_suffix(".manifest.json").read_text()) == manifest
 

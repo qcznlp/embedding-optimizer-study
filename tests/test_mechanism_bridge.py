@@ -157,11 +157,19 @@ def test_mechanism_bridge_strictly_joins_all_checkpoint_sources(tmp_path: Path, 
     } == first_bytes
     assert manifest["checkpoints"] == 120
     assert manifest["within_run_transitions"] == 96
-    assert manifest["correlations"] == 200
+    assert manifest["correlations"] == 216
+    assert set(manifest["sources"]) == {
+        "weight_space",
+        "training_dynamics",
+        "representation",
+        "evaluation",
+        "loss_retrieval_protocol",
+    }
     with (output / "checkpoint_bridge.csv").open(newline="") as handle:
         rows = list(csv.DictReader(handle))
     assert len(rows) == 120
     assert {row["model_family"] for row in rows} == {"dense", "late"}
+    assert all(float(row["mean_training_loss"]) >= 0 for row in rows)
     with (output / "within_run_changes.csv").open(newline="") as handle:
         changes = list(csv.DictReader(handle))
     assert len(changes) == 96

@@ -231,7 +231,10 @@ passage to the within-family median final AdamW reference, (iii) the number and 
 configurations, (iv) peak memory and optimizer-state size, and (v) all per-task results. The
 first-passage rule was locked after 160 of 1,680 discovery units were visible and is disclosed as an
 exploratory completion analysis, not a preregistration. Lower training loss is never substituted for
-better retrieval quality.
+better retrieval quality. After 1,456 discovery units were visible, we additionally declared a
+post-hoc diagnostic that joins the trailing training loss at every checkpoint to its mean BEIR score,
+both at checkpoint levels and through within-run first differences. It is reported as descriptive
+evidence only and cannot affect recipe selection or confirmatory sign language.
 
 \section{What Do the Optimizers Change?}
 

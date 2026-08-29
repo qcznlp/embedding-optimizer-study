@@ -320,7 +320,10 @@ def _bridge_rows(
         manifest.get("complete") is not True
         or manifest.get("checkpoints") != 120
         or manifest.get("within_run_transitions") != 96
-        or manifest.get("correlations") != 200
+        or manifest.get("correlations") != 216
+        or not {"training_dynamics", "loss_retrieval_protocol"}.issubset(
+            manifest.get("sources", {})
+        )
     ):
         raise ValueError("Mechanism bridge is not the strict 120-checkpoint join")
     if _rehash_references(manifest.get("sources"), context="mechanism_bridge.sources") < 6:
@@ -329,6 +332,7 @@ def _bridge_rows(
         "model_family",
         "optimizer",
         "stage",
+        "mean_training_loss",
         "training_margin_mean",
         "unseen_margin_mean",
         "unseen_query_normalized_effective_rank",
@@ -418,11 +422,13 @@ def _bridge_rows(
         )
     ]
     selected.append(("late", "unseen_document_token_coverage_mean", "mean_beir_ndcg_at_10"))
+    selected.extend((family, "mean_training_loss", "mean_beir_ndcg_at_10") for family in FAMILIES)
     labels = {
         "reference_delta_row_cv_parameter_weighted": "weight-delta row CV",
         "unseen_margin_mean": "unseen margin",
         "unseen_query_normalized_effective_rank": "unseen query effective rank",
         "unseen_document_token_coverage_mean": "document-token coverage",
+        "mean_training_loss": "trailing training loss (post-hoc)",
         "mean_beir_ndcg_at_10": "mean BEIR nDCG@10",
     }
     correlation_output: list[list[str]] = []
@@ -724,11 +730,13 @@ def render_mechanism_report(
                 ["Family", "Predictor change", "Outcome change", "Transitions", "Spearman ρ"],
                 correlation_rows,
             )
-            + "\n\nThese seven associations were fixed in the renderer and use within-run first "
-            "differences across all optimizers. They are one-seed observational summaries, not a "
-            "causal mediation analysis. The same-state fingerprints identify what each update rule "
-            "does; causal claims about later retrieval still require matched short branches or "
-            "optimizer-switch interventions.",
+            + "\n\nThe first seven geometry associations were fixed in the renderer and use "
+            "within-run first differences across all optimizers. The final two training-loss rows "
+            "are explicitly post-hoc diagnostics added after 1,456/1,680 discovery units were "
+            "visible. All nine are one-seed observational summaries, not a causal mediation "
+            "analysis. The same-state fingerprints identify what each update rule does; causal "
+            "claims about later retrieval still require matched short branches or optimizer-switch "
+            "interventions.",
         ]
     )
     output_path = output_path.resolve()
@@ -790,7 +798,10 @@ def render_mechanism_report(
             "basis_sensitivity": "median-over-ninety-fixed-comparisons-per-family-operator",
             "exact_spectra": "median-over-sixty-prespecified-spectra-per-family-operator",
             "representation": "final-stage-median-over-four-frozen-learning-rates",
-            "bridge": "seven-prespecified-within-run-first-difference-spearman-associations",
+            "bridge": (
+                "seven-prespecified-geometry-and-two-posthoc-training-loss-within-run-"
+                "first-difference-spearman-associations"
+            ),
         },
         "interpretation": (
             "Common-state transforms identify optimizer fingerprints and the bridge remains "

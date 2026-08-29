@@ -298,12 +298,16 @@ def build_headline_macros(
     correlation = {(row[0], row[1], row[2]): row for row in correlation_rows if len(row) >= 5}
     representation_parts = []
     rho_parts = []
+    loss_rho_parts = []
     for family_label in FAMILY_LABELS.values():
         margins = "/".join(
             representation[(family_label, operator)][3] for operator in optimizer_labels
         )
         representation_parts.append(f"{family_label} unseen margins were {margins}")
         rho_parts.append(correlation[(family_label, "unseen margin", "mean BEIR nDCG@10")][4])
+        loss_rho_parts.append(
+            correlation[(family_label, "trailing training loss (post-hoc)", "mean BEIR nDCG@10")][4]
+        )
     late_coverage = "/".join(
         representation[("LateOn", operator)][6] for operator in optimizer_labels
     )
@@ -311,7 +315,9 @@ def build_headline_macros(
         "For AdamW/Muon/NorMuon respectively, "
         + "; ".join(representation_parts)
         + f", and LateOn document-token coverage was {late_coverage}. The descriptive within-run "
-        f"margin-to-BEIR Spearman rho was {rho_parts[0]}/{rho_parts[1]} for DenseOn/LateOn."
+        f"margin-to-BEIR Spearman rho was {rho_parts[0]}/{rho_parts[1]} for DenseOn/LateOn. "
+        "In the explicitly post-hoc loss diagnostic, the corresponding trailing-training-loss-to-"
+        f"BEIR rho was {loss_rho_parts[0]}/{loss_rho_parts[1]}."
     )
 
     intervention_parts = []

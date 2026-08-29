@@ -29,6 +29,10 @@ within-family AdamW reference without interpolation or silently dropping right-c
 rule and its 160/1,680-unit visibility disclosure are content-locked in
 `configs/retrieval_dynamics_protocol.json`; this is a prospective completion analysis rather than a
 preregistration.
+The cross-space mechanism bridge also joins the audited ten-observation trailing training loss at
+all 120 checkpoints to their BEIR means. Its checkpoint-level and within-run first-difference
+associations are explicitly post-hoc—the partial-result visibility and claim boundary are recorded
+in `configs/loss_retrieval_diagnostic.json`—and never substitute lower loss for retrieval evidence.
 
 ## Experimental contract
 

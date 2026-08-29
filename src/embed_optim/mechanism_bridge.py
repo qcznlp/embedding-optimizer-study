@@ -43,6 +43,23 @@ EVALUATION_FIELDS = [
     "mean_ndcg_at_10",
     "tasks_completed",
 ]
+TRAINING_FIELDS = [
+    "model_family",
+    "optimizer",
+    "learning_rate",
+    "run_id",
+    "stage",
+    "fraction",
+    "checkpoint_step",
+    "observed_step",
+    "window_start_step",
+    "window_observations",
+    "mean_loss",
+    "loss_standard_deviation",
+    "median_grad_norm",
+    "end_learning_rate",
+    "end_epoch",
+]
 WEIGHT_METRICS = WEIGHT_FIELDS[8:]
 SCORE_METRICS = [
     "margin_mean",
@@ -70,6 +87,7 @@ BRIDGE_IDENTITY_FIELDS = [
     "step",
 ]
 BRIDGE_METRIC_FIELDS = [
+    "mean_training_loss",
     *WEIGHT_METRICS,
     *[
         f"{tier}_{metric}"
@@ -255,6 +273,116 @@ def _load_evaluation_rows(
     return indexed, provenance
 
 
+def _declared_output_path(summary_dir: Path, declared: dict[str, Any]) -> Path:
+    raw = declared.get("path")
+    if not isinstance(raw, str) or not raw:
+        raise ValueError("Training-dynamics manifest has no declared stage table path")
+    path = Path(raw)
+    if not path.is_absolute():
+        path = summary_dir.parents[1] / path
+    return path.resolve()
+
+
+def _load_training_rows(
+    summary_dir: Path,
+    expected: dict[tuple[str, str, int], dict[str, Any]],
+) -> tuple[dict[tuple[str, str, int], dict[str, str]], dict[str, Any]]:
+    summary_dir = summary_dir.resolve()
+    manifest_path = summary_dir / "summary_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    coverage = manifest.get("coverage", {})
+    declared = manifest.get("outputs", {}).get("stages")
+    if (
+        manifest.get("schema_version") != SCHEMA_VERSION
+        or manifest.get("complete") is not True
+        or coverage.get("runs") != 24
+        or coverage.get("checkpoints") != 120
+        or coverage.get("history_rows") != 9_384
+        or coverage.get("trailing_observations") != 10
+        or not isinstance(declared, dict)
+        or declared.get("rows") != 120
+    ):
+        raise ValueError("Training-dynamics summary is incomplete")
+    path = _declared_output_path(summary_dir, declared)
+    if (
+        path != summary_dir / "stage_dynamics.csv"
+        or not path.is_file()
+        or path.stat().st_size != declared.get("bytes")
+        or _sha256(path) != declared.get("sha256")
+    ):
+        raise ValueError("Training-dynamics stage table differs from its strict manifest")
+    rows = _read_csv(path, TRAINING_FIELDS)
+    indexed: dict[tuple[str, str, int], dict[str, str]] = {}
+    for row in rows:
+        identity = _row_identity(row)
+        if identity in indexed or identity not in expected:
+            raise ValueError("Training-dynamics checkpoint identities are duplicated or unexpected")
+        _validate_metadata(row, expected[identity], step_field="checkpoint_step")
+        mean_loss = _finite(row["mean_loss"], f"training/{identity}/mean_loss")
+        loss_std = _finite(
+            row["loss_standard_deviation"], f"training/{identity}/loss_standard_deviation"
+        )
+        median_grad = _finite(row["median_grad_norm"], f"training/{identity}/median_grad_norm")
+        end_lr = _finite(row["end_learning_rate"], f"training/{identity}/end_learning_rate")
+        end_epoch = _finite(row["end_epoch"], f"training/{identity}/end_epoch")
+        try:
+            checkpoint_step = int(row["checkpoint_step"])
+            observed_step = int(row["observed_step"])
+            window_start = int(row["window_start_step"])
+            observations = int(row["window_observations"])
+        except (TypeError, ValueError) as error:
+            raise ValueError(f"Invalid training window metadata: {row}") from error
+        if (
+            mean_loss is None
+            or mean_loss < 0
+            or loss_std is None
+            or loss_std < 0
+            or median_grad is None
+            or median_grad < 0
+            or end_lr is None
+            or end_lr < 0
+            or end_epoch is None
+            or end_epoch < 0
+            or observations != 10
+            or not window_start <= observed_step <= checkpoint_step
+        ):
+            raise ValueError(f"Training-dynamics row violates the frozen window contract: {row}")
+        indexed[identity] = row
+    if set(indexed) != set(expected):
+        raise ValueError("Training-dynamics summary does not cover all 120 checkpoints")
+    provenance = {
+        "manifest": {"path": str(manifest_path), "sha256": _sha256(manifest_path)},
+        "table": {"path": str(path), "sha256": _sha256(path)},
+    }
+    return indexed, provenance
+
+
+def _load_loss_retrieval_protocol(path: Path) -> dict[str, Any]:
+    path = path.resolve()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    freeze = payload.get("freeze_context", {})
+    analysis = payload.get("analysis", {})
+    if (
+        payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("status") != "posthoc_exploratory_diagnostic"
+        or freeze.get("strict_beir_valid_units") != 1_456
+        or freeze.get("strict_beir_expected_units") != 1_680
+        or freeze.get("complete_retrieval_matrix_visible") is not False
+        or freeze.get("training_dynamics_visible") is not True
+        or freeze.get("dense_retrieval_matrix_visible") is not True
+        or freeze.get("late_adamw_retrieval_matrix_visible") is not True
+        or freeze.get("late_muon_retrieval_matrix_visible") is not True
+        or freeze.get("partial_late_normuon_results_visible") is not True
+        or not isinstance(freeze.get("strict_progress_snapshot_sha256"), str)
+        or len(freeze["strict_progress_snapshot_sha256"]) != 64
+        or not isinstance(analysis.get("views"), list)
+        or len(analysis["views"]) != 2
+        or "post-hoc" not in str(payload.get("claim_boundary", ""))
+    ):
+        raise ValueError("Loss-to-retrieval diagnostic does not disclose its post-hoc context")
+    return {"path": str(path), "sha256": _sha256(path), "status": payload["status"]}
+
+
 def _representation_lookups(
     checkpoint_rows: list[dict[str, str]],
     representation_rows: list[dict[str, str]],
@@ -376,6 +504,7 @@ def _correlation_pairs(family: str) -> list[tuple[str, str, str]]:
     ]
     pairs.extend(
         [
+            ("mean_training_loss", "mean_beir_ndcg_at_10", "objective-to-retrieval"),
             ("training_margin_mean", "mean_beir_ndcg_at_10", "representation-to-retrieval"),
             (
                 "training_query_normalized_effective_rank",
@@ -466,6 +595,9 @@ def build_mechanism_bridge(
     unseen_summary: Path,
     evaluation_reports: Path,
     output_dir: Path,
+    *,
+    training_dynamics: Path = Path("reports/training-dynamics"),
+    loss_retrieval_protocol: Path = Path("configs/loss_retrieval_diagnostic.json"),
 ) -> dict[str, Any]:
     matrix_path = resolve_matrix_path(matrix_path).resolve()
     configs = load_matrix(matrix_path)
@@ -474,7 +606,9 @@ def build_mechanism_bridge(
         raise ValueError("Experiment matrix differs from the frozen 24-run contract")
     expected = _expected_checkpoints(configs)
     weights, weight_provenance = _load_weight_rows(weight_summary, expected)
+    training, training_provenance = _load_training_rows(training_dynamics, expected)
     evaluations, evaluation_provenance = _load_evaluation_rows(evaluation_reports, expected)
+    loss_retrieval_provenance = _load_loss_retrieval_protocol(loss_retrieval_protocol)
     representation_sources = {}
     representation_values = {}
     for tier, summary in (("training", training_summary), ("unseen", unseen_summary)):
@@ -495,6 +629,7 @@ def build_mechanism_bridge(
     rows = []
     for identity, metadata in sorted(expected.items()):
         row: dict[str, Any] = dict(metadata)
+        row["mean_training_loss"] = float(training[identity]["mean_loss"])
         row.update({field: weights[identity][field] for field in WEIGHT_METRICS})
         for tier in TIERS:
             checkpoints, representations = representation_values[tier]
@@ -540,8 +675,10 @@ def build_mechanism_bridge(
         "matrix": {"path": str(matrix_path), "sha256": _sha256(matrix_path)},
         "sources": {
             "weight_space": weight_provenance,
+            "training_dynamics": training_provenance,
             "representation": representation_sources,
             "evaluation": evaluation_provenance,
+            "loss_retrieval_protocol": loss_retrieval_provenance,
         },
         "checkpoints": len(rows),
         "within_run_transitions": len(changes),
@@ -564,7 +701,8 @@ def build_mechanism_bridge(
         "interpretation": (
             "Spearman correlations are descriptive one-seed checkpoint associations. The "
             "within-run table removes run-level offsets but remains observational; causal claims "
-            "require the common-state and short-branch interventions."
+            "require the common-state and short-branch interventions. The training-loss bridge is "
+            "an explicitly post-hoc diagnostic added after 1,456/1,680 discovery units were visible."
         ),
     }
     _atomic_json(output_dir / "summary_manifest.json", manifest)
@@ -588,6 +726,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=Path("results/representation-space/decontaminated-beir/summary"),
     )
     parser.add_argument("--evaluation-reports", type=Path, default=Path("reports"))
+    parser.add_argument("--training-dynamics", type=Path, default=Path("reports/training-dynamics"))
+    parser.add_argument(
+        "--loss-retrieval-protocol",
+        type=Path,
+        default=Path("configs/loss_retrieval_diagnostic.json"),
+    )
     parser.add_argument("--output-dir", type=Path, default=Path("reports/mechanism-bridge"))
     return parser.parse_args(argv)
 
@@ -603,6 +747,8 @@ def main(argv: list[str] | None = None) -> None:
                 args.unseen_summary,
                 args.evaluation_reports,
                 args.output_dir,
+                training_dynamics=args.training_dynamics,
+                loss_retrieval_protocol=args.loss_retrieval_protocol,
             ),
             sort_keys=True,
         )
