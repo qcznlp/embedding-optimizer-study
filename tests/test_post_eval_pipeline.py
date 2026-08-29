@@ -4,6 +4,7 @@ import importlib
 import json
 import shutil
 import subprocess
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,7 @@ import pytest
 from embed_optim.post_eval_pipeline import (
     TransientProgressAuditError,
     _strict_progress,
+    audit_pipeline_ledger,
     parse_args,
     pipeline_steps,
     supervise_post_eval,
@@ -257,7 +259,18 @@ def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
     assert len(ledger["steps"]) == 56
     assert all(step["complete"] for step in ledger["steps"])
     assert all(len(step["attempts"]) == 1 for step in ledger["steps"])
+    for step in ledger["steps"]:
+        attempt = step["attempts"][0]
+        log = Path(attempt["log_path"])
+        assert log.is_absolute()
+        assert attempt["bytes"] == log.stat().st_size
+        assert attempt["sha256"] == sha256(log.read_bytes()).hexdigest()
     assert len(list(Path(args.log_dir).glob("*.log"))) == 56
+    audit = audit_pipeline_ledger(Path(args.log_dir) / "pipeline-ledger.json", pipeline_steps(args))
+    assert audit["complete"] is True
+    assert audit["steps"] == 56
+    assert audit["attempts"] == 56
+    assert len(audit["sha256"]) == 64
 
 
 def test_pipeline_retries_then_records_failed_step(tmp_path: Path):
@@ -311,9 +324,14 @@ def test_pipeline_resume_skips_only_matching_completed_prefix(tmp_path: Path):
     assert ledger["steps"][0] == failed["steps"][0]
     assert ledger["resume_history"][0]["completed_prefix"] == 1
     assert ledger["resume_history"][0]["failed_step"] == "strict-blog-render"
-    archive = Path(ledger["resume_history"][0]["source"])
+    source = ledger["resume_history"][0]["source"]
+    archive = Path(source["path"])
+    assert source["bytes"] == archive.stat().st_size
+    assert source["sha256"] == sha256(archive.read_bytes()).hexdigest()
     assert json.loads(archive.read_text()) == failed
     assert len(list(Path(args.log_dir).glob("*.resume-1.attempt-1.log"))) == 55
+    audit = audit_pipeline_ledger(Path(args.log_dir) / "pipeline-ledger.json", pipeline_steps(args))
+    assert audit["resume_count"] == 1
 
 
 def test_pipeline_resume_reexecutes_after_completed_command_drift(tmp_path: Path):
@@ -342,12 +360,167 @@ def test_pipeline_resume_reexecutes_after_completed_command_drift(tmp_path: Path
     assert len(calls) == 56
 
 
+def test_pipeline_resume_reexecutes_from_a_tampered_completed_log(tmp_path: Path):
+    args = _args(tmp_path)
+    _progress(Path(args.progress))
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("fixture command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    ledger_path = Path(args.log_dir) / "pipeline-ledger.json"
+    ledger = json.loads(ledger_path.read_text())
+    ledger["complete"] = False
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+    Path(ledger["steps"][0]["attempts"][0]["log_path"]).write_text("tampered\n")
+    args.resume = True
+    calls = []
+
+    def rerun(command, **kwargs):
+        calls.append(command)
+        kwargs["stdout"].write("rerun\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=rerun) == 0
+    assert len(calls) == 56
+    resumed = json.loads(ledger_path.read_text())
+    assert resumed["resume_history"][0]["completed_prefix"] == 0
+    assert audit_pipeline_ledger(ledger_path, pipeline_steps(args))["complete"] is True
+
+
 def test_pipeline_resume_requires_an_existing_valid_ledger(tmp_path: Path):
     args = _args(tmp_path, "--resume")
     _progress(Path(args.progress))
 
     with pytest.raises(ValueError, match="Cannot resume invalid pipeline ledger"):
         supervise_post_eval(args)
+
+
+def test_pipeline_ledger_audit_rejects_a_tampered_log(tmp_path: Path):
+    args = _args(tmp_path)
+    _progress(Path(args.progress))
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("fixture command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    ledger_path = Path(args.log_dir) / "pipeline-ledger.json"
+    ledger = json.loads(ledger_path.read_text())
+    Path(ledger["steps"][7]["attempts"][0]["log_path"]).write_text("tampered\n")
+
+    with pytest.raises(ValueError, match="log identity differs"):
+        audit_pipeline_ledger(ledger_path, pipeline_steps(args))
+
+
+def test_pipeline_ledger_only_audit_does_not_wait_or_launch(tmp_path: Path, capsys):
+    args = _args(tmp_path)
+    _progress(Path(args.progress))
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("fixture command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    capsys.readouterr()
+    Path(args.progress).unlink()
+    args.audit_ledger_only = True
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("ledger-only audit must not inspect runtime state or launch commands")
+
+    assert (
+        supervise_post_eval(
+            args,
+            run_command=forbidden,
+            sleeper=forbidden,
+            pid_exists=forbidden,
+            matching_command_pids=forbidden,
+        )
+        == 0
+    )
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["complete"] is True
+    assert payload["steps"] == 56
+
+
+def test_pipeline_ledger_audit_rejects_a_tampered_resume_archive(tmp_path: Path):
+    args = _args(tmp_path, "--step-retries", "0")
+    _progress(Path(args.progress))
+    calls = 0
+
+    def fail_second(command, **kwargs):
+        nonlocal calls
+        calls += 1
+        kwargs["stdout"].write("initial attempt\n")
+        return subprocess.CompletedProcess(command, 0 if calls == 1 else 17)
+
+    assert supervise_post_eval(args, run_command=fail_second) == 1
+    args.resume = True
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("resumed attempt\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    ledger_path = Path(args.log_dir) / "pipeline-ledger.json"
+    ledger = json.loads(ledger_path.read_text())
+    archive = Path(ledger["resume_history"][0]["source"]["path"])
+    archive.write_text("{}\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="resume source differs"):
+        audit_pipeline_ledger(ledger_path, pipeline_steps(args))
+
+
+def test_pipeline_ledger_audits_a_two_resume_archive_chain(tmp_path: Path):
+    args = _args(tmp_path, "--step-retries", "0")
+    _progress(Path(args.progress))
+    initial_calls = 0
+
+    def fail_second(command, **kwargs):
+        nonlocal initial_calls
+        initial_calls += 1
+        kwargs["stdout"].write("initial attempt\n")
+        return subprocess.CompletedProcess(command, 0 if initial_calls == 1 else 17)
+
+    assert supervise_post_eval(args, run_command=fail_second) == 1
+    args.resume = True
+    first_resume_calls = 0
+
+    def fail_third_step(command, **kwargs):
+        nonlocal first_resume_calls
+        first_resume_calls += 1
+        kwargs["stdout"].write("first resumed attempt\n")
+        return subprocess.CompletedProcess(command, 0 if first_resume_calls == 1 else 17)
+
+    assert supervise_post_eval(args, run_command=fail_third_step) == 1
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("second resumed attempt\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    ledger_path = Path(args.log_dir) / "pipeline-ledger.json"
+    ledger = json.loads(ledger_path.read_text())
+    assert ledger["resume_count"] == 2
+    assert [item["completed_prefix"] for item in ledger["resume_history"]] == [1, 2]
+    second_archive = json.loads(Path(ledger["resume_history"][1]["source"]["path"]).read_text())
+    assert second_archive["resume_history"] == ledger["resume_history"][:1]
+    assert audit_pipeline_ledger(ledger_path, pipeline_steps(args))["resume_count"] == 2
+
+
+@pytest.mark.parametrize(
+    "arguments",
+    [
+        ["--resume", "--dry-run"],
+        ["--resume", "--audit-ledger-only"],
+        ["--dry-run", "--audit-ledger-only"],
+    ],
+)
+def test_post_eval_cli_rejects_conflicting_modes(arguments):
+    with pytest.raises(SystemExit):
+        parse_args(arguments)
 
 
 def test_strict_progress_rejects_unexpected_results(tmp_path: Path):

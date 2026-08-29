@@ -29,7 +29,7 @@ the authoritative artifact and the command that must validate its full scope.
 | Mechanism report | `reports/mechanism-summary.manifest.json` | The common-state, 360-spectrum, two-tier representation, figures, and 120-checkpoint bridge sources are rehashed before the fixed mechanism tables are rendered. |
 | Blog | [`docs/blog.md`](blog.md) | Strict aggregation replaces the retrieval/system sections and in-progress sentinel, then strict mechanism rendering replaces its marked section; every reported number derives from audited aggregate artifacts. |
 | NAACL manuscript | `paper/main.tex`, `paper/results.tex`, six files under `paper/generated/`, `paper/README.md`, `configs/paper_claim_protocol.json`, and `reports/paper-results.manifest.json` | `embed-optim-render-paper-results` generates the five headline macros and six evidence-table files (including the full per-task appendix) from every frozen tier; `make -C paper` builds with the pinned official ACL style; and `embed-optim-audit-paper --strict` proves that the claim protocol, all 13 ordered source tables, generated TeX hashes, headlines, and result tables still match with no pending marker or stale draft language. |
-| Unattended handoff | `logs/post-eval-pipeline/pipeline-ledger.json` | The strict evaluation, W&B, mechanism, representation, bridge, hybrid, confirmatory, short-branch, paper-build, test, formatting, distribution, and terminal `embed-optim-audit-paper --strict` steps all record successful terminal attempts. |
+| Unattended handoff | `logs/post-eval-pipeline/pipeline-ledger.json` | The exact strict evaluation, W&B, mechanism, representation, bridge, hybrid, confirmatory, short-branch, paper-build, test, formatting, distribution, and terminal `embed-optim-audit-paper --strict` command plan records successful terminal attempts; every attempt log is byte/SHA-256 bound and every prior ledger survives in a verified resume archive chain. |
 | Reproducible distribution | Wheel, sdist, repository tests, and CI | Package build succeeds; configs, workers, docs, report tables/figures/manifests, citation, license, and notices are present with working local links. |
 | Publication hygiene | Git tracked tree/history, built wheel/sdist, and GitHub settings | The full-depth high-confidence scan finds no credential material in the current tree, any reachable revision or commit message, or any distribution member; findings never echo matched values, and the repository remains private until the user explicitly requests publication. |
 
@@ -77,6 +77,7 @@ embed-optim-render-outcome-report
 embed-optim-render-paper-results
 make -C paper
 embed-optim-audit-paper --strict
+embed-optim-post-eval-pipeline --python /usr/bin/python3 --audit-ledger-only
 
 uv build
 embed-optim-audit-distribution

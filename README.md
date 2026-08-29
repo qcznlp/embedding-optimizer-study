@@ -322,10 +322,14 @@ headline or generated result table remains pending, differs from its recorded ha
 evidence manifest is incomplete. Dense and LateOn probe
 exports run separately with conservative
 family-specific batch sizes while using all declared GPUs. Every step has an isolated log and an
-atomic JSON ledger under `logs/post-eval-pipeline/`; failed steps retry and leave an exact restart
-diagnosis. Rerun the identical command with `--resume` to skip only the contiguous completed prefix
-whose names and full commands still match; a changed step and everything after it execute again,
-while the prior ledger is archived before the canonical ledger is updated. The final validation
+atomic JSON ledger under `logs/post-eval-pipeline/`; every attempt is bound to its absolute log by
+byte length and SHA-256, and failed steps retry while leaving an exact restart diagnosis. Rerun the
+identical command with `--resume` to skip only the contiguous completed prefix whose names, full
+commands, and log identities still match; a changed or tampered step and everything after it execute
+again, while every prior ledger is archived into a content-hashed resume chain before the canonical
+ledger is updated. After completion, rerun the identical command with `--audit-ledger-only` to verify
+the terminal command plan, every attempt log, and the complete archive chain without waiting for an
+evaluator or launching work. The final validation
 builds both distribution artifacts and byte-audits the wheel and
 sdist against every declared command, package module, configuration, worker, document, and report
 data file. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit.

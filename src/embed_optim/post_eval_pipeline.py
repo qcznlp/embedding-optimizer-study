@@ -13,7 +13,7 @@ from typing import Any, Callable
 
 from .config import resolve_matrix_path
 from .evaluation_supervisor import _matching_command_pids
-from .geometry import SCHEMA_VERSION, _atomic_json
+from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 
 
 @dataclass(frozen=True)
@@ -587,6 +587,186 @@ def _write_ledger(path: Path, ledger: dict[str, Any]) -> None:
     _atomic_json(path, ledger)
 
 
+def _successful_record(record: Any) -> bool:
+    attempts = record.get("attempts") if isinstance(record, dict) else None
+    return bool(
+        isinstance(attempts, list)
+        and attempts
+        and isinstance(attempts[-1], dict)
+        and attempts[-1].get("return_code") == 0
+        and record.get("complete") is True
+    )
+
+
+def _with_log_identities(record: dict[str, Any]) -> dict[str, Any]:
+    """Verify and bind every attempt log without trusting prior identity fields."""
+
+    attempts = record.get("attempts")
+    if not isinstance(attempts, list) or not attempts:
+        raise ValueError(f"Pipeline step has no auditable attempts: {record.get('name')}")
+    verified = []
+    for expected_attempt, attempt in enumerate(attempts, start=1):
+        if (
+            not isinstance(attempt, dict)
+            or isinstance(attempt.get("attempt"), bool)
+            or attempt.get("attempt") != expected_attempt
+            or isinstance(attempt.get("return_code"), bool)
+            or not isinstance(attempt.get("return_code"), int)
+            or not isinstance(attempt.get("log_path"), str)
+            or (
+                "bytes" in attempt
+                and (
+                    isinstance(attempt.get("bytes"), bool)
+                    or not isinstance(attempt.get("bytes"), int)
+                    or attempt["bytes"] < 0
+                )
+            )
+            or (
+                "sha256" in attempt
+                and (not isinstance(attempt.get("sha256"), str) or len(attempt["sha256"]) != 64)
+            )
+        ):
+            raise ValueError(f"Pipeline attempt record is invalid: {record.get('name')}")
+        path = Path(attempt["log_path"]).resolve()
+        if not path.is_file():
+            raise ValueError(f"Pipeline attempt log is missing: {path}")
+        observed_bytes = path.stat().st_size
+        observed_sha256 = _sha256(path)
+        if ("bytes" in attempt and attempt.get("bytes") != observed_bytes) or (
+            "sha256" in attempt and attempt.get("sha256") != observed_sha256
+        ):
+            raise ValueError(f"Pipeline attempt log identity differs: {path}")
+        verified.append(
+            {
+                **attempt,
+                "log_path": str(path),
+                "bytes": observed_bytes,
+                "sha256": observed_sha256,
+            }
+        )
+    return {**record, "attempts": verified}
+
+
+def _audit_pipeline_ledger_payload(
+    payload: dict[str, Any],
+    steps: list[PipelineStep],
+) -> dict[str, Any]:
+    records = payload.get("steps")
+    if (
+        isinstance(payload.get("schema_version"), bool)
+        or payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("complete") is not True
+        or not isinstance(payload.get("started_at"), str)
+        or not isinstance(payload.get("finished_at"), str)
+        or "failed_step" in payload
+        or not isinstance(records, list)
+        or len(records) != len(steps)
+    ):
+        raise ValueError("Post-evaluation pipeline ledger is not terminal and complete")
+    for index, (step, record) in enumerate(zip(steps, records, strict=True), start=1):
+        if (
+            not isinstance(record, dict)
+            or isinstance(record.get("index"), bool)
+            or record.get("index") != index
+            or record.get("name") != step.name
+            or record.get("command") != list(step.command)
+            or not _successful_record(record)
+        ):
+            raise ValueError(f"Pipeline ledger step {index} differs: {step.name}")
+        verified_record = _with_log_identities(record)
+        attempts = record["attempts"]
+        if (
+            verified_record != record
+            or not isinstance(record.get("finished_at"), str)
+            or record["finished_at"] != attempts[-1].get("finished_at")
+            or any(
+                not isinstance(attempt.get("started_at"), str)
+                or not isinstance(attempt.get("finished_at"), str)
+                for attempt in attempts
+            )
+            or any(attempt["return_code"] == 0 for attempt in attempts[:-1])
+        ):
+            raise ValueError(f"Pipeline ledger step is not content-bound: {step.name}")
+    history = payload.get("resume_history", [])
+    resume_count = payload.get("resume_count", 0)
+    if (
+        not isinstance(history, list)
+        or isinstance(resume_count, bool)
+        or not isinstance(resume_count, int)
+        or resume_count != len(history)
+        or (history and not isinstance(payload.get("resumed_at"), str))
+    ):
+        raise ValueError("Pipeline resume history is invalid")
+    for resume_index, item in enumerate(history, start=1):
+        source = item.get("source") if isinstance(item, dict) else None
+        completed_prefix = item.get("completed_prefix") if isinstance(item, dict) else None
+        if (
+            not isinstance(source, dict)
+            or not isinstance(source.get("path"), str)
+            or isinstance(source.get("bytes"), bool)
+            or not isinstance(source.get("bytes"), int)
+            or source["bytes"] < 0
+            or not isinstance(source.get("sha256"), str)
+            or len(source["sha256"]) != 64
+            or isinstance(completed_prefix, bool)
+            or not isinstance(completed_prefix, int)
+            or completed_prefix < 0
+        ):
+            raise ValueError("Pipeline resume source identity is invalid")
+        path = Path(source["path"]).resolve()
+        if (
+            source["path"] != str(path)
+            or not path.is_file()
+            or path.stat().st_size != source["bytes"]
+            or _sha256(path) != source["sha256"]
+        ):
+            raise ValueError(f"Pipeline resume source differs: {path}")
+        try:
+            archived = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, TypeError) as error:
+            raise ValueError(f"Pipeline resume source is invalid: {path}") from error
+        archived_history = archived.get("resume_history", [])
+        archived_resume_count = archived.get("resume_count", 0)
+        if (
+            isinstance(archived.get("schema_version"), bool)
+            or archived.get("schema_version") != SCHEMA_VERSION
+            or archived.get("started_at") != payload["started_at"]
+            or archived.get("progress") != payload.get("progress")
+            or isinstance(archived_resume_count, bool)
+            or not isinstance(archived_resume_count, int)
+            or archived_resume_count != resume_index - 1
+            or archived_history != history[: resume_index - 1]
+            or item.get("failed_step") != archived.get("failed_step")
+            or item.get("finished_at") != archived.get("finished_at")
+            or not isinstance(archived.get("steps"), list)
+            or completed_prefix > len(archived["steps"])
+            or any(
+                not _successful_record(record) for record in archived["steps"][:completed_prefix]
+            )
+        ):
+            raise ValueError(f"Pipeline resume archive chain differs: {path}")
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "complete": True,
+        "steps": len(steps),
+        "attempts": sum(len(record["attempts"]) for record in records),
+        "resume_count": resume_count,
+    }
+
+
+def audit_pipeline_ledger(
+    ledger_path: str | Path,
+    steps: list[PipelineStep],
+) -> dict[str, Any]:
+    path = Path(ledger_path).resolve()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError, TypeError) as error:
+        raise ValueError(f"Cannot audit invalid pipeline ledger: {path}") from error
+    result = _audit_pipeline_ledger_payload(payload, steps)
+    return {**result, "ledger": str(path), "sha256": _sha256(path)}
+
+
 def _resume_prefix(
     ledger_path: Path,
     steps: list[PipelineStep],
@@ -601,7 +781,8 @@ def _resume_prefix(
     recorded_resume_count = previous.get("resume_count", 0)
     resume_history = previous.get("resume_history", [])
     if (
-        previous.get("schema_version") != SCHEMA_VERSION
+        isinstance(previous.get("schema_version"), bool)
+        or previous.get("schema_version") != SCHEMA_VERSION
         or not isinstance(records, list)
         or not isinstance(recorded_progress, str)
         or Path(recorded_progress).resolve() != progress_path
@@ -609,6 +790,7 @@ def _resume_prefix(
         or not isinstance(recorded_resume_count, int)
         or recorded_resume_count < 0
         or not isinstance(resume_history, list)
+        or recorded_resume_count != len(resume_history)
     ):
         raise ValueError(f"Pipeline resume ledger differs from this handoff: {ledger_path}")
     prefix = 0
@@ -617,8 +799,12 @@ def _resume_prefix(
             not isinstance(record, dict)
             or record.get("name") != step.name
             or record.get("command") != list(step.command)
-            or record.get("complete") is not True
+            or not _successful_record(record)
         ):
+            break
+        try:
+            _with_log_identities(record)
+        except ValueError:
             break
         prefix += 1
     return previous, prefix
@@ -651,6 +837,13 @@ def supervise_post_eval(
     matching_command_pids: Callable[[str], list[int]] = _matching_command_pids,
 ) -> int:
     all_steps = pipeline_steps(args)
+    if args.audit_ledger_only:
+        result = audit_pipeline_ledger(
+            Path(args.log_dir) / "pipeline-ledger.json",
+            all_steps,
+        )
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
     if args.dry_run:
         print(
             json.dumps([{"name": step.name, "command": list(step.command)} for step in all_steps])
@@ -717,8 +910,12 @@ def supervise_post_eval(
     if args.resume:
         previous, completed_prefix = _resume_prefix(ledger_path, all_steps, progress_path)
         if previous.get("complete") is True and completed_prefix == len(all_steps):
+            audit_pipeline_ledger(ledger_path, all_steps)
             print("Post-evaluation pipeline ledger is already complete", flush=True)
             return 0
+        prefix_records = [
+            _with_log_identities(record) for record in previous["steps"][:completed_prefix]
+        ]
         resume_count = int(previous.get("resume_count", 0)) + 1
         archive = _archive_resume_source(ledger_path, previous, resume_count)
         print(
@@ -735,7 +932,7 @@ def supervise_post_eval(
         "progress": str(progress_path),
         "wait_pids": args.wait_pids,
         "wait_for_commands": args.wait_for_commands,
-        "steps": list(previous["steps"][:completed_prefix]) if previous is not None else [],
+        "steps": prefix_records if previous is not None else [],
     }
     if previous is not None and archive is not None:
         ledger["resume_count"] = resume_count
@@ -743,7 +940,11 @@ def supervise_post_eval(
         ledger["resume_history"] = [
             *list(previous.get("resume_history", [])),
             {
-                "source": str(archive),
+                "source": {
+                    "path": str(archive.resolve()),
+                    "bytes": archive.stat().st_size,
+                    "sha256": _sha256(archive),
+                },
                 "completed_prefix": completed_prefix,
                 "failed_step": previous.get("failed_step"),
                 "finished_at": previous.get("finished_at"),
@@ -778,7 +979,9 @@ def supervise_post_eval(
                 "started_at": started,
                 "finished_at": _timestamp(),
                 "return_code": completed.returncode,
-                "log_path": str(log_path),
+                "log_path": str(log_path.resolve()),
+                "bytes": log_path.stat().st_size,
+                "sha256": _sha256(log_path),
             }
             record["attempts"].append(attempt_record)
             if completed.returncode == 0:
@@ -801,9 +1004,13 @@ def supervise_post_eval(
             _write_ledger(ledger_path, ledger)
             return 1
 
-    ledger["complete"] = True
-    ledger["finished_at"] = _timestamp()
-    _write_ledger(ledger_path, ledger)
+    candidate = {
+        **ledger,
+        "complete": True,
+        "finished_at": _timestamp(),
+    }
+    _audit_pipeline_ledger_payload(candidate, all_steps)
+    _write_ledger(ledger_path, candidate)
     print("Post-evaluation mechanism and reporting pipeline is complete", flush=True)
     return 0
 
@@ -843,8 +1050,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--late-probe-batch-size", type=int, default=8)
     parser.add_argument("--skip-wandb-sync", action="store_true")
     parser.add_argument("--skip-validation", action="store_true")
-    parser.add_argument("--resume", action="store_true")
-    parser.add_argument("--dry-run", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--resume", action="store_true")
+    mode.add_argument("--dry-run", action="store_true")
+    mode.add_argument(
+        "--audit-ledger-only",
+        action="store_true",
+        help="Independently verify the terminal command plan, logs, and resume archive chain",
+    )
     args = parser.parse_args(argv)
     if (
         args.poll_seconds <= 0
