@@ -26,6 +26,10 @@ class TransientProgressAuditError(ValueError):
     """The watcher could not audit its current snapshot while evaluators may still recover."""
 
 
+class UnboundPipelineLedgerError(ValueError):
+    """A legacy terminal ledger is valid except for recorded log identities."""
+
+
 def _timestamp() -> str:
     return datetime.now(UTC).isoformat().replace("+00:00", "Z")
 
@@ -676,8 +680,7 @@ def _audit_pipeline_ledger_payload(
         verified_record = _with_log_identities(record)
         attempts = record["attempts"]
         if (
-            verified_record != record
-            or not isinstance(record.get("finished_at"), str)
+            not isinstance(record.get("finished_at"), str)
             or record["finished_at"] != attempts[-1].get("finished_at")
             or any(
                 not isinstance(attempt.get("started_at"), str)
@@ -686,7 +689,11 @@ def _audit_pipeline_ledger_payload(
             )
             or any(attempt["return_code"] == 0 for attempt in attempts[:-1])
         ):
-            raise ValueError(f"Pipeline ledger step is not content-bound: {step.name}")
+            raise ValueError(f"Pipeline ledger step metadata is invalid: {step.name}")
+        if verified_record != record:
+            raise UnboundPipelineLedgerError(
+                f"Pipeline ledger step is not content-bound: {step.name}"
+            )
     history = payload.get("resume_history", [])
     resume_count = payload.get("resume_count", 0)
     if (
@@ -910,9 +917,18 @@ def supervise_post_eval(
     if args.resume:
         previous, completed_prefix = _resume_prefix(ledger_path, all_steps, progress_path)
         if previous.get("complete") is True and completed_prefix == len(all_steps):
-            audit_pipeline_ledger(ledger_path, all_steps)
-            print("Post-evaluation pipeline ledger is already complete", flush=True)
-            return 0
+            try:
+                audit_pipeline_ledger(ledger_path, all_steps)
+            except UnboundPipelineLedgerError:
+                if previous.get("resume_history", []):
+                    raise
+                print(
+                    "Migrating complete pre-hash pipeline ledger without rerunning steps",
+                    flush=True,
+                )
+            else:
+                print("Post-evaluation pipeline ledger is already complete", flush=True)
+                return 0
         prefix_records = [
             _with_log_identities(record) for record in previous["steps"][:completed_prefix]
         ]

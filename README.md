@@ -329,7 +329,11 @@ commands, and log identities still match; a changed or tampered step and everyth
 again, while every prior ledger is archived into a content-hashed resume chain before the canonical
 ledger is updated. After completion, rerun the identical command with `--audit-ledger-only` to verify
 the terminal command plan, every attempt log, and the complete archive chain without waiting for an
-evaluator or launching work. The final validation
+evaluator or launching work. For compatibility with a terminal ledger written by the pre-hash
+supervisor, `--resume` can bind its existing logs and archive the legacy ledger without rerunning a
+step, but only when every declared step/log exists and the ledger has no older unbound resume
+history. A missing or identity-mismatched log cannot use that zero-rerun migration: ordinary resume
+reexecutes from the first unverifiable step. The final validation
 builds both distribution artifacts and byte-audits the wheel and
 sdist against every declared command, package module, configuration, worker, document, and report
 data file. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit.

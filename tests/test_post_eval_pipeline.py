@@ -360,6 +360,67 @@ def test_pipeline_resume_reexecutes_after_completed_command_drift(tmp_path: Path
     assert len(calls) == 56
 
 
+def test_pipeline_resume_migrates_a_complete_pre_hash_ledger_without_rerunning(
+    tmp_path: Path,
+):
+    args = _args(tmp_path)
+    _progress(Path(args.progress))
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("legacy command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    ledger_path = Path(args.log_dir) / "pipeline-ledger.json"
+    legacy = json.loads(ledger_path.read_text())
+    for step in legacy["steps"]:
+        for attempt in step["attempts"]:
+            attempt.pop("bytes")
+            attempt.pop("sha256")
+    ledger_path.write_text(json.dumps(legacy), encoding="utf-8")
+    args.resume = True
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("complete pre-hash migration must not rerun a pipeline step")
+
+    assert supervise_post_eval(args, run_command=forbidden) == 0
+    migrated = json.loads(ledger_path.read_text())
+    assert migrated["complete"] is True
+    assert migrated["resume_count"] == 1
+    assert migrated["resume_history"][0]["completed_prefix"] == 56
+    assert all(
+        "bytes" in attempt and "sha256" in attempt
+        for step in migrated["steps"]
+        for attempt in step["attempts"]
+    )
+    assert audit_pipeline_ledger(ledger_path, pipeline_steps(args))["complete"] is True
+
+
+def test_complete_pre_hash_migration_rejects_other_ledger_corruption(tmp_path: Path):
+    args = _args(tmp_path)
+    _progress(Path(args.progress))
+
+    def succeed(command, **kwargs):
+        kwargs["stdout"].write("legacy command output\n")
+        return subprocess.CompletedProcess(command, 0)
+
+    assert supervise_post_eval(args, run_command=succeed) == 0
+    ledger_path = Path(args.log_dir) / "pipeline-ledger.json"
+    legacy = json.loads(ledger_path.read_text())
+    for step in legacy["steps"]:
+        for attempt in step["attempts"]:
+            attempt.pop("bytes")
+            attempt.pop("sha256")
+    legacy["steps"][0]["finished_at"] = "corrupt-timestamp"
+    ledger_path.write_text(json.dumps(legacy), encoding="utf-8")
+    before = ledger_path.read_bytes()
+    args.resume = True
+
+    with pytest.raises(ValueError, match="metadata is invalid"):
+        supervise_post_eval(args)
+    assert ledger_path.read_bytes() == before
+
+
 def test_pipeline_resume_reexecutes_from_a_tampered_completed_log(tmp_path: Path):
     args = _args(tmp_path)
     _progress(Path(args.progress))
