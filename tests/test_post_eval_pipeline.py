@@ -164,7 +164,7 @@ def test_full_pipeline_commands_have_importable_cli_contracts(tmp_path: Path):
     args.skip_validation = False
     steps = pipeline_steps(args)
 
-    assert len(steps) == 61
+    assert len(steps) == 62
     for step in steps:
         command = list(step.command)
         if len(command) >= 3 and command[1] == "-m":
@@ -185,6 +185,13 @@ def test_distribution_build_uses_uv_instead_of_shadowable_python_module(tmp_path
     distribution = next(step for step in pipeline_steps(args) if step.name == "distribution-build")
 
     assert distribution.command == ("uv", "build")
+    steps = pipeline_steps(args)
+    assert [step.name for step in steps].index("distribution-build") < [
+        step.name for step in steps
+    ].index("distribution-audit")
+    assert [step.name for step in steps].index("distribution-audit") < [
+        step.name for step in steps
+    ].index("paper-final-strict-audit")
 
 
 def test_all_training_steps_have_bounded_worker_retries(tmp_path: Path):

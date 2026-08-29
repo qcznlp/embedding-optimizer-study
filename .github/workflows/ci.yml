@@ -16,6 +16,7 @@ jobs:
           enable-cache: true
       - run: uv sync --extra dev --extra eval --extra analysis
       - run: uv build
+      - run: uv run embed-optim-audit-distribution
       - run: uv run pytest
       - run: uv run ruff check src tests scripts/eval
       - run: uv run ruff format --check src tests scripts/eval

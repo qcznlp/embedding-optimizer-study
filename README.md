@@ -105,6 +105,14 @@ manuscript sources for inspection. The installed `docs/` and `reports/` topology
 blog's local links. If a bundled `configs/*.yaml` path is absent from the working directory, the CLI
 automatically resolves it from the installation prefix.
 
+```bash
+uv build
+embed-optim-audit-distribution
+```
+
+The audit reads both archives, verifies their hashes and integrity, and compares every package
+module, console entry point, and declared data file against the source contract.
+
 Authenticate separately for services that need it; credentials are never stored in this repository:
 
 ```bash
@@ -311,7 +319,9 @@ evidence manifest is incomplete. Dense and LateOn probe
 exports run separately with conservative
 family-specific batch sizes while using all declared GPUs. Every step has an isolated log and an
 atomic JSON ledger under `logs/post-eval-pipeline/`; failed steps retry and leave an exact restart
-diagnosis. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit.
+diagnosis. The final validation builds both distribution artifacts and byte-audits the wheel and
+sdist against every declared command, package module, configuration, worker, document, and report
+data file. `--wait-pids` can additionally hold the handoff until known evaluator coordinators exit.
 Repeatable `--wait-for-command` fragments also cover replacement or orphan workers, preventing the
 first mechanism job from sharing GPUs with an evaluator whose coordinator PID changed. The matcher
 ignores fragments appearing only as another supervisor's adoption declaration. `--dry-run` prints

@@ -529,6 +529,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     "ruff-format-check", _module(args.python, "ruff", "format", "--check", ".")
                 ),
                 PipelineStep("distribution-build", ("uv", "build")),
+                PipelineStep(
+                    "distribution-audit",
+                    _module(args.python, "embed_optim.distribution_audit"),
+                ),
             ]
         )
     steps.append(

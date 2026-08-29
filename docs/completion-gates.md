@@ -78,12 +78,13 @@ make -C paper
 embed-optim-audit-paper --strict
 
 uv build
+embed-optim-audit-distribution
 uv run pytest
 uv run ruff check src tests scripts/eval
 uv run ruff format --check src tests scripts/eval
 ```
 
-Then inspect the built wheel rather than inferring its contents from `pyproject.toml`, verify the
+Then verify the distribution audit hashes belong to those freshly built artifacts, verify the
 GitHub CI result belongs to the final commit, and rerun a secret-pattern scan over both the tracked
 tree and Git history. The final handoff should link the exact blog, coverage manifest, principal
 tables/figures, W&B project, commit, pull request, and CI run.
