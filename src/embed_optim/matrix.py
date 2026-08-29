@@ -284,7 +284,9 @@ def run_matrix(args: argparse.Namespace) -> int:
     log_dir = Path(args.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
     running: dict[str, Running] = {}
-    failures = 0
+    max_retries = int(getattr(args, "max_retries", 2))
+    failed_attempts: dict[tuple[str, str], int] = {}
+    exhausted_failures = 0
     while any(queues.values()) or running:
         for pool_name, job in list(running.items()):
             return_code = job.process.poll()
@@ -292,24 +294,42 @@ def run_matrix(args: argparse.Namespace) -> int:
                 continue
             job.log_handle.close()
             elapsed = time.monotonic() - job.started
+            complete = return_code == 0 and _complete(job.config)
             print(
                 f"pool-{pool_name} {job.config.model_family}/{job.config.run_id} "
-                f"exited {return_code} after {elapsed / 60:.1f} min",
+                f"exited {return_code} after {elapsed / 60:.1f} min; complete={complete}",
                 flush=True,
             )
             del running[pool_name]
-            if return_code != 0:
-                failures += 1
+            if not complete:
+                key = (job.config.model_family, job.config.run_id)
+                failed_attempts[key] = failed_attempts.get(key, 0) + 1
                 if args.fail_fast:
                     for other in running.values():
                         other.process.terminate()
-                    return failures
+                    return 1
                 # A failed distributed job is normally recoverable from its
                 # latest complete checkpoint.  Put it back at the front of its
                 # family queue so a transient CUDA/NCCL failure does not leave
                 # the run incomplete until every later configuration finishes.
-                if not _complete(job.config):
+                # Bound retries so a deterministic failure cannot hold the
+                # multi-day post-evaluation pipeline forever.  A zero exit code
+                # without the strictly validated completion artifacts is also a
+                # failed attempt.
+                if failed_attempts[key] <= max_retries:
+                    print(
+                        f"retrying {job.config.model_family}/{job.config.run_id} "
+                        f"({failed_attempts[key]}/{max_retries})",
+                        flush=True,
+                    )
                     queues[job.config.model_family].insert(0, job.config)
+                else:
+                    exhausted_failures += 1
+                    print(
+                        f"retry budget exhausted for {job.config.model_family}/{job.config.run_id}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
 
         for pool_name, pool in pools.items():
             if pool_name in running:
@@ -330,7 +350,7 @@ def run_matrix(args: argparse.Namespace) -> int:
         if args.dry_run:
             continue
         time.sleep(5)
-    return failures
+    return exhausted_failures
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -347,9 +367,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--port-a", type=int, default=29510)
     parser.add_argument("--port-b", type=int, default=29520)
     parser.add_argument("--log-dir", default="logs/training")
+    parser.add_argument(
+        "--max-retries",
+        type=int,
+        default=2,
+        help="Retries per incomplete run after its first launch (default: 2)",
+    )
     parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.max_retries < 0:
+        parser.error("--max-retries must be non-negative")
+    return args
 
 
 def main(argv: list[str] | None = None) -> None:

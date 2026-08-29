@@ -164,10 +164,13 @@ The former preserves the full-run scheduler horizon, saves the stop-step checkpo
 ledger, and writes `diagnostic_completed.json` instead of a formal completion marker.
 
 For long matrices, omit `--fail-fast` as above so a failure on one pool does not terminate an
-unrelated healthy job on the other pool. The command returns nonzero after the remaining queue drains
-if any job failed; rerunning it resumes only incomplete runs from their latest structurally valid
-and deeply audited checkpoint, falling back to an earlier declared checkpoint if the latest payload
-is corrupt. The deep resume gate validates the mixed-optimizer group algorithms, hyperparameters,
+unrelated healthy job on the other pool. Each run is retried from its latest audited checkpoint up to
+`--max-retries` times after the initial launch (default: two); a zero process exit without the strict
+terminal artifacts is treated as an incomplete attempt. The command returns nonzero only when a run
+exhausts that budget, while unrelated queued work still drains. Rerunning it resumes only incomplete
+runs from their latest structurally valid and deeply audited checkpoint, falling back to an earlier
+declared checkpoint if the latest payload is corrupt. The deep resume gate validates the
+mixed-optimizer group algorithms, hyperparameters,
 scheduled learning rates, per-parameter state fields/shapes and AdamW step counters, together with
 the scheduler's base/last learning rates and step count. Floating-point model tensors must be finite,
 and consecutive formal checkpoints must not contain identical model payloads. It stops instead of

@@ -3,12 +3,15 @@ import subprocess
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
+import pytest
+
 from embed_optim.matrix import (
     Pool,
     _checkpoint_is_resumable,
     _latest_resumable_checkpoint,
     _pop_next,
     _run_is_complete,
+    parse_args,
     run_matrix,
 )
 
@@ -197,11 +200,15 @@ def test_failed_job_is_retried_before_later_family_config(monkeypatch, tmp_path)
 
     launched = []
     return_codes = iter([1, 0, 0, 0])
+    completed = set()
 
     def fake_launch(config, *args, **kwargs):
         launched.append(config.run_id)
+        return_code = next(return_codes)
+        if return_code == 0:
+            completed.add(config.run_id)
         process = MagicMock(spec=subprocess.Popen)
-        process.poll.return_value = next(return_codes)
+        process.poll.return_value = return_code
         return SimpleNamespace(
             config=config,
             process=process,
@@ -210,6 +217,48 @@ def test_failed_job_is_retried_before_later_family_config(monkeypatch, tmp_path)
         )
 
     monkeypatch.setattr("embed_optim.matrix.load_matrix", lambda _: [first, second, third])
+    monkeypatch.setattr("embed_optim.matrix._complete", lambda config: config.run_id in completed)
+    monkeypatch.setattr("embed_optim.matrix.matrix_runtime_spec", lambda _: None)
+    monkeypatch.setattr("embed_optim.matrix._launch", fake_launch)
+    monkeypatch.setattr("embed_optim.matrix.time.monotonic", lambda: 60.0)
+    monkeypatch.setattr("embed_optim.matrix.time.sleep", lambda _: None)
+    args = SimpleNamespace(
+        matrix=tmp_path / "matrix.yaml",
+        families=["dense"],
+        run_ids=[],
+        gpus_a="0,1,2,3",
+        gpus_b="4,5,6,7",
+        port_a=29510,
+        port_b=29520,
+        log_dir=tmp_path / "logs",
+        max_retries=2,
+        fail_fast=False,
+        dry_run=False,
+    )
+
+    assert run_matrix(args) == 0
+    # Pool B may steal d2 before pool A observes d1's failure.  Once the
+    # failure is known, d1 must be retried before the still-queued d3.
+    assert launched == ["d1", "d2", "d1", "d3"]
+
+
+def test_persistent_failure_exhausts_bounded_retry_budget(monkeypatch, tmp_path):
+    config = _run("dense", "broken")
+    config.output_dir = tmp_path / config.run_id
+    launched = []
+
+    def fake_launch(config, *args, **kwargs):
+        launched.append(config.run_id)
+        process = MagicMock(spec=subprocess.Popen)
+        process.poll.return_value = 17
+        return SimpleNamespace(
+            config=config,
+            process=process,
+            log_handle=MagicMock(),
+            started=0.0,
+        )
+
+    monkeypatch.setattr("embed_optim.matrix.load_matrix", lambda _: [config])
     monkeypatch.setattr("embed_optim.matrix._complete", lambda _: False)
     monkeypatch.setattr("embed_optim.matrix.matrix_runtime_spec", lambda _: None)
     monkeypatch.setattr("embed_optim.matrix._launch", fake_launch)
@@ -224,11 +273,55 @@ def test_failed_job_is_retried_before_later_family_config(monkeypatch, tmp_path)
         port_a=29510,
         port_b=29520,
         log_dir=tmp_path / "logs",
+        max_retries=2,
         fail_fast=False,
         dry_run=False,
     )
 
     assert run_matrix(args) == 1
-    # Pool B may steal d2 before pool A observes d1's failure.  Once the
-    # failure is known, d1 must be retried before the still-queued d3.
-    assert launched == ["d1", "d2", "d1", "d3"]
+    assert launched == ["broken", "broken", "broken"]
+
+
+def test_zero_exit_without_completion_artifacts_is_retried(monkeypatch, tmp_path):
+    config = _run("late", "missing-terminal-state")
+    config.output_dir = tmp_path / config.run_id
+    launched = []
+
+    def fake_launch(config, *args, **kwargs):
+        launched.append(config.run_id)
+        process = MagicMock(spec=subprocess.Popen)
+        process.poll.return_value = 0
+        return SimpleNamespace(
+            config=config,
+            process=process,
+            log_handle=MagicMock(),
+            started=0.0,
+        )
+
+    monkeypatch.setattr("embed_optim.matrix.load_matrix", lambda _: [config])
+    monkeypatch.setattr("embed_optim.matrix._complete", lambda _: len(launched) >= 2)
+    monkeypatch.setattr("embed_optim.matrix.matrix_runtime_spec", lambda _: None)
+    monkeypatch.setattr("embed_optim.matrix._launch", fake_launch)
+    monkeypatch.setattr("embed_optim.matrix.time.monotonic", lambda: 60.0)
+    monkeypatch.setattr("embed_optim.matrix.time.sleep", lambda _: None)
+    args = SimpleNamespace(
+        matrix=tmp_path / "matrix.yaml",
+        families=["late"],
+        run_ids=[],
+        gpus_a="0,1,2,3",
+        gpus_b="4,5,6,7",
+        port_a=29510,
+        port_b=29520,
+        log_dir=tmp_path / "logs",
+        max_retries=2,
+        fail_fast=False,
+        dry_run=False,
+    )
+
+    assert run_matrix(args) == 0
+    assert launched == ["missing-terminal-state", "missing-terminal-state"]
+
+
+def test_matrix_cli_rejects_negative_retry_budget():
+    with pytest.raises(SystemExit):
+        parse_args(["--max-retries", "-1"])

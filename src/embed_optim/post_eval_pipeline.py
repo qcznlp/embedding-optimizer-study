@@ -374,6 +374,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     "29820",
                     "--log-dir",
                     "logs/hybrid-adamw-training",
+                    "--max-retries",
+                    str(args.worker_retries),
                 ),
             ),
             PipelineStep(
@@ -421,6 +423,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     str(29920 + 20 * offset),
                     "--log-dir",
                     f"logs/confirmatory-training/seed{seed}",
+                    "--max-retries",
+                    str(args.worker_retries),
                 ),
             )
         )
@@ -466,6 +470,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     str(30020 + 20 * offset),
                     "--log-dir",
                     f"logs/short-branch-training/seed{seed}",
+                    "--max-retries",
+                    str(args.worker_retries),
                 ),
             )
         )

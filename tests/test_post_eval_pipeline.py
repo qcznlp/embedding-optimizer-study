@@ -165,6 +165,24 @@ def test_distribution_build_uses_uv_instead_of_shadowable_python_module(tmp_path
     assert distribution.command == ("uv", "build")
 
 
+def test_all_training_steps_have_bounded_worker_retries(tmp_path: Path):
+    args = _args(tmp_path)
+    args.worker_retries = 3
+
+    training_steps = [
+        step
+        for step in pipeline_steps(args)
+        if step.name == "hybrid-adamw-training"
+        or step.name.startswith("confirmatory-training-seed-")
+        or step.name.startswith("short-branch-training-seed-")
+    ]
+
+    assert len(training_steps) == 7
+    assert all(
+        step.command[step.command.index("--max-retries") + 1] == "3" for step in training_steps
+    )
+
+
 def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
     args = _args(
         tmp_path,
