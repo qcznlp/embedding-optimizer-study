@@ -14,13 +14,12 @@ from typing import Any
 import numpy as np
 
 from .aggregate import (
-    audit_dataset_artifacts,
     audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
 )
 from .config import load_matrix
-from .confirmatory_data import load_confirmatory_protocol
+from .confirmatory_data import audit_confirmatory_view, load_confirmatory_protocol
 from .confirmatory_evaluation import audit_confirmatory_evaluations
 from .confirmatory_matrix import audit_confirmatory_matrices
 from .decontamination import DECONTAMINATED_TASK_NAMES
@@ -246,13 +245,14 @@ def build_confirmatory_report(
     for seed in seeds:
         matrix_path = generated / f"seed{seed}.yaml"
         configs = load_matrix(matrix_path)
-        dataset = audit_dataset_artifacts(configs)
+        dataset = audit_confirmatory_view(resolved_protocol, seed)
         training = audit_training_artifacts(
             configs,
             deep=True,
-            expected_dataset_fingerprint=dataset.get("training_view_fingerprint"),
+            expected_dataset_fingerprint=dataset["training_view_fingerprint"],
+            expected_dataset_rows=dataset["rows"],
         )
-        if not dataset.get("complete") or not training.get("complete"):
+        if not training.get("complete"):
             raise ValueError(f"Seed {seed}: confirmatory training artifacts failed strict audit")
         training_audits[str(seed)] = {"dataset": dataset, "training": training}
         for row in collect_evaluations(Path(results_root) / f"seed{seed}", configs):

@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 from .aggregate import (
-    audit_dataset_artifacts,
     audit_training_artifacts,
     collect_system_metrics,
     collect_training_history,
@@ -22,6 +21,7 @@ from .representation_summary import (
     ExpectedMetric,
     summarize_probe_metrics,
 )
+from .short_branch import audit_short_branch_subset
 from .short_branch_evaluation import (
     ShortBranchValidationJob,
     _audit_counts,
@@ -340,14 +340,15 @@ def build_short_branch_report(
     training_audits = {}
     system_rows = []
     history_rows = []
+    dataset = audit_short_branch_subset(protocol_path)
     for seed, runs in sorted(configs.items()):
-        dataset = audit_dataset_artifacts(runs)
         training = audit_training_artifacts(
             runs,
             deep=True,
-            expected_dataset_fingerprint=dataset.get("training_view_fingerprint"),
+            expected_dataset_fingerprint=dataset["training_view_fingerprint"],
+            expected_dataset_rows=dataset["rows"],
         )
-        if not dataset.get("complete") or not training.get("complete"):
+        if not training.get("complete"):
             raise ValueError(f"Seed {seed}: short-branch training artifacts failed strict audit")
         training_audits[str(seed)] = {"dataset": dataset, "training": training}
         for row in collect_system_metrics(runs):

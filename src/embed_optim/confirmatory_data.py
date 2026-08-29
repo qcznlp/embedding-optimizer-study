@@ -18,6 +18,7 @@ import pyarrow.parquet as pq
 from datasets import Dataset, concatenate_datasets
 from huggingface_hub import snapshot_download
 
+from .collators import TEXT_COLUMNS
 from .config import resolve_matrix_path
 from .data import SOURCE_REPO, SOURCE_REVISION, SPLITS, _files, _seed_for
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
@@ -804,6 +805,7 @@ def audit_confirmatory_view(
         "manifest_sha256": _sha256(manifest_path),
         "row_ledger_sha256": _sha256(ledger_path),
         "dataset_fingerprint": dataset._fingerprint,
+        "training_view_fingerprint": dataset.select_columns([*TEXT_COLUMNS, "length"])._fingerprint,
         "rows": sample_id,
         "query_positive_identity_sha256": identity_digest.hexdigest(),
     }

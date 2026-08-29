@@ -16,6 +16,7 @@ import numpy as np
 import yaml
 from datasets import Dataset
 
+from .collators import TEXT_COLUMNS
 from .config import OptimizerConfig, load_matrix, resolve_matrix_path
 from .confirmatory_data import (
     _canonical,
@@ -267,6 +268,7 @@ def audit_short_branch_subset(
         "quotas": dict(counts),
         "selected_sample_ids_sha256": selected_id_digest.hexdigest(),
         "dataset_fingerprint": subset._fingerprint,
+        "training_view_fingerprint": subset.select_columns([*TEXT_COLUMNS, "length"])._fingerprint,
     }
 
 

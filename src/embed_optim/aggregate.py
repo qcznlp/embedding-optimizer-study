@@ -1022,6 +1022,7 @@ def audit_training_artifacts(
     *,
     deep: bool = False,
     expected_dataset_fingerprint: str | None = None,
+    expected_dataset_rows: int | None = None,
 ) -> dict:
     """Verify that every planned run has five complete, resumable checkpoints."""
 
@@ -1069,6 +1070,7 @@ def audit_training_artifacts(
                     errors.append(f"{label}: resolved run config differs from matrix")
 
         source_manifest: dict = {}
+        source_dataset_rows: int | None = None
         if not source_manifest_path.is_file():
             errors.append(f"{label}: missing source dataset manifest")
         else:
@@ -1076,6 +1078,28 @@ def audit_training_artifacts(
                 source_manifest = json.loads(source_manifest_path.read_text())
             except json.JSONDecodeError as error:
                 errors.append(f"{label}: invalid source dataset manifest ({error})")
+            else:
+                row_fields = [
+                    source_manifest.get(name)
+                    for name in ("total_queries", "rows")
+                    if name in source_manifest
+                ]
+                if (
+                    len(row_fields) != 1
+                    or isinstance(row_fields[0], bool)
+                    or not isinstance(row_fields[0], int)
+                    or row_fields[0] <= 0
+                ):
+                    errors.append(f"{label}: source dataset manifest has an invalid row count")
+                else:
+                    source_dataset_rows = row_fields[0]
+                    if (
+                        expected_dataset_rows is not None
+                        and source_dataset_rows != expected_dataset_rows
+                    ):
+                        errors.append(
+                            f"{label}: source dataset row count differs from audited dataset"
+                        )
         if not run_manifest_path.is_file():
             errors.append(f"{label}: missing copied dataset manifest")
         else:
@@ -1108,7 +1132,7 @@ def audit_training_artifacts(
             if completed and completed.get("model_family") != config.model_family:
                 errors.append(f"{label}: completion model family does not match matrix")
             if completed and source_manifest:
-                if completed.get("dataset_rows") != source_manifest.get("total_queries"):
+                if completed.get("dataset_rows") != source_dataset_rows:
                     errors.append(f"{label}: completion dataset row count does not match manifest")
             if completed:
                 dataset_fingerprint = completed.get("dataset_fingerprint")
