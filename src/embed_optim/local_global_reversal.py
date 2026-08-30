@@ -122,6 +122,15 @@ def _declared_file(
     path = Path(declared["path"])
     if not path.is_absolute():
         path = manifest_path.parent / path
+    else:
+        try:
+            declared_path_available = path.is_file()
+        except OSError:
+            declared_path_available = False
+        if not declared_path_available:
+            # Checked-in report manifests preserve the producer's absolute path for provenance.
+            # A clean checkout may live elsewhere, so content-address the colocated copy instead.
+            path = manifest_path.parent / path.name
     path = path.resolve()
     if (
         not path.is_file()

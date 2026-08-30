@@ -111,6 +111,38 @@ def test_declared_file_rejects_changed_bytes(tmp_path: Path):
         )
 
 
+def test_declared_file_relocates_unavailable_absolute_producer_path(tmp_path: Path):
+    table = tmp_path / "table.csv"
+    table.write_text("a\n1\n", encoding="utf-8")
+    from embed_optim.geometry import _sha256
+
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "complete": True,
+                "outputs": {
+                    "table": {
+                        "path": "/unavailable/producer/checkout/table.csv",
+                        "bytes": table.stat().st_size,
+                        "sha256": _sha256(table),
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    resolved, _ = _declared_file(
+        manifest,
+        "table",
+        required={"schema_version": 1, "complete": True},
+    )
+
+    assert resolved == table.resolve()
+
+
 def test_repository_reversal_report_is_reproducible(tmp_path: Path):
     manifest = build_local_global_reversal(
         Path("configs/local_global_reversal.json"),
