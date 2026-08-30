@@ -1,0 +1,39 @@
+{
+  "aggregation": "median-and-interquartile-range-over-ten-anchors-per-family",
+  "anchors": 20,
+  "display_floor": 1e-07,
+  "families": [
+    "dense",
+    "late"
+  ],
+  "input_rows": 276480,
+  "layers": [
+    0,
+    10,
+    21
+  ],
+  "modules": [
+    "attn.Wqkv",
+    "mlp.Wi"
+  ],
+  "operators": [
+    "adamw",
+    "muon",
+    "normuon"
+  ],
+  "output": {
+    "bytes": 1723679,
+    "path": "/root/embedding-optimizer-study/reports/common-state/exact-update-spectra.svg",
+    "sha256": "65f254bf55757f2ed1ece6b95d344c855e071227362aaaac5f8c8856d874c3e8"
+  },
+  "schema_version": 1,
+  "source_summary_manifest": {
+    "path": "/root/embedding-optimizer-study/results/common-state-spectra/summary/summary_manifest.json",
+    "sha256": "8d3c3fbd6b2113a5228b3e0b77f965284cd2beeccecfcade30671534586bfd65"
+  },
+  "spectra": 360,
+  "spectrum_spec": {
+    "path": "/root/embedding-optimizer-study/configs/common_state_spectrum_probe.json",
+    "sha256": "a8d99735de5d7faea52355f27b5c70edb595165a74d05cf118652970cc807e0f"
+  }
+}

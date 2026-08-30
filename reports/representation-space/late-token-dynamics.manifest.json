@@ -1,0 +1,105 @@
+{
+  "aggregation": "median-and-interquartile-range-over-four-learning-rates",
+  "complete": true,
+  "family": "late",
+  "jobs": 244,
+  "matrix": {
+    "path": "/root/embedding-optimizer-study/configs/experiment.yaml",
+    "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+  },
+  "metrics": [
+    "token_evidence_entropy_mean",
+    "token_evidence_gini_mean",
+    "document_token_coverage_mean",
+    "repeated_token_dominance_mean"
+  ],
+  "optimizers": [
+    "adamw",
+    "muon",
+    "normuon"
+  ],
+  "output": {
+    "bytes": 182058,
+    "path": "/root/embedding-optimizer-study/reports/representation-space/late-token-dynamics.svg",
+    "sha256": "d6b0e4c93a48cfa64aa3386955831398fbef2237d965fd0998223086372aa6be"
+  },
+  "pretrained_reference_fraction": 0.0,
+  "schema_version": 1,
+  "sources": {
+    "training": {
+      "checkpoint_metrics": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/training/summary/checkpoint_metrics.csv",
+        "sha256": "c7dadbcbc936d751620eec5d9aa3091be186d4f0aa195c162b377acca5d06f39"
+      },
+      "group_metrics": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/training/summary/group_metrics.csv",
+        "sha256": "9b783c00d347afb44c934bd74cd853b39a464ace1e4639eafff21a03aadb77bb"
+      },
+      "probe": {
+        "groups": {
+          "fever": 147,
+          "fiqa": 147,
+          "hotpotqa": 146,
+          "msmarco": 146,
+          "nq": 146,
+          "squadv2": 146,
+          "trivia": 146
+        },
+        "manifest_path": "/root/embedding-optimizer-study/data/probes/training-1024-seed1729/manifest.json",
+        "manifest_sha256": "40953eb60bb5dbfa02d9abde5e634bb3221ee934d7ca654c5e5a7e961b39eed2",
+        "samples": 1024,
+        "spec_path": "/root/embedding-optimizer-study/configs/representation_probe.json",
+        "spec_sha256": "45e76c8daa5bda0213c346b39200a34ddc1e9295f37198a2bd238276ee6057e2"
+      },
+      "representation_metrics": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/training/summary/representation_metrics.csv",
+        "sha256": "4393848c8acda0a1226ac9b1ee6e8be40da35d8fd9c37899e49ae90891b01f8c"
+      },
+      "summary_manifest": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/training/summary/summary_manifest.json",
+        "sha256": "58e47da5b2ab040a939d2daa41fa91f6d56ba59f469465fea1b4a37a4a04c20a"
+      }
+    },
+    "unseen": {
+      "checkpoint_metrics": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/summary/checkpoint_metrics.csv",
+        "sha256": "f5bf8dc530f188a347291ced1606ba4c61035468743b6d8ac085b1fa26babca1"
+      },
+      "group_metrics": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/summary/group_metrics.csv",
+        "sha256": "c6a686a80a6bda37c83182bb954e79c7aad691a4be498e76e6f3122c4de7b98a"
+      },
+      "probe": {
+        "groups": {
+          "ArguAna": 16,
+          "ClimateFEVER": 16,
+          "DBPedia": 16,
+          "FEVER": 16,
+          "FiQA2018": 16,
+          "HotpotQA": 16,
+          "MSMARCO": 16,
+          "NFCorpus": 16,
+          "NQ": 16,
+          "QuoraRetrieval": 16,
+          "SCIDOCS": 16,
+          "SciFact": 16,
+          "TRECCOVID": 16,
+          "Touche2020": 16
+        },
+        "manifest_path": "/root/embedding-optimizer-study/data/probes/decontaminated-beir-224-seed4242/manifest.json",
+        "manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+        "samples": 224,
+        "spec_path": "/root/embedding-optimizer-study/configs/beir_representation_probe.json",
+        "spec_sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+      },
+      "representation_metrics": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/summary/representation_metrics.csv",
+        "sha256": "d94cc60e953dbfa053c6609189ea449bce49371d396c921b8c4563cfe46dc75b"
+      },
+      "summary_manifest": {
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/summary/summary_manifest.json",
+        "sha256": "242ca2c8efe0b80744d1babf2475b5912561d7996b8ae1820ba435ca876a1800"
+      }
+    }
+  }
+}

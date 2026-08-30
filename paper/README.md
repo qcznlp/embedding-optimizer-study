@@ -52,6 +52,8 @@ completion gate without weakening failures caused by malformed or stale complete
 | Function-preserving basis diagnostic | `configs/basis_sensitivity.json` and `reports/basis-sensitivity/summary_manifest.json` | 540 RoPE-commuting QKV comparisons and 3,240 selected-head records pass functional-invariance, Cartesian-coverage, and source-hash audits |
 | Representation and score geometry | strict manifests under `reports/representation-space/` | two pretrained references plus 120 checkpoints per probe tier |
 | Immediate causal intervention | `reports/functional-intervention/manifest.json` | 20 anchors and 58,240 paired sample records |
+| Post-hoc local-to-global synthesis | `reports/local-global-reversal/summary_manifest.json` | four reversal contrasts and six acquisition--preservation rows, source-bound to the completed intervention, bridge, and validation reports |
+| Post-hoc spectrum/basis factorization | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | 20 anchors and 49,280 paired records identify immediate spectrum, singular-vector-basis, interaction, interpolation-path, and spectral-band effects; this explanatory tier is not sufficient by itself for a long-horizon claim |
 | Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 18 runs, 90 checkpoints on both frozen probes |
 | Routing fairness | `reports/hybrid-adamw/summary_manifest.json` | eight hybrid runs and 112 final BEIR units |
 | Confirmatory retrieval claims | `reports/confirmatory/summary_manifest.json` | three new seeds, 18 runs, 252 final BEIR units |

@@ -1,0 +1,1213 @@
+{
+  "analysis": {
+    "causal_boundary": "This is a function-preserving coordinate diagnostic of optimizer equivariance, not a retrieval-quality intervention.",
+    "device": "cuda:0",
+    "operator_protocol": {
+      "adam_beta1": 0.9,
+      "adam_beta2": 0.999,
+      "adam_eps": 1e-08,
+      "adjust_lr_fn": "original",
+      "muon_momentum": 0.95,
+      "normuon_beta2": 0.95,
+      "ns_steps": 5
+    },
+    "parameters_advanced": false,
+    "weight_decay_included": false
+  },
+  "common_state_spec": {
+    "bytes": 2433,
+    "path": "/root/embedding-optimizer-study/configs/common_state_probe.json",
+    "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+  },
+  "complete": true,
+  "coverage": {
+    "anchors": 20,
+    "head_records": 3240,
+    "records": 540,
+    "summary_rows": 6,
+    "tensor_sequences": 60
+  },
+  "functional_calibration": {
+    "by_rotation_seed": {
+      "2026082701": 5.329070518200751e-15,
+      "2026082702": 7.105427357601002e-15,
+      "2026082703": 7.105427357601002e-15
+    },
+    "maximum_allowed_absolute_logit_error": 1e-10,
+    "maximum_observed_absolute_logit_error": 7.105427357601002e-15
+  },
+  "outputs": {
+    "head_records": {
+      "bytes": 559913,
+      "path": "head_records.csv",
+      "rows": 3240,
+      "sha256": "1120583e96b35a1e591bd173eb28ffc9049726561071b9bbc6e2367e765b1805"
+    },
+    "records": {
+      "bytes": 144871,
+      "path": "records.csv",
+      "rows": 540,
+      "sha256": "8ca9cd03a0bf8bc0573945e9d7a5c08dc7ae866b278ede42d9921f90f367be09"
+    },
+    "summary": {
+      "bytes": 1245,
+      "path": "summary.csv",
+      "rows": 6,
+      "sha256": "d05a7d6fb54891d6d8f53e63b5623d34da49f7221f70dd76d5a68fb85c626fa5"
+    }
+  },
+  "protocol": {
+    "bytes": 2995,
+    "path": "/root/embedding-optimizer-study/configs/basis_sensitivity.json",
+    "sha256": "b5cb7f7117f6af775948e7d5da23ea368ea8100f9d01edb87ef98643a9af5e58"
+  },
+  "runtime": {
+    "cuda": "12.9",
+    "device": "cuda:0",
+    "gpu_name": "NVIDIA L20Z",
+    "torch": "2.9.1+cu129"
+  },
+  "schema_version": 1,
+  "sources": [
+    {
+      "anchor": "dense/adamw-lr1e-5/checkpoint-2345",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25958,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-2345/gradients/manifest.json",
+        "sha256": "a9ef1dc27750c4008a1ddd9a25b809d900e733be19ffe77b20859f52699824e9"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0000.safetensors",
+          "sha256": "87e79d5e50f2cb32c20994a0fe7d878a8a95503049f29a1573a64de123912399"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0001.safetensors",
+          "sha256": "dc05a940205a539e8490180e1b584ef97ef1a55f83fb7289a8b712ccb9daeb7f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0002.safetensors",
+          "sha256": "39c4cbe93f6971bac02464a4f67a75967d54c4c397b9c242c51d67d3f2c13b0f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0003.safetensors",
+          "sha256": "ce48a295358b5ae54f8d2057b11973bfaedb4b5d5704a20ef164690214c2548f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0004.safetensors",
+          "sha256": "0db20b09de7f400e06201aa4110a2beb3df9c3206e113ed879e6000877b3712f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0005.safetensors",
+          "sha256": "5663e7334792864ed5dac536ec2bda88cd361345f98fb926721c28cf4f5f1d83"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0006.safetensors",
+          "sha256": "51479edb44b7420ef14a662762f5b7045c8eeaa8d9d269b3c9d36be0dcd59192"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0007.safetensors",
+          "sha256": "66cbc93df45b76dbd46c821f261a1dc63c9f2c9057f57ae77bed61d99a0c5367"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/adamw-lr1e-5/checkpoint-3907",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-3907",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-3907/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25962,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-3907/gradients/manifest.json",
+        "sha256": "f9a813fa5d3011ced32e9b048a33088a1fff5a5d97d4b3a6a0283bec64d3c437"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0000.safetensors",
+          "sha256": "1a5a961d797223c5a1db22c6f15fef19c9a1eb178edc384ef10e7850ecf5767b"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0001.safetensors",
+          "sha256": "02f4a2f5b021c28ca4c4f65cc9b09ebcecf2308205da0d078aa5f0394a32fd11"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0002.safetensors",
+          "sha256": "bafc64b131095cb91f0f6c5d0f36b16786ad655b5d5e350ce1f5b6d8b6a39595"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0003.safetensors",
+          "sha256": "e8ac0f5adb8ffc9728efb0c36f33e390564837b2ae70d2d3bd889817ca3f69b1"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0004.safetensors",
+          "sha256": "6da5404317ae5af01a6c5064aae053af466dd43b7edb3dd9161d22257bb84800"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0005.safetensors",
+          "sha256": "b12f83340fa7fe27bf1a3a779c80c734b9f06a2aabee06bbb7c75c83202de855"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0006.safetensors",
+          "sha256": "6e4e800ff96aa539cccf996ec77d2a8124217d9db5f17da995025355bb2b48c4"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0007.safetensors",
+          "sha256": "0fcd9770653443d4320ccac077efac6443cef2b604bc615fc5e57260e48b018d"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/adamw-lr1e-5/checkpoint-782",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-782",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-782/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25965,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-782/gradients/manifest.json",
+        "sha256": "1df25f1b9e16d421bfff576cc8f406295ae02ae8db50af4ee67975ec8c21ca46"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0000.safetensors",
+          "sha256": "826edf08a23185734c6d5e2b3b643e788a545f048e78d3ed671cac616104840f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0001.safetensors",
+          "sha256": "0ecdcdd5650e8af12882ba7ee9de17985b866ebc7eff469771cac29d13c4c78e"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0002.safetensors",
+          "sha256": "71fa21aaed2dafe645f210af397a414f5379012704798b48c5cd2072450adc04"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0003.safetensors",
+          "sha256": "2b70929ce48fb3dc5411ab948808daeeb71592a3a884e5f76ac3e6067d934d51"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0004.safetensors",
+          "sha256": "a29b22906378140652a7483257565a02599a203ed2a4840c37225434e21dcaa9"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0005.safetensors",
+          "sha256": "6aa4cb584f6368a4c6f13d53c10a739979bac6ce3a74814189d5f1c357cf4ce7"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0006.safetensors",
+          "sha256": "fba9412791964e2db53019f096c78714091c1485a6d04e266cf87607861595de"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/adamw-lr1e-5/checkpoint-782/gradients/gradient-0007.safetensors",
+          "sha256": "ccb6d9f2b29907a9fe2fcecac6f830e5b05b5977dc66076b90972f0a3c7e3097"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/muon-lr1e-3/checkpoint-2345",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/muon-lr1e-3/checkpoint-2345",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/muon-lr1e-3/checkpoint-2345/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25940,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+        "sha256": "291fe5829cfb7571db9f6a86f4c813df88d64436955720d32cb8ec6338958191"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0000.safetensors",
+          "sha256": "01a3bd1e4205bb576eb488ceb382c36dae62d56963aac81a4e49da9d9d494abe"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0001.safetensors",
+          "sha256": "bc93b1feb851de4fb0c06486194acced043a8c52042ad9a5f8f0fcbe6f5c260b"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0002.safetensors",
+          "sha256": "9cd96530fcd4d67bd6c5678d2edcc1504aa669fe9cb2713d7babe29251796c4e"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0003.safetensors",
+          "sha256": "bd35c9663da61bac4931058109cd1ca149ca2e3e36eb0814a01286fba033d873"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0004.safetensors",
+          "sha256": "e5f86a2fde0c340d9234b0617a392adcedef15d2f64b3b92f3e09bb58708b245"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0005.safetensors",
+          "sha256": "cd292fa4b491818cf47e1417d854df3c53f3d275c2bb1edf14ea5a501d7d7471"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0006.safetensors",
+          "sha256": "fc8c5411b1528a99d5d6fb417a22b5c4b2d556129fc75765b8cb703ca48adc7f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-2345/gradients/gradient-0007.safetensors",
+          "sha256": "5114f74955d0c513e7d74f0d353f48780e2915071db2b9dc1775c22113c649ec"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/muon-lr1e-3/checkpoint-3907",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/muon-lr1e-3/checkpoint-3907",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/muon-lr1e-3/checkpoint-3907/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25938,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+        "sha256": "976ed0d8549ace03ad95f8a636c5ad36b20d7f9df2c43f4d4ac6c8ca8a6bfc16"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0000.safetensors",
+          "sha256": "e1f922a79dc1453970f2af1f82d0ec39fd5966d6e1e067e4e85c5778649d35fe"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0001.safetensors",
+          "sha256": "5fe693a9909f13a97031cd04ac3d74f8d24a1d0f8ee7207878a2f84271637157"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0002.safetensors",
+          "sha256": "d784d6592a5c33fd54ac3f3e7bdf7cc9d9fcc85367075f16950ab496ef17e59c"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0003.safetensors",
+          "sha256": "4a804a59336027da17a5d0146424eac8680d7a06f02a999baeb69693cd11d4cf"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0004.safetensors",
+          "sha256": "d96f4d1bbcdf1fc533dcd2f247ed8b8356149aee0741b4c9855d3bff76b6f260"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0005.safetensors",
+          "sha256": "390b3e731d37fcc23da79d66c7f82b0a44ae91ffb3fb6f3266ffbdde79f0b152"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0006.safetensors",
+          "sha256": "b86df6b8515c4830044a3d12bc1a212d12cf0121906ac3c78bd521cbf14f6fdf"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-3907/gradients/gradient-0007.safetensors",
+          "sha256": "6fb8135a406f9e2789157e3cd555ab2251d1c299594de011bbf44044a1fafc05"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/muon-lr1e-3/checkpoint-782",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/muon-lr1e-3/checkpoint-782",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/muon-lr1e-3/checkpoint-782/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25964,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-782/gradients/manifest.json",
+        "sha256": "a44211416f71ffd7092f70c17a2aa50b0101987492acb4374e53381b0d692b2d"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0000.safetensors",
+          "sha256": "3f5a847ec170dc4b564be6eaad4bb94a0c7a92a860d582a23a5672b3dc449049"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0001.safetensors",
+          "sha256": "84857c03409a4418c50c191c1e0a68a6aa5b6c2817d359a31aa8d50ce0c8da82"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0002.safetensors",
+          "sha256": "79ef2c27ffaf21f1e1d82ce77a1e98c3b9a7558c8cd6f4b213ad1e131c9fd8e3"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0003.safetensors",
+          "sha256": "04613b57a02ce1fc925c5aa329f039c086eb71a72257e966846d400617471ab3"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0004.safetensors",
+          "sha256": "b60a272a9a861dc23708d76b8fcd19b49373c60c903a1a5be4817580e1e97463"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0005.safetensors",
+          "sha256": "92d85f9ce7b7293bfd9d98126d757b7e9a32776209016ccfe11e7ec970a03023"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0006.safetensors",
+          "sha256": "0f5d3da566166f0f01719da70dd67fbf07fce19873aecd58eee4c5d9b4ee4308"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/muon-lr1e-3/checkpoint-782/gradients/gradient-0007.safetensors",
+          "sha256": "d4a4da478a758be3c6df4f80220ba99826f6ae64646cd09367a1ed0863cb07e9"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/normuon-lr1e-3/checkpoint-2345",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/checkpoint-2345",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/checkpoint-2345/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25940,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+        "sha256": "06e90bd45efe57451c33040775a006e954cf5d79a1a6e1d5297e2fd951b0ef9f"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0000.safetensors",
+          "sha256": "1a0c9469e968e05fee71d253b60fbae79d40e8015ce87214814a88f7958fa5c0"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0001.safetensors",
+          "sha256": "14852fc961a93aed5fbe3c543d8971b6eb9a1592bf09eff65baf05792ba2e029"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0002.safetensors",
+          "sha256": "97d131ae9893417a68a0c6fdde4b6cec843e55a7ffc95b6e29c2335405130875"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0003.safetensors",
+          "sha256": "75c9e8f17b3247e86c40f584528ded1d5516f3d1eb41a356292b78beda28f66e"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0004.safetensors",
+          "sha256": "24559eb647aafa735f513075c7657c2a1cdcb5be92ea97c515d81c205b1006ca"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0005.safetensors",
+          "sha256": "23e1c049be9e2bad1a64facfc9177f485f6a235d02a07c7dc5ab443f1f3c5699"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0006.safetensors",
+          "sha256": "efc88e263834b1f32b49a3af6dda0e733aceeb27311d94a5db625fb17cf1df3b"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0007.safetensors",
+          "sha256": "fcb43994ae9fd8c791748c0217bf9a92923341b01d06e5c1a376f49373153694"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/normuon-lr1e-3/checkpoint-3907",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/checkpoint-3907",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/checkpoint-3907/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25939,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+        "sha256": "dfa3bea354750185b0f0d38cf9f0e96d4e288fde4d1969beaf3be2c552dc2fc7"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0000.safetensors",
+          "sha256": "b09cd7acf208f6fbd6678eda6ecde7cc87b220ad60aca3e1d2fc23ead053c37f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0001.safetensors",
+          "sha256": "9f9115755a43af4299f02756a22ec68eb79f9e6e79d0a78722634135e5a55070"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0002.safetensors",
+          "sha256": "6c73d3c48076dd7f59b61793c5742c6cb16f33749acae1e3031cb7a7347581e1"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0003.safetensors",
+          "sha256": "0064942895756ea037de08a98272da117a37a887a224abf0b1d2c5437aaa8684"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0004.safetensors",
+          "sha256": "4e5b9d11e80592a7925b1361905ea5890f9aee76b56886d4fb0033d1602bd7c2"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0005.safetensors",
+          "sha256": "d731b4b4aa48f787974abe3db2ad3a16a2d7fef58e0d47f62312309cbe33068e"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0006.safetensors",
+          "sha256": "64e6b619e24c9e78cc667d07044eb3417e174a7300268ff59df9c90004bcaab9"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0007.safetensors",
+          "sha256": "230c9e9f8101501df7c4bd7b3ef4c77da6399eeaa62b164a0ffee912760e6e63"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/normuon-lr1e-3/checkpoint-782",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/checkpoint-782",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/checkpoint-782/config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25966,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-782/gradients/manifest.json",
+        "sha256": "5288945a97c4a0cbe9ff96324296a8168e671f1214be6e93f6ef3e9b783028e0"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0000.safetensors",
+          "sha256": "977e236ec5f7bc8cd30cc581e45d28c2d1443983261d9973d5c60b6182e0bc1f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0001.safetensors",
+          "sha256": "2dcc64e9cfd65b7577d35ac18708cbf325fa494996f71febb0285e77affecd38"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0002.safetensors",
+          "sha256": "1a74520ef76e2da7bafc12eded0343b5f34445203e14ad6344240178883c89e3"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0003.safetensors",
+          "sha256": "43082672062d70f56e174f7368ab0a7ed0f5fd51b6530571b6c42c2a8a8da939"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0004.safetensors",
+          "sha256": "511e842e29fa6ad1291cfa70dd54e2bfdf12e8d1fd69f1c7bed5a0810b6c4958"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0005.safetensors",
+          "sha256": "cd679394ccf464e1e8a16dfcee8b385043461738ec99948dae4e4a2f245dcb2d"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0006.safetensors",
+          "sha256": "552eb1c8379cdf9b4d630c5512b8e861102314f850b6f3aa6b9091b7d545e26b"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/normuon-lr1e-3/checkpoint-782/gradients/gradient-0007.safetensors",
+          "sha256": "19718daf198aca97d30a7aaf6323e37806ef5f7debc56e603b53aeb7b1034c0f"
+        }
+      ]
+    },
+    {
+      "anchor": "dense/pretrained",
+      "checkpoint": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/snapshots/0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+      "config": {
+        "bytes": 1208,
+        "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/d4a8ff5a8efba181915dd285d33c9eaabac5609b",
+        "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+      },
+      "family": "dense",
+      "gradient_manifest": {
+        "bytes": 25871,
+        "path": "/root/embedding-optimizer-study/results/common-state/dense/pretrained/gradients/manifest.json",
+        "sha256": "68f92b962f237ed37db6c90d7a509ad7fa9151649caf4300cb573dc88a32bed2"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0000.safetensors",
+          "sha256": "f38a16062a79c9d9a0108a204b017abeedfb286f054db7099ebfdfd4d56412a0"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0001.safetensors",
+          "sha256": "0a7c610e353bf9ae411fd4bb368f33b0d1b5923b061accce76ec87e1cada14ac"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0002.safetensors",
+          "sha256": "70854a9334a722f1d55977f773923e54e64e83d0488af99df8bb463eaed8108d"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0003.safetensors",
+          "sha256": "5bbba40193673a0bbacfa33adbf8346e0738e44fa1c774ec37f5e94b8e4ab681"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0004.safetensors",
+          "sha256": "ece4f257e46c26eae626eb5f3f42b54562e0304b003ceb21a1eb361d0f491471"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0005.safetensors",
+          "sha256": "c3b929a7e2d10b410089d6a81ae2a6ae85028060b076036ca47e6559dd7be9cf"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0006.safetensors",
+          "sha256": "12d64d4ef9dd874a5471e4aea9adbbfe723256d1b24d854e7035d2bf78f4f012"
+        },
+        {
+          "bytes": 441197248,
+          "path": "dense/pretrained/gradients/gradient-0007.safetensors",
+          "sha256": "eb3bc04d94f63f2c61d3276f117d590debeada5b95439067deb39d2e399e3dd8"
+        }
+      ]
+    },
+    {
+      "anchor": "late/adamw-lr1e-5/checkpoint-2345",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/adamw-lr1e-5/checkpoint-2345",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/adamw-lr1e-5/checkpoint-2345/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26806,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-2345/gradients/manifest.json",
+        "sha256": "b44c097d51e9bcd88e845275e00d1747b8ec09f12d351ef5d1b7885c8028eb77"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0000.safetensors",
+          "sha256": "d826776b639910112fbf74ef433aeb5d932f02b01b502bee9a04bb4e7755de9d"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0001.safetensors",
+          "sha256": "b7a5d3c9cbb9c7f83cc64cd8b5cb5f6ce312dfd5b674571f218ad10a73d95398"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0002.safetensors",
+          "sha256": "9ef9c004da9fd13e4f298c2497b9fbfefe6e47a4aefbb57ee37ea5dee773a1b1"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0003.safetensors",
+          "sha256": "0eb4d52a5ae175135132c59ac4a345e454c9fe088a319eb3c15d31c39ee9ff08"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0004.safetensors",
+          "sha256": "4a3a58a589cfe0473906c91178c257cdc13666779466d9835d70393f8e4a0e71"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0005.safetensors",
+          "sha256": "bde59e41829ee5fe2b4e5ad7dc9129bfb01b1e5e6a30dcc21767cb71e542bab4"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0006.safetensors",
+          "sha256": "1d8d0352093733ee46b1f18dc2d83dbc09212fa17504e184e0cda8011a0f7356"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-2345/gradients/gradient-0007.safetensors",
+          "sha256": "24214e0dbc52b068b00b65603e18cb588df20cac39f2b563c5a8876f96b83ab4"
+        }
+      ]
+    },
+    {
+      "anchor": "late/adamw-lr1e-5/checkpoint-3907",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/adamw-lr1e-5/checkpoint-3907",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/adamw-lr1e-5/checkpoint-3907/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26795,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-3907/gradients/manifest.json",
+        "sha256": "fda95d0607d6acbca615a3d2a8749bea8132172cca3a195a4b7248edb73cbbcc"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0000.safetensors",
+          "sha256": "87290ced2332779691ffd24bbf74ce86d0f1e4faa76ae914bf186d1d596aada5"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0001.safetensors",
+          "sha256": "6cd1e98a3c5935cbc1ff44e5e74079d28f648ad9f91f0af518f4703ceaa46691"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0002.safetensors",
+          "sha256": "62ae0f4f071aa755f211bcea7efa5cd39986d912a364e0c613e5860b5ca052ce"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0003.safetensors",
+          "sha256": "b04fe9c9ac1c50416e700847e84d0f9ebbb8a3ac6eb7c23609415ec91437dd27"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0004.safetensors",
+          "sha256": "c27e007aaf8fe56239b2cd7aec950bc9014164f9246b558525aeb7611a781692"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0005.safetensors",
+          "sha256": "67522a51c9711d4842683c1a39dfac2d9ab5c0155585b0d70b4c37a7839d193f"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0006.safetensors",
+          "sha256": "4feef1b8047a244e7d5f6004420039b8d78aecd89b4e6c6ef77ddcc8341e577a"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-3907/gradients/gradient-0007.safetensors",
+          "sha256": "762f6e7c6012c5a5b162a3295ca04e1be19b4147bbabe5a7efc5e7b6dd153ca3"
+        }
+      ]
+    },
+    {
+      "anchor": "late/adamw-lr1e-5/checkpoint-782",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/adamw-lr1e-5/checkpoint-782",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/adamw-lr1e-5/checkpoint-782/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26828,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-782/gradients/manifest.json",
+        "sha256": "50421754b28afdd3a47396c6d679377dc67fa9a08a7138c54ab9b1da3da29f4b"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0000.safetensors",
+          "sha256": "8669274cc8c92c5a2e61d2dac539421ff6775ce4b7c49e2bc251a0542324a086"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0001.safetensors",
+          "sha256": "c65ae435c4aa9aa48a8b0d2b05692902a76329b5b088c5c9c6c20ab198e2d0de"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0002.safetensors",
+          "sha256": "5dd4c8770abfcf6bfbd723628449b78117653202a7b7ad31248bc6e7e5346786"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0003.safetensors",
+          "sha256": "170ee8a71f5dcaea52e37000aa7e1a72dba04ae540a3362ebc4690cf65ad906b"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0004.safetensors",
+          "sha256": "7e25daa9aa1c5f543adea9adfdc09b462ecb28d483b16a5dc2418d37cc983db1"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0005.safetensors",
+          "sha256": "ff92bd11e457293240afbd067da5af56f00e1f64d743e97f627ef643786e6ac6"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0006.safetensors",
+          "sha256": "66b509ad73a0d7f9243b7a799169582d8c64c862cc5c41a42e2bc9bb45efad9d"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/adamw-lr1e-5/checkpoint-782/gradients/gradient-0007.safetensors",
+          "sha256": "0e9058ff77bc1c755fbad63e4021dae9187b0a82e26a527a2962669ffb911169"
+        }
+      ]
+    },
+    {
+      "anchor": "late/muon-lr1e-3/checkpoint-2345",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/muon-lr1e-3/checkpoint-2345",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/muon-lr1e-3/checkpoint-2345/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26773,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+        "sha256": "0d54a26efd49409efce470e29d010bf85eb6e5f2d8ffab78a434035e2751294f"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0000.safetensors",
+          "sha256": "9a6f38d4d158ef4768662ee34909956ce1602c19332dd3775cb1aa757c1f699c"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0001.safetensors",
+          "sha256": "13058db80f04d85e9d5e4c81040b6699282acd46ce61a0f4f7d1f0686c8850a8"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0002.safetensors",
+          "sha256": "68d9d8ed351530e58c33b63ff6cd4dd3da9386e665582710a772ccd989261937"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0003.safetensors",
+          "sha256": "efdf1bc7e43a9f37a35ed3bf07ebc003534cd1a10dd7c058b50c96d75199f5d8"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0004.safetensors",
+          "sha256": "d39a815c77dba6616ae75e13d28c8fedeccc489df388c9cb9e9a2b47ffc6f2a4"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0005.safetensors",
+          "sha256": "1e6ea126fcdca6e8a4394ceb09646a92051131f1983fc2e7df943587a4349b92"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0006.safetensors",
+          "sha256": "e2d5fa37ff06c97c3bba1d595329842cbdfadf297dba4c47bc8d7013d0c2791b"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-2345/gradients/gradient-0007.safetensors",
+          "sha256": "83b023e8fbb2aad1f55b0763abe4ff72b39e49502f0d3fe66aaf7d91edb11217"
+        }
+      ]
+    },
+    {
+      "anchor": "late/muon-lr1e-3/checkpoint-3907",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/muon-lr1e-3/checkpoint-3907",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/muon-lr1e-3/checkpoint-3907/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26752,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+        "sha256": "dfcb31e6631840d833faaadadc96882332100d431154731a4aceff3e153137f1"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0000.safetensors",
+          "sha256": "efa87f5bf0fb643d374d49c6c2b25a211c34ec75dfc4804aa8a9533b1a4f48d5"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0001.safetensors",
+          "sha256": "4f6e8f8c077c146ec8215fca7d60b8da45a1ee4115c38eb31be07ef6d211d133"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0002.safetensors",
+          "sha256": "5cd1004ba44d702acc71a94896833da12a7d83f69807ba373ee68bff98a992d0"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0003.safetensors",
+          "sha256": "1f66c0cbc00b5f2cc5b751de1bf52135d7cf4e28756ebacf18a04f8da3d6d9f1"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0004.safetensors",
+          "sha256": "dccf9b653acce32a6d67f17e2d08f368e87a922d8aae6834a8949d3b6ee04af2"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0005.safetensors",
+          "sha256": "748e00699ebb1c1b9d935922b66ddd7b220b4b04984a6ee1f15447b66d9ee17e"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0006.safetensors",
+          "sha256": "0197d393c16ea311fe6b74920f53555e235ae9e103b7ab5f8a32063796620bf3"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-3907/gradients/gradient-0007.safetensors",
+          "sha256": "c59fde3ee0ab8ec66d7b8e9b2be6c96914385c3baaf71c4592a96b7c6ce2a0f0"
+        }
+      ]
+    },
+    {
+      "anchor": "late/muon-lr1e-3/checkpoint-782",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/muon-lr1e-3/checkpoint-782",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/muon-lr1e-3/checkpoint-782/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26759,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-782/gradients/manifest.json",
+        "sha256": "71ff0c4dc5dc7bd9f726f66e9d91cdf85615543cc56694298c00544104d7422a"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0000.safetensors",
+          "sha256": "575e6c3383a7d3fc3422c0d2f93455c6dd1538a2dce5f3154d0d63ac2fdd9699"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0001.safetensors",
+          "sha256": "981fb7429c9119110460ba021b75c07385c113af04be1fceafed3fc829d89435"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0002.safetensors",
+          "sha256": "59029528c57588c981259c5a415d5941424e3cb0a860ab39f6472af4c99dd2e2"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0003.safetensors",
+          "sha256": "4feed11cc9e13bc3918dc52bd4011ffecbbef1c170b2e6ce638741be3173c873"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0004.safetensors",
+          "sha256": "9e536005d2305286e82ad2578aa08e855efc65980383330e4d1a1888d98f9565"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0005.safetensors",
+          "sha256": "c616b9471d129ae76df2b7643c9cd756366155dde4293fee1b51922ceb762e93"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0006.safetensors",
+          "sha256": "ca7deb0a1cff9cfc7bdad2e69a7a02d8f2457a3af4a799a586a41e4e964349bb"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/muon-lr1e-3/checkpoint-782/gradients/gradient-0007.safetensors",
+          "sha256": "00752d9103633df2304b377936fc06d5f8c1d68ea625da7245a4c0431fbd4f01"
+        }
+      ]
+    },
+    {
+      "anchor": "late/normuon-lr1e-3/checkpoint-2345",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/normuon-lr1e-3/checkpoint-2345",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/normuon-lr1e-3/checkpoint-2345/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26772,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+        "sha256": "14d45da50c388668a4282006bb04379284eea6811ef2f6d983367d3c5d71ba81"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0000.safetensors",
+          "sha256": "699581d232bc63a82595b860c3ef560062c0140ffcd2266bb0a80a2c4ceb5588"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0001.safetensors",
+          "sha256": "e7c5555a72f2879edc9e43d94b920cf188fc3f4fdc1b3ae64d0bc1d17b0164f4"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0002.safetensors",
+          "sha256": "96e9c2fc24df944263b545425370366dda96d9459092e8358f9c20e9b11d45d1"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0003.safetensors",
+          "sha256": "515bfe0db1a9ca117b059dced12db442d0c36897f798c4392dd8428264217222"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0004.safetensors",
+          "sha256": "fb865a01329778928d2cd768ee0578f0affd2885a1697c3ad4b3b87c2dfc14cf"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0005.safetensors",
+          "sha256": "9374af9cbc43802a97516e5f0d5e665e38b92aeaca3f5303449d72aa675428f6"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0006.safetensors",
+          "sha256": "fb0fda6e766b24ae5b5c4cfc870f136ce125a9fe218a85854f2b42897467c1d0"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-2345/gradients/gradient-0007.safetensors",
+          "sha256": "06f761e418824474f20c2420865a13f612667fb4887c635eafe5a86fcfb0ad41"
+        }
+      ]
+    },
+    {
+      "anchor": "late/normuon-lr1e-3/checkpoint-3907",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/normuon-lr1e-3/checkpoint-3907",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/normuon-lr1e-3/checkpoint-3907/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26770,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+        "sha256": "b2e16240ba37ac98835fce96e01e1cf7420354d2fb62c348cdf9aa34d76c8a13"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0000.safetensors",
+          "sha256": "2b8852ae49ed91e3924398442892024e61774c080e41a168101a21488d87a431"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0001.safetensors",
+          "sha256": "b4bb869d0b21bfa5f2c23c8b13e746ae74996278d231477ef38d4b740faaebfe"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0002.safetensors",
+          "sha256": "9f90a7a006cec9035728e735fdb02e245f84a4d9b960168524413de00539f4e3"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0003.safetensors",
+          "sha256": "deabfa73fe3a31c02424b32ff4134ce7aa544014d9eb8a91b7e1261193c90895"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0004.safetensors",
+          "sha256": "467435a6b18f79b44bb707ae32eb377d6273156e4f20c490244b9bef38838017"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0005.safetensors",
+          "sha256": "8a2b8f01d783d7474668a885459f23542222ad0fc17639b2f935ac4cd2547ccf"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0006.safetensors",
+          "sha256": "363f5569ed38b36fca24b470322057f1d9168ea5f8720eb2f48526221a8b11cf"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-3907/gradients/gradient-0007.safetensors",
+          "sha256": "6bab3bcfb65a8722f00f11bf59844f9b49aff2c9f7d845b95e6d13460ec841ce"
+        }
+      ]
+    },
+    {
+      "anchor": "late/normuon-lr1e-3/checkpoint-782",
+      "checkpoint": "/root/embedding-optimizer-study/outputs/late/normuon-lr1e-3/checkpoint-782",
+      "config": {
+        "bytes": 1952,
+        "path": "/root/embedding-optimizer-study/outputs/late/normuon-lr1e-3/checkpoint-782/config.json",
+        "sha256": "c25ca532f3104da5544eb70ac0f5cc76fc35f03d55fb3cc6556783cf034de3f6"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26766,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-782/gradients/manifest.json",
+        "sha256": "e47769cea6662c6cffaa71d83186b27a845ed871046129d360cc33407dd81544"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0000.safetensors",
+          "sha256": "a48b25ec74a3ef5bdf77c261fef432f0eef8d54a92040c77dfb9e2ad0a9ec2ed"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0001.safetensors",
+          "sha256": "2849fb82f67893a4c8ec6a3ece399c7a84a666cbc1c0afd2eb5bd36ac1083fa6"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0002.safetensors",
+          "sha256": "b28f4c7bc40e0dd24ad89186c01d0642416b647711f6b576a9b8c79cc522f41b"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0003.safetensors",
+          "sha256": "91f9e777a59f1a6cdd8c620177df862507a6b65776cbe6c5a7b3a665bbe283d4"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0004.safetensors",
+          "sha256": "f1284a534c090a3d95353c8dc18ae065c5283dd926ecb4ef326763b7dc88aa84"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0005.safetensors",
+          "sha256": "873b05b92bc69b932be3824eb743b17c3c2f5ea620f81fc587ff7d55912ce38e"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0006.safetensors",
+          "sha256": "a9f53458066a5f6bc234cc7f868437ede239f940212a5882106b43c1417f49f6"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/normuon-lr1e-3/checkpoint-782/gradients/gradient-0007.safetensors",
+          "sha256": "b35a74460526b424925b407392d410921879bc162001ba448eb96c15fffe5b8f"
+        }
+      ]
+    },
+    {
+      "anchor": "late/pretrained",
+      "checkpoint": "/root/.cache/huggingface/hub/models--lightonai--LateOn-unsupervised/snapshots/1047071849a708b9b3ee4dccdc60186c185224a7",
+      "config": {
+        "bytes": 1208,
+        "path": "/root/.cache/huggingface/hub/models--lightonai--LateOn-unsupervised/blobs/a14a6c82c2993ca6b701a5bcc208eee70ffee684",
+        "sha256": "424fa6fedd42b6a78257145a6068c17cc7e67ac5d7cc3c011ed9d8141c9159d4"
+      },
+      "family": "late",
+      "gradient_manifest": {
+        "bytes": 26713,
+        "path": "/root/embedding-optimizer-study/results/common-state/late/pretrained/gradients/manifest.json",
+        "sha256": "98fed3f64aeb9228deae02f09718b43ab11238213b6389243cdaff940e173166"
+      },
+      "gradient_shards": [
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0000.safetensors",
+          "sha256": "23bada0c397192ed8793117d9a6401b192db17e443e513c73589d243d51d03d0"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0001.safetensors",
+          "sha256": "860bb94f691705e0793f28ce2b507129f0701b17655725b215c509d692299461"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0002.safetensors",
+          "sha256": "c548b94ffd552291df7ab764c149062e08ae573265e7e54ebc42604a2db805e8"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0003.safetensors",
+          "sha256": "73d3a7839516bc3eb85c610a7469ea0d9fb0979e7a0208672cd04757d48cdf5d"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0004.safetensors",
+          "sha256": "1896107a3f21ca9b5eb793b127e7919501617a0e9cae8e6f1b6a6c7838e1d6f2"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0005.safetensors",
+          "sha256": "228936edd65a9e466c9f06b738910c83ff467097628b8c9ab0127e8ce24ab4cc"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0006.safetensors",
+          "sha256": "f99b01f6d5fa0c74843220ec90f0a41eb20f314ce9fba482ba0849a51bab43a8"
+        },
+        {
+          "bytes": 441197248,
+          "path": "late/pretrained/gradients/gradient-0007.safetensors",
+          "sha256": "4a5c0d222a9a86f7abca73bd75c9378af54672cdc74e6f3e264c086e4c4e1169"
+        }
+      ]
+    }
+  ]
+}

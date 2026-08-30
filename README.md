@@ -1067,6 +1067,36 @@ probe, protocol, record table, and summary is content-hashed. This is a local fi
 intervention—not evidence that one virtual step reproduces a complete native optimizer trajectory;
 the NAACL plan retains a short shared-checkpoint branch for that stronger claim.
 
+### 8b. Factor spectrum values from singular-vector basis
+
+The original functional intervention shows whether native optimizer directions differ at fixed
+weights, but it does not identify which part of a matrix direction matters. The explicitly
+post-hoc [`spectral_transplant_intervention.json`](configs/spectral_transplant_intervention.json)
+protocol factorizes AdamW and Muon updates at all 20 frozen anchors. It keeps the update's left/right
+singular vectors fixed while moving its singular values along a four-point log-linear path, swaps
+the two spectra and bases in a 2×2 design, and separately transplants the head, middle, and tail
+singular-value bands. Every resulting hidden tensor is rematched to the source weight's Frobenius
+norm before the same `1e-3` virtual step is evaluated on the 224-query unseen probe.
+
+Run, rehash, and summarize the complete matrix with:
+
+```bash
+embed-optim-spectral-transplant --dry-run
+embed-optim-spectral-transplant \
+  --matrix configs/experiment.yaml \
+  --gpus 0,1,2,3,4,5,6,7
+embed-optim-spectral-transplant --audit-only --verify-hashes
+embed-optim-summarize-spectral-transplant
+```
+
+The primary tables distinguish a singular-value-spectrum effect, a singular-vector-basis effect,
+their interaction, the continuous interpolation path, and the three spectral bands. The protocol
+records that discovery, common-state, exact-spectrum, representation, and original functional
+results were already visible when this experiment was designed. It can therefore support causal
+claims about an immediate fixed-state perturbation, but it cannot by itself attribute a complete
+training-run BEIR gain to spectral equalization; that stronger claim must also survive the
+independently frozen shared-start branches.
+
 ## Performance engineering
 
 - FlashAttention-2, bfloat16 autocast, TF32, non-reentrant gradient checkpointing, and fused AdamW.

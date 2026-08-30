@@ -3,9 +3,7 @@
 > A controlled comparison on DenseOn and LateOn, with identical data, five-point training dynamics,
 > and decontaminated BEIR evaluation.
 
-**Experiment status:** training matrix in progress. This document already records the frozen protocol;
-the results sections are populated only from strictly validated aggregation artifacts after coverage reaches
-1,680/1,680.
+**Experiment status:** complete — 24/24 training runs and 1,680/1,680 checkpoint/task evaluations.
 
 ## Why this comparison
 
@@ -128,6 +126,29 @@ and validates this runtime-specific choice. NorMuon uses the same orthogonalizat
 official β₂=0.95 row-wise second-moment normalization, restores the pre-normalization Frobenius norm,
 and applies the matrix-aspect-ratio correction.
 
+### What is structural—and what is empirical
+
+The core distinction is easiest to see from an idealized momentum matrix
+`M = U diag(σ) Vᵀ`. Muon replaces it with an approximation to the polar factor `UVᵀ`, so flattening
+the nonzero singular values is part of Muon's definition. Our implementation uses the standard
+five-step bfloat16 Newton–Schulz polynomial, which deliberately approximates rather than exactly
+computes that factor. The measured condition numbers therefore need not equal one.
+
+Muon does **not** mathematically require non-uniform neuron updates in every layer. For an exactly
+orthogonalized full-row-rank matrix with at most as many rows as columns, every row has the same
+norm. Tall matrices can have unequal row leverage scores, and finite Newton–Schulz iterations can
+leave row variation in either shape. The large Muon row-CV observed below is therefore a repeatable
+property of these models and this practical operator—not a theorem that defines Muon.
+
+NorMuon's defining addition is neuron-wise adaptation: it tracks one exponential second moment per
+row, divides the Muon direction by its square root, and restores the matrix-level update norm. This
+is designed to reduce persistent row-energy imbalance, but it does not force exact equality at each
+step because the statistic contains history. Row-wise diagonal scaling can also perturb Muon's
+singular spectrum and chooses a particular output-neuron coordinate system. Accordingly, the
+following are treated as empirical questions rather than algorithmic guarantees: how much spectral
+flattening NorMuon retains, how it behaves under a given function-preserving basis change, whether
+either optimizer tolerates a larger learning rate, and whether either improves BEIR retrieval.
+
 We use linear decay with a 10% warmup, bfloat16 autocast, TF32, FlashAttention-2, non-reentrant
 gradient checkpointing, and gradient clipping at 1.0. Each run uses four GPUs, a per-GPU micro-batch
 of 8, and four gradient-accumulation steps, yielding the shared global batch of 128. Each run saves
@@ -234,14 +255,128 @@ not uncertainty across random seeds. Retrieval time-to-quality is computed only 
 
 <!-- RESULTS:BEGIN -->
 
-Results will be inserted here after `reports/coverage.json` confirms all 1,680 task/checkpoint pairs.
+All 1,680 planned task/checkpoint evaluations completed. Scores below are the unweighted mean nDCG@10 across the 14 tasks.
+
+### Final quality and learning-rate robustness
+
+| Family | Optimizer | Best LR | Best final | 4-LR mean | SD | Range | 4-LR trajectory AUC |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| dense | adamw | 3e-5 | 0.5899 | 0.5816 | 0.0099 | 0.5650–0.5899 | 0.5779 |
+| dense | muon | 3e-4 | 0.5923 | 0.5833 | 0.0131 | 0.5608–0.5923 | 0.5776 |
+| dense | normuon | 3e-4 | 0.5934 | 0.5847 | 0.0123 | 0.5634–0.5934 | 0.5800 |
+| late | adamw | 3e-5 | 0.5958 | 0.5864 | 0.0105 | 0.5701–0.5958 | 0.5829 |
+| late | muon | 3e-4 | 0.5972 | 0.5910 | 0.0082 | 0.5770–0.5972 | 0.5858 |
+| late | normuon | 3e-4 | 0.5963 | 0.5906 | 0.0082 | 0.5765–0.5963 | 0.5872 |
+
+- **Dense:** best tuned final score is normuon at 3e-4 (0.5934); the highest four-LR mean is normuon (0.5847); the highest mean observed-window AUC is normuon (0.5800). Best-config paired muon beats AdamW on 10/14 tasks, mean Δ=+0.0024 (95% CI [+0.0006, +0.0047]); normuon beats AdamW on 11/14 tasks, mean Δ=+0.0036 (95% CI [+0.0015, +0.0059]).
+- **Late:** best tuned final score is muon at 3e-4 (0.5972); the highest four-LR mean is muon (0.5910); the highest mean observed-window AUC is normuon (0.5872). Best-config paired muon beats AdamW on 9/14 tasks (2 ties), mean Δ=+0.0014 (95% CI [-0.0008, +0.0035]); normuon beats AdamW on 7/14 tasks (1 ties), mean Δ=+0.0005 (95% CI [-0.0025, +0.0034]).
+
+![Dense training dynamics](../reports/figures/dense-training-dynamics.png)
+
+![Late-interaction training dynamics](../reports/figures/late-training-dynamics.png)
+
+### Five-checkpoint dynamics for every learning-rate run
+
+Each panel below shows all four LR configurations rather than an optimizer-level average; every curve contains the formal 20%, 40%, 60%, 80%, and 100% checkpoints.
+
+![Dense per-run training dynamics](../reports/figures/dense-training-dynamics-by-run.png)
+
+![Late-interaction per-run training dynamics](../reports/figures/late-training-dynamics-by-run.png)
+
+### Dynamics of each optimizer's best final configuration
+
+| Family | Optimizer | 20% | 40% | 60% | 80% | 100% | AUC |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| dense | adamw | 0.5850 | 0.5892 | 0.5881 | 0.5880 | 0.5899 | 0.5882 |
+| dense | muon | 0.5882 | 0.5921 | 0.5912 | 0.5913 | 0.5923 | 0.5912 |
+| dense | normuon | 0.5881 | 0.5922 | 0.5925 | 0.5929 | 0.5934 | 0.5921 |
+| late | adamw | 0.5924 | 0.5927 | 0.5952 | 0.5937 | 0.5958 | 0.5939 |
+| late | muon | 0.5923 | 0.5946 | 0.5948 | 0.5955 | 0.5972 | 0.5949 |
+| late | normuon | 0.5906 | 0.5939 | 0.5976 | 0.5978 | 0.5963 | 0.5957 |
+
+### Paired best-config task effects
+
+| Family | Comparison | W/T/L | Mean Δ | Paired bootstrap 95% CI | Sign p | Holm p |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| dense | muon − AdamW | 10/0/4 | +0.0024 | [+0.0006, +0.0047] | 0.1796 | 0.438 |
+| dense | normuon − AdamW | 11/0/3 | +0.0036 | [+0.0015, +0.0059] | 0.05737 | 0.2295 |
+| late | muon − AdamW | 9/2/3 | +0.0014 | [-0.0008, +0.0035] | 0.146 | 0.438 |
+| late | normuon − AdamW | 7/1/6 | +0.0005 | [-0.0025, +0.0034] | 1 | 1 |
+
+![Dense learning-rate sensitivity](../reports/figures/dense-lr-sensitivity.png)
+
+![Late-interaction learning-rate sensitivity](../reports/figures/late-lr-sensitivity.png)
+
+### Per-task final scores for the best configuration of each optimizer
+
+#### Dense best-config task scores
+
+
+| Task | AdamW | Muon | NorMuon | Muon − AdamW | NorMuon − AdamW |
+| --- | --- | ---: | ---: | ---: | ---: |
+| ArguAna | 0.5600 | 0.5620 | 0.5617 | +0.0020 | +0.0017 |
+| ClimateFEVER | 0.4059 | 0.4104 | 0.4140 | +0.0045 | +0.0082 |
+| DBPedia | 0.2776 | 0.2790 | 0.2811 | +0.0015 | +0.0035 |
+| FEVER | 0.9205 | 0.9225 | 0.9235 | +0.0020 | +0.0030 |
+| FiQA2018 | 0.5421 | 0.5447 | 0.5490 | +0.0026 | +0.0069 |
+| HotpotQA | 0.6750 | 0.6787 | 0.6777 | +0.0037 | +0.0027 |
+| MSMARCO | 0.5680 | 0.5712 | 0.5707 | +0.0032 | +0.0028 |
+| NFCorpus | 0.2874 | 0.2840 | 0.2862 | -0.0034 | -0.0012 |
+| NQ | 0.9254 | 0.9396 | 0.9396 | +0.0142 | +0.0142 |
+| QuoraRetrieval | 0.9118 | 0.9131 | 0.9132 | +0.0013 | +0.0014 |
+| SCIDOCS | 0.1477 | 0.1470 | 0.1484 | -0.0008 | +0.0006 |
+| SciFact | 0.8804 | 0.8792 | 0.8792 | -0.0012 | -0.0012 |
+| TRECCOVID | 0.8304 | 0.8301 | 0.8297 | -0.0004 | -0.0008 |
+| Touche2020 | 0.3259 | 0.3309 | 0.3342 | +0.0050 | +0.0083 |
+
+#### Late best-config task scores
+
+
+| Task | AdamW | Muon | NorMuon | Muon − AdamW | NorMuon − AdamW |
+| --- | --- | ---: | ---: | ---: | ---: |
+| ArguAna | 0.4345 | 0.4278 | 0.4273 | -0.0067 | -0.0073 |
+| ClimateFEVER | 0.4088 | 0.4141 | 0.4154 | +0.0053 | +0.0066 |
+| DBPedia | 0.3037 | 0.3089 | 0.3073 | +0.0052 | +0.0036 |
+| FEVER | 0.9388 | 0.9392 | 0.9395 | +0.0004 | +0.0007 |
+| FiQA2018 | 0.5584 | 0.5641 | 0.5662 | +0.0057 | +0.0078 |
+| HotpotQA | 0.7508 | 0.7489 | 0.7508 | -0.0019 | -0.0000 |
+| MSMARCO | 0.5928 | 0.5946 | 0.5919 | +0.0018 | -0.0009 |
+| NFCorpus | 0.2776 | 0.2802 | 0.2733 | +0.0026 | -0.0043 |
+| NQ | 0.9639 | 0.9639 | 0.9639 | +0.0000 | +0.0000 |
+| QuoraRetrieval | 0.9153 | 0.9162 | 0.9165 | +0.0009 | +0.0012 |
+| SCIDOCS | 0.1478 | 0.1511 | 0.1478 | +0.0033 | -0.0000 |
+| SciFact | 0.8965 | 0.8965 | 0.9074 | +0.0000 | +0.0110 |
+| TRECCOVID | 0.8065 | 0.8009 | 0.7952 | -0.0056 | -0.0113 |
+| Touche2020 | 0.3462 | 0.3548 | 0.3463 | +0.0086 | +0.0001 |
+
+The best-LR comparisons are selected on this same benchmark suite and should therefore be read as controlled exploratory results, not as an unbiased model-selection estimate. Paired intervals use 20,000 deterministic task-level bootstrap resamples; the sign-test p-value is exact after excluding ties, and Holm p controls the family of four reported sign tests. BEIR tasks are heterogeneous and not independent draws, so these are descriptive uncertainty summaries rather than population inference. The four-LR mean, spread, and complete per-task rows are included to expose sensitivity rather than reporting only the winning point. Trajectory AUC is the normalized trapezoidal mean nDCG@10 over the observed 20%–100% checkpoint window; it measures early-to-late quality, not time before the first checkpoint.
 
 <!-- RESULTS:END -->
 
 <!-- TASK-DELTA-STABILITY:BEGIN -->
 
-The post-hoc adjacent-checkpoint task-effect stability table will be inserted after strict retrieval
-dynamics aggregation completes.
+### Exploratory task-effect stability across checkpoints
+
+| Family | Comparison | Stages | Same direction | Pearson r | Spearman rho |
+| --- | --- | --- | ---: | ---: | ---: |
+| DenseOn | Muon − AdamW | 20%→40% | 10/14 | 0.645 | 0.543 |
+| DenseOn | Muon − AdamW | 40%→60% | 10/14 | 0.709 | 0.640 |
+| DenseOn | Muon − AdamW | 60%→80% | 11/14 | 0.651 | 0.648 |
+| DenseOn | Muon − AdamW | 80%→100% | 12/14 | 0.811 | 0.855 |
+| DenseOn | NorMuon − AdamW | 20%→40% | 6/14 | 0.324 | 0.345 |
+| DenseOn | NorMuon − AdamW | 40%→60% | 8/14 | 0.463 | 0.451 |
+| DenseOn | NorMuon − AdamW | 60%→80% | 11/14 | 0.753 | 0.662 |
+| DenseOn | NorMuon − AdamW | 80%→100% | 9/14 | 0.743 | 0.714 |
+| LateOn | Muon − AdamW | 20%→40% | 10/14 | 0.585 | 0.393 |
+| LateOn | Muon − AdamW | 40%→60% | 10/14 | 0.295 | 0.341 |
+| LateOn | Muon − AdamW | 60%→80% | 13/14 | 0.607 | 0.642 |
+| LateOn | Muon − AdamW | 80%→100% | 11/14 | 0.532 | 0.515 |
+| LateOn | NorMuon − AdamW | 20%→40% | 9/14 | 0.532 | 0.310 |
+| LateOn | NorMuon − AdamW | 40%→60% | 10/14 | 0.266 | 0.398 |
+| LateOn | NorMuon − AdamW | 60%→80% | 11/14 | 0.797 | 0.798 |
+| LateOn | NorMuon − AdamW | 80%→100% | 11/14 | 0.771 | 0.824 |
+
+This post-hoc diagnostic applies each optimizer's final-score-selected learning-rate run at every checkpoint and correlates its 14 paired task deltas against AdamW across adjacent stages. It was added after heterogeneous LateOn task directions became visible. It does not alter run selection, the primary aggregate, or the frozen confirmatory family, and it carries no causal interpretation.
 
 <!-- TASK-DELTA-STABILITY:END -->
 
@@ -249,25 +384,18 @@ dynamics aggregation completes.
 
 <!-- SYSTEMS:BEGIN -->
 
-Every run used four NVIDIA L20Z devices. Values below are medians over all four learning-rate
-configurations for that optimizer and family; CUDA memory is the maximum allocated on one rank, not
-the sum across ranks.
+Every run used 4 × NVIDIA L20Z. Values are medians over the four learning-rate configurations for that optimizer and family; CUDA memory is the maximum per rank, not the sum across ranks.
 
-| Family | Optimizer | Useful hours | Samples/s | Throughput vs AdamW | Peak allocated GiB | Optimizer state GiB | Checkpoint GiB |
+| Family | Optimizer | Median hours | Samples/s | Throughput vs AdamW | Peak allocated GiB | Optimizer state GiB | Checkpoint GiB |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| DenseOn | AdamW | 3.52 | 39.43 | 1.0000× | 7.41 | 1.110 | 1.669 |
-| DenseOn | Muon | 3.71 | 37.41 | 0.9489× | 6.98 | 0.699 | 1.258 |
-| DenseOn | NorMuon | 3.77 | 36.86 | 0.9348× | 6.97 | 0.700 | 1.259 |
-| LateOn | AdamW | 8.34 | 16.66 | 1.0000× | 37.46 | 1.146 | 1.723 |
-| LateOn | Muon | 8.38 | 16.57 | 0.9946× | 37.05 | 0.735 | 1.312 |
-| LateOn | NorMuon | 8.46 | 16.42 | 0.9860× | 37.05 | 0.736 | 1.312 |
+| dense | adamw | 3.52 | 39.43 | 1.00× | 7.41 | 1.11 | 1.67 |
+| dense | muon | 3.71 | 37.41 | 0.95× | 6.98 | 0.70 | 1.26 |
+| dense | normuon | 3.77 | 36.86 | 0.93× | 6.97 | 0.70 | 1.26 |
+| late | adamw | 8.34 | 16.66 | 1.00× | 37.46 | 1.15 | 1.72 |
+| late | muon | 8.38 | 16.57 | 0.99× | 37.05 | 0.74 | 1.31 |
+| late | normuon | 8.46 | 16.42 | 0.99× | 37.05 | 0.74 | 1.31 |
 
-The complete native-recipe measurements do **not** show faster step execution for the matrix
-optimizers: Muon/NorMuon throughput is 5.11%/6.52% below AdamW for DenseOn and 0.54%/1.40% below
-AdamW for LateOn. Their systems benefit is instead a 35.80%--37.01% smaller optimizer state and a
-23.82%--24.62% smaller complete checkpoint. Time-to-retrieval-quality remains a separate question
-until all 1,680 evaluation units finish. The source-bound six-row audit is
-[`optimizer_system_summary.csv`](../reports/training-dynamics/optimizer_system_summary.csv).
+The recorded wall time includes training and five full checkpoint writes. Peak CUDA memory comes from PyTorch allocator counters inside each training process, so the independent utilization guard process is excluded. For checkpoint-resumed runs, throughput is recomputed from the sum of non-overlapping useful training segments rather than Trainer's resume-local runtime; the segment adjustment and original Trainer fields remain in the audit table. Exact per-run measurements are in `reports/system_metrics.csv`.
 
 <!-- SYSTEMS:END -->
 
@@ -956,10 +1084,156 @@ are an appendix test of implementation-level basis dependence, not a retrieval-q
 
 <!-- MECHANISM:BEGIN -->
 
-Formal common-state, exact-spectrum, representation, and cross-space results will be inserted here
-only after all corresponding strict manifests and the complete 1,680-unit BEIR matrix pass.
+The formal mechanism tier evaluates every optimizer transform at the same frozen weights and on the same ordered eight-gradient history. The values below are generated only after the complete 20-anchor matrix, 540 basis comparisons, 360 exact spectra, both 122-job representation tiers, and the 1,680-unit retrieval matrix pass their content-hash audits.
+
+### Retrieval time to an AdamW reference
+
+![Retrieval quality versus useful wall time](../reports/retrieval-dynamics/quality_vs_useful_wall_time.svg)
+
+| Family | Optimizer | AdamW reference | LR points reaching | fastest hours | median hours | right-censored |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.5858 | 2/4 | 1.407 | 1.416 | 2 |
+| DenseOn | Muon | 0.5858 | 3/4 | 0.749 | 1.476 | 1 |
+| DenseOn | NorMuon | 0.5858 | 3/4 | 0.756 | 1.507 | 1 |
+| LateOn | AdamW | 0.5898 | 2/4 | 1.673 | 2.523 | 2 |
+| LateOn | Muon | 0.5898 | 3/4 | 1.673 | 3.377 | 1 |
+| LateOn | NorMuon | 0.5898 | 3/4 | 1.692 | 1.693 | 1 |
+
+The reference is the within-family median final nDCG@10 of the four AdamW learning-rate points. Passage is observed only at the five saved checkpoints; no interpolation is used, and non-reaching points remain right-censored. Checkpoint time is a step-proportional estimate from audited useful terminal wall time. The rule was locked after 160/1,680 discovery units were visible, so this is exploratory rather than a preregistration or a substitute for the three-seed confirmation.
+
+### Same-state optimizer fingerprints
+
+| Family | Operator | row CV / AdamW | top-1% row energy / AdamW | stable rank / AdamW | spectral norm / AdamW | cosine with AdamW |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon | 2.855 | 1.586 | 28.916 | 0.015 | 0.470 |
+| DenseOn | NorMuon | 0.711 | 0.979 | 22.021 | 0.018 | 0.480 |
+| LateOn | Muon | 2.989 | 1.603 | 31.965 | 0.014 | 0.442 |
+| LateOn | NorMuon | 0.667 | 0.974 | 23.996 | 0.017 | 0.452 |
+
+Each cell is the median over ten frozen anchors. Ratios use raw optimizer directions but are scale-invariant except for the explicitly reported spectral-norm ratio; the exact-spectrum intervention below uses per-tensor Frobenius-matched directions. Weight decay is excluded from this comparison.
+
+### Function-preserving basis sensitivity
+
+| Family | Operator | mapped cosine | relative direction error | absolute norm-ratio error | predicted-descent error | Q/K spectrum error |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.96940 | 0.24738 | 0.00022 | 0.00488 | 0.02540 |
+| DenseOn | Muon | 0.99946 | 0.03277 | 0.00007 | 0.00034 | 0.00148 |
+| DenseOn | NorMuon | 0.99832 | 0.05793 | 0.00007 | 0.00360 | 0.00946 |
+| LateOn | AdamW | 0.96906 | 0.24878 | 0.00025 | 0.00242 | 0.02389 |
+| LateOn | Muon | 0.99943 | 0.03374 | 0.00005 | 0.00025 | 0.00150 |
+| LateOn | NorMuon | 0.99760 | 0.06935 | 0.00005 | 0.00228 | 0.01079 |
+
+Each row is the median over 90 fixed comparisons: ten common-state anchors, three QKV layers, and three seeded RoPE-commuting rotations. Query and key share each split-half plane rotation, value rows are unchanged, and every direction is inverse-mapped before comparison. The transform preserves attention logits, so this table measures implementation-level coordinate dependence rather than retrieval quality; bfloat16 Newton--Schulz rounding is retained as part of the Muon runtime.
+
+### Exact update spectra
+
+![Exact common-state update spectra](../reports/common-state/exact-update-spectra.svg)
+
+| Family | Operator | stable rank / rank | entropy rank / rank | condition number |
+| --- | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.0195 | 0.6984 | 61.26 |
+| DenseOn | Muon | 0.5772 | 0.9698 | 16.72 |
+| DenseOn | NorMuon | 0.4153 | 0.9603 | 23.82 |
+| LateOn | AdamW | 0.0178 | 0.6711 | 68.14 |
+| LateOn | Muon | 0.5037 | 0.9386 | 20.76 |
+| LateOn | NorMuon | 0.3385 | 0.9334 | 23.98 |
+
+The six matrices were fixed by early/middle/final depth and attention/MLP role before formal spectra existed. Values are medians over 60 exact spectra per family/operator; the figure shows the full normalized curves and interquartile bands.
+
+### Representation and score geometry
+
+![Representation dynamics](../reports/representation-space/representation-dynamics.svg)
+
+| Family | Optimizer | training margin | unseen margin | unseen query rank | pretrained top-1 agreement | Late document-token coverage | mean BEIR nDCG@10 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.0997 | 0.2499 | 0.6748 | 0.9286 | — | 0.5858 |
+| DenseOn | Muon | 0.1240 | 0.2609 | 0.6770 | 0.9040 | — | 0.5901 |
+| DenseOn | NorMuon | 0.1250 | 0.2611 | 0.6787 | 0.8996 | — | 0.5910 |
+| LateOn | AdamW | 0.0061 | 0.0146 | 0.6439 | 0.9420 | 0.1702 | 0.5898 |
+| LateOn | Muon | 0.0083 | 0.0163 | 0.6372 | 0.9085 | 0.1751 | 0.5949 |
+| LateOn | NorMuon | 0.0084 | 0.0163 | 0.6369 | 0.9129 | 0.1744 | 0.5947 |
+
+Rows are final-stage medians across all four frozen learning rates, not test-selected winners. Training and unseen probes remain separate; the latter contains 224 fixed examples balanced over all 14 decontaminated tasks.
+
+### Late-interaction token utilization
+
+![LateOn token-utilization dynamics](../reports/representation-space/late-token-dynamics.svg)
+
+This panel reports the four prespecified MaxSim evidence summaries on both probe tiers. It is kept separate from the shared DenseOn/LateOn figure so a LateOn-only signal cannot change the cross-architecture metric definition after results are visible.
+
+### Descriptive temporal bridge
+
+| Family | Predictor change | Outcome change | Transitions | Spearman ρ |
+| --- | ---: | ---: | ---: | ---: |
+| DenseOn | weight-delta row CV | unseen margin | 48 | -0.067 |
+| DenseOn | unseen margin | mean BEIR nDCG@10 | 48 | 0.531 |
+| DenseOn | unseen query effective rank | mean BEIR nDCG@10 | 48 | -0.027 |
+| LateOn | weight-delta row CV | unseen margin | 48 | -0.439 |
+| LateOn | unseen margin | mean BEIR nDCG@10 | 48 | 0.188 |
+| LateOn | unseen query effective rank | mean BEIR nDCG@10 | 48 | -0.219 |
+| LateOn | document-token coverage | mean BEIR nDCG@10 | 48 | 0.305 |
+| DenseOn | trailing training loss (post-hoc) | mean BEIR nDCG@10 | 48 | -0.684 |
+| LateOn | trailing training loss (post-hoc) | mean BEIR nDCG@10 | 48 | -0.496 |
+
+The first seven geometry associations were fixed in the renderer and use within-run first differences across all optimizers. The final two training-loss rows are explicitly post-hoc diagnostics added after 1,456/1,680 discovery units were visible. All nine are one-seed observational summaries, not a causal mediation analysis. The same-state fingerprints identify what each update rule does; causal claims about later retrieval still require matched short branches or optimizer-switch interventions.
 
 <!-- MECHANISM:END -->
+
+## The non-obvious result: local steps lose, trajectories win
+
+Flattened singular values and balanced rows are definition-level fingerprints, not an explanation
+for retrieval quality. The sharper result appears only when the same-state intervention is compared
+with complete training trajectories. This comparison was declared **post hoc** after all 1,680
+discovery BEIR units and the mechanism analyses were complete, but before any confirmatory-seed or
+shared-start-branch result existed.
+
+At relative scale `1e-3`, every virtual step uses the same frozen weights and gradient history and
+matches each tensor's update-to-weight Frobenius ratio. The local column below is the challenger's
+mean unseen-margin effect minus AdamW's. Long-horizon columns compare final-stage medians over all
+four frozen learning rates. Positive values favor the challenger.
+
+| Family | Challenger | Local margin Δ vs AdamW | Final unseen-margin Δ | Final BEIR Δ | Reversal |
+| --- | --- | ---: | ---: | ---: | --- |
+| DenseOn | Muon | -3.034e-4 | +0.0110 | +0.0043 | yes |
+| DenseOn | NorMuon | -3.671e-4 | +0.0112 | +0.0052 | yes |
+| LateOn | Muon | -3.976e-4 | +0.0017 | +0.0051 | yes |
+| LateOn | NorMuon | -4.527e-4 | +0.0017 | +0.0049 | yes |
+
+All four comparisons reverse sign. Muon-family directions therefore do not win because a
+Frobenius-matched step produces a larger immediate retrieval margin. Their native trajectories must
+change later gradients or accumulate functionally useful changes that the local intervention does
+not reproduce.
+
+An independent validation set exposes the other half of the mechanism. It selects one recipe per
+family and optimizer without looking at BEIR; the within-optimizer best discovery BEIR point below
+is a descriptive oracle and is never substituted into confirmation.
+
+| Family | Optimizer | Validation-selected LR | BEIR-oracle LR | Selected BEIR | Oracle BEIR | Regret | Drift excess |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 3e-5 | 3e-5 | 0.5899 | 0.5899 | +0.0000 | +0.0000 |
+| DenseOn | Muon | 3e-3 | 3e-4 | 0.5608 | 0.5923 | +0.0315 | +0.0591 |
+| DenseOn | NorMuon | 3e-3 | 3e-4 | 0.5634 | 0.5934 | +0.0300 | +0.0469 |
+| LateOn | AdamW | 3e-5 | 3e-5 | 0.5958 | 0.5958 | +0.0000 | +0.0000 |
+| LateOn | Muon | 1e-3 | 3e-4 | 0.5966 | 0.5972 | +0.0006 | +0.0105 |
+| LateOn | NorMuon | 1e-3 | 3e-4 | 0.5962 | 0.5963 | +0.0002 | +0.0113 |
+
+DenseOn is the decisive mismatch. Validation prefers the aggressive `3e-3` Muon-family recipes,
+whose validation margins are much larger, but they lose about 0.03 mean zero-shot BEIR and nearly
+double unseen score drift relative to the `3e-4` within-optimizer oracle. LateOn's mismatch is much
+smaller. Muon therefore appears to alter an **acquisition–preservation frontier**: moderate spectral
+reweighting can accumulate useful margins, while excessive strength optimizes the adaptation domain
+at the cost of the pretrained retrieval function.
+
+This is not yet a causal spectral explanation. The frozen shared-start branches must determine
+whether the long-horizon reversal survives matched accumulated update budgets. To factor the local
+effect, an explicitly post-hoc intervention now crosses AdamW/Muon singular-vector bases with their
+singular-value spectra, follows four interior points of the Adam-to-Muon log-spectrum path, and
+transplants the head, middle, and tail bands separately at all 20 anchors. Every tensor is rematched
+to the same Frobenius budget before scoring. These results will identify which matrix component
+changes the immediate retriever function, but only agreement with the already-frozen short branches
+can support a long-horizon mechanism claim. The complete source-bound reversal tables and current
+claim boundary are in
+[`reports/local-global-reversal`](../reports/local-global-reversal/README.md).
 
 <!-- OUTCOMES:BEGIN -->
 

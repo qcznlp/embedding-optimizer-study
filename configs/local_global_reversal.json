@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "analysis_status": "post_hoc_exploratory",
+  "frozen_at_utc": "2026-08-30T18:41:55Z",
+  "freeze_context": {
+    "discovery_beir_valid_units": 1680,
+    "discovery_beir_expected_units": 1680,
+    "functional_intervention_complete": true,
+    "mechanism_bridge_complete": true,
+    "hybrid_checkpoints_audited": 6,
+    "hybrid_checkpoints_expected": 40,
+    "confirmatory_results_available": false,
+    "short_branch_results_available": false,
+    "reason": "Added after the definition-level Muon and NorMuon fingerprints were judged insufficient as a novel mechanism claim."
+  },
+  "local_effect": {
+    "source": "reports/functional-intervention/family_summary.csv",
+    "direction": "descent",
+    "relative_scale": 0.001,
+    "metric": "mean_anchor_delta_positive_margin",
+    "scale_matching": "per-tensor Frobenius update-to-weight ratio"
+  },
+  "long_horizon_effect": {
+    "source": "reports/mechanism-bridge/checkpoint_bridge.csv",
+    "stage": 5,
+    "aggregation": "median over the four frozen learning-rate points within family and optimizer",
+    "margin_metric": "unseen_margin_mean",
+    "retrieval_metric": "mean_beir_ndcg_at_10"
+  },
+  "reversal_definition": {
+    "reference": "adamw",
+    "challengers": [
+      "muon",
+      "normuon"
+    ],
+    "required_conditions": [
+      "challenger local margin effect is smaller than AdamW",
+      "challenger final median unseen margin is larger than AdamW",
+      "challenger final median BEIR nDCG@10 is larger than AdamW"
+    ]
+  },
+  "acquisition_preservation": {
+    "selection_source": "reports/recipe-validation/recipe_selection.json",
+    "selection_rule": "validation-frozen recipe from the independent 4096-query training-domain validation set",
+    "oracle_comparator": "highest final discovery BEIR point within the same family and optimizer",
+    "drift_metric": "unseen_reference_score_drift_rms",
+    "agreement_metric": "unseen_reference_top1_agreement",
+    "interpretation": "The oracle comparator is descriptive and cannot be used for confirmatory recipe selection."
+  },
+  "claim_boundary": "This post-hoc analysis can establish a descriptive local-to-global sign reversal and an acquisition-preservation mismatch in the completed discovery seed. It cannot establish that spectral equalization causes the long-horizon gain; that requires the frozen shared-start branches and additional spectral interventions."
+}

@@ -78,9 +78,9 @@ Our contributions are fourfold:
     \item We provide a controlled dense/late-interaction benchmark of AdamW, Muon, and NorMuon,
     reporting learning dynamics, time-to-quality, memory, learning-rate tolerance, and complete
     decontaminated retrieval results.
-    \item We distinguish Muon's singular-direction conditioning hypothesis from NorMuon's
-    neuron-wise row-balancing hypothesis using common-state updates rather than distant checkpoint
-    differences alone.
+    \item We separate definition-level optimizer fingerprints from explanatory evidence, and test a
+    local-to-global reversal in which scale-matched Muon-family steps need not be locally superior
+    even when their accumulated trajectories yield better retrieval geometry.
     \item We connect update geometry to retrieval-specific function geometry: dense-vector rank,
     hubness, and margins, plus token-level MaxSim evidence concentration for late interaction.
     \item We isolate update rule, parameter routing, update magnitude, and optimizer-pretraining
@@ -98,12 +98,25 @@ For a matrix parameter $W$ with gradient $G_t$, AdamW applies an element-wise pr
 -\eta\frac{\widehat{M}_t}{\sqrt{\widehat{V}_t}+\epsilon}-\eta\lambda W_t,
 \end{equation}
 whereas Muon applies a Newton--Schulz approximation to the polar factor of a momentum matrix,
-approximately replacing its nonzero singular values by a common scale. NorMuon subsequently applies
-row-wise second-moment normalization. Consequently, we predict that Muon increases the effective
-rank and improves the conditioning of individual matrix updates relative to AdamW, while NorMuon
-specifically reduces dispersion and concentration of row energy relative to Muon. A flatter update
-spectrum is not assumed to be beneficial: it may amplify noise-dominated directions or disrupt
-useful Adam-pretrained features \citep{pang2026htmuon,qu2026finetune}.
+approximately replacing its nonzero singular values by a common scale \citep{jordan2024muon}.
+More precisely, if $M=U\Sigma V^\top$, the idealized transform is
+$\operatorname{polar}(M)=UV^\top$; the practical five-step bfloat16 polynomial is an approximation,
+not an exact projection. Spectral equalization is therefore intrinsic to Muon's operator, whereas
+high row-norm variance is not a universal mathematical consequence. An exact full-row-rank polar
+factor has equal row norms when $M\in\mathbb{R}^{m\times n}$ and $m\leq n$; for $m>n$, row norms are
+leverage scores and may differ, and approximate orthogonalization can reintroduce variation in either
+shape.
+
+NorMuon subsequently forms an exponential moving average of each row's squared magnitude and applies
+the resulting row-wise preconditioner before restoring a matrix-level update scale
+\citep{li2025normuon}. Thus neuron-wise scale adaptation is intrinsic to NorMuon, but exact row
+equality is not: the historical second moment need not equal the current row energy. Diagonal row
+scaling can also perturb Muon's singular spectrum. Consequently, we predict that Muon increases the
+effective rank and improves the conditioning of individual matrix updates relative to AdamW, while
+NorMuon reduces dispersion and concentration of row energy relative to Muon without necessarily
+preserving every spectral property. A flatter update spectrum is not assumed to be beneficial: it
+may amplify noise-dominated directions or disrupt useful Adam-pretrained features
+\citep{pang2026htmuon,qu2026finetune}.
 
 \subsection{Optimizer mismatch as a competing hypothesis}
 
@@ -273,7 +286,12 @@ common-state anchors, we replay original and transformed gradient histories for 
 layers 0, 10, and 21, inverse-map the prescribed updates, and measure direction, norm,
 predicted-descent, and selected-head spectrum error. This appendix diagnostic tests coordinate
 equivariance of the implemented optimizer \citep{singh2026basis} and is not treated as a retrieval
-intervention.
+intervention. In exact arithmetic, the polar map and its Newton--Schulz matrix polynomial are
+equivariant to orthogonal changes of basis on either side. AdamW's coordinate-wise second moment is
+not generally equivariant to dense rotations. NorMuon's row-diagonal state also selects an output
+coordinate system, so it retains right-orthogonal equivariance but not arbitrary left-orthogonal
+equivariance. Its measured near-equivariance below is therefore specific to the frozen,
+function-preserving RoPE transformations rather than a universal property.
 
 \input{generated/common-state}
 
@@ -300,6 +318,14 @@ weights, examples, gradients, and update norm fixed. Baseline, three positive sc
 sign-reversed condition are evaluated on the same 224 unseen queries. These one-step results identify
 immediate directional effects but not long-horizon training behavior.
 
+After the complete discovery, common-state, and representation matrices were visible, we declared a
+post-hoc local-to-global analysis that compares the largest frozen virtual-step condition with
+final-stage medians over all four learning rates. It asks whether the ordering of immediate unseen
+margin changes agrees with the ordering of accumulated unseen margins and BEIR scores. The same
+analysis compares the independently validation-selected recipe with the within-optimizer discovery
+BEIR oracle, which remains descriptive and never replaces the prospectively selected confirmation
+recipe. This synthesis cannot establish a spectral mechanism by itself.
+
 \paragraph{Shared-start branches.}
 Both architectures branch from the same 60\% AdamW checkpoint. AdamW, Muon, and NorMuon receive
 hidden learning rates calibrated to a common global $\lVert\Delta W\rVert_F/\lVert W\rVert_F$
@@ -310,13 +336,17 @@ on the query-disjoint and unseen functional probes. \InterventionHeadline.
 
 \section{Discussion}
 
-The interpretation is selected by evidence rather than by optimizer preference. A Muon
-time-to-quality gain with tied final retrieval would establish an optimization benefit but not a
-better representation. Lower loss with worse BEIR performance would support optimizer mismatch and
-functional drift. A NorMuon advantage concentrated in LateOn, accompanied by improved token-evidence
-coverage, would support a retrieval-specific role for row adaptation. If update and weight geometry
-change without consistent margin or ranking changes, the appropriate conclusion is that much of the
-parameter-space difference is functionally redundant.
+The interpretation is selected by evidence rather than by optimizer preference. Definition-level
+spectral flattening and row balancing validate the implementations but are not explanatory results.
+A Muon time-to-quality gain with tied final retrieval would establish an optimization benefit but
+not a better representation. A local-to-global reversal would instead rule out the simplest
+``better one-step descent'' account and make the changing gradient trajectory the object requiring
+explanation. Lower validation loss with worse BEIR performance would locate that trajectory on an
+acquisition--preservation frontier and support optimizer mismatch and functional drift. A NorMuon
+advantage concentrated in LateOn, accompanied by improved token-evidence coverage, would support a
+retrieval-specific role for row adaptation. If row geometry changes strongly without a corresponding
+margin or ranking advantage, row balancing is a genuine optimizer effect but not the mediator of
+retrieval quality.
 
 The practical recommendation therefore conditions on model family, update strength, and the
 desired compute/quality operating point rather than naming a universal winner. \ConfirmationHeadline.

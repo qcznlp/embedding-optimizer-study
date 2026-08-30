@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "selected": [
+    {
+      "family": "dense",
+      "learning_rate": 3e-05,
+      "model_name": "lightonai/DenseOn-unsupervised",
+      "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+      "optimizer": "adamw",
+      "optimizer_config": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 3e-05,
+        "momentum": 0.95,
+        "name": "adamw",
+        "normuon_beta2": 0.95,
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "run_id": "adamw-lr3e-5",
+      "validation_contrastive_loss": 1.2285124746322253,
+      "validation_positive_margin": 0.007457733154296875
+    },
+    {
+      "family": "dense",
+      "learning_rate": 0.003,
+      "model_name": "lightonai/DenseOn-unsupervised",
+      "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+      "optimizer": "muon",
+      "optimizer_config": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 0.003,
+        "momentum": 0.95,
+        "name": "muon",
+        "normuon_beta2": 0.95,
+        "ns_implementation": "unfused-bfloat16-v1",
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "run_id": "muon-lr3e-3",
+      "validation_contrastive_loss": 0.7657533268286691,
+      "validation_positive_margin": 0.03001689910888672
+    },
+    {
+      "family": "dense",
+      "learning_rate": 0.003,
+      "model_name": "lightonai/DenseOn-unsupervised",
+      "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+      "optimizer": "normuon",
+      "optimizer_config": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 0.003,
+        "momentum": 0.95,
+        "name": "normuon",
+        "normuon_beta2": 0.95,
+        "ns_implementation": "unfused-bfloat16-v1",
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "run_id": "normuon-lr3e-3",
+      "validation_contrastive_loss": 0.7261481215106116,
+      "validation_positive_margin": 0.03057098388671875
+    },
+    {
+      "family": "late",
+      "learning_rate": 3e-05,
+      "model_name": "lightonai/LateOn-unsupervised",
+      "model_revision": "1047071849a708b9b3ee4dccdc60186c185224a7",
+      "optimizer": "adamw",
+      "optimizer_config": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 3e-05,
+        "momentum": 0.95,
+        "name": "adamw",
+        "normuon_beta2": 0.95,
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "run_id": "adamw-lr3e-5",
+      "validation_contrastive_loss": 0.16617350674153297,
+      "validation_positive_margin": 0.0077189189760247245
+    },
+    {
+      "family": "late",
+      "learning_rate": 0.001,
+      "model_name": "lightonai/LateOn-unsupervised",
+      "model_revision": "1047071849a708b9b3ee4dccdc60186c185224a7",
+      "optimizer": "muon",
+      "optimizer_config": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 0.001,
+        "momentum": 0.95,
+        "name": "muon",
+        "normuon_beta2": 0.95,
+        "ns_implementation": "unfused-bfloat16-v1",
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "run_id": "muon-lr1e-3",
+      "validation_contrastive_loss": 0.15281773754549374,
+      "validation_positive_margin": 0.00840956307365559
+    },
+    {
+      "family": "late",
+      "learning_rate": 0.001,
+      "model_name": "lightonai/LateOn-unsupervised",
+      "model_revision": "1047071849a708b9b3ee4dccdc60186c185224a7",
+      "optimizer": "normuon",
+      "optimizer_config": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 0.001,
+        "momentum": 0.95,
+        "name": "normuon",
+        "normuon_beta2": 0.95,
+        "ns_implementation": "unfused-bfloat16-v1",
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "run_id": "normuon-lr1e-3",
+      "validation_contrastive_loss": 0.151930531028941,
+      "validation_positive_margin": 0.008435057534370571
+    }
+  ],
+  "selection_rule": {
+    "checkpoint": "final checkpoint only",
+    "primary_metric": "mean eight-way contrastive loss",
+    "scope": "select one learning rate independently for each optimizer and model family before confirmatory-seed BEIR evaluation",
+    "tie_breakers": [
+      "higher mean positive margin",
+      "lower hidden learning rate"
+    ]
+  },
+  "status": "complete",
+  "validation_spec": {
+    "path": "/root/embedding-optimizer-study/configs/validation_probe.json",
+    "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+  }
+}

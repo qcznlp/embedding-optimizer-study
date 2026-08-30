@@ -1,0 +1,152 @@
+formal_runtime: ../../formal_runtime.json
+common:
+  dataset_path: data/short-branch-50k-seed20260826
+  output_root: outputs/short-branch/seed314159
+  seed: 314159
+  epochs: 1.0
+  global_batch_size: 128
+  micro_batch_size: 8
+  max_length: 8192
+  warmup_ratio: 0.1
+  max_grad_norm: 1.0
+  dataloader_workers: 8
+  gradient_checkpointing: true
+  flash_attention: true
+  wandb_project: embedding-optimizer-study
+  wandb_entity: stevezenguom
+  checkpoint_fractions:
+  - 0.2
+  - 0.4
+  - 0.6
+  - 0.8
+  - 1.0
+models:
+  dense:
+    model_name: outputs/dense/adamw-lr1e-5/checkpoint-2345
+    temperature: 0.02
+  late:
+    model_name: outputs/late/adamw-lr1e-5/checkpoint-2345
+    temperature: 0.001
+runs:
+- id: adamw-scale-matched
+  model_family: dense
+  optimizer:
+    name: hybrid_adamw
+    lr: 0.00015409498859627469
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    momentum: 0.95
+    normuon_beta2: 0.95
+    aux_lr: 3.0e-06
+    aux_beta1: 0.9
+    aux_beta2: 0.999
+    aux_eps: 1.0e-08
+    ns_steps: 5
+    adjust_lr_fn: original
+- id: muon-scale-matched
+  model_family: dense
+  optimizer:
+    name: muon
+    lr: 0.0018259740111827764
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    momentum: 0.95
+    normuon_beta2: 0.95
+    aux_lr: 3.0e-06
+    aux_beta1: 0.9
+    aux_beta2: 0.999
+    aux_eps: 1.0e-08
+    ns_steps: 5
+    adjust_lr_fn: original
+    ns_implementation: unfused-bfloat16-v1
+- id: normuon-scale-matched
+  model_family: dense
+  optimizer:
+    name: normuon
+    lr: 0.0018260319582594357
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    momentum: 0.95
+    normuon_beta2: 0.95
+    aux_lr: 3.0e-06
+    aux_beta1: 0.9
+    aux_beta2: 0.999
+    aux_eps: 1.0e-08
+    ns_steps: 5
+    adjust_lr_fn: original
+    ns_implementation: unfused-bfloat16-v1
+- id: adamw-scale-matched
+  model_family: late
+  optimizer:
+    name: hybrid_adamw
+    lr: 0.0001441771361730221
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    momentum: 0.95
+    normuon_beta2: 0.95
+    aux_lr: 3.0e-06
+    aux_beta1: 0.9
+    aux_beta2: 0.999
+    aux_eps: 1.0e-08
+    ns_steps: 5
+    adjust_lr_fn: original
+- id: muon-scale-matched
+  model_family: late
+  optimizer:
+    name: muon
+    lr: 0.0018641823067403608
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    momentum: 0.95
+    normuon_beta2: 0.95
+    aux_lr: 3.0e-06
+    aux_beta1: 0.9
+    aux_beta2: 0.999
+    aux_eps: 1.0e-08
+    ns_steps: 5
+    adjust_lr_fn: original
+    ns_implementation: unfused-bfloat16-v1
+- id: normuon-scale-matched
+  model_family: late
+  optimizer:
+    name: normuon
+    lr: 0.0018642293975164343
+    weight_decay: 0.01
+    beta1: 0.9
+    beta2: 0.999
+    eps: 1.0e-08
+    momentum: 0.95
+    normuon_beta2: 0.95
+    aux_lr: 3.0e-06
+    aux_beta1: 0.9
+    aux_beta2: 0.999
+    aux_eps: 1.0e-08
+    ns_steps: 5
+    adjust_lr_fn: original
+    ns_implementation: unfused-bfloat16-v1
+provenance:
+  short_branch_protocol_sha256: d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec
+  subset_manifest_sha256: eee88aa0ef11cd43343dc4f40d1385b6829d7e1d4887ab406724849dbaa21bb0
+  calibration_metrics_sha256:
+    dense: e5443c7a05d018b0cbcdcdb5350bc49a9868553d75e0f3ae69c1490a0c66e235
+    late: ac56b4fac7f3b9ade8fbbedcb795e92e04398b751b4e15e2da6ee510f6932a80
+  target_global_hidden_update_to_weight: 0.0005
+  derived_hidden_learning_rates:
+    dense:
+      adamw: 0.00015409498859627469
+      muon: 0.0018259740111827764
+      normuon: 0.0018260319582594357
+    late:
+      adamw: 0.0001441771361730221
+      muon: 0.0018641823067403608
+      normuon: 0.0018642293975164343
