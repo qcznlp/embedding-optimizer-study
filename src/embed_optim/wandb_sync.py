@@ -287,6 +287,30 @@ def _historical_scope_summary(scope_amendment: dict[str, Any]) -> dict[str, Any]
     }
 
 
+def _flatten_summary(prefix: str, value: Any) -> dict[str, Any]:
+    """Mirror W&B's dotted-key representation for nested summary dictionaries."""
+
+    if isinstance(value, dict):
+        flattened: dict[str, Any] = {}
+        for key, child in value.items():
+            child_prefix = f"{prefix}.{key}" if prefix else str(key)
+            flattened.update(_flatten_summary(child_prefix, child))
+        return flattened
+    return {prefix: value}
+
+
+def _historical_scope_matches(summary: Any, expected_scope: dict[str, Any]) -> bool:
+    """Accept the nested input form or W&B's exact dotted-key round trip."""
+
+    if summary.get("historical_scope") == expected_scope:
+        return True
+    expected_flat = _flatten_summary("historical_scope", expected_scope)
+    observed_keys = {str(key) for key in summary.keys() if str(key).startswith("historical_scope.")}
+    return observed_keys == set(expected_flat) and all(
+        summary.get(key) == value for key, value in expected_flat.items()
+    )
+
+
 def _matched_excluded_current_runs(
     runs: list[Any],
     excluded: list[CanonicalRun],
@@ -321,7 +345,7 @@ def _matched_excluded_current_runs(
             "canonical-current" not in tags
             and "canonical-historical" in tags
             and run.summary.get("canonical_status") == "historical"
-            and run.summary.get("historical_scope") == expected_historical_scope
+            and _historical_scope_matches(run.summary, expected_historical_scope)
         )
         if digest != spec.history_sha256 or not (is_current or is_historical):
             raise RuntimeError(
@@ -410,7 +434,7 @@ def verify_remote_historical_matrix(
             and "canonical-current" not in tags
             and config.get("canonical_history_sha256") == expected[identity].history_sha256
             and run.summary.get("canonical_status") == "historical"
-            and run.summary.get("historical_scope") == expected_scope
+            and _historical_scope_matches(run.summary, expected_scope)
         ):
             observed[identity].append(run)
     problems = [

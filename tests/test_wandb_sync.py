@@ -477,11 +477,17 @@ def test_excluded_family_retirement_recovers_mixed_current_historical_matrix():
     historical = _MatrixRemoteRun(
         historical_spec, ["canonical", "canonical-historical"], "historical"
     )
-    historical.summary["historical_scope"] = {
+    historical_scope = {
         "status": "excluded_by_user_directed_dense_scope_amendment",
         "active_families": ["dense"],
         "scope_amendment": scope,
     }
+    for key, value in {
+        "historical_scope.status": historical_scope["status"],
+        "historical_scope.active_families": historical_scope["active_families"],
+        **{f"historical_scope.scope_amendment.{key}": value for key, value in scope.items()},
+    }.items():
+        historical.summary[key] = value
 
     result = retire_excluded_canonical_runs(
         [current, historical], [current_spec, historical_spec], scope
@@ -496,6 +502,12 @@ def test_excluded_family_retirement_recovers_mixed_current_historical_matrix():
     assert verify_remote_historical_matrix(
         [current, historical], [current_spec, historical_spec], scope
     ) == {"excluded_runs": 2, "verified_historical_runs": 2}
+
+    historical.summary["historical_scope.unexpected"] = "changed"
+    with pytest.raises(RuntimeError, match="historical matrix is invalid"):
+        verify_remote_historical_matrix(
+            [current, historical], [current_spec, historical_spec], scope
+        )
 
 
 def test_retirement_precondition_rejects_unexpected_current_before_updates():
