@@ -12,7 +12,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .dense_completion_pipeline import CORE_STEP_NAMES, VALIDATION_STEP_NAMES
+from .dense_completion_pipeline import (
+    CORE_STEP_NAMES,
+    VALIDATION_STEP_NAMES,
+    _args_from_pipeline_arguments,
+    _assert_step_contract_unchanged,
+    _repository_contract_sources,
+    _step_contract,
+    _validate_training_inputs,
+)
+from .dense_completion_pipeline import (
+    pipeline_steps as completion_pipeline_steps,
+)
 from .scope import resolve_scope, scope_amendments_equal
 
 
@@ -202,6 +213,7 @@ def _read_completion_ledger(
     path: Path,
     *,
     expected_scope: dict[str, Any],
+    repository: Path,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     try:
         raw = path.read_bytes()
@@ -218,21 +230,89 @@ def _read_completion_ledger(
         CORE_STEP_NAMES,
         CORE_STEP_NAMES + VALIDATION_STEP_NAMES,
     }
+    training_plan = payload.get("training_plan")
+    training_ledgers = payload.get("training_ledgers")
+    step_contract = payload.get("step_contract")
+    completion_binding = payload.get("input_binding")
+    pipeline_arguments = payload.get("pipeline_arguments")
     if (
         payload.get("schema_version") != 1
         or payload.get("complete") is not True
         or payload.get("families") != ["dense"]
-        or not scope_amendments_equal(
-            payload.get("scope_amendment"), expected_scope, path.parents[2]
-        )
+        or not scope_amendments_equal(payload.get("scope_amendment"), expected_scope, repository)
         or not isinstance(steps, list)
         or not steps
         or not valid_step_names
-        or any(not isinstance(step, dict) or step.get("complete") is not True for step in steps)
+        or any(
+            not isinstance(step, dict)
+            or step.get("index") != index
+            or not isinstance(step.get("command"), list)
+            or not all(isinstance(token, str) for token in step["command"])
+            or step.get("complete") is not True
+            for index, step in enumerate(steps, start=1)
+        )
         or "failed_step" in payload
+        or not isinstance(training_plan, dict)
+        or not isinstance(training_plan.get("path"), str)
+        or not isinstance(training_ledgers, list)
+        or len(training_ledgers) != 2
+        or any(
+            not isinstance(record, dict) or not isinstance(record.get("path"), str)
+            for record in training_ledgers
+        )
+        or not isinstance(step_contract, dict)
+        or not isinstance(completion_binding, dict)
+        or not isinstance(pipeline_arguments, dict)
     ):
         raise RuntimeError(
             "Dense completion ledger is not a complete, clean, scope-matched Dense-only run: "
+            f"{path}"
+        )
+
+    try:
+        canonical_args = _args_from_pipeline_arguments(pipeline_arguments)
+    except RuntimeError as error:
+        raise RuntimeError(
+            f"Dense completion ledger has invalid canonical arguments: {path}"
+        ) from error
+    if (
+        canonical_args.workdir.resolve() != repository.resolve()
+        or canonical_args.scope_amendment.resolve()
+        != (repository / expected_scope["path"]).resolve()
+    ):
+        raise RuntimeError(f"Dense completion ledger canonical paths differ: {path}")
+    canonical_steps = completion_pipeline_steps(canonical_args)
+    expected_contract = _step_contract(
+        canonical_steps,
+        implementation_paths=_repository_contract_sources(repository),
+    )
+    try:
+        current_training_inputs = _validate_training_inputs(
+            workdir=repository,
+            scope=expected_scope,
+            training_plan=Path(training_plan["path"]),
+            training_ledgers=[Path(record["path"]) for record in training_ledgers],
+        )
+    except RuntimeError as error:
+        raise RuntimeError(
+            f"Dense completion ledger upstream provenance is no longer valid: {path}"
+        ) from error
+    expected_binding = {
+        "scope_amendment": expected_scope,
+        "training_plan": current_training_inputs["training_plan"],
+        "training_ledgers": current_training_inputs["training_ledgers"],
+        "step_contract_sha256": expected_contract["sha256"],
+        "pipeline_arguments": pipeline_arguments,
+    }
+    if (
+        step_contract != expected_contract
+        or training_plan != current_training_inputs["training_plan"]
+        or training_ledgers != current_training_inputs["training_ledgers"]
+        or completion_binding != expected_binding
+        or any(step.get("input_binding") != expected_binding for step in steps)
+    ):
+        raise RuntimeError(
+            "Dense completion ledger provenance or step contract differs from current inputs: "
             f"{path}"
         )
     source = {
@@ -243,13 +323,18 @@ def _read_completion_ledger(
     return payload, source
 
 
-def _matching_completed_prefix(previous: dict[str, Any], steps: list[PipelineStep]) -> int:
+def _matching_completed_prefix(
+    previous: dict[str, Any],
+    steps: list[PipelineStep],
+    input_binding: dict[str, Any] | None = None,
+) -> int:
     completed = 0
     for old, current in zip(previous.get("steps") or [], steps, strict=False):
         if (
             old.get("name") != current.name
             or old.get("command") != list(current.command)
             or old.get("complete") is not True
+            or (input_binding is not None and old.get("input_binding") != input_binding)
         ):
             break
         completed += 1
@@ -260,16 +345,43 @@ def _validate_previous_ledger(
     previous: dict[str, Any],
     *,
     scope: dict[str, Any],
-    upstream: dict[str, Any],
     repository: Path,
 ) -> None:
     if (
         previous.get("schema_version") != 1
         or previous.get("families") != ["dense"]
         or not scope_amendments_equal(previous.get("scope_amendment"), scope, repository)
-        or previous.get("completion_ledger") != upstream
     ):
-        raise ValueError("Dense finalization ledger is bound to different inputs or scope")
+        raise ValueError("Dense finalization ledger is bound to a different scope")
+
+
+def _finalization_input_binding(
+    *,
+    scope: dict[str, Any],
+    completion_source: dict[str, Any],
+    step_contract: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "scope_amendment": scope,
+        "completion_ledger": completion_source,
+        "step_contract_sha256": step_contract["sha256"],
+    }
+
+
+def _assert_completion_unchanged(
+    path: Path,
+    *,
+    scope: dict[str, Any],
+    repository: Path,
+    expected_source: dict[str, Any],
+) -> None:
+    _, current_source = _read_completion_ledger(
+        path,
+        expected_scope=scope,
+        repository=repository,
+    )
+    if current_source != expected_source:
+        raise RuntimeError("Dense completion provenance changed while finalization was running")
 
 
 def run_pipeline(args: argparse.Namespace) -> int:
@@ -284,8 +396,16 @@ def run_pipeline(args: argparse.Namespace) -> int:
     _, completion_source = _read_completion_ledger(
         completion_path,
         expected_scope=scope,
+        repository=workdir,
     )
     steps = pipeline_steps(args)
+    implementation_paths = _repository_contract_sources(workdir)
+    step_contract = _step_contract(steps, implementation_paths=implementation_paths)
+    input_binding = _finalization_input_binding(
+        scope=scope,
+        completion_source=completion_source,
+        step_contract=step_contract,
+    )
     log_dir = _under_workdir(args.log_dir, workdir)
     ledger_path = log_dir / "pipeline-ledger.json"
 
@@ -298,13 +418,11 @@ def run_pipeline(args: argparse.Namespace) -> int:
         _validate_previous_ledger(
             previous,
             scope=scope,
-            upstream=completion_source,
             repository=workdir,
         )
-        completed_prefix = _matching_completed_prefix(previous, steps)
-        if previous.get("complete") is True and completed_prefix == len(steps):
-            print("Dense finalization pipeline is already complete", flush=True)
-            return 0
+        # Never trust prior report/build success bits. Re-run the complete
+        # orchestration so strict renderers and audits revalidate all outputs.
+        completed_prefix = 0
 
     now = _timestamp()
     ledger: dict[str, Any] = {
@@ -314,15 +432,29 @@ def run_pipeline(args: argparse.Namespace) -> int:
         "families": ["dense"],
         "scope_amendment": scope,
         "completion_ledger": completion_source,
+        "step_contract": step_contract,
+        "input_binding": input_binding,
         "steps": list(previous.get("steps", [])[:completed_prefix]) if previous else [],
     }
     _atomic_json(ledger_path, ledger)
 
     for index, step in enumerate(steps[completed_prefix:], start=completed_prefix + 1):
+        _assert_completion_unchanged(
+            completion_path,
+            scope=scope,
+            repository=workdir,
+            expected_source=completion_source,
+        )
+        _assert_step_contract_unchanged(
+            steps,
+            step_contract,
+            implementation_paths=implementation_paths,
+        )
         record: dict[str, Any] = {
             "index": index,
             "name": step.name,
             "command": list(step.command),
+            "input_binding": input_binding,
             "attempts": [],
             "complete": False,
         }
@@ -364,6 +496,17 @@ def run_pipeline(args: argparse.Namespace) -> int:
                 attempt_record["execution_error"] = execution_error
             record["attempts"].append(attempt_record)
             if return_code == 0:
+                _assert_completion_unchanged(
+                    completion_path,
+                    scope=scope,
+                    repository=workdir,
+                    expected_source=completion_source,
+                )
+                _assert_step_contract_unchanged(
+                    steps,
+                    step_contract,
+                    implementation_paths=implementation_paths,
+                )
                 record["complete"] = True
                 record["finished_at"] = _timestamp()
                 _atomic_json(ledger_path, ledger)

@@ -531,14 +531,33 @@ confirmatory checkpoints, runs the short-branch probes, and performs the spectra
 ~~~bash
 embed-optim-dense-completion \
   --scope-amendment configs/dense_scope_amendment.json \
+  --training-plan configs/dense_training_queue.json \
+  --training-ledgers \
+    logs/dense-only-runtime/training-queue-a.json \
+    logs/dense-only-runtime/training-queue-b.json \
   --workdir "$PWD" \
   --gpus 0,1,2,3,4,5,6,7 \
   --gpus-b 4,5,6,7 \
-  --include-validation
+  --include-validation \
+  --resume
 ~~~
 
 All commands are resumable and content-addressed. Do not edit the frozen queue or scope files during
-an active run.
+an active run. Each pool is protected by an exclusive lease and writes `complete=false` before it
+waits or resumes. Existing terminal runs are skipped only after the same uncached deep checkpoint
+payload audit used by the downstream watcher. Failed completed artifacts are preserved under
+`.invalid-completed-runs/` before a clean rerun, while a 24-hour process-group watchdog prevents a
+stalled matrix command from holding a pool indefinitely.
+
+If completion is launched before the queues exit, add their exact process IDs as
+`--wait-pids POOL_A_PID POOL_B_PID`. That wait does not replace the ledger gate: completion requires
+exactly two unique, complete Dense-only ledgers for pools `a` and `b`, verifies their nine jobs and
+shared frozen-plan hash, and hashes both ledger contents. To recover after interruption, finish or
+repair both queues first and rerun this same command with `--resume`. Any plan, scope, ledger-content,
+or step-contract change invalidates the previously completed prefix and reruns the affected analysis
+instead of accepting stale audit or evaluation state.
+Legacy completion ledgers without per-step provenance are deliberately rerun once under `--resume`
+so they cannot be grandfathered into the stricter contract.
 
 ### Render the Dense paper and blog
 
@@ -548,9 +567,17 @@ scoped blog blocks and reports before running the paper, test, build, and distri
 ~~~bash
 embed-optim-dense-finalize \
   --scope-amendment configs/dense_scope_amendment.json \
+  --completion-ledger logs/dense-completion-pipeline/pipeline-ledger.json \
   --workdir "$PWD" \
   --resume
 ~~~
+
+Use `--wait-pid COMPLETION_PID` only when the exact completion process is still running. After a
+failure, rerun the finalizer with `--resume` only once the completion ledger is clean and complete;
+even an already-complete finalization ledger is accepted only after its current completion-ledger,
+training-plan, pool-ledger, scope, and step-contract provenance is revalidated.
+If the completion ledger predates those bindings, upgrade it with completion `--resume` before
+retrying the finalizer.
 
 Its reporting sequence begins with the scoped discovery aggregate and retrieval dynamics; these two
 steps regenerate the `RESULTS`, `SYSTEMS`, and `TASK-DELTA-STABILITY` blocks that the later renderers

@@ -3,7 +3,11 @@ from types import SimpleNamespace
 
 import pytest
 
-from embed_optim.checkpoint_watch import _validate_formal_runtime, audit_once
+from embed_optim.checkpoint_watch import (
+    _validate_formal_runtime,
+    audit_checkpoint_integrity,
+    audit_once,
+)
 
 
 def _config(tmp_path):
@@ -221,3 +225,28 @@ def test_watcher_uses_specialized_hybrid_checkpoint_contract(tmp_path, monkeypat
     assert [event["status"] for event in events] == ["passed"]
     assert state["audited_checkpoints"] == 1
     assert calls == [(checkpoint, config, 10, 50, 4)]
+
+
+def test_uncached_integrity_audit_uses_same_deep_payload_contract(tmp_path, monkeypatch):
+    config = _config(tmp_path)
+    _write_schedule(config)
+    for step in (10, 20, 30, 40, 50):
+        _write_checkpoint(config, step)
+    audited = []
+    monkeypatch.setattr(
+        "embed_optim.matrix._checkpoint_is_resumable", lambda path, world_size: path.is_dir()
+    )
+
+    def deep_problems(path, step, world_size, config, final_step):
+        audited.append((path.name, step, world_size, final_step))
+        return ["corrupt optimizer"] if step == 30 else []
+
+    monkeypatch.setattr("embed_optim.aggregate._deep_checkpoint_problems", deep_problems)
+    monkeypatch.setattr("embed_optim.aggregate._safetensors_digest", lambda path: path.name)
+
+    result = audit_checkpoint_integrity(config)
+
+    assert not result["complete"]
+    assert result["verified_checkpoints"] == 4
+    assert result["problems"] == ["checkpoint-30: corrupt optimizer"]
+    assert [item[1] for item in audited] == [10, 20, 30, 40, 50]

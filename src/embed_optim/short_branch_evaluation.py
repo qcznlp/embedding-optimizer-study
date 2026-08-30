@@ -3,11 +3,13 @@ from __future__ import annotations
 import argparse
 import dataclasses
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 from .config import ModelFamily, RunConfig, load_matrix, resolve_matrix_path
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .gpu_lease import acquire_gpu_lease, parse_gpu_tokens
 from .probe_matrix import (
     ProbeJob,
     _declared_checkpoint_steps,
@@ -277,6 +279,52 @@ def _audit_counts(
     }
 
 
+def _run_gpu_tiers(
+    args: argparse.Namespace,
+    validation_jobs: list[ShortBranchValidationJob],
+    probe_jobs: list[ProbeJob],
+) -> int:
+    failures = 0
+    if args.tier in {"validation", "both"}:
+        validation_args = argparse.Namespace(
+            **{
+                **vars(args),
+                "probe": args.validation_probe,
+                "log_dir": Path("logs/short-branch/query-disjoint"),
+            }
+        )
+        failures += run_validation_matrix(validation_jobs, validation_args)
+    if args.tier in {"unseen", "both"}:
+        probe_args = argparse.Namespace(
+            **{
+                **vars(args),
+                "probe": args.unseen_probe,
+                "probe_spec": args.unseen_probe_spec,
+                "log_dir": Path("logs/short-branch/unseen-representation"),
+            }
+        )
+        failures += run_probe_matrix(probe_jobs, probe_args)
+    return failures
+
+
+def _run_gpu_tiers_with_lease(
+    args: argparse.Namespace,
+    families: tuple[str, ...],
+    validation_jobs: list[ShortBranchValidationJob],
+    probe_jobs: list[ProbeJob],
+) -> int:
+    gpu_tokens = tuple(sorted(parse_gpu_tokens(args.gpus), key=int))
+    lease_ledger = Path("logs/short-branch") / f"gpu-lease-{os.getpid()}.json"
+    with acquire_gpu_lease(
+        gpu_tokens,
+        lock_dir=args.gpu_lock_dir,
+        timeout_seconds=args.gpu_lock_timeout_seconds,
+        purpose=f"short-branch:{','.join(families)}:{args.tier}",
+        ledger_path=lease_ledger,
+    ):
+        return _run_gpu_tiers(args, validation_jobs, probe_jobs)
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Evaluate all scale-matched short-branch checkpoints on both frozen probes"
@@ -301,6 +349,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)
     parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
+    parser.add_argument(
+        "--gpu-lock-dir",
+        type=Path,
+        default=Path("logs/dense-only-runtime/gpu-leases"),
+    )
+    parser.add_argument("--gpu-lock-timeout-seconds", type=float, default=86_400.0)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--model-dtype", choices=("bfloat16", "float32"), default="bfloat16")
     parser.add_argument("--storage-dtype", choices=("float16", "float32"), default="float16")
@@ -320,8 +374,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=Path("reports/short-branch/training-audit.json"),
     )
     args = parser.parse_args(argv)
-    if args.batch_size <= 0 or args.max_retries < 0:
-        parser.error("--batch-size must be positive and --max-retries must be non-negative")
+    if args.batch_size <= 0 or args.max_retries < 0 or args.gpu_lock_timeout_seconds <= 0:
+        parser.error(
+            "--batch-size/--gpu-lock-timeout-seconds must be positive and "
+            "--max-retries must be non-negative"
+        )
     if sum((args.dry_run, args.audit_only, args.training_audit_only)) > 1:
         parser.error("--dry-run, --audit-only, and --training-audit-only are mutually exclusive")
     return args
@@ -389,27 +446,12 @@ def main(argv: list[str] | None = None) -> None:
             or counts["unseen_probe_complete"] != counts["unseen_probe_expected"]
         ):
             raise SystemExit(1)
+    elif args.dry_run:
+        failures = _run_gpu_tiers(args, validation_jobs, probe_jobs)
+        if failures:
+            raise SystemExit(1)
     else:
-        failures = 0
-        if args.tier in {"validation", "both"}:
-            validation_args = argparse.Namespace(
-                **{
-                    **vars(args),
-                    "probe": args.validation_probe,
-                    "log_dir": Path("logs/short-branch/query-disjoint"),
-                }
-            )
-            failures += run_validation_matrix(validation_jobs, validation_args)
-        if args.tier in {"unseen", "both"}:
-            probe_args = argparse.Namespace(
-                **{
-                    **vars(args),
-                    "probe": args.unseen_probe,
-                    "probe_spec": args.unseen_probe_spec,
-                    "log_dir": Path("logs/short-branch/unseen-representation"),
-                }
-            )
-            failures += run_probe_matrix(probe_jobs, probe_args)
+        failures = _run_gpu_tiers_with_lease(args, families, validation_jobs, probe_jobs)
         if failures:
             raise SystemExit(1)
 

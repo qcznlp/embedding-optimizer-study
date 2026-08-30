@@ -44,14 +44,36 @@ After both nine-job Dense training queues complete, run:
 ~~~bash
 embed-optim-dense-completion \
   --scope-amendment configs/dense_scope_amendment.json \
+  --training-plan configs/dense_training_queue.json \
+  --training-ledgers \
+    logs/dense-only-runtime/training-queue-a.json \
+    logs/dense-only-runtime/training-queue-b.json \
   --workdir "$PWD" \
   --gpus 0,1,2,3,4,5,6,7 \
-  --gpus-b 4,5,6,7
+  --gpus-b 4,5,6,7 \
+  --resume
 ~~~
 
 The ledger under logs/dense-completion-pipeline must finish every checkpoint audit, evaluation,
 short-branch summary, tail summary, and spectral-transplant step. A failed or incomplete step blocks
 final reporting.
+
+Each training-pool queue has a non-blocking exclusive lease and clears its aggregate completion bit
+at entry. It may adopt or skip an on-disk run only after an uncached deep audit of all five scheduled
+checkpoint payloads. If a terminal run fails that audit, the entire output is moved atomically to a
+sibling `.invalid-completed-runs/` evidence directory before a clean rerun. The default per-command
+watchdog is 24 hours and terminates the complete child process group after a grace period; extending
+it requires the explicit `--job-timeout-seconds` option.
+
+When the queues are still running, add the exact queue process IDs as
+`--wait-pids POOL_A_PID POOL_B_PID`. This is a wait guard, not evidence of completion: the command
+also requires exactly two unique ledgers, one each for pools `a` and `b`, and verifies Dense family,
+nine complete jobs per pool, the common frozen-plan hash, scope identity, and exact ledger-content
+hashes. For recovery, first resume the failed queue until both queue ledgers are clean and complete,
+then rerun the command above with `--resume`. Any change to either ledger, the plan, the scope, or the
+completion step contract prevents reuse of the old audit/evaluation prefix.
+An older completion ledger without a per-step input binding is not grandfathered in; rerun the
+completion command once with `--resume` to validate the current inputs and rewrite the ledger.
 
 ## Final independent audit
 
@@ -60,9 +82,18 @@ Run the canonical resume-safe finalizer only after the compute ledger is complet
 ~~~bash
 embed-optim-dense-finalize \
   --scope-amendment configs/dense_scope_amendment.json \
+  --completion-ledger logs/dense-completion-pipeline/pipeline-ledger.json \
   --workdir "$PWD" \
   --resume
 ~~~
+
+If finalization is queued behind a still-running completion process, add its exact process ID with
+`--wait-pid COMPLETION_PID`. If either process fails, recover completion first and then rerun the
+finalizer with `--resume`. The finalizer revalidates current upstream provenance even when its own
+ledger says `complete`; a changed completion ledger or finalization step contract causes the final
+steps to rerun instead of reusing stale reports.
+If an older completion ledger is rejected for missing provenance, upgrade it with completion
+`--resume` before retrying finalization.
 
 For independent inspection, its complete ordered finalization sequence is:
 

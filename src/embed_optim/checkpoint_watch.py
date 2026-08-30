@@ -91,6 +91,108 @@ def _new_state(configs: list[RunConfig]) -> dict[str, Any]:
     }
 
 
+def _checkpoint_payload_problems(
+    config: RunConfig,
+    checkpoint: Path,
+    step: int,
+    final_step: int,
+    *,
+    world_size: int,
+) -> list[str]:
+    """Apply the optimizer-specific deep contract used by the formal watcher."""
+
+    if getattr(getattr(config, "optimizer", None), "name", None) == "hybrid_adamw":
+        from .supplemental_training_audit import hybrid_checkpoint_problems
+
+        return hybrid_checkpoint_problems(
+            checkpoint,
+            config,
+            step,
+            final_step,
+            world_size=world_size,
+        )
+
+    from .aggregate import _deep_checkpoint_problems
+
+    return _deep_checkpoint_problems(
+        checkpoint,
+        step,
+        world_size,
+        config=config,
+        final_step=final_step,
+    )
+
+
+def audit_checkpoint_integrity(
+    config: RunConfig,
+    *,
+    world_size: int = 4,
+) -> dict[str, Any]:
+    """Deep-audit all five scheduled checkpoints without consulting cached state.
+
+    Queue admission uses this same payload contract as :func:`audit_once`, so a
+    stale watcher ledger can never turn a corrupt completed run into a skip.
+    """
+
+    from .aggregate import _safetensors_digest
+    from .matrix import _checkpoint_is_resumable
+
+    schedule = _read_schedule(config)
+    if schedule is None:
+        return {
+            "complete": False,
+            "expected_checkpoints": 5,
+            "verified_checkpoints": 0,
+            "checkpoints": [],
+            "problems": ["missing checkpoint schedule"],
+        }
+
+    final_step = schedule[-1]
+    previous_digest: str | None = None
+    records: list[dict[str, Any]] = []
+    all_problems: list[str] = []
+    verified = 0
+    for step in schedule:
+        checkpoint = config.output_dir / f"checkpoint-{step}"
+        problems: list[str] = []
+        model_digest: str | None = None
+        if not _checkpoint_is_resumable(checkpoint, world_size=world_size):
+            problems.append("checkpoint is not atomically resumable")
+        else:
+            problems.extend(
+                _checkpoint_payload_problems(
+                    config,
+                    checkpoint,
+                    step,
+                    final_step,
+                    world_size=world_size,
+                )
+            )
+            model_digest = _safetensors_digest(checkpoint)
+            if previous_digest is not None and model_digest == previous_digest:
+                problems.append("model payload is unchanged from the previous checkpoint")
+            if not problems:
+                previous_digest = model_digest
+                verified += 1
+        records.append(
+            {
+                "step": step,
+                "status": "failed" if problems else "passed",
+                "model_digest": model_digest,
+                "problems": problems,
+            }
+        )
+        all_problems.extend(f"checkpoint-{step}: {problem}" for problem in problems)
+
+    return {
+        "complete": not all_problems and verified == len(schedule) == 5,
+        "expected_checkpoints": 5,
+        "verified_checkpoints": verified,
+        "checkpoints": records,
+        "problems": all_problems,
+    }
+
+
 def _load_state(path: Path, configs: list[RunConfig]) -> dict[str, Any]:
     if not path.is_file():
         return _new_state(configs)
@@ -118,7 +220,7 @@ def audit_once(
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Deep-audit every newly complete or changed scheduled checkpoint once."""
 
-    from .aggregate import _deep_checkpoint_problems, _safetensors_digest
+    from .aggregate import _safetensors_digest
     from .matrix import _checkpoint_is_resumable
 
     state = _load_state(state_path, configs)
@@ -169,24 +271,13 @@ def audit_once(
                     previous_digest = prior.get("model_digest")
                 continue
 
-            if getattr(getattr(config, "optimizer", None), "name", None) == "hybrid_adamw":
-                from .supplemental_training_audit import hybrid_checkpoint_problems
-
-                problems = hybrid_checkpoint_problems(
-                    checkpoint,
-                    config,
-                    step,
-                    final_step,
-                    world_size=world_size,
-                )
-            else:
-                problems = _deep_checkpoint_problems(
-                    checkpoint,
-                    step,
-                    world_size,
-                    config=config,
-                    final_step=final_step,
-                )
+            problems = _checkpoint_payload_problems(
+                config,
+                checkpoint,
+                step,
+                final_step,
+                world_size=world_size,
+            )
             model_digest = _safetensors_digest(checkpoint)
             if previous_digest is not None and model_digest == previous_digest:
                 problems.append("model payload is unchanged from the previous checkpoint")

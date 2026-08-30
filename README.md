@@ -197,16 +197,28 @@ embed-optim-family-training-queue \
 
 The queue plan contains exactly nine DenseOn jobs per pool: nine confirmatory full runs and nine
 50K shared-start runs in total. It is content-bound to the generated matrices and safe to resume.
+Each pool holds an exclusive lease, resets its aggregate ledger to `complete=false` before waiting,
+and deep-validates all five checkpoint payloads before accepting an existing run. A completed output
+that fails that audit is atomically preserved under the sibling `.invalid-completed-runs/` directory
+and retrained from a clean output path, so a shallow terminal marker cannot permanently hide damage.
+Each matrix command also has a 24-hour process-group watchdog (including its bounded internal
+retries); override it conservatively with `--job-timeout-seconds` when a legitimate run needs longer.
+GPU lists must contain four unique canonical non-negative integer IDs.
 
 After both queue ledgers complete, run the evaluation/intervention pipeline:
 
 ~~~bash
 embed-optim-dense-completion \
   --scope-amendment configs/dense_scope_amendment.json \
+  --training-plan configs/dense_training_queue.json \
+  --training-ledgers \
+    logs/dense-only-runtime/training-queue-a.json \
+    logs/dense-only-runtime/training-queue-b.json \
   --workdir "$PWD" \
   --gpus 0,1,2,3,4,5,6,7 \
   --gpus-b 4,5,6,7 \
-  --include-validation
+  --include-validation \
+  --resume
 ~~~
 
 The pipeline performs:
@@ -221,6 +233,18 @@ The pipeline performs:
 Every step has an atomic ledger, validated completion predicate, bounded retries, and resume mode.
 Do not edit the scope amendment, queue plan, or bound protocols while a run is active.
 
+If this command is launched while the two queue processes are still running, also pass their exact
+process IDs as `--wait-pids POOL_A_PID POOL_B_PID`. The process-ID wait is only a convenience: the
+completion pipeline always requires exactly two unique ledgers for pools `a` and `b`, verifies both
+are complete Dense-only nine-job queues, and rehashes the shared frozen plan and both ledger files.
+If a queue, completion step, or host session fails, first recover the queue until both ledgers are
+clean and complete, then rerun the same completion command with `--resume`. A changed plan, scope, or
+ledger invalidates the old completed-step prefix, so audits and evaluations are rerun rather than
+silently reused.
+Completion ledgers created before per-step provenance binding are intentionally not reusable: run
+the completion command above once with `--resume` to validate the current queues and rewrite a
+fully bound ledger.
+
 ## Render the final Dense-only deliverables
 
 After the Dense completion ledger passes, the canonical, resume-safe finalizer regenerates every
@@ -230,9 +254,17 @@ distributions, and audits the distributions:
 ~~~bash
 embed-optim-dense-finalize \
   --scope-amendment configs/dense_scope_amendment.json \
+  --completion-ledger logs/dense-completion-pipeline/pipeline-ledger.json \
   --workdir "$PWD" \
   --resume
 ~~~
+
+When finalization is started before completion exits, pass the exact completion process ID with
+`--wait-pid COMPLETION_PID`. On recovery, rerun the same finalizer command with `--resume` only after
+the completion ledger is complete. The finalizer revalidates that ledger's current training-plan,
+pool-ledger, scope, and step-contract provenance before reusing any completed finalization step.
+If it reports that an older completion ledger lacks provenance, upgrade that ledger with the
+completion `--resume` command first, then rerun finalization.
 
 For an independent step-by-step audit, the reporting portion of that finalizer is:
 

@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .family_training_queue import load_queue_plan
 from .scope import resolve_scope, scope_amendments_equal
 
 CORE_STEP_NAMES = (
@@ -50,6 +51,13 @@ class PipelineStep:
     command: tuple[str, ...]
 
 
+@dataclass(frozen=True)
+class ProcessIdentity:
+    pid: int
+    start_time_ticks: int
+    command: str
+
+
 def _timestamp() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -60,6 +68,146 @@ def _sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def _sha256_bytes(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _under_workdir(path: Path, workdir: Path) -> Path:
+    return path.resolve() if path.is_absolute() else (workdir / path).resolve()
+
+
+def _source_identity(path: Path) -> dict[str, Any]:
+    resolved = path.resolve()
+    raw = resolved.read_bytes()
+    return {
+        "path": str(resolved),
+        "bytes": len(raw),
+        "sha256": _sha256_bytes(raw),
+    }
+
+
+def _repository_contract_sources(repository: Path) -> tuple[Path, ...]:
+    root = repository.resolve()
+    sources: set[Path] = set()
+    for directory, pattern in (
+        (root / "src" / "embed_optim", "*.py"),
+        (root / "scripts" / "eval", "*.py"),
+        (root / "tests", "*.py"),
+        (root / "configs", "*.json"),
+        (root / "configs", "*.yaml"),
+    ):
+        if directory.is_dir():
+            sources.update(path.resolve() for path in directory.rglob(pattern) if path.is_file())
+    # Keep generated paper fragments out of this set: paper_results legitimately
+    # rewrites paper/results.tex and paper/generated/*.tex during finalization.
+    # Only immutable templates and vendored style inputs belong to the contract.
+    for relative in (
+        "pyproject.toml",
+        "uv.lock",
+        "paper/main.tex",
+        "paper/references.bib",
+        "paper/Makefile",
+        "paper/vendor/acl.sty",
+        "paper/vendor/acl_natbib.bst",
+    ):
+        path = (root / relative).resolve()
+        if path.is_file():
+            sources.add(path)
+    if not sources:
+        raise RuntimeError(f"Cannot build repository source contract under {root}")
+    return tuple(sorted(sources, key=str))
+
+
+def _step_contract(
+    steps: list[PipelineStep],
+    *,
+    implementation_paths: tuple[Path, ...] | None = None,
+) -> dict[str, Any]:
+    records = [
+        {"index": index, "name": step.name, "command": list(step.command)}
+        for index, step in enumerate(steps, start=1)
+    ]
+    sources = [
+        _source_identity(path)
+        for path in sorted(
+            implementation_paths or (Path(__file__).resolve(),),
+            key=lambda path: str(path.resolve()),
+        )
+    ]
+    contract = {"steps": records, "implementation_sources": sources}
+    encoded = json.dumps(contract, sort_keys=True, separators=(",", ":")).encode()
+    return {
+        "schema_version": 1,
+        **contract,
+        "sha256": _sha256_bytes(encoded),
+    }
+
+
+def _assert_step_contract_unchanged(
+    steps: list[PipelineStep],
+    expected: dict[str, Any],
+    *,
+    implementation_paths: tuple[Path, ...] | None = None,
+) -> None:
+    if _step_contract(steps, implementation_paths=implementation_paths) != expected:
+        raise RuntimeError("Pipeline step contract changed while the pipeline was running")
+
+
+def _completion_input_binding(
+    *,
+    scope: dict[str, Any],
+    training_inputs: dict[str, Any],
+    step_contract: dict[str, Any],
+    pipeline_arguments: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "scope_amendment": scope,
+        "training_plan": training_inputs["training_plan"],
+        "training_ledgers": training_inputs["training_ledgers"],
+        "step_contract_sha256": step_contract["sha256"],
+        "pipeline_arguments": pipeline_arguments,
+    }
+
+
+def _pipeline_arguments(
+    args: argparse.Namespace, *, workdir: Path, scope_path: Path
+) -> dict[str, Any]:
+    return {
+        "workdir": str(workdir.resolve()),
+        "scope_amendment": str(scope_path.resolve()),
+        "python": str(args.python),
+        "gpus": str(args.gpus),
+        "gpus_b": str(args.gpus_b),
+        "worker_retries": int(args.worker_retries),
+        "include_validation": bool(args.include_validation),
+    }
+
+
+def _args_from_pipeline_arguments(payload: dict[str, Any]) -> argparse.Namespace:
+    required = {
+        "workdir": str,
+        "scope_amendment": str,
+        "python": str,
+        "gpus": str,
+        "gpus_b": str,
+        "worker_retries": int,
+        "include_validation": bool,
+    }
+    if set(payload) != set(required) or any(
+        not isinstance(payload.get(name), expected_type) for name, expected_type in required.items()
+    ):
+        raise RuntimeError("Dense completion pipeline arguments are malformed")
+    return argparse.Namespace(
+        workdir=Path(payload["workdir"]),
+        scope_amendment=Path(payload["scope_amendment"]),
+        python=payload["python"],
+        gpus=payload["gpus"],
+        gpus_b=payload["gpus_b"],
+        worker_retries=payload["worker_retries"],
+        include_validation=payload["include_validation"],
+    )
 
 
 def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
@@ -78,7 +226,6 @@ def _module(python: str, module: str, *arguments: str) -> tuple[str, ...]:
 
 
 def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
-    repository = args.workdir.resolve()
     scope = str(args.scope_amendment.resolve())
     family_scope = ("--families", "dense", "--scope-amendment", scope)
     all_gpus = args.gpus
@@ -283,49 +430,204 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
     expected_names = CORE_STEP_NAMES + (VALIDATION_STEP_NAMES if args.include_validation else ())
     if observed_names != expected_names:
         raise AssertionError("Dense completion step contract changed")
-    if repository != Path.cwd().resolve():
-        raise ValueError("Dense completion pipeline must be launched from --workdir")
     return steps
 
 
-def _pid_command(pid: int) -> str | None:
+def _read_process_identity(pid: int) -> ProcessIdentity | None:
     try:
-        return Path(f"/proc/{pid}/cmdline").read_bytes().replace(b"\0", b" ").decode()
+        command = Path(f"/proc/{pid}/cmdline").read_bytes().replace(b"\0", b" ").decode()
+        stat = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
     except (FileNotFoundError, ProcessLookupError):
         return None
+    closing_parenthesis = stat.rfind(")")
+    if closing_parenthesis < 0:
+        raise RuntimeError(f"Cannot parse process identity for PID {pid}")
+    fields_after_command = stat[closing_parenthesis + 2 :].split()
+    if len(fields_after_command) <= 19:
+        raise RuntimeError(f"Cannot parse process start time for PID {pid}")
+    return ProcessIdentity(
+        pid=pid,
+        start_time_ticks=int(fields_after_command[19]),
+        command=command,
+    )
 
 
 def _wait_for_training(args: argparse.Namespace) -> None:
-    pending = set(args.wait_pids)
+    pending: dict[int, ProcessIdentity] = {}
+    for pid in args.wait_pids:
+        identity = _read_process_identity(pid)
+        if identity is None:
+            continue
+        if args.wait_command_fragment not in identity.command:
+            raise RuntimeError(
+                f"PID {pid} is not the requested Dense training queue: {identity.command!r}"
+            )
+        pending[pid] = identity
     while pending:
-        finished = []
+        finished: list[int] = []
         for pid in sorted(pending):
-            command = _pid_command(pid)
-            if command is None or args.wait_command_fragment not in command:
+            current = _read_process_identity(pid)
+            if current is None:
                 finished.append(pid)
-        pending.difference_update(finished)
+                continue
+            initial = pending[pid]
+            if current.start_time_ticks != initial.start_time_ticks:
+                raise RuntimeError(f"PID {pid} was reused while waiting for Dense training")
+            if args.wait_command_fragment not in current.command:
+                raise RuntimeError(f"PID {pid} changed identity while waiting for Dense training")
+        for pid in finished:
+            pending.pop(pid)
         if pending:
             print(f"waiting for Dense training queues: {sorted(pending)}", flush=True)
             time.sleep(args.poll_seconds)
-    for path in args.training_ledgers:
-        payload = json.loads(path.resolve().read_text(encoding="utf-8"))
+
+
+def _declared_path(path: object, workdir: Path) -> Path | None:
+    if not isinstance(path, str) or not path:
+        return None
+    declared = Path(path)
+    return declared.resolve() if declared.is_absolute() else (workdir / declared).resolve()
+
+
+def _validate_training_inputs(
+    *,
+    workdir: Path,
+    scope: dict[str, Any],
+    training_plan: Path,
+    training_ledgers: list[Path],
+) -> dict[str, Any]:
+    repository = workdir.resolve()
+    plan_path = _under_workdir(training_plan, repository)
+    ledger_paths = [_under_workdir(path, repository) for path in training_ledgers]
+    if len(ledger_paths) != 2 or len(set(ledger_paths)) != 2:
+        raise RuntimeError("Dense completion requires exactly two unique training-ledger paths")
+
+    try:
+        resolved_plan, plan_payload, jobs_by_pool = load_queue_plan(plan_path)
+        plan_source = _source_identity(resolved_plan)
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"Cannot validate frozen Dense training plan: {plan_path}") from error
+    if resolved_plan != plan_path:
+        raise RuntimeError("Dense training plan resolved to an unexpected path")
+
+    declared_scope = _declared_path(
+        (plan_payload.get("scope_amendment") or {}).get("path"), repository
+    )
+    expected_scope = _declared_path(scope.get("path"), repository)
+    if (
+        declared_scope is None
+        or declared_scope != expected_scope
+        or not expected_scope.is_file()
+        or _sha256(expected_scope) != scope.get("sha256")
+    ):
+        raise RuntimeError("Dense training plan is bound to a different scope amendment")
+
+    ledger_records: list[tuple[str, dict[str, Any]]] = []
+    observed_pools: set[str] = set()
+    for ledger_path in ledger_paths:
+        try:
+            raw = ledger_path.read_bytes()
+            payload = json.loads(raw)
+        except (OSError, json.JSONDecodeError) as error:
+            raise RuntimeError(f"Cannot read Dense training queue ledger: {ledger_path}") from error
+        pool = payload.get("pool")
+        jobs = payload.get("jobs")
+        observed_plan = payload.get("plan")
+        observed_plan_path = (
+            _declared_path(observed_plan.get("path"), repository)
+            if isinstance(observed_plan, dict)
+            else None
+        )
+        expected_jobs = jobs_by_pool.get(pool) if isinstance(pool, str) else None
+        expected_identities = (
+            [job.identity for job in expected_jobs] if expected_jobs is not None else []
+        )
+        observed_identities = (
+            [record.get("identity") for record in jobs]
+            if isinstance(jobs, list) and all(isinstance(record, dict) for record in jobs)
+            else []
+        )
+        job_records_match = (
+            isinstance(jobs, list)
+            and expected_jobs is not None
+            and len(jobs) == len(expected_jobs)
+            and all(
+                record.get("index") == index
+                and _declared_path(record.get("matrix"), repository) == job.matrix.resolve()
+                and _declared_path(record.get("output_dir"), repository)
+                == job.config.output_dir.resolve()
+                for index, (record, job) in enumerate(
+                    zip(jobs, expected_jobs, strict=True),
+                    start=1,
+                )
+            )
+        )
         if (
             payload.get("schema_version") != 1
             or payload.get("complete") is not True
             or payload.get("family") != "dense"
-            or len(payload.get("jobs") or []) != 9
-            or any(record.get("complete") is not True for record in payload["jobs"])
+            or pool not in {"a", "b"}
+            or pool in observed_pools
+            or "failed_job" in payload
+            or not isinstance(observed_plan, dict)
+            or observed_plan_path != plan_path
+            or observed_plan.get("sha256") != plan_source["sha256"]
+            or not isinstance(jobs, list)
+            or len(jobs) != 9
+            or observed_identities != expected_identities
+            or not job_records_match
+            or any(record.get("complete") is not True for record in jobs)
         ):
-            raise RuntimeError(f"Dense training queue did not finish cleanly: {path}")
+            raise RuntimeError(f"Dense training queue did not finish cleanly: {ledger_path}")
+        observed_pools.add(pool)
+        ledger_records.append(
+            (
+                pool,
+                {
+                    "pool": pool,
+                    "path": str(ledger_path),
+                    "bytes": len(raw),
+                    "sha256": _sha256_bytes(raw),
+                },
+            )
+        )
+
+    if observed_pools != {"a", "b"}:
+        raise RuntimeError("Dense completion requires exactly training pools a and b")
+    return {
+        "training_plan": plan_source,
+        "training_ledgers": [record for _, record in sorted(ledger_records)],
+    }
 
 
-def _matching_completed_prefix(previous: dict[str, Any], steps: list[PipelineStep]) -> int:
+def _assert_training_inputs_unchanged(
+    args: argparse.Namespace,
+    *,
+    scope: dict[str, Any],
+    expected: dict[str, Any],
+) -> None:
+    current = _validate_training_inputs(
+        workdir=args.workdir.resolve(),
+        scope=scope,
+        training_plan=args.training_plan,
+        training_ledgers=args.training_ledgers,
+    )
+    if current != expected:
+        raise RuntimeError("Dense training input provenance changed while completion was running")
+
+
+def _matching_completed_prefix(
+    previous: dict[str, Any],
+    steps: list[PipelineStep],
+    input_binding: dict[str, Any] | None = None,
+) -> int:
     completed = 0
     for old, current in zip(previous.get("steps") or [], steps, strict=False):
         if (
             old.get("name") != current.name
             or old.get("command") != list(current.command)
             or old.get("complete") is not True
+            or (input_binding is not None and old.get("input_binding") != input_binding)
         ):
             break
         completed += 1
@@ -334,12 +636,28 @@ def _matching_completed_prefix(previous: dict[str, Any], steps: list[PipelineSte
 
 def run_pipeline(args: argparse.Namespace) -> int:
     workdir = args.workdir.resolve()
-    families, scope = resolve_scope(["dense"], args.scope_amendment)
-    if families != ("dense",):
+    scope_path = _under_workdir(args.scope_amendment, workdir)
+    families, scope = resolve_scope(["dense"], scope_path)
+    if families != ("dense",) or scope is None:
         raise AssertionError("Dense completion pipeline received a non-dense scope")
     _wait_for_training(args)
+    training_inputs = _validate_training_inputs(
+        workdir=workdir,
+        scope=scope,
+        training_plan=args.training_plan,
+        training_ledgers=args.training_ledgers,
+    )
     steps = pipeline_steps(args)
-    log_dir = args.log_dir.resolve()
+    pipeline_arguments = _pipeline_arguments(args, workdir=workdir, scope_path=scope_path)
+    contract_sources = _repository_contract_sources(workdir)
+    step_contract = _step_contract(steps, implementation_paths=contract_sources)
+    input_binding = _completion_input_binding(
+        scope=scope,
+        training_inputs=training_inputs,
+        step_contract=step_contract,
+        pipeline_arguments=pipeline_arguments,
+    )
+    log_dir = _under_workdir(args.log_dir, workdir)
     ledger_path = log_dir / "pipeline-ledger.json"
     previous = None
     completed_prefix = 0
@@ -349,10 +667,10 @@ def run_pipeline(args: argparse.Namespace) -> int:
             raise FileExistsError(f"Dense completion ledger already exists: {ledger_path}")
         if not scope_amendments_equal(previous.get("scope_amendment"), scope, workdir):
             raise ValueError("Dense completion ledger is bound to a different scope amendment")
-        completed_prefix = _matching_completed_prefix(previous, steps)
-        if previous.get("complete") is True and completed_prefix == len(steps):
-            print("Dense completion pipeline is already complete", flush=True)
-            return 0
+        # Conservative recovery contract: orchestration steps are always rerun.
+        # Their own strict caches may reuse content-addressed units, but this
+        # coordinator never trusts an old success bit or output receipt.
+        completed_prefix = 0
     now = _timestamp()
     ledger: dict[str, Any] = {
         "schema_version": 1,
@@ -360,18 +678,26 @@ def run_pipeline(args: argparse.Namespace) -> int:
         "started_at": previous.get("started_at", now) if previous else now,
         "families": ["dense"],
         "scope_amendment": scope,
-        "training_ledgers": [
-            {"path": str(path.resolve()), "sha256": _sha256(path.resolve())}
-            for path in args.training_ledgers
-        ],
+        "training_plan": training_inputs["training_plan"],
+        "training_ledgers": training_inputs["training_ledgers"],
+        "step_contract": step_contract,
+        "pipeline_arguments": pipeline_arguments,
+        "input_binding": input_binding,
         "steps": list(previous.get("steps", [])[:completed_prefix]) if previous else [],
     }
     _atomic_json(ledger_path, ledger)
     for index, step in enumerate(steps[completed_prefix:], start=completed_prefix + 1):
+        _assert_training_inputs_unchanged(args, scope=scope, expected=training_inputs)
+        _assert_step_contract_unchanged(
+            steps,
+            step_contract,
+            implementation_paths=contract_sources,
+        )
         record = {
             "index": index,
             "name": step.name,
             "command": list(step.command),
+            "input_binding": input_binding,
             "attempts": [],
             "complete": False,
         }
@@ -403,6 +729,16 @@ def run_pipeline(args: argparse.Namespace) -> int:
                 }
             )
             if result.returncode == 0:
+                _assert_training_inputs_unchanged(
+                    args,
+                    scope=scope,
+                    expected=training_inputs,
+                )
+                _assert_step_contract_unchanged(
+                    steps,
+                    step_contract,
+                    implementation_paths=contract_sources,
+                )
                 record["complete"] = True
                 record["finished_at"] = _timestamp()
                 _atomic_json(ledger_path, ledger)
@@ -447,6 +783,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
             Path("logs/dense-only-runtime/training-queue-b.json"),
         ],
     )
+    parser.add_argument(
+        "--training-plan",
+        type=Path,
+        default=Path("configs/dense_training_queue.json"),
+    )
     parser.add_argument("--log-dir", type=Path, default=Path("logs/dense-completion-pipeline"))
     parser.add_argument("--poll-seconds", type=float, default=60.0)
     parser.add_argument("--worker-retries", type=int, default=2)
@@ -462,6 +803,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         or args.step_retries < 0
     ):
         parser.error("Polling/retry values must be non-negative and polling must be positive")
+    if len(args.training_ledgers) != 2:
+        parser.error("--training-ledgers requires exactly the pool-a and pool-b ledgers")
+    resolved_ledgers = [
+        _under_workdir(path, args.workdir.resolve()) for path in args.training_ledgers
+    ]
+    if len(set(resolved_ledgers)) != 2:
+        parser.error("--training-ledgers paths must be unique")
+    if len(args.wait_pids) != len(set(args.wait_pids)) or any(pid <= 0 for pid in args.wait_pids):
+        parser.error("--wait-pids must contain unique positive process IDs")
     gpu_ids = [gpu.strip() for gpu in args.gpus.split(",") if gpu.strip()]
     if len(gpu_ids) != 8 or len(set(gpu_ids)) != 8:
         parser.error("--gpus must identify eight unique devices")

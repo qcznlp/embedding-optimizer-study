@@ -20,6 +20,7 @@ from .common_state_matrix import (
 )
 from .config import ModelFamily, load_matrix, resolve_matrix_path
 from .geometry import SCHEMA_VERSION, _sha256
+from .gpu_lease import acquire_gpu_lease, parse_gpu_tokens
 from .scope import resolve_scope
 from .spectral_transplant import (
     load_spectral_transplant_protocol,
@@ -214,51 +215,11 @@ def _launch(
     return RunningJob(job, process, log_handle, attempts)
 
 
-def run_matrix(jobs: list[SpectralTransplantJob], args: argparse.Namespace) -> int:
-    pending = [
-        job
-        for job in jobs
-        if not spectral_transplant_job_complete(
-            job,
-            args.spectral_spec,
-            args.common_state_spec,
-            verify_hashes=args.verify_hashes,
-        )
-    ]
-    print(
-        json.dumps(
-            {
-                "complete": len(jobs) - len(pending),
-                "expected": len(jobs),
-                "pending": len(pending),
-                "verify_hashes": args.verify_hashes,
-            },
-            sort_keys=True,
-        ),
-        flush=True,
-    )
-    if args.audit_only:
-        return len(pending)
-    if args.dry_run:
-        for job in pending:
-            print(job.label)
-        return 0
-    unavailable = [
-        job.label
-        for job in pending
-        if not common_state_job_complete(
-            job.common_state,
-            args.common_state_spec,
-            verify_hashes=args.verify_hashes,
-        )
-    ]
-    if unavailable:
-        raise ValueError(
-            "Spectral transplant requires completed common-state inputs: " + ", ".join(unavailable)
-        )
-    gpus = [value.strip() for value in args.gpus.split(",") if value.strip()]
-    if not gpus or len(gpus) != len(set(gpus)):
-        raise ValueError(f"--gpus must contain unique comma-separated IDs, got {args.gpus!r}")
+def _execute_pending_jobs(
+    pending: list[SpectralTransplantJob],
+    gpus: tuple[str, ...],
+    args: argparse.Namespace,
+) -> int:
     running: dict[str, RunningJob] = {}
     attempts: dict[str, int] = {}
     failures = 0
@@ -305,6 +266,62 @@ def run_matrix(jobs: list[SpectralTransplantJob], args: argparse.Namespace) -> i
     return failures
 
 
+def run_matrix(jobs: list[SpectralTransplantJob], args: argparse.Namespace) -> int:
+    pending = [
+        job
+        for job in jobs
+        if not spectral_transplant_job_complete(
+            job,
+            args.spectral_spec,
+            args.common_state_spec,
+            verify_hashes=args.verify_hashes,
+        )
+    ]
+    print(
+        json.dumps(
+            {
+                "complete": len(jobs) - len(pending),
+                "expected": len(jobs),
+                "pending": len(pending),
+                "verify_hashes": args.verify_hashes,
+            },
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    if args.audit_only:
+        return len(pending)
+    if args.dry_run:
+        for job in pending:
+            print(job.label)
+        return 0
+    unavailable = [
+        job.label
+        for job in pending
+        if not common_state_job_complete(
+            job.common_state,
+            args.common_state_spec,
+            verify_hashes=args.verify_hashes,
+        )
+    ]
+    if unavailable:
+        raise ValueError(
+            "Spectral transplant requires completed common-state inputs: " + ", ".join(unavailable)
+        )
+    if not pending:
+        return 0
+    gpus = tuple(sorted(parse_gpu_tokens(args.gpus), key=int))
+    lease_ledger = args.log_dir.resolve() / f"gpu-lease-{os.getpid()}.json"
+    with acquire_gpu_lease(
+        gpus,
+        lock_dir=getattr(args, "gpu_lock_dir", Path("logs/dense-only-runtime/gpu-leases")),
+        timeout_seconds=getattr(args, "gpu_lock_timeout_seconds", 86_400.0),
+        purpose=f"spectral-transplant:{','.join(getattr(args, 'families', ['dense']))}",
+        ledger_path=lease_ledger,
+    ):
+        return _execute_pending_jobs(pending, gpus, args)
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run the frozen AdamW--Muon spectrum/basis transplant matrix"
@@ -325,6 +342,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=Path("configs/spectral_transplant_intervention.json"),
     )
     parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
+    parser.add_argument(
+        "--gpu-lock-dir",
+        type=Path,
+        default=Path("logs/dense-only-runtime/gpu-leases"),
+    )
+    parser.add_argument("--gpu-lock-timeout-seconds", type=float, default=86_400.0)
     parser.add_argument("--log-dir", type=Path, default=Path("logs/spectral-transplant"))
     parser.add_argument("--max-retries", type=int, default=1)
     parser.add_argument("--fail-fast", action="store_true")
@@ -339,7 +362,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--update-dir", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--output-dir", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--device", default="cuda", help=argparse.SUPPRESS)
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.gpu_lock_timeout_seconds <= 0:
+        parser.error("--gpu-lock-timeout-seconds must be positive")
+    return args
 
 
 def main(argv: list[str] | None = None) -> None:

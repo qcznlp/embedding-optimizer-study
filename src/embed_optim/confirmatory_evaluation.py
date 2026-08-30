@@ -166,11 +166,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--late-port-a", type=int, default=29710)
     parser.add_argument("--late-port", type=int, default=29720)
     parser.add_argument("--worker-python", default=None)
+    parser.add_argument(
+        "--gpu-lock-dir",
+        type=Path,
+        default=Path("logs/dense-only-runtime/gpu-leases"),
+    )
+    parser.add_argument("--gpu-lock-timeout-seconds", type=float, default=86_400.0)
     parser.add_argument("--audit-only", action="store_true")
     parser.add_argument(
         "--receipt", type=Path, default=Path("reports/confirmatory/evaluation-receipt.json")
     )
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.gpu_lock_timeout_seconds <= 0:
+        parser.error("--gpu-lock-timeout-seconds must be positive")
+    return args
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -214,6 +223,10 @@ def main(argv: list[str] | None = None) -> None:
                 log_dir=str((args.log_dir / f"seed{seed}").resolve()),
                 worker_python=args.worker_python or sys.executable,
                 scope_amendment=args.scope_amendment,
+                gpu_lock_dir=getattr(
+                    args, "gpu_lock_dir", Path("logs/dense-only-runtime/gpu-leases")
+                ),
+                gpu_lock_timeout_seconds=getattr(args, "gpu_lock_timeout_seconds", 86_400.0),
             )
             if failures := run_evaluation_after_specialized_audit(
                 worker_args,

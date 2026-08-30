@@ -45,6 +45,7 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
     monkeypatch.setattr(evaluate_matrix, "_validate_formal_runtime", lambda python, matrix: None)
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_sources", lambda python, sources: None)
+    monkeypatch.setattr(evaluate_matrix, "_record_evaluation_inputs", lambda results, models: None)
 
     launches = []
 
