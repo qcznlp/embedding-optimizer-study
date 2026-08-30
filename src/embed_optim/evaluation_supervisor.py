@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shlex
 import subprocess
 import sys
 import time
@@ -45,11 +46,30 @@ def _ancestor_pids(pid: int) -> set[int]:
 def _argv_contains_command_fragment(argv: list[str], fragment: str) -> bool:
     """Match an executed command while ignoring command-adoption declarations."""
 
-    return any(
-        fragment in argument
-        for index, argument in enumerate(argv)
-        if index == 0 or argv[index - 1] != "--wait-for-command"
-    )
+    def is_declaration(tokens: list[str], index: int) -> bool:
+        return tokens[index].startswith("--wait-for-command=") or (
+            index > 0 and tokens[index - 1] == "--wait-for-command"
+        )
+
+    for index, argument in enumerate(argv):
+        if fragment not in argument or is_declaration(argv, index):
+            continue
+        # Recovery wrappers commonly place an entire shell program in one
+        # argv item. Tokenize that item so a quoted ``--wait-for-command``
+        # declaration is not mistaken for a live evaluator. If the same shell
+        # program really executes the fragment elsewhere, retain the match.
+        if "--wait-for-command" in argument:
+            try:
+                embedded = shlex.split(argument)
+            except ValueError:
+                embedded = []
+            matching = [
+                token_index for token_index, token in enumerate(embedded) if fragment in token
+            ]
+            if matching and all(is_declaration(embedded, token_index) for token_index in matching):
+                continue
+        return True
+    return False
 
 
 def _matching_command_pids(fragment: str) -> list[int]:

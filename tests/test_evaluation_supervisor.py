@@ -23,6 +23,27 @@ def test_command_match_ignores_adoption_declaration_values():
         ["python", "-m", "supervisor", "--wait-for-command", fragment],
         fragment,
     )
+    assert not _argv_contains_command_fragment(
+        ["python", "-m", "supervisor", f"--wait-for-command={fragment}"],
+        fragment,
+    )
+    assert not _argv_contains_command_fragment(
+        [
+            "bash",
+            "-c",
+            f"exec python -m supervisor --wait-for-command {fragment} --poll-seconds 60",
+        ],
+        fragment,
+    )
+    assert _argv_contains_command_fragment(
+        [
+            "bash",
+            "-c",
+            f"python {fragment} --models checkpoint; "
+            f"python -m supervisor --wait-for-command {fragment}",
+        ],
+        fragment,
+    )
 
 
 def _args(**overrides):
