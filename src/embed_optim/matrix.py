@@ -107,13 +107,32 @@ def _latest_resumable_checkpoint(config: RunConfig) -> Path | None:
         if step not in steps:
             rejected.append(f"{checkpoint.name}: step is outside the declared schedule")
             continue
-        problems = _deep_checkpoint_problems(
-            checkpoint,
-            step,
-            world_size=4,
-            config=config,
-            final_step=final_step,
-        )
+        if getattr(getattr(config, "optimizer", None), "name", None) == "hybrid_adamw":
+            # Hybrid AdamW deliberately routes every parameter group through
+            # AdamW while assigning different learning rates to the hidden and
+            # auxiliary groups.  The generic optimizer audit expects the
+            # configured algorithm name in each group, so use the same
+            # specialized contract that gates hybrid evaluation and the live
+            # checkpoint watcher.  This path matters most after a transient
+            # distributed failure, when the scheduler must select a valid
+            # checkpoint before retrying the run.
+            from .supplemental_training_audit import hybrid_checkpoint_problems
+
+            problems = hybrid_checkpoint_problems(
+                checkpoint,
+                config,
+                step,
+                final_step,
+                world_size=4,
+            )
+        else:
+            problems = _deep_checkpoint_problems(
+                checkpoint,
+                step,
+                world_size=4,
+                config=config,
+                final_step=final_step,
+            )
         if not problems:
             previous_steps = [candidate for candidate in steps if candidate < step]
             previous_step = previous_steps[-1] if previous_steps else None

@@ -111,6 +111,32 @@ def test_checkpoint_resume_selection_falls_back_after_deep_audit_failure(tmp_pat
     ]
 
 
+def test_checkpoint_resume_selection_uses_hybrid_contract(tmp_path, monkeypatch):
+    output = tmp_path / "dense" / "hybrid"
+    checkpoint = _write_checkpoint(output, 10)
+    (output / "checkpoint_schedule.json").write_text(json.dumps({"steps": [10, 20, 30, 40, 50]}))
+    config = SimpleNamespace(
+        output_dir=output,
+        optimizer=SimpleNamespace(name="hybrid_adamw"),
+    )
+    audited = []
+
+    def hybrid_problems(candidate, selected_config, expected_step, final_step, *, world_size):
+        audited.append((candidate.name, selected_config, expected_step, final_step, world_size))
+        return []
+
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit.hybrid_checkpoint_problems",
+        hybrid_problems,
+    )
+    generic = MagicMock(side_effect=AssertionError("generic hybrid audit must not run"))
+    monkeypatch.setattr("embed_optim.aggregate._deep_checkpoint_problems", generic)
+
+    assert _latest_resumable_checkpoint(config) == checkpoint
+    assert audited == [("checkpoint-10", config, 10, 50, 4)]
+    generic.assert_not_called()
+
+
 def test_checkpoint_resume_selection_rejects_unchanged_model_payload(tmp_path, monkeypatch):
     output = tmp_path / "dense" / "run"
     older = _write_checkpoint(output, 10)
