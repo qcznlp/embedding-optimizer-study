@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import numpy as np
+import torch
 from huggingface_hub import snapshot_download
 
 from .config import ModelFamily, RunConfig, load_matrix, resolve_matrix_path
@@ -285,6 +286,10 @@ def _job_cli(job: ProbeJob, args: argparse.Namespace) -> list[str]:
         args.storage_dtype,
         "--device",
         "cuda:0",
+        "--gpus",
+        args.gpus,
+        "--cpu-threads-per-worker",
+        str(args.cpu_threads_per_worker),
     ]
     if job.reference_export is not None:
         command.extend(["--reference-export", str(job.reference_export)])
@@ -418,6 +423,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--no-flash-attention", action="store_true")
+    parser.add_argument(
+        "--cpu-threads-per-worker",
+        type=int,
+        default=0,
+        help=(
+            "CPU threads used by each probe worker; 0 divides available CPUs "
+            "across the requested GPU workers"
+        ),
+    )
 
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--kind", choices=("reference", "checkpoint"), help=argparse.SUPPRESS)
@@ -433,9 +447,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
-    if args.batch_size <= 0 or args.max_retries < 0:
-        raise ValueError("--batch-size must be positive and --max-retries must be non-negative")
+    if args.batch_size <= 0 or args.max_retries < 0 or args.cpu_threads_per_worker < 0:
+        raise ValueError(
+            "--batch-size must be positive; --max-retries and "
+            "--cpu-threads-per-worker must be non-negative"
+        )
     if args.worker:
+        requested_workers = len({value.strip() for value in args.gpus.split(",") if value.strip()})
+        cpu_threads = args.cpu_threads_per_worker or max(
+            1, (os.cpu_count() or 1) // max(1, requested_workers)
+        )
+        torch.set_num_threads(cpu_threads)
+        torch.set_num_interop_threads(1)
         required = (args.kind, args.family, args.label, args.checkpoint, args.export, args.metrics)
         if any(value is None for value in required):
             raise ValueError("Worker invocation is missing required job fields")

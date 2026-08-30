@@ -28,6 +28,27 @@ def test_representation_summary_is_deterministic_and_scale_aware():
     assert -1 <= first["mean_pairwise_cosine"] <= 1
 
 
+def test_representation_summary_matches_svd_spectrum_oracle():
+    generator = torch.Generator().manual_seed(91)
+    vectors = torch.randn(64, 7, generator=generator)
+
+    result = representation_summary(vectors, max_vectors=64, seed=3)
+    centered = vectors - vectors.mean(dim=0, keepdim=True)
+    eigenvalues = torch.linalg.svdvals(centered).square() / (vectors.size(0) - 1)
+    positive = eigenvalues[eigenvalues > torch.finfo(eigenvalues.dtype).eps]
+    total = positive.sum()
+    probabilities = positive / total
+
+    assert result["covariance_trace"] == pytest.approx(float(total), rel=1e-5)
+    assert result["stable_rank"] == pytest.approx(float(total / positive.max()), rel=1e-5)
+    assert result["entropy_effective_rank"] == pytest.approx(
+        float(torch.exp(-(probabilities * probabilities.log()).sum())), rel=1e-5
+    )
+    assert result["leading_variance_fraction"] == pytest.approx(
+        float(positive.max() / total), rel=1e-5
+    )
+
+
 def test_dense_probe_reports_exact_margin_and_reference_stability():
     queries = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
     documents = torch.tensor(

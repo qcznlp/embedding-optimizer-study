@@ -185,8 +185,17 @@ def representation_summary(
 
     centered = vectors - vectors.mean(dim=0, keepdim=True)
     if count > 1 and bool(centered.square().sum() > 0):
-        singular_values = torch.linalg.svdvals(centered)
-        eigenvalues = singular_values.square() / (count - 1)
+        # We only consume covariance eigenvalues below.  Computing the full
+        # singular spectrum of a tall [vectors, dimension] matrix is much more
+        # expensive than diagonalising the smaller covariance/Gram matrix, and
+        # it becomes the dominant cost when many checkpoint probes run in
+        # parallel.  The non-zero eigenvalues are mathematically identical.
+        denominator = count - 1
+        if centered.size(0) <= centered.size(1):
+            spectrum_matrix = centered @ centered.T / denominator
+        else:
+            spectrum_matrix = centered.T @ centered / denominator
+        eigenvalues = torch.linalg.eigvalsh(spectrum_matrix)
         positive = eigenvalues[eigenvalues > torch.finfo(eigenvalues.dtype).eps]
         if positive.numel() > 0:
             total = positive.sum()
