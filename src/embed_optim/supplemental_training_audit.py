@@ -96,42 +96,60 @@ def _audit_hybrid_checkpoints(config: RunConfig) -> tuple[int, list[str]]:
     final_step = steps[-1]
     for step in steps:
         checkpoint = config.output_dir / f"checkpoint-{step}"
-        problems = _deep_checkpoint_problems(checkpoint, step, world_size=4)
-        optimizer = None
-        try:
-            optimizer = torch.load(
-                checkpoint / "optimizer.pt",
-                map_location="cpu",
-                weights_only=True,
-                mmap=True,
-            )
-            if problem := _hybrid_optimizer_contract_problem(optimizer, config, step, final_step):
-                problems.append(problem)
-        except Exception as error:  # noqa: BLE001
-            problems.append(
-                f"hybrid optimizer contract load failed ({type(error).__name__}: {error})"
-            )
-        finally:
-            del optimizer
-            gc.collect()
-        try:
-            scheduler = torch.load(
-                checkpoint / "scheduler.pt", map_location="cpu", weights_only=True
-            )
-            if problem := _scheduler_contract_problem(scheduler, config, step, final_step):
-                problems.append(problem)
-        except Exception as error:  # noqa: BLE001
-            problems.append(f"scheduler contract load failed ({type(error).__name__}: {error})")
-        if problem := _training_arguments_problem(
-            checkpoint / "training_args.bin", config, world_size=4, final_step=final_step
-        ):
-            problems.append(problem)
+        problems = hybrid_checkpoint_problems(
+            checkpoint,
+            config,
+            step,
+            final_step,
+            world_size=4,
+        )
         checkpoint_label = f"{label}/checkpoint-{step}"
         if problems:
             errors.extend(f"{checkpoint_label}: {problem}" for problem in problems)
         else:
             verified += 1
     return verified, errors
+
+
+def hybrid_checkpoint_problems(
+    checkpoint: Path,
+    config: RunConfig,
+    expected_step: int,
+    final_step: int,
+    *,
+    world_size: int,
+) -> list[str]:
+    """Deep-audit one hybrid AdamW checkpoint with its three-group contract."""
+
+    problems = _deep_checkpoint_problems(checkpoint, expected_step, world_size)
+    optimizer = None
+    try:
+        optimizer = torch.load(
+            checkpoint / "optimizer.pt",
+            map_location="cpu",
+            weights_only=True,
+            mmap=True,
+        )
+        if problem := _hybrid_optimizer_contract_problem(
+            optimizer, config, expected_step, final_step
+        ):
+            problems.append(problem)
+    except Exception as error:  # noqa: BLE001
+        problems.append(f"hybrid optimizer contract load failed ({type(error).__name__}: {error})")
+    finally:
+        del optimizer
+        gc.collect()
+    try:
+        scheduler = torch.load(checkpoint / "scheduler.pt", map_location="cpu", weights_only=True)
+        if problem := _scheduler_contract_problem(scheduler, config, expected_step, final_step):
+            problems.append(problem)
+    except Exception as error:  # noqa: BLE001
+        problems.append(f"scheduler contract load failed ({type(error).__name__}: {error})")
+    if problem := _training_arguments_problem(
+        checkpoint / "training_args.bin", config, world_size, final_step
+    ):
+        problems.append(problem)
+    return problems
 
 
 def _append_unique(target: list[str], additions: list[str]) -> None:

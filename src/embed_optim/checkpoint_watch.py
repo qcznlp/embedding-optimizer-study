@@ -11,6 +11,8 @@ from typing import Any
 
 from .config import RunConfig, load_matrix, matrix_runtime_spec
 
+AUDIT_CONTRACT_VERSION = 2
+
 
 def _utc_now() -> str:
     return datetime.now(UTC).isoformat().replace("+00:00", "Z")
@@ -69,7 +71,11 @@ def _audit_contract_signature(config: RunConfig, world_size: int) -> str:
             "run_id": config.run_id,
             "output_dir": str(config.output_dir),
         }
-    payload = {"config": config_payload, "world_size": world_size}
+    payload = {
+        "audit_contract_version": AUDIT_CONTRACT_VERSION,
+        "config": config_payload,
+        "world_size": world_size,
+    }
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 
 
@@ -163,13 +169,24 @@ def audit_once(
                     previous_digest = prior.get("model_digest")
                 continue
 
-            problems = _deep_checkpoint_problems(
-                checkpoint,
-                step,
-                world_size,
-                config=config,
-                final_step=final_step,
-            )
+            if getattr(getattr(config, "optimizer", None), "name", None) == "hybrid_adamw":
+                from .supplemental_training_audit import hybrid_checkpoint_problems
+
+                problems = hybrid_checkpoint_problems(
+                    checkpoint,
+                    config,
+                    step,
+                    final_step,
+                    world_size=world_size,
+                )
+            else:
+                problems = _deep_checkpoint_problems(
+                    checkpoint,
+                    step,
+                    world_size,
+                    config=config,
+                    final_step=final_step,
+                )
             model_digest = _safetensors_digest(checkpoint)
             if previous_digest is not None and model_digest == previous_digest:
                 problems.append("model payload is unchanged from the previous checkpoint")

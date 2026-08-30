@@ -192,3 +192,32 @@ def test_watcher_validates_declared_formal_runtime_before_audit(tmp_path, monkey
 
     monkeypatch.setattr("embed_optim.checkpoint_watch.matrix_runtime_spec", lambda matrix: None)
     assert _validate_formal_runtime("portable.yaml") is None
+
+
+def test_watcher_uses_specialized_hybrid_checkpoint_contract(tmp_path, monkeypatch):
+    config = _config(tmp_path)
+    config.optimizer = SimpleNamespace(name="hybrid_adamw")
+    _write_schedule(config)
+    checkpoint = _write_checkpoint(config, 10)
+    calls = []
+
+    monkeypatch.setattr(
+        "embed_optim.matrix._checkpoint_is_resumable", lambda path, world_size: path.is_dir()
+    )
+    monkeypatch.setattr(
+        "embed_optim.aggregate._deep_checkpoint_problems",
+        lambda *args, **kwargs: pytest.fail("generic optimizer contract must not audit hybrid"),
+    )
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit.hybrid_checkpoint_problems",
+        lambda path, received, step, final_step, *, world_size: (
+            calls.append((path, received, step, final_step, world_size)) or []
+        ),
+    )
+    monkeypatch.setattr("embed_optim.aggregate._safetensors_digest", lambda path: "digest")
+
+    state, events = audit_once([config], tmp_path / "audit.json")
+
+    assert [event["status"] for event in events] == ["passed"]
+    assert state["audited_checkpoints"] == 1
+    assert calls == [(checkpoint, config, 10, 50, 4)]
