@@ -1067,6 +1067,28 @@ probe, protocol, record table, and summary is content-hashed. This is a local fi
 intervention—not evidence that one virtual step reproduces a complete native optimizer trajectory;
 the NAACL plan retains a short shared-checkpoint branch for that stronger claim.
 
+### 8a. Audit mean improvement versus query-tail stability
+
+The explicitly post-hoc discovery diagnostic re-reads all 20 intervention sample tables rather than
+inferring query tails from aggregate means. It measures mean and p05 positive-margin changes plus
+p95/p99 contrastive-loss changes for the Frobenius-matched `1e-3` AdamW, Muon, and NorMuon steps. A
+fully disclosed secondary diagnostic symmetrically selects each operator's own worst 5% queries and
+reports tail overlap plus effects on both selected sets; it was added only after its preliminary
+values were visible. A separate rule was frozen before any three-seed shared-start result existed:
+support requires both a lower median query-disjoint loss p95 and a higher median unseen-margin p05 at
+the final branch stage.
+
+```bash
+embed-optim-tail-stability
+# After the short-branch summary is complete:
+embed-optim-tail-stability --require-short-branch
+```
+
+The first command produces the complete post-hoc 20-anchor diagnostic while honestly leaving the
+prospective tier pending. The second fails closed unless all 90 validation checkpoints and 92 unseen
+probe reports pass their hashes and coverage contracts. Outputs and the claim boundary live under
+[`reports/tail-stability`](reports/tail-stability/README.md).
+
 ### 8b. Factor spectrum values from singular-vector basis
 
 The original functional intervention shows whether native optimizer directions differ at fixed

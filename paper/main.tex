@@ -326,6 +326,16 @@ analysis compares the independently validation-selected recipe with the within-o
 BEIR oracle, which remains descriptive and never replaces the prospectively selected confirmation
 recipe. This synthesis cannot establish a spectral mechanism by itself.
 
+We additionally inspect the per-query distribution hidden by the mean intervention effect. This
+mean--tail diagnostic is explicitly post hoc for the discovery anchors: it contrasts mean and fifth
+percentile margin changes with the 95th and 99th percentiles of loss change. A secondary,
+post-inspection diagnostic selects each operator's own worst loss tail and compares effects on both
+sets, separating shared-tail severity suppression from a change in tail membership. Before any
+shared-start outcome existed, we froze a separate final-stage rule requiring both lower
+query-disjoint loss-tail and higher unseen margin-tail under the three-seed median. Thus the discovery
+diagnostic can suggest a functional robustness account, while only the accumulated branch can test
+whether it persists.
+
 \paragraph{Shared-start branches.}
 Both architectures branch from the same 60\% AdamW checkpoint. AdamW, Muon, and NorMuon receive
 hidden learning rates calibrated to a common global $\lVert\Delta W\rVert_F/\lVert W\rVert_F$
@@ -341,7 +351,15 @@ spectral flattening and row balancing validate the implementations but are not e
 A Muon time-to-quality gain with tied final retrieval would establish an optimization benefit but
 not a better representation. A local-to-global reversal would instead rule out the simplest
 ``better one-step descent'' account and make the changing gradient trajectory the object requiring
-explanation. Lower validation loss with worse BEIR performance would locate that trajectory on an
+explanation. A mean--tail trade-off would sharpen this account: the matrix-aware step could sacrifice
+average immediate progress while avoiding severe query-level regressions, allowing moderate repeated
+steps to acquire useful margins without erasing as much pretrained behavior. This functional tail
+claim is distinct from merely observing Muon's definition-level spectral flattening and must survive
+the frozen shared-start rule. The exploratory cross-tail result further suggests different failure
+geometry across architectures: tail redistribution for the dense retriever but suppression of a
+largely shared fragile-query tail for late interaction. Because that comparison was defined after
+inspection, it is hypothesis-generating. Lower validation loss with worse BEIR performance would
+locate that trajectory on an
 acquisition--preservation frontier and support optimizer mismatch and functional drift. A NorMuon
 advantage concentrated in LateOn, accompanied by improved token-evidence coverage, would support a
 retrieval-specific role for row adaptation. If row geometry changes strongly without a corresponding

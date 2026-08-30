@@ -1204,6 +1204,71 @@ Frobenius-matched step produces a larger immediate retrieval margin. Their nativ
 change later gradients or accumulate functionally useful changes that the local intervention does
 not reproduce.
 
+### The new clue: Muon loses on the mean but protects the bad tail
+
+The per-query intervention records reveal a more informative optimization signature than the
+definition-level spectra. At the same `1e-3` virtual step, Muon and NorMuon make the **average**
+positive-margin gain smaller than AdamW, yet make the worst query-level changes substantially less
+bad. The table reports challenger minus AdamW: positive p05-margin values and negative p95/p99-loss
+values favor the challenger.
+
+| Family | Challenger | Mean margin Δ | p05 margin Δ | p95 loss Δ | p99 loss Δ | p99 anchor wins |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon | -3.034e-4 | +2.178e-3 | -4.445e-2 | -7.579e-2 | 10/10 |
+| DenseOn | NorMuon | -3.671e-4 | +2.344e-3 | -5.109e-2 | -9.361e-2 | 10/10 |
+| LateOn | Muon | -3.976e-4 | +1.678e-4 | -1.025e-1 | -2.933e-1 | 10/10 |
+| LateOn | NorMuon | -4.527e-4 | +1.848e-4 | -1.139e-1 | -3.165e-1 | 10/10 |
+
+This is not merely the statement that Muon flattens singular values. It is a downstream,
+query-level consequence at identical weights, examples, gradient history, and per-tensor norm:
+AdamW obtains more average local margin, while the Muon family avoids the largest functional
+regressions. The p99 loss-tail direction holds at every one of the ten anchors in each family for
+both challengers, and every leave-one-anchor-out mean keeps the same sign. DenseOn's p05 margin has
+four exact anchor ties for each challenger, while both LateOn challengers improve it at all ten
+anchors.
+
+A symmetric worst-tail check shows that the two architectures reach this aggregate pattern in
+different ways. For each operator we independently select its own worst 5% loss-change queries
+(12/224), then evaluate the challenger-minus-AdamW contrast on both sets. This avoids interpreting a
+comparison selected only on AdamW's failures as uniform dominance.
+
+| Family | Challenger | Δ on AdamW tail | Δ on challenger tail | Tail Jaccard | AdamW-tail baseline-margin percentile | Pattern |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| DenseOn | Muon | -0.1366 | +0.0203 | 0.279 | 0.192 | tail redistribution |
+| DenseOn | NorMuon | -0.1402 | +0.0110 | 0.270 | 0.192 | tail redistribution |
+| LateOn | Muon | -0.2330 | -0.1779 | 0.711 | 0.036 | shared-tail severity suppression |
+| LateOn | NorMuon | -0.2585 | -0.2022 | 0.670 | 0.036 | shared-tail severity suppression |
+
+DenseOn's negative advantage on AdamW's tail reverses on the challenger's own tail, and the two
+tail sets overlap little. Its aggregate p95/p99 improvement is therefore a redistribution of which
+queries fail, not query-wise dominance. LateOn is qualitatively stronger: the tail sets overlap by
+0.67--0.71, the challenger remains better even on its own selected tail, and AdamW's fragile set lies
+around the lowest 3.6% of the baseline-margin distribution. The own-tail contrast is negative at
+9/10 LateOn anchors for Muon and 10/10 for NorMuon, with every leave-one-anchor-out mean still
+negative. Thus the strongest new result is architecture-specific: Muon-family updates suppress the
+severity of a persistent hard-query failure mode for late interaction, while dense retrieval mainly
+changes tail membership. This symmetric diagnostic was itself defined after its preliminary values
+were inspected and is hypothesis-generating.
+
+One plausible optimization account is therefore **tail-controlled acquisition**. AdamW's
+coordinate-wise rescaling can place more of a norm-matched update in locally high-leverage
+directions, producing a larger mean gain but also a larger adverse tail across query Jacobians.
+Muon's polar transform spreads singular amplification more evenly, giving up some mean one-step
+progress while preserving hard queries; accumulated moderate steps can then build margins without
+catastrophically moving as many pretrained rankings. This is a hypothesis about the functional
+effect of the operator, not a theorem. The queued spectrum/basis transplant tests whether the tail
+protection follows the singular values or their basis, and the prospectively frozen three-seed
+shared-start rule tests whether lower validation-loss p95 and higher unseen-margin p05 survive
+accumulated training.
+
+The qualification matters: NorMuon has the strongest local tail protection but does not consistently
+beat Muon on final BEIR, so tail stability is not sufficient by itself. Likewise, DenseOn's
+aggressive `3e-3` Muon-family recipes exceed the apparent preservation budget despite the local
+signature. The result suggests a mechanism for robustness, not an unlimited license to increase the
+learning rate. This diagnostic was discovered post hoc; its full source-bound table and the
+pre-outcome short-branch decision rule are in
+[`reports/tail-stability`](../reports/tail-stability/README.md).
+
 An independent validation set exposes the other half of the mechanism. It selects one recipe per
 family and optimizer without looking at BEIR; the within-optimizer best discovery BEIR point below
 is a descriptive oracle and is never substituted into confirmation.

@@ -77,6 +77,7 @@ embed-optim-plot-representation-dynamics = "embed_optim.representation_plot:main
 embed-optim-plot-late-token-dynamics = "embed_optim.representation_plot:late_main"
 embed-optim-build-mechanism-bridge = "embed_optim.mechanism_bridge:main"
 embed-optim-local-global-reversal = "embed_optim.local_global_reversal:main"
+embed-optim-tail-stability = "embed_optim.tail_stability:main"
 embed-optim-spectral-transplant = "embed_optim.spectral_transplant_matrix:main"
 embed-optim-summarize-spectral-transplant = "embed_optim.spectral_transplant_summary:main"
 embed-optim-render-mechanism-report = "embed_optim.mechanism_report:main"
@@ -134,6 +135,7 @@ where = ["src"]
   "configs/hybrid_adamw_control.json",
   "configs/hybrid_adamw.yaml",
   "configs/local_global_reversal.json",
+  "configs/tail_stability_analysis.json",
   "configs/spectral_transplant_intervention.json",
   "configs/paper_claim_protocol.json",
   "configs/representation_probe.json",
@@ -206,6 +208,14 @@ where = ["src"]
   "reports/local-global-reversal/acquisition_preservation_frontier.csv",
   "reports/local-global-reversal/local_to_global_reversal.csv",
   "reports/local-global-reversal/summary_manifest.json",
+]
+"share/doc/embedding-optimizer-study/reports/tail-stability" = [
+  "reports/tail-stability/README.md",
+  "reports/tail-stability/discovery_anchor_tail.csv",
+  "reports/tail-stability/discovery_cross_tail.csv",
+  "reports/tail-stability/discovery_cross_tail_summary.csv",
+  "reports/tail-stability/discovery_family_contrasts.csv",
+  "reports/tail-stability/summary_manifest.json",
 ]
 
 [tool.uv]
