@@ -501,9 +501,19 @@ def _gradient_shards(
 
 def _validate_model_config(path: Path, architecture: dict[str, Any]) -> None:
     config = json.loads(path.read_text(encoding="utf-8"))
-    observed_bases = sorted(
-        float(item["rope_theta"]) for item in config.get("rope_parameters", {}).values()
-    )
+    rope_parameters = config.get("rope_parameters")
+    if isinstance(rope_parameters, dict) and rope_parameters:
+        observed_bases = sorted(float(item["rope_theta"]) for item in rope_parameters.values())
+    else:
+        # Transformers 4.x ModernBERT checkpoints store these same architectural
+        # constants under the legacy global/local keys. Transformers 5.x rewrites
+        # them to ``rope_parameters`` when a trained checkpoint is saved.
+        legacy_bases = (config.get("local_rope_theta"), config.get("global_rope_theta"))
+        observed_bases = (
+            sorted(float(value) for value in legacy_bases)
+            if all(value is not None for value in legacy_bases)
+            else []
+        )
     if (
         config.get("model_type") != architecture["model_type"]
         or config.get("hidden_size") != architecture["hidden_size"]

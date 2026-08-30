@@ -14,6 +14,7 @@ from embed_optim.basis_sensitivity import (
     RECORD_METRICS,
     _direction_metrics,
     _load_protocol,
+    _validate_model_config,
     analyze_basis_sensitivity,
     audit_basis_sensitivity,
     functional_invariance_error,
@@ -31,6 +32,38 @@ def test_frozen_basis_protocol_uses_sentence_transformers_qkv_namespace():
     assert protocol["metrics"]["full_tensor"] == list(RECORD_METRICS)
     assert protocol["metrics"]["selected_qk_heads"] == list(HEAD_METRICS)
     assert protocol["freeze_context"]["formal_basis_output_visible"] is False
+
+
+def test_model_config_validation_accepts_legacy_modernbert_rope_keys(tmp_path: Path):
+    architecture = {
+        "model_type": "modernbert",
+        "hidden_size": 768,
+        "num_attention_heads": 12,
+        "attention_bias": False,
+        "max_position_embeddings": 8192,
+        "rope_bases": [10_000.0, 160_000.0],
+    }
+    config = tmp_path / "config.json"
+    _write_json(
+        config,
+        {
+            "model_type": "modernbert",
+            "hidden_size": 768,
+            "num_attention_heads": 12,
+            "attention_bias": False,
+            "max_position_embeddings": 8192,
+            "local_rope_theta": 10_000.0,
+            "global_rope_theta": 160_000.0,
+        },
+    )
+
+    _validate_model_config(config, architecture)
+
+    payload = json.loads(config.read_text(encoding="utf-8"))
+    payload["global_rope_theta"] = 80_000.0
+    _write_json(config, payload)
+    with pytest.raises(ValueError, match="architecture differs"):
+        _validate_model_config(config, architecture)
 
 
 def test_rope_commuting_transform_is_invertible_and_preserves_attention_logits():
