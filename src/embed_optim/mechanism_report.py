@@ -496,6 +496,8 @@ def _retrieval_rows(
             "tasks": 14,
             "evaluation_units": 1_680,
             "optimizer_family_groups": 6,
+            "best_config_task_delta_rows": 280,
+            "adjacent_stage_task_stability_rows": 16,
         }
         or _rehash_references(manifest.get("sources"), context="retrieval_dynamics.sources") < 1_685
     ):

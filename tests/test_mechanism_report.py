@@ -340,6 +340,8 @@ def _retrieval(root: Path) -> Path:
                     "tasks": 14,
                     "evaluation_units": 1_680,
                     "optimizer_family_groups": 6,
+                    "best_config_task_delta_rows": 280,
+                    "adjacent_stage_task_stability_rows": 16,
                 },
                 "sources": sources,
                 "outputs": {
