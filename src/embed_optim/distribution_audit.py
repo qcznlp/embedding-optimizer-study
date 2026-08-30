@@ -39,6 +39,11 @@ def _credential_findings(scope: str, member: str, payload: bytes) -> list[str]:
     ]
 
 
+def _checkout_path_findings(scope: str, member: str, payload: bytes) -> list[str]:
+    producer_path = b"/root" + b"/embedding-optimizer-study"
+    return [f"{scope} producer checkout path: {member}"] if producer_path in payload else []
+
+
 def _section(text: str, name: str) -> str:
     marker = f"[{name}]"
     if marker not in text:
@@ -128,6 +133,9 @@ def audit_distribution(
                 problems.extend(
                     _credential_findings("wheel", member.filename, archive.read(member))
                 )
+                problems.extend(
+                    _checkout_path_findings("wheel", member.filename, archive.read(member))
+                )
         expected_package = set(package_members.values())
         expected_data = set(data_members.values())
         expected_metadata = {
@@ -180,6 +188,7 @@ def audit_distribution(
                 payload = extracted.read()
                 payloads[member.name] = payload
                 problems.extend(_credential_findings("sdist", member.name, payload))
+                problems.extend(_checkout_path_findings("sdist", member.name, payload))
         for source in sorted(expected_sdist_sources):
             member = f"{sdist_prefix}{source}"
             if member not in names:

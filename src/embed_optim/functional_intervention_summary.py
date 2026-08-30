@@ -25,6 +25,7 @@ from .functional_intervention_matrix import (
     functional_intervention_job_complete,
 )
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .scope import ALL_FAMILIES, resolve_scope
 
 METRICS = (
     "contrastive_loss",
@@ -227,13 +228,26 @@ def summarize_functional_interventions(
     output_dir: str | Path,
     *,
     intervention_spec: str | Path,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
     output_dir = Path(output_dir).resolve()
     spec_path, spec = load_intervention_protocol(intervention_spec)
     conditions = intervention_conditions(spec)
     condition_names = [condition.condition for condition in conditions]
-    if len(jobs) != spec["common_state"]["expected_anchors"]:
-        raise ValueError("Intervention summary requires the exact frozen anchor matrix")
+    families, scope = resolve_scope(families, scope_amendment)
+    expected_per_family, remainder = divmod(
+        int(spec["common_state"]["expected_anchors"]), len(ALL_FAMILIES)
+    )
+    if remainder:
+        raise ValueError("Frozen intervention anchor count is not divisible by its family count")
+    expected_anchors = expected_per_family * len(families)
+    if len(jobs) != expected_anchors:
+        raise ValueError(
+            f"Intervention summary requires {expected_anchors} anchors for the requested scope"
+        )
+    if {job.common_state.family for job in jobs} != set(families):
+        raise ValueError("Intervention jobs do not match the requested family scope")
     incomplete = [
         job.label
         for job in jobs
@@ -296,6 +310,8 @@ def summarize_functional_interventions(
         "schema_version": SCHEMA_VERSION,
         "complete": True,
         "status": "complete",
+        "families": list(families),
+        "scope_amendment": scope,
         "intervention_spec": {
             "path": str(spec_path),
             "bytes": spec_path.stat().st_size,
@@ -319,6 +335,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Strictly summarize the scale-matched functional interventions"
     )
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)
     parser.add_argument("--common-state-root", type=Path, default=Path("results/common-state"))
@@ -339,12 +359,18 @@ def main(argv: list[str] | None = None) -> None:
     common_spec_path = resolve_common_state_spec(args.common_state_spec).resolve()
     if _sha256(common_spec_path) != intervention["common_state"]["spec_sha256"]:
         raise ValueError("Common-state spec differs from the intervention lock")
-    common_spec, _ = _load_protocol(common_spec_path)
+    common_spec, common_anchor = _load_protocol(common_spec_path)
     matrix_path = resolve_matrix_path(args.matrix).resolve()
-    configs = load_matrix(matrix_path)
+    all_configs = load_matrix(matrix_path)
+    families, _ = resolve_scope(args.families, args.scope_amendment)
+    configs = [config for config in all_configs if config.model_family in families]
+    if {config.model_family for config in configs} != set(families):
+        raise ValueError("Training matrix does not cover every requested model family")
+    if intervention["common_state"]["expected_anchors"] != common_anchor["expected_total_anchors"]:
+        raise ValueError("Functional intervention and common-state anchor locks differ")
     by_family = {config.model_family: config for config in configs}
     references: dict[ModelFamily, Path] = {}
-    for family in ("dense", "late"):
+    for family in families:
         explicit = (
             args.dense_reference_checkpoint if family == "dense" else args.late_reference_checkpoint
         )
@@ -352,7 +378,11 @@ def main(argv: list[str] | None = None) -> None:
     common_jobs = build_common_state_jobs(configs, references, common_spec, args.common_state_root)
     jobs = build_functional_intervention_jobs(common_jobs, args.result_root)
     manifest = summarize_functional_interventions(
-        jobs, args.output_dir, intervention_spec=spec_path
+        jobs,
+        args.output_dir,
+        intervention_spec=spec_path,
+        families=families,
+        scope_amendment=args.scope_amendment,
     )
     print(json.dumps(manifest, indent=2, sort_keys=True))
 

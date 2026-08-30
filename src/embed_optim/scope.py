@@ -67,13 +67,56 @@ def resolve_scope(
     if amendment is None:
         raise ValueError("A reduced family scope requires --scope-amendment")
     path, payload = load_scope_amendment(amendment, families=requested)
+    repository = path.parent.parent
+    portable_path = str(path.relative_to(repository))
     return requested, {
-        "path": str(path),
+        "path": portable_path,
         "sha256": _sha256(path),
         "status": payload["status"],
         "amended_at_utc": payload["amended_at_utc"],
         "claim_boundary": payload["claim_boundary"],
     }
+
+
+def canonical_scope_amendment(record: dict[str, Any], repository: str | Path) -> dict[str, Any]:
+    """Normalize a verified scope identity across producer checkout locations."""
+
+    if not isinstance(record, dict) or not isinstance(record.get("path"), str):
+        raise ValueError("Scope-amendment identity is malformed")
+    root = Path(repository).resolve()
+    declared = Path(record["path"])
+    candidate = declared.resolve() if declared.is_absolute() else (root / declared).resolve()
+    try:
+        relative = candidate.relative_to(root)
+    except ValueError:
+        # Older ledgers recorded the producer's absolute checkout. Relocate only
+        # the canonical configs entry and still require its content hash below.
+        if len(declared.parts) < 2 or declared.parts[-2] != "configs":
+            raise ValueError("Scope amendment is outside the repository") from None
+        relative = Path("configs") / declared.name
+        candidate = (root / relative).resolve()
+    if (
+        not candidate.is_file()
+        or not isinstance(record.get("sha256"), str)
+        or _sha256(candidate) != record["sha256"]
+    ):
+        raise ValueError("Scope-amendment identity differs from the repository")
+    return {**record, "path": relative.as_posix()}
+
+
+def scope_amendments_equal(observed: Any, expected: Any, repository: str | Path) -> bool:
+    """Compare portable and legacy-absolute identities for the same amendment."""
+
+    if observed == expected:
+        return True
+    if not isinstance(observed, dict) or not isinstance(expected, dict):
+        return False
+    try:
+        return canonical_scope_amendment(observed, repository) == canonical_scope_amendment(
+            expected, repository
+        )
+    except (OSError, ValueError):
+        return False
 
 
 def select_family_configs(configs: Iterable[RunConfig], families: Iterable[str]) -> list[RunConfig]:

@@ -12,7 +12,36 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .scope import resolve_scope
+from .scope import resolve_scope, scope_amendments_equal
+
+CORE_STEP_NAMES = (
+    "hybrid-training-audit",
+    "confirmatory-training-audit-seed-314159",
+    "confirmatory-training-audit-seed-271828",
+    "confirmatory-training-audit-seed-161803",
+    "short-branch-training-audit-seed-314159",
+    "short-branch-training-audit-seed-271828",
+    "short-branch-training-audit-seed-161803",
+    "hybrid-adamw-evaluation",
+    "hybrid-adamw-summary",
+    "confirmatory-evaluation",
+    "confirmatory-evaluation-audit",
+    "confirmatory-summary",
+    "short-branch-training-audit",
+    "short-branch-evaluation",
+    "short-branch-evaluation-audit",
+    "short-branch-summary",
+    "tail-stability-summary",
+    "spectral-transplant-matrix",
+    "spectral-transplant-audit",
+    "spectral-transplant-summary",
+)
+VALIDATION_STEP_NAMES = (
+    "tests",
+    "ruff-check",
+    "ruff-format-check",
+    "distribution-build",
+)
 
 
 @dataclass(frozen=True)
@@ -250,6 +279,10 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 PipelineStep("distribution-build", ("uv", "build")),
             ]
         )
+    observed_names = tuple(step.name for step in steps)
+    expected_names = CORE_STEP_NAMES + (VALIDATION_STEP_NAMES if args.include_validation else ())
+    if observed_names != expected_names:
+        raise AssertionError("Dense completion step contract changed")
     if repository != Path.cwd().resolve():
         raise ValueError("Dense completion pipeline must be launched from --workdir")
     return steps
@@ -300,6 +333,7 @@ def _matching_completed_prefix(previous: dict[str, Any], steps: list[PipelineSte
 
 
 def run_pipeline(args: argparse.Namespace) -> int:
+    workdir = args.workdir.resolve()
     families, scope = resolve_scope(["dense"], args.scope_amendment)
     if families != ("dense",):
         raise AssertionError("Dense completion pipeline received a non-dense scope")
@@ -313,7 +347,7 @@ def run_pipeline(args: argparse.Namespace) -> int:
         previous = json.loads(ledger_path.read_text(encoding="utf-8"))
         if not args.resume:
             raise FileExistsError(f"Dense completion ledger already exists: {ledger_path}")
-        if previous.get("scope_amendment") != scope:
+        if not scope_amendments_equal(previous.get("scope_amendment"), scope, workdir):
             raise ValueError("Dense completion ledger is bound to a different scope amendment")
         completed_prefix = _matching_completed_prefix(previous, steps)
         if previous.get("complete") is True and completed_prefix == len(steps):

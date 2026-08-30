@@ -20,12 +20,15 @@ from embed_optim.functional_intervention_matrix import (
     functional_intervention_job_complete,
     parse_args,
 )
+from embed_optim.functional_intervention_matrix import main as intervention_matrix_main
 from embed_optim.functional_intervention_summary import (
     METRICS,
     _anchor_effects,
     _family_summary,
     _optimizer_contrasts,
+    summarize_functional_interventions,
 )
+from embed_optim.functional_intervention_summary import parse_args as parse_summary_args
 from embed_optim.geometry import _sha256
 
 
@@ -165,6 +168,53 @@ def test_worker_command_round_trips(tmp_path: Path):
     assert parsed.family == "late"
     assert parsed.label == "late/pretrained"
     assert parsed.output_dir == job.output_dir
+    defaults = parse_args([])
+    assert defaults.families == ["dense", "late"]
+    assert defaults.scope_amendment is None
+    summary_defaults = parse_summary_args([])
+    assert summary_defaults.families == ["dense", "late"]
+    assert summary_defaults.scope_amendment is None
+
+
+def test_dense_intervention_matrix_builds_ten_authorized_jobs(monkeypatch):
+    observed = {}
+
+    def fake_common_jobs(configs, references, spec, output_root):
+        observed["families"] = {config.model_family for config in configs}
+        observed["references"] = set(references)
+        return list(range(10))
+
+    monkeypatch.setattr(
+        "embed_optim.functional_intervention_matrix.build_common_state_jobs",
+        fake_common_jobs,
+    )
+    monkeypatch.setattr(
+        "embed_optim.functional_intervention_matrix.build_functional_intervention_jobs",
+        lambda jobs, output_root: jobs,
+    )
+
+    def fake_run_matrix(jobs, args):
+        observed["jobs"] = len(jobs)
+        return 0
+
+    monkeypatch.setattr("embed_optim.functional_intervention_matrix.run_matrix", fake_run_matrix)
+
+    intervention_matrix_main(
+        [
+            "--families",
+            "dense",
+            "--scope-amendment",
+            "configs/dense_scope_amendment.json",
+            "--dry-run",
+        ]
+    )
+
+    assert observed == {"families": {"dense"}, "references": {"dense"}, "jobs": 10}
+
+
+def test_dense_intervention_matrix_requires_scope_amendment():
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        intervention_matrix_main(["--families", "dense", "--dry-run"])
 
 
 def _sample_record(condition, sample_id, loss, margin):
@@ -222,3 +272,72 @@ def test_summary_uses_paired_baseline_and_adamw_contrasts():
     assert muon_vs_adam["delta_delta_contrastive_loss"] == pytest.approx(-0.1)
     assert len(family) == 12
     assert all(metric in METRICS for metric in METRICS)
+
+
+def test_dense_intervention_summary_has_half_frozen_anchor_matrix(tmp_path: Path, monkeypatch):
+    spec = json.loads(Path("configs/functional_intervention.json").read_text(encoding="utf-8"))
+    spec["evaluation_probe"]["count"] = 2
+    spec["intervention"]["expected_sample_records_per_anchor"] = 26
+    spec_path = tmp_path / "functional-intervention.json"
+    spec_path.write_text(json.dumps(spec, sort_keys=True) + "\n", encoding="utf-8")
+    conditions = intervention_conditions(spec)
+    records = [
+        _sample_record(condition, sample_id, loss=1.0, margin=0.1)
+        for condition in conditions
+        for sample_id in (10, 20)
+    ]
+    jobs = []
+    for index in range(10):
+        label = f"dense/anchor-{index}"
+        output_dir = tmp_path / "results" / label
+        output_dir.mkdir(parents=True)
+        sample_path = output_dir / "sample_metrics.jsonl"
+        sample_path.write_text("{}\n", encoding="utf-8")
+        (output_dir / "manifest.json").write_text(
+            json.dumps({"outputs": {"sample_metrics": {"path": sample_path.name}}}) + "\n",
+            encoding="utf-8",
+        )
+        common = CommonStateJob(
+            family="dense",
+            label=label,
+            checkpoint=(tmp_path / "checkpoint" / str(index)).resolve(),
+            gradient_dir=tmp_path / "common" / label / "gradients",
+            update_dir=tmp_path / "common" / label / "updates",
+            gradient_steps=8,
+            hidden_tensors=88,
+            hidden_parameters=110_297_088,
+        )
+        jobs.append(FunctionalInterventionJob(common, output_dir))
+    monkeypatch.setattr(
+        "embed_optim.functional_intervention_summary.functional_intervention_job_complete",
+        lambda *args, **kwargs: True,
+    )
+    monkeypatch.setattr(
+        "embed_optim.functional_intervention_summary._read_jsonl",
+        lambda path: records,
+    )
+
+    manifest = summarize_functional_interventions(
+        jobs,
+        tmp_path / "summary",
+        intervention_spec=spec_path,
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+    assert manifest["families"] == ["dense"]
+    assert manifest["anchors"] == 10
+    assert manifest["anchor_effect_records"] == 120
+    assert manifest["optimizer_contrast_records"] == 80
+    assert manifest["family_summary_records"] == 12
+    assert manifest["scope_amendment"]["status"] == ("user_directed_post_hoc_scope_amendment")
+
+
+def test_dense_intervention_summary_requires_scope_amendment(tmp_path: Path):
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        summarize_functional_interventions(
+            [],
+            tmp_path / "summary",
+            intervention_spec="configs/functional_intervention.json",
+            families=("dense",),
+        )

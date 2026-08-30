@@ -1,7 +1,7 @@
 [project]
 name = "embedding-optimizer-study"
 version = "0.1.0"
-description = "Reproducible AdamW, Muon, and NorMuon experiments for dense and late-interaction retrievers"
+description = "Reproducible AdamW, Muon, and NorMuon experiments for dense retriever adaptation"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
 license = "Apache-2.0"
@@ -74,7 +74,6 @@ embed-optim-summarize-functional-interventions = "embed_optim.functional_interve
 embed-optim-probe-matrix = "embed_optim.probe_matrix:main"
 embed-optim-summarize-probes = "embed_optim.representation_summary:main"
 embed-optim-plot-representation-dynamics = "embed_optim.representation_plot:main"
-embed-optim-plot-late-token-dynamics = "embed_optim.representation_plot:late_main"
 embed-optim-build-mechanism-bridge = "embed_optim.mechanism_bridge:main"
 embed-optim-local-global-reversal = "embed_optim.local_global_reversal:main"
 embed-optim-tail-stability = "embed_optim.tail_stability:main"
@@ -89,6 +88,7 @@ embed-optim-train = "embed_optim.train:main"
 embed-optim-matrix = "embed_optim.matrix:main"
 embed-optim-family-training-queue = "embed_optim.family_training_queue:main"
 embed-optim-dense-completion = "embed_optim.dense_completion_pipeline:main"
+embed-optim-dense-finalize = "embed_optim.dense_finalization_pipeline:main"
 embed-optim-evaluate = "embed_optim.evaluate_matrix:main"
 embed-optim-evaluation-progress = "embed_optim.evaluation_progress:main"
 embed-optim-supervise-evaluation = "embed_optim.evaluation_supervisor:main"
@@ -114,7 +114,6 @@ StudyPaper = "https://github.com/qcznlp/embedding-optimizer-study/blob/main/pape
 DenseOnPaper = "https://arxiv.org/abs/2607.27178"
 Muon = "https://kellerjordan.github.io/posts/muon/"
 DenseModel = "https://huggingface.co/lightonai/DenseOn-unsupervised"
-LateModel = "https://huggingface.co/lightonai/LateOn-unsupervised"
 NorMuon = "https://github.com/zichongli5/NorMuon"
 
 [build-system]
@@ -153,28 +152,28 @@ where = ["src"]
 "share/embedding-optimizer-study/scripts/eval" = [
   "scripts/eval/dense_parallel.py",
   "scripts/eval/dense_sequential.py",
-  "scripts/eval/late_interaction.py",
 ]
-"share/doc/embedding-optimizer-study" = [
+"share/embedding-optimizer-study" = [
   "CITATION.cff",
   "CODE_OF_CONDUCT.md",
   "CONTRIBUTING.md",
   "SECURITY.md",
   "THIRD_PARTY_NOTICES.md",
 ]
-"share/doc/embedding-optimizer-study/docs" = [
+"share/embedding-optimizer-study/docs" = [
   "docs/blog.md",
   "docs/completion-gates.md",
+  "docs/naacl-dense-paper-plan.md",
   "docs/naacl-paper-plan.md",
 ]
-"share/doc/embedding-optimizer-study/paper" = [
+"share/embedding-optimizer-study/paper" = [
   "paper/Makefile",
   "paper/README.md",
   "paper/main.tex",
   "paper/references.bib",
   "paper/results.tex",
 ]
-"share/doc/embedding-optimizer-study/paper/generated" = [
+"share/embedding-optimizer-study/paper/generated" = [
   "paper/generated/common-state.tex",
   "paper/generated/confirmation.tex",
   "paper/generated/discovery.tex",
@@ -182,7 +181,7 @@ where = ["src"]
   "paper/generated/per-task.tex",
   "paper/generated/representation.tex",
 ]
-"share/doc/embedding-optimizer-study/reports/weight-space" = [
+"share/embedding-optimizer-study/reports/weight-space" = [
   "reports/weight-space/README.md",
   "reports/weight-space/checkpoint_trajectory.csv",
   "reports/weight-space/optimizer_geometry_phase.svg",
@@ -192,7 +191,7 @@ where = ["src"]
   "reports/weight-space/run_trajectory_summary.csv",
   "reports/weight-space/summary_manifest.json",
 ]
-"share/doc/embedding-optimizer-study/reports/training-dynamics" = [
+"share/embedding-optimizer-study/reports/training-dynamics" = [
   "reports/training-dynamics/optimizer_system_summary.csv",
   "reports/training-dynamics/plot_manifest.json",
   "reports/training-dynamics/run_summary.csv",
@@ -201,19 +200,40 @@ where = ["src"]
   "reports/training-dynamics/system_tradeoffs.svg",
   "reports/training-dynamics/training_loss_dynamics.svg",
 ]
-"share/doc/embedding-optimizer-study/reports/confirmatory-data" = [
+"share/embedding-optimizer-study/reports/dense-discovery" = [
+  "reports/dense-discovery/best_config_dynamics.csv",
+  "reports/dense-discovery/best_config_task_comparison.csv",
+  "reports/dense-discovery/checkpoint_summary.csv",
+  "reports/dense-discovery/coverage.json",
+  "reports/dense-discovery/evaluation_long.csv",
+  "reports/dense-discovery/optimizer_summary.csv",
+  "reports/dense-discovery/paired_comparison.csv",
+  "reports/dense-discovery/system_metrics.csv",
+  "reports/dense-discovery/system_summary.csv",
+  "reports/dense-discovery/training_history.csv",
+]
+"share/embedding-optimizer-study/reports/dense-discovery/figures" = [
+  "reports/dense-discovery/figures/dense-lr-sensitivity.png",
+  "reports/dense-discovery/figures/dense-training-dynamics-by-run.png",
+  "reports/dense-discovery/figures/dense-training-dynamics.png",
+]
+"share/embedding-optimizer-study/reports/retrieval-dynamics-dense" = [
+  "reports/retrieval-dynamics-dense/best_config_task_comparison.csv",
+  "reports/retrieval-dynamics-dense/best_config_task_delta_dynamics.csv",
+  "reports/retrieval-dynamics-dense/checkpoint_dynamics.csv",
+  "reports/retrieval-dynamics-dense/optimizer_first_passage.csv",
+  "reports/retrieval-dynamics-dense/quality_vs_useful_wall_time.svg",
+  "reports/retrieval-dynamics-dense/run_first_passage.csv",
+  "reports/retrieval-dynamics-dense/summary_manifest.json",
+  "reports/retrieval-dynamics-dense/task_delta_stability.csv",
+]
+"share/embedding-optimizer-study/reports/confirmatory-data" = [
   "reports/confirmatory-data/receipt.json",
 ]
-"share/doc/embedding-optimizer-study/reports/short-branch" = [
+"share/embedding-optimizer-study/reports/short-branch" = [
   "reports/short-branch/subset-receipt.json",
 ]
-"share/doc/embedding-optimizer-study/reports/local-global-reversal" = [
-  "reports/local-global-reversal/README.md",
-  "reports/local-global-reversal/acquisition_preservation_frontier.csv",
-  "reports/local-global-reversal/local_to_global_reversal.csv",
-  "reports/local-global-reversal/summary_manifest.json",
-]
-"share/doc/embedding-optimizer-study/reports/tail-stability" = [
+"share/embedding-optimizer-study/reports/tail-stability" = [
   "reports/tail-stability/README.md",
   "reports/tail-stability/discovery_anchor_tail.csv",
   "reports/tail-stability/discovery_cross_tail.csv",

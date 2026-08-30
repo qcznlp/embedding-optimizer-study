@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import shutil
@@ -8,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from embed_optim.paper_audit import (
+    BLOG_MARKERS,
     PAPER_RESULT_TABLE_PATHS,
     PAPER_SOURCE_TABLE_PATHS,
     _complete_manifest,
@@ -15,11 +17,15 @@ from embed_optim.paper_audit import (
     _macros,
     _paper_result_tables_complete,
     _paper_source_tables_complete,
+    _renderer_marker_blocks_complete,
+    _spectral_transplant_complete,
+    _tail_stability_complete,
     audit_paper,
     expected_constant_macros,
     load_paper_claim_protocol,
     main,
 )
+from embed_optim.scope import resolve_scope
 
 
 def test_macro_parser_rejects_duplicate_definition(tmp_path: Path):
@@ -32,22 +38,23 @@ def test_macro_parser_rejects_duplicate_definition(tmp_path: Path):
         _macros(path)
 
 
-def test_current_paper_constants_match_strict_sources():
-    result = audit_paper()
+@pytest.fixture
+def checked_in_dense_audit():
+    return audit_paper(
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
 
-    assert result["complete"] is False
-    assert result["pending_headlines"] == [
-        "CommonStateHeadline",
-        "ConfirmationHeadline",
-        "DiscoveryHeadline",
-        "InterventionHeadline",
-        "RepresentationHeadline",
-    ]
-    assert result["constant_macros"]["NumDiscoveryRuns"] == "24"
-    assert result["constant_macros"]["NumDiscoveryUnits"] == "1680"
-    assert result["constant_macros"]["NumWeightPairs"] == "40"
-    assert result["constant_macros"]["MuonFamilyThroughputRatioRange"] == "0.9348--0.9946"
-    assert result["constant_macros"]["MuonFamilyStateRatioRange"] == "0.6299--0.6420"
+
+def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_audit):
+    result = checked_in_dense_audit
+
+    assert isinstance(result["complete"], bool)
+    assert result["constant_macros"]["NumDiscoveryRuns"] == "12"
+    assert result["constant_macros"]["NumDiscoveryUnits"] == "840"
+    assert result["constant_macros"]["NumWeightPairs"] == "20"
+    assert result["constant_macros"]["MuonFamilyThroughputRatioRange"] == "0.9348--0.9489"
+    assert result["constant_macros"]["MuonFamilyStateRatioRange"] == "0.6299--0.6304"
     assert result["constant_sources"]["dataset_manifest"]["sha256"] == (
         "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8"
     )
@@ -62,8 +69,76 @@ def test_current_paper_constants_match_strict_sources():
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
-    assert result["paper_results"]["complete"] is False
-    assert result["document_language_problems"]
+    assert isinstance(result["paper_results"]["complete"], bool)
+    assert set(result["blog_marker_blocks"]) == set(BLOG_MARKERS)
+    assert result["document_language_problems"] == []
+
+
+@pytest.fixture
+def synthetic_pending_audit(monkeypatch):
+    parsed = _macros(Path("paper/results.tex"))
+    for name in (
+        "DiscoveryHeadline",
+        "CommonStateHeadline",
+        "RepresentationHeadline",
+        "InterventionHeadline",
+        "ConfirmationHeadline",
+    ):
+        parsed[name] = "\\ResultPending{synthetic pending fixture}"
+    monkeypatch.setattr("embed_optim.paper_audit._macros", lambda _path: parsed)
+    return audit_paper(
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+
+def test_synthetic_pending_checked_in_state_stays_incomplete(synthetic_pending_audit):
+    assert synthetic_pending_audit["complete"] is False
+    assert synthetic_pending_audit["pending_headlines"] == [
+        "CommonStateHeadline",
+        "ConfirmationHeadline",
+        "DiscoveryHeadline",
+        "InterventionHeadline",
+        "RepresentationHeadline",
+    ]
+
+
+@pytest.fixture
+def synthetic_future_final_audit(monkeypatch):
+    parsed = _macros(Path("paper/results.tex"))
+    for name in (
+        "DiscoveryHeadline",
+        "CommonStateHeadline",
+        "RepresentationHeadline",
+        "InterventionHeadline",
+        "ConfirmationHeadline",
+    ):
+        parsed[name] = "audited final result"
+    monkeypatch.setattr("embed_optim.paper_audit._macros", lambda _path: parsed)
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._complete_manifest", lambda *_args, **_kwargs: True
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._blog_marker_audit",
+        lambda *_args, **_kwargs: {name: {"complete": True} for name in BLOG_MARKERS},
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._final_document_language_problems",
+        lambda _root: [],
+    )
+    return audit_paper(
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+
+def test_synthetic_future_final_state_can_pass_every_completion_gate(
+    synthetic_future_final_audit,
+):
+    assert synthetic_future_final_audit["complete"] is True
+    assert synthetic_future_final_audit["pending_headlines"] == []
+    assert synthetic_future_final_audit["incomplete_evidence"] == []
+    assert synthetic_future_final_audit["incomplete_blog_marker_blocks"] == []
 
 
 def test_paper_claim_protocol_freezes_result_contingent_language_before_completion():
@@ -174,14 +249,28 @@ def test_paper_claim_protocol_freezes_result_contingent_language_before_completi
     assert len(sources) == 11
 
 
-def test_strict_paper_audit_rejects_pending_headlines():
+def test_strict_paper_audit_rejects_pending_headlines(synthetic_pending_audit):
+    assert synthetic_pending_audit["complete"] is False
     with pytest.raises(ValueError, match="Paper is not final"):
-        audit_paper(strict=True)
+        audit_paper(
+            strict=True,
+            families=("dense",),
+            scope_amendment="configs/dense_scope_amendment.json",
+        )
 
 
-def test_strict_paper_audit_cli_reports_pending_evidence(capsys):
+def test_strict_paper_audit_cli_reports_pending_evidence(capsys, synthetic_pending_audit):
+    assert synthetic_pending_audit["complete"] is False
     with pytest.raises(SystemExit, match="1"):
-        main(["--strict"])
+        main(
+            [
+                "--strict",
+                "--families",
+                "dense",
+                "--scope-amendment",
+                "configs/dense_scope_amendment.json",
+            ]
+        )
 
     result = json.loads(capsys.readouterr().out)
     assert result["complete"] is False
@@ -224,6 +313,63 @@ def test_paper_constants_use_distributable_receipt_without_local_500k_data(tmp_p
     assert constants["NumTrainingQueries"] == "500{,}000"
     assert constants["NumHardNegatives"] == "7"
     assert sources["dataset_manifest"]["local_byte_verification"] is False
+
+
+def test_dense_scope_constants_filter_only_after_full_source_audit():
+    constants, sources = expected_constant_macros(
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+    assert constants["NumDiscoveryRuns"] == "12"
+    assert constants["NumDiscoveryCheckpoints"] == "60"
+    assert constants["NumDiscoveryUnits"] == "840"
+    assert constants["NumWeightPairs"] == "20"
+    assert constants["MuonFamilyThroughputRatioRange"] == "0.9348--0.9489"
+    assert constants["MuonFamilyStateRatioRange"] == "0.6299--0.6304"
+    assert sources["scope_amendment"]["status"] == ("user_directed_post_hoc_scope_amendment")
+
+
+def test_dense_hybrid_manifest_requires_scope_and_exact_four_run_coverage(tmp_path: Path):
+    families, scope = resolve_scope(("dense",), "configs/dense_scope_amendment.json")
+    report = tmp_path / "reports" / "hybrid-adamw"
+    report.mkdir(parents=True)
+    table = report / "final_summary.csv"
+    table.write_text("header\nrow1\nrow2\nrow3\nrow4\n", encoding="utf-8")
+    record = {
+        "path": str(table),
+        "rows": 4,
+        "bytes": table.stat().st_size,
+        "sha256": hashlib.sha256(table.read_bytes()).hexdigest(),
+    }
+    path = report / "summary_manifest.json"
+    payload = {
+        "schema_version": 1,
+        "complete": True,
+        "families": ["dense"],
+        "scope_amendment": scope,
+        "evaluations": {
+            "native_five_stage_units": 280,
+            "native_final_units": 56,
+            "hybrid_final_units": 56,
+            "tasks": 14,
+        },
+        "outputs": {"final_summary": record},
+    }
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    assert _complete_manifest(
+        path,
+        families=families,
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+    payload["evaluations"]["hybrid_final_units"] = 55
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    assert not _complete_manifest(
+        path,
+        families=families,
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
 
 
 def test_strict_evidence_requires_boolean_complete(tmp_path: Path):
@@ -440,7 +586,7 @@ def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_p
     ]
 
 
-def test_paper_source_table_audit_requires_all_thirteen_tables_in_declared_order(
+def test_paper_source_table_audit_requires_all_seventeen_tables_in_declared_order(
     tmp_path: Path,
 ):
     records = []
@@ -456,7 +602,7 @@ def test_paper_source_table_audit_requires_all_thirteen_tables_in_declared_order
             }
         )
 
-    assert len(records) == 13
+    assert len(records) == 17
     assert _paper_source_tables_complete(tmp_path, records) is True
     assert _paper_source_tables_complete(tmp_path, records[:-1]) is False
     assert _paper_source_tables_complete(tmp_path, list(reversed(records))) is False
@@ -464,3 +610,254 @@ def test_paper_source_table_audit_requires_all_thirteen_tables_in_declared_order
     first = tmp_path / PAPER_SOURCE_TABLE_PATHS[0]
     first.write_text("changed\n", encoding="utf-8")
     assert _paper_source_tables_complete(tmp_path, records) is False
+
+
+def _hashed_record(path: Path, content: str = "source\n") -> dict[str, object]:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+    return {
+        "path": str(path),
+        "bytes": path.stat().st_size,
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+
+
+def _csv_record(
+    path: Path,
+    rows: list[dict[str, object]],
+) -> dict[str, object]:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    return {
+        "path": str(path),
+        "rows": len(rows),
+        "bytes": path.stat().st_size,
+        "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+    }
+
+
+def _generic_rows(count: int) -> list[dict[str, object]]:
+    return [{"row_id": index} for index in range(count)]
+
+
+def _marker_record(text: str, markers: tuple[str, str]) -> dict[str, object]:
+    start = text.index(markers[0])
+    stop = text.index(markers[1], start) + len(markers[1])
+    block = text[start:stop].encode()
+    return {
+        "begin_marker": markers[0],
+        "end_marker": markers[1],
+        "encoding": "utf-8",
+        "bytes": len(block),
+        "sha256": hashlib.sha256(block).hexdigest(),
+    }
+
+
+def test_renderer_marker_hashes_are_block_local_not_whole_blog(tmp_path: Path):
+    blog = tmp_path / "docs/blog.md"
+    blog.parent.mkdir(parents=True)
+    text = (
+        "editable introduction\n"
+        f"{BLOG_MARKERS['results'][0]}\nresult body\n{BLOG_MARKERS['results'][1]}\n"
+        f"{BLOG_MARKERS['systems'][0]}\nsystems body\n{BLOG_MARKERS['systems'][1]}\n"
+        "editable conclusion\n"
+    )
+    blog.write_text(text, encoding="utf-8")
+    record = {
+        "schema_version": 1,
+        "path": "docs/blog.md",
+        "blocks": {
+            name: _marker_record(text, BLOG_MARKERS[name]) for name in ("results", "systems")
+        },
+    }
+
+    assert _renderer_marker_blocks_complete(
+        tmp_path,
+        record,
+        {name: BLOG_MARKERS[name] for name in ("results", "systems")},
+    )
+    blog.write_text("new preface\n" + text, encoding="utf-8")
+    assert _renderer_marker_blocks_complete(
+        tmp_path,
+        record,
+        {name: BLOG_MARKERS[name] for name in ("results", "systems")},
+    )
+    blog.write_text(("new preface\n" + text).replace("result body", "tampered"), encoding="utf-8")
+    assert not _renderer_marker_blocks_complete(
+        tmp_path,
+        record,
+        {name: BLOG_MARKERS[name] for name in ("results", "systems")},
+    )
+
+
+def test_tail_stability_future_manifest_requires_every_hashed_source_and_row(
+    tmp_path: Path,
+):
+    report = tmp_path / "reports/tail-stability"
+    report.mkdir(parents=True)
+    scope = {"status": "test-dense-scope"}
+    expected_outputs = {
+        "discovery_anchor_tail": 30,
+        "discovery_family_contrasts": 2,
+        "discovery_cross_tail": 20,
+        "discovery_cross_tail_summary": 2,
+        "short_branch_checkpoint_tail": 45,
+        "short_branch_checkpoint_contrasts": 30,
+        "short_branch_final_summary": 2,
+    }
+    outputs = {}
+    for name, count in expected_outputs.items():
+        rows = _generic_rows(count)
+        if name in {"discovery_cross_tail_summary", "short_branch_final_summary"}:
+            rows = [
+                {"family": "dense", "challenger": challenger, "reference": "adamw"}
+                for challenger in ("muon", "normuon")
+            ]
+        outputs[name] = _csv_record(report / f"{name}.csv", rows)
+    outputs["readme"] = _hashed_record(report / "README.md", "audited tail report\n")
+
+    source_root = tmp_path / "tail-sources"
+    discovery_sources = []
+    for index in range(10):
+        discovery_sources.append(
+            {
+                "label": f"anchor-{index}",
+                "manifest": _hashed_record(source_root / f"discovery-{index}-manifest.json"),
+                "sample_metrics": _hashed_record(source_root / f"discovery-{index}-samples.jsonl"),
+            }
+        )
+    short_sources = [{"short_branch_summary": _hashed_record(source_root / "short-summary.json")}]
+    for index in range(45):
+        short_sources.append(
+            {
+                "label": f"validation-{index}",
+                "validation_manifest": _hashed_record(
+                    source_root / f"validation-{index}-manifest.json"
+                ),
+                "validation_samples": _hashed_record(
+                    source_root / f"validation-{index}-samples.jsonl"
+                ),
+            }
+        )
+    for index in range(45):
+        short_sources.append(
+            {
+                "label": f"unseen-{index}",
+                "unseen_metrics": _hashed_record(source_root / f"unseen-{index}.json"),
+            }
+        )
+    manifest = {
+        "schema_version": 1,
+        "status": "complete",
+        "complete": True,
+        "discovery_complete": True,
+        "short_branch_confirmation_complete": True,
+        "analysis_status": "post_hoc_discovery_with_prospective_short_branch_confirmation",
+        "families": ["dense"],
+        "scope_amendment": scope,
+        "protocol": _hashed_record(tmp_path / "configs/tail.json"),
+        "discovery_anchors": 10,
+        "discovery_anchor_operator_rows": 30,
+        "discovery_contrasts": 2,
+        "discovery_cross_tail_rows": 20,
+        "discovery_cross_tail_summaries": 2,
+        "short_branch_checkpoint_rows": 45,
+        "short_branch_contrast_rows": 30,
+        "short_branch_final_rows": 2,
+        "pending_reason": None,
+        "discovery_sources": discovery_sources,
+        "short_branch_sources": short_sources,
+        "outputs": outputs,
+        "claim_boundary": "post-hoc decomposition, not BEIR mediation",
+    }
+    path = report / "summary_manifest.json"
+
+    assert _tail_stability_complete(path, manifest, ("dense",), scope)
+    Path(discovery_sources[0]["sample_metrics"]["path"]).write_text("tampered\n", encoding="utf-8")
+    assert not _tail_stability_complete(path, manifest, ("dense",), scope)
+
+
+def test_spectral_transplant_future_manifest_requires_full_grid_and_source_hashes(
+    tmp_path: Path,
+):
+    report = tmp_path / "reports/spectral-transplant"
+    report.mkdir(parents=True)
+    scope = {"status": "test-dense-scope"}
+    output_counts = {
+        "anchor_condition_effects": 100,
+        "family_condition_summary": 60,
+        "anchor_factorial_effects": 60,
+        "family_factorial_summary": 6,
+        "anchor_spectral_path": 300,
+        "family_spectral_path": 30,
+        "anchor_band_effects": 180,
+        "family_band_summary": 18,
+        "anchor_query_tail_effects": 90,
+        "family_query_tail_summary": 9,
+    }
+    metrics = (
+        "contrastive_loss",
+        "positive_score",
+        "hardest_negative_score",
+        "positive_margin",
+        "reciprocal_rank",
+        "top1_accuracy",
+    )
+    conditions = (
+        "muon-native",
+        "adam-basis__spectrum-lambda-0.25",
+        "adam-basis__spectrum-lambda-0.50",
+        "adam-basis__spectrum-lambda-0.75",
+        "adam-basis__muon-spectrum",
+        "muon-basis__adam-spectrum",
+        "adam-basis__muon-head-spectrum",
+        "adam-basis__muon-middle-spectrum",
+        "adam-basis__muon-tail-spectrum",
+    )
+    outputs = {}
+    for name, count in output_counts.items():
+        rows = _generic_rows(count)
+        if name == "family_factorial_summary":
+            rows = [{"family": "dense", "metric": metric} for metric in metrics]
+        elif name == "family_query_tail_summary":
+            rows = [{"family": "dense", "condition": condition} for condition in conditions]
+        outputs[name] = _csv_record(report / f"{name}.csv", rows)
+
+    source_root = tmp_path / "spectral-sources"
+    sources = [
+        {
+            "label": f"anchor-{index}",
+            "manifest": _hashed_record(source_root / f"anchor-{index}-manifest.json"),
+            "sample_metrics": _hashed_record(source_root / f"anchor-{index}-samples.jsonl"),
+        }
+        for index in range(10)
+    ]
+    manifest = {
+        "schema_version": 1,
+        "status": "complete",
+        "complete": True,
+        "analysis_status": "post_hoc_explanatory_intervention",
+        "families": ["dense"],
+        "scope_amendment": scope,
+        "spectral_transplant_spec": _hashed_record(tmp_path / "configs/spectral.json"),
+        "common_state_spec": _hashed_record(tmp_path / "configs/common-state.json"),
+        "anchors": 10,
+        "anchor_effect_records": 100,
+        "anchor_tail_effect_records": 90,
+        "tail_protocol": {
+            "status": "frozen-before-spectral-transplant-output",
+            "tail_fraction": 0.05,
+            "tail_count": 12,
+        },
+        "sources": sources,
+        "outputs": outputs,
+        "claim_boundary": "fixed-state intervention, not retrieval mediation",
+    }
+    path = report / "summary_manifest.json"
+
+    assert _spectral_transplant_complete(path, manifest, ("dense",), scope)
+    outputs["family_query_tail_summary"]["rows"] = 8
+    assert not _spectral_transplant_complete(path, manifest, ("dense",), scope)

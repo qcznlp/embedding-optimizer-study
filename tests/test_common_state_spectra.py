@@ -200,6 +200,9 @@ def test_spectrum_matrix_mapping_and_worker_command_round_trip(tmp_path: Path):
     assert parsed.worker is True
     assert parsed.label == "dense/pretrained"
     assert parsed.output_dir == rebuilt[0].output_dir
+    defaults = parse_args([])
+    assert defaults.families == ["dense", "late"]
+    assert defaults.scope_amendment is None
 
 
 def test_spectrum_summary_writes_exact_long_form_matrix(tmp_path: Path, monkeypatch):
@@ -211,6 +214,7 @@ def test_spectrum_summary_writes_exact_long_form_matrix(tmp_path: Path, monkeypa
         "selection": {
             "expected_anchors": 20,
             "expected_spectra": 60,
+            "families": ["dense", "late"],
             "tensor_names": ["encoder.layers.0.weight"],
         },
         "freeze_context": {"fixture": True},
@@ -304,3 +308,50 @@ def test_spectrum_summary_writes_exact_long_form_matrix(tmp_path: Path, monkeypa
     assert manifest["singular_values"] == 120
     assert manifest["outputs"]["spectrum_metrics"]["rows"] == 60
     assert manifest["outputs"]["singular_values"]["rows"] == 120
+
+    dense_manifest = summarize_spectrum_matrix(
+        jobs[:10],
+        expected[:10],
+        result_root,
+        tmp_path / "dense-summary",
+        spectrum_spec=spectrum_spec,
+        common_state_spec=common_state_spec,
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+    assert dense_manifest["complete"] is True
+    assert dense_manifest["families"] == ["dense"]
+    assert dense_manifest["scope_amendment"]["status"] == ("user_directed_post_hoc_scope_amendment")
+    assert dense_manifest["expected_anchors"] == dense_manifest["valid_anchors"] == 10
+    assert dense_manifest["expected_spectra"] == dense_manifest["valid_spectra"] == 30
+    assert dense_manifest["outputs"]["singular_values"]["rows"] == 60
+
+
+def test_dense_spectrum_summary_requires_scope_amendment(tmp_path: Path, monkeypatch):
+    common_state_spec = tmp_path / "common.json"
+    spectrum_spec = tmp_path / "spectrum.json"
+    common_state_spec.write_text("common\n", encoding="utf-8")
+    spectrum_spec.write_text("spectrum\n", encoding="utf-8")
+    monkeypatch.setattr(
+        "embed_optim.common_state_spectra.load_spectrum_spec",
+        lambda spectrum_path, common_path: {
+            "selection": {
+                "expected_anchors": 20,
+                "expected_spectra": 360,
+                "families": ["dense", "late"],
+                "tensor_names": ["tensor"],
+            }
+        },
+    )
+
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        summarize_spectrum_matrix(
+            [],
+            [],
+            tmp_path / "results",
+            tmp_path / "summary",
+            spectrum_spec=spectrum_spec,
+            common_state_spec=common_state_spec,
+            families=("dense",),
+        )

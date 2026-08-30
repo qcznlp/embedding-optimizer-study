@@ -18,6 +18,7 @@ from .common_state_matrix import (
 from .config import RunConfig, load_matrix, resolve_matrix_path
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .geometry_summary import _atomic_csv
+from .scope import ALL_FAMILIES, resolve_scope
 from .update_geometry import ALGORITHMS
 
 MATRIX_FIELDS = (
@@ -360,25 +361,35 @@ def summarize_common_state(
     *,
     common_state_spec: Path,
     allow_partial: bool = False,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
     result_root = result_root.resolve()
     output_dir = output_dir.resolve()
     common_state_spec = common_state_spec.resolve()
     spec, anchor_protocol = _load_protocol(common_state_spec)
-    if len(expected) != int(anchor_protocol["expected_total_anchors"]):
+    families, scope = resolve_scope(families, scope_amendment)
+    expected_anchors = int(anchor_protocol["expected_anchors_per_family"]) * len(families)
+    if len(expected) != expected_anchors:
         raise ValueError(
-            f"Expected {anchor_protocol['expected_total_anchors']} anchors from the frozen protocol, "
+            f"Expected {expected_anchors} anchors for the requested family scope, "
             f"received {len(expected)}"
         )
+    if {item.job.family for item in expected} != set(families):
+        raise ValueError("Common-state identities do not match the requested family scope")
     labels = [item.job.label for item in expected]
     if len(labels) != len(set(labels)):
         raise ValueError("Duplicate common-state anchor labels")
     expected_manifests = {(item.job.update_dir / "manifest.json").resolve() for item in expected}
-    unexpected = {
-        path.resolve()
-        for path in result_root.rglob("manifest.json")
-        if path.parent.name == "updates"
-    }.difference(expected_manifests)
+    observed_manifests = set()
+    for path in result_root.rglob("manifest.json"):
+        if path.parent.name != "updates":
+            continue
+        relative = path.relative_to(result_root)
+        if relative.parts and relative.parts[0] in set(ALL_FAMILIES) - set(families):
+            continue
+        observed_manifests.add(path.resolve())
+    unexpected = observed_manifests.difference(expected_manifests)
     if unexpected:
         raise ValueError(f"Unexpected common-state update manifests: {sorted(unexpected)[:5]}")
 
@@ -627,6 +638,8 @@ def summarize_common_state(
         "schema_version": SCHEMA_VERSION,
         "complete": complete,
         "allow_partial": allow_partial,
+        "families": list(families),
+        "scope_amendment": scope,
         "expected_anchors": len(expected),
         "valid_anchors": len(inputs),
         "missing_labels": missing,
@@ -658,6 +671,10 @@ def summarize_common_state(
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Strictly aggregate common-state update geometry")
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--result-root", type=Path, default=Path("results/common-state"))
     parser.add_argument("--output-dir", type=Path, default=Path("reports/common-state"))
     parser.add_argument(
@@ -672,12 +689,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     matrix_path = resolve_matrix_path(args.matrix).resolve()
-    configs = load_matrix(matrix_path)
+    all_configs = load_matrix(matrix_path)
     common_state_spec = resolve_common_state_spec(args.common_state_spec).resolve()
     spec, anchor = _load_protocol(common_state_spec)
+    families, _ = resolve_scope(args.families, args.scope_amendment)
+    configs = [config for config in all_configs if config.model_family in families]
+    if {config.model_family for config in configs} != set(families):
+        raise ValueError("Training matrix does not cover every requested model family")
     by_family = {config.model_family: config for config in configs}
     references = {}
-    for family in anchor["expected_families"]:
+    for family in families:
         explicit = (
             args.dense_reference_checkpoint if family == "dense" else args.late_reference_checkpoint
         )
@@ -690,6 +711,8 @@ def main(argv: list[str] | None = None) -> None:
         args.output_dir,
         common_state_spec=common_state_spec,
         allow_partial=args.allow_partial,
+        families=families,
+        scope_amendment=args.scope_amendment,
     )
     print(
         f"Aggregated {manifest['valid_anchors']}/{manifest['expected_anchors']} common-state "

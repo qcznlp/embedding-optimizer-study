@@ -99,7 +99,7 @@ def test_confirmatory_summary_rejects_partial_coverage():
         summarize_confirmatory_scores(rows, [314159, 271828, 161803], bootstrap_samples=10)
 
 
-def test_dense_scope_uses_three_familywise_contrasts():
+def test_dense_scope_preserves_the_frozen_six_comparison_family():
     dense_rows = [row for row in _rows() if row["model_family"] == "dense"]
 
     seed_scores, contrasts, summaries = summarize_confirmatory_scores(
@@ -112,4 +112,4 @@ def test_dense_scope_uses_three_familywise_contrasts():
     assert len(seed_scores) == 9
     assert len(contrasts) == 126
     assert len(summaries) == 3
-    assert all(row["familywise_contrasts"] == 3 for row in summaries)
+    assert all(row["familywise_contrasts"] == 6 for row in summaries)

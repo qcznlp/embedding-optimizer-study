@@ -7,17 +7,20 @@ import csv
 import hashlib
 import json
 import math
+import os
 import random
 import re
 import statistics
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 from .collators import TEXT_COLUMNS
-from .config import MUON_NS_IMPLEMENTATION, RunConfig, load_matrix
+from .config import MUON_NS_IMPLEMENTATION, RunConfig, load_matrix, resolve_matrix_path
 from .data import SOURCE_REPO, SOURCE_REVISION, SPLITS
 from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
+from .scope import ALL_FAMILIES, resolve_scope, select_family_configs
 
 CHECKPOINT_PATTERN = re.compile(r"checkpoint-(\d+)")
 RESULTS_MARKERS = ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->")
@@ -1749,7 +1752,11 @@ def _optimizer_summaries(summary: list[dict]) -> tuple[list[dict], list[dict]]:
     return optimizer_rows, best_dynamics
 
 
-def _task_comparison(rows: list[dict], optimizer_rows: list[dict]) -> list[dict]:
+def _task_comparison(
+    rows: list[dict],
+    optimizer_rows: list[dict],
+    families: tuple[str, ...] = ALL_FAMILIES,
+) -> list[dict]:
     best_runs = {
         (row["model_family"], row["optimizer"]): row["best_run_id"] for row in optimizer_rows
     }
@@ -1758,7 +1765,7 @@ def _task_comparison(rows: list[dict], optimizer_rows: list[dict]) -> list[dict]
         for row in rows
     }
     output = []
-    for family in ("dense", "late"):
+    for family in families:
         for task in DECONTAMINATED_TASK_NAMES:
             values = {
                 optimizer: lookup[(family, best_runs[(family, optimizer)], 5, task)]
@@ -1789,14 +1796,17 @@ def _percentile(sorted_values: list[float], probability: float) -> float:
 
 
 def _paired_comparisons(
-    task_rows: list[dict], bootstrap_samples: int = 20_000, seed: int = 42
+    task_rows: list[dict],
+    bootstrap_samples: int = 20_000,
+    seed: int = 42,
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> list[dict]:
     """Summarize best-config task deltas with deterministic paired uncertainty."""
 
     if bootstrap_samples < 1:
         raise ValueError("bootstrap_samples must be positive")
     output = []
-    for family in ("dense", "late"):
+    for family in families:
         family_rows = [row for row in task_rows if row["model_family"] == family]
         if not family_rows:
             raise ValueError(f"No paired task rows for {family}")
@@ -1993,6 +2003,8 @@ def _render_results(
     best_dynamics: list[dict],
     task_rows: list[dict],
     paired_rows: list[dict],
+    families: tuple[str, ...] = ALL_FAMILIES,
+    figure_prefix: str = "../reports/figures",
 ) -> str:
     final_table = _markdown_table(
         [
@@ -2063,7 +2075,7 @@ def _render_results(
     )
 
     winners = []
-    for family in ("dense", "late"):
+    for family in families:
         candidates = [row for row in optimizer_rows if row["model_family"] == family]
         best_tuned = max(candidates, key=lambda row: row["best_final_ndcg_at_10"])
         robust = max(candidates, key=lambda row: row["final_mean_across_lrs"])
@@ -2095,7 +2107,7 @@ def _render_results(
         )
 
     per_task_sections = []
-    for family in ("dense", "late"):
+    for family in families:
         values = [row for row in task_rows if row["model_family"] == family]
         per_task_sections.append(f"#### {family.capitalize()} best-config task scores\n")
         per_task_sections.append(
@@ -2115,42 +2127,60 @@ def _render_results(
             )
         )
 
+    family_figures = "\n\n".join(
+        f"![{'Dense' if family == 'dense' else 'Late-interaction'} training dynamics]"
+        f"({figure_prefix}/{family}-training-dynamics.png)"
+        for family in families
+    )
+    per_run_figures = "\n\n".join(
+        f"![{'Dense' if family == 'dense' else 'Late-interaction'} per-run training dynamics]"
+        f"({figure_prefix}/{family}-training-dynamics-by-run.png)"
+        for family in families
+    )
+    sensitivity_figures = "\n\n".join(
+        f"![{'Dense' if family == 'dense' else 'Late-interaction'} learning-rate sensitivity]"
+        f"({figure_prefix}/{family}-lr-sensitivity.png)"
+        for family in families
+    )
+    evaluation_units = 12 * 5 * len(DECONTAMINATED_TASK_NAMES) * len(families)
+    holm_scope = (
+        "the family of four reported sign tests"
+        if families == ALL_FAMILIES
+        else "the original four-comparison discovery family"
+    )
     return "\n\n".join(
         [
-            "All 1,680 planned task/checkpoint evaluations completed. Scores below are the "
-            "unweighted mean nDCG@10 across the 14 tasks.",
+            f"All {evaluation_units:,} planned task/checkpoint evaluations completed. Scores below "
+            "are the unweighted mean nDCG@10 across the 14 tasks.",
             "### Final quality and learning-rate robustness\n\n" + final_table,
             "\n".join(winners),
-            "![Dense training dynamics](../reports/figures/dense-training-dynamics.png)\n\n"
-            "![Late-interaction training dynamics](../reports/figures/late-training-dynamics.png)",
+            family_figures,
             "### Five-checkpoint dynamics for every learning-rate run\n\n"
             "Each panel below shows all four LR configurations rather than an optimizer-level "
             "average; every curve contains the formal 20%, 40%, 60%, 80%, and 100% checkpoints.\n\n"
-            "![Dense per-run training dynamics]"
-            "(../reports/figures/dense-training-dynamics-by-run.png)\n\n"
-            "![Late-interaction per-run training dynamics]"
-            "(../reports/figures/late-training-dynamics-by-run.png)",
+            + per_run_figures,
             "### Dynamics of each optimizer's best final configuration\n\n" + dynamics_table,
             "### Paired best-config task effects\n\n" + paired_table,
-            "![Dense learning-rate sensitivity](../reports/figures/dense-lr-sensitivity.png)\n\n"
-            "![Late-interaction learning-rate sensitivity](../reports/figures/late-lr-sensitivity.png)",
+            sensitivity_figures,
             "### Per-task final scores for the best configuration of each optimizer",
             *per_task_sections,
             "The best-LR comparisons are selected on this same benchmark suite and should therefore "
             "be read as controlled exploratory results, not as an unbiased model-selection estimate. "
             "Paired intervals use 20,000 deterministic task-level bootstrap resamples; the sign-test "
-            "p-value is exact after excluding ties, and Holm p controls the family of four reported "
-            "sign tests. BEIR tasks are heterogeneous and not independent draws, so these are "
-            "descriptive uncertainty summaries rather than population inference. "
-            "The four-LR mean, spread, and complete per-task rows are included to expose sensitivity "
-            "rather than reporting only the winning point. Trajectory AUC is the normalized "
-            "trapezoidal mean nDCG@10 over the observed 20%–100% checkpoint window; it measures "
-            "early-to-late quality, not time before the first checkpoint.",
+            f"p-value is exact after excluding ties, and Holm p controls {holm_scope}. BEIR tasks "
+            "are heterogeneous and not "
+            "independent draws, so these are descriptive uncertainty summaries rather than "
+            "population inference. The four-LR mean, spread, and complete per-task rows are included "
+            "to expose sensitivity rather than reporting only the winning point. Trajectory AUC is "
+            "the normalized trapezoidal mean nDCG@10 over the observed 20%–100% checkpoint window; "
+            "it measures early-to-late quality, not time before the first checkpoint.",
         ]
     )
 
 
-def _render_systems(rows: list[dict]) -> str:
+def _render_systems(
+    rows: list[dict], system_metrics_path: str = "reports/system_metrics.csv"
+) -> str:
     table = _markdown_table(
         [
             "Family",
@@ -2188,8 +2218,7 @@ def _render_systems(rows: list[dict]) -> str:
         "utilization guard process is excluded. For checkpoint-resumed runs, throughput is recomputed "
         "from the sum of non-overlapping useful training segments rather than Trainer's resume-local "
         "runtime; the segment adjustment and original Trainer fields remain in the audit table. "
-        "Exact per-run measurements are in "
-        "`reports/system_metrics.csv`."
+        f"Exact per-run measurements are in `{system_metrics_path}`."
     )
 
 
@@ -2202,6 +2231,32 @@ def _replace_marked(text: str, markers: tuple[str, str], content: str) -> str:
     return f"{before}{begin}\n\n{content}\n\n{end}{after}"
 
 
+def _verified_marker_block(
+    path: Path,
+    markers: tuple[str, str],
+    content: str,
+) -> dict[str, str | int]:
+    """Re-read and fingerprint exactly one rendered marker block, not its document."""
+
+    text = path.read_text(encoding="utf-8")
+    begin, end = markers
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise ValueError(f"Expected exactly one written marker pair {markers}")
+    start = text.index(begin)
+    stop = text.index(end, start) + len(end)
+    observed = text[start:stop].encode("utf-8")
+    expected = f"{begin}\n\n{content}\n\n{end}".encode("utf-8")
+    if observed != expected:
+        raise ValueError(f"Written marker block differs after render: {markers}")
+    return {
+        "begin_marker": begin,
+        "end_marker": end,
+        "encoding": "utf-8",
+        "bytes": len(observed),
+        "sha256": hashlib.sha256(observed).hexdigest(),
+    }
+
+
 def render_blog(
     blog_path: Path,
     optimizer_rows: list[dict],
@@ -2209,21 +2264,48 @@ def render_blog(
     task_rows: list[dict],
     paired_rows: list[dict],
     system_rows: list[dict],
-) -> None:
-    text = blog_path.read_text()
+    families: tuple[str, ...] = ALL_FAMILIES,
+    figure_prefix: str = "../reports/figures",
+    system_metrics_path: str = "reports/system_metrics.csv",
+) -> dict[str, dict[str, str | int]]:
+    text = blog_path.read_text(encoding="utf-8")
+    results_content = _render_results(
+        optimizer_rows,
+        best_dynamics,
+        task_rows,
+        paired_rows,
+        families,
+        figure_prefix,
+    )
+    systems_content = _render_systems(system_rows, system_metrics_path)
     text = _replace_marked(
         text,
         RESULTS_MARKERS,
-        _render_results(optimizer_rows, best_dynamics, task_rows, paired_rows),
+        results_content,
     )
-    text = _replace_marked(text, SYSTEMS_MARKERS, _render_systems(system_rows))
-    text = text.replace(
-        "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
-        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
-        "1,680/1,680.",
-        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 checkpoint/task evaluations.",
+    text = _replace_marked(text, SYSTEMS_MARKERS, systems_content)
+    status_in_progress = (
+        "**Experiment status:** training matrix in progress. This document already records the frozen "
+        "protocol;\nthe results sections are populated only from strictly validated aggregation "
+        "artifacts after coverage reaches\n1,680/1,680."
     )
-    blog_path.write_text(text)
+    full_status = (
+        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
+        "checkpoint/task evaluations."
+    )
+    dense_status = (
+        "**Experiment status:** Dense discovery view complete — 12/12 training runs and "
+        "840/840 checkpoint/task evaluations, filtered from the strictly audited discovery source."
+    )
+    replacement = full_status if families == ALL_FAMILIES else dense_status
+    for candidate in (status_in_progress, full_status, dense_status):
+        if candidate != replacement:
+            text = text.replace(candidate, replacement)
+    blog_path.write_text(text, encoding="utf-8")
+    return {
+        "results": _verified_marker_block(blog_path, RESULTS_MARKERS, results_content),
+        "systems": _verified_marker_block(blog_path, SYSTEMS_MARKERS, systems_content),
+    }
 
 
 def _coverage(
@@ -2277,8 +2359,285 @@ def _coverage(
     }
 
 
+def _read_report_csv(path: Path) -> list[dict]:
+    """Read a frozen report table while restoring scalar CSV types."""
+
+    try:
+        with path.open(encoding="utf-8", newline="") as handle:
+            raw_rows = list(csv.DictReader(handle))
+    except OSError as error:
+        raise ValueError(f"Missing frozen discovery report: {path}") from error
+    rows = []
+    integer = re.compile(r"^-?\d+$")
+    for raw in raw_rows:
+        row = {}
+        for key, value in raw.items():
+            if value == "":
+                row[key] = None
+            elif value in {"True", "False"}:
+                row[key] = value == "True"
+            elif integer.fullmatch(value):
+                row[key] = int(value)
+            else:
+                try:
+                    row[key] = float(value)
+                except ValueError:
+                    row[key] = value
+        rows.append(row)
+    return rows
+
+
+def _strict_discovery_report_source(
+    report_root: Path, configs: list[RunConfig]
+) -> tuple[dict, list[dict], list[dict], list[dict], dict[str, dict]]:
+    """Validate the already-complete discovery report before making a scoped view."""
+
+    coverage_path = report_root / "coverage.json"
+    try:
+        coverage = json.loads(coverage_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(
+            "Dense discovery rendering requires the frozen full coverage report"
+        ) from error
+    required = {
+        "complete": True,
+        "contract_complete": True,
+        "dataset_complete": True,
+        "training_complete": True,
+        "evaluation_complete": True,
+        "verified_experiment_runs": 24,
+        "expected_experiment_runs": 24,
+        "verified_training_runs": 24,
+        "expected_training_runs": 24,
+        "verified_training_checkpoints": 120,
+        "expected_training_checkpoints": 120,
+        "observed_results": 1_680,
+        "expected_results": 1_680,
+        "observed_checkpoint_summaries": 120,
+        "expected_checkpoint_summaries": 120,
+        "missing": [],
+        "unexpected": [],
+    }
+    if any(coverage.get(key) != value for key, value in required.items()):
+        raise ValueError("Dense discovery rendering requires strict complete 1,680-unit coverage")
+
+    evaluation_path = report_root / "evaluation_long.csv"
+    system_path = report_root / "system_metrics.csv"
+    history_path = report_root / "training_history.csv"
+    rows = _read_report_csv(evaluation_path)
+    observed = {
+        (row.get("model_family"), row.get("run_id"), row.get("stage"), row.get("task"))
+        for row in rows
+    }
+    expected = {
+        (config.model_family, config.run_id, stage, task)
+        for config in configs
+        for stage in range(1, 6)
+        for task in DECONTAMINATED_TASK_NAMES
+    }
+    if len(rows) != 1_680 or observed != expected:
+        raise ValueError("Frozen discovery evaluation table has incomplete or duplicate identities")
+    if any(
+        not isinstance(row.get("ndcg_at_10"), (int, float))
+        or isinstance(row.get("ndcg_at_10"), bool)
+        or not math.isfinite(float(row["ndcg_at_10"]))
+        for row in rows
+    ):
+        raise ValueError("Frozen discovery evaluation table contains an invalid score")
+
+    system_rows = _read_report_csv(system_path)
+    identities = {(row.get("model_family"), row.get("run_id")) for row in system_rows}
+    expected_identities = {(config.model_family, config.run_id) for config in configs}
+    if len(system_rows) != 24 or identities != expected_identities:
+        raise ValueError("Frozen discovery system table does not cover all 24 runs")
+    history_rows = _read_report_csv(history_path)
+    if not history_rows or any(
+        (row.get("model_family"), row.get("run_id")) not in expected_identities
+        for row in history_rows
+    ):
+        raise ValueError("Frozen discovery training-history table has invalid run identities")
+
+    sources = {}
+    for label, path in {
+        "coverage": coverage_path,
+        "evaluation_long": evaluation_path,
+        "system_metrics": system_path,
+        "training_history": history_path,
+    }.items():
+        sources[label] = {
+            "path": str(path.resolve().relative_to(report_root.parent.resolve())),
+            "bytes": path.stat().st_size,
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+    return coverage, rows, system_rows, history_rows, sources
+
+
+def _aggregate_scoped_from_reports(
+    args: argparse.Namespace,
+    *,
+    families: tuple[str, ...],
+    scope: dict,
+    matrix_path: Path,
+    configs: list[RunConfig],
+) -> None:
+    """Create an isolated family view without rewriting the frozen full report."""
+
+    repository_root = matrix_path.parent.parent
+    source_coverage, all_rows, all_system_metrics, all_history, sources = (
+        _strict_discovery_report_source(repository_root / "reports", configs)
+    )
+    requested = set(families)
+    scoped_configs = select_family_configs(configs, families)
+    rows = [row for row in all_rows if row["model_family"] in requested]
+    summary = _checkpoint_summaries(rows)
+    optimizer_rows, best_dynamics = _optimizer_summaries(summary)
+    task_rows = _task_comparison(rows, optimizer_rows, families)
+    # Preserve the original four-comparison discovery correction, then filter.
+    all_summary = _checkpoint_summaries(all_rows)
+    all_optimizer_rows, _ = _optimizer_summaries(all_summary)
+    all_task_rows = _task_comparison(all_rows, all_optimizer_rows)
+    paired_rows = [
+        row for row in _paired_comparisons(all_task_rows) if row["model_family"] in requested
+    ]
+    system_metrics = [row for row in all_system_metrics if row["model_family"] in requested]
+    system_rows = _system_summaries(system_metrics)
+    history_rows = [row for row in all_history if row["model_family"] in requested]
+    expected_units = len(scoped_configs) * 5 * len(DECONTAMINATED_TASK_NAMES)
+    if (
+        len(rows) != expected_units
+        or len(summary) != len(scoped_configs) * 5
+        or len(optimizer_rows) != len(families) * len(EXPECTED_SWEEP)
+        or len(task_rows) != len(families) * len(DECONTAMINATED_TASK_NAMES)
+        or len(paired_rows) != len(families) * 2
+    ):
+        raise ValueError("Dense discovery report filtering produced incomplete derived tables")
+
+    coverage = {
+        **source_coverage,
+        "verified_experiment_runs": len(scoped_configs),
+        "expected_experiment_runs": len(scoped_configs),
+        "verified_training_runs": len(scoped_configs),
+        "expected_training_runs": len(scoped_configs),
+        "verified_training_checkpoints": len(scoped_configs) * 5,
+        "expected_training_checkpoints": len(scoped_configs) * 5,
+        "observed_results": len(rows),
+        "expected_results": expected_units,
+        "observed_checkpoint_summaries": len(summary),
+        "expected_checkpoint_summaries": len(scoped_configs) * 5,
+        "families": list(families),
+        "scope_amendment": scope,
+        "selected_experiment_runs": len(scoped_configs),
+        "selected_training_checkpoints": len(scoped_configs) * 5,
+        "outputs": None,
+        "blog_marker_blocks": None,
+        "source_full_discovery": {
+            "complete": True,
+            "verified_experiment_runs": source_coverage["verified_experiment_runs"],
+            "expected_experiment_runs": source_coverage["expected_experiment_runs"],
+            "verified_training_runs": source_coverage["verified_training_runs"],
+            "expected_training_runs": source_coverage["expected_training_runs"],
+            "verified_training_checkpoints": source_coverage["verified_training_checkpoints"],
+            "expected_training_checkpoints": source_coverage["expected_training_checkpoints"],
+            "observed_results": source_coverage["observed_results"],
+            "expected_results": source_coverage["expected_results"],
+            "observed_checkpoint_summaries": source_coverage["observed_checkpoint_summaries"],
+            "expected_checkpoint_summaries": source_coverage["expected_checkpoint_summaries"],
+            "reports": sources,
+        },
+    }
+    output = Path(args.output_dir) / "dense-discovery"
+    tables = {
+        "evaluation_long": rows,
+        "checkpoint_summary": summary,
+        "optimizer_summary": optimizer_rows,
+        "best_config_dynamics": best_dynamics,
+        "best_config_task_comparison": task_rows,
+        "paired_comparison": paired_rows,
+        "training_history": history_rows,
+        "system_metrics": system_metrics,
+        "system_summary": system_rows,
+    }
+    for name, table_rows in tables.items():
+        _write_csv(output / f"{name}.csv", table_rows)
+    _plot(summary, output)
+
+    def identity(path: Path, *, row_count: int | None = None) -> dict[str, Any]:
+        resolved = path.resolve()
+        try:
+            portable = str(resolved.relative_to(repository_root.resolve()))
+        except ValueError:
+            portable = str(resolved)
+        record: dict[str, Any] = {
+            "path": portable,
+            "bytes": resolved.stat().st_size,
+            "sha256": hashlib.sha256(resolved.read_bytes()).hexdigest(),
+        }
+        if row_count is not None:
+            record["rows"] = row_count
+        return record
+
+    coverage["outputs"] = {
+        **{
+            name: identity(output / f"{name}.csv", row_count=len(table_rows))
+            for name, table_rows in tables.items()
+        },
+        **{
+            f"{family}_{suffix.replace('-', '_')}": identity(
+                output / "figures" / f"{family}-{suffix}.png"
+            )
+            for family in families
+            for suffix in (
+                "training-dynamics",
+                "training-dynamics-by-run",
+                "lr-sensitivity",
+            )
+        },
+    }
+    if not args.no_render_blog:
+        blog_path = Path(args.blog).resolve()
+        figure_prefix = os.path.relpath((output / "figures").resolve(), blog_path.parent).replace(
+            os.sep, "/"
+        )
+        blocks = render_blog(
+            blog_path,
+            optimizer_rows,
+            best_dynamics,
+            task_rows,
+            paired_rows,
+            system_rows,
+            families,
+            figure_prefix,
+            str(output / "system_metrics.csv"),
+        )
+        try:
+            portable_blog = str(blog_path.relative_to(repository_root.resolve()))
+        except ValueError:
+            portable_blog = str(blog_path)
+        coverage["blog_marker_blocks"] = {
+            "schema_version": 1,
+            "path": portable_blog,
+            "blocks": blocks,
+        }
+    (output / "coverage.json").write_text(json.dumps(coverage, indent=2) + "\n", encoding="utf-8")
+    print(json.dumps({key: value for key, value in coverage.items() if key != "missing"}, indent=2))
+
+
 def aggregate(args: argparse.Namespace) -> None:
-    configs = load_matrix(args.matrix)
+    families, scope = resolve_scope(
+        getattr(args, "families", ALL_FAMILIES),
+        getattr(args, "scope_amendment", None),
+    )
+    matrix_path = resolve_matrix_path(args.matrix).resolve()
+    configs = load_matrix(matrix_path)
+    if families != ALL_FAMILIES:
+        _aggregate_scoped_from_reports(
+            args,
+            families=families,
+            scope=scope,
+            matrix_path=matrix_path,
+            configs=configs,
+        )
+        return
     rows = collect_evaluations(Path(args.results_root), configs)
     summary = _checkpoint_summaries(rows)
     optimizer_rows, best_dynamics = _optimizer_summaries(summary)
@@ -2326,6 +2685,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--results-root", default="results/decontaminated-beir")
     parser.add_argument("--output-dir", default="reports")
     parser.add_argument("--blog", default="docs/blog.md")
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--no-render-blog", action="store_true")
     parser.add_argument("--strict", action="store_true")
     return parser.parse_args(argv)

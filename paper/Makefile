@@ -16,7 +16,9 @@ all: headlines $(BUILD)/main.pdf
 vendor: $(STYLE_FILES)
 
 headlines:
-	$(PYTHON) -m embed_optim.paper_results --repo-root .. --if-ready
+	$(PYTHON) -m embed_optim.paper_results --repo-root .. --if-ready \
+		--families dense \
+		--scope-amendment ../configs/dense_scope_amendment.json
 
 $(VENDOR)/.ready:
 	mkdir -p $(VENDOR)

@@ -10,8 +10,6 @@ Every row compares a per-tensor Frobenius-matched `1e-3` virtual step with AdamW
 | --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
 | dense | muon | -3.034e-04 | +2.178e-03 | -4.445e-02 | -7.579e-02 | 10/10 | yes |
 | dense | normuon | -3.671e-04 | +2.344e-03 | -5.109e-02 | -9.361e-02 | 10/10 | yes |
-| late | muon | -3.976e-04 | +1.678e-04 | -1.025e-01 | -2.933e-01 | 10/10 | yes |
-| late | normuon | -4.527e-04 | +1.848e-04 | -1.139e-01 | -3.165e-01 | 10/10 | yes |
 
 The result is a mean–tail trade-off, not a claim that Muon has a better average local step. Muon-family directions produce smaller average margin gains while reducing severe per-query regressions. Because this pattern was found after inspecting the discovery intervention, it is explanatory rather than confirmatory.
 
@@ -23,10 +21,8 @@ This secondary diagnostic was added after its preliminary values were visible. I
 | --- | --- | ---: | ---: | ---: | ---: | --- |
 | dense | muon | -1.366e-01 | +2.032e-02 | 0.279 | 0.192 | tail redistribution |
 | dense | normuon | -1.402e-01 | +1.097e-02 | 0.270 | 0.192 | tail redistribution |
-| late | muon | -2.330e-01 | -1.779e-01 | 0.711 | 0.036 | shared-tail severity suppression |
-| late | normuon | -2.585e-01 | -2.022e-01 | 0.670 | 0.036 | shared-tail severity suppression |
 
-Late interaction shows a largely shared fragile-query set whose regression severity is reduced even when the challenger defines the tail. Dense retrieval shows much lower tail overlap and reverses sign on the challenger-selected set, which is evidence of tail redistribution rather than uniform query-wise dominance.
+Within DenseOn, low tail overlap and sign reversal on the challenger-selected set indicate tail redistribution rather than uniform query-wise dominance.
 
 ## Prospective shared-start confirmation
 

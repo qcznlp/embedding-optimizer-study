@@ -576,8 +576,8 @@ def discovery_anchor_tail_rows(
         verified_sources.append(
             {
                 "label": label,
-                "manifest": _identity(manifest_path),
-                "sample_metrics": _identity(sample_path),
+                "manifest": _identity(manifest_path, root),
+                "sample_metrics": _identity(sample_path, root),
             }
         )
     expected = int(protocol["discovery_diagnostic"]["anchors"]) * len(ALGORITHMS)
@@ -828,7 +828,7 @@ def _short_branch_tail_rows(
         )
 
     rows_by_identity: dict[tuple[str, int, str, int], dict[str, Any]] = {}
-    sources = [{"short_branch_summary": _identity(report_manifest_path)}]
+    sources = [{"short_branch_summary": _identity(report_manifest_path, root)}]
     for job in validation_jobs:
         if not validation_job_complete(job, validation_spec_path, verify_hashes=True):
             raise ValueError(f"Short-branch validation job failed audit: {job.label}")
@@ -875,8 +875,8 @@ def _short_branch_tail_rows(
         sources.append(
             {
                 "label": job.label,
-                "validation_manifest": _identity(manifest_path),
-                "validation_samples": _identity(sample_path),
+                "validation_manifest": _identity(manifest_path, root),
+                "validation_samples": _identity(sample_path, root),
             }
         )
 
@@ -917,7 +917,7 @@ def _short_branch_tail_rows(
         sources.append(
             {
                 "label": expected.job.label,
-                "unseen_metrics": _identity(expected.job.metrics),
+                "unseen_metrics": _identity(expected.job.metrics, root),
             }
         )
     rows = [rows_by_identity[key] for key in sorted(rows_by_identity)]
@@ -1201,7 +1201,7 @@ def build_tail_stability_report(
         "analysis_status": protocol["analysis_status"],
         "families": list(families),
         "scope_amendment": scope,
-        "protocol": _identity(protocol_path),
+        "protocol": _identity(protocol_path, protocol_path.parent.parent),
         "discovery_anchors": len(discovery_rows) // len(ALGORITHMS),
         "discovery_anchor_operator_rows": len(discovery_rows),
         "discovery_contrasts": len(discovery_contrasts),

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import statistics
@@ -19,9 +20,10 @@ from .aggregate import (
 from .config import RunConfig, load_matrix, resolve_matrix_path
 from .confirmatory_summary import _atomic_csv
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .scope import ALL_FAMILIES, resolve_scope, select_family_configs
 from .training_dynamics_plot import _atomic_figure
 
-FAMILIES = ("dense", "late")
+FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
 OPTIMIZER_LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
@@ -151,13 +153,14 @@ def summarize_retrieval_dynamics(
     run_rows: list[dict[str, Any]],
     *,
     configs: list[RunConfig] | None = None,
+    families: tuple[str, ...] = FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     indexed_runs: dict[tuple[str, str], dict[str, Any]] = {}
     for row in run_rows:
         identity = (str(row.get("model_family", "")), str(row.get("run_id", "")))
         optimizer = str(row.get("optimizer", ""))
         if (
-            identity[0] not in FAMILIES
+            identity[0] not in families
             or optimizer not in OPTIMIZERS
             or not identity[1]
             or identity in indexed_runs
@@ -166,8 +169,9 @@ def summarize_retrieval_dynamics(
         ):
             raise ValueError(f"Invalid or duplicate training-system row: {identity}")
         indexed_runs[identity] = row
-    if len(indexed_runs) != 24:
-        raise ValueError("Retrieval dynamics requires 24 unique training runs")
+    expected_runs = 12 * len(families)
+    if len(indexed_runs) != expected_runs:
+        raise ValueError(f"Retrieval dynamics requires {expected_runs} unique training runs")
     if configs is not None and set(indexed_runs) != _expected_identities(configs):
         raise ValueError("Retrieval dynamics training identities differ from the frozen matrix")
 
@@ -186,7 +190,7 @@ def summarize_retrieval_dynamics(
         identity = (family, run_id, stage)
         run_identity = (family, run_id)
         if (
-            family not in FAMILIES
+            family not in families
             or optimizer not in OPTIMIZERS
             or run_identity not in indexed_runs
             or optimizer != indexed_runs[run_identity].get("optimizer")
@@ -201,14 +205,16 @@ def summarize_retrieval_dynamics(
         indexed_checkpoints[identity] = row
         by_run[run_identity].append(row)
     if (
-        len(checkpoint_rows) != 120
+        len(checkpoint_rows) != expected_runs * 5
         or set(by_run) != set(indexed_runs)
         or any({int(row["stage"]) for row in rows} != {1, 2, 3, 4, 5} for rows in by_run.values())
     ):
-        raise ValueError("Retrieval dynamics requires 24 complete five-checkpoint trajectories")
+        raise ValueError(
+            f"Retrieval dynamics requires {expected_runs} complete five-checkpoint trajectories"
+        )
 
     targets = {}
-    for family in FAMILIES:
+    for family in families:
         values = [
             _finite(row, "mean_ndcg_at_10")
             for row in checkpoint_rows
@@ -273,7 +279,7 @@ def summarize_retrieval_dynamics(
     grouped: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for row in first_passage:
         grouped[(str(row["model_family"]), str(row["optimizer"]))].append(row)
-    expected_groups = {(family, optimizer) for family in FAMILIES for optimizer in OPTIMIZERS}
+    expected_groups = {(family, optimizer) for family in families for optimizer in OPTIMIZERS}
     if set(grouped) != expected_groups or any(len(rows) != 4 for rows in grouped.values()):
         raise ValueError("First-passage summary does not cover four sweep points per group")
     group_summary = []
@@ -334,7 +340,9 @@ def _finite_correlation(left: list[float], right: list[float]) -> float | None:
 
 
 def task_delta_dynamics(
-    evaluation_rows: list[dict[str, Any]], optimizer_rows: list[dict[str, Any]]
+    evaluation_rows: list[dict[str, Any]],
+    optimizer_rows: list[dict[str, Any]],
+    families: tuple[str, ...] = FAMILIES,
 ) -> list[dict[str, Any]]:
     """Collect post-hoc task deltas for final-score-selected runs at all checkpoints."""
 
@@ -342,15 +350,15 @@ def task_delta_dynamics(
         (str(row["model_family"]), str(row["optimizer"])): str(row["best_run_id"])
         for row in optimizer_rows
     }
-    expected_groups = {(family, optimizer) for family in FAMILIES for optimizer in OPTIMIZERS}
+    expected_groups = {(family, optimizer) for family in families for optimizer in OPTIMIZERS}
     if set(best_runs) != expected_groups:
-        raise ValueError("Task-delta dynamics requires all six optimizer-family best runs")
+        raise ValueError("Task-delta dynamics requires every optimizer-family best run in scope")
     lookup = {
         (str(row["model_family"]), str(row["run_id"]), int(row["stage"]), str(row["task"])): row
         for row in evaluation_rows
     }
     output = []
-    for family in FAMILIES:
+    for family in families:
         baseline_run = best_runs[(family, "adamw")]
         for optimizer in ("muon", "normuon"):
             treatment_run = best_runs[(family, optimizer)]
@@ -382,7 +390,7 @@ def task_delta_dynamics(
                             "delta": treatment_score - baseline_score,
                         }
                     )
-    expected_rows = len(FAMILIES) * 2 * 5 * len(DECONTAMINATED_TASK_NAMES)
+    expected_rows = len(families) * 2 * 5 * len(DECONTAMINATED_TASK_NAMES)
     if len(output) != expected_rows:
         raise ValueError("Task-delta dynamics has incomplete best-run checkpoint coverage")
     return output
@@ -390,6 +398,7 @@ def task_delta_dynamics(
 
 def summarize_task_delta_stability(
     delta_rows: list[dict[str, Any]],
+    families: tuple[str, ...] = FAMILIES,
 ) -> list[dict[str, Any]]:
     """Summarize adjacent-checkpoint persistence of post-hoc per-task effects."""
 
@@ -402,7 +411,7 @@ def summarize_task_delta_stability(
         grouped[identity][task] = _finite(row, "delta")
 
     output = []
-    for family in FAMILIES:
+    for family in families:
         for optimizer in ("muon", "normuon"):
             for first_stage in range(1, 5):
                 second_stage = first_stage + 1
@@ -443,12 +452,14 @@ def summarize_task_delta_stability(
                         ),
                     }
                 )
-    if len(output) != len(FAMILIES) * 2 * 4:
+    if len(output) != len(families) * 2 * 4:
         raise ValueError("Task-delta stability summary has incomplete adjacent-stage coverage")
     return output
 
 
-def _task_stability_markdown(rows: list[dict[str, Any]]) -> str:
+def _task_stability_markdown(
+    rows: list[dict[str, Any]], families: tuple[str, ...] = FAMILIES
+) -> str:
     lines = [
         "### Exploratory task-effect stability across checkpoints",
         "",
@@ -469,41 +480,79 @@ def _task_stability_markdown(rows: list[dict[str, Any]]) -> str:
             f"{row['same_direction_tasks']}/{row['tasks']} | "
             f"{pearson_text} | {spearman_text} |"
         )
-    lines.extend(
-        [
-            "",
+    if families == FAMILIES:
+        interpretation = (
             "This post-hoc diagnostic applies each optimizer's final-score-selected learning-rate "
             "run at every checkpoint and correlates its 14 paired task deltas against AdamW across "
             "adjacent stages. It was added after heterogeneous LateOn task directions became "
             "visible. It does not alter run selection, the primary aggregate, or the frozen "
-            "confirmatory family, and it carries no causal interpretation.",
-        ]
-    )
+            "confirmatory family, and it carries no causal interpretation."
+        )
+    else:
+        interpretation = (
+            "This DenseOn-only post-hoc diagnostic applies each optimizer's final-score-selected "
+            "learning-rate run at every checkpoint and correlates its 14 paired task deltas against "
+            "AdamW across adjacent stages. It is a filtered exploratory view of the already audited "
+            "discovery matrix. It does not alter run selection, the primary aggregate, or the frozen "
+            "Dense confirmatory family, and it carries no causal interpretation."
+        )
+    lines.extend(["", interpretation])
     return "\n".join(lines)
 
 
-def render_task_stability_blog(path: Path, rows: list[dict[str, Any]]) -> None:
+def render_task_stability_blog(
+    path: Path,
+    rows: list[dict[str, Any]],
+    families: tuple[str, ...] = FAMILIES,
+) -> dict[str, str | int]:
     text = path.read_text(encoding="utf-8")
     begin, end = TASK_STABILITY_MARKERS
     if text.count(begin) != 1 or text.count(end) != 1:
         raise ValueError("Blog requires exactly one task-delta stability marker pair")
     before, remainder = text.split(begin)
     _old, after = remainder.split(end)
-    rendered = f"{before}{begin}\n\n{_task_stability_markdown(rows)}\n\n{end}{after}"
+    content = _task_stability_markdown(rows, families)
+    rendered = f"{before}{begin}\n\n{content}\n\n{end}{after}"
     temporary = path.with_name(f".{path.name}.tmp")
     temporary.write_text(rendered, encoding="utf-8")
     temporary.replace(path)
+    written = path.read_text(encoding="utf-8")
+    if written.count(begin) != 1 or written.count(end) != 1:
+        raise ValueError("Written blog has an invalid task-delta stability marker pair")
+    start = written.index(begin)
+    stop = written.index(end, start) + len(end)
+    observed = written[start:stop].encode("utf-8")
+    expected = f"{begin}\n\n{content}\n\n{end}".encode("utf-8")
+    if observed != expected:
+        raise ValueError("Written task-delta stability marker block differs after render")
+    return {
+        "begin_marker": begin,
+        "end_marker": end,
+        "encoding": "utf-8",
+        "bytes": len(observed),
+        "sha256": hashlib.sha256(observed).hexdigest(),
+    }
 
 
-def _quality_figure(rows: list[dict[str, Any]], path: Path) -> dict[str, Any]:
+def _quality_figure(
+    rows: list[dict[str, Any]],
+    path: Path,
+    families: tuple[str, ...] = FAMILIES,
+) -> dict[str, Any]:
     import matplotlib
 
     matplotlib.use("Agg")
     matplotlib.rcParams["svg.hashsalt"] = "embedding-optimizer-retrieval-wall-time-v1"
     import matplotlib.pyplot as plt
 
-    figure, axes = plt.subplots(2, 3, figsize=(12.5, 7.0), sharey="row")
-    for row_index, family in enumerate(FAMILIES):
+    figure, axes = plt.subplots(
+        len(families),
+        len(OPTIMIZERS),
+        figsize=(12.5, 7.0 if len(families) == 2 else 3.8),
+        sharey="row",
+        squeeze=False,
+    )
+    for row_index, family in enumerate(families):
         for column_index, optimizer in enumerate(OPTIMIZERS):
             axis = axes[row_index][column_index]
             subset = [
@@ -533,7 +582,7 @@ def _quality_figure(rows: list[dict[str, Any]], path: Path) -> dict[str, Any]:
             axis.axhline(target, color="#B22222", linestyle="--", linewidth=1.2, alpha=0.75)
             axis.set_title(f"{FAMILY_LABELS[family]} — {OPTIMIZER_LABELS[optimizer]}")
             axis.grid(alpha=0.22)
-            if row_index == 1:
+            if row_index == len(families) - 1:
                 axis.set_xlabel("Estimated useful wall time (hours)")
             if column_index == 0:
                 axis.set_ylabel("Mean decontaminated BEIR nDCG@10")
@@ -548,6 +597,235 @@ def _quality_figure(rows: list[dict[str, Any]], path: Path) -> dict[str, Any]:
     return record
 
 
+def _read_frozen_csv(path: Path) -> list[dict[str, Any]]:
+    try:
+        with path.open(encoding="utf-8", newline="") as handle:
+            raw_rows = list(csv.DictReader(handle))
+    except OSError as error:
+        raise ValueError(f"Missing frozen retrieval-dynamics table: {path}") from error
+    rows: list[dict[str, Any]] = []
+    for raw in raw_rows:
+        row: dict[str, Any] = {}
+        for key, value in raw.items():
+            if value == "":
+                row[key] = None
+            elif value in {"True", "False"}:
+                row[key] = value == "True"
+            else:
+                try:
+                    row[key] = int(value)
+                except ValueError:
+                    try:
+                        row[key] = float(value)
+                    except ValueError:
+                        row[key] = value
+        rows.append(row)
+    return rows
+
+
+def _manifest_path(record: dict[str, Any], repository_root: Path) -> Path:
+    declared = Path(str(record.get("path", "")))
+    return declared.resolve() if declared.is_absolute() else (repository_root / declared).resolve()
+
+
+def _validate_manifest_file(
+    record: dict[str, Any],
+    repository_root: Path,
+    *,
+    expected_rows: int | None = None,
+) -> Path:
+    path = _manifest_path(record, repository_root)
+    if (
+        not path.is_file()
+        or path.stat().st_size != record.get("bytes")
+        or _sha256(path) != record.get("sha256")
+        or (expected_rows is not None and record.get("rows") != expected_rows)
+    ):
+        raise ValueError(f"Frozen retrieval-dynamics source differs: {path}")
+    return path
+
+
+def _strict_full_retrieval_report(
+    repository_root: Path,
+) -> tuple[Path, dict[str, Any], dict[str, list[dict[str, Any]]]]:
+    """Validate the complete historical report without reinterpreting its runtime lock."""
+
+    manifest_path = repository_root / "reports/retrieval-dynamics/summary_manifest.json"
+    manifest = _json(manifest_path)
+    expected_coverage = {
+        "runs": 24,
+        "checkpoints": 120,
+        "tasks": len(DECONTAMINATED_TASK_NAMES),
+        "evaluation_units": 1_680,
+        "optimizer_family_groups": 6,
+        "best_config_task_delta_rows": 280,
+        "adjacent_stage_task_stability_rows": 16,
+    }
+    if (
+        manifest.get("schema_version") != SCHEMA_VERSION
+        or manifest.get("complete") is not True
+        or manifest.get("coverage") != expected_coverage
+    ):
+        raise ValueError("Dense retrieval dynamics requires the complete historical report")
+
+    expected_outputs = {
+        "checkpoint_dynamics": 120,
+        "run_first_passage": 24,
+        "optimizer_first_passage": 6,
+        "best_config_task_comparison": 28,
+        "best_config_task_delta_dynamics": 280,
+        "task_delta_stability": 16,
+    }
+    output_records = manifest.get("outputs", {})
+    if set(output_records) != {*expected_outputs, "quality_vs_useful_wall_time"}:
+        raise ValueError("Frozen retrieval-dynamics output ledger is incomplete")
+    tables = {}
+    for label, row_count in expected_outputs.items():
+        table_path = _validate_manifest_file(
+            output_records[label], repository_root, expected_rows=row_count
+        )
+        rows = _read_frozen_csv(table_path)
+        if len(rows) != row_count or {row.get("model_family") for row in rows} != set(FAMILIES):
+            raise ValueError(f"Frozen retrieval-dynamics table has invalid coverage: {label}")
+        tables[label] = rows
+    _validate_manifest_file(output_records["quality_vs_useful_wall_time"], repository_root)
+
+    sources = manifest.get("sources", {})
+    expected_source_keys = {
+        "frozen_protocol",
+        "matrix",
+        "strict_coverage",
+        "training_summary",
+        "training_run_table",
+        "evaluation_results",
+    }
+    if not isinstance(sources, dict) or set(sources) != expected_source_keys:
+        raise ValueError("Frozen retrieval-dynamics source ledger is incomplete")
+    for label in expected_source_keys - {"evaluation_results"}:
+        _validate_manifest_file(sources[label], repository_root)
+    result_records = sources["evaluation_results"]
+    if not isinstance(result_records, list) or len(result_records) != 1_680:
+        raise ValueError("Frozen retrieval-dynamics evaluation ledger is incomplete")
+    result_paths = [record.get("path") for record in result_records if isinstance(record, dict)]
+    if (
+        len(result_paths) != 1_680
+        or len(set(result_paths)) != 1_680
+        or any(
+            set(record) != {"path", "bytes", "sha256"}
+            or not isinstance(record["path"], str)
+            or not isinstance(record["bytes"], int)
+            or isinstance(record["bytes"], bool)
+            or record["bytes"] <= 0
+            or not isinstance(record["sha256"], str)
+            or len(record["sha256"]) != 64
+            for record in result_records
+        )
+    ):
+        raise ValueError("Frozen retrieval-dynamics evaluation ledger has invalid identities")
+    return manifest_path, manifest, tables
+
+
+def _build_scoped_retrieval_from_report(
+    *,
+    repository_root: Path,
+    coverage_file: Path,
+    output_dir: str | Path,
+    blog_path: str | Path | None,
+    families: tuple[str, ...],
+    scope: dict[str, Any],
+) -> dict[str, Any]:
+    """Filter the immutable complete report into a separately bound Dense artifact."""
+
+    source_manifest_path, source_manifest, tables = _strict_full_retrieval_report(repository_root)
+    requested = set(families)
+    selected = {
+        label: [row for row in rows if row["model_family"] in requested]
+        for label, rows in tables.items()
+    }
+    expected_rows = {
+        "checkpoint_dynamics": 60 * len(families),
+        "run_first_passage": 12 * len(families),
+        "optimizer_first_passage": 3 * len(families),
+        "best_config_task_comparison": 14 * len(families),
+        "best_config_task_delta_dynamics": 140 * len(families),
+        "task_delta_stability": 8 * len(families),
+    }
+    if any(len(selected[label]) != count for label, count in expected_rows.items()):
+        raise ValueError("Scoped retrieval-dynamics filtering produced incomplete tables")
+
+    output = Path(output_dir).resolve()
+    canonical_output = (repository_root / "reports/retrieval-dynamics").resolve()
+    if output == canonical_output:
+        output = canonical_output.with_name("retrieval-dynamics-dense")
+    outputs = {
+        label: _atomic_csv(output / f"{label}.csv", selected[label]) for label in expected_rows
+    }
+    outputs["quality_vs_useful_wall_time"] = _quality_figure(
+        selected["checkpoint_dynamics"],
+        output / "quality_vs_useful_wall_time.svg",
+        families,
+    )
+    for record in outputs.values():
+        record["path"] = _portable_path(Path(record["path"]), repository_root)
+
+    interpretation = (
+        "The four learning rates are sweep points rather than random seeds. This DenseOn-only view "
+        "was filtered from the strictly complete 24-run, 1,680-unit discovery report after the "
+        "user-directed scope amendment; it does not require or impute a new historical evaluation. "
+        "First passage and adjacent-checkpoint task stability remain exploratory and do not replace "
+        "the frozen three-seed Dense confirmatory comparison or carry a causal interpretation."
+    )
+    manifest = {
+        "schema_version": SCHEMA_VERSION,
+        "complete": True,
+        "families": list(families),
+        "scope_amendment": scope,
+        "coverage": {
+            "runs": expected_rows["run_first_passage"],
+            "checkpoints": expected_rows["checkpoint_dynamics"],
+            "tasks": len(DECONTAMINATED_TASK_NAMES),
+            "evaluation_units": 840 * len(families),
+            "optimizer_family_groups": expected_rows["optimizer_first_passage"],
+            "best_config_task_delta_rows": expected_rows["best_config_task_delta_dynamics"],
+            "adjacent_stage_task_stability_rows": expected_rows["task_delta_stability"],
+        },
+        "target_definition": source_manifest["target_definition"],
+        "wall_time_definition": source_manifest["wall_time_definition"],
+        "sources": {
+            "full_retrieval_dynamics": {
+                "path": _portable_path(source_manifest_path, repository_root),
+                "bytes": source_manifest_path.stat().st_size,
+                "sha256": _sha256(source_manifest_path),
+            },
+            "strict_coverage": {
+                "path": _portable_path(coverage_file, repository_root),
+                "bytes": coverage_file.stat().st_size,
+                "sha256": _sha256(coverage_file),
+                "observed_results": 1_680,
+            },
+        },
+        "source_full_discovery": {
+            "complete": True,
+            **source_manifest["coverage"],
+        },
+        "outputs": outputs,
+        "interpretation": interpretation,
+        "blog_marker_blocks": None,
+    }
+    if blog_path is not None:
+        resolved_blog = Path(blog_path).resolve()
+        block = render_task_stability_blog(
+            resolved_blog, selected["task_delta_stability"], families
+        )
+        manifest["blog_marker_blocks"] = {
+            "schema_version": 1,
+            "path": _portable_path(resolved_blog, repository_root),
+            "blocks": {"task_delta_stability": block},
+        }
+    _atomic_json(output / "summary_manifest.json", manifest)
+    return manifest
+
+
 def build_retrieval_dynamics(
     matrix: str | Path = "configs/experiment.yaml",
     results_root: str | Path = "results/decontaminated-beir",
@@ -556,7 +834,11 @@ def build_retrieval_dynamics(
     output_dir: str | Path = "reports/retrieval-dynamics",
     protocol_path: str | Path = "configs/retrieval_dynamics_protocol.json",
     blog_path: str | Path | None = None,
+    *,
+    families: tuple[str, ...] = FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
+    families, scope = resolve_scope(families, scope_amendment)
     matrix_path = resolve_matrix_path(matrix).resolve()
     repository_root = matrix_path.parent.parent
     frozen_protocol_path, protocol = load_retrieval_dynamics_protocol(protocol_path)
@@ -569,8 +851,18 @@ def build_retrieval_dynamics(
     configs = load_matrix(matrix_path)
     if len(configs) != 24:
         raise ValueError("Retrieval dynamics requires the frozen 24-run discovery matrix")
+    select_family_configs(configs, families)
     coverage_file = Path(coverage_path).resolve()
     coverage = _strict_coverage(coverage_file)
+    if families != FAMILIES:
+        return _build_scoped_retrieval_from_report(
+            repository_root=repository_root,
+            coverage_file=coverage_file,
+            output_dir=output_dir,
+            blog_path=blog_path,
+            families=families,
+            scope=scope,
+        )
     evaluation_rows = collect_evaluations(Path(results_root), configs)
     if len(evaluation_rows) != 1_680:
         raise ValueError("Retrieval dynamics requires exactly 1,680 provenance-valid results")
@@ -708,6 +1000,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--protocol", type=Path, default=Path("configs/retrieval_dynamics_protocol.json")
     )
     parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     return parser.parse_args(argv)
 
 
@@ -721,6 +1017,8 @@ def main(argv: list[str] | None = None) -> None:
         args.output_dir,
         args.protocol,
         args.blog,
+        families=tuple(args.families),
+        scope_amendment=args.scope_amendment,
     )
     print(json.dumps(manifest, indent=2, sort_keys=True))
 

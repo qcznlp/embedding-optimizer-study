@@ -108,7 +108,10 @@ def summarize_confirmatory_scores(
     families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     families = normalize_families(families)
-    familywise_contrasts = len(families) * len(CONTRASTS)
+    # The prospective claim protocol froze one six-comparison family before the
+    # post-hoc Dense-only scope amendment. Filtering which rows are displayed must
+    # not make the interval less conservative.
+    familywise_contrasts = FAMILYWISE_CONTRASTS
     tasks = list(DECONTAMINATED_TASK_NAMES)
     expected = {
         (seed, family, optimizer, task)
@@ -312,9 +315,10 @@ def build_confirmatory_report(
             "bootstrap_seed": bootstrap_seed,
             "nominal_interval": "hierarchical seed-by-task bootstrap 95% interval",
             "familywise_method": "bonferroni",
-            "familywise_contrasts": len(families) * len(CONTRASTS),
+            "familywise_contrasts": FAMILYWISE_CONTRASTS,
             "familywise_interval": (
-                "simultaneous familywise 95% interval over all active family-by-optimizer contrasts"
+                "simultaneous familywise 95% interval over all six contrasts frozen before the "
+                "post-hoc Dense-only scope amendment"
             ),
             "headline_interval": "familywise_ci_95",
             "query_level_inference": False,

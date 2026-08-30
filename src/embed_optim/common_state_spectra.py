@@ -23,9 +23,10 @@ from .common_state_matrix import (
     resolve_common_state_spec,
 )
 from .common_state_summary import ExpectedCommonStateMetric, expected_common_state_metrics
-from .config import load_matrix, resolve_matrix_path
+from .config import ModelFamily, load_matrix, resolve_matrix_path
 from .geometry import SCHEMA_VERSION, _atomic_json, _atomic_jsonl, _sha256
 from .geometry_summary import _atomic_csv
+from .scope import ALL_FAMILIES, resolve_scope
 from .update_geometry import ALGORITHMS
 
 
@@ -517,18 +518,31 @@ def summarize_spectrum_matrix(
     spectrum_spec: Path,
     common_state_spec: Path,
     allow_partial: bool = False,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
     result_root = result_root.resolve()
     output_dir = output_dir.resolve()
     spectrum_spec = spectrum_spec.resolve()
     common_state_spec = common_state_spec.resolve()
     protocol = load_spectrum_spec(spectrum_spec, common_state_spec)
-    expected_anchors = int(protocol["selection"]["expected_anchors"])
+    families, scope = resolve_scope(families, scope_amendment)
+    declared_families = tuple(protocol["selection"]["families"])
+    if declared_families != ALL_FAMILIES:
+        raise ValueError("Frozen spectrum protocol no longer covers the original two-family scope")
+    expected_per_family, remainder = divmod(
+        int(protocol["selection"]["expected_anchors"]), len(declared_families)
+    )
+    if remainder:
+        raise ValueError("Frozen spectrum anchor count is not divisible by its family count")
+    expected_anchors = expected_per_family * len(families)
     if len(jobs) != expected_anchors or len(expected) != expected_anchors:
         raise ValueError(
             f"Frozen spectrum summary requires {expected_anchors} anchors, "
             f"received {len(jobs)} jobs and {len(expected)} identities"
         )
+    if {job.common_state.family for job in jobs} != set(families):
+        raise ValueError("Spectrum jobs do not match the requested family scope")
     identity_by_label = {item.job.label: item for item in expected}
     if len(identity_by_label) != expected_anchors:
         raise ValueError("Duplicate or missing common-state spectrum identities")
@@ -536,9 +550,13 @@ def summarize_spectrum_matrix(
     if job_labels != set(identity_by_label):
         raise ValueError("Spectrum jobs and common-state identities differ")
     expected_paths = {(job.output_dir / "spectra.jsonl").resolve() for job in jobs}
-    unexpected = {path.resolve() for path in result_root.rglob("spectra.jsonl")}.difference(
-        expected_paths
-    )
+    observed_paths = set()
+    for path in result_root.rglob("spectra.jsonl"):
+        relative = path.relative_to(result_root)
+        if relative.parts and relative.parts[0] in set(ALL_FAMILIES) - set(families):
+            continue
+        observed_paths.add(path.resolve())
+    unexpected = observed_paths.difference(expected_paths)
     if unexpected:
         raise ValueError(f"Unexpected common-state spectrum files: {sorted(unexpected)[:5]}")
 
@@ -656,13 +674,18 @@ def summarize_spectrum_matrix(
         ],
     )
     complete = not missing and len(inputs) == expected_anchors
+    expected_spectra = (
+        expected_anchors * len(protocol["selection"]["tensor_names"]) * len(ALGORITHMS)
+    )
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": complete,
         "allow_partial": allow_partial,
+        "families": list(families),
+        "scope_amendment": scope,
         "expected_anchors": expected_anchors,
         "valid_anchors": len(inputs),
-        "expected_spectra": protocol["selection"]["expected_spectra"],
+        "expected_spectra": expected_spectra,
         "valid_spectra": len(metric_rows),
         "singular_values": len(value_rows),
         "missing_labels": missing,
@@ -844,6 +867,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Compute a frozen exact-spectrum tier over common-state update directions"
     )
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--common-state-root", type=Path, default=Path("results/common-state"))
     parser.add_argument(
         "--common-state-spec", type=Path, default=Path("configs/common_state_probe.json")
@@ -887,7 +914,7 @@ def main(argv: list[str] | None = None) -> None:
     args.common_state_spec = resolve_common_state_spec(args.common_state_spec).resolve()
     args.spectrum_spec = resolve_spectrum_spec(args.spectrum_spec).resolve()
     common_protocol, anchor = _load_protocol(args.common_state_spec)
-    spectrum_protocol = load_spectrum_spec(args.spectrum_spec, args.common_state_spec)
+    load_spectrum_spec(args.spectrum_spec, args.common_state_spec)
     if args.worker:
         required = (
             args.family,
@@ -919,11 +946,15 @@ def main(argv: list[str] | None = None) -> None:
         )
         return
 
+    families, _ = resolve_scope(args.families, args.scope_amendment)
     matrix_path = resolve_matrix_path(args.matrix).resolve()
-    configs = load_matrix(matrix_path)
+    all_configs = load_matrix(matrix_path)
+    configs = [config for config in all_configs if config.model_family in families]
+    if {config.model_family for config in configs} != set(families):
+        raise ValueError("Training matrix does not cover every requested model family")
     by_family = {config.model_family: config for config in configs}
-    references = {}
-    for family in spectrum_protocol["selection"]["families"]:
+    references: dict[ModelFamily, Path] = {}
+    for family in families:
         explicit = (
             args.dense_reference_checkpoint if family == "dense" else args.late_reference_checkpoint
         )
@@ -946,6 +977,8 @@ def main(argv: list[str] | None = None) -> None:
             spectrum_spec=args.spectrum_spec,
             common_state_spec=args.common_state_spec,
             allow_partial=args.allow_partial_summary,
+            families=families,
+            scope_amendment=args.scope_amendment,
         )
         print(
             f"Aggregated {summary['valid_spectra']}/{summary['expected_spectra']} exact spectra "
@@ -963,6 +996,8 @@ def main(argv: list[str] | None = None) -> None:
             summary_dir,
             spectrum_spec=args.spectrum_spec,
             common_state_spec=args.common_state_spec,
+            families=families,
+            scope_amendment=args.scope_amendment,
         )
 
 

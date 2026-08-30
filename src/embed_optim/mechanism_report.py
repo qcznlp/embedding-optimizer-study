@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
@@ -12,9 +13,10 @@ from typing import Any
 
 from .basis_sensitivity import audit_basis_sensitivity
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 
 MECHANISM_MARKERS = ("<!-- MECHANISM:BEGIN -->", "<!-- MECHANISM:END -->")
-FAMILIES = ("dense", "late")
+FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
 OPTIMIZER_LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
@@ -23,6 +25,22 @@ OPTIMIZER_LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
 def _resolve_declared(root: Path, value: str) -> Path:
     path = Path(value)
     return path.resolve() if path.is_absolute() else (root / path).resolve()
+
+
+def _repository_root(path: Path) -> Path:
+    resolved = path.resolve()
+    for candidate in (resolved, *resolved.parents):
+        if (candidate / "pyproject.toml").is_file():
+            return candidate
+    return Path.cwd().resolve()
+
+
+def _portable_path(path: Path, repository_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(repository_root.resolve()))
+    except ValueError:
+        return str(resolved)
 
 
 def _load_manifest(path: Path) -> dict[str, Any]:
@@ -118,7 +136,11 @@ def _format(value: float | None, digits: int = 4) -> str:
     return "—" if value is None else f"{value:.{digits}f}"
 
 
-def _common_state_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], Path]:
+def _common_state_rows(
+    summary_dir: Path,
+    families: tuple[str, ...] = FAMILIES,
+) -> tuple[list[list[str]], dict[str, Any], Path]:
+    families = normalize_families(families)
     summary_dir = summary_dir.resolve()
     manifest_path = summary_dir / "summary_manifest.json"
     manifest = _load_manifest(manifest_path)
@@ -173,7 +195,7 @@ def _common_state_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, An
         "spectral_norm_parameter_weighted_to_adamw_ratio",
         "cosine_with_adamw_parameter_weighted",
     )
-    for family in FAMILIES:
+    for family in families:
         for optimizer in ("muon", "normuon"):
             values = grouped[(family, optimizer)]
             medians = [_median([float(_finite(row, field)) for row in values]) for field in metrics]
@@ -187,7 +209,11 @@ def _common_state_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, An
     return output, manifest, path
 
 
-def _basis_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], Path]:
+def _basis_rows(
+    summary_dir: Path,
+    families: tuple[str, ...] = FAMILIES,
+) -> tuple[list[list[str]], dict[str, Any], Path]:
+    families = normalize_families(families)
     summary_dir = summary_dir.resolve()
     manifest_path = summary_dir / "summary_manifest.json"
     manifest = _load_manifest(manifest_path)
@@ -223,7 +249,7 @@ def _basis_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], Pat
     if len(rows) != 6 or set(indexed) != expected:
         raise ValueError("Basis summary does not cover every family/optimizer group")
     output = []
-    for family in FAMILIES:
+    for family in families:
         for optimizer in OPTIMIZERS:
             row = indexed[(family, optimizer)]
             if int(row["records"]) != 90:
@@ -242,7 +268,11 @@ def _basis_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], Pat
     return output, manifest, path
 
 
-def _spectrum_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], Path]:
+def _spectrum_rows(
+    summary_dir: Path,
+    families: tuple[str, ...] = FAMILIES,
+) -> tuple[list[list[str]], dict[str, Any], Path]:
+    families = normalize_families(families)
     summary_dir = summary_dir.resolve()
     manifest_path = summary_dir / "summary_manifest.json"
     manifest = _load_manifest(manifest_path)
@@ -280,7 +310,7 @@ def _spectrum_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], 
     } or any(len(values) != 60 for values in grouped.values()):
         raise ValueError("Exact spectra do not cover 60 selected matrices per family/operator")
     output: list[list[str]] = []
-    for family in FAMILIES:
+    for family in families:
         for optimizer in OPTIMIZERS:
             values = grouped[(family, optimizer)]
             normalized_stable = []
@@ -310,9 +340,17 @@ def _spectrum_rows(summary_dir: Path) -> tuple[list[list[str]], dict[str, Any], 
     return output, manifest, path
 
 
-def _bridge_rows(
+def _bridge_rows_with_coverage(
     bridge_dir: Path,
-) -> tuple[list[list[str]], list[list[str]], dict[str, Any], list[Path]]:
+    families: tuple[str, ...] = FAMILIES,
+) -> tuple[
+    list[list[str]],
+    list[list[str]],
+    dict[str, Any],
+    list[Path],
+    dict[str, int],
+]:
+    families = normalize_families(families)
     bridge_dir = bridge_dir.resolve()
     manifest_path = bridge_dir / "summary_manifest.json"
     manifest = _load_manifest(manifest_path)
@@ -344,6 +382,7 @@ def _bridge_rows(
         bridge_dir, manifest, "checkpoint_bridge", required_fields=checkpoint_fields
     )
     final: dict[tuple[str, str], list[dict[str, str]]] = defaultdict(list)
+    checkpoint_groups: dict[tuple[str, str, int], int] = defaultdict(int)
     for row in checkpoints:
         family = row.get("model_family", "")
         optimizer = row.get("optimizer", "")
@@ -353,8 +392,21 @@ def _bridge_rows(
             raise ValueError(f"Invalid mechanism checkpoint stage: {row}") from error
         if family not in FAMILIES or optimizer not in OPTIMIZERS or not 1 <= stage <= 5:
             raise ValueError(f"Invalid mechanism checkpoint identity: {row}")
+        checkpoint_groups[(family, optimizer, stage)] += 1
         if stage == 5:
             final[(family, optimizer)].append(row)
+    expected_checkpoint_groups = {
+        (family, optimizer, stage)
+        for family in FAMILIES
+        for optimizer in OPTIMIZERS
+        for stage in range(1, 6)
+    }
+    if set(checkpoint_groups) != expected_checkpoint_groups or any(
+        count != 4 for count in checkpoint_groups.values()
+    ):
+        raise ValueError(
+            "Mechanism bridge does not contain four learning rates per checkpoint group"
+        )
     if set(final) != {
         (family, optimizer) for family in FAMILIES for optimizer in OPTIMIZERS
     } or any(len(values) != 4 for values in final.values()):
@@ -367,7 +419,8 @@ def _bridge_rows(
         "unseen_reference_top1_agreement",
         "mean_beir_ndcg_at_10",
     )
-    for family in FAMILIES:
+    include_token_coverage = "late" in families
+    for family in families:
         for optimizer in OPTIMIZERS:
             values = final[(family, optimizer)]
             summaries = [
@@ -378,15 +431,15 @@ def _bridge_rows(
                 coverage = _median(
                     [float(_finite(row, "unseen_document_token_coverage_mean")) for row in values]
                 )
-            representation.append(
-                [
-                    FAMILY_LABELS[family],
-                    OPTIMIZER_LABELS[optimizer],
-                    *[_format(value) for value in summaries[:4]],
-                    _format(coverage),
-                    _format(summaries[4]),
-                ]
-            )
+            rendered = [
+                FAMILY_LABELS[family],
+                OPTIMIZER_LABELS[optimizer],
+                *[_format(value) for value in summaries[:4]],
+            ]
+            if include_token_coverage:
+                rendered.append(_format(coverage))
+            rendered.append(_format(summaries[4]))
+            representation.append(rendered)
 
     correlation_fields = {
         "model_family",
@@ -399,8 +452,17 @@ def _bridge_rows(
         "spearman_rho",
     }
     correlations, correlation_path = _read_declared_csv(
-        bridge_dir, manifest, "descriptive_correlations", required_fields=correlation_fields
+        bridge_dir,
+        manifest,
+        "descriptive_correlations",
+        required_fields=correlation_fields,
     )
+    correlation_counts = {
+        family: sum(row.get("model_family", "") == family for row in correlations)
+        for family in FAMILIES
+    }
+    if correlation_counts != {"dense": 96, "late": 120}:
+        raise ValueError("Mechanism correlations do not cover the frozen family-specific grid")
     indexed = {
         (
             row["model_family"],
@@ -414,15 +476,16 @@ def _bridge_rows(
     }
     selected = [
         (family, predictor, outcome)
-        for family in FAMILIES
+        for family in families
         for predictor, outcome in (
             ("reference_delta_row_cv_parameter_weighted", "unseen_margin_mean"),
             ("unseen_margin_mean", "mean_beir_ndcg_at_10"),
             ("unseen_query_normalized_effective_rank", "mean_beir_ndcg_at_10"),
         )
     ]
-    selected.append(("late", "unseen_document_token_coverage_mean", "mean_beir_ndcg_at_10"))
-    selected.extend((family, "mean_training_loss", "mean_beir_ndcg_at_10") for family in FAMILIES)
+    if "late" in families:
+        selected.append(("late", "unseen_document_token_coverage_mean", "mean_beir_ndcg_at_10"))
+    selected.extend((family, "mean_training_loss", "mean_beir_ndcg_at_10") for family in families)
     labels = {
         "reference_delta_row_cv_parameter_weighted": "weight-delta row CV",
         "unseen_margin_mean": "unseen margin",
@@ -457,7 +520,86 @@ def _bridge_rows(
                 _format(rho, 3),
             ]
         )
-    return representation, correlation_output, manifest, [checkpoint_path, correlation_path]
+    selected_correlations = sum(correlation_counts[family] for family in families)
+    selected_checkpoints = sum(
+        count
+        for (family, _optimizer, _stage), count in checkpoint_groups.items()
+        if family in families
+    )
+    bridge_tables = [checkpoint_path, correlation_path]
+    selected_transitions = manifest["within_run_transitions"] * len(families) // len(FAMILIES)
+    if families != FAMILIES:
+        transition_fields = {
+            "model_family",
+            "optimizer",
+            "learning_rate",
+            "stage",
+            "previous_stage",
+        }
+        transitions, transition_path = _read_declared_csv(
+            bridge_dir,
+            manifest,
+            "within_run_changes",
+            required_fields=transition_fields,
+        )
+        transition_groups: dict[tuple[str, str, int], int] = defaultdict(int)
+        for row in transitions:
+            family = row.get("model_family", "")
+            optimizer = row.get("optimizer", "")
+            try:
+                stage = int(row.get("stage", ""))
+                previous_stage = int(row.get("previous_stage", ""))
+                float(row.get("learning_rate", ""))
+            except ValueError as error:
+                raise ValueError(f"Invalid mechanism transition identity: {row}") from error
+            if (
+                family not in FAMILIES
+                or optimizer not in OPTIMIZERS
+                or not 2 <= stage <= 5
+                or previous_stage != stage - 1
+            ):
+                raise ValueError(f"Invalid mechanism transition identity: {row}")
+            transition_groups[(family, optimizer, stage)] += 1
+        expected_transition_groups = {
+            (family, optimizer, stage)
+            for family in FAMILIES
+            for optimizer in OPTIMIZERS
+            for stage in range(2, 6)
+        }
+        if set(transition_groups) != expected_transition_groups or any(
+            count != 4 for count in transition_groups.values()
+        ):
+            raise ValueError(
+                "Mechanism transitions do not contain four learning rates per adjacent stage"
+            )
+        selected_transitions = sum(
+            count
+            for (family, _optimizer, _stage), count in transition_groups.items()
+            if family in families
+        )
+        bridge_tables.append(transition_path)
+    coverage = {
+        "checkpoints": selected_checkpoints,
+        "within_run_transitions": selected_transitions,
+        "correlations": selected_correlations,
+    }
+    return (
+        representation,
+        correlation_output,
+        manifest,
+        bridge_tables,
+        coverage,
+    )
+
+
+def _bridge_rows(
+    bridge_dir: Path,
+    families: tuple[str, ...] = FAMILIES,
+) -> tuple[list[list[str]], list[list[str]], dict[str, Any], list[Path]]:
+    representation, correlations, manifest, tables, _coverage = _bridge_rows_with_coverage(
+        bridge_dir, families
+    )
+    return representation, correlations, manifest, tables
 
 
 def _validate_figure(path: Path, *, spectra: bool = False) -> dict[str, Any]:
@@ -477,12 +619,18 @@ def _validate_figure(path: Path, *, spectra: bool = False) -> dict[str, Any]:
     sources = {name: value for name, value in manifest.items() if name != "output"}
     if _rehash_references(sources, context=f"figure.{path.name}") == 0:
         raise ValueError(f"Mechanism figure does not bind a source manifest: {path}")
-    return {"path": str(path), "sha256": _sha256(path), "manifest_sha256": _sha256(sidecar)}
+    return {
+        "path": str(path),
+        "sha256": _sha256(path),
+        "manifest_sha256": _sha256(sidecar),
+    }
 
 
 def _retrieval_rows(
     retrieval_dir: Path,
+    families: tuple[str, ...] = FAMILIES,
 ) -> tuple[list[list[str]], dict[str, Any], Path, dict[str, Any]]:
+    families = normalize_families(families)
     retrieval_dir = retrieval_dir.resolve()
     repository_root = retrieval_dir.parents[1]
     manifest_path = retrieval_dir / "summary_manifest.json"
@@ -525,7 +673,7 @@ def _retrieval_rows(
     if len(rows) != 6 or set(indexed) != expected:
         raise ValueError("Retrieval first-passage table does not cover six optimizer/family groups")
     output = []
-    for family in FAMILIES:
+    for family in families:
         for optimizer in OPTIMIZERS:
             row = indexed[(family, optimizer)]
             learning_rates = int(row["learning_rate_points"])
@@ -574,6 +722,49 @@ def _replace_marked(text: str, content: str) -> str:
     return f"{before}{begin}\n\n{content}\n\n{end}{after}"
 
 
+def _marked_block_bytes(text: str, markers: tuple[str, str]) -> bytes:
+    """Return the exact UTF-8 bytes owned by one blog renderer."""
+
+    begin, end = markers
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise ValueError(f"Expected exactly one marker pair {markers}")
+    start = text.index(begin)
+    stop = text.index(end, start + len(begin)) + len(end)
+    return text[start:stop].encode("utf-8")
+
+
+def _marked_block_record(path: Path, markers: tuple[str, str]) -> dict[str, Any]:
+    block = _marked_block_bytes(path.read_text(encoding="utf-8"), markers)
+    return {
+        "path": str(path.resolve()),
+        "markers": list(markers),
+        "block_bytes": len(block),
+        "block_sha256": hashlib.sha256(block).hexdigest(),
+    }
+
+
+def _marked_block_complete(
+    path: Path,
+    record: Any,
+    markers: tuple[str, str],
+) -> bool:
+    if (
+        not isinstance(record, dict)
+        or not isinstance(record.get("path"), str)
+        or Path(record["path"]).resolve() != path.resolve()
+        or record.get("markers") != list(markers)
+    ):
+        return False
+    try:
+        block = _marked_block_bytes(path.read_text(encoding="utf-8"), markers)
+    except (OSError, UnicodeDecodeError, ValueError):
+        return False
+    return bool(
+        record.get("block_bytes") == len(block)
+        and record.get("block_sha256") == hashlib.sha256(block).hexdigest()
+    )
+
+
 def _atomic_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.tmp.{os.getpid()}")
@@ -612,20 +803,37 @@ def render_mechanism_report(
     spectrum_figure: Path,
     representation_figure: Path,
     late_token_figure: Path,
+    families: tuple[str, ...] = FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
-    common_rows, common_manifest, common_table = _common_state_rows(common_state_dir)
-    basis_rows, basis_manifest, basis_table = _basis_rows(basis_dir)
-    spectrum_rows, spectrum_manifest, spectrum_table = _spectrum_rows(spectrum_dir)
-    representation_rows, correlation_rows, bridge_manifest, bridge_tables = _bridge_rows(bridge_dir)
+    families = normalize_families(families)
+    families, scope = resolve_scope(families, scope_amendment)
+    repository_root = _repository_root(common_state_dir)
+    family_count = len(families)
+    common_rows, common_manifest, common_table = _common_state_rows(common_state_dir, families)
+    basis_rows, basis_manifest, basis_table = _basis_rows(basis_dir, families)
+    spectrum_rows, spectrum_manifest, spectrum_table = _spectrum_rows(spectrum_dir, families)
+    (
+        representation_rows,
+        correlation_rows,
+        bridge_manifest,
+        bridge_tables,
+        bridge_coverage,
+    ) = _bridge_rows_with_coverage(bridge_dir, families)
     retrieval_rows, retrieval_manifest, retrieval_table, retrieval_figure = _retrieval_rows(
-        retrieval_dir
+        retrieval_dir, families
     )
-    figures = {
-        "retrieval_dynamics": retrieval_figure,
-        "exact_spectra": _validate_figure(spectrum_figure, spectra=True),
-        "representation_dynamics": _validate_figure(representation_figure),
-        "late_token_dynamics": _validate_figure(late_token_figure),
-    }
+    figures = {"retrieval_dynamics": retrieval_figure}
+    if families == FAMILIES:
+        figures.update(
+            {
+                "exact_spectra": _validate_figure(spectrum_figure, spectra=True),
+                "representation_dynamics": _validate_figure(representation_figure),
+                "late_token_dynamics": _validate_figure(late_token_figure),
+            }
+        )
+    for record in figures.values():
+        record["path"] = _portable_path(Path(record["path"]), repository_root)
     content = "\n\n".join(
         [
             "The formal mechanism tier evaluates every optimizer transform at the same frozen weights "
@@ -729,7 +937,13 @@ def render_mechanism_report(
             "change the cross-architecture metric definition after results are visible.",
             "### Descriptive temporal bridge\n\n"
             + _table(
-                ["Family", "Predictor change", "Outcome change", "Transitions", "Spearman ρ"],
+                [
+                    "Family",
+                    "Predictor change",
+                    "Outcome change",
+                    "Transitions",
+                    "Spearman ρ",
+                ],
                 correlation_rows,
             )
             + "\n\nThe first seven geometry associations were fixed in the renderer and use "
@@ -741,6 +955,120 @@ def render_mechanism_report(
             "interventions.",
         ]
     )
+    if families != FAMILIES:
+        content = "\n\n".join(
+            [
+                "Under the disclosed post-hoc DenseOn scope, the formal mechanism tier evaluates "
+                "every optimizer transform at the same frozen weights and on the same ordered "
+                "eight-gradient history. The complete historical source artifacts still pass their "
+                "content-hash and cardinality audits before the renderer selects the active DenseOn "
+                "slice: 10 common-state anchors, 270 basis comparisons, 180 exact spectra, 60 bridge "
+                "checkpoints, and 840 retrieval evaluation units.",
+                "### Retrieval time to an AdamW reference\n\n"
+                + _table(
+                    [
+                        "Family",
+                        "Optimizer",
+                        "AdamW reference",
+                        "LR points reaching",
+                        "fastest hours",
+                        "median hours",
+                        "right-censored",
+                    ],
+                    retrieval_rows,
+                )
+                + "\n\nThe reference is the DenseOn median final nDCG@10 of the four AdamW "
+                "learning-rate points. Passage is observed only at the five saved checkpoints; no "
+                "interpolation is used, and non-reaching points remain right-censored. Checkpoint "
+                "time is a step-proportional estimate from audited useful terminal wall time. This "
+                "one-seed discovery analysis remains exploratory rather than a substitute for the "
+                "validation-frozen three-seed confirmation.",
+                "### Same-state optimizer fingerprints\n\n"
+                + _table(
+                    [
+                        "Family",
+                        "Operator",
+                        "row CV / AdamW",
+                        "top-1% row energy / AdamW",
+                        "stable rank / AdamW",
+                        "spectral norm / AdamW",
+                        "cosine with AdamW",
+                    ],
+                    common_rows,
+                )
+                + "\n\nEach cell is the median over ten frozen DenseOn anchors. Ratios use raw "
+                "optimizer directions but are scale-invariant except for the explicitly reported "
+                "spectral-norm ratio; the exact-spectrum intervention uses per-tensor "
+                "Frobenius-matched directions. Weight decay is excluded from this comparison.",
+                "### Function-preserving basis sensitivity\n\n"
+                + _table(
+                    [
+                        "Family",
+                        "Operator",
+                        "mapped cosine",
+                        "relative direction error",
+                        "absolute norm-ratio error",
+                        "predicted-descent error",
+                        "Q/K spectrum error",
+                    ],
+                    basis_rows,
+                )
+                + "\n\nEach row is the median over 90 fixed comparisons: ten common-state "
+                "anchors, three QKV layers, and three seeded RoPE-commuting rotations. Query and key "
+                "share each split-half plane rotation, value rows are unchanged, and every direction "
+                "is inverse-mapped before comparison. The transform preserves attention logits, so "
+                "this table measures implementation-level coordinate dependence rather than "
+                "retrieval quality; bfloat16 Newton--Schulz rounding is retained as part of the Muon "
+                "runtime.",
+                "### Exact update spectra\n\n"
+                + _table(
+                    [
+                        "Family",
+                        "Operator",
+                        "stable rank / rank",
+                        "entropy rank / rank",
+                        "condition number",
+                    ],
+                    spectrum_rows,
+                )
+                + "\n\nThe six matrices were fixed by early/middle/final depth and attention/MLP "
+                "role before formal spectra existed. Values are medians over 60 exact spectra per "
+                "optimizer on the active DenseOn anchors.",
+                "### Representation and score geometry\n\n"
+                + _table(
+                    [
+                        "Family",
+                        "Optimizer",
+                        "training margin",
+                        "unseen margin",
+                        "unseen query rank",
+                        "pretrained top-1 agreement",
+                        "mean BEIR nDCG@10",
+                    ],
+                    representation_rows,
+                )
+                + "\n\nRows are final-stage medians across all four frozen learning rates, not "
+                "test-selected winners. Training and unseen probes remain separate; the latter "
+                "contains 224 fixed examples balanced over all 14 decontaminated tasks.",
+                "### Descriptive temporal bridge\n\n"
+                + _table(
+                    [
+                        "Family",
+                        "Predictor change",
+                        "Outcome change",
+                        "Transitions",
+                        "Spearman ρ",
+                    ],
+                    correlation_rows,
+                )
+                + "\n\nThe first three geometry associations were fixed in the renderer and use "
+                "within-run first differences across all optimizers. The final training-loss row is "
+                "an explicitly post-hoc diagnostic. All four are one-seed observational summaries, "
+                "not a causal mediation analysis. Same-state fingerprints identify what each update "
+                "rule does; causal claims about accumulated retrieval behavior still require the "
+                "matched shared-start branches and fixed-state spectral interventions.",
+            ]
+        )
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
     blog_path = blog_path.resolve()
@@ -748,30 +1076,34 @@ def render_mechanism_report(
     _atomic_text(blog_path, rendered_blog)
     source_manifests = {
         "common_state": {
-            "path": str((common_state_dir / "summary_manifest.json").resolve()),
+            "path": _portable_path(common_state_dir / "summary_manifest.json", repository_root),
             "sha256": _sha256((common_state_dir / "summary_manifest.json").resolve()),
-            "anchors": common_manifest["valid_anchors"],
+            "anchors": common_manifest["valid_anchors"] * family_count // len(FAMILIES),
         },
         "retrieval_dynamics": {
-            "path": str((retrieval_dir / "summary_manifest.json").resolve()),
+            "path": _portable_path(retrieval_dir / "summary_manifest.json", repository_root),
             "sha256": _sha256((retrieval_dir / "summary_manifest.json").resolve()),
-            "evaluation_units": retrieval_manifest["coverage"]["evaluation_units"],
+            "evaluation_units": (
+                retrieval_manifest["coverage"]["evaluation_units"] * family_count // len(FAMILIES)
+            ),
         },
         "exact_spectra": {
-            "path": str((spectrum_dir / "summary_manifest.json").resolve()),
+            "path": _portable_path(spectrum_dir / "summary_manifest.json", repository_root),
             "sha256": _sha256((spectrum_dir / "summary_manifest.json").resolve()),
-            "spectra": spectrum_manifest["valid_spectra"],
+            "spectra": spectrum_manifest["valid_spectra"] * family_count // len(FAMILIES),
         },
         "basis_sensitivity": {
-            "path": str((basis_dir / "summary_manifest.json").resolve()),
+            "path": _portable_path(basis_dir / "summary_manifest.json", repository_root),
             "sha256": _sha256((basis_dir / "summary_manifest.json").resolve()),
-            "records": basis_manifest["coverage"]["records"],
-            "head_records": basis_manifest["coverage"]["head_records"],
+            "records": basis_manifest["coverage"]["records"] * family_count // len(FAMILIES),
+            "head_records": (
+                basis_manifest["coverage"]["head_records"] * family_count // len(FAMILIES)
+            ),
         },
         "mechanism_bridge": {
-            "path": str((bridge_dir / "summary_manifest.json").resolve()),
+            "path": _portable_path(bridge_dir / "summary_manifest.json", repository_root),
             "sha256": _sha256((bridge_dir / "summary_manifest.json").resolve()),
-            "checkpoints": bridge_manifest["checkpoints"],
+            "checkpoints": bridge_manifest["checkpoints"] * family_count // len(FAMILIES),
         },
     }
     manifest = {
@@ -779,20 +1111,27 @@ def render_mechanism_report(
         "complete": True,
         "sources": source_manifests,
         "source_tables": [
-            {"path": str(path), "sha256": _sha256(path)}
-            for path in [retrieval_table, common_table, basis_table, spectrum_table, *bridge_tables]
+            {
+                "path": _portable_path(path, repository_root),
+                "sha256": _sha256(path),
+            }
+            for path in [
+                retrieval_table,
+                common_table,
+                basis_table,
+                spectrum_table,
+                *bridge_tables,
+            ]
         ],
         "figures": figures,
         "output": {
-            "path": str(output_path),
+            "path": _portable_path(output_path, repository_root),
             "bytes": output_path.stat().st_size,
             "sha256": _sha256(output_path),
         },
         "blog": {
-            "path": str(blog_path),
-            "bytes": blog_path.stat().st_size,
-            "sha256": _sha256(blog_path),
-            "markers": list(MECHANISM_MARKERS),
+            **_marked_block_record(blog_path, MECHANISM_MARKERS),
+            "path": _portable_path(blog_path, repository_root),
         },
         "aggregation": {
             "retrieval_dynamics": "six-family-optimizer-groups-over-four-learning-rate-points",
@@ -810,6 +1149,33 @@ def render_mechanism_report(
             "descriptive one-seed evidence; causal retrieval claims require short interventions."
         ),
     }
+    if scope is not None:
+        source_manifests["basis_sensitivity"]["summary_rows"] = 3 * family_count
+        source_manifests["mechanism_bridge"].update(
+            {
+                "within_run_transitions": bridge_coverage["within_run_transitions"],
+                "correlations": bridge_coverage["correlations"],
+            }
+        )
+        manifest["families"] = list(families)
+        manifest["scope_amendment"] = scope
+        manifest["aggregation"] = {
+            "retrieval_dynamics": (
+                "three-optimizer-groups-over-four-learning-rate-points-in-active-dense-scope"
+            ),
+            "common_state": "median-over-ten-frozen-anchors-per-operator-in-active-dense-scope",
+            "basis_sensitivity": (
+                "median-over-ninety-fixed-comparisons-per-operator-in-active-dense-scope"
+            ),
+            "exact_spectra": (
+                "median-over-sixty-prespecified-spectra-per-operator-in-active-dense-scope"
+            ),
+            "representation": "final-stage-median-over-four-frozen-learning-rates",
+            "bridge": (
+                "three-prespecified-geometry-and-one-posthoc-training-loss-within-run-"
+                "first-difference-spearman-associations-in-active-dense-scope"
+            ),
+        }
     _atomic_json(output_path.with_suffix(".manifest.json"), manifest)
     return manifest
 
@@ -821,7 +1187,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--common-state-dir", type=Path, default=Path("reports/common-state"))
     parser.add_argument("--basis-dir", type=Path, default=Path("reports/basis-sensitivity"))
     parser.add_argument(
-        "--spectrum-dir", type=Path, default=Path("results/common-state-spectra/summary")
+        "--spectrum-dir",
+        type=Path,
+        default=Path("results/common-state-spectra/summary"),
     )
     parser.add_argument("--bridge-dir", type=Path, default=Path("reports/mechanism-bridge"))
     parser.add_argument("--retrieval-dir", type=Path, default=Path("reports/retrieval-dynamics"))
@@ -842,11 +1210,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         default=Path("reports/representation-space/late-token-dynamics.svg"),
     )
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    families = normalize_families(args.families)
+    resolve_scope(families, args.scope_amendment)
     ensure_retrieval_dynamics(args.retrieval_dir)
     manifest = render_mechanism_report(
         args.common_state_dir,
@@ -859,6 +1233,8 @@ def main(argv: list[str] | None = None) -> None:
         spectrum_figure=args.spectrum_figure,
         representation_figure=args.representation_figure,
         late_token_figure=args.late_token_figure,
+        families=families,
+        scope_amendment=args.scope_amendment,
     )
     print(json.dumps(manifest, sort_keys=True))
 

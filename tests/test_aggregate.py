@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import json
 import shutil
@@ -8,6 +9,8 @@ from types import SimpleNamespace
 import pytest
 
 from embed_optim.aggregate import (
+    RESULTS_MARKERS,
+    SYSTEMS_MARKERS,
     _accepted_timing_problems,
     _contains_run_id,
     _dataset_rows_audit,
@@ -23,11 +26,13 @@ from embed_optim.aggregate import (
     _system_summaries,
     _timing_adjustment_problems,
     _trajectory_auc,
+    aggregate,
     audit_dataset_artifacts,
     audit_experiment_contract,
     audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
+    parse_args,
     render_blog,
 )
 from embed_optim.config import MUON_NS_IMPLEMENTATION, OptimizerConfig, RunConfig, load_matrix
@@ -388,6 +393,103 @@ def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monk
         "checkpoint/task evaluations." in rendered
     )
     assert "training matrix in progress" not in rendered
+
+
+def test_aggregate_cli_defaults_to_the_original_two_family_contract():
+    args = parse_args([])
+
+    assert args.families == ["dense", "late"]
+    assert args.scope_amendment is None
+    assert args.output_dir == "reports"
+
+
+def test_dense_aggregate_filters_frozen_full_report_without_overwriting_it(tmp_path):
+    blog = tmp_path / "blog.md"
+    blog.write_text(
+        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
+        "checkpoint/task evaluations.\n\n"
+        "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
+        "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n",
+        encoding="utf-8",
+    )
+    output_root = tmp_path / "reports"
+    args = parse_args(
+        [
+            "--families",
+            "dense",
+            "--scope-amendment",
+            "configs/dense_scope_amendment.json",
+            "--output-dir",
+            str(output_root),
+            "--blog",
+            str(blog),
+            "--strict",
+        ]
+    )
+
+    aggregate(args)
+
+    scoped = output_root / "dense-discovery"
+    coverage = json.loads((scoped / "coverage.json").read_text(encoding="utf-8"))
+    with (scoped / "evaluation_long.csv").open(encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    rendered = blog.read_text(encoding="utf-8")
+    assert coverage["complete"] is True
+    assert coverage["families"] == ["dense"]
+    assert coverage["verified_experiment_runs"] == coverage["expected_experiment_runs"] == 12
+    assert coverage["verified_training_runs"] == coverage["expected_training_runs"] == 12
+    assert coverage["verified_training_checkpoints"] == 60
+    assert coverage["expected_training_checkpoints"] == 60
+    assert coverage["observed_results"] == coverage["expected_results"] == 840
+    assert coverage["source_full_discovery"]["observed_results"] == 1_680
+    assert coverage["source_full_discovery"]["verified_experiment_runs"] == 24
+    assert coverage["scope_amendment"]["status"] == "user_directed_post_hoc_scope_amendment"
+    assert len(rows) == 840
+    assert {row["model_family"] for row in rows} == {"dense"}
+    assert not (output_root / "coverage.json").exists()
+    assert "Dense discovery view complete" in rendered
+    assert "All 840 planned" in rendered
+    assert "Late" not in rendered
+    assert "MaxSim" not in rendered
+    marker_receipt = coverage["blog_marker_blocks"]
+    assert marker_receipt["schema_version"] == 1
+    assert marker_receipt["path"] == str(blog.resolve())
+    for label, markers in (("results", RESULTS_MARKERS), ("systems", SYSTEMS_MARKERS)):
+        begin, end = markers
+        start = rendered.index(begin)
+        stop = rendered.index(end, start) + len(end)
+        payload = rendered[start:stop].encode("utf-8")
+        record = marker_receipt["blocks"][label]
+        assert record == {
+            "begin_marker": begin,
+            "end_marker": end,
+            "encoding": "utf-8",
+            "bytes": len(payload),
+            "sha256": hashlib.sha256(payload).hexdigest(),
+        }
+        assert record["sha256"] != hashlib.sha256(rendered.encode("utf-8")).hexdigest()
+    outputs = coverage["outputs"]
+    assert len(outputs) == 12
+    for record in outputs.values():
+        artifact = Path(record["path"])
+        assert artifact.is_file()
+        assert record["bytes"] == artifact.stat().st_size
+        assert record["sha256"] == hashlib.sha256(artifact.read_bytes()).hexdigest()
+
+
+def test_dense_aggregate_requires_the_bound_scope_amendment(tmp_path):
+    args = parse_args(
+        [
+            "--families",
+            "dense",
+            "--output-dir",
+            str(tmp_path),
+            "--no-render-blog",
+        ]
+    )
+
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        aggregate(args)
 
 
 def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):

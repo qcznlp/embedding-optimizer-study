@@ -18,7 +18,15 @@ def _rows():
     families = ("DenseOn", "LateOn")
     optimizers = ("AdamW", "Muon", "NorMuon")
     retrieval = [
-        [family, optimizer, "0.4000", f"{index + 1}/4", "1.000", "2.000", str(3 - index)]
+        [
+            family,
+            optimizer,
+            "0.4000",
+            f"{index + 1}/4",
+            "1.000",
+            "2.000",
+            str(3 - index),
+        ]
         for family in families
         for index, optimizer in enumerate(optimizers)
     ]
@@ -33,7 +41,16 @@ def _rows():
         for index, optimizer in enumerate(optimizers)
     ]
     representation = [
-        [family, optimizer, "0.1000", f"0.{index + 2}000", "0.5000", "0.8000", "0.3000", "0.4000"]
+        [
+            family,
+            optimizer,
+            "0.1000",
+            f"0.{index + 2}000",
+            "0.5000",
+            "0.8000",
+            "0.3000",
+            "0.4000",
+        ]
         for family in families
         for index, optimizer in enumerate(optimizers)
     ]
@@ -46,7 +63,16 @@ def _rows():
         )
     ]
     functional = [
-        [family, optimizer, "descent", "-0.0100", f"0.0{index + 1}00", "0.0200", "0.0300", "0.80"]
+        [
+            family,
+            optimizer,
+            "descent",
+            "-0.0100",
+            f"0.0{index + 1}00",
+            "0.0200",
+            "0.0300",
+            "0.80",
+        ]
         for family in families
         for index, optimizer in enumerate(optimizers)
     ]
@@ -57,7 +83,14 @@ def _rows():
     ]
     contrasts = ("Muon - AdamW", "NorMuon - AdamW", "NorMuon - Muon")
     short = [
-        [family, contrast, "-0.0100 (3/0/0)", "0.0100 (3/0/0)", "0.0100 (3/0/0)", "0.0100 (3/0/0)"]
+        [
+            family,
+            contrast,
+            "-0.0100 (3/0/0)",
+            "0.0100 (3/0/0)",
+            "0.0100 (3/0/0)",
+            "0.0100 (3/0/0)",
+        ]
         for family in families
         for contrast in contrasts
     ]
@@ -152,6 +185,38 @@ def _task_stability_rows():
     ]
 
 
+def _tail_result_rows():
+    discovery = [
+        [family, optimizer, "-0.1000", "0.0100", "0.3000", "tail redistribution"]
+        for family in ("DenseOn", "LateOn")
+        for optimizer in ("Muon", "NorMuon")
+    ]
+    final = [
+        [family, optimizer, "-0.0200", "3/3", "0.0100", "2/3", "supported"]
+        for family in ("DenseOn", "LateOn")
+        for optimizer in ("Muon", "NorMuon")
+    ]
+    return discovery, final
+
+
+def _spectral_result_rows():
+    factorial = [
+        [family, metric, "-0.0200", "0.0100", "0.0010"]
+        for family in ("DenseOn", "LateOn")
+        for metric in ("contrastive loss", "positive margin")
+    ]
+    tail = [
+        [family, condition, "-0.0200", "0.0100", "-0.1000", "-0.0500", "0.4000"]
+        for family in ("DenseOn", "LateOn")
+        for condition in (
+            "Muon native",
+            "Adam basis + Muon spectrum",
+            "Muon basis + Adam spectrum",
+        )
+    ]
+    return factorial, tail
+
+
 def test_headlines_report_every_frozen_evidence_tier_without_sign_overreach():
     final = {
         (family, optimizer): 0.4 + 0.01 * index
@@ -231,12 +296,18 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     }
     rows = _rows()
     rows.pop("correlation_rows")
+    tail_discovery, tail_final = _tail_result_rows()
+    spectral_factorial, spectral_tail = _spectral_result_rows()
 
     tables = build_result_tables(
         final_medians=final,
         task_rows=_task_rows(),
         task_stability_rows=_task_stability_rows(),
         basis_rows=_basis_result_rows(),
+        tail_discovery_rows=tail_discovery,
+        tail_final_rows=tail_final,
+        spectral_factorial_rows=spectral_factorial,
+        spectral_tail_rows=spectral_tail,
         **rows,
     )
 
@@ -252,6 +323,7 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     per_task = tables["paper/generated/per-task.tex"]
     confirmation = tables["paper/generated/confirmation.tex"]
     common = tables["paper/generated/common-state.tex"]
+    intervention = tables["paper/generated/intervention.tex"]
     assert (
         sum(
             f"{family} & {optimizer}" in discovery
@@ -276,7 +348,50 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     assert "Bonferroni correction" in confirmation
     assert "Function-preserving basis sensitivity" in common
     assert "0.99000 & 0.01000 & 0.00100 & 0.00200 & 0.00300" in common
+    assert "Post-hoc spectrum-versus-basis causal decomposition" in intervention
+    assert "tail redistribution" in intervention
+    assert "cannot establish BEIR mediation" in intervention
     assert all("ResultPending" not in content for content in tables.values())
+
+
+def test_dense_scope_headlines_and_tables_exclude_late_results():
+    families = ("dense",)
+    final = {
+        ("dense", optimizer): 0.4 + 0.01 * index
+        for index, optimizer in enumerate(("adamw", "muon", "normuon"))
+    }
+    rows = {
+        name: [row for row in values if row[0] == "DenseOn"] for name, values in _rows().items()
+    }
+    headlines = build_headline_macros(
+        final_medians=final,
+        families=families,
+        **rows,
+    )
+    table_rows = dict(rows)
+    table_rows.pop("correlation_rows")
+    tail_discovery, tail_final = _tail_result_rows()
+    spectral_factorial, spectral_tail = _spectral_result_rows()
+    tables = build_result_tables(
+        final_medians=final,
+        task_rows=[row for row in _task_rows() if row[0] == "DenseOn"],
+        task_stability_rows=[row for row in _task_stability_rows() if row[0] == "DenseOn"],
+        basis_rows=[row for row in _basis_result_rows() if row[0] == "DenseOn"],
+        tail_discovery_rows=[row for row in tail_discovery if row[0] == "DenseOn"],
+        tail_final_rows=[row for row in tail_final if row[0] == "DenseOn"],
+        spectral_factorial_rows=[row for row in spectral_factorial if row[0] == "DenseOn"],
+        spectral_tail_rows=[row for row in spectral_tail if row[0] == "DenseOn"],
+        families=families,
+        **table_rows,
+    )
+
+    assert all("LateOn" not in value for value in headlines.values())
+    assert "for DenseOn" in headlines["RepresentationHeadline"]
+    assert all("LateOn" not in value for value in tables.values())
+    assert tables["paper/generated/discovery.tex"].count("DenseOn &") == 3
+    assert tables["paper/generated/confirmation.tex"].count("DenseOn &") == 3
+    assert "all six comparisons prespecified" in tables["paper/generated/confirmation.tex"]
+    assert "Late token coverage" not in tables["paper/generated/representation.tex"]
 
 
 def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, monkeypatch):
@@ -357,6 +472,16 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
         "embed_optim.paper_results._short_branch_rows",
         lambda *_args: ([], source, {}),
     )
+    tail_discovery, tail_final = _tail_result_rows()
+    monkeypatch.setattr(
+        "embed_optim.paper_results._tail_stability_rows",
+        lambda *_args: (tail_discovery, tail_final, (source, source), {}),
+    )
+    spectral_factorial, spectral_tail = _spectral_result_rows()
+    monkeypatch.setattr(
+        "embed_optim.paper_results._spectral_transplant_rows",
+        lambda *_args: (spectral_factorial, spectral_tail, (source, source), {}),
+    )
     monkeypatch.setattr(
         "embed_optim.paper_results._confirmation_rows",
         lambda *_args: ([], source, {}),
@@ -389,7 +514,7 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     assert "task_rows" not in captured["headline_keys"]
     assert captured["table_task_rows"] is task_rows
     assert captured["table_task_stability_rows"] is task_stability_rows
-    assert len(manifest["source_tables"]) == 13
+    assert len(manifest["source_tables"]) == 17
     assert len(manifest["result_tables"]) == 6
 
 

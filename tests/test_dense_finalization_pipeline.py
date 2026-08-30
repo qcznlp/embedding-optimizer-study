@@ -1,0 +1,337 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import sys
+from argparse import Namespace
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
+from embed_optim.dense_completion_pipeline import CORE_STEP_NAMES
+from embed_optim.dense_finalization_pipeline import (
+    PipelineStep,
+    ProcessIdentity,
+    _matching_completed_prefix,
+    _read_completion_ledger,
+    _wait_for_completion,
+    parse_args,
+    pipeline_steps,
+    run_pipeline,
+)
+
+SCOPE = {
+    "path": "/scope.json",
+    "sha256": "a" * 64,
+    "status": "user_directed_post_hoc_scope_amendment",
+    "amended_at_utc": "2026-08-31T00:00:00Z",
+    "claim_boundary": "Dense only",
+}
+
+
+def _step_args(tmp_path: Path, *, include_wandb: bool = False) -> Namespace:
+    return Namespace(
+        workdir=tmp_path,
+        scope_amendment=Path("configs/dense_scope_amendment.json"),
+        python="/usr/bin/python3",
+        include_wandb=include_wandb,
+    )
+
+
+def _valid_completion() -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "complete": True,
+        "families": ["dense"],
+        "scope_amendment": SCOPE,
+        "steps": [{"name": name, "complete": True} for name in CORE_STEP_NAMES],
+    }
+
+
+def _run_args(tmp_path: Path, completion: Path, *, resume: bool = False) -> Namespace:
+    return Namespace(
+        workdir=tmp_path,
+        scope_amendment=Path("configs/dense_scope_amendment.json"),
+        completion_ledger=completion,
+        log_dir=Path("logs/finalization"),
+        python=sys.executable,
+        include_wandb=False,
+        wait_pid=None,
+        wait_command_fragment="embed_optim.dense_completion_pipeline",
+        poll_seconds=0.001,
+        step_retries=0,
+        retry_delay=0.0,
+        resume=resume,
+    )
+
+
+def _write_completion(path: Path, payload: dict[str, object] | None = None) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload or _valid_completion()), encoding="utf-8")
+
+
+def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
+    steps = pipeline_steps(_step_args(tmp_path))
+
+    assert [step.name for step in steps] == [
+        "discovery-report",
+        "retrieval-dynamics",
+        "mechanism-report",
+        "outcome-report",
+        "paper-results",
+        "paper-audit-strict",
+        "tests",
+        "ruff-check",
+        "ruff-format-check",
+        "paper-build",
+        "distribution-build",
+        "distribution-audit",
+    ]
+    for step in steps[:6]:
+        assert "--families" in step.command
+        family_index = step.command.index("--families")
+        assert step.command[family_index + 1] == "dense"
+        assert "--scope-amendment" in step.command
+    assert "--strict" in steps[0].command
+    assert "--strict" in steps[5].command
+    assert steps[6].command[-2:] == ("pytest", "-q")
+    assert steps[7].command[-4:] == ("check", "src", "tests", "scripts/eval")
+    assert steps[8].command[-5:] == (
+        "format",
+        "--check",
+        "src",
+        "tests",
+        "scripts/eval",
+    )
+    assert steps[9].command == ("make", "-C", "paper", "clean", "all")
+    assert steps[10].command == ("uv", "build")
+    assert all("wandb_sync" not in step.command for step in steps)
+
+
+def test_wandb_is_an_explicit_opt_in_and_dense_only(tmp_path: Path):
+    steps = pipeline_steps(_step_args(tmp_path, include_wandb=True))
+
+    assert steps[-1].name == "wandb-sync-dense"
+    assert steps[-1].command[-3:] == ("embed_optim.wandb_sync", "--families", "dense")
+    assert "late" not in steps[-1].command
+
+
+def test_wait_tracks_process_start_identity_until_exit(monkeypatch, tmp_path: Path):
+    command = f"{sys.executable} -m embed_optim.dense_completion_pipeline"
+    identities = iter(
+        [
+            ProcessIdentity(123, 456, command),
+            ProcessIdentity(123, 456, command),
+            None,
+        ]
+    )
+    sleeps: list[float] = []
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_process_identity",
+        lambda _pid: next(identities),
+    )
+    monkeypatch.setattr("embed_optim.dense_finalization_pipeline.time.sleep", sleeps.append)
+    args = _run_args(tmp_path, tmp_path / "completion.json")
+    args.wait_pid = 123
+
+    _wait_for_completion(args)
+
+    assert sleeps == [args.poll_seconds]
+
+
+def test_wait_rejects_wrong_or_reused_pid(monkeypatch, tmp_path: Path):
+    args = _run_args(tmp_path, tmp_path / "completion.json")
+    args.wait_pid = 123
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_process_identity",
+        lambda _pid: ProcessIdentity(123, 456, "unrelated-command"),
+    )
+    with pytest.raises(RuntimeError, match="not the requested Dense completion"):
+        _wait_for_completion(args)
+
+    expected = f"{sys.executable} -m embed_optim.dense_completion_pipeline"
+    identities = iter([ProcessIdentity(123, 456, expected), ProcessIdentity(123, 789, expected)])
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_process_identity",
+        lambda _pid: next(identities),
+    )
+    with pytest.raises(RuntimeError, match="was reused"):
+        _wait_for_completion(args)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        lambda payload: payload.update(complete=False),
+        lambda payload: payload.update(families=["dense", "late"]),
+        lambda payload: payload.update(scope_amendment={"sha256": "wrong"}),
+        lambda payload: payload.update(steps=[{"name": "pending", "complete": False}]),
+        lambda payload: payload.update(failed_step="spectral-transplant-summary"),
+    ],
+)
+def test_completion_ledger_is_a_strict_dense_scope_gate(tmp_path: Path, mutation):
+    path = tmp_path / "completion.json"
+    payload = _valid_completion()
+    mutation(payload)
+    _write_completion(path, payload)
+
+    with pytest.raises(RuntimeError, match="scope-matched Dense-only"):
+        _read_completion_ledger(path, expected_scope=SCOPE)
+
+
+def test_completion_ledger_source_hashes_exact_bytes(tmp_path: Path):
+    path = tmp_path / "completion.json"
+    _write_completion(path)
+
+    payload, source = _read_completion_ledger(path, expected_scope=SCOPE)
+
+    raw = path.read_bytes()
+    assert payload["complete"] is True
+    assert source == {
+        "path": str(path),
+        "bytes": len(raw),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+    }
+
+
+def test_completion_ledger_accepts_legacy_absolute_scope_path(tmp_path: Path):
+    scope_path = tmp_path / "configs" / "dense_scope_amendment.json"
+    scope_path.parent.mkdir(parents=True)
+    scope_path.write_text("scope\n", encoding="utf-8")
+    identity = {
+        **SCOPE,
+        "path": "configs/dense_scope_amendment.json",
+        "sha256": hashlib.sha256(scope_path.read_bytes()).hexdigest(),
+    }
+    payload = _valid_completion()
+    payload["scope_amendment"] = {**identity, "path": str(scope_path.resolve())}
+    ledger = tmp_path / "logs" / "dense-completion-pipeline" / "pipeline-ledger.json"
+    _write_completion(ledger, payload)
+
+    observed, _ = _read_completion_ledger(ledger, expected_scope=identity)
+
+    assert observed["complete"] is True
+
+
+def test_pipeline_writes_atomic_complete_ledger_and_hashed_logs(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    _write_completion(completion)
+    args = _run_args(tmp_path, completion)
+    steps = [
+        PipelineStep("one", (sys.executable, "-c", "print('one')")),
+        PipelineStep("two", (sys.executable, "-c", "print('two')")),
+    ]
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: steps
+    )
+
+    assert run_pipeline(args) == 0
+
+    ledger_path = tmp_path / args.log_dir / "pipeline-ledger.json"
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert ledger["complete"] is True
+    assert ledger["families"] == ["dense"]
+    assert ledger["scope_amendment"] == SCOPE
+    assert (
+        ledger["completion_ledger"]["sha256"] == hashlib.sha256(completion.read_bytes()).hexdigest()
+    )
+    assert [record["name"] for record in ledger["steps"]] == ["one", "two"]
+    for record in ledger["steps"]:
+        attempt = record["attempts"][-1]
+        log_path = Path(attempt["log"]["path"])
+        assert attempt["return_code"] == 0
+        assert attempt["log"]["bytes"] == log_path.stat().st_size
+        assert attempt["log"]["sha256"] == hashlib.sha256(log_path.read_bytes()).hexdigest()
+
+
+def test_pipeline_retries_a_failed_step_and_records_both_attempts(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    _write_completion(completion)
+    args = _run_args(tmp_path, completion)
+    args.step_retries = 1
+    step = PipelineStep("retry", ("synthetic-command",))
+    return_codes = iter((9, 0))
+
+    def fake_run(*_args, stdout, **_kwargs):
+        return_code = next(return_codes)
+        stdout.write(f"return code {return_code}\n")
+        return SimpleNamespace(returncode=return_code)
+
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr("embed_optim.dense_finalization_pipeline.subprocess.run", fake_run)
+
+    assert run_pipeline(args) == 0
+
+    ledger = json.loads(
+        (tmp_path / args.log_dir / "pipeline-ledger.json").read_text(encoding="utf-8")
+    )
+    attempts = ledger["steps"][0]["attempts"]
+    assert [attempt["return_code"] for attempt in attempts] == [9, 0]
+    assert all(len(attempt["log"]["sha256"]) == 64 for attempt in attempts)
+
+
+def test_resume_keeps_only_matching_completed_prefix(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    _write_completion(completion)
+    args = _run_args(tmp_path, completion)
+    first = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    failing = PipelineStep("two", (sys.executable, "-c", "raise SystemExit(7)"))
+    current_steps = [first, failing]
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: current_steps
+    )
+
+    assert run_pipeline(args) == 1
+    ledger_path = tmp_path / args.log_dir / "pipeline-ledger.json"
+    failed = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert failed["failed_step"] == "two"
+    first_record = failed["steps"][0]
+
+    current_steps[1] = PipelineStep("two", (sys.executable, "-c", "print('recovered')"))
+    args.resume = True
+    assert run_pipeline(args) == 0
+
+    resumed = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert resumed["complete"] is True
+    assert "failed_step" not in resumed
+    assert resumed["steps"][0] == first_record
+    assert resumed["steps"][1]["command"] == list(current_steps[1].command)
+
+
+def test_resume_prefix_requires_command_identity():
+    steps = [
+        PipelineStep("one", ("python", "one")),
+        PipelineStep("two", ("python", "two")),
+    ]
+    previous = {
+        "steps": [
+            {"name": "one", "command": ["python", "one"], "complete": True},
+            {"name": "two", "command": ["python", "changed"], "complete": True},
+        ]
+    }
+
+    assert _matching_completed_prefix(previous, steps) == 1
+
+
+def test_cli_rejects_invalid_wait_and_retry_values():
+    with pytest.raises(SystemExit):
+        parse_args(["--wait-pid", "0"])
+    with pytest.raises(SystemExit):
+        parse_args(["--poll-seconds", "0"])
+    with pytest.raises(SystemExit):
+        parse_args(["--step-retries", "-1"])

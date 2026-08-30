@@ -7,7 +7,12 @@ from pathlib import Path
 import pytest
 
 from embed_optim.geometry import _sha256
-from embed_optim.mechanism_report import ensure_retrieval_dynamics, render_mechanism_report
+from embed_optim.mechanism_report import (
+    MECHANISM_MARKERS,
+    _marked_block_complete,
+    ensure_retrieval_dynamics,
+    render_mechanism_report,
+)
 
 
 def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
@@ -148,7 +153,10 @@ def _basis(root: Path) -> Path:
             {
                 "schema_version": 1,
                 "complete": True,
-                "protocol": {"path": str(protocol.resolve()), "sha256": _sha256(protocol)},
+                "protocol": {
+                    "path": str(protocol.resolve()),
+                    "sha256": _sha256(protocol),
+                },
                 "coverage": {
                     "anchors": 20,
                     "tensor_sequences": 60,
@@ -219,22 +227,38 @@ def _bridge(root: Path) -> Path:
         }
         for family, predictor, outcome in selected
     ]
-    while len(correlations) < 216:
-        index = len(correlations)
-        correlations.append(
-            {
-                "model_family": "dense",
-                "scope": "optimizer",
-                "optimizer": "adamw",
-                "analysis": "checkpoint_levels",
-                "predictor": f"fixture-{index}",
-                "outcome": "mean_beir_ndcg_at_10",
-                "observations": 20,
-                "spearman_rho": 0.0,
-            }
-        )
+    for family, target in (("dense", 96), ("late", 120)):
+        present = sum(row["model_family"] == family for row in correlations)
+        for index in range(present, target):
+            correlations.append(
+                {
+                    "model_family": family,
+                    "scope": "optimizer",
+                    "optimizer": "adamw",
+                    "analysis": "checkpoint_levels",
+                    "predictor": f"fixture-{family}-{index}",
+                    "outcome": "mean_beir_ndcg_at_10",
+                    "observations": 20,
+                    "spearman_rho": 0.0,
+                }
+            )
     correlation_path = root / "descriptive_correlations.csv"
     _write_csv(correlation_path, correlations)
+    transitions = [
+        {
+            "model_family": family,
+            "optimizer": optimizer,
+            "learning_rate": learning_rate,
+            "stage": stage,
+            "previous_stage": stage - 1,
+        }
+        for family in ("dense", "late")
+        for optimizer in ("adamw", "muon", "normuon")
+        for learning_rate in range(4)
+        for stage in range(2, 6)
+    ]
+    transition_path = root / "within_run_changes.csv"
+    _write_csv(transition_path, transitions)
     source = root / "source.json"
     source.write_text("{}\n", encoding="utf-8")
     reference = {"path": str(source.resolve()), "sha256": _sha256(source)}
@@ -259,6 +283,7 @@ def _bridge(root: Path) -> Path:
                 "outputs": {
                     "checkpoint_bridge": _declared(checkpoint_path, len(checkpoints)),
                     "descriptive_correlations": _declared(correlation_path, len(correlations)),
+                    "within_run_changes": _declared(transition_path, len(transitions)),
                 },
             },
             sort_keys=True,
@@ -380,6 +405,30 @@ def _inputs(tmp_path: Path):
     return common, basis, spectra, bridge, retrieval, figures, blog
 
 
+def _scope_amendment(root: Path, *, bad_hash: bool = False) -> Path:
+    (root / "configs").mkdir(parents=True, exist_ok=True)
+    project = root / "pyproject.toml"
+    project.write_text("[project]\nname = 'mechanism-fixture'\n", encoding="utf-8")
+    digest = "0" * 64 if bad_hash else _sha256(project)
+    amendment = root / "configs" / "dense_scope_amendment.json"
+    amendment.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "status": "user_directed_post_hoc_scope_amendment",
+                "amended_at_utc": "2026-08-30T20:14:42Z",
+                "active_scope": {"families": ["dense"]},
+                "claim_boundary": "Dense-only post-hoc claim boundary for the fixture.",
+                "source_bindings": [{"path": "pyproject.toml", "sha256": digest} for _ in range(6)],
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return amendment
+
+
 @pytest.fixture(autouse=True)
 def _accept_fixture_basis_audit(monkeypatch):
     def audit(_protocol, *, output_dir, **_kwargs):
@@ -419,6 +468,8 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
     )
 
     assert manifest["complete"] is True
+    assert "families" not in manifest
+    assert "scope_amendment" not in manifest
     assert repeated == manifest
     assert (output.read_bytes(), blog.read_bytes()) == first
     assert "Same-state optimizer fingerprints" in output.read_text()
@@ -428,7 +479,82 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
     assert "trailing training loss (post-hoc)" in output.read_text()
     assert "1,456/1,680" in output.read_text()
     assert "old" not in blog.read_text()
+    assert set(manifest["blog"]) == {
+        "path",
+        "markers",
+        "block_bytes",
+        "block_sha256",
+    }
+    assert _marked_block_complete(blog, manifest["blog"], MECHANISM_MARKERS)
     assert json.loads(output.with_suffix(".manifest.json").read_text()) == manifest
+
+    blog.write_text("other renderer\n" + blog.read_text(encoding="utf-8"), encoding="utf-8")
+    assert _marked_block_complete(blog, manifest["blog"], MECHANISM_MARKERS)
+    blog.write_text(
+        blog.read_text(encoding="utf-8").replace("Same-state optimizer fingerprints", "changed"),
+        encoding="utf-8",
+    )
+    assert not _marked_block_complete(blog, manifest["blog"], MECHANISM_MARKERS)
+
+
+def test_mechanism_report_renders_strict_dense_scope(tmp_path: Path):
+    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path / "inputs")
+    amendment = _scope_amendment(tmp_path / "scope")
+    output = tmp_path / "reports" / "dense-mechanism-summary.md"
+
+    manifest = render_mechanism_report(
+        common,
+        spectra,
+        bridge,
+        retrieval,
+        blog,
+        output,
+        basis_dir=basis,
+        spectrum_figure=figures[0],
+        representation_figure=figures[1],
+        late_token_figure=figures[2],
+        families=("dense",),
+        scope_amendment=amendment,
+    )
+
+    rendered = output.read_text(encoding="utf-8")
+    assert manifest["families"] == ["dense"]
+    assert manifest["scope_amendment"]["path"] == "configs/dense_scope_amendment.json"
+    assert manifest["scope_amendment"]["sha256"] == _sha256(amendment)
+    assert manifest["sources"]["common_state"]["anchors"] == 10
+    assert manifest["sources"]["exact_spectra"]["spectra"] == 180
+    assert manifest["sources"]["basis_sensitivity"]["records"] == 270
+    assert manifest["sources"]["basis_sensitivity"]["summary_rows"] == 3
+    assert manifest["sources"]["mechanism_bridge"]["checkpoints"] == 60
+    assert manifest["sources"]["mechanism_bridge"]["within_run_transitions"] == 48
+    assert manifest["sources"]["mechanism_bridge"]["correlations"] == 96
+    assert manifest["sources"]["retrieval_dynamics"]["evaluation_units"] == 840
+    assert set(manifest["figures"]) == {"retrieval_dynamics"}
+    assert "DenseOn" in rendered
+    assert "Late" not in rendered
+    assert "MaxSim" not in rendered
+    assert rendered.strip() in blog.read_text(encoding="utf-8")
+
+
+def test_mechanism_report_rejects_changed_scope_binding(tmp_path: Path):
+    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path / "inputs")
+    amendment = _scope_amendment(tmp_path / "scope", bad_hash=True)
+
+    with pytest.raises(ValueError, match="Scope-amendment source differs"):
+        render_mechanism_report(
+            common,
+            spectra,
+            bridge,
+            retrieval,
+            blog,
+            tmp_path / "mechanism.md",
+            basis_dir=basis,
+            spectrum_figure=figures[0],
+            representation_figure=figures[1],
+            late_token_figure=figures[2],
+            families=("dense",),
+            scope_amendment=amendment,
+        )
 
 
 def test_mechanism_report_rejects_figure_hash_drift(tmp_path: Path):

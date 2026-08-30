@@ -1,8 +1,13 @@
 import json
+from pathlib import Path
 
 import pytest
 
-from embed_optim.scope import normalize_families, resolve_scope
+from embed_optim.scope import (
+    canonical_scope_amendment,
+    normalize_families,
+    resolve_scope,
+)
 
 
 def test_family_scope_is_canonical():
@@ -19,6 +24,7 @@ def test_frozen_dense_scope_amendment_passes():
 
     assert families == ("dense",)
     assert amendment["status"] == "user_directed_post_hoc_scope_amendment"
+    assert amendment["path"] == "configs/dense_scope_amendment.json"
     assert len(amendment["sha256"]) == 64
 
 
@@ -35,3 +41,13 @@ def test_changed_scope_binding_is_rejected(tmp_path, monkeypatch):
 
     with pytest.raises(ValueError, match="Scope-amendment source differs"):
         resolve_scope(["dense"], amendment)
+
+
+def test_scope_identity_accepts_the_legacy_absolute_checkout_path():
+    _, amendment = resolve_scope(["dense"], "configs/dense_scope_amendment.json")
+    legacy = {
+        **amendment,
+        "path": str((Path.cwd() / amendment["path"]).resolve()),
+    }
+
+    assert canonical_scope_amendment(legacy, Path.cwd()) == amendment

@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import hashlib
 from pathlib import Path
 
 import pytest
 
 from embed_optim.decontamination import DECONTAMINATED_TASK_NAMES
 from embed_optim.retrieval_dynamics import (
+    TASK_STABILITY_MARKERS,
     _quality_figure,
+    build_retrieval_dynamics,
     load_retrieval_dynamics_protocol,
     render_task_stability_blog,
     summarize_retrieval_dynamics,
@@ -78,6 +81,21 @@ def test_retrieval_dynamics_keeps_all_sweep_points_and_censoring():
     assert dense_normuon["points_right_censored"] == 4
     assert dense_normuon["median_observed_useful_wall_time_hours"] is None
     assert all(row["wall_time_estimation"] for row in dynamics)
+
+
+def test_retrieval_dynamics_accepts_a_complete_dense_family_view():
+    checkpoints, runs = _sources()
+    checkpoints = [row for row in checkpoints if row["model_family"] == "dense"]
+    runs = [row for row in runs if row["model_family"] == "dense"]
+
+    dynamics, first_passage, groups = summarize_retrieval_dynamics(
+        checkpoints, runs, families=("dense",)
+    )
+
+    assert len(dynamics) == 60
+    assert len(first_passage) == 12
+    assert len(groups) == 3
+    assert {row["model_family"] for row in dynamics} == {"dense"}
 
 
 def test_retrieval_dynamics_rejects_partial_checkpoint_matrix():
@@ -166,3 +184,66 @@ def test_posthoc_task_delta_stability_tracks_adjacent_checkpoint_directions(tmp_
     assert "14/14" in rendered
     assert "post-hoc" in rendered
     assert "old" not in rendered
+
+
+def test_dense_retrieval_report_is_scoped_and_does_not_rewrite_full_report(tmp_path: Path):
+    blog = tmp_path / "blog.md"
+    blog.write_text(
+        "before\n<!-- TASK-DELTA-STABILITY:BEGIN -->\nold\n"
+        "<!-- TASK-DELTA-STABILITY:END -->\nafter\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "retrieval-dynamics-dense"
+
+    manifest = build_retrieval_dynamics(
+        output_dir=output,
+        blog_path=blog,
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+    rendered = blog.read_text(encoding="utf-8")
+    assert manifest["complete"] is True
+    assert manifest["families"] == ["dense"]
+    assert manifest["coverage"] == {
+        "runs": 12,
+        "checkpoints": 60,
+        "tasks": 14,
+        "evaluation_units": 840,
+        "optimizer_family_groups": 3,
+        "best_config_task_delta_rows": 140,
+        "adjacent_stage_task_stability_rows": 8,
+    }
+    assert manifest["source_full_discovery"]["evaluation_units"] == 1_680
+    assert manifest["scope_amendment"]["status"] == "user_directed_post_hoc_scope_amendment"
+    assert (output / "summary_manifest.json").is_file()
+    assert "DenseOn-only post-hoc diagnostic" in rendered
+    assert "Late" not in rendered
+    assert "MaxSim" not in rendered
+    marker_receipt = manifest["blog_marker_blocks"]
+    assert marker_receipt["schema_version"] == 1
+    assert marker_receipt["path"] == str(blog.resolve())
+    begin, end = TASK_STABILITY_MARKERS
+    start = rendered.index(begin)
+    stop = rendered.index(end, start) + len(end)
+    payload = rendered[start:stop].encode("utf-8")
+    assert marker_receipt["blocks"]["task_delta_stability"] == {
+        "begin_marker": begin,
+        "end_marker": end,
+        "encoding": "utf-8",
+        "bytes": len(payload),
+        "sha256": hashlib.sha256(payload).hexdigest(),
+    }
+    assert (
+        marker_receipt["blocks"]["task_delta_stability"]["sha256"]
+        != hashlib.sha256(rendered.encode("utf-8")).hexdigest()
+    )
+
+
+def test_dense_retrieval_report_requires_scope_amendment(tmp_path: Path):
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        build_retrieval_dynamics(
+            output_dir=tmp_path,
+            blog_path=None,
+            families=("dense",),
+        )

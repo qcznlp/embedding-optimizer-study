@@ -24,6 +24,8 @@ from .outcome_report import (
     _functional_rows,
     _hybrid_rows,
     _short_branch_rows,
+    _spectral_transplant_rows,
+    _tail_stability_rows,
 )
 from .paper_audit import (
     HEADLINE_MACROS,
@@ -33,9 +35,10 @@ from .paper_audit import (
     expected_constant_macros,
     load_paper_claim_protocol,
 )
+from .scope import ALL_FAMILIES, resolve_scope
 
 FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
-FAMILIES = ("dense", "late")
+FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CONTRAST_LABELS = ("Muon - AdamW", "NorMuon - AdamW", "NorMuon - Muon")
 
@@ -66,6 +69,7 @@ def _indexed(rows: list[list[str]], *, context: str) -> dict[tuple[str, str], li
 def _discovery_final_medians(
     retrieval_dir: Path,
     manifest: dict[str, Any],
+    families: tuple[str, ...] = FAMILIES,
 ) -> tuple[dict[tuple[str, str], float], Path]:
     repository_root = retrieval_dir.resolve().parents[1]
     rows, table = _read_declared_csv(
@@ -93,12 +97,17 @@ def _discovery_final_medians(
         or any(len(values) != 4 for values in grouped.values())
     ):
         raise ValueError("Discovery headline requires four final points for all six family groups")
-    return {key: float(statistics.median(values)) for key, values in grouped.items()}, table
+    return {
+        key: float(statistics.median(values))
+        for key, values in grouped.items()
+        if key[0] in families
+    }, table
 
 
 def _discovery_task_rows(
     retrieval_dir: Path,
     manifest: dict[str, Any],
+    families: tuple[str, ...] = FAMILIES,
 ) -> tuple[list[list[str]], Path]:
     repository_root = retrieval_dir.resolve().parents[1]
     required = {
@@ -127,7 +136,7 @@ def _discovery_task_rows(
         raise ValueError("Discovery per-task table requires both families and all 14 tasks")
 
     output: list[list[str]] = []
-    for family in FAMILIES:
+    for family in families:
         for task in DECONTAMINATED_TASK_NAMES:
             row = indexed[(family, task)]
             adamw = _finite(row["adamw"])
@@ -158,6 +167,7 @@ def _discovery_task_rows(
 def _discovery_task_stability_rows(
     retrieval_dir: Path,
     manifest: dict[str, Any],
+    families: tuple[str, ...] = FAMILIES,
 ) -> tuple[list[list[str]], Path]:
     repository_root = retrieval_dir.resolve().parents[1]
     required = {
@@ -204,6 +214,8 @@ def _discovery_task_stability_rows(
 
     output = []
     for family, optimizer, first_stage, second_stage in sorted(expected):
+        if family not in families:
+            continue
         row = indexed[(family, optimizer, first_stage, second_stage)]
         tasks = int(row["tasks"])
         stable = int(row["same_direction_tasks"])
@@ -261,6 +273,7 @@ def build_headline_macros(
     hybrid_rows: list[list[str]],
     short_rows: list[list[str]],
     confirmation_rows: list[list[str]],
+    families: tuple[str, ...] = FAMILIES,
 ) -> dict[str, str]:
     retrieval = _indexed(retrieval_rows, context="retrieval")
     common = _indexed(common_rows, context="common-state")
@@ -272,7 +285,7 @@ def build_headline_macros(
 
     optimizer_labels = tuple(OPTIMIZER_LABELS[name] for name in OPTIMIZERS)
     discovery_parts = []
-    for family in FAMILIES:
+    for family in families:
         family_label = FAMILY_LABELS[family]
         medians = "/".join(f"{final_medians[(family, optimizer)]:.4f}" for optimizer in OPTIMIZERS)
         reached = "/".join(
@@ -286,7 +299,8 @@ def build_headline_macros(
     discovery = "For AdamW/Muon/NorMuon respectively, " + "; ".join(discovery_parts) + "."
 
     common_parts = []
-    for family_label in FAMILY_LABELS.values():
+    family_labels = tuple(FAMILY_LABELS[family] for family in families)
+    for family_label in family_labels:
         row_cv = "/".join(common[(family_label, operator)][2] for operator in ("Muon", "NorMuon"))
         stable = "/".join(spectra[(family_label, operator)][2] for operator in ("Muon", "NorMuon"))
         common_parts.append(
@@ -299,7 +313,7 @@ def build_headline_macros(
     representation_parts = []
     rho_parts = []
     loss_rho_parts = []
-    for family_label in FAMILY_LABELS.values():
+    for family_label in family_labels:
         margins = "/".join(
             representation[(family_label, operator)][3] for operator in optimizer_labels
         )
@@ -308,20 +322,29 @@ def build_headline_macros(
         loss_rho_parts.append(
             correlation[(family_label, "trailing training loss (post-hoc)", "mean BEIR nDCG@10")][4]
         )
-    late_coverage = "/".join(
-        representation[("LateOn", operator)][6] for operator in optimizer_labels
-    )
-    representation_headline = (
-        "For AdamW/Muon/NorMuon respectively, "
-        + "; ".join(representation_parts)
-        + f", and LateOn document-token coverage was {late_coverage}. The descriptive within-run "
-        f"margin-to-BEIR Spearman rho was {rho_parts[0]}/{rho_parts[1]} for DenseOn/LateOn. "
-        "In the explicitly post-hoc loss diagnostic, the corresponding trailing-training-loss-to-"
-        f"BEIR rho was {loss_rho_parts[0]}/{loss_rho_parts[1]}."
-    )
+    if families == FAMILIES:
+        late_coverage = "/".join(
+            representation[("LateOn", operator)][6] for operator in optimizer_labels
+        )
+        representation_headline = (
+            "For AdamW/Muon/NorMuon respectively, "
+            + "; ".join(representation_parts)
+            + f", and LateOn document-token coverage was {late_coverage}. The descriptive "
+            f"within-run margin-to-BEIR Spearman rho was {rho_parts[0]}/{rho_parts[1]} for "
+            "DenseOn/LateOn. In the explicitly post-hoc loss diagnostic, the corresponding "
+            f"trailing-training-loss-to-BEIR rho was {loss_rho_parts[0]}/{loss_rho_parts[1]}."
+        )
+    else:
+        representation_headline = (
+            "For AdamW/Muon/NorMuon respectively, "
+            + "; ".join(representation_parts)
+            + f". The descriptive within-run margin-to-BEIR Spearman rho was {rho_parts[0]} "
+            f"for {family_labels[0]}. In the explicitly post-hoc loss diagnostic, the "
+            f"corresponding trailing-training-loss-to-BEIR rho was {loss_rho_parts[0]}."
+        )
 
     intervention_parts = []
-    for family_label in FAMILY_LABELS.values():
+    for family_label in family_labels:
         margins = "/".join(
             functional[(family_label, operator, "descent")][4] for operator in optimizer_labels
         )
@@ -342,7 +365,7 @@ def build_headline_macros(
     )
 
     confirmation_parts = []
-    for family_label in FAMILY_LABELS.values():
+    for family_label in family_labels:
         cells = []
         for contrast in CONTRAST_LABELS:
             row = confirmation[(family_label, contrast)]
@@ -432,7 +455,12 @@ def build_result_tables(
     functional_rows: list[list[str]],
     hybrid_rows: list[list[str]],
     short_rows: list[list[str]],
+    tail_discovery_rows: list[list[str]],
+    tail_final_rows: list[list[str]],
+    spectral_factorial_rows: list[list[str]],
+    spectral_tail_rows: list[list[str]],
     confirmation_rows: list[list[str]],
+    families: tuple[str, ...] = FAMILIES,
 ) -> dict[str, str]:
     retrieval = _indexed(retrieval_rows, context="retrieval table")
     common = _indexed(common_rows, context="common-state table")
@@ -441,27 +469,31 @@ def build_result_tables(
     representation = _indexed(representation_rows, context="representation table")
     functional = {(row[0], row[1], row[2]): row for row in functional_rows if len(row) >= 8}
     short = _indexed(short_rows, context="short-branch table")
+    tail_discovery = _indexed(tail_discovery_rows, context="tail discovery table")
+    tail_final = _indexed(tail_final_rows, context="tail final table")
     confirmation = _indexed(confirmation_rows, context="confirmation table")
     optimizer_labels = tuple(OPTIMIZER_LABELS[name] for name in OPTIMIZERS)
+    family_labels = tuple(FAMILY_LABELS[family] for family in families)
 
     expected_task_identities = {
-        (family_label, task)
-        for family_label in FAMILY_LABELS.values()
-        for task in DECONTAMINATED_TASK_NAMES
+        (family_label, task) for family_label in family_labels for task in DECONTAMINATED_TASK_NAMES
     }
     indexed_tasks = {(row[0], row[1]): row for row in task_rows if len(row) == 7}
-    if len(task_rows) != 28 or set(indexed_tasks) != expected_task_identities:
-        raise ValueError("Paper per-task table requires both families and all 14 tasks")
+    if len(task_rows) != 14 * len(families) or set(indexed_tasks) != expected_task_identities:
+        raise ValueError("Paper per-task table requires every active family and all 14 tasks")
     expected_stability = {
         (family_label, f"{optimizer} - AdamW", f"{first * 20}--{(first + 1) * 20}%")
-        for family_label in FAMILY_LABELS.values()
+        for family_label in family_labels
         for optimizer in ("Muon", "NorMuon")
         for first in range(1, 5)
     }
     indexed_stability = {
         (row[0], row[1], row[2]): row for row in task_stability_rows if len(row) == 6
     }
-    if len(task_stability_rows) != 16 or set(indexed_stability) != expected_stability:
+    if (
+        len(task_stability_rows) != 8 * len(families)
+        or set(indexed_stability) != expected_stability
+    ):
         raise ValueError("Paper task-stability table requires all adjacent-stage contrasts")
 
     discovery_rows = [
@@ -471,7 +503,7 @@ def build_result_tables(
             f"{final_medians[(family, optimizer)]:.4f}",
             retrieval[(FAMILY_LABELS[family], OPTIMIZER_LABELS[optimizer])][3],
         )
-        for family in FAMILIES
+        for family in families
         for optimizer in OPTIMIZERS
     ]
     common_table_rows = [
@@ -481,27 +513,56 @@ def build_result_tables(
             common[(family_label, operator)][2],
             spectra[(family_label, operator)][2],
         )
-        for family_label in FAMILY_LABELS.values()
+        for family_label in family_labels
         for operator in ("Muon", "NorMuon")
     ]
     basis_table_rows = [
         tuple(basis[(family_label, optimizer)])
-        for family_label in FAMILY_LABELS.values()
+        for family_label in family_labels
         for optimizer in optimizer_labels
     ]
-    representation_table_rows = [
-        (
-            family_label,
-            optimizer,
-            representation[(family_label, optimizer)][3],
-            representation[(family_label, optimizer)][5],
-            representation[(family_label, optimizer)][6] if family_label == "LateOn" else "--",
+    if families == FAMILIES:
+        representation_headers = (
+            "Model",
+            "Optimizer",
+            "Unseen margin",
+            "Top-1 agreement",
+            "Late token coverage",
         )
-        for family_label in FAMILY_LABELS.values()
-        for optimizer in optimizer_labels
-    ]
+        representation_table_rows = [
+            (
+                family_label,
+                optimizer,
+                representation[(family_label, optimizer)][3],
+                representation[(family_label, optimizer)][5],
+                (
+                    representation[(family_label, optimizer)][6]
+                    if family_label == "LateOn"
+                    else "--"
+                ),
+            )
+            for family_label in family_labels
+            for optimizer in optimizer_labels
+        ]
+    else:
+        representation_headers = (
+            "Model",
+            "Optimizer",
+            "Unseen margin",
+            "Top-1 agreement",
+        )
+        representation_table_rows = [
+            (
+                family_label,
+                optimizer,
+                representation[(family_label, optimizer)][3],
+                representation[(family_label, optimizer)][5],
+            )
+            for family_label in family_labels
+            for optimizer in optimizer_labels
+        ]
     intervention_rows = []
-    for family_label in FAMILY_LABELS.values():
+    for family_label in family_labels:
         matched = "/".join(
             functional[(family_label, optimizer, "descent")][4] for optimizer in optimizer_labels
         )
@@ -525,9 +586,53 @@ def build_result_tables(
             contrast,
             *confirmation[(family_label, contrast)][2:7],
         )
-        for family_label in FAMILY_LABELS.values()
+        for family_label in family_labels
         for contrast in CONTRAST_LABELS
     ]
+    expected_tail = {
+        (family_label, optimizer)
+        for family_label in family_labels
+        for optimizer in ("Muon", "NorMuon")
+    }
+    if set(tail_discovery) != expected_tail or set(tail_final) != expected_tail:
+        raise ValueError("Paper tail-stability tables require both challengers per active family")
+    expected_factorial = {
+        (family_label, metric)
+        for family_label in family_labels
+        for metric in ("contrastive loss", "positive margin")
+    }
+    spectral_factorial = _indexed(spectral_factorial_rows, context="spectral factorial table")
+    expected_spectral_tail = {
+        (family_label, condition)
+        for family_label in family_labels
+        for condition in (
+            "Muon native",
+            "Adam basis + Muon spectrum",
+            "Muon basis + Adam spectrum",
+        )
+    }
+    spectral_tail = _indexed(spectral_tail_rows, context="spectral tail table")
+    if (
+        set(spectral_factorial) != expected_factorial
+        or set(spectral_tail) != expected_spectral_tail
+    ):
+        raise ValueError("Paper spectral-transplant tables differ from the key frozen summaries")
+    stability_caption = (
+        "Post-hoc adjacent-checkpoint stability of the 14 task effects for each "
+        "final-score-selected optimizer/LR run against the selected AdamW run. This "
+        "exploratory diagnostic was added after heterogeneous LateOn directions became "
+        "visible and is outside the confirmatory family."
+        if families == FAMILIES
+        else "Post-hoc adjacent-checkpoint stability of the 14 task effects for each "
+        "final-score-selected optimizer/LR run against the selected AdamW run. This "
+        "exploratory diagnostic was added after heterogeneous task directions became visible "
+        "and is outside the confirmatory family."
+    )
+    confirmation_caption = (
+        "Validation-frozen, three-seed confirmatory retrieval contrasts. The FWER interval "
+        "applies a Bonferroni correction over all six comparisons prespecified before the "
+        "post-hoc Dense-only scope amendment and governs headline sign language."
+    )
 
     per_task_tables = "\n".join(
         [
@@ -554,7 +659,7 @@ def build_result_tables(
                     ),
                     label=f"tab:{family_label.lower()}-per-task-results",
                 )
-                for family_label in FAMILY_LABELS.values()
+                for family_label in family_labels
             ],
             _latex_table(
                 environment="table*",
@@ -568,12 +673,7 @@ def build_result_tables(
                     "Spearman $\\rho$",
                 ),
                 rows=[tuple(row) for row in task_stability_rows],
-                caption=(
-                    "Post-hoc adjacent-checkpoint stability of the 14 task effects for each "
-                    "final-score-selected optimizer/LR run against the selected AdamW run. This "
-                    "exploratory diagnostic was added after heterogeneous LateOn directions "
-                    "became visible and is outside the confirmatory family."
-                ),
+                caption=stability_caption,
                 label="tab:task-delta-stability",
             ),
         ]
@@ -616,7 +716,12 @@ def build_result_tables(
         _latex_table(
             environment="table*",
             columns="llcc",
-            headers=("Model", "Optimizer", "Final nDCG@10", "Rates reaching AdamW target"),
+            headers=(
+                "Model",
+                "Optimizer",
+                "Final nDCG@10",
+                "Rates reaching AdamW target",
+            ),
             rows=discovery_rows,
             caption=(
                 "Discovery retrieval outcomes. Final scores are medians over four learning-rate "
@@ -628,14 +733,8 @@ def build_result_tables(
         common_tables,
         _latex_table(
             environment="table*",
-            columns="llccc",
-            headers=(
-                "Model",
-                "Optimizer",
-                "Unseen margin",
-                "Top-1 agreement",
-                "Late token coverage",
-            ),
+            columns="llccc" if families == FAMILIES else "llcc",
+            headers=representation_headers,
             rows=representation_table_rows,
             caption=(
                 "Final-stage representation and score geometry, aggregated without selecting a "
@@ -643,18 +742,118 @@ def build_result_tables(
             ),
             label="tab:representation-results",
         ),
-        _latex_table(
-            environment="table*",
-            columns="lccc",
-            headers=(
-                "Model",
-                r"Matched-step margin $\Delta$ (A/M/N)",
-                r"Shared-start margin $\Delta$ (M--A/N--M)",
-                r"Hybrid AdamW $\Delta$",
-            ),
-            rows=intervention_rows,
-            caption="Immediate, accumulated, and routing-matched causal controls.",
-            label="tab:intervention-results",
+        "\n".join(
+            (
+                _latex_table(
+                    environment="table*",
+                    columns="lccc",
+                    headers=(
+                        "Model",
+                        r"Matched-step margin $\Delta$ (A/M/N)",
+                        r"Shared-start margin $\Delta$ (M--A/N--M)",
+                        r"Hybrid AdamW $\Delta$",
+                    ),
+                    rows=intervention_rows,
+                    caption="Immediate, accumulated, and routing-matched causal controls.",
+                    label="tab:intervention-results",
+                ),
+                _latex_table(
+                    environment="table*",
+                    columns="llcccl",
+                    headers=(
+                        "Model",
+                        "Rule",
+                        r"$\Delta$ AdamW tail",
+                        r"$\Delta$ rule tail",
+                        "Jaccard",
+                        "Regime",
+                    ),
+                    rows=[
+                        tuple(tail_discovery[(family_label, optimizer)])
+                        for family_label in family_labels
+                        for optimizer in ("Muon", "NorMuon")
+                    ],
+                    caption=(
+                        "Post-hoc fixed-state worst-query-tail decomposition. This exploratory "
+                        "diagnostic classifies shared-tail severity suppression versus tail "
+                        "redistribution; it is not confirmatory retrieval evidence."
+                    ),
+                    label="tab:tail-identity-results",
+                ),
+                _latex_table(
+                    environment="table*",
+                    columns="llccccl",
+                    headers=(
+                        "Model",
+                        "Rule",
+                        r"Validation p95 loss $\Delta$",
+                        "Loss wins",
+                        r"Unseen p05 margin $\Delta$",
+                        "Margin wins",
+                        "Decision",
+                    ),
+                    rows=[
+                        tuple(tail_final[(family_label, optimizer)])
+                        for family_label in family_labels
+                        for optimizer in ("Muon", "NorMuon")
+                    ],
+                    caption=(
+                        "Three-seed shared-start endpoint test of the tail signature. The endpoint "
+                        "rule was frozen before branch outcomes, while the motivating tail account "
+                        "is post hoc; persistence does not establish mediation of BEIR."
+                    ),
+                    label="tab:tail-persistence-results",
+                ),
+                _latex_table(
+                    environment="table*",
+                    columns="llccc",
+                    headers=(
+                        "Model",
+                        "Immediate metric",
+                        "Spectrum effect",
+                        "Basis effect",
+                        "Interaction",
+                    ),
+                    rows=[
+                        tuple(spectral_factorial[(family_label, metric)])
+                        for family_label in family_labels
+                        for metric in ("contrastive loss", "positive margin")
+                    ],
+                    caption=(
+                        "Post-hoc spectrum-versus-basis causal decomposition at fixed checkpoint "
+                        "states. The transplant identifies immediate functional effects, not the "
+                        "cause of a full-training BEIR difference."
+                    ),
+                    label="tab:spectral-factorial-results",
+                ),
+                _latex_table(
+                    environment="table*",
+                    columns="llccccc",
+                    headers=(
+                        "Model",
+                        "Condition",
+                        "p95 loss",
+                        "p05 margin",
+                        "AdamW tail",
+                        "Condition tail",
+                        "Jaccard",
+                    ),
+                    rows=[
+                        tuple(spectral_tail[(family_label, condition)])
+                        for family_label in family_labels
+                        for condition in (
+                            "Muon native",
+                            "Adam basis + Muon spectrum",
+                            "Muon basis + Adam spectrum",
+                        )
+                    ],
+                    caption=(
+                        "Post-hoc query-tail readout for the fixed-state spectral transplant. "
+                        "Contrasts are relative to native AdamW and cannot establish BEIR mediation."
+                    ),
+                    label="tab:spectral-tail-results",
+                ),
+            )
         ),
         _latex_table(
             environment="table*",
@@ -669,11 +868,7 @@ def build_result_tables(
                 "Task W/T/L",
             ),
             rows=confirmation_table_rows,
-            caption=(
-                "Validation-frozen, three-seed confirmatory retrieval contrasts. The FWER "
-                "interval applies a Bonferroni correction over all six prespecified comparisons "
-                "and governs headline sign language."
-            ),
+            caption=confirmation_caption,
             label="tab:confirmation-results",
         ),
     )
@@ -701,13 +896,28 @@ def _replace_headlines(text: str, headlines: dict[str, str]) -> str:
     return "\n".join(lines) + ("\n" if text.endswith("\n") else "")
 
 
-def _source(path: Path) -> dict[str, Any]:
+def _source(path: Path, repository_root: Path | None = None) -> dict[str, Any]:
     resolved = path.resolve()
+    if repository_root is None:
+        portable = str(resolved)
+    else:
+        try:
+            portable = str(resolved.relative_to(repository_root.resolve()))
+        except ValueError:
+            portable = str(resolved)
     return {
-        "path": str(resolved),
+        "path": portable,
         "bytes": resolved.stat().st_size,
         "sha256": _sha256(resolved),
     }
+
+
+def _select_family_rows(
+    rows: list[list[str]],
+    families: tuple[str, ...],
+) -> list[list[str]]:
+    labels = {FAMILY_LABELS[family] for family in families}
+    return [row for row in rows if row and row[0] in labels]
 
 
 def render_paper_results(
@@ -715,9 +925,16 @@ def render_paper_results(
     repo_root: Path = Path("."),
     results_path: Path = Path("paper/results.tex"),
     output_manifest: Path = Path("reports/paper-results.manifest.json"),
+    families: tuple[str, ...] = FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
+    families, scope = resolve_scope(families, scope_amendment)
     root = repo_root.resolve()
-    current_audit = audit_paper(repo_root=root)
+    current_audit = audit_paper(
+        repo_root=root,
+        families=families,
+        scope_amendment=scope_amendment,
+    )
     if current_audit["incomplete_evidence"]:
         raise IncompletePaperEvidenceError(
             "Paper headlines require every frozen evidence tier: "
@@ -731,6 +948,8 @@ def render_paper_results(
         root / "reports/weight-space",
         root / "reports/training-dynamics",
         repo_root=root,
+        families=families,
+        scope_amendment=scope_amendment,
     )
     mismatches = {
         name: (expected, current_macros.get(name))
@@ -744,26 +963,47 @@ def render_paper_results(
     retrieval_rows, retrieval_manifest, retrieval_table, _retrieval_figure = _retrieval_rows(
         retrieval_dir
     )
-    final_medians, checkpoint_table = _discovery_final_medians(retrieval_dir, retrieval_manifest)
-    task_rows, task_table = _discovery_task_rows(retrieval_dir, retrieval_manifest)
+    retrieval_rows = _select_family_rows(retrieval_rows, families)
+    final_medians, checkpoint_table = _discovery_final_medians(
+        retrieval_dir, retrieval_manifest, families
+    )
+    task_rows, task_table = _discovery_task_rows(retrieval_dir, retrieval_manifest, families)
     task_stability_rows, task_stability_table = _discovery_task_stability_rows(
-        retrieval_dir, retrieval_manifest
+        retrieval_dir, retrieval_manifest, families
     )
     common_rows, _common_manifest, common_table = _common_state_rows(root / "reports/common-state")
+    common_rows = _select_family_rows(common_rows, families)
     basis_rows, _basis_manifest, basis_table = _basis_rows(root / "reports/basis-sensitivity")
+    basis_rows = _select_family_rows(basis_rows, families)
     spectrum_rows, _spectrum_manifest, spectrum_table = _spectrum_rows(
         root / "results/common-state-spectra/summary"
     )
+    spectrum_rows = _select_family_rows(spectrum_rows, families)
     representation_rows, correlation_rows, _bridge_manifest, bridge_tables = _bridge_rows(
         root / "reports/mechanism-bridge"
     )
+    representation_rows = _select_family_rows(representation_rows, families)
+    correlation_rows = _select_family_rows(correlation_rows, families)
     functional_rows, functional_table, _functional_manifest = _functional_rows(
-        root / "reports/functional-intervention"
+        root / "reports/functional-intervention", families
     )
-    hybrid_rows, hybrid_table, _hybrid_manifest = _hybrid_rows(root / "reports/hybrid-adamw")
-    short_rows, short_table, _short_manifest = _short_branch_rows(root / "reports/short-branch")
+    hybrid_rows, hybrid_table, _hybrid_manifest = _hybrid_rows(
+        root / "reports/hybrid-adamw", families, scope
+    )
+    short_rows, short_table, _short_manifest = _short_branch_rows(
+        root / "reports/short-branch", families, scope
+    )
+    tail_discovery_rows, tail_final_rows, tail_tables, _tail_manifest = _tail_stability_rows(
+        root / "reports/tail-stability", families, scope
+    )
+    (
+        spectral_factorial_rows,
+        spectral_tail_rows,
+        spectral_tables,
+        _spectral_manifest,
+    ) = _spectral_transplant_rows(root / "reports/spectral-transplant", families, scope)
     confirmation_rows, confirmation_table, _confirmation_manifest = _confirmation_rows(
-        root / "reports/confirmatory"
+        root / "reports/confirmatory", families, scope
     )
     headlines = build_headline_macros(
         final_medians=final_medians,
@@ -776,6 +1016,7 @@ def render_paper_results(
         hybrid_rows=hybrid_rows,
         short_rows=short_rows,
         confirmation_rows=confirmation_rows,
+        families=families,
     )
     result_tables = build_result_tables(
         final_medians=final_medians,
@@ -789,7 +1030,12 @@ def render_paper_results(
         functional_rows=functional_rows,
         hybrid_rows=hybrid_rows,
         short_rows=short_rows,
+        tail_discovery_rows=tail_discovery_rows,
+        tail_final_rows=tail_final_rows,
+        spectral_factorial_rows=spectral_factorial_rows,
+        spectral_tail_rows=spectral_tail_rows,
         confirmation_rows=confirmation_rows,
+        families=families,
     )
     for relative, content in result_tables.items():
         _atomic_text(root / relative, content)
@@ -824,26 +1070,33 @@ def render_paper_results(
         functional_table,
         hybrid_table,
         short_table,
+        *tail_tables,
+        *spectral_tables,
         confirmation_table,
     ]
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,
         "claim_protocol": {
-            **_source(claim_path),
+            **_source(claim_path, root),
             "status": claim_protocol["status"],
             "frozen_at": claim_protocol["frozen_at"],
         },
-        "evidence_manifests": [_source(path) for path in evidence_paths],
-        "source_tables": [_source(path) for path in source_tables],
-        "result_tables": [_source(root / path) for path in PAPER_RESULT_TABLE_PATHS],
+        "evidence_manifests": [_source(path, root) for path in evidence_paths],
+        "source_tables": [_source(path, root) for path in source_tables],
+        "result_tables": [_source(root / path, root) for path in PAPER_RESULT_TABLE_PATHS],
         "headlines": headlines,
-        "results_tex": _source(paper_results),
+        "results_tex": _source(paper_results, root),
         "claim_boundary": (
             "These macros report the complete prespecified contrasts and interval classifications; "
-            "they do not convert descriptive checkpoint associations into causal evidence."
+            "they do not convert descriptive checkpoint associations into causal evidence. The "
+            "tail and spectrum-versus-basis tables are explicitly post-hoc causal decomposition at "
+            "fixed states and do not establish mediation of the full-training BEIR outcome."
         ),
     }
+    if scope is not None:
+        manifest["families"] = list(families)
+        manifest["scope_amendment"] = scope
     _atomic_json((root / output_manifest).resolve(), manifest)
     return manifest
 
@@ -860,6 +1113,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Exit successfully without mutation when frozen evidence is still incomplete",
     )
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     return parser.parse_args(argv)
 
 
@@ -870,6 +1127,8 @@ def main(argv: list[str] | None = None) -> None:
             repo_root=args.repo_root,
             results_path=args.results,
             output_manifest=args.output,
+            families=tuple(args.families),
+            scope_amendment=args.scope_amendment,
         )
     except IncompletePaperEvidenceError as error:
         if not args.if_ready:

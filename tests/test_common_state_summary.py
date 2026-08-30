@@ -217,6 +217,79 @@ def test_strict_common_state_summary_writes_complete_paper_tables(tmp_path: Path
     assert float(dense_pretrained_muon["cosine_with_adamw_parameter_weighted"]) == 0.6
 
 
+def test_dense_common_state_summary_reuses_only_authorized_family(tmp_path: Path):
+    spec = tmp_path / "common-state.json"
+    _spec(spec)
+    result_root = tmp_path / "results"
+    all_expected = [_anchor(result_root, spec, index) for index in range(20)]
+
+    manifest = summarize_common_state(
+        all_expected[:10],
+        result_root,
+        tmp_path / "dense-summary",
+        common_state_spec=spec,
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+    assert manifest["complete"] is True
+    assert manifest["families"] == ["dense"]
+    assert manifest["scope_amendment"]["status"] == ("user_directed_post_hoc_scope_amendment")
+    assert manifest["expected_anchors"] == manifest["valid_anchors"] == 10
+    assert {name: item["rows"] for name, item in manifest["outputs"].items()} == {
+        "gradient_tensor_metrics": 10,
+        "update_tensor_metrics": 30,
+        "pairwise_tensor_cosines": 30,
+        "gradient_anchor_metrics": 10,
+        "anchor_metrics": 30,
+        "pairwise_anchor_cosines": 30,
+        "update_gradient_contrasts": 30,
+        "anchor_contrasts": 20,
+    }
+
+
+def test_dense_common_state_summary_requires_scope_amendment(tmp_path: Path):
+    spec = tmp_path / "common-state.json"
+    _spec(spec)
+
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        summarize_common_state(
+            [],
+            tmp_path / "results",
+            tmp_path / "summary",
+            common_state_spec=spec,
+            families=("dense",),
+        )
+
+
+def test_dense_common_state_summary_rejects_changed_scope_binding(tmp_path: Path):
+    spec = tmp_path / "common-state.json"
+    _spec(spec)
+    payload = json.loads(Path("configs/dense_scope_amendment.json").read_text(encoding="utf-8"))
+    repository = tmp_path / "repository"
+    (repository / "configs").mkdir(parents=True)
+    (repository / "pyproject.toml").write_text("[project]\nname='fixture'\n", encoding="utf-8")
+    for binding in payload["source_bindings"]:
+        source = Path(binding["path"])
+        target = repository / source
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes())
+    changed = repository / payload["source_bindings"][0]["path"]
+    changed.write_bytes(changed.read_bytes() + b"\n")
+    amendment = repository / "configs" / "dense_scope_amendment.json"
+    amendment.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Scope-amendment source differs"):
+        summarize_common_state(
+            [],
+            tmp_path / "results",
+            tmp_path / "summary",
+            common_state_spec=spec,
+            families=("dense",),
+            scope_amendment=amendment,
+        )
+
+
 def test_expected_common_state_identity_preserves_full_checkpoint_stage(tmp_path: Path):
     config = RunConfig(
         run_id="muon-lr1e-3",

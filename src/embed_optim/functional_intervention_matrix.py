@@ -24,6 +24,7 @@ from .functional_intervention import (
     run_functional_intervention,
 )
 from .geometry import SCHEMA_VERSION, _sha256
+from .scope import resolve_scope
 
 
 @dataclass(frozen=True)
@@ -250,6 +251,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
     )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)
     parser.add_argument("--common-state-root", type=Path, default=Path("results/common-state"))
@@ -319,12 +321,13 @@ def main(argv: list[str] | None = None) -> None:
         )
         return
 
+    families, _ = resolve_scope(args.families, args.scope_amendment)
     matrix_path = resolve_matrix_path(args.matrix).resolve()
     all_configs = load_matrix(matrix_path)
-    configs = [config for config in all_configs if config.model_family in args.families]
-    if not configs:
-        raise ValueError("No matrix configurations matched the requested families")
-    if not set(args.families).issubset(set(common_anchor["expected_families"])):
+    configs = [config for config in all_configs if config.model_family in families]
+    if {config.model_family for config in configs} != set(families):
+        raise ValueError("Training matrix does not cover every requested model family")
+    if not set(families).issubset(set(common_anchor["expected_families"])):
         raise ValueError("Requested families are outside the frozen common-state protocol")
     by_family = {config.model_family: config for config in configs}
     references: dict[ModelFamily, Path] = {}
@@ -338,8 +341,14 @@ def main(argv: list[str] | None = None) -> None:
             references[family] = _resolve_reference(config, explicit)
     common_jobs = build_common_state_jobs(configs, references, common_spec, args.common_state_root)
     jobs = build_functional_intervention_jobs(common_jobs, args.output_root)
-    if len(jobs) != intervention["common_state"]["expected_anchors"]:
-        raise ValueError("Functional intervention job count differs from its frozen protocol")
+    if intervention["common_state"]["expected_anchors"] != common_anchor["expected_total_anchors"]:
+        raise ValueError("Functional intervention and common-state anchor locks differ")
+    expected = int(common_anchor["expected_anchors_per_family"]) * len(families)
+    if len(jobs) != expected:
+        raise ValueError(
+            f"Functional intervention built {len(jobs)} jobs for the requested scope, "
+            f"expected {expected}"
+        )
     failures = run_matrix(jobs, args)
     if failures:
         raise SystemExit(1)

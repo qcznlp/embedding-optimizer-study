@@ -1,9 +1,10 @@
 # NAACL manuscript
 
-This directory contains the result-safe manuscript for the optimizer study. It uses the official
-ACL style files pinned to commit `d5adc823ff0f80f98c80405ca0ab66c68e684409` of
+This directory contains the result-safe DenseOn manuscript for the AdamW/Muon/NorMuon optimizer
+study. It uses the official ACL style files pinned to commit
+`d5adc823ff0f80f98c80405ca0ab66c68e684409` of
 [`acl-org/acl-style-files`](https://github.com/acl-org/acl-style-files). The style files are fetched
-into an ignored local directory so this repository does not silently fork the conference template.
+into an ignored local directory so the repository does not silently fork the conference template.
 
 Build the review-format PDF with:
 
@@ -12,54 +13,89 @@ cd paper
 make
 ```
 
-`results.tex` is deliberately the only place where numerical result macros may enter prose. A
-macro containing `\ResultPending` marks an unresolved completion gate and renders visibly in red.
-The prospectively frozen headline and interpretation rules live in
-`../configs/paper_claim_protocol.json`. They bind the experiment and intervention protocols by hash,
-require all family/optimizer contrasts, and define when a confirmatory interval permits positive,
-negative, or only inconclusive language.
-If a bound narrative source needs a factual documentation correction, the protocol retains the
-original freeze context and records a content-hashed amendment with the evidence visible at the
-time; the audit exposes that amendment and rejects an unrecorded source change.
-The paper is not submission-ready while any such marker remains.
+## Scope amendment
 
-Audit the checked-in constants against the frozen matrix, materialized dataset, and strict
-weight-space manifest with `embed-optim-audit-paper`. The command reports unresolved evidence during
-drafting; `embed-optim-audit-paper --strict` becomes a hard final-submission gate.
+The project originally included DenseOn and LateOn. After the original discovery runs and some
+exploratory mechanism outputs were visible, the user directing the project requested that future
+work focus on DenseOn because LateOn was substantially slower and less central to the intended paper
+audience. This is a **user-directed, post-hoc scope amendment**, not a preregistered exclusion.
 
-After every strict evidence report exists, run `embed-optim-render-paper-results`. It replaces only
-the five headline macros and the six result-table files under `generated/` (including the two-panel
-per-task appendix), writes
-`reports/paper-results.manifest.json`, and binds the resulting `results.tex` and table bytes to the
-claim protocol, all evidence manifests, and all source tables. The strict paper audit rejects a
-manual headline/table edit, a stale generated manifest, or a final table that still contains a
-`ResultPending` marker.
+The main paper therefore makes primary, causal, and confirmatory claims about DenseOn only. LateOn
+artifacts remain in the repository as historical exploratory material, but they are not pooled,
+treated as replication, used to estimate architecture interactions, or allowed to determine headline
+wording. The authoritative dated record is `../configs/dense_scope_amendment.json`; the manuscript
+plan is `../docs/naacl-dense-paper-plan.md`. The original
+`../docs/naacl-paper-plan.md` remains byte-for-byte frozen as a historical two-family protocol
+artifact.
 
-`make -C paper` also invokes this renderer with `--if-ready`: an incomplete experiment retains the
-visible audited draft placeholders, while a complete evidence matrix renders the frozen headlines
-before LaTeX compilation. This keeps an already-running final handoff compatible with the same
-completion gate without weakening failures caused by malformed or stale complete evidence.
+Legacy manifests outside the manuscript may still contain two model panels for provenance. Every
+generated manuscript table and placeholder is strictly DenseOn-only. The final paper audit must
+reject any headline, confidence interval, or generated table that includes LateOn.
 
-## Evidence contract
+## Result safety
 
-| Claim family | Authoritative evidence | Required gate |
+`results.tex` is the only checked-in source of final numerical result macros. A
+`\ResultPending{...}` marker denotes an unresolved evidence gate and renders visibly in red. The
+paper is not submission-ready while any marker remains.
+
+The central result sequence is deliberately gated:
+
+1. same-state, Frobenius-matched Muon-family steps can be worse than AdamW on mean immediate margin;
+2. the DenseOn discovery trajectories can nevertheless have better final BEIR point estimates;
+3. symmetric cross-tails show redistribution of fragile queries rather than uniform dominance;
+4. a post-hoc cosine synthesis motivates optimizer-induced state feedback but is not causal;
+5. three-seed shared-start branches test whether the advantage accumulates;
+6. hybrid AdamW tests whether parameter routing is sufficient; and
+7. three new negative-sampling seeds determine the final retrieval claim.
+
+Exact state-feedback cosines, shared-start outcomes, hybrid results, and confirmatory intervals must
+enter through audited macros or generated tables. Do not copy them directly into prose. Spectral
+flattening and row adaptation are implementation fingerprints, not standalone paper contributions.
+
+The claim protocol and its content-hashed amendments bind experiment and intervention protocols to
+headline decision rules. If a bound source receives a factual documentation correction, the original
+freeze context and the evidence visible at amendment time must remain recorded. An unrecorded source
+change is a hard audit failure.
+
+Run `embed-optim-audit-paper` during drafting. It reports unresolved evidence without hiding it.
+`embed-optim-audit-paper --strict` is the final submission gate. After every DenseOn evidence report
+exists, run `embed-optim-render-paper-results`; it replaces only authorized headline macros and table
+files, writes `reports/paper-results.manifest.json`, and binds rendered bytes to the claim protocol,
+evidence manifests, and source tables.
+
+`make -C paper` invokes the renderer with `--if-ready`: incomplete experiments keep audited red
+placeholders, while complete evidence can be rendered before LaTeX compilation. This preserves a
+buildable draft without weakening the final strict gate.
+
+## DenseOn evidence contract
+
+The final renderer/auditor may read legacy two-model manifests, but each primary gate must select and
+verify the DenseOn subset explicitly.
+
+| Claim family | Authoritative evidence | DenseOn final gate |
 |---|---|---|
-| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and both manifests under `reports/training-dynamics/` | 24 runs, 120 checkpoints, 9,384 finite loss rows plus 24 explicit terminal/system rows in the rehashed remote histories, six systems summaries, and two source-bound figures pass audit |
-| Discovery retrieval behavior | `reports/coverage.json`, strict aggregate tables and plot sidecars | exactly 1,680 decontaminated-BEIR units |
-| Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics/summary_manifest.json` | 120 checkpoint means and all 1,680 source task files pass hashes; first passage uses the prospectively locked AdamW-median rule with right censoring and discloses its 160/1,680-unit freeze timing |
-| Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 24 runs, 120 checkpoints, verified model inputs |
-| Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | 20 anchors, 1,760 gradients, 5,280 transforms, 360 spectra |
-| Function-preserving basis diagnostic | `configs/basis_sensitivity.json` and `reports/basis-sensitivity/summary_manifest.json` | 540 RoPE-commuting QKV comparisons and 3,240 selected-head records pass functional-invariance, Cartesian-coverage, and source-hash audits |
-| Representation and score geometry | strict manifests under `reports/representation-space/` | two pretrained references plus 120 checkpoints per probe tier |
-| Immediate causal intervention | `reports/functional-intervention/manifest.json` | 20 anchors and 58,240 paired sample records |
-| Post-hoc local-to-global synthesis | `reports/local-global-reversal/summary_manifest.json` | four reversal contrasts and six acquisition--preservation rows, source-bound to the completed intervention, bridge, and validation reports |
-| Post-hoc mean-tail diagnostic with prospective branch test | `configs/tail_stability_analysis.json` and `reports/tail-stability/summary_manifest.json` | 60 fixed-state operator rows, four AdamW contrasts, and 40 symmetric worst-tail rows are labeled post hoc; the final claim requires 90 three-seed branch checkpoints and the pre-outcome joint loss-p95/unseen-margin-p05 rule |
-| Post-hoc spectrum/basis factorization | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | 20 anchors and 49,280 paired records identify immediate spectrum, singular-vector-basis, interaction, interpolation-path, and spectral-band effects; this explanatory tier is not sufficient by itself for a long-horizon claim |
-| Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 18 runs, 90 checkpoints on both frozen probes |
-| Routing fairness | `reports/hybrid-adamw/summary_manifest.json` | eight hybrid runs and 112 final BEIR units |
-| Confirmatory retrieval claims | `reports/confirmatory/summary_manifest.json` | three new seeds, 18 runs, 252 final BEIR units |
-| Final outcome rendering | `reports/outcome-summary.manifest.json` | all routing, immediate-direction, accumulated-branch, and confirmatory tables are source-hashed into the final blog marker region |
+| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and manifests under `reports/training-dynamics/` | 12 DenseOn runs and 60 checkpoints; every history, terminal record, systems summary, and source-bound figure passes audit |
+| Discovery retrieval behavior | `reports/coverage.json`, strict aggregate tables, and plot sidecars | exactly 840 DenseOn checkpoint--task cells across 14 decontaminated-BEIR tasks |
+| Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics-dense/summary_manifest.json` | 60 DenseOn checkpoint means and all 840 source task files pass hashes; right-censored AdamW-median rule and post-hoc timing are disclosed |
+| Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 12 DenseOn runs and 60 checkpoints with verified model inputs |
+| Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | every frozen DenseOn anchor, gradient replay, transform, and spectrum passes Cartesian and source-hash audits |
+| Immediate causal intervention | `reports/functional-intervention/manifest.json` | every DenseOn anchor and paired query record passes scale, sign, pairing, and source audits |
+| Post-hoc state-feedback synthesis | common-state cosine summary and `reports/local-global-reversal/summary_manifest.json` | trajectory-conditioned AdamW--Muon, Muon--NorMuon, and terminal-gradient alignments are source-bound and labeled post hoc |
+| Post-hoc symmetric tail diagnostic | `configs/tail_stability_analysis.json` and `reports/tail-stability/summary_manifest.json` | fixed DenseOn quantiles and Adam/challenger cross-tails are labeled post hoc; no robustness claim without the accumulated gate |
+| Spectrum/basis attribution | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | complete DenseOn spectrum, basis, interaction, path, and band cells; this fixed-state tier is insufficient for long-horizon causality |
+| Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 9 DenseOn runs and 45 checkpoints on both frozen probes; three-seed joint loss-p95/unseen-margin-p05 endpoint |
+| Routing fairness | `reports/hybrid-adamw/summary_manifest.json` | all 4 DenseOn hybrid-AdamW learning-rate runs and 56 final BEIR cells |
+| Confirmatory retrieval claims | `reports/confirmatory/summary_manifest.json` | 3 seeds × 3 optimizers = 9 DenseOn runs and 126 final BEIR cells; two primary contrasts receive nominal intervals and the original six-comparison Bonferroni familywise intervals |
+| Final outcome rendering | `reports/outcome-summary.manifest.json` and `reports/paper-results.manifest.json` | all DenseOn tables/headlines are source-hashed; no unresolved marker or LateOn contribution to primary inference |
 
-Checkpoint correlations are always described as observational. Causal language is reserved for
-same-state interventions and shared-start branches. The exploratory seed is never pooled with the
-three confirmation seeds as though all four were prospectively sampled.
+Checkpoint correlations are observational. Causal language is reserved for fixed-state interventions
+and shared-start branches. The exploratory training view is never pooled with the three confirmation
+views as though all four were prospectively sampled.
+
+## Historical LateOn artifacts
+
+Do not delete or rewrite LateOn logs to make the narrowed study look prospective. Preserve their
+hashes and provenance, label them historical/exploratory, and keep every LateOn table in the
+repository archive outside the manuscript. The paper appendix may describe and link to that archive,
+but every generated appendix table remains strictly DenseOn-only and the manuscript must not make
+MaxSim, token-level, cross-architecture, or general late-interaction claims.

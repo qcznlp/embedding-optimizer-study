@@ -1,101 +1,103 @@
 {
   "aggregation": {
-    "basis_sensitivity": "median-over-ninety-fixed-comparisons-per-family-operator",
-    "bridge": "seven-prespecified-geometry-and-two-posthoc-training-loss-within-run-first-difference-spearman-associations",
-    "common_state": "median-over-ten-frozen-anchors-per-family-operator",
-    "exact_spectra": "median-over-sixty-prespecified-spectra-per-family-operator",
+    "basis_sensitivity": "median-over-ninety-fixed-comparisons-per-operator-in-active-dense-scope",
+    "bridge": "three-prespecified-geometry-and-one-posthoc-training-loss-within-run-first-difference-spearman-associations-in-active-dense-scope",
+    "common_state": "median-over-ten-frozen-anchors-per-operator-in-active-dense-scope",
+    "exact_spectra": "median-over-sixty-prespecified-spectra-per-operator-in-active-dense-scope",
     "representation": "final-stage-median-over-four-frozen-learning-rates",
-    "retrieval_dynamics": "six-family-optimizer-groups-over-four-learning-rate-points"
+    "retrieval_dynamics": "three-optimizer-groups-over-four-learning-rate-points-in-active-dense-scope"
   },
   "blog": {
-    "bytes": 98371,
+    "block_bytes": 4903,
+    "block_sha256": "410e75762143f4b620c7420bfa0c00ee20a774f076db95345e2483a1bd165b95",
     "markers": [
       "<!-- MECHANISM:BEGIN -->",
       "<!-- MECHANISM:END -->"
     ],
-    "path": "/root/embedding-optimizer-study/docs/blog.md",
-    "sha256": "7b45a4fb012c27cced07fb1e8eea9608e0e21576d7b43d1fcec7abe05a6eccb2"
+    "path": "docs/blog.md"
   },
   "complete": true,
+  "families": [
+    "dense"
+  ],
   "figures": {
-    "exact_spectra": {
-      "manifest_sha256": "09ff4efd1c546e8e7493fba3df17cbcee54e6117926f2fbf195709bc30e583d5",
-      "path": "/root/embedding-optimizer-study/reports/common-state/exact-update-spectra.svg",
-      "sha256": "65f254bf55757f2ed1ece6b95d344c855e071227362aaaac5f8c8856d874c3e8"
-    },
-    "late_token_dynamics": {
-      "manifest_sha256": "dd173a3d54bb2f8b5dc6fc2e969d30e50e58d9dc44b58b5cb2298bdd6d973c47",
-      "path": "/root/embedding-optimizer-study/reports/representation-space/late-token-dynamics.svg",
-      "sha256": "d6b0e4c93a48cfa64aa3386955831398fbef2237d965fd0998223086372aa6be"
-    },
-    "representation_dynamics": {
-      "manifest_sha256": "30edd5a1f2cd15489ce042f925cf237e5036c90f5769f90b2cbae6504222ae85",
-      "path": "/root/embedding-optimizer-study/reports/representation-space/representation-dynamics.svg",
-      "sha256": "c4a9ff1fac81164b99d55f354f6353622372c2400a2e39e972b530845dde2c4c"
-    },
     "retrieval_dynamics": {
-      "path": "/root/embedding-optimizer-study/reports/retrieval-dynamics/quality_vs_useful_wall_time.svg",
+      "path": "reports/retrieval-dynamics/quality_vs_useful_wall_time.svg",
       "sha256": "ffec9bbe923449e50f88df6dfc5fd1db72963c18de83be01e81c5df8bcd2f863"
     }
   },
   "interpretation": "Common-state transforms identify optimizer fingerprints and the bridge remains descriptive one-seed evidence; causal retrieval claims require short interventions.",
   "output": {
-    "bytes": 6799,
-    "path": "/root/embedding-optimizer-study/reports/mechanism-summary.md",
-    "sha256": "50e87d5f30b0add3d64c2cbe953442e442c60d7c5150ec5f33d3344e0187b1e3"
+    "bytes": 4854,
+    "path": "reports/mechanism-summary.md",
+    "sha256": "17ba38dec5351d85c5e3168c79ffd5024f3288a3f0ccb0393d391fa7edceffb7"
   },
   "schema_version": 1,
+  "scope_amendment": {
+    "amended_at_utc": "2026-08-30T20:14:42Z",
+    "claim_boundary": "The scope reduction is post hoc and must be disclosed in the paper and blog. Confirmatory optimizer claims are DenseOn-only. Existing LateOn discovery and mechanism artifacts remain available for audit but cannot supply missing controls or be selectively promoted as confirmatory evidence.",
+    "path": "configs/dense_scope_amendment.json",
+    "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
+    "status": "user_directed_post_hoc_scope_amendment"
+  },
   "source_tables": [
     {
-      "path": "/root/embedding-optimizer-study/reports/retrieval-dynamics/optimizer_first_passage.csv",
+      "path": "reports/retrieval-dynamics/optimizer_first_passage.csv",
       "sha256": "921749b7755ae5c39deed65441163f17651dcef76258ad0b4bd369a039b47d40"
     },
     {
-      "path": "/root/embedding-optimizer-study/reports/common-state/anchor_contrasts.csv",
+      "path": "reports/common-state/anchor_contrasts.csv",
       "sha256": "75258e6e16d0fcc6c97b93fe425ee208af928e2dc0269cd57f9bffbfd8227a45"
     },
     {
-      "path": "/root/embedding-optimizer-study/reports/basis-sensitivity/summary.csv",
+      "path": "reports/basis-sensitivity/summary.csv",
       "sha256": "d05a7d6fb54891d6d8f53e63b5623d34da49f7221f70dd76d5a68fb85c626fa5"
     },
     {
-      "path": "/root/embedding-optimizer-study/results/common-state-spectra/summary/spectrum_metrics.csv",
+      "path": "results/common-state-spectra/summary/spectrum_metrics.csv",
       "sha256": "1b1d41bde4066bb7a51d7e159e27f94f0b91307904a596988cd53c765c8f1588"
     },
     {
-      "path": "/root/embedding-optimizer-study/reports/mechanism-bridge/checkpoint_bridge.csv",
+      "path": "reports/mechanism-bridge/checkpoint_bridge.csv",
       "sha256": "52af9cf0c97fbaa93086e9b5319ea5f875adf5fd03cd3bd3d2276ee71491d586"
     },
     {
-      "path": "/root/embedding-optimizer-study/reports/mechanism-bridge/descriptive_correlations.csv",
+      "path": "reports/mechanism-bridge/descriptive_correlations.csv",
       "sha256": "1cfd4262e073fa76d556386f0e51ead9d3bac76f1b1fbcbd7695fa798174e3b1"
+    },
+    {
+      "path": "reports/mechanism-bridge/within_run_changes.csv",
+      "sha256": "17a4cbad4486e862ed2adcb749811eaab8cb580ba7e5df863718e8aebf61a8d5"
     }
   ],
   "sources": {
     "basis_sensitivity": {
-      "head_records": 3240,
-      "path": "/root/embedding-optimizer-study/reports/basis-sensitivity/summary_manifest.json",
-      "records": 540,
-      "sha256": "236f7bd9f810c9507bc8bb8cf33b14362fc143e54f0b2ca55e6811743e067e2d"
+      "head_records": 1620,
+      "path": "reports/basis-sensitivity/summary_manifest.json",
+      "records": 270,
+      "sha256": "236f7bd9f810c9507bc8bb8cf33b14362fc143e54f0b2ca55e6811743e067e2d",
+      "summary_rows": 3
     },
     "common_state": {
-      "anchors": 20,
-      "path": "/root/embedding-optimizer-study/reports/common-state/summary_manifest.json",
+      "anchors": 10,
+      "path": "reports/common-state/summary_manifest.json",
       "sha256": "d4bea7b45cf5b985b46eb72fea724dff400a92a9a6301e7a8bdf1689bb1218b1"
     },
     "exact_spectra": {
-      "path": "/root/embedding-optimizer-study/results/common-state-spectra/summary/summary_manifest.json",
+      "path": "results/common-state-spectra/summary/summary_manifest.json",
       "sha256": "8d3c3fbd6b2113a5228b3e0b77f965284cd2beeccecfcade30671534586bfd65",
-      "spectra": 360
+      "spectra": 180
     },
     "mechanism_bridge": {
-      "checkpoints": 120,
-      "path": "/root/embedding-optimizer-study/reports/mechanism-bridge/summary_manifest.json",
-      "sha256": "6fb5970fb8d487eef4619ebcd5ca42ffa6a4dd6297743cc40879cf5f6adf1834"
+      "checkpoints": 60,
+      "correlations": 96,
+      "path": "reports/mechanism-bridge/summary_manifest.json",
+      "sha256": "6fb5970fb8d487eef4619ebcd5ca42ffa6a4dd6297743cc40879cf5f6adf1834",
+      "within_run_transitions": 48
     },
     "retrieval_dynamics": {
-      "evaluation_units": 1680,
-      "path": "/root/embedding-optimizer-study/reports/retrieval-dynamics/summary_manifest.json",
+      "evaluation_units": 840,
+      "path": "reports/retrieval-dynamics/summary_manifest.json",
       "sha256": "5eb922b55f19c9b93685bb8ce087c3e2bc80ae35b585f975ce50360625ad99a6"
     }
   }

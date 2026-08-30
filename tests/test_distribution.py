@@ -5,7 +5,18 @@ import posixpath
 import re
 from pathlib import Path, PurePosixPath
 
+from embed_optim.distribution_audit import _checkout_path_findings
+
 ROOT = Path(__file__).parents[1]
+
+
+def test_distribution_scanner_rejects_producer_checkout_paths() -> None:
+    assert _checkout_path_findings(
+        "wheel",
+        "report.json",
+        b'{"path":"' + b"/root" + b'/embedding-optimizer-study/report"}',
+    )
+    assert not _checkout_path_findings("wheel", "report.json", b'{"path":"reports/report.json"}')
 
 
 def _installed_data_paths() -> dict[str, PurePosixPath]:
@@ -27,11 +38,17 @@ def test_distribution_preserves_weight_space_document_links() -> None:
     installed = _installed_data_paths()
     expected_links = {
         "docs/blog.md": (
+            "../configs/dense_scope_amendment.json",
+            "../reports/dense-discovery/figures/dense-training-dynamics.png",
+            "../reports/dense-discovery/figures/dense-training-dynamics-by-run.png",
+            "../reports/dense-discovery/figures/dense-lr-sensitivity.png",
             "../reports/weight-space/optimizer_pair_contrast_trajectory.svg",
             "../reports/weight-space/optimizer_geometry_phase.svg",
             "../reports/weight-space/README.md",
+            "naacl-dense-paper-plan.md",
             "naacl-paper-plan.md",
         ),
+        "docs/naacl-dense-paper-plan.md": (),
         "docs/naacl-paper-plan.md": (
             "../reports/weight-space/optimizer_pair_contrasts.csv",
             "../reports/weight-space/optimizer_pair_contrast_trajectory.csv",
@@ -39,6 +56,7 @@ def test_distribution_preserves_weight_space_document_links() -> None:
             "../reports/weight-space/optimizer_geometry_phase.svg",
         ),
         "docs/completion-gates.md": (
+            "../configs/dense_scope_amendment.json",
             "../reports/weight-space/summary_manifest.json",
             "blog.md",
         ),
@@ -165,11 +183,11 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
     )
     for source in paper_files:
         assert installed[source] == PurePosixPath(
-            "share/doc/embedding-optimizer-study"
+            "share/embedding-optimizer-study"
         ) / PurePosixPath(source)
     for source in result_tables:
         assert installed[source] == PurePosixPath(
-            "share/doc/embedding-optimizer-study"
+            "share/embedding-optimizer-study"
         ) / PurePosixPath(source)
 
     main = (ROOT / "paper/main.tex").read_text()
@@ -178,7 +196,11 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         table = PurePosixPath(source).stem
         assert f"\\input{{generated/{table}}}" in main
         assert f"generated/{table}.tex" in makefile
-        assert "\\ResultPending" in (ROOT / source).read_text()
+        # Checked-in artifacts may represent either the audited pending state or
+        # the audited final state. Distribution safety requires complete,
+        # non-empty tables; strict pending/final consistency is owned by the
+        # paper-results manifest and paper audit.
+        assert (ROOT / source).read_text().strip()
 
 
 def test_distribution_bundles_project_governance_documents() -> None:
@@ -192,5 +214,5 @@ def test_distribution_bundles_project_governance_documents() -> None:
     )
     for source in documents:
         assert installed[source] == PurePosixPath(
-            "share/doc/embedding-optimizer-study"
+            "share/embedding-optimizer-study"
         ) / PurePosixPath(source)
