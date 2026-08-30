@@ -87,6 +87,8 @@ embed-optim-summarize-hybrid-control = "embed_optim.hybrid_control:main"
 embed-optim-evaluate-hybrid = "embed_optim.hybrid_evaluation:main"
 embed-optim-train = "embed_optim.train:main"
 embed-optim-matrix = "embed_optim.matrix:main"
+embed-optim-family-training-queue = "embed_optim.family_training_queue:main"
+embed-optim-dense-completion = "embed_optim.dense_completion_pipeline:main"
 embed-optim-evaluate = "embed_optim.evaluate_matrix:main"
 embed-optim-evaluation-progress = "embed_optim.evaluation_progress:main"
 embed-optim-supervise-evaluation = "embed_optim.evaluation_supervisor:main"
@@ -130,6 +132,8 @@ where = ["src"]
   "configs/common_state_probe.json",
   "configs/common_state_spectrum_probe.json",
   "configs/confirmatory_protocol.json",
+  "configs/dense_scope_amendment.json",
+  "configs/dense_training_queue.json",
   "configs/functional_intervention.json",
   "configs/formal_runtime.json",
   "configs/hybrid_adamw_control.json",

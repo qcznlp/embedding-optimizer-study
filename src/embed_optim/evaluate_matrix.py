@@ -463,6 +463,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--families", nargs="+", choices=["dense", "late"], default=["dense", "late"]
     )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--stages", nargs="*", type=int, choices=range(1, 6))
     parser.add_argument("--tasks", nargs="+", default=list(DECONTAMINATED_TASK_NAMES))

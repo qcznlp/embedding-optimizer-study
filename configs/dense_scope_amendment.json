@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "status": "user_directed_post_hoc_scope_amendment",
+  "amended_at_utc": "2026-08-30T20:14:42Z",
+  "reason": "Late-interaction training is substantially slower and has lower expected audience interest; all new computation and the primary paper narrative are therefore restricted to the DenseOn dense retriever.",
+  "decision_timing": {
+    "discovery_training_complete": true,
+    "discovery_beir_valid_units": 1680,
+    "discovery_beir_expected_units": 1680,
+    "common_state_and_post_hoc_mechanism_outputs_visible": true,
+    "dense_hybrid_completed_runs": 1,
+    "late_hybrid_completed_runs": 0,
+    "late_hybrid_partial_run_stopped": "late/hybrid-adamw-lr1e-6",
+    "confirmatory_training_outputs_visible": false,
+    "short_branch_training_outputs_visible": false,
+    "spectral_transplant_outputs_visible": false
+  },
+  "active_scope": {
+    "families": [
+      "dense"
+    ],
+    "base_model": "lightonai/DenseOn-unsupervised",
+    "discovery_runs": 12,
+    "discovery_checkpoints": 60,
+    "discovery_beir_units": 840,
+    "hybrid_adamw_runs": 4,
+    "hybrid_adamw_checkpoints": 20,
+    "hybrid_adamw_final_beir_units": 56,
+    "confirmatory_seeds": [
+      314159,
+      271828,
+      161803
+    ],
+    "confirmatory_runs": 9,
+    "confirmatory_checkpoints": 45,
+    "confirmatory_final_beir_units": 126,
+    "short_branch_runs": 9,
+    "short_branch_checkpoints": 45,
+    "short_branch_validation_units": 45,
+    "short_branch_unseen_probe_units": 46,
+    "common_state_anchors": 10,
+    "spectral_transplant_anchors": 10
+  },
+  "historical_late_policy": {
+    "delete_existing_artifacts": false,
+    "run_new_training": false,
+    "run_new_evaluation": false,
+    "use_in_primary_inference": false,
+    "allowed_presentation": "Clearly labelled historical exploratory appendix only; incomplete LateOn controls cannot be compared with the complete DenseOn confirmation design."
+  },
+  "claim_boundary": "The scope reduction is post hoc and must be disclosed in the paper and blog. Confirmatory optimizer claims are DenseOn-only. Existing LateOn discovery and mechanism artifacts remain available for audit but cannot supply missing controls or be selectively promoted as confirmatory evidence.",
+  "source_bindings": [
+    {
+      "path": "configs/experiment.yaml",
+      "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+    },
+    {
+      "path": "configs/hybrid_adamw.yaml",
+      "sha256": "d512ff3fb9ab86a1f1c27408a3672e819a6dcf3538aa4c1897a1f06afd1d457c"
+    },
+    {
+      "path": "configs/confirmatory_protocol.json",
+      "sha256": "f512e98ec07635c82ce9af6b6c8ed745146c4dc34379efb78b583b33bf53e550"
+    },
+    {
+      "path": "configs/short_branch_protocol.json",
+      "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+    },
+    {
+      "path": "configs/spectral_transplant_intervention.json",
+      "sha256": "c80709158e0d9b2d83b6fd24240cf05e32bec272087d71e91bda2ac76b19a36b"
+    },
+    {
+      "path": "configs/paper_claim_protocol.json",
+      "sha256": "0ddff916eccedbe493b41a07538d0e4e9e058a784f5440e10d688f5270609949"
+    }
+  ]
+}

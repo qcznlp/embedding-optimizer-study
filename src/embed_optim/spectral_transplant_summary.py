@@ -17,6 +17,7 @@ from .common_state_matrix import (
 from .config import ModelFamily, load_matrix, resolve_matrix_path
 from .functional_intervention_summary import METRICS, _read_jsonl, _write_csv
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .scope import ALL_FAMILIES, resolve_scope
 from .spectral_transplant import (
     NATIVE_CONDITIONS,
     load_spectral_transplant_protocol,
@@ -417,13 +418,18 @@ def summarize_spectral_transplants(
     *,
     spectral_spec: str | Path,
     common_state_spec: str | Path,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
     output_dir = Path(output_dir).resolve()
     spec_path, spec = load_spectral_transplant_protocol(spectral_spec)
     common_state_spec = Path(common_state_spec).resolve()
-    expected = spec["anchor_scope"]["expected_total_anchors"]
+    families, scope = resolve_scope(families, scope_amendment)
+    expected = spec["anchor_scope"]["expected_anchors_per_family"] * len(families)
     if len(jobs) != expected:
         raise ValueError(f"Spectral summary requires {expected} anchors")
+    if {job.common_state.family for job in jobs} != set(families):
+        raise ValueError("Spectral jobs do not match the requested family scope")
     incomplete = [
         job.label
         for job in jobs
@@ -532,6 +538,8 @@ def summarize_spectral_transplants(
         "status": "complete",
         "complete": True,
         "analysis_status": spec["analysis_status"],
+        "families": list(families),
+        "scope_amendment": scope,
         "spectral_transplant_spec": {
             "path": str(spec_path),
             "bytes": spec_path.stat().st_size,
@@ -557,6 +565,10 @@ def summarize_spectral_transplants(
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Summarize the spectral-transplant intervention")
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)
     parser.add_argument("--common-state-root", type=Path, default=Path("results/common-state"))
@@ -575,12 +587,17 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    families, _ = resolve_scope(args.families, args.scope_amendment)
     spec_path, protocol = load_spectral_transplant_protocol(args.spectral_spec)
     common_path = resolve_common_state_spec(args.common_state_spec).resolve()
     if _sha256(common_path) != protocol["source_inputs"]["common_state_spec_sha256"]:
         raise ValueError("Common-state spec differs from the spectral-transplant lock")
     common_spec, _ = _load_protocol(common_path)
-    configs = load_matrix(resolve_matrix_path(args.matrix).resolve())
+    configs = [
+        config
+        for config in load_matrix(resolve_matrix_path(args.matrix).resolve())
+        if config.model_family in families
+    ]
     by_family = {config.model_family: config for config in configs}
     references: dict[ModelFamily, Path] = {}
     for family, config in by_family.items():
@@ -600,6 +617,8 @@ def main(argv: list[str] | None = None) -> None:
         args.output_dir,
         spectral_spec=spec_path,
         common_state_spec=common_path,
+        families=families,
+        scope_amendment=args.scope_amendment,
     )
     print(json.dumps(manifest, indent=2, sort_keys=True))
 

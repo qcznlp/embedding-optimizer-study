@@ -97,3 +97,19 @@ def test_confirmatory_summary_rejects_partial_coverage():
 
     with pytest.raises(ValueError, match="coverage differs"):
         summarize_confirmatory_scores(rows, [314159, 271828, 161803], bootstrap_samples=10)
+
+
+def test_dense_scope_uses_three_familywise_contrasts():
+    dense_rows = [row for row in _rows() if row["model_family"] == "dense"]
+
+    seed_scores, contrasts, summaries = summarize_confirmatory_scores(
+        dense_rows,
+        [314159, 271828, 161803],
+        bootstrap_samples=100,
+        families=("dense",),
+    )
+
+    assert len(seed_scores) == 9
+    assert len(contrasts) == 126
+    assert len(summaries) == 3
+    assert all(row["familywise_contrasts"] == 3 for row in summaries)

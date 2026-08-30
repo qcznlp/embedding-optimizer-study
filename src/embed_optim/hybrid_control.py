@@ -26,6 +26,7 @@ from .aggregate import (
 from .config import RunConfig, load_matrix
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 
 FAMILIES = ("dense", "late")
 LEARNING_RATES = (1e-6, 3e-6, 1e-5, 3e-5)
@@ -179,14 +180,23 @@ def _hybrid_optimizer_contract_problem(
     return None
 
 
-def audit_hybrid_training(configs: list[RunConfig]) -> dict[str, Any]:
+def audit_hybrid_training(
+    configs: list[RunConfig], families: tuple[str, ...] = ALL_FAMILIES
+) -> dict[str, Any]:
+    families = normalize_families(families)
+    expected_runs = len(families) * len(LEARNING_RATES)
+    expected_checkpoints = expected_runs * 5
     if (
-        len(configs) != EXPECTED_HYBRID_RUNS
-        or {config.model_family for config in configs} != set(FAMILIES)
+        len(configs) != expected_runs
+        or {config.model_family for config in configs} != set(families)
         or {config.optimizer.name for config in configs} != {"hybrid_adamw"}
-        or {config.optimizer.lr for config in configs} != set(LEARNING_RATES)
+        or any(
+            {config.optimizer.lr for config in configs if config.model_family == family}
+            != set(LEARNING_RATES)
+            for family in families
+        )
     ):
-        raise ValueError("Hybrid training matrix is not the frozen 2×4 control")
+        raise ValueError(f"Hybrid training matrix is not the active {len(families)}×4 control")
     dataset_audit = audit_dataset_artifacts(configs)
     if not dataset_audit.get("complete"):
         return {
@@ -249,12 +259,12 @@ def audit_hybrid_training(configs: list[RunConfig]) -> dict[str, Any]:
                 verified_checkpoints += 1
     return {
         "complete": not errors
-        and shallow.get("verified_runs") == EXPECTED_HYBRID_RUNS
-        and verified_checkpoints == EXPECTED_HYBRID_CHECKPOINTS,
+        and shallow.get("verified_runs") == expected_runs
+        and verified_checkpoints == expected_checkpoints,
         "verified_runs": shallow.get("verified_runs", 0),
         "verified_checkpoints": verified_checkpoints,
-        "expected_runs": EXPECTED_HYBRID_RUNS,
-        "expected_checkpoints": EXPECTED_HYBRID_CHECKPOINTS,
+        "expected_runs": expected_runs,
+        "expected_checkpoints": expected_checkpoints,
         "training_view_fingerprint": dataset_audit.get("training_view_fingerprint"),
         "errors": errors,
     }
@@ -263,7 +273,9 @@ def audit_hybrid_training(configs: list[RunConfig]) -> dict[str, Any]:
 def summarize_final_evaluations(
     native_rows: list[dict[str, Any]],
     hybrid_rows: list[dict[str, Any]],
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    families = normalize_families(families)
     tasks = set(DECONTAMINATED_TASK_NAMES)
 
     def index_rows(
@@ -287,13 +299,13 @@ def summarize_final_evaluations(
     hybrid = index_rows(hybrid_rows, "hybrid_adamw")
     expected = {
         (family, learning_rate, task)
-        for family in FAMILIES
+        for family in families
         for learning_rate in LEARNING_RATES
         for task in tasks
     }
     if set(native) != expected or set(hybrid) != expected:
         raise ValueError(
-            "Final hybrid/native evaluation coverage differs from the frozen 2×4×14 design"
+            "Final hybrid/native evaluation coverage differs from the active family×4×14 design"
         )
     contrasts: list[dict[str, Any]] = []
     grouped: dict[tuple[str, float], list[dict[str, Any]]] = defaultdict(list)
@@ -332,14 +344,21 @@ def summarize_final_evaluations(
                 "hybrid_task_losses": sum(delta < 0 for delta in deltas),
             }
         )
-    if len(contrasts) != EXPECTED_HYBRID_EVALUATIONS or len(summaries) != 8:
+    expected_evaluations = len(families) * len(LEARNING_RATES) * len(tasks)
+    expected_summaries = len(families) * len(LEARNING_RATES)
+    if len(contrasts) != expected_evaluations or len(summaries) != expected_summaries:
         raise AssertionError("Hybrid control summary cardinality invariant failed")
     return contrasts, summaries
 
 
 def _system_contrasts(
-    native_rows: list[dict[str, Any]], hybrid_rows: list[dict[str, Any]]
+    native_rows: list[dict[str, Any]],
+    hybrid_rows: list[dict[str, Any]],
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> list[dict[str, Any]]:
+    families = normalize_families(families)
+    expected_rows = len(families) * len(LEARNING_RATES)
+
     def index(
         rows: list[dict[str, Any]], optimizer: str
     ) -> dict[tuple[str, float], dict[str, Any]]:
@@ -348,8 +367,10 @@ def _system_contrasts(
             for row in rows
             if row.get("optimizer") == optimizer
         }
-        if len(result) != 8:
-            raise ValueError(f"Expected eight {optimizer} system rows, found {len(result)}")
+        if len(result) != expected_rows:
+            raise ValueError(
+                f"Expected {expected_rows} {optimizer} system rows, found {len(result)}"
+            )
         return result
 
     native = index(native_rows, "adamw")
@@ -385,36 +406,47 @@ def build_hybrid_report(
     discovery_results: Path,
     control_results: Path,
     output_dir: Path,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
+    families, scope = resolve_scope(families, scope_amendment)
     protocol = _validate_protocol(protocol_path)
     discovery = [
-        config for config in load_matrix(discovery_matrix) if config.optimizer.name == "adamw"
+        config
+        for config in load_matrix(discovery_matrix)
+        if config.optimizer.name == "adamw" and config.model_family in families
     ]
-    control = load_matrix(control_matrix)
-    if len(discovery) != 8:
-        raise ValueError("Discovery matrix does not contain eight native AdamW runs")
+    control = [config for config in load_matrix(control_matrix) if config.model_family in families]
+    expected_runs = len(families) * len(LEARNING_RATES)
+    if len(discovery) != expected_runs:
+        raise ValueError(
+            f"Discovery matrix does not contain {expected_runs} scoped native AdamW runs"
+        )
     native_dataset = audit_dataset_artifacts(discovery)
     native_training = audit_training_artifacts(
         discovery,
         deep=True,
         expected_dataset_fingerprint=native_dataset.get("training_view_fingerprint"),
     )
-    hybrid_training = audit_hybrid_training(control)
+    hybrid_training = audit_hybrid_training(control, families)
     if not native_dataset.get("complete") or not native_training.get("complete"):
         raise ValueError("Native AdamW training sources do not pass their strict audit")
     if not hybrid_training.get("complete"):
         raise ValueError("Hybrid AdamW training sources do not pass their strict audit")
     native_all = collect_evaluations(discovery_results, discovery)
-    if len(native_all) != 8 * 5 * len(DECONTAMINATED_TASK_NAMES):
+    if len(native_all) != expected_runs * 5 * len(DECONTAMINATED_TASK_NAMES):
         raise ValueError("Native AdamW evaluation source is not the complete five-stage matrix")
     native_final = [row for row in native_all if row["stage"] == 5]
     hybrid_all = collect_evaluations(control_results, control)
-    if len(hybrid_all) != EXPECTED_HYBRID_EVALUATIONS or any(
+    expected_hybrid_evaluations = expected_runs * len(DECONTAMINATED_TASK_NAMES)
+    if len(hybrid_all) != expected_hybrid_evaluations or any(
         row["stage"] != 5 for row in hybrid_all
     ):
         raise ValueError("Hybrid evaluation source is not exactly the frozen final-stage matrix")
-    contrasts, summaries = summarize_final_evaluations(native_final, hybrid_all)
-    system = _system_contrasts(collect_system_metrics(discovery), collect_system_metrics(control))
+    contrasts, summaries = summarize_final_evaluations(native_final, hybrid_all, families)
+    system = _system_contrasts(
+        collect_system_metrics(discovery), collect_system_metrics(control), families
+    )
     output_dir = output_dir.resolve()
     tables = {
         "paired_task_contrasts": (output_dir / "paired_task_contrasts.csv", contrasts),
@@ -427,6 +459,8 @@ def build_hybrid_report(
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,
+        "families": list(families),
+        "scope_amendment": scope,
         "protocol": {
             "path": str(protocol_path.resolve()),
             "sha256": _sha256(protocol_path.resolve()),
@@ -483,6 +517,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--control-results", type=Path, default=Path("results/hybrid-adamw-beir"))
     parser.add_argument("--output-dir", type=Path, default=Path("reports/hybrid-adamw"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     return parser.parse_args(argv)
 
 
@@ -495,6 +533,8 @@ def main(argv: list[str] | None = None) -> None:
         args.discovery_results,
         args.control_results,
         args.output_dir,
+        tuple(args.families),
+        args.scope_amendment,
     )
     print(json.dumps(manifest, sort_keys=True))
 

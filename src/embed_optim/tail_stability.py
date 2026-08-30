@@ -14,6 +14,7 @@ from typing import Any
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .probe_matrix import _requested_probe_identity, probe_job_complete
 from .probes import resolve_probe_spec_path
+from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 from .short_branch_evaluation import (
     _audit_counts,
     _load_branch_configs,
@@ -403,8 +404,11 @@ def _write_text(path: Path, content: str) -> None:
 
 
 def discovery_anchor_tail_rows(
-    protocol_path: Path, protocol: dict[str, Any]
+    protocol_path: Path,
+    protocol: dict[str, Any],
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    families = normalize_families(families)
     root = protocol_path.parent.parent
     summary_path = (root / protocol["source_inputs"]["functional_intervention_summary"]).resolve()
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
@@ -584,7 +588,11 @@ def discovery_anchor_tail_rows(
         raise AssertionError(
             f"Built {len(cross_tail_output)} cross-tail rows, expected {expected_cross_tail}"
         )
-    return output, cross_tail_output, verified_sources
+    return (
+        [row for row in output if row["family"] in families],
+        [row for row in cross_tail_output if row["family"] in families],
+        [source for source in verified_sources if source["label"].split("/", 1)[0] in families],
+    )
 
 
 def _sign_counts(values: list[float], *, beneficial: str) -> tuple[int, int, int]:
@@ -610,12 +618,16 @@ def _leave_one_out_fraction(values: list[float], *, expected: str) -> float:
     raise ValueError(f"Unknown leave-one-out direction: {expected}")
 
 
-def discovery_family_contrasts(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def discovery_family_contrasts(
+    rows: list[dict[str, Any]], families: tuple[str, ...] = ALL_FAMILIES
+) -> list[dict[str, Any]]:
+    families = normalize_families(families)
     indexed = {(str(row["family"]), str(row["anchor"]), str(row["algorithm"])): row for row in rows}
-    if len(indexed) != 60:
-        raise ValueError("Discovery tail contrasts require 60 unique anchor/operator rows")
+    expected = 10 * len(families) * len(ALGORITHMS)
+    if len(indexed) != expected:
+        raise ValueError(f"Discovery tail contrasts require {expected} unique anchor/operator rows")
     output = []
-    for family in FAMILIES:
+    for family in families:
         anchors = sorted(
             {anchor for current_family, anchor, _ in indexed if current_family == family}
         )
@@ -689,14 +701,18 @@ def discovery_family_contrasts(rows: list[dict[str, Any]]) -> list[dict[str, Any
     return output
 
 
-def discovery_cross_tail_summary(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def discovery_cross_tail_summary(
+    rows: list[dict[str, Any]], families: tuple[str, ...] = ALL_FAMILIES
+) -> list[dict[str, Any]]:
+    families = normalize_families(families)
     indexed = {
         (str(row["family"]), str(row["anchor"]), str(row["challenger"])): row for row in rows
     }
-    if len(indexed) != 40:
-        raise ValueError("Cross-tail summary requires 40 unique anchor/challenger rows")
+    expected = 10 * len(families) * len(CHALLENGERS)
+    if len(indexed) != expected:
+        raise ValueError(f"Cross-tail summary requires {expected} unique anchor/challenger rows")
     output = []
-    for family in FAMILIES:
+    for family in families:
         for challenger in CHALLENGERS:
             members = [
                 row
@@ -769,7 +785,9 @@ def _short_branch_tail_rows(
     experiment_matrix: Path,
     matrix_dir: Path | None,
     results_root: Path,
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], str | None]:
+    families = normalize_families(families)
     root = protocol_path.parent.parent
     report_manifest_path = (root / "reports/short-branch/summary_manifest.json").resolve()
     if not report_manifest_path.is_file():
@@ -783,6 +801,7 @@ def _short_branch_tail_rows(
         experiment_matrix=experiment_matrix,
         matrix_dir=matrix_dir,
         audit_matrices=True,
+        families=families,
     )
     validation_spec_path, _ = load_validation_spec(
         root / protocol["source_inputs"]["validation_spec"]
@@ -795,18 +814,15 @@ def _short_branch_tail_rows(
     probe_identity = _requested_probe_identity(unseen_probe, unseen_spec)
     probe_jobs = build_short_branch_probe_jobs(
         configs,
-        {"dense": Path("."), "late": Path(".")},
+        {family: Path(".") for family in families},
         results_root / "unseen-representation",
         probe_identity,
     )
     counts = _audit_counts(validation_jobs, probe_jobs, validation_spec_path)
-    expected_counts = {
-        "validation_complete": 90,
-        "validation_expected": 90,
-        "unseen_probe_complete": 92,
-        "unseen_probe_expected": 92,
-    }
-    if counts != expected_counts:
+    if (
+        counts["validation_complete"] != counts["validation_expected"]
+        or counts["unseen_probe_complete"] != counts["unseen_probe_expected"]
+    ):
         raise ValueError(
             f"Complete short-branch summary disagrees with the audited evaluation matrix: {counts}"
         )
@@ -905,20 +921,24 @@ def _short_branch_tail_rows(
             }
         )
     rows = [rows_by_identity[key] for key in sorted(rows_by_identity)]
-    if len(rows) != 90 or any(list(row) != SHORT_BRANCH_FIELDS for row in rows):
-        raise ValueError("Short-branch tail matrix does not contain 90 complete rows")
+    expected_rows = len(families) * 3 * len(ALGORITHMS) * 5
+    if len(rows) != expected_rows or any(list(row) != SHORT_BRANCH_FIELDS for row in rows):
+        raise ValueError(f"Short-branch tail matrix does not contain {expected_rows} complete rows")
     return rows, sources, None
 
 
 def short_branch_contrasts(
     rows: list[dict[str, Any]],
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    families = normalize_families(families)
     indexed = {
         (str(row["family"]), int(row["seed"]), int(row["stage"]), str(row["operator"])): row
         for row in rows
     }
-    if len(indexed) != 90:
-        raise ValueError("Short-branch tail contrasts require 90 unique rows")
+    expected_rows = len(families) * 3 * 5 * len(ALGORITHMS)
+    if len(indexed) != expected_rows:
+        raise ValueError(f"Short-branch tail contrasts require {expected_rows} unique rows")
     contrast_metrics = (
         "validation_loss_mean",
         "validation_loss_p95",
@@ -932,7 +952,7 @@ def short_branch_contrasts(
     )
     contrasts = []
     seeds = sorted({identity[1] for identity in indexed})
-    for family in FAMILIES:
+    for family in families:
         for seed in seeds:
             for stage in range(1, 6):
                 reference = indexed[(family, seed, stage, "adamw")]
@@ -953,10 +973,13 @@ def short_branch_contrasts(
                             },
                         }
                     )
-    if len(contrasts) != 60 or any(list(row) != SHORT_BRANCH_CONTRAST_FIELDS for row in contrasts):
+    expected_contrasts = len(families) * 3 * 5 * len(CHALLENGERS)
+    if len(contrasts) != expected_contrasts or any(
+        list(row) != SHORT_BRANCH_CONTRAST_FIELDS for row in contrasts
+    ):
         raise AssertionError("Short-branch tail contrast cardinality changed")
     final = []
-    for family in FAMILIES:
+    for family in families:
         for challenger in CHALLENGERS:
             members = [
                 row
@@ -1016,6 +1039,7 @@ def _render_readme(
     *,
     pending_reason: str | None,
     claim_boundary: str,
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> str:
     lines = [
         "# Mean improvement versus tail stability",
@@ -1058,15 +1082,16 @@ def _render_readme(
             f"{row['adam_tail_baseline_margin_percentile_median_mean']:.3f} | "
             f"{row['tail_identity_regime']} |"
         )
-    lines.extend(
-        [
-            "",
-            "Late interaction shows a largely shared fragile-query set whose regression severity is reduced even when the challenger defines the tail. Dense retrieval shows much lower tail overlap and reverses sign on the challenger-selected set, which is evidence of tail redistribution rather than uniform query-wise dominance.",
-            "",
-            "## Prospective shared-start confirmation",
-            "",
-        ]
+    architecture_readout = (
+        "Late interaction shows a largely shared fragile-query set whose regression severity is "
+        "reduced even when the challenger defines the tail. Dense retrieval shows much lower tail "
+        "overlap and reverses sign on the challenger-selected set, which is evidence of tail "
+        "redistribution rather than uniform query-wise dominance."
+        if set(families) == set(ALL_FAMILIES)
+        else "Within DenseOn, low tail overlap and sign reversal on the challenger-selected set "
+        "indicate tail redistribution rather than uniform query-wise dominance."
     )
+    lines.extend(["", architecture_readout, "", "## Prospective shared-start confirmation", ""])
     if final:
         lines.extend(
             [
@@ -1096,15 +1121,18 @@ def build_tail_stability_report(
     matrix_dir: str | Path | None = None,
     short_branch_results_root: str | Path | None = None,
     require_short_branch: bool = False,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
+    families, scope = resolve_scope(families, scope_amendment)
     protocol_path, protocol = load_tail_stability_protocol(protocol_path)
     output_dir = Path(output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     discovery_rows, cross_tail_rows, discovery_sources = discovery_anchor_tail_rows(
-        protocol_path, protocol
+        protocol_path, protocol, families
     )
-    discovery_contrasts = discovery_family_contrasts(discovery_rows)
-    cross_tail_summary = discovery_cross_tail_summary(cross_tail_rows)
+    discovery_contrasts = discovery_family_contrasts(discovery_rows, families)
+    cross_tail_summary = discovery_cross_tail_summary(cross_tail_rows, families)
     short_root = Path(
         short_branch_results_root or protocol["short_branch_confirmation"]["results_root"]
     ).resolve()
@@ -1114,13 +1142,14 @@ def build_tail_stability_report(
         experiment_matrix=Path(experiment_matrix).resolve(),
         matrix_dir=None if matrix_dir is None else Path(matrix_dir).resolve(),
         results_root=short_root,
+        families=families,
     )
     if require_short_branch and pending_reason is not None:
         raise RuntimeError(f"Short-branch tail confirmation is not ready: {pending_reason}")
     short_contrasts: list[dict[str, Any]] = []
     final_summary: list[dict[str, Any]] = []
     if short_rows:
-        short_contrasts, final_summary = short_branch_contrasts(short_rows)
+        short_contrasts, final_summary = short_branch_contrasts(short_rows, families)
 
     table_specs: list[tuple[str, list[str], list[dict[str, Any]]]] = [
         ("discovery_anchor_tail", DISCOVERY_ANCHOR_FIELDS, discovery_rows),
@@ -1158,6 +1187,7 @@ def build_tail_stability_report(
             final_summary,
             pending_reason=pending_reason,
             claim_boundary=protocol["claim_boundary"],
+            families=families,
         ),
     )
     outputs["readme"] = _identity(readme_path, output_dir)
@@ -1169,6 +1199,8 @@ def build_tail_stability_report(
         "discovery_complete": True,
         "short_branch_confirmation_complete": complete,
         "analysis_status": protocol["analysis_status"],
+        "families": list(families),
+        "scope_amendment": scope,
         "protocol": _identity(protocol_path),
         "discovery_anchors": len(discovery_rows) // len(ALGORITHMS),
         "discovery_anchor_operator_rows": len(discovery_rows),
@@ -1199,6 +1231,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--experiment-matrix", type=Path, default=Path("configs/experiment.yaml"))
     parser.add_argument("--matrix-dir", type=Path)
     parser.add_argument("--short-branch-results-root", type=Path)
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--require-short-branch", action="store_true")
     return parser.parse_args(argv)
 
@@ -1212,6 +1248,8 @@ def main(argv: list[str] | None = None) -> None:
         matrix_dir=args.matrix_dir,
         short_branch_results_root=args.short_branch_results_root,
         require_short_branch=args.require_short_branch,
+        families=tuple(args.families),
+        scope_amendment=args.scope_amendment,
     )
     print(json.dumps(manifest, indent=2, sort_keys=True))
 

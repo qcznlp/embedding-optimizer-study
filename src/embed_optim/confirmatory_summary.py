@@ -23,6 +23,7 @@ from .confirmatory_evaluation import audit_confirmatory_evaluations
 from .confirmatory_matrix import audit_confirmatory_matrices
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 from .supplemental_training_audit import audit_derived_training_artifacts
 
 FAMILIES = ("dense", "late")
@@ -62,6 +63,7 @@ def hierarchical_seed_task_bootstrap(
     *,
     samples: int = 20_000,
     seed: int = 20260826,
+    familywise_contrasts: int = FAMILYWISE_CONTRASTS,
 ) -> dict[str, float | int]:
     values = np.asarray(effects, dtype=np.float64)
     if (
@@ -70,6 +72,7 @@ def hierarchical_seed_task_bootstrap(
         or values.shape[1] < 2
         or not np.isfinite(values).all()
         or samples < 1
+        or familywise_contrasts < 1
     ):
         raise ValueError("Hierarchical bootstrap requires a finite seed-by-task matrix")
     generator = np.random.default_rng(seed)
@@ -77,7 +80,7 @@ def hierarchical_seed_task_bootstrap(
     task_indices = generator.integers(0, values.shape[1], size=(samples, values.shape[1]))
     draws = values[seed_indices[:, :, None], task_indices[:, None, :]].mean(axis=(1, 2))
     lower, upper = np.quantile(draws, [0.025, 0.975])
-    familywise_alpha = 0.05 / FAMILYWISE_CONTRASTS
+    familywise_alpha = 0.05 / familywise_contrasts
     familywise_lower, familywise_upper = np.quantile(
         draws,
         [familywise_alpha / 2, 1 - familywise_alpha / 2],
@@ -88,7 +91,7 @@ def hierarchical_seed_task_bootstrap(
         "bootstrap_ci_95_lower": float(lower),
         "bootstrap_ci_95_upper": float(upper),
         "familywise_method": "bonferroni",
-        "familywise_contrasts": FAMILYWISE_CONTRASTS,
+        "familywise_contrasts": familywise_contrasts,
         "familywise_ci_95_lower": float(familywise_lower),
         "familywise_ci_95_upper": float(familywise_upper),
         "bootstrap_probability_positive": float(np.mean(draws > 0)),
@@ -102,12 +105,15 @@ def summarize_confirmatory_scores(
     *,
     bootstrap_samples: int = 20_000,
     bootstrap_seed: int = 20260826,
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    families = normalize_families(families)
+    familywise_contrasts = len(families) * len(CONTRASTS)
     tasks = list(DECONTAMINATED_TASK_NAMES)
     expected = {
         (seed, family, optimizer, task)
         for seed in seeds
-        for family in FAMILIES
+        for family in families
         for optimizer in OPTIMIZERS
         for task in tasks
     }
@@ -135,7 +141,7 @@ def summarize_confirmatory_scores(
 
     seed_scores = []
     for seed in seeds:
-        for family in FAMILIES:
+        for family in families:
             for optimizer in OPTIMIZERS:
                 task_scores = [
                     indexed[(seed, family, optimizer, task)]["ndcg_at_10"] for task in tasks
@@ -153,7 +159,7 @@ def summarize_confirmatory_scores(
 
     contrast_rows = []
     grouped: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
-    for family in FAMILIES:
+    for family in families:
         for treatment, baseline in CONTRASTS:
             for seed in seeds:
                 for task in tasks:
@@ -187,6 +193,7 @@ def summarize_confirmatory_scores(
             effect_matrix,
             samples=bootstrap_samples,
             seed=_stable_seed(bootstrap_seed, family, treatment, baseline),
+            familywise_contrasts=familywise_contrasts,
         )
         summaries.append(
             {
@@ -207,7 +214,14 @@ def summarize_confirmatory_scores(
                 **interval,
             }
         )
-    if len(seed_scores) != 18 or len(contrast_rows) != 252 or len(summaries) != 6:
+    expected_seed_scores = len(seeds) * len(families) * len(OPTIMIZERS)
+    expected_contrasts = len(seeds) * len(families) * len(CONTRASTS) * len(tasks)
+    expected_summaries = len(families) * len(CONTRASTS)
+    if (
+        len(seed_scores) != expected_seed_scores
+        or len(contrast_rows) != expected_contrasts
+        or len(summaries) != expected_summaries
+    ):
         raise AssertionError("Confirmatory summary cardinality invariant failed")
     return seed_scores, contrast_rows, summaries
 
@@ -222,7 +236,10 @@ def build_confirmatory_report(
     output_dir: str | Path = "reports/confirmatory",
     bootstrap_samples: int = 20_000,
     bootstrap_seed: int = 20260826,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
+    families, scope = resolve_scope(families, scope_amendment)
     resolved_protocol, protocol = load_confirmatory_protocol(protocol_path)
     generated = Path(matrix_dir or protocol["training"]["matrix_output_dir"]).resolve()
     matrix_audit = audit_confirmatory_matrices(
@@ -237,6 +254,8 @@ def build_confirmatory_report(
         validation_spec=validation_spec,
         matrix_dir=generated,
         results_root=results_root,
+        families=families,
+        scope_amendment=scope_amendment,
     )
     seeds = [int(seed) for seed in protocol["confirmatory_data"]["seeds"]]
     rows = []
@@ -244,7 +263,7 @@ def build_confirmatory_report(
     training_audits: dict[str, Any] = {}
     for seed in seeds:
         matrix_path = generated / f"seed{seed}.yaml"
-        configs = load_matrix(matrix_path)
+        configs = [config for config in load_matrix(matrix_path) if config.model_family in families]
         dataset = audit_confirmatory_view(resolved_protocol, seed)
         training = audit_derived_training_artifacts(configs, dataset, deep=True)
         if not training.get("complete"):
@@ -259,6 +278,7 @@ def build_confirmatory_report(
         seeds,
         bootstrap_samples=bootstrap_samples,
         bootstrap_seed=bootstrap_seed,
+        families=families,
     )
     output = Path(output_dir).resolve()
     tables = {
@@ -273,6 +293,8 @@ def build_confirmatory_report(
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,
+        "families": list(families),
+        "scope_amendment": scope,
         "protocol": {"path": str(resolved_protocol), "sha256": _sha256(resolved_protocol)},
         "matrix_audit": matrix_audit,
         "evaluation_audit": evaluation_audit,
@@ -290,10 +312,9 @@ def build_confirmatory_report(
             "bootstrap_seed": bootstrap_seed,
             "nominal_interval": "hierarchical seed-by-task bootstrap 95% interval",
             "familywise_method": "bonferroni",
-            "familywise_contrasts": FAMILYWISE_CONTRASTS,
+            "familywise_contrasts": len(families) * len(CONTRASTS),
             "familywise_interval": (
-                "simultaneous familywise 95% interval over all six frozen "
-                "family-by-optimizer contrasts"
+                "simultaneous familywise 95% interval over all active family-by-optimizer contrasts"
             ),
             "headline_interval": "familywise_ci_95",
             "query_level_inference": False,
@@ -322,6 +343,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--matrix-dir", type=Path)
     parser.add_argument("--results-root", type=Path, default=Path("results/confirmatory-beir"))
     parser.add_argument("--output-dir", type=Path, default=Path("reports/confirmatory"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--bootstrap-samples", type=int, default=20_000)
     parser.add_argument("--bootstrap-seed", type=int, default=20260826)
     return parser.parse_args(argv)
@@ -338,6 +363,8 @@ def main(argv: list[str] | None = None) -> None:
         output_dir=args.output_dir,
         bootstrap_samples=args.bootstrap_samples,
         bootstrap_seed=args.bootstrap_seed,
+        families=tuple(args.families),
+        scope_amendment=args.scope_amendment,
     )
     print(json.dumps(manifest, indent=2, sort_keys=True))
 

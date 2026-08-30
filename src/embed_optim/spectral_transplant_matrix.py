@@ -20,6 +20,7 @@ from .common_state_matrix import (
 )
 from .config import ModelFamily, load_matrix, resolve_matrix_path
 from .geometry import SCHEMA_VERSION, _sha256
+from .scope import resolve_scope
 from .spectral_transplant import (
     load_spectral_transplant_protocol,
     run_spectral_transplant_intervention,
@@ -312,6 +313,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
     )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)
     parser.add_argument("--common-state-root", type=Path, default=Path("results/common-state"))
@@ -380,6 +382,8 @@ def main(argv: list[str] | None = None) -> None:
         )
         return
 
+    families, _ = resolve_scope(args.families, args.scope_amendment)
+    args.families = list(families)
     matrix_path = resolve_matrix_path(args.matrix).resolve()
     all_configs = load_matrix(matrix_path)
     configs = [config for config in all_configs if config.model_family in args.families]
@@ -404,7 +408,7 @@ def main(argv: list[str] | None = None) -> None:
         args.common_state_root,
     )
     jobs = build_spectral_transplant_jobs(common_jobs, args.output_root)
-    expected = protocol["anchor_scope"]["expected_total_anchors"]
+    expected = protocol["anchor_scope"]["expected_anchors_per_family"] * len(families)
     if len(jobs) != expected:
         raise AssertionError(f"Built {len(jobs)} spectral jobs, expected {expected}")
     failures = run_matrix(jobs, args)

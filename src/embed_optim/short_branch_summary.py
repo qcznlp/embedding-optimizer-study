@@ -20,6 +20,7 @@ from .representation_summary import (
     ExpectedMetric,
     summarize_probe_metrics,
 )
+from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 from .short_branch import audit_short_branch_subset
 from .short_branch_evaluation import (
     ShortBranchValidationJob,
@@ -52,7 +53,12 @@ def expected_short_branch_probe_metrics(
 ) -> list[ExpectedMetric]:
     by_label = {job.label: job for job in probe_jobs}
     expected = []
-    for family in FAMILIES:
+    families = tuple(
+        family
+        for family in FAMILIES
+        if any(run.model_family == family for runs in configs.values() for run in runs)
+    )
+    for family in families:
         label = f"{family}/pretrained"
         expected.append(ExpectedMetric(by_label[label], "", "", "pretrained", 0, 0.0, 0))
     for seed, runs in sorted(configs.items()):
@@ -79,8 +85,14 @@ def expected_short_branch_probe_metrics(
                         seed,
                     )
                 )
-    if len(expected) != 92 or len({item.job.label for item in expected}) != 92:
-        raise ValueError("Short-branch representation summary requires 92 unique jobs")
+    expected_count = sum(len(runs) for runs in configs.values()) * 5 + len(families)
+    if (
+        len(expected) != expected_count
+        or len({item.job.label for item in expected}) != expected_count
+    ):
+        raise ValueError(
+            f"Short-branch representation summary requires {expected_count} unique jobs"
+        )
     return expected
 
 
@@ -148,25 +160,36 @@ def load_short_branch_validation_rows(
                 "group_metrics_sha256": _sha256(group_path),
             }
         )
-    if len(checkpoint_rows) != 90 or len(group_rows) != 630 or len(sources) != 90:
+    expected_checkpoints = len(jobs)
+    expected_group_rows = expected_checkpoints * (len(expected_groups) - 1)
+    if (
+        len(checkpoint_rows) != expected_checkpoints
+        or len(group_rows) != expected_group_rows
+        or len(sources) != expected_checkpoints
+    ):
         raise ValueError("Short-branch query-disjoint summary coverage differs")
     return checkpoint_rows, group_rows, sources
 
 
 def summarize_short_branch_contrasts(
     rows: list[dict[str, Any]],
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    families = normalize_families(families)
     indexed = {
         (int(row["seed"]), str(row["family"]), int(row["stage"]), str(row["operator"])): row
         for row in rows
     }
-    if len(indexed) != 90:
-        raise ValueError("Short-branch contrast input requires 90 unique checkpoint rows")
     seeds = sorted({identity[0] for identity in indexed})
+    expected_rows = len(seeds) * len(families) * 5 * len(OPERATORS)
+    if len(indexed) != expected_rows:
+        raise ValueError(
+            f"Short-branch contrast input requires {expected_rows} unique checkpoint rows"
+        )
     expected = {
         (seed, family, stage, operator)
         for seed in seeds
-        for family in FAMILIES
+        for family in families
         for stage in range(1, 6)
         for operator in OPERATORS
     }
@@ -174,7 +197,7 @@ def summarize_short_branch_contrasts(
         raise ValueError("Short-branch contrast input coverage differs")
     contrasts = []
     for seed in seeds:
-        for family in FAMILIES:
+        for family in families:
             for stage in range(1, 6):
                 for treatment, baseline in CONTRASTS:
                     left = indexed[(seed, family, stage, treatment)]
@@ -227,7 +250,9 @@ def summarize_short_branch_contrasts(
                 "beneficial_direction": "negative" if lower_is_better else "positive",
             }
         )
-    if len(contrasts) != 90 or len(summaries) != 120:
+    expected_contrasts = len(seeds) * len(families) * 5 * len(CONTRASTS)
+    expected_summaries = len(families) * 5 * len(CONTRASTS) * len(PRIMARY_VALIDATION_METRICS)
+    if len(contrasts) != expected_contrasts or len(summaries) != expected_summaries:
         raise AssertionError("Short-branch contrast cardinality invariant failed")
     return contrasts, summaries
 
@@ -262,7 +287,7 @@ def _bridge_rows(
     checkpoint_index = {key(row): row for row in checkpoint}
     geometry_index = {key(row): row for row in geometries}
     if not (
-        len(validation_index) == len(checkpoint_index) == len(geometry_index) == 90
+        len(validation_index) == len(checkpoint_index) == len(geometry_index) == len(validation)
         and set(validation_index) == set(checkpoint_index) == set(geometry_index)
     ):
         raise ValueError("Short-branch validation and representation checkpoints do not align")
@@ -310,12 +335,16 @@ def build_short_branch_report(
     validation_spec: str | Path = "configs/validation_probe.json",
     unseen_probe: str | Path | None = None,
     unseen_probe_spec: str | Path = "configs/beir_representation_probe.json",
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
+    families, scope = resolve_scope(families, scope_amendment)
     protocol_path, protocol, configs, generated = _load_branch_configs(
         protocol_path,
         experiment_matrix=experiment_matrix,
         matrix_dir=matrix_dir,
         audit_matrices=True,
+        families=families,
     )
     validation_spec_path, _ = load_validation_spec(validation_spec)
     root = Path(results_root).resolve()
@@ -325,17 +354,15 @@ def build_short_branch_report(
     probe_identity = _requested_probe_identity(probe_path, probe_spec_path)
     probe_jobs = build_short_branch_probe_jobs(
         configs,
-        {"dense": Path("."), "late": Path(".")},
+        {family: Path(".") for family in families},
         root / "unseen-representation",
         probe_identity,
     )
     counts = _audit_counts(validation_jobs, probe_jobs, validation_spec_path)
-    if counts != {
-        "validation_complete": 90,
-        "validation_expected": 90,
-        "unseen_probe_complete": 92,
-        "unseen_probe_expected": 92,
-    }:
+    if (
+        counts["validation_complete"] != counts["validation_expected"]
+        or counts["unseen_probe_complete"] != counts["unseen_probe_expected"]
+    ):
         raise ValueError(f"Short-branch evaluation matrix is incomplete: {counts}")
     training_audits = {}
     system_rows = []
@@ -362,13 +389,14 @@ def build_short_branch_report(
                     "optimizer": _canonical_operator(str(row["optimizer"])),
                 }
             )
-    if len(system_rows) != 18 or not history_rows:
+    expected_runs = sum(len(runs) for runs in configs.values())
+    if len(system_rows) != expected_runs or not history_rows:
         raise ValueError("Short-branch training dynamics or system metrics are incomplete")
 
     validation_rows, group_rows, validation_sources = load_short_branch_validation_rows(
         validation_jobs, validation_spec_path
     )
-    contrast_rows, contrast_summaries = summarize_short_branch_contrasts(validation_rows)
+    contrast_rows, contrast_summaries = summarize_short_branch_contrasts(validation_rows, families)
     output = Path(output_dir).resolve()
     representation_manifest = summarize_probe_metrics(
         expected_short_branch_probe_metrics(configs, probe_jobs),
@@ -394,6 +422,8 @@ def build_short_branch_report(
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,
+        "families": list(families),
+        "scope_amendment": scope,
         "protocol": {"path": str(protocol_path), "sha256": _sha256(protocol_path)},
         "matrix_manifest": {
             "path": str(matrix_manifest),
@@ -408,7 +438,7 @@ def build_short_branch_report(
             "valid_jobs": representation_manifest["valid_jobs"],
         },
         "coverage": {
-            "runs": 18,
+            "runs": expected_runs,
             "checkpoints": len(validation_rows),
             "validation_group_rows": len(group_rows),
             "paired_checkpoint_contrasts": len(contrast_rows),
@@ -437,6 +467,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--results-root", type=Path, default=Path("results/short-branch"))
     parser.add_argument("--output-dir", type=Path, default=Path("reports/short-branch"))
     parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
+    parser.add_argument(
         "--validation-spec", type=Path, default=Path("configs/validation_probe.json")
     )
     parser.add_argument("--unseen-probe", type=Path)
@@ -459,6 +493,8 @@ def main(argv: list[str] | None = None) -> None:
         validation_spec=args.validation_spec,
         unseen_probe=args.unseen_probe,
         unseen_probe_spec=args.unseen_probe_spec,
+        families=tuple(args.families),
+        scope_amendment=args.scope_amendment,
     )
     print(json.dumps(manifest, indent=2, sort_keys=True))
 

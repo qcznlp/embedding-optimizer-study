@@ -16,6 +16,7 @@ from .probe_matrix import (
     probe_job_complete,
     run_probe_matrix,
 )
+from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 from .short_branch import (
     audit_short_branch_matrices,
     audit_short_branch_subset,
@@ -49,7 +50,9 @@ def _load_branch_configs(
     experiment_matrix: str | Path,
     matrix_dir: str | Path | None,
     audit_matrices: bool,
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> tuple[Path, dict[str, Any], dict[int, list[RunConfig]], Path]:
+    families = normalize_families(families)
     resolved_protocol, protocol = load_short_branch_protocol(protocol_path)
     generated = Path(matrix_dir or protocol["training"]["matrix_output_dir"]).resolve()
     source_matrix = resolve_matrix_path(experiment_matrix).resolve()
@@ -62,30 +65,48 @@ def _load_branch_configs(
     configs: dict[int, list[RunConfig]] = {}
     for seed in protocol["training"]["order_seeds"]:
         matrix_path = generated / f"seed{seed}.yaml"
-        runs = load_matrix(matrix_path)
-        if len(runs) != protocol["training"]["runs_per_seed"] or {run.seed for run in runs} != {
-            seed
-        }:
+        runs = [run for run in load_matrix(matrix_path) if run.model_family in families]
+        expected_per_seed = len(families) * len(protocol["training"]["optimizer_operators"])
+        if (
+            len(runs) != expected_per_seed
+            or {run.seed for run in runs} != {seed}
+            or {run.model_family for run in runs} != set(families)
+        ):
             raise ValueError(f"Seed {seed}: short-branch evaluation matrix coverage differs")
         configs[int(seed)] = runs
-    if sum(map(len, configs.values())) != protocol["training"]["expected_runs"]:
-        raise ValueError("Short-branch evaluation did not load exactly 18 runs")
+    expected_runs = (
+        len(protocol["training"]["order_seeds"])
+        * len(families)
+        * len(protocol["training"]["optimizer_operators"])
+    )
+    if sum(map(len, configs.values())) != expected_runs:
+        raise ValueError(f"Short-branch evaluation did not load exactly {expected_runs} runs")
     return resolved_protocol, protocol, configs, generated
 
 
 def audit_short_branch_training(
     protocol_path: str | Path,
     configs: dict[int, list[RunConfig]],
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> dict[str, Any]:
     """Deep-audit the shared 50K subset and all 18 short-branch runs."""
 
     resolved_protocol, protocol = load_short_branch_protocol(protocol_path)
+    families = normalize_families(families)
     expected_seeds = {int(seed) for seed in protocol["training"]["order_seeds"]}
+    expected_runs = int(protocol["training"]["expected_runs"]) * len(families) // len(ALL_FAMILIES)
+    observed_families = {
+        getattr(run, "model_family", None) for runs in configs.values() for run in runs
+    }
+    family_mismatch = None not in observed_families and observed_families != set(families)
     if (
         set(configs) != expected_seeds
-        or sum(map(len, configs.values())) != protocol["training"]["expected_runs"]
+        or sum(map(len, configs.values())) != expected_runs
+        or family_mismatch
     ):
-        raise ValueError("Short-branch training audit requires the frozen 18-run matrix")
+        raise ValueError(
+            f"Short-branch training audit requires the active {expected_runs}-run matrix"
+        )
     dataset = audit_short_branch_subset(resolved_protocol)
     per_seed: dict[str, Any] = {}
     errors: list[str] = []
@@ -97,7 +118,6 @@ def audit_short_branch_training(
         verified_runs += int(audit.get("verified_runs", 0))
         verified_checkpoints += int(audit.get("verified_checkpoints", 0))
         errors.extend(f"seed {seed}: {error}" for error in audit.get("errors", []))
-    expected_runs = int(protocol["training"]["expected_runs"])
     expected_checkpoints = expected_runs * 5
     complete = (
         not errors
@@ -149,8 +169,9 @@ def build_short_branch_validation_jobs(
                     )
                 )
     labels = [job.label for job in jobs]
-    if len(jobs) != 90 or len(labels) != len(set(labels)):
-        raise ValueError("Short-branch validation requires 90 unique checkpoint jobs")
+    expected = sum(len(runs) for runs in configs.values()) * 5
+    if len(jobs) != expected or len(labels) != len(set(labels)):
+        raise ValueError(f"Short-branch validation requires {expected} unique checkpoint jobs")
     return jobs
 
 
@@ -162,8 +183,8 @@ def build_short_branch_probe_jobs(
 ) -> list[ProbeJob]:
     root = Path(output_root).resolve()
     families = sorted({run.model_family for runs in configs.values() for run in runs})
-    if set(families) != {"dense", "late"} or set(references) != set(families):
-        raise ValueError("Short-branch probe evaluation requires both pretrained references")
+    if not families or set(references) != set(families):
+        raise ValueError("Short-branch probe evaluation requires every scoped pretrained reference")
     probe_manifest_sha256, probe_spec_sha256 = probe_identity or (None, None)
     jobs: list[ProbeJob] = []
     for family in families:
@@ -202,25 +223,30 @@ def build_short_branch_probe_jobs(
                     )
                 )
     labels = [job.label for job in jobs]
-    if len(jobs) != 92 or len(labels) != len(set(labels)):
-        raise ValueError("Short-branch unseen probe requires 90 checkpoints plus two references")
+    expected = sum(len(runs) for runs in configs.values()) * 5 + len(families)
+    if len(jobs) != expected or len(labels) != len(set(labels)):
+        raise ValueError(
+            "Short-branch unseen probe requires every checkpoint plus one reference per family"
+        )
     return jobs
 
 
 def _reference_checkpoints(
     experiment_matrix: Path,
     *,
+    families: tuple[str, ...],
     dense: Path | None,
     late: Path | None,
     dry_run: bool,
 ) -> dict[ModelFamily, Path]:
     source = load_matrix(experiment_matrix)
     by_family = {
-        family: next(run for run in source if run.model_family == family)
-        for family in ("dense", "late")
+        family: next(run for run in source if run.model_family == family) for family in families
     }
     result: dict[ModelFamily, Path] = {}
-    for family, explicit in (("dense", dense), ("late", late)):
+    explicit_by_family = {"dense": dense, "late": late}
+    for family in families:
+        explicit = explicit_by_family[family]
         config = by_family[family]
         if explicit is not None:
             path = explicit.resolve()
@@ -258,6 +284,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--protocol", type=Path, default=Path("configs/short_branch_protocol.json"))
     parser.add_argument("--experiment-matrix", type=Path, default=Path("configs/experiment.yaml"))
     parser.add_argument("--matrix-dir", type=Path)
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--tier", choices=("validation", "unseen", "both"), default="both")
     parser.add_argument("--validation-probe", type=Path)
     parser.add_argument(
@@ -301,14 +331,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    families, scope = resolve_scope(args.families, args.scope_amendment)
     protocol_path, protocol, configs, matrix_dir = _load_branch_configs(
         args.protocol,
         experiment_matrix=args.experiment_matrix,
         matrix_dir=args.matrix_dir,
         audit_matrices=True,
+        families=families,
     )
     if args.training_audit_only or (not args.audit_only and not args.dry_run):
-        training_audit = audit_short_branch_training(protocol_path, configs)
+        training_audit = audit_short_branch_training(protocol_path, configs, families)
         if not training_audit["complete"]:
             details = "; ".join(training_audit["errors"][:10])
             raise RuntimeError(f"Short-branch training preflight failed: {details}")
@@ -338,6 +370,7 @@ def main(argv: list[str] | None = None) -> None:
     )
     references = _reference_checkpoints(
         args.experiment_matrix,
+        families=families,
         dense=args.dense_reference_checkpoint,
         late=args.late_reference_checkpoint,
         dry_run=args.dry_run,
@@ -383,16 +416,16 @@ def main(argv: list[str] | None = None) -> None:
             raise SystemExit(1)
 
     counts = _audit_counts(validation_jobs, probe_jobs, args.validation_spec)
-    if counts == {
-        "validation_complete": 90,
-        "validation_expected": 90,
-        "unseen_probe_complete": 92,
-        "unseen_probe_expected": 92,
-    }:
+    if (
+        counts["validation_complete"] == counts["validation_expected"]
+        and counts["unseen_probe_complete"] == counts["unseen_probe_expected"]
+    ):
         manifest_path = matrix_dir / "manifest.json"
         receipt = {
             "schema_version": SCHEMA_VERSION,
             "status": "complete",
+            "families": list(families),
+            "scope_amendment": scope,
             "protocol_sha256": _sha256(protocol_path),
             "matrix_manifest_sha256": _sha256(manifest_path),
             "validation_spec_sha256": _sha256(args.validation_spec),

@@ -12,6 +12,7 @@ from .confirmatory_data import audit_confirmatory_view, load_confirmatory_protoc
 from .confirmatory_matrix import audit_confirmatory_matrices
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
+from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 from .supplemental_training_audit import (
     audit_derived_training_artifacts,
     run_evaluation_after_specialized_audit,
@@ -29,14 +30,29 @@ def audit_confirmatory_training(
     protocol_path: str | Path,
     seed: int,
     configs: list[RunConfig],
+    families: tuple[str, ...] = ALL_FAMILIES,
 ) -> dict[str, Any]:
     """Deep-audit one derived 500K view and all six runs trained from it."""
 
     _, protocol = load_confirmatory_protocol(protocol_path)
+    families = normalize_families(families)
+    expected_runs = len(families) * 3
+    observed_families = {getattr(config, "model_family", None) for config in configs}
+    observed_optimizers = {
+        getattr(getattr(config, "optimizer", None), "name", None) for config in configs
+    }
+    family_mismatch = None not in observed_families and observed_families != set(families)
+    optimizer_mismatch = None not in observed_optimizers and observed_optimizers != {
+        "adamw",
+        "muon",
+        "normuon",
+    }
     if (
         seed not in protocol["confirmatory_data"]["seeds"]
-        or len(configs) != protocol["training"]["runs_per_seed"]
+        or len(configs) != expected_runs
         or {config.seed for config in configs} != {seed}
+        or family_mismatch
+        or optimizer_mismatch
     ):
         raise ValueError(f"Seed {seed}: confirmatory training selection differs")
     dataset = audit_confirmatory_view(protocol_path, seed)
@@ -51,7 +67,10 @@ def audit_confirmatory_evaluations(
     matrix_dir: str | Path | None = None,
     results_root: str | Path = "results/confirmatory-beir",
     verify_results: bool = True,
+    families: tuple[str, ...] = ALL_FAMILIES,
+    scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
+    families, scope = resolve_scope(families, scope_amendment)
     resolved_protocol, protocol = load_confirmatory_protocol(protocol_path)
     generated = Path(matrix_dir or protocol["training"]["matrix_output_dir"]).resolve()
     matrix_audit = audit_confirmatory_matrices(
@@ -66,7 +85,7 @@ def audit_confirmatory_evaluations(
     sources: list[dict[str, Any]] = []
     total = 0
     for seed, matrix_path in matrices.items():
-        configs = load_matrix(matrix_path)
+        configs = [config for config in load_matrix(matrix_path) if config.model_family in families]
         seed_root = root / f"seed{seed}"
         try:
             rows = collect_evaluations(seed_root, configs)
@@ -91,10 +110,12 @@ def audit_confirmatory_evaluations(
             if int(row["stage"]) == 5
         }
         only_final = len(rows) == len(observed) and all(int(row["stage"]) == 5 for row in rows)
-        complete = observed == expected and only_final and len(rows) == 84
+        expected_seed_units = len(configs) * len(DECONTAMINATED_TASK_NAMES)
+        complete = observed == expected and only_final and len(rows) == expected_seed_units
         if verify_results and not complete:
             raise ValueError(
-                f"Seed {seed}: confirmatory evaluation coverage is {len(rows)}/84 final units"
+                f"Seed {seed}: confirmatory evaluation coverage is "
+                f"{len(rows)}/{expected_seed_units} final units"
             )
         for row in rows:
             path = Path(row["result_path"]).resolve()
@@ -108,13 +129,15 @@ def audit_confirmatory_evaluations(
             )
         per_seed[str(seed)] = {"complete": complete, "units": len(rows)}
         total += len(rows)
-    expected_total = int(protocol["training"]["expected_beir_units"])
+    expected_total = len(matrices) * len(families) * 3 * len(DECONTAMINATED_TASK_NAMES)
     complete = total == expected_total and all(item["complete"] for item in per_seed.values())
     if verify_results and not complete:
         raise ValueError(f"Confirmatory evaluation coverage is {total}/{expected_total}")
     return {
         "schema_version": SCHEMA_VERSION,
         "complete": complete,
+        "families": list(families),
+        "scope_amendment": scope,
         "protocol_sha256": _sha256(resolved_protocol),
         "matrix_manifest_sha256": matrix_audit["manifest_sha256"],
         "expected_units": expected_total,
@@ -135,6 +158,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--matrix-dir", type=Path)
     parser.add_argument("--results-root", type=Path, default=Path("results/confirmatory-beir"))
+    parser.add_argument(
+        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
+    )
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--log-dir", type=Path, default=Path("logs/confirmatory-evaluation"))
     parser.add_argument("--gpus-a", default="0,1,2,3")
     parser.add_argument("--gpus-b", default="4,5,6,7")
@@ -150,6 +177,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    families, _ = resolve_scope(
+        getattr(args, "families", ["dense", "late"]),
+        getattr(args, "scope_amendment", None),
+    )
     protocol_path, protocol = load_confirmatory_protocol(args.protocol)
     generated = Path(args.matrix_dir or protocol["training"]["matrix_output_dir"]).resolve()
     audit_confirmatory_matrices(
@@ -160,11 +191,20 @@ def main(argv: list[str] | None = None) -> None:
     )
     if not args.audit_only:
         for seed, matrix_path in _matrix_paths(protocol, generated).items():
-            configs = load_matrix(matrix_path)
-            training_audit = audit_confirmatory_training(protocol_path, seed, configs)
+            loaded = load_matrix(matrix_path)
+            configs = (
+                loaded
+                if families == ("dense", "late")
+                else [config for config in loaded if config.model_family in families]
+            )
+            training_audit = (
+                audit_confirmatory_training(protocol_path, seed, configs)
+                if families == ("dense", "late")
+                else audit_confirmatory_training(protocol_path, seed, configs, families)
+            )
             worker_args = argparse.Namespace(
                 matrix=str(matrix_path),
-                families=["dense", "late"],
+                families=list(families),
                 run_ids=[],
                 stages=[5],
                 tasks=list(DECONTAMINATED_TASK_NAMES),
@@ -188,6 +228,8 @@ def main(argv: list[str] | None = None) -> None:
         validation_spec=args.validation_spec,
         matrix_dir=generated,
         results_root=args.results_root,
+        families=families,
+        scope_amendment=getattr(args, "scope_amendment", None),
     )
     _atomic_json(args.receipt, receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
