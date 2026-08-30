@@ -544,6 +544,8 @@ def _retrieval_dynamics_complete(path: Path, payload: dict[str, Any]) -> bool:
             "tasks": 14,
             "evaluation_units": 1_680,
             "optimizer_family_groups": 6,
+            "best_config_task_delta_rows": 280,
+            "adjacent_stage_task_stability_rows": 16,
         }
         or not isinstance(sources, dict)
         or not isinstance(outputs, dict)
@@ -555,6 +557,11 @@ def _retrieval_dynamics_complete(path: Path, payload: dict[str, Any]) -> bool:
         "run_first_passage": ("run_first_passage.csv", 24),
         "optimizer_first_passage": ("optimizer_first_passage.csv", 6),
         "best_config_task_comparison": ("best_config_task_comparison.csv", 28),
+        "best_config_task_delta_dynamics": (
+            "best_config_task_delta_dynamics.csv",
+            280,
+        ),
+        "task_delta_stability": ("task_delta_stability.csv", 16),
         "quality_vs_useful_wall_time": ("quality_vs_useful_wall_time.svg", None),
     }
     if set(outputs) != set(expected_outputs) or any(

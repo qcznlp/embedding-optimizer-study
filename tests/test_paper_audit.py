@@ -58,7 +58,11 @@ def test_current_paper_constants_match_strict_sources():
     assert len(discovery_evidence) == 4
     assert discovery_evidence[1]["complete"] is True
     assert discovery_evidence[2]["complete"] is True
-    assert discovery_evidence[3]["complete"] is False
+    assert discovery_evidence[3]["complete"] is True
+    assert result["incomplete_evidence"] == [
+        "ConfirmationHeadline",
+        "InterventionHeadline",
+    ]
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
