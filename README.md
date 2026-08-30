@@ -160,6 +160,7 @@ embed-optim-watch-checkpoints \
 embed-optim-evaluate \
   --matrix configs/experiment.yaml \
   --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
   --stages 1 2 3 4 5 \
   --gpus-a 0,1,2,3,4,5,6,7 \
   --gpus-b 4,5,6,7
@@ -281,7 +282,9 @@ The final Dense-only sync must use an explicit family selection and the final re
 historical LateOn tags as active confirmation.
 
 ~~~bash
-embed-optim-sync-wandb --families dense
+embed-optim-sync-wandb \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
 ~~~
 
 No API key or service credential is stored in source, logs intended for release, build artifacts, or

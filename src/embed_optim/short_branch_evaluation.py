@@ -284,9 +284,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--protocol", type=Path, default=Path("configs/short_branch_protocol.json"))
     parser.add_argument("--experiment-matrix", type=Path, default=Path("configs/experiment.yaml"))
     parser.add_argument("--matrix-dir", type=Path)
-    parser.add_argument(
-        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
     parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--tier", choices=("validation", "unseen", "both"), default="both")
     parser.add_argument("--validation-probe", type=Path)

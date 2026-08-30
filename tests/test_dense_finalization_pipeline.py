@@ -113,7 +113,10 @@ def test_wandb_is_an_explicit_opt_in_and_dense_only(tmp_path: Path):
     steps = pipeline_steps(_step_args(tmp_path, include_wandb=True))
 
     assert steps[-1].name == "wandb-sync-dense"
-    assert steps[-1].command[-3:] == ("embed_optim.wandb_sync", "--families", "dense")
+    assert steps[-1].command[2] == "embed_optim.wandb_sync"
+    assert steps[-1].command[-4:-2] == ("--families", "dense")
+    assert steps[-1].command[-2] == "--scope-amendment"
+    assert steps[-1].command[-1].endswith("/configs/dense_scope_amendment.json")
     assert "late" not in steps[-1].command
 
 

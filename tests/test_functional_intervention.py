@@ -169,8 +169,9 @@ def test_worker_command_round_trips(tmp_path: Path):
     assert parsed.label == "late/pretrained"
     assert parsed.output_dir == job.output_dir
     defaults = parse_args([])
-    assert defaults.families == ["dense", "late"]
+    assert defaults.families == ["dense"]
     assert defaults.scope_amendment is None
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
     summary_defaults = parse_summary_args([])
     assert summary_defaults.families == ["dense", "late"]
     assert summary_defaults.scope_amendment is None
@@ -214,7 +215,7 @@ def test_dense_intervention_matrix_builds_ten_authorized_jobs(monkeypatch):
 
 def test_dense_intervention_matrix_requires_scope_amendment():
     with pytest.raises(ValueError, match="requires --scope-amendment"):
-        intervention_matrix_main(["--families", "dense", "--dry-run"])
+        intervention_matrix_main(["--dry-run"])
 
 
 def _sample_record(condition, sample_id, loss, margin):

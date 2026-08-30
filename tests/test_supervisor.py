@@ -130,3 +130,8 @@ def test_supervisor_cli_rejects_invalid_intervals():
         parse_args(["--poll-seconds", "0"])
     with pytest.raises(SystemExit):
         parse_args(["--wait-for-pid", "-1"])
+
+
+def test_supervisor_cli_defaults_dense_and_requires_explicit_late_opt_in():
+    assert parse_args([]).families == ["dense"]
+    assert parse_args(["--families", "late"]).families == ["late"]

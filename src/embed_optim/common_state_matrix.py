@@ -15,6 +15,7 @@ from huggingface_hub import snapshot_download
 from .config import ModelFamily, RunConfig, load_matrix, resolve_matrix_path
 from .geometry import SCHEMA_VERSION, _sha256
 from .gradient_probe import export_gradient_probe
+from .scope import resolve_scope
 from .update_geometry import ALGORITHMS, UpdateOperatorConfig, analyze_common_state_updates
 
 
@@ -486,9 +487,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Run the prospectively frozen common-state gradient and update-geometry matrix"
     )
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
-    parser.add_argument(
-        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)
     parser.add_argument("--output-root", type=Path, default=Path("results/common-state"))
@@ -523,6 +523,9 @@ def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     if args.max_retries < 0:
         raise ValueError("--max-retries must be non-negative")
+    if not args.worker:
+        families, _ = resolve_scope(args.families, args.scope_amendment)
+        args.families = list(families)
     args.common_state_spec = resolve_common_state_spec(args.common_state_spec).resolve()
     spec, anchor = _load_protocol(args.common_state_spec)
     if args.worker:

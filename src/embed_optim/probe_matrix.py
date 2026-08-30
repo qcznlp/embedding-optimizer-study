@@ -19,6 +19,7 @@ from .geometry import _sha256
 from .probe_export import export_probe
 from .probes import resolve_probe_spec_path
 from .representation_geometry import SCHEMA_VERSION, _export_manifest_identity, analyze_probe
+from .scope import resolve_scope
 
 JobKind = Literal["reference", "checkpoint"]
 
@@ -403,9 +404,8 @@ def _resolve_reference(config: RunConfig, explicit: Path | None) -> Path:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Export and analyze the fixed probe matrix")
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
-    parser.add_argument(
-        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)
@@ -452,6 +452,9 @@ def main(argv: list[str] | None = None) -> None:
             "--batch-size must be positive; --max-retries and "
             "--cpu-threads-per-worker must be non-negative"
         )
+    if not args.worker:
+        families, _ = resolve_scope(args.families, args.scope_amendment)
+        args.families = list(families)
     if args.worker:
         requested_workers = len({value.strip() for value in args.gpus.split(",") if value.strip()})
         cpu_threads = args.cpu_threads_per_worker or max(

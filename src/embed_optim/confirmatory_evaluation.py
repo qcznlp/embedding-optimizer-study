@@ -158,9 +158,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--matrix-dir", type=Path)
     parser.add_argument("--results-root", type=Path, default=Path("results/confirmatory-beir"))
-    parser.add_argument(
-        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
     parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--log-dir", type=Path, default=Path("logs/confirmatory-evaluation"))
     parser.add_argument("--gpus-a", default="0,1,2,3")
@@ -215,6 +213,7 @@ def main(argv: list[str] | None = None) -> None:
                 results_root=str((args.results_root / f"seed{seed}").resolve()),
                 log_dir=str((args.log_dir / f"seed{seed}").resolve()),
                 worker_python=args.worker_python or sys.executable,
+                scope_amendment=args.scope_amendment,
             )
             if failures := run_evaluation_after_specialized_audit(
                 worker_args,

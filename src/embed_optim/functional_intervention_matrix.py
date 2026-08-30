@@ -248,9 +248,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Run the frozen scale-matched functional-intervention matrix"
     )
     parser.add_argument("--matrix", type=Path, default=Path("configs/experiment.yaml"))
-    parser.add_argument(
-        "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
     parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--dense-reference-checkpoint", type=Path)
     parser.add_argument("--late-reference-checkpoint", type=Path)

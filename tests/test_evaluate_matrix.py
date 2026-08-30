@@ -86,6 +86,23 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
     assert all(command[command.index("--num_processes") + 1] == "4" for command, _ in late_launches)
 
 
+def test_evaluation_cli_defaults_dense_and_validates_scope_before_gpu_work(monkeypatch):
+    args = evaluate_matrix.parse_args([])
+    assert args.families == ["dense"]
+    assert evaluate_matrix.parse_args(["--families", "dense", "late"]).families == [
+        "dense",
+        "late",
+    ]
+
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_selected_models",
+        lambda args: pytest.fail("scope must be validated before selecting checkpoints"),
+    )
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        evaluate_matrix.run_evaluation(args)
+
+
 def test_evaluation_preflight_requires_deep_validated_training_inputs(monkeypatch):
     config = SimpleNamespace(model_family="dense", run_id="adamw-test")
     monkeypatch.setattr(evaluate_matrix, "_selected_configs", lambda args: [config])

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from argparse import Namespace
+from pathlib import Path
 from types import SimpleNamespace
 
 from embed_optim import confirmatory_evaluation, hybrid_evaluation
@@ -84,6 +85,8 @@ def test_confirmatory_entrypoint_uses_specialized_preflight_for_each_seed(tmp_pa
         late_port_a=29710,
         late_port=29720,
         worker_python="/usr/bin/python3",
+        families=["dense"],
+        scope_amendment=Path("configs/dense_scope_amendment.json"),
         audit_only=False,
         receipt=tmp_path / "receipt.json",
     )
@@ -91,9 +94,9 @@ def test_confirmatory_entrypoint_uses_specialized_preflight_for_each_seed(tmp_pa
         "confirmatory_data": {"seeds": [seed]},
         "training": {"matrix_output_dir": str(generated)},
     }
-    configs = [SimpleNamespace(seed=seed) for _ in range(6)]
-    training_audit = {"complete": True, "errors": [], "verified_runs": 6}
-    receipt = {"complete": True, "valid_units": 84}
+    configs = [SimpleNamespace(seed=seed, model_family="dense") for _ in range(3)]
+    training_audit = {"complete": True, "errors": [], "verified_runs": 3}
+    receipt = {"complete": True, "valid_units": 42}
     monkeypatch.setattr(confirmatory_evaluation, "parse_args", lambda _argv: args)
     monkeypatch.setattr(
         confirmatory_evaluation,
@@ -105,7 +108,7 @@ def test_confirmatory_entrypoint_uses_specialized_preflight_for_each_seed(tmp_pa
     monkeypatch.setattr(
         confirmatory_evaluation,
         "audit_confirmatory_training",
-        lambda _path, selected_seed, selected_configs: training_audit,
+        lambda _path, selected_seed, selected_configs, families: training_audit,
     )
     calls = []
     monkeypatch.setattr(
@@ -130,4 +133,13 @@ def test_confirmatory_entrypoint_uses_specialized_preflight_for_each_seed(tmp_pa
     assert len(calls) == 1
     assert calls[0][1:] == (training_audit, f"confirmatory seed {seed}")
     assert calls[0][0].matrix == str((generated / f"seed{seed}.yaml").resolve())
+    assert calls[0][0].scope_amendment == args.scope_amendment
     assert writes == [(args.receipt, receipt)]
+
+
+def test_confirmatory_evaluation_defaults_dense_with_explicit_two_family_opt_in():
+    assert confirmatory_evaluation.parse_args([]).families == ["dense"]
+    assert confirmatory_evaluation.parse_args(["--families", "dense", "late"]).families == [
+        "dense",
+        "late",
+    ]

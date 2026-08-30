@@ -143,8 +143,7 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(
                     args.python,
                     "embed_optim.wandb_sync",
-                    "--families",
-                    "dense",
+                    *dense_scope,
                 ),
             )
         )

@@ -228,6 +228,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--audit-only", action="store_true")
     parser.add_argument("--verify-hashes", action="store_true")
+    parser.add_argument(
+        "--allow-retired-two-family-validation",
+        action="store_true",
+        help=("Explicitly opt in to the retired historical two-family recipe-validation matrix"),
+    )
 
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--family", choices=("dense", "late"), help=argparse.SUPPRESS)
@@ -242,6 +247,11 @@ def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     if args.max_retries < 0:
         raise ValueError("--max-retries must be non-negative")
+    if not args.worker and not args.allow_retired_two_family_validation:
+        raise SystemExit(
+            "The historical two-family recipe-validation matrix is retired from the active Dense "
+            "study. Archival replay requires --allow-retired-two-family-validation."
+        )
     args.validation_spec, spec = load_validation_spec(args.validation_spec)
     args.probe = args.probe.resolve()
     if args.worker:

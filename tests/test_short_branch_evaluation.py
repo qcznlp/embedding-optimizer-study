@@ -161,3 +161,10 @@ def test_short_branch_training_audit_rejects_silent_checkpoint_shortfall(tmp_pat
 def test_short_branch_cli_modes_are_mutually_exclusive():
     with pytest.raises(SystemExit):
         parse_args(["--audit-only", "--training-audit-only"])
+
+
+def test_short_branch_evaluation_defaults_dense_with_explicit_two_family_opt_in():
+    defaults = parse_args([])
+    assert defaults.families == ["dense"]
+    assert defaults.scope_amendment is None
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]

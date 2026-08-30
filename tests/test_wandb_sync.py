@@ -10,6 +10,7 @@ from embed_optim.wandb_sync import (
     build_canonical_run,
     canonical_history,
     history_sha256,
+    main,
     parse_args,
     verify_remote_canonical_history,
     verify_remote_current_matrix,
@@ -226,10 +227,23 @@ def test_remote_canonical_history_rejects_changed_or_duplicate_rows():
 
 
 def test_remote_history_verification_is_enabled_by_default():
-    assert parse_args([]).skip_remote_history_verification is False
+    defaults = parse_args([])
+    assert defaults.families == ["dense"]
+    assert defaults.scope_amendment is None
+    assert defaults.skip_remote_history_verification is False
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
     assert (
         parse_args(["--skip-remote-history-verification"]).skip_remote_history_verification is True
     )
+
+
+def test_wandb_sync_validates_dense_scope_before_training_or_remote_io(monkeypatch):
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.load_matrix",
+        lambda matrix: pytest.fail("scope must be validated before training history I/O"),
+    )
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        main([])
 
 
 def test_remote_current_matrix_requires_one_exact_run_per_identity():

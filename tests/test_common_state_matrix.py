@@ -3,12 +3,15 @@ import sys
 from argparse import Namespace
 from pathlib import Path
 
+import pytest
+
 from embed_optim.common_state_matrix import (
     CommonStateJob,
     _job_cli,
     _load_protocol,
     build_common_state_jobs,
     common_state_job_complete,
+    main,
     parse_args,
 )
 from embed_optim.config import OptimizerConfig, RunConfig
@@ -199,3 +202,16 @@ def test_common_state_worker_command_round_trips_through_parser(tmp_path: Path):
     assert parsed.checkpoint == job.checkpoint
     assert parsed.hidden_tensors == 88
     assert parsed.hidden_parameters == 110_297_088
+
+
+def test_common_state_controller_defaults_dense_and_validates_scope_before_artifacts(monkeypatch):
+    defaults = parse_args([])
+    assert defaults.families == ["dense"]
+    assert defaults.scope_amendment is None
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
+    monkeypatch.setattr(
+        "embed_optim.common_state_matrix.resolve_common_state_spec",
+        lambda path: pytest.fail("scope must be validated before protocol artifacts"),
+    )
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        main([])

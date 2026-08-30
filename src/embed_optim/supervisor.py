@@ -119,9 +119,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         description="Restart the training matrix orchestrator until selected runs are complete"
     )
     parser.add_argument("--matrix", default="configs/experiment.yaml")
-    parser.add_argument(
-        "--families", nargs="+", choices=("dense", "late"), default=("dense", "late")
-    )
+    parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--gpus-a", default="0,1,2,3")
     parser.add_argument("--gpus-b", default="4,5,6,7")

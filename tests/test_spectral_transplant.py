@@ -21,6 +21,7 @@ from embed_optim.spectral_transplant_matrix import (
     parse_args,
     spectral_transplant_job_complete,
 )
+from embed_optim.spectral_transplant_matrix import main as spectral_matrix_main
 from embed_optim.spectral_transplant_summary import (
     _anchor_effects,
     _anchor_tail_effects,
@@ -28,6 +29,15 @@ from embed_optim.spectral_transplant_summary import (
     _factorial_effects,
     _spectral_path_effects,
 )
+
+
+def test_spectral_matrix_defaults_dense_and_requires_scope_amendment():
+    defaults = parse_args([])
+    assert defaults.families == ["dense"]
+    assert defaults.scope_amendment is None
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        spectral_matrix_main(["--dry-run"])
 
 
 def test_frozen_spectral_transplant_protocol_is_self_consistent():

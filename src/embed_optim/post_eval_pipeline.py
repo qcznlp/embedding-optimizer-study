@@ -63,7 +63,14 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
         steps.append(
             PipelineStep(
                 "canonical-wandb-sync",
-                _module(args.python, "embed_optim.wandb_sync", *shared),
+                _module(
+                    args.python,
+                    "embed_optim.wandb_sync",
+                    *shared,
+                    "--families",
+                    "dense",
+                    "late",
+                ),
             )
         )
     steps.extend(
@@ -339,14 +346,6 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(args.python, "embed_optim.representation_plot"),
             ),
             PipelineStep(
-                "late-token-dynamics-plot",
-                (
-                    args.python,
-                    "-c",
-                    "from embed_optim.representation_plot import late_main; late_main()",
-                ),
-            ),
-            PipelineStep(
                 "mechanism-bridge",
                 _module(args.python, "embed_optim.mechanism_bridge", *shared),
             ),
@@ -371,6 +370,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     "embed_optim.matrix",
                     "--matrix",
                     "configs/hybrid_adamw.yaml",
+                    "--families",
+                    "dense",
                     *training_pools,
                     "--port-a",
                     "29810",
@@ -420,6 +421,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     "embed_optim.matrix",
                     "--matrix",
                     f"configs/generated/confirmatory/seed{seed}.yaml",
+                    "--families",
+                    "dense",
                     *training_pools,
                     "--port-a",
                     str(29910 + 20 * offset),
@@ -467,6 +470,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     "embed_optim.matrix",
                     "--matrix",
                     f"configs/generated/short-branch/seed{seed}.yaml",
+                    "--families",
+                    "dense",
                     *training_pools,
                     "--port-a",
                     str(30010 + 20 * offset),
@@ -1066,6 +1071,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--late-probe-batch-size", type=int, default=8)
     parser.add_argument("--skip-wandb-sync", action="store_true")
     parser.add_argument("--skip-validation", action="store_true")
+    parser.add_argument(
+        "--allow-retired-two-family-pipeline",
+        action="store_true",
+        help=(
+            "Explicitly opt in to the retired historical pipeline; active Dense work must use "
+            "embed-optim-dense-completion and embed-optim-dense-finalize"
+        ),
+    )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--resume", action="store_true")
     mode.add_argument("--dry-run", action="store_true")
@@ -1094,7 +1107,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> None:
-    raise SystemExit(supervise_post_eval(parse_args(argv)))
+    args = parse_args(argv)
+    if not args.allow_retired_two_family_pipeline:
+        raise SystemExit(
+            "The historical two-family post-evaluation pipeline is retired. Use "
+            "embed-optim-dense-completion and embed-optim-dense-finalize; archival replay requires "
+            "--allow-retired-two-family-pipeline."
+        )
+    raise SystemExit(supervise_post_eval(args))
 
 
 if __name__ == "__main__":

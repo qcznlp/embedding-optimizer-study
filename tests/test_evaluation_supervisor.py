@@ -1,3 +1,4 @@
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -49,6 +50,8 @@ def test_command_match_ignores_adoption_declaration_values():
 def _args(**overrides):
     values = {
         "matrix": "configs/experiment.yaml",
+        "families": ["dense", "late"],
+        "scope_amendment": None,
         "gpus_a": "3,5,6,7",
         "gpus_b": "0,1,2,4",
         "late_port_a": 29610,
@@ -120,6 +123,49 @@ def test_evaluation_supervisor_accepts_complete_coverage_after_worker_failure(mo
     )
 
     assert result == 0
+
+
+def test_evaluation_supervisor_dense_scope_ignores_late_training(monkeypatch):
+    configs = [_config("dense", "adamw"), _config("late", "muon")]
+    checked = []
+    monkeypatch.setattr("embed_optim.evaluation_supervisor.load_matrix", lambda matrix: configs)
+
+    def complete(config):
+        checked.append(config.model_family)
+        return config.model_family == "dense"
+
+    monkeypatch.setattr("embed_optim.evaluation_supervisor._run_is_complete", complete)
+    commands = []
+
+    def run(command, check):
+        commands.append(command)
+        return SimpleNamespace(returncode=0)
+
+    result = supervise(
+        _args(
+            families=["dense"],
+            scope_amendment=Path("configs/dense_scope_amendment.json"),
+            evaluation_only=True,
+        ),
+        run_command=run,
+    )
+
+    assert result == 0
+    assert checked == ["dense"]
+    assert [command[2] for command in commands] == [
+        "embed_optim.evaluate_matrix",
+        "embed_optim.aggregate",
+    ]
+    assert all("late" not in command for command in commands)
+
+
+def test_evaluation_supervisor_validates_dense_scope_before_training_io(monkeypatch):
+    monkeypatch.setattr(
+        "embed_optim.evaluation_supervisor.load_matrix",
+        lambda matrix: pytest.fail("scope must be validated before reading training state"),
+    )
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        supervise(_args(families=["dense"], scope_amendment=None))
 
 
 def test_evaluation_supervisor_adopts_multiple_coordinators_before_recovery(monkeypatch):
@@ -250,6 +296,34 @@ def test_evaluation_supervisor_commands_pin_worker_and_strict_audit():
     assert final_aggregate[-1] == "--strict"
     assert "--no-render-blog" not in final_aggregate
     assert wandb[:3] == ["/system/python", "-m", "embed_optim.wandb_sync"]
+    assert wandb[-3:] == ["--families", "dense", "late"]
+
+    dense = _args(
+        families=["dense"],
+        scope_amendment=Path("configs/dense_scope_amendment.json"),
+    )
+    dense_evaluation = _evaluation_command(dense)
+    assert dense_evaluation[
+        dense_evaluation.index("--families") + 1 : dense_evaluation.index("--gpus-a")
+    ] == ["dense"]
+    assert dense_evaluation[-2:] == [
+        "--scope-amendment",
+        "configs/dense_scope_amendment.json",
+    ]
+    dense_aggregate = _aggregate_command(dense)
+    assert dense_aggregate[
+        dense_aggregate.index("--families") + 1 : dense_aggregate.index("--scope-amendment")
+    ] == ["dense"]
+    assert dense_aggregate[dense_aggregate.index("--scope-amendment") + 1] == (
+        "configs/dense_scope_amendment.json"
+    )
+    dense_wandb = _wandb_command(dense)
+    assert dense_wandb[-4:] == [
+        "--families",
+        "dense",
+        "--scope-amendment",
+        "configs/dense_scope_amendment.json",
+    ]
 
 
 def test_evaluation_supervisor_cli_rejects_invalid_intervals():
@@ -263,3 +337,8 @@ def test_evaluation_supervisor_cli_rejects_invalid_intervals():
         parse_args(["--wait-for-pid", "-1"])
     with pytest.raises(SystemExit):
         parse_args(["--wait-for-command", ""])
+
+
+def test_evaluation_supervisor_cli_defaults_dense_and_requires_explicit_late_opt_in():
+    assert parse_args([]).families == ["dense"]
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]

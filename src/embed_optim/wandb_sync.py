@@ -7,9 +7,11 @@ import hashlib
 import json
 import math
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from .config import RunConfig, load_matrix, source_wandb_run_id
+from .scope import resolve_scope
 
 SCALAR_HISTORY_KEYS = {
     "epoch": "train/epoch",
@@ -332,9 +334,8 @@ def publish_canonical_run(
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--matrix", default="configs/experiment.yaml")
-    parser.add_argument(
-        "--families", nargs="+", choices=["dense", "late"], default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=["dense", "late"], default=["dense"])
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
@@ -350,6 +351,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    families, _ = resolve_scope(args.families, args.scope_amendment)
+    args.families = list(families)
     configs = [
         config
         for config in load_matrix(args.matrix)

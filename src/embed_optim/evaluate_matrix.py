@@ -16,6 +16,7 @@ from pathlib import Path
 from .aggregate import audit_dataset_artifacts, audit_training_artifacts
 from .config import RunConfig, load_matrix, matrix_runtime_spec
 from .decontamination import DECONTAMINATED_TASK_NAMES, decontaminated_corpus_size
+from .scope import resolve_scope
 
 EVALUATION_PACKAGES = (
     "mteb",
@@ -372,6 +373,11 @@ def _launch_late(
 
 
 def run_evaluation(args: argparse.Namespace) -> int:
+    families, _ = resolve_scope(
+        args.families,
+        getattr(args, "scope_amendment", None),
+    )
+    args.families = list(families)
     repo = Path(__file__).resolve().parents[2]
     models = _selected_models(args)
     _validate_training_inputs(args)
@@ -460,9 +466,7 @@ def run_evaluation(args: argparse.Namespace) -> int:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--matrix", default="configs/experiment.yaml")
-    parser.add_argument(
-        "--families", nargs="+", choices=["dense", "late"], default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=["dense", "late"], default=["dense"])
     parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--stages", nargs="*", type=int, choices=range(1, 6))

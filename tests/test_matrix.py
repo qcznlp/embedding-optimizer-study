@@ -351,3 +351,8 @@ def test_zero_exit_without_completion_artifacts_is_retried(monkeypatch, tmp_path
 def test_matrix_cli_rejects_negative_retry_budget():
     with pytest.raises(SystemExit):
         parse_args(["--max-retries", "-1"])
+
+
+def test_matrix_cli_defaults_dense_and_requires_explicit_late_opt_in():
+    assert parse_args([]).families == ["dense"]
+    assert parse_args(["--families", "late"]).families == ["late"]

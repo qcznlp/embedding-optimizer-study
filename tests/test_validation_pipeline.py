@@ -14,6 +14,7 @@ from embed_optim.validation_evaluation import METRICS, _group_summaries
 from embed_optim.validation_matrix import (
     _job_cli,
     build_validation_jobs,
+    main,
     parse_args,
     validation_job_complete,
 )
@@ -24,6 +25,16 @@ RATES = {
     "muon": (1e-4, 3e-4, 1e-3, 3e-3),
     "normuon": (1e-4, 3e-4, 1e-3, 3e-3),
 }
+
+
+def test_validation_controller_is_retired_but_worker_contract_remains_available(monkeypatch):
+    monkeypatch.setattr(
+        "embed_optim.validation_matrix.load_validation_spec",
+        lambda path: pytest.fail("retired controller must exit before artifact I/O"),
+    )
+    with pytest.raises(SystemExit, match="two-family recipe-validation matrix is retired"):
+        main([])
+    assert parse_args(["--allow-retired-two-family-validation"]).allow_retired_two_family_validation
 
 
 def _configs(tmp_path: Path) -> list[RunConfig]:

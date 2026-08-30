@@ -4,16 +4,32 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
+import pytest
 
 from embed_optim.config import OptimizerConfig, RunConfig
 from embed_optim.geometry import _sha256
 from embed_optim.probe_matrix import (
     ProbeJob,
     build_probe_jobs,
+    main,
+    parse_args,
     probe_job_complete,
     run_probe_job,
     run_probe_matrix,
 )
+
+
+def test_probe_controller_defaults_dense_and_validates_scope_before_artifacts(monkeypatch):
+    defaults = parse_args([])
+    assert defaults.families == ["dense"]
+    assert defaults.scope_amendment is None
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
+    monkeypatch.setattr(
+        "embed_optim.probe_matrix.resolve_matrix_path",
+        lambda path: pytest.fail("scope must be validated before matrix artifacts"),
+    )
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        main([])
 
 
 def _config(tmp_path: Path, family: str, run_id: str) -> RunConfig:

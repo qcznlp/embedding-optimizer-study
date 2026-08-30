@@ -11,6 +11,7 @@ from typing import Callable
 
 from .config import RunConfig, load_matrix, resolve_matrix_path
 from .matrix import _run_is_complete
+from .scope import resolve_scope
 
 
 def _pid_exists(pid: int) -> bool:
@@ -100,15 +101,14 @@ def _matching_command_pids(fragment: str) -> list[int]:
 
 def _evaluation_command(args: argparse.Namespace) -> list[str]:
     worker_python = args.worker_python or args.python
-    return [
+    command = [
         args.python,
         "-m",
         "embed_optim.evaluate_matrix",
         "--matrix",
         str(resolve_matrix_path(args.matrix).resolve()),
         "--families",
-        "dense",
-        "late",
+        *args.families,
         "--gpus-a",
         args.gpus_a,
         "--gpus-b",
@@ -124,6 +124,9 @@ def _evaluation_command(args: argparse.Namespace) -> list[str]:
         "--worker-python",
         worker_python,
     ]
+    if args.scope_amendment is not None:
+        command.extend(["--scope-amendment", str(args.scope_amendment)])
+    return command
 
 
 def _aggregate_command(args: argparse.Namespace, *, render_blog: bool = False) -> list[str]:
@@ -139,21 +142,30 @@ def _aggregate_command(args: argparse.Namespace, *, render_blog: bool = False) -
         args.output_dir,
         "--blog",
         args.blog,
-        "--strict",
+        "--families",
+        *args.families,
     ]
+    if args.scope_amendment is not None:
+        command.extend(["--scope-amendment", str(args.scope_amendment)])
+    command.append("--strict")
     if not render_blog:
         command.append("--no-render-blog")
     return command
 
 
 def _wandb_command(args: argparse.Namespace) -> list[str]:
-    return [
+    command = [
         args.python,
         "-m",
         "embed_optim.wandb_sync",
         "--matrix",
         str(resolve_matrix_path(args.matrix).resolve()),
+        "--families",
+        *args.families,
     ]
+    if args.scope_amendment is not None:
+        command.extend(["--scope-amendment", str(args.scope_amendment)])
+    return command
 
 
 def _remaining_training_runs(configs: list[RunConfig]) -> list[RunConfig]:
@@ -170,9 +182,11 @@ def supervise(
 ) -> int:
     """Wait for training, then resume evaluation until strict coverage is complete."""
 
-    configs = load_matrix(args.matrix)
+    families, _ = resolve_scope(args.families, args.scope_amendment)
+    args.families = list(families)
+    configs = [config for config in load_matrix(args.matrix) if config.model_family in families]
     if not configs:
-        raise ValueError("The experiment matrix contains no training runs")
+        raise ValueError("The experiment matrix contains no training runs in the selected scope")
 
     previous_remaining: int | None = None
     while remaining := _remaining_training_runs(configs):
@@ -260,11 +274,13 @@ def supervise(
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Wait for the full training matrix, then restart resumable evaluation until strict "
-            "coverage is complete"
+            "Wait for the selected training matrix, then restart resumable evaluation until "
+            "strict coverage is complete"
         )
     )
     parser.add_argument("--matrix", default="configs/experiment.yaml")
+    parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--gpus-a", default="0,1,2,3")
     parser.add_argument("--gpus-b", default="4,5,6,7")
     parser.add_argument("--late-port-a", type=int, default=29610)
