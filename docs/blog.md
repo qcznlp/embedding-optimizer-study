@@ -164,13 +164,13 @@ All 840 planned task/checkpoint evaluations completed. Scores below are the unwe
 
 ### Final quality and learning-rate robustness
 
-| Family | Optimizer | Best LR | Best final | 4-LR mean | SD | Range | 4-LR trajectory AUC |
-| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| dense | adamw | 3e-5 | 0.5899 | 0.5816 | 0.0099 | 0.5650–0.5899 | 0.5779 |
-| dense | muon | 3e-4 | 0.5923 | 0.5833 | 0.0131 | 0.5608–0.5923 | 0.5776 |
-| dense | normuon | 3e-4 | 0.5934 | 0.5847 | 0.0123 | 0.5634–0.5934 | 0.5800 |
+| Family | Optimizer | Same-suite BEIR-best LR | Exploratory BEIR-best final | 4-LR mean | 4-LR median | SD | Range | 4-LR trajectory AUC |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| dense | adamw | 3e-5 | 0.5899 | 0.5816 | 0.5858 | 0.0099 | 0.5650–0.5899 | 0.5779 |
+| dense | muon | 3e-4 | 0.5923 | 0.5833 | 0.5901 | 0.0131 | 0.5608–0.5923 | 0.5776 |
+| dense | normuon | 3e-4 | 0.5934 | 0.5847 | 0.5910 | 0.0123 | 0.5634–0.5934 | 0.5800 |
 
-- **Dense:** best tuned final score is normuon at 3e-4 (0.5934); the highest four-LR mean is normuon (0.5847); the highest mean observed-window AUC is normuon (0.5800). Best-config paired muon beats AdamW on 10/14 tasks, mean Δ=+0.0024 (95% CI [+0.0006, +0.0047]); normuon beats AdamW on 11/14 tasks, mean Δ=+0.0036 (95% CI [+0.0015, +0.0059]).
+- **Dense:** best same-suite BEIR-selected final score is normuon at 3e-4 (0.5934); the highest four-LR mean is normuon (0.5847); the highest mean observed-window AUC is normuon (0.5800). Same-suite BEIR-selected paired muon beats AdamW on 10/14 tasks, mean Δ=+0.0024 (95% CI [+0.0006, +0.0047]); normuon beats AdamW on 11/14 tasks, mean Δ=+0.0036 (95% CI [+0.0015, +0.0059]).
 
 ![Dense training dynamics](../reports/dense-discovery/figures/dense-training-dynamics.png)
 
@@ -180,7 +180,7 @@ Each panel below shows all four LR configurations rather than an optimizer-level
 
 ![Dense per-run training dynamics](../reports/dense-discovery/figures/dense-training-dynamics-by-run.png)
 
-### Dynamics of each optimizer's best final configuration
+### Dynamics after selecting each optimizer by final nDCG@10 on this same BEIR suite
 
 | Family | Optimizer | 20% | 40% | 60% | 80% | 100% | AUC |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -188,7 +188,7 @@ Each panel below shows all four LR configurations rather than an optimizer-level
 | dense | muon | 0.5882 | 0.5921 | 0.5912 | 0.5913 | 0.5923 | 0.5912 |
 | dense | normuon | 0.5881 | 0.5922 | 0.5925 | 0.5929 | 0.5934 | 0.5921 |
 
-### Paired best-config task effects
+### Paired effects after same-suite BEIR selection
 
 | Family | Comparison | W/T/L | Mean Δ | Paired bootstrap 95% CI | Sign p | Holm p |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
@@ -197,9 +197,9 @@ Each panel below shows all four LR configurations rather than an optimizer-level
 
 ![Dense learning-rate sensitivity](../reports/dense-discovery/figures/dense-lr-sensitivity.png)
 
-### Per-task final scores for the best configuration of each optimizer
+### Per-task final scores after same-suite BEIR selection
 
-#### Dense best-config task scores
+#### Dense same-suite BEIR-selected discovery task scores
 
 
 | Task | AdamW | Muon | NorMuon | Muon − AdamW | NorMuon − AdamW |
@@ -238,7 +238,7 @@ The best-LR comparisons are selected on this same benchmark suite and should the
 | DenseOn | NorMuon − AdamW | 60%→80% | 11/14 | 0.753 | 0.662 |
 | DenseOn | NorMuon − AdamW | 80%→100% | 9/14 | 0.743 | 0.714 |
 
-This DenseOn-only post-hoc diagnostic applies each optimizer's final-score-selected learning-rate run at every checkpoint and correlates its 14 paired task deltas against AdamW across adjacent stages. It is a filtered exploratory view of the already audited discovery matrix. It does not alter run selection, the primary aggregate, or the frozen Dense confirmatory family, and it carries no causal interpretation.
+This DenseOn-only post-hoc diagnostic applies each optimizer's learning-rate run selected by final nDCG@10 on this same BEIR suite at every checkpoint and correlates its 14 paired task deltas against AdamW across adjacent stages. It is a filtered exploratory view of the already audited discovery matrix. It does not alter run selection, the primary aggregate, or the frozen Dense confirmatory family, and it carries no causal interpretation.
 
 <!-- TASK-DELTA-STABILITY:END -->
 
@@ -263,7 +263,7 @@ The recorded wall time includes training and five full checkpoint writes. Peak C
 Spectral flattening is part of Muon's construction; observing it is not a new contribution. The
 retrieval-specific evidence begins where the obvious operator property stops.
 
-### 1. Local steps lose while trajectories win
+### 1. Local matched steps lose while the one-seed grid median reverses
 
 At ten common DenseOn states, we apply AdamW, Muon, and NorMuon to the same eight-gradient history.
 After matching every hidden tensor to AdamW's Frobenius norm and taking a relative 1e-3 virtual step,
@@ -275,9 +275,10 @@ the mean positive-margin gains are:
 | Muon | +0.000562 | -0.000303 |
 | NorMuon | +0.000498 | -0.000367 |
 
-Across the four frozen learning rates, however, final median BEIR is +0.00435 for Muon and +0.00521
-for NorMuon relative to AdamW. The sign reverses from the matched local intervention to the complete
-trajectory. A “better immediate descent direction” cannot explain the final discovery ordering.
+Across the four frozen learning-rate sweep points in the single discovery seed, however, median
+final BEIR is +0.00435 for Muon and +0.00521 for NorMuon relative to AdamW. The sign reverses from
+the matched local intervention to this one-seed grid aggregate. A “better immediate descent
+direction” cannot explain that discovery ordering.
 
 ### 2. The optimizers enter different directions, not better-aligned gradients
 
@@ -302,7 +303,7 @@ Muon therefore moves which queries are fragile; it does not uniformly suppress o
 tail. This query-level redistribution is specific to the retrieval function and cannot be read from
 the optimizer definition alone.
 
-### 4. Flatter spectra alone do not explain the gain
+### 4. Flatter spectra alone do not explain the one-seed discovery contrast
 
 For exact selected matrices, the median normalized stable-rank statistic is about 0.0195 for AdamW,
 0.5772 for Muon, and 0.4153 for NorMuon. Yet across DenseOn anchors, the magnitude of spectral
@@ -310,7 +311,7 @@ flattening has little or no association with tail protection. Representation eff
 track BEIR over checkpoints, but within-run first differences are weak and inconsistent.
 
 Those negative results matter: “Muon flattens the spectrum” is an operator fingerprint, not a
-mechanistic explanation of improved retrieval.
+mechanistic explanation of the observed four-learning-rate-median discovery contrast.
 
 ### 5. Learning a new objective can damage pretrained rankings
 
@@ -428,7 +429,8 @@ causal decomposition whose design was frozen before its outputs existed.
 ### Completion outcome
 
 Pending Dense-only hybrid, shared-start, three-seed, and transplant outputs. The discovery estimates
-above remain exploratory until this block is regenerated from strict completion manifests.
+above remain exploratory regardless of completion. Regeneration reports the separate outcomes from
+the validation-frozen recipes and three new seeds.
 
 <!-- OUTCOMES:END -->
 
@@ -601,12 +603,15 @@ embed-optim-audit-distribution
 
 ## Current defensible conclusion
 
-The discovery study supports a narrow claim: well-tuned Muon and NorMuon can slightly improve the
-DenseOn zero-shot BEIR point estimate over tuned AdamW, but not because they take a better average
-one-step descent direction. Their updates move into a distinct, state-dependent trajectory and
-redistribute which queries are fragile. Stronger Muon-family adaptation can also overfit the
-training-style objective while damaging pretrained rankings.
+The discovery study supports a narrower descriptive claim: when the same BEIR suite selects one
+learning rate per optimizer, Muon and NorMuon slightly exceed the likewise BEIR-selected AdamW point
+estimate, but not because they take a better average one-step descent direction. This is not the
+validation-selected comparison. Query-disjoint validation selects 3e-3 for both Muon variants, and
+those discovery-BEIR scores are below AdamW. Together, the results suggest that Muon-family updates
+move into a distinct, state-dependent trajectory and redistribute which queries are fragile, while
+stronger adaptation can overfit the training-style objective and damage pretrained rankings.
 
-Whether that trajectory explanation survives common-start accumulation and whether the final quality
-advantage replicates across frozen seeds remain gated on the running Dense-only experiments. The
-final blog and paper will state a stronger claim only if those prospective gates pass.
+Whether that trajectory explanation survives common-start accumulation and what final quality
+contrast appears under validation-frozen recipes and new seeds remain gated on the running
+Dense-only experiments. The final blog and paper will state a stronger claim only if those
+prospective gates pass.

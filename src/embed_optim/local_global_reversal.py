@@ -389,7 +389,7 @@ def _render_markdown(
     claim_boundary: str,
 ) -> str:
     lines = [
-        "# Local steps lose, trajectories win",
+        "# Local matched steps lose; one-seed four-LR medians reverse",
         "",
         "This is a **post-hoc exploratory analysis** declared after all 1,680 discovery BEIR units, "
         "the common-state intervention, and the mechanism bridge were complete, but before any "
@@ -398,8 +398,9 @@ def _render_markdown(
         "## Local-to-global reversal",
         "",
         "The local column compares per-tensor Frobenius-matched virtual steps at relative scale "
-        "`1e-3`. Long-horizon columns compare final-stage medians over all four frozen learning "
-        "rates. Positive values favor the challenger over AdamW.",
+        "`1e-3`. Long-horizon columns compare final-stage medians over all four frozen learning-"
+        "rate sweep points from the same discovery seed. Positive values favor the challenger "
+        "over AdamW.",
         "",
         "| Family | Challenger | Local margin Δ vs AdamW | Final unseen-margin Δ | Final BEIR Δ | Reversal |",
         "| --- | --- | ---: | ---: | ---: | --- |",
@@ -418,9 +419,9 @@ def _render_markdown(
     lines.extend(
         [
             "",
-            "All four contrasts reverse sign. The completed native trajectories therefore cannot "
-            "be explained by Muon-family directions producing a larger immediate margin increase "
-            "under a matched parameter-space step budget.",
+            "Each reported one-seed, four-LR-median contrast reverses sign. The completed native "
+            "trajectories therefore cannot be explained by Muon-family directions producing a "
+            "larger immediate margin increase under a matched parameter-space step budget.",
             "",
             "## Acquisition–preservation mismatch",
             "",

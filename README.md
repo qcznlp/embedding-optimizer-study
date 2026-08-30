@@ -6,7 +6,8 @@ A reproducible study of AdamW, Muon, and NorMuon for supervised adaptation of
 The project compares complete training dynamics, zero-shot retrieval quality, systems cost, and
 weight/update geometry. Its central question is not whether Muon produces flatter update spectra—that
 is largely built into the operator—but why a matrix-aware optimizer can lose a matched one-step
-functional comparison and still finish with a better dense retriever.
+functional comparison while showing higher one-seed, four-learning-rate-median final BEIR. Whether
+the recipe frozen by query-disjoint validation is better remains a prospective question.
 
 The repository is private while the remaining DenseOn confirmation is running. It is structured for
 a later public release under Apache-2.0.
@@ -35,20 +36,23 @@ is part of the original claim-protocol hash chain. It is historical, not the act
 The complete 12-run DenseOn discovery sweep contains four learning rates for each optimizer and five
 evaluated checkpoints per run: 60 checkpoints and 840 decontaminated BEIR task units.
 
-| Optimizer | Best LR | Best final mean nDCG@10 | Four-LR final mean |
-| --- | ---: | ---: | ---: |
-| AdamW | 3e-5 | 0.5899 | 0.5816 |
-| Muon | 3e-4 | 0.5923 | 0.5833 |
-| NorMuon | 3e-4 | 0.5934 | 0.5847 |
+| Optimizer | Same-suite BEIR-best LR | Exploratory BEIR-best final | Four-LR final mean | Four-LR final median |
+| --- | ---: | ---: | ---: | ---: |
+| AdamW | 3e-5 | 0.5899 | 0.5816 | 0.5858 |
+| Muon | 3e-4 | 0.5923 | 0.5833 | 0.5901 |
+| NorMuon | 3e-4 | 0.5934 | 0.5847 | 0.5910 |
 
 The best observed Muon and NorMuon points are +0.0024 and +0.0036 over the best AdamW point.
-These are exploratory estimates because BEIR is used for discovery selection. Three new
-validation-frozen seeds provide the confirmatory comparison.
+These are exploratory estimates because BEIR is used for discovery selection. The query-disjoint
+validation rule instead selects AdamW 3e-5 (discovery BEIR 0.5899), Muon 3e-3 (0.5608), and NorMuon
+3e-3 (0.5634). Three new seeds using recipes frozen by that validation rule provide the confirmatory
+comparison.
 
 The strongest current mechanism observation is a local-to-global reversal:
 
 - a Frobenius-matched Muon virtual step improves the mean immediate query margin less than AdamW;
-- the full Muon trajectory has a better median unseen margin and BEIR point estimate;
+- across the four frozen learning-rate points, Muon's one-seed final median unseen margin and BEIR
+  exceed AdamW by 0.0110 and 0.00435;
 - in the post-hoc fixed-state intervention, the adverse query tail is redistributed rather than
   uniformly dominated;
 - spectral flattening alone has little or no anchor-level association with tail protection.
@@ -286,6 +290,27 @@ embed-optim-sync-wandb \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json
 ~~~
+
+After reviewing a dry run, the historical LateOn canonical runs can be explicitly retired from the
+active W&B view without deleting them or touching non-canonical and hybrid runs:
+
+~~~bash
+embed-optim-sync-wandb \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --retire-excluded-families \
+  --dry-run
+
+embed-optim-sync-wandb \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --retire-excluded-families
+~~~
+
+Retirement fails closed unless every selected Dense history and every excluded LateOn canonical
+identity/hash exactly matches the frozen matrix. It removes `canonical-current`, adds
+`canonical-historical`, records the verified scope amendment in the run summary, and verifies the
+remote state afterward. Repeating the command is safe and does not update already-historical runs.
 
 No API key or service credential is stored in source, logs intended for release, build artifacts, or
 Git history.

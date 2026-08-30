@@ -344,7 +344,7 @@ def task_delta_dynamics(
     optimizer_rows: list[dict[str, Any]],
     families: tuple[str, ...] = FAMILIES,
 ) -> list[dict[str, Any]]:
-    """Collect post-hoc task deltas for final-score-selected runs at all checkpoints."""
+    """Collect post-hoc task deltas for runs selected by final score on the same BEIR suite."""
 
     best_runs = {
         (str(row["model_family"]), str(row["optimizer"])): str(row["best_run_id"])
@@ -482,16 +482,18 @@ def _task_stability_markdown(
         )
     if families == FAMILIES:
         interpretation = (
-            "This post-hoc diagnostic applies each optimizer's final-score-selected learning-rate "
-            "run at every checkpoint and correlates its 14 paired task deltas against AdamW across "
+            "This post-hoc diagnostic applies each optimizer's learning-rate run selected by final "
+            "nDCG@10 on this same BEIR suite "
+            "at every checkpoint and correlates its 14 paired task deltas against AdamW across "
             "adjacent stages. It was added after heterogeneous LateOn task directions became "
             "visible. It does not alter run selection, the primary aggregate, or the frozen "
             "confirmatory family, and it carries no causal interpretation."
         )
     else:
         interpretation = (
-            "This DenseOn-only post-hoc diagnostic applies each optimizer's final-score-selected "
-            "learning-rate run at every checkpoint and correlates its 14 paired task deltas against "
+            "This DenseOn-only post-hoc diagnostic applies each optimizer's learning-rate run "
+            "selected by final nDCG@10 on this same BEIR suite at every checkpoint and correlates "
+            "its 14 paired task deltas against "
             "AdamW across adjacent stages. It is a filtered exploratory view of the already audited "
             "discovery matrix. It does not alter run selection, the primary aggregate, or the frozen "
             "Dense confirmatory family, and it carries no causal interpretation."

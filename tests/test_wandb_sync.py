@@ -12,8 +12,13 @@ from embed_optim.wandb_sync import (
     history_sha256,
     main,
     parse_args,
+    retire_excluded_canonical_runs,
+    verify_excluded_canonical_histories,
     verify_remote_canonical_history,
     verify_remote_current_matrix,
+    verify_remote_historical_matrix,
+    verify_remote_only_selected_current,
+    verify_remote_retirement_precondition,
 )
 
 
@@ -231,6 +236,8 @@ def test_remote_history_verification_is_enabled_by_default():
     assert defaults.families == ["dense"]
     assert defaults.scope_amendment is None
     assert defaults.skip_remote_history_verification is False
+    assert defaults.retire_excluded_families is False
+    assert parse_args(["--retire-excluded-families"]).retire_excluded_families is True
     assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
     assert (
         parse_args(["--skip-remote-history-verification"]).skip_remote_history_verification is True
@@ -277,3 +284,240 @@ def test_remote_current_matrix_requires_one_exact_run_per_identity():
         verify_remote_current_matrix([CurrentRun(dense), CurrentRun(dense)], [dense])
     with pytest.raises(RuntimeError, match="identity/status differs"):
         verify_remote_current_matrix([CurrentRun(dense, status="superseded")], [dense])
+
+    with pytest.raises(RuntimeError, match="outside the selected matrix"):
+        verify_remote_only_selected_current([CurrentRun(dense), unrelated], [dense])
+    assert verify_remote_only_selected_current([CurrentRun(dense)], [dense]) == {
+        "selected_runs": 1,
+        "selected_current_runs": 1,
+        "project_current_runs": 1,
+    }
+
+
+def _excluded_late_spec():
+    dense = _canonical_spec(({"global_step": 10, "train/loss": 0.8},))
+    config = replace(dense.config, model_family="late")
+    return replace(dense, config=config, wandb_run_id="canonical-late-adamw-test-deadbeef")
+
+
+class _MatrixRemoteRun(_RemoteRun):
+    def __init__(self, spec, tags, status, *, digest=None, history=None):
+        super().__init__(tags, status, spec.history if history is None else history)
+        self.id = spec.wandb_run_id
+        self.config = {
+            "model_family": spec.config.model_family,
+            "run_id": spec.config.run_id,
+            "canonical_history_sha256": digest or spec.history_sha256,
+        }
+
+
+def _dense_scope():
+    return {
+        "path": "configs/dense_scope_amendment.json",
+        "sha256": "scope-sha",
+        "status": "user_directed_post_hoc_scope_amendment",
+        "amended_at_utc": "2026-08-30T00:00:00Z",
+        "claim_boundary": "Dense only",
+    }
+
+
+def test_excluded_family_retirement_is_dry_run_safe_exact_and_idempotent():
+    spec = _excluded_late_spec()
+    run = _MatrixRemoteRun(spec, ["late", "canonical", "canonical-current"], "current")
+    hybrid = _MatrixRemoteRun(spec, ["late", "hybrid_adamw"], None)
+    hybrid.id = "hybrid-run"
+    scope = _dense_scope()
+
+    result = retire_excluded_canonical_runs([run, hybrid], [spec], scope, dry_run=True)
+    assert result == [f"would-retire {run.id} sha256={spec.history_sha256}"]
+    assert run.tags == ["late", "canonical", "canonical-current"]
+    assert run.updates == 0
+    assert hybrid.updates == 0
+
+    result = retire_excluded_canonical_runs([run, hybrid], [spec], scope)
+    assert result == [f"retired {run.id} sha256={spec.history_sha256}"]
+    assert run.tags == ["late", "canonical", "canonical-historical"]
+    assert run.summary["canonical_status"] == "historical"
+    assert run.summary["historical_scope"] == {
+        "status": "excluded_by_user_directed_dense_scope_amendment",
+        "active_families": ["dense"],
+        "scope_amendment": scope,
+    }
+    assert run.updates == 1
+    assert verify_remote_historical_matrix([run, hybrid], [spec], scope) == {
+        "excluded_runs": 1,
+        "verified_historical_runs": 1,
+    }
+
+    assert retire_excluded_canonical_runs([run, hybrid], [spec], scope) == [
+        f"already-historical {run.id} sha256={spec.history_sha256}"
+    ]
+    assert run.updates == 1
+    assert hybrid.updates == 0
+
+
+def test_excluded_family_retirement_fails_closed_before_updates():
+    first = _excluded_late_spec()
+    second = replace(
+        first,
+        config=replace(first.config, run_id="muon-test"),
+        wandb_run_id="canonical-late-muon-test-cafebabe",
+    )
+    good = _MatrixRemoteRun(first, ["canonical", "canonical-current"], "current")
+    changed = _MatrixRemoteRun(
+        second,
+        ["canonical", "canonical-current"],
+        "current",
+        digest="different",
+    )
+
+    with pytest.raises(RuntimeError, match="does not exactly match"):
+        retire_excluded_canonical_runs([good, changed], [first, second], _dense_scope())
+    assert good.updates == 0
+    assert changed.updates == 0
+
+
+def test_excluded_family_history_is_rehashed_before_retirement():
+    spec = _excluded_late_spec()
+    matching = _MatrixRemoteRun(spec, ["canonical", "canonical-current"], "current")
+    changed = _MatrixRemoteRun(
+        spec,
+        ["canonical", "canonical-current"],
+        "current",
+        history=({"global_step": 10, "train/loss": 0.7},),
+    )
+
+    assert verify_excluded_canonical_histories([matching], [spec], _dense_scope()) == 1
+    with pytest.raises(RuntimeError, match="does not match local history"):
+        verify_excluded_canonical_histories([changed], [spec], _dense_scope())
+    assert changed.updates == 0
+
+
+def test_excluded_family_retirement_requires_verified_dense_scope():
+    spec = _excluded_late_spec()
+    run = _MatrixRemoteRun(spec, ["canonical", "canonical-current"], "current")
+
+    with pytest.raises(ValueError, match="verified Dense scope amendment"):
+        retire_excluded_canonical_runs([run], [spec], {}, dry_run=True)
+
+
+def test_retirement_main_never_publishes_or_updates_before_full_preflight(
+    monkeypatch,
+):
+    dense = _canonical_spec(({"global_step": 10, "train/loss": 0.8},))
+    late = _excluded_late_spec()
+    scope = _dense_scope()
+    dense_remote = _MatrixRemoteRun(dense, ["canonical", "canonical-current"], "current")
+    late_remote = _MatrixRemoteRun(late, ["canonical", "canonical-current"], "current")
+    calls = []
+
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.resolve_scope", lambda families, amendment: (("dense",), scope)
+    )
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.load_matrix", lambda matrix: [dense.config, late.config]
+    )
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.build_canonical_run",
+        lambda config: dense if config.model_family == "dense" else late,
+    )
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.verify_remote_current_matrix",
+        lambda runs, specs: (
+            calls.append("dense-matrix")
+            or {
+                "selected_runs": 1,
+                "selected_current_runs": 1,
+                "project_current_runs": 2,
+            }
+        ),
+    )
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.verify_remote_canonical_history",
+        lambda run, spec: calls.append(f"history-{spec.config.model_family}"),
+    )
+
+    def fail_late_preflight(runs, specs, amendment):
+        calls.append("late-histories")
+        raise RuntimeError("late history mismatch")
+
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.verify_excluded_canonical_histories", fail_late_preflight
+    )
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.publish_canonical_run",
+        lambda *args, **kwargs: pytest.fail("retirement must bypass publish"),
+    )
+    monkeypatch.setattr(
+        "embed_optim.wandb_sync.retire_excluded_canonical_runs",
+        lambda *args, **kwargs: pytest.fail("preflight failure must prevent updates"),
+    )
+
+    class Api:
+        def runs(self, path):
+            return [dense_remote, late_remote]
+
+    monkeypatch.setattr("wandb.Api", Api)
+
+    with pytest.raises(RuntimeError, match="late history mismatch"):
+        main(["--retire-excluded-families"])
+    assert calls == ["dense-matrix", "history-dense", "late-histories"]
+    assert dense_remote.updates == late_remote.updates == 0
+
+
+def test_excluded_family_retirement_recovers_mixed_current_historical_matrix():
+    current_spec = _excluded_late_spec()
+    historical_spec = replace(
+        current_spec,
+        config=replace(current_spec.config, run_id="muon-test"),
+        wandb_run_id="canonical-late-muon-test-cafebabe",
+    )
+    scope = _dense_scope()
+    current = _MatrixRemoteRun(current_spec, ["canonical", "canonical-current"], "current")
+    historical = _MatrixRemoteRun(
+        historical_spec, ["canonical", "canonical-historical"], "historical"
+    )
+    historical.summary["historical_scope"] = {
+        "status": "excluded_by_user_directed_dense_scope_amendment",
+        "active_families": ["dense"],
+        "scope_amendment": scope,
+    }
+
+    result = retire_excluded_canonical_runs(
+        [current, historical], [current_spec, historical_spec], scope
+    )
+
+    assert result == [
+        f"retired {current.id} sha256={current_spec.history_sha256}",
+        f"already-historical {historical.id} sha256={historical_spec.history_sha256}",
+    ]
+    assert current.updates == 1
+    assert historical.updates == 0
+    assert verify_remote_historical_matrix(
+        [current, historical], [current_spec, historical_spec], scope
+    ) == {"excluded_runs": 2, "verified_historical_runs": 2}
+
+
+def test_retirement_precondition_rejects_unexpected_current_before_updates():
+    dense = _canonical_spec(({"global_step": 10, "train/loss": 0.8},))
+    late = _excluded_late_spec()
+    dense_remote = _MatrixRemoteRun(dense, ["canonical", "canonical-current"], "current")
+    late_remote = _MatrixRemoteRun(late, ["canonical", "canonical-current"], "current")
+    unrelated = _MatrixRemoteRun(late, ["canonical-current"], "current")
+    unrelated.id = "unrelated-current"
+    unrelated.config = {"model_family": "hybrid", "run_id": "unrelated"}
+
+    with pytest.raises(RuntimeError, match="outside the exact retirement scope"):
+        verify_remote_retirement_precondition(
+            [dense_remote, late_remote, unrelated], [dense], [late], _dense_scope()
+        )
+    assert dense_remote.updates == late_remote.updates == unrelated.updates == 0
+
+    assert verify_remote_retirement_precondition(
+        [dense_remote, late_remote], [dense], [late], _dense_scope()
+    ) == {
+        "selected_runs": 1,
+        "selected_current_runs": 1,
+        "project_current_runs": 2,
+        "excluded_current_runs": 1,
+    }

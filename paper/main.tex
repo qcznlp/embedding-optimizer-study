@@ -30,7 +30,8 @@ NorMuon on DenseOn using one deterministic \NumTrainingQueries-query training vi
 rates per optimizer, five training stages, and \NumBEIRTasks{} decontaminated zero-shot retrieval
 tasks. The discovery results expose a local--global reversal: at common weights and matched update
 norms, Muon-family directions need not improve the mean query margin as much as AdamW, while their
-tuned accumulated trajectories produce different final BEIR point estimates in discovery. Their
+accumulated trajectories have higher one-seed, four-learning-rate-median final BEIR point estimates
+in discovery. Their
 immediate errors also redistribute rather than uniformly dominate AdamW's worst-query tail. We test
 whether repeated, trajectory-changing adaptation---rather than a universally better one-step
 direction---explains those discovery differences, using routing-matched AdamW, shared-start branches,
@@ -61,8 +62,10 @@ query--document margins and rankings, not by its spectrum or training loss alone
 
 Our central observation is deliberately not ``Muon takes a better step.'' In the completed
 discovery diagnostics, Frobenius-matched Muon-family virtual steps can be weaker than AdamW in mean
-immediate margin improvement, yet tuned full trajectories can finish with better zero-shot BEIR
-point estimates. We call this tension the \emph{local--global reversal}. It rules out the simplest
+immediate margin improvement, yet the one-seed, four-learning-rate-median final BEIR point estimates
+are 0.5901/0.5910 for Muon/NorMuon versus 0.5858 for AdamW. We call this tension the
+\emph{local--global reversal}; it is an exploratory aggregate over the frozen grid, not the
+validation-selected comparison. It rules out the simplest
 one-step-descent explanation and moves the mechanism question to what repeated updates do: the first
 step changes the parameters, which changes the next gradient, the set of difficult queries, and the
 future optimizer state.
@@ -239,10 +242,12 @@ and all task scores. Lower training loss is never substituted for retrieval qual
 first-passage rule and later loss--BEIR join retain their recorded post-hoc status and cannot affect
 recipe selection or confirmatory wording.
 
-The discovery point estimates motivate, but do not settle, the paper's central tension: tuned
-Muon-family trajectories can finish above tuned AdamW on mean decontaminated BEIR even though their
-matched one-step directions are not superior on mean immediate margin. The new-seed matrix remains
-the only basis for a final optimizer claim.
+The discovery point estimates motivate, but do not settle, the paper's central tension: when the
+same BEIR suite selects one learning rate per optimizer, Muon-family trajectories can finish above
+the likewise BEIR-selected AdamW point estimate even though their matched one-step directions are
+not superior on mean immediate margin. Query-disjoint validation instead selects the larger 3e-3
+Muon-family rate, whose discovery-BEIR score is lower than AdamW; the new-seed matrix using those
+frozen validation recipes remains the only basis for a final optimizer claim.
 
 \section{From Same-State Updates to Query Effects}
 
@@ -277,13 +282,14 @@ A post-hoc common-state synthesis provides a more specific candidate explanation
 update cosine decreases from the pretrained anchor along both AdamW- and Muon-induced trajectories,
 whereas Muon and NorMuon remain nearly collinear with one another. At the final anchors, the two
 matrix-aware directions also align less with the same terminal gradient than AdamW does. Together
-with the worse Frobenius-matched immediate mean margin but better discovery BEIR point estimates,
-this pattern is consistent with \emph{optimizer-induced state feedback}: committing an operator's
+with the worse Frobenius-matched immediate mean margin but higher one-seed,
+four-learning-rate-median discovery BEIR point estimates, this pattern is consistent with
+\emph{optimizer-induced state feedback}: committing an operator's
 direction moves DenseOn into states that elicit different future gradients, so the accumulated path
 cannot be reduced to the quality of one frozen-state step. The cosine synthesis was defined after
 inspection and is descriptive. Exact values remain behind the audited result gate
-(Table~\ref{tab:common-state-results}); shared-start branches test whether the advantage actually
-accumulates, while the frozen spectrum/basis transplant distinguishes a
+(Table~\ref{tab:common-state-results}); shared-start branches test the prospective accumulation
+hypothesis, while the frozen spectrum/basis transplant distinguishes a
 singular-value account from a singular-vector-basis account.
 
 \subsection{Tail redistribution, not uniform dominance}

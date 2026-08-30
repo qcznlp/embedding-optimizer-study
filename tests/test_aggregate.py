@@ -316,6 +316,7 @@ def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
                     "best_learning_rate": 1e-4,
                     "best_final_ndcg_at_10": score,
                     "final_mean_across_lrs": score,
+                    "final_median_across_lrs": score,
                     "final_population_std_across_lrs": 0.01,
                     "final_min_across_lrs": score - 0.01,
                     "final_max_across_lrs": score + 0.01,

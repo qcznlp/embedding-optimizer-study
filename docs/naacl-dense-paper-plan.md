@@ -25,26 +25,29 @@ scope record. It narrows future inference; it does not erase prior work.
 
 ## One-sentence thesis
 
-> Muon-family updates can be locally worse than AdamW at the same weights and update norm yet reach a
-> better dense-retrieval solution after repeated adaptation, because they change the future gradient
-> trajectory and redistribute which queries occupy the adverse tail rather than uniformly improving
-> every one-step outcome.
+> In the one-seed discovery grid, Muon-family matched steps are locally weaker than AdamW while their
+> four-learning-rate median BEIR is higher. Optimizer-induced state feedback and tail redistribution
+> are candidate explanations, but whether validation-frozen recipes improve retrieval on new seeds
+> remains unresolved.
 
-This sentence is the paper's target explanation, not an unconditional final claim. The accumulated
-tail endpoint and three-seed BEIR comparison must still pass their frozen gates before the verbs can
-be strengthened from “can” and “suggest” to “do” and “explain.”
+This is the paper's current hypothesis, not an unconditional optimizer claim. The shared-start
+endpoint decides the accumulation account, and the validation-frozen three-seed BEIR comparison
+decides the recipe outcome. No discovery-oracle result can upgrade either conclusion.
 
 ## Why this is new
 
 Muon spectral equalization and NorMuon row-wise adaptation are properties of the optimizers. Showing
 them again during embedding training is implementation validation, not the contribution. The
-retrieval-specific novelty is the conjunction of five observations and tests:
+retrieval-specific novelty is the conjunction of six observations and tests:
 
 1. **Same-state local disadvantage.** Under common weights, common gradient histories, and
    Frobenius-matched update budgets, Muon-family directions need not beat AdamW in mean immediate
    query-margin improvement.
-2. **Final discovery gain.** Validation-tuned Muon-family trajectories can nevertheless finish above
-   AdamW in decontaminated BEIR point estimates.
+2. **Final discovery gain.** When the discovery BEIR suite itself selects one learning rate per
+   optimizer, Muon-family trajectories finish slightly above the likewise BEIR-selected AdamW point
+   estimate. This is an exploratory same-suite oracle comparison, not the validation-selected result:
+   the frozen query-disjoint validation rule instead selects 3e-3 for both Muon variants, whose
+   discovery-BEIR scores are below AdamW.
 3. **Tail redistribution.** Muon/NorMuon can improve AdamW's worst-query set while AdamW performs
    better on each challenger's own worst set; low tail overlap means the operator changes which
    queries are fragile rather than uniformly shrinking a shared tail.
@@ -57,7 +60,8 @@ retrieval-specific novelty is the conjunction of five observations and tests:
 5. **Accumulated adaptation test.** Three-seed shared-start branches ask whether repeated updates turn
    the local redistribution into simultaneous query-disjoint loss-p95 and unseen-margin-p05 gains.
 6. **Fair operator attribution.** Hybrid AdamW matches Muon's parameter routing and auxiliary rate;
-   three independently resampled training views test whether any final BEIR advantage generalizes.
+   three independently resampled training views test the validation-frozen BEIR contrasts on new
+   seeds.
 
 The local--global reversal rules out the easy explanation that Muon wins simply because its next
 step descends the retrieval objective more effectively. It makes the changing gradient sequence the
@@ -225,7 +229,7 @@ The main contrasts are:
 | Muon-family matched steps are weaker on mean immediate margin | Completed exploratory/local result | audited fixed-state intervention; wording remains local |
 | DenseOn exhibits worst-tail redistribution | Completed post-hoc diagnostic | audited symmetric cross-tail table; label post hoc |
 | Trajectory-dependent direction drift supports optimizer-induced state feedback | Completed post-hoc synthesis | audited common-state cosine summary; causal wording remains prohibited |
-| Muon/NorMuon improve final discovery BEIR point estimates | Completed discovery observation | label exploratory and selection-sensitive |
+| Muon/NorMuon have higher one-seed four-LR-median and same-suite BEIR-selected discovery point estimates | Completed exploratory observation | disclose both aggregation and test selection; neither is validation-selected |
 | Tail redistribution becomes accumulated robustness | Pending | frozen three-seed shared-start joint endpoint |
 | Matrix transform, not routing, causes the accumulated effect | Pending | complete hybrid AdamW control and shared-start comparison |
 | Muon or NorMuon is a better DenseOn recipe | Pending | complete three-seed strict BEIR matrix and familywise interval |
@@ -275,8 +279,8 @@ to rescue the headline.
 
 1. **DenseOn learning dynamics:** nDCG@10 and validation loss at 20/40/60/80/100%, all learning
    rates, with useful wall-time and censoring markers.
-2. **Local--global reversal:** same-state matched-step mean margin on the left; accumulated unseen
-   margin and final BEIR on the right.
+2. **Local--global reversal:** same-state matched-step mean margin on the left; one-seed medians over
+   the four fixed learning-rate sweep points for unseen margin and final BEIR on the right.
 3. **State feedback and tail redistribution:** trajectory-conditioned update cosines plus Adam-selected
    and challenger-selected cross-tail effects with set overlap.
 4. **Accumulation:** three-seed shared-start loss p95 and margin p05 trajectories.

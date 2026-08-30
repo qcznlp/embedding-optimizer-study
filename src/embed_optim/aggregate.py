@@ -2010,9 +2010,10 @@ def _render_results(
         [
             "Family",
             "Optimizer",
-            "Best LR",
-            "Best final",
+            "Same-suite BEIR-best LR",
+            "Exploratory BEIR-best final",
             "4-LR mean",
+            "4-LR median",
             "SD",
             "Range",
             "4-LR trajectory AUC",
@@ -2024,6 +2025,7 @@ def _render_results(
                 _format_lr(row["best_learning_rate"]),
                 f"{row['best_final_ndcg_at_10']:.4f}",
                 f"{row['final_mean_across_lrs']:.4f}",
+                f"{row['final_median_across_lrs']:.4f}",
                 f"{row['final_population_std_across_lrs']:.4f}",
                 f"{row['final_min_across_lrs']:.4f}–{row['final_max_across_lrs']:.4f}",
                 f"{row['observed_auc_mean_across_lrs']:.4f}",
@@ -2096,20 +2098,21 @@ def _render_results(
                 f"{comparison['bootstrap_ci_95_upper']:+.4f}])"
             )
         winners.append(
-            f"- **{family.capitalize()}:** best tuned final score is "
+            f"- **{family.capitalize()}:** best same-suite BEIR-selected final score is "
             f"{best_tuned['optimizer']} at {_format_lr(best_tuned['best_learning_rate'])} "
             f"({best_tuned['best_final_ndcg_at_10']:.4f}); the highest four-LR mean is "
             f"{robust['optimizer']} ({robust['final_mean_across_lrs']:.4f}); the highest mean "
             f"observed-window AUC is {fastest_convergence['optimizer']} "
-            f"({fastest_convergence['observed_auc_mean_across_lrs']:.4f}). Best-config paired "
-            + "; ".join(paired)
-            + "."
+            f"({fastest_convergence['observed_auc_mean_across_lrs']:.4f}). Same-suite "
+            "BEIR-selected paired " + "; ".join(paired) + "."
         )
 
     per_task_sections = []
     for family in families:
         values = [row for row in task_rows if row["model_family"] == family]
-        per_task_sections.append(f"#### {family.capitalize()} best-config task scores\n")
+        per_task_sections.append(
+            f"#### {family.capitalize()} same-suite BEIR-selected discovery task scores\n"
+        )
         per_task_sections.append(
             _markdown_table(
                 ["Task", "AdamW", "Muon", "NorMuon", "Muon − AdamW", "NorMuon − AdamW"],
@@ -2159,10 +2162,11 @@ def _render_results(
             "Each panel below shows all four LR configurations rather than an optimizer-level "
             "average; every curve contains the formal 20%, 40%, 60%, 80%, and 100% checkpoints.\n\n"
             + per_run_figures,
-            "### Dynamics of each optimizer's best final configuration\n\n" + dynamics_table,
-            "### Paired best-config task effects\n\n" + paired_table,
+            "### Dynamics after selecting each optimizer by final nDCG@10 on this same BEIR suite\n\n"
+            + dynamics_table,
+            "### Paired effects after same-suite BEIR selection\n\n" + paired_table,
             sensitivity_figures,
-            "### Per-task final scores for the best configuration of each optimizer",
+            "### Per-task final scores after same-suite BEIR selection",
             *per_task_sections,
             "The best-LR comparisons are selected on this same benchmark suite and should therefore "
             "be read as controlled exploratory results, not as an unbiased model-selection estimate. "

@@ -241,6 +241,188 @@ def verify_remote_current_matrix(runs: list[Any], expected: list[CanonicalRun]) 
     }
 
 
+def verify_remote_only_selected_current(
+    runs: list[Any], expected: list[CanonicalRun]
+) -> dict[str, int]:
+    """Require the selected matrix to be the entire project's current canonical scope."""
+
+    audit = verify_remote_current_matrix(runs, expected)
+    if audit["project_current_runs"] != len(expected):
+        raise RuntimeError(
+            "Remote project still has canonical-current runs outside the selected matrix: "
+            f"{audit['project_current_runs']} != {len(expected)}"
+        )
+    return audit
+
+
+def verify_remote_retirement_precondition(
+    runs: list[Any],
+    selected: list[CanonicalRun],
+    excluded: list[CanonicalRun],
+    scope_amendment: dict[str, Any],
+) -> dict[str, int]:
+    """Reject any current canonical run outside the exact retirement scope."""
+
+    audit = verify_remote_current_matrix(runs, selected)
+    excluded_matches = _matched_excluded_current_runs(runs, excluded, scope_amendment)
+    excluded_current = sum(
+        "canonical-current" in {str(tag) for tag in (run.tags or [])} for run, _ in excluded_matches
+    )
+    expected_current = len(selected) + excluded_current
+    if audit["project_current_runs"] != expected_current:
+        raise RuntimeError(
+            "Remote project has canonical-current runs outside the exact retirement scope: "
+            f"{audit['project_current_runs']} != {expected_current}"
+        )
+    return {**audit, "excluded_current_runs": excluded_current}
+
+
+def _historical_scope_summary(scope_amendment: dict[str, Any]) -> dict[str, Any]:
+    """Return the portable, explicit reason an excluded canonical run became historical."""
+
+    return {
+        "status": "excluded_by_user_directed_dense_scope_amendment",
+        "active_families": ["dense"],
+        "scope_amendment": scope_amendment,
+    }
+
+
+def _matched_excluded_current_runs(
+    runs: list[Any],
+    excluded: list[CanonicalRun],
+    scope_amendment: dict[str, Any],
+) -> list[tuple[Any, CanonicalRun]]:
+    """Fail closed unless every excluded current run exactly matches the frozen matrix."""
+
+    expected = {(spec.config.model_family, spec.config.run_id): spec for spec in excluded}
+    matched: dict[tuple[str, str], list[Any]] = {identity: [] for identity in expected}
+    unexpected = []
+    expected_historical_scope = _historical_scope_summary(scope_amendment)
+    for run in runs:
+        tags = {str(tag) for tag in (run.tags or [])}
+        config = run.config or {}
+        identity = (config.get("model_family"), config.get("run_id"))
+        if identity[0] != "late" or "canonical" not in tags:
+            continue
+        if identity not in expected:
+            if "canonical-current" in tags:
+                unexpected.append(f"{run.id} ({identity[0]}/{identity[1]})")
+            continue
+        spec = expected[identity]
+        if run.id != spec.wandb_run_id:
+            if "canonical-current" in tags:
+                unexpected.append(f"{run.id} ({identity[0]}/{identity[1]})")
+            continue
+        digest = config.get("canonical_history_sha256")
+        is_current = (
+            "canonical-current" in tags and run.summary.get("canonical_status") == "current"
+        )
+        is_historical = (
+            "canonical-current" not in tags
+            and "canonical-historical" in tags
+            and run.summary.get("canonical_status") == "historical"
+            and run.summary.get("historical_scope") == expected_historical_scope
+        )
+        if digest != spec.history_sha256 or not (is_current or is_historical):
+            raise RuntimeError(
+                "Excluded canonical run does not exactly match the frozen matrix and scope: "
+                f"{run.id}"
+            )
+        matched[identity].append(run)
+    problems = [
+        f"{family}/{run_id} has {len(matches)} exact current runs"
+        for (family, run_id), matches in matched.items()
+        if len(matches) != 1
+    ]
+    if unexpected:
+        problems.append("unexpected Late canonical-current runs: " + ", ".join(unexpected))
+    if problems:
+        raise RuntimeError("Excluded canonical-current matrix is invalid: " + "; ".join(problems))
+    return [(matched[identity][0], spec) for identity, spec in expected.items()]
+
+
+def retire_excluded_canonical_runs(
+    runs: list[Any],
+    excluded: list[CanonicalRun],
+    scope_amendment: dict[str, Any],
+    *,
+    dry_run: bool = False,
+) -> list[str]:
+    """Retire exact excluded canonical runs without touching any other remote run."""
+
+    if not scope_amendment or scope_amendment.get("status") != (
+        "user_directed_post_hoc_scope_amendment"
+    ):
+        raise ValueError("Retirement requires a verified Dense scope amendment")
+    matches = _matched_excluded_current_runs(runs, excluded, scope_amendment)
+    historical_scope = _historical_scope_summary(scope_amendment)
+    results = []
+    for run, spec in matches:
+        if "canonical-historical" in {str(tag) for tag in (run.tags or [])}:
+            results.append(f"already-historical {run.id} sha256={spec.history_sha256}")
+            continue
+        if dry_run:
+            results.append(f"would-retire {run.id} sha256={spec.history_sha256}")
+            continue
+        tags = [str(tag) for tag in (run.tags or []) if str(tag) != "canonical-current"]
+        if "canonical-historical" not in tags:
+            tags.append("canonical-historical")
+        run.tags = tags
+        run.summary["canonical_status"] = "historical"
+        run.summary["historical_scope"] = historical_scope
+        run.update()
+        results.append(f"retired {run.id} sha256={spec.history_sha256}")
+    return results
+
+
+def verify_excluded_canonical_histories(
+    runs: list[Any],
+    excluded: list[CanonicalRun],
+    scope_amendment: dict[str, Any],
+) -> int:
+    """Content-verify every exact excluded run before any remote mutation."""
+
+    matches = _matched_excluded_current_runs(runs, excluded, scope_amendment)
+    for run, spec in matches:
+        verify_remote_canonical_history(run, spec)
+    return len(matches)
+
+
+def verify_remote_historical_matrix(
+    runs: list[Any],
+    excluded: list[CanonicalRun],
+    scope_amendment: dict[str, Any],
+) -> dict[str, int]:
+    """Verify the exact excluded matrix is historical after a retirement operation."""
+
+    expected_scope = _historical_scope_summary(scope_amendment)
+    expected = {(spec.config.model_family, spec.config.run_id): spec for spec in excluded}
+    observed: dict[tuple[str, str], list[Any]] = {identity: [] for identity in expected}
+    for run in runs:
+        config = run.config or {}
+        identity = (config.get("model_family"), config.get("run_id"))
+        if identity not in expected or run.id != expected[identity].wandb_run_id:
+            continue
+        tags = {str(tag) for tag in (run.tags or [])}
+        if (
+            "canonical" in tags
+            and "canonical-historical" in tags
+            and "canonical-current" not in tags
+            and config.get("canonical_history_sha256") == expected[identity].history_sha256
+            and run.summary.get("canonical_status") == "historical"
+            and run.summary.get("historical_scope") == expected_scope
+        ):
+            observed[identity].append(run)
+    problems = [
+        f"{family}/{run_id} has {len(matches)} exact historical runs"
+        for (family, run_id), matches in observed.items()
+        if len(matches) != 1
+    ]
+    if problems:
+        raise RuntimeError("Remote historical matrix is invalid: " + "; ".join(problems))
+    return {"excluded_runs": len(excluded), "verified_historical_runs": len(excluded)}
+
+
 def publish_canonical_run(
     spec: CanonicalRun,
     dry_run: bool = False,
@@ -339,6 +521,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
+        "--retire-excluded-families",
+        action="store_true",
+        help=(
+            "After exact remote verification, mark canonical-current runs excluded by the "
+            "verified Dense scope amendment as canonical-historical"
+        ),
+    )
+    parser.add_argument(
         "--skip-remote-history-verification",
         action="store_true",
         help=(
@@ -351,20 +541,61 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
-    families, _ = resolve_scope(args.families, args.scope_amendment)
+    families, scope_amendment = resolve_scope(args.families, args.scope_amendment)
+    if args.retire_excluded_families and families != ("dense",):
+        raise ValueError("Excluded-family retirement is only valid for verified Dense-only scope")
+    if args.retire_excluded_families and args.run_ids:
+        raise ValueError("Excluded-family retirement requires the complete Dense matrix")
+    if args.retire_excluded_families and args.skip_remote_history_verification:
+        raise ValueError("Excluded-family retirement requires remote history verification")
     args.families = list(families)
+    matrix_configs = load_matrix(args.matrix)
     configs = [
         config
-        for config in load_matrix(args.matrix)
+        for config in matrix_configs
         if config.model_family in args.families
         and (not args.run_ids or config.run_id in args.run_ids)
     ]
     if not configs:
         raise SystemExit("No runs selected")
-    specs = []
-    for config in configs:
-        spec = build_canonical_run(config)
-        specs.append(spec)
+    specs = [build_canonical_run(config) for config in configs]
+    if args.retire_excluded_families:
+        excluded = [
+            build_canonical_run(config)
+            for config in matrix_configs
+            if config.model_family not in families
+        ]
+        if not excluded or {spec.config.model_family for spec in excluded} != {"late"}:
+            raise RuntimeError("Training matrix does not define the excluded Late canonical matrix")
+        entity, project = specs[0].config.wandb_entity, specs[0].config.wandb_project
+        if not entity or any(
+            (spec.config.wandb_entity, spec.config.wandb_project) != (entity, project)
+            for spec in [*specs, *excluded]
+        ):
+            raise RuntimeError("Dense and excluded canonical runs do not share one W&B project")
+        import wandb
+
+        api = wandb.Api()
+        project_runs = list(api.runs(f"{entity}/{project}"))
+        verify_remote_retirement_precondition(project_runs, specs, excluded, scope_amendment)
+        for spec in specs:
+            remote = next((run for run in project_runs if run.id == spec.wandb_run_id), None)
+            if remote is None:
+                raise RuntimeError(f"Current Dense canonical run is missing: {spec.wandb_run_id}")
+            verify_remote_canonical_history(remote, spec)
+        verify_excluded_canonical_histories(project_runs, excluded, scope_amendment)
+        for result in retire_excluded_canonical_runs(
+            project_runs, excluded, scope_amendment, dry_run=args.dry_run
+        ):
+            print(result, flush=True)
+        if not args.dry_run:
+            refreshed = list(api.runs(f"{entity}/{project}"))
+            audit = verify_remote_historical_matrix(refreshed, excluded, scope_amendment)
+            verify_remote_only_selected_current(refreshed, specs)
+            print(json.dumps({"remote_historical_matrix": audit}, sort_keys=True), flush=True)
+        return
+
+    for spec in specs:
         print(
             publish_canonical_run(
                 spec,
@@ -373,6 +604,7 @@ def main(argv: list[str] | None = None) -> None:
             ),
             flush=True,
         )
+
     if not args.dry_run and not args.skip_remote_history_verification:
         projects = {(spec.config.wandb_entity, spec.config.wandb_project) for spec in specs}
         if len(projects) != 1:

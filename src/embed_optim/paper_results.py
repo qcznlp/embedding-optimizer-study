@@ -619,12 +619,14 @@ def build_result_tables(
         raise ValueError("Paper spectral-transplant tables differ from the key frozen summaries")
     stability_caption = (
         "Post-hoc adjacent-checkpoint stability of the 14 task effects for each "
-        "final-score-selected optimizer/LR run against the selected AdamW run. This "
+        "optimizer/LR run selected by final nDCG@10 on this same BEIR suite against the likewise "
+        "selected AdamW run. This "
         "exploratory diagnostic was added after heterogeneous LateOn directions became "
         "visible and is outside the confirmatory family."
         if families == FAMILIES
         else "Post-hoc adjacent-checkpoint stability of the 14 task effects for each "
-        "final-score-selected optimizer/LR run against the selected AdamW run. This "
+        "optimizer/LR run selected by final nDCG@10 on this same BEIR suite against the likewise "
+        "selected AdamW run. This "
         "exploratory diagnostic was added after heterogeneous task directions became visible "
         "and is outside the confirmatory family."
     )
