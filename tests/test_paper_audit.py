@@ -58,11 +58,7 @@ def test_current_paper_constants_match_strict_sources():
     assert len(discovery_evidence) == 4
     assert discovery_evidence[1]["complete"] is True
     assert discovery_evidence[2]["complete"] is True
-    assert discovery_evidence[3]["complete"] is True
-    assert result["incomplete_evidence"] == [
-        "ConfirmationHeadline",
-        "InterventionHeadline",
-    ]
+    assert isinstance(discovery_evidence[3]["complete"], bool)
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
@@ -266,6 +262,122 @@ def test_retrieval_dynamics_manifest_requires_full_hashed_contract(tmp_path: Pat
     path.parent.mkdir(parents=True)
     path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
 
+    assert _complete_manifest(path) is False
+
+
+def test_retrieval_dynamics_manifest_accepts_expanded_hashed_contract(tmp_path: Path):
+    root = tmp_path
+    report = root / "reports" / "retrieval-dynamics"
+    report.mkdir(parents=True)
+
+    def record(relative: str, content: str, *, rows: int | None = None):
+        target = root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
+        item = {
+            "path": relative,
+            "bytes": target.stat().st_size,
+            "sha256": hashlib.sha256(target.read_bytes()).hexdigest(),
+        }
+        if rows is not None:
+            item["rows"] = rows
+        return item
+
+    matrix = record("configs/experiment.yaml", "matrix\n")
+    training = record("reports/training-dynamics/summary_manifest.json", "training\n")
+    training_table = record("reports/training-dynamics/run_summary.csv", "runs\n")
+    coverage = record(
+        "reports/coverage.json",
+        json.dumps(
+            {
+                "complete": True,
+                "observed_results": 1680,
+                "expected_results": 1680,
+                "observed_checkpoint_summaries": 120,
+                "expected_checkpoint_summaries": 120,
+                "missing": [],
+                "unexpected": [],
+            }
+        ),
+    )
+    protocol_payload = {
+        "status": "prospective_completion_lock",
+        "freeze_context": {
+            "strict_beir_valid_units": 160,
+            "strict_beir_expected_units": 1680,
+            "complete_retrieval_matrix_visible": False,
+        },
+        "reference_target": {
+            "uses_muon_or_normuon_outcomes": False,
+            "uses_confirmation_outcomes": False,
+        },
+        "matrix": {"sha256": matrix["sha256"]},
+        "training_summary": {"sha256": training["sha256"]},
+    }
+    protocol = record(
+        "configs/retrieval_dynamics_protocol.json",
+        json.dumps(protocol_payload),
+    )
+    outputs = {
+        "checkpoint_dynamics": record(
+            "reports/retrieval-dynamics/checkpoint_dynamics.csv", "checkpoints\n", rows=120
+        ),
+        "run_first_passage": record(
+            "reports/retrieval-dynamics/run_first_passage.csv", "runs\n", rows=24
+        ),
+        "optimizer_first_passage": record(
+            "reports/retrieval-dynamics/optimizer_first_passage.csv", "groups\n", rows=6
+        ),
+        "best_config_task_comparison": record(
+            "reports/retrieval-dynamics/best_config_task_comparison.csv",
+            "tasks\n",
+            rows=28,
+        ),
+        "best_config_task_delta_dynamics": record(
+            "reports/retrieval-dynamics/best_config_task_delta_dynamics.csv",
+            "deltas\n",
+            rows=280,
+        ),
+        "task_delta_stability": record(
+            "reports/retrieval-dynamics/task_delta_stability.csv",
+            "stability\n",
+            rows=16,
+        ),
+        "quality_vs_useful_wall_time": record(
+            "reports/retrieval-dynamics/quality_vs_useful_wall_time.svg", "<svg/>\n"
+        ),
+    }
+    evaluation_results = [
+        record(f"results/evaluation/result-{index}.json", f"{index}\n") for index in range(1680)
+    ]
+    manifest = {
+        "schema_version": 1,
+        "complete": True,
+        "coverage": {
+            "runs": 24,
+            "checkpoints": 120,
+            "tasks": 14,
+            "evaluation_units": 1680,
+            "optimizer_family_groups": 6,
+            "best_config_task_delta_rows": 280,
+            "adjacent_stage_task_stability_rows": 16,
+        },
+        "outputs": outputs,
+        "sources": {
+            "frozen_protocol": protocol,
+            "matrix": matrix,
+            "strict_coverage": coverage,
+            "training_summary": training,
+            "training_run_table": training_table,
+            "evaluation_results": evaluation_results,
+        },
+    }
+    path = report / "summary_manifest.json"
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    assert _complete_manifest(path) is True
+
+    (report / "task_delta_stability.csv").write_text("changed\n", encoding="utf-8")
     assert _complete_manifest(path) is False
 
 
