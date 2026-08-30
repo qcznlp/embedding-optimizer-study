@@ -1250,16 +1250,44 @@ severity of a persistent hard-query failure mode for late interaction, while den
 changes tail membership. This symmetric diagnostic was itself defined after its preliminary values
 were inspected and is hypothesis-generating.
 
-One plausible optimization account is therefore **tail-controlled acquisition**. AdamW's
-coordinate-wise rescaling can place more of a norm-matched update in locally high-leverage
-directions, producing a larger mean gain but also a larger adverse tail across query Jacobians.
-Muon's polar transform spreads singular amplification more evenly, giving up some mean one-step
-progress while preserving hard queries; accumulated moderate steps can then build margins without
-catastrophically moving as many pretrained rankings. This is a hypothesis about the functional
-effect of the operator, not a theorem. The queued spectrum/basis transplant tests whether the tail
-protection follows the singular values or their basis, and the prospectively frozen three-seed
-shared-start rule tests whether lower validation-loss p95 and higher unseen-margin p05 survive
-accumulated training.
+This also sharpens the optimizer-mismatch question. Prior full-rank fine-tuning experiments report
+that switching an Adam-pretrained model to Muon usually hurts and that the damage grows with update
+strength. Here both starting retrievers were AdamW-pretrained, yet the tuned discovery point
+estimates for Muon and NorMuon exceed AdamW on decontaminated BEIR. LateOn's paired interval still
+includes zero, so this is not a confirmed universal reversal. It does identify a candidate interior
+regime in which the switch can help retrieval before stronger updates cross the preservation
+budget---the task- and architecture-dependent boundary, rather than optimizer mismatch itself, is
+the new object of study.
+
+One plausible optimization account is therefore **tail-controlled acquisition**. For an update
+matrix \(D\),
+
+\[
+\lVert D\rVert_2 = \frac{\lVert D\rVert_F}{\sqrt{\operatorname{srank}(D)}}.
+\]
+
+Consequently, at the per-tensor Frobenius budget used by our virtual-step comparison, the observed
+higher stable rank of the Muon-family direction necessarily lowers its largest singular
+amplification. The elementary bound
+\(\lVert D h\rVert_2\leq\lVert D\rVert_2\lVert h\rVert_2\) then supplies a concrete candidate bridge:
+AdamW's coordinate-wise rescaling can concentrate a norm-matched update into a few singular
+directions, giving larger average descent but creating large changes for queries or tokens aligned
+with those directions. Muon's polar transform spreads that budget, giving up mean one-step progress
+while reducing the adverse query tail. LateOn's token-wise maximum is especially exposed to an
+extreme token-score perturbation, which could explain why the same low-margin query set persists and
+becomes less severe; DenseOn's pooled score instead mainly changes which queries occupy the tail.
+This is a first-order account, not a guarantee for a nonlinear Transformer.
+
+The aggregate token-usage probes do not rescue a simpler explanation: evidence entropy, document
+token coverage, and repeated-token dominance differ little at the best discovery recipes and their
+within-run associations with BEIR are not stable across optimizers. We therefore do not claim that
+Muon wins by using more tokens. Before any spectral-transplant output existed, we amended and
+content-hashed its protocol to freeze query-level loss p95/p99, margin p01/p05, and symmetric
+operator-specific worst tails. The decisive immediate test is whether replacing only AdamW's
+singular values with Muon's, while retaining AdamW's singular vectors and Frobenius norm, inherits
+LateOn's tail protection; the reciprocal basis-only transplant is the competing explanation. The
+prospectively frozen three-seed shared-start rule separately tests whether lower validation-loss p95
+and higher unseen-margin p05 survive accumulated training.
 
 The qualification matters: NorMuon has the strongest local tail protection but does not consistently
 beat Muon on final BEIR, so tail stability is not sufficient by itself. Likewise, DenseOn's

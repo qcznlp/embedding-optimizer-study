@@ -184,6 +184,20 @@ def load_spectral_transplant_protocol(path: str | Path) -> tuple[Path, dict[str,
         or evaluation.get("normalized_embeddings") is not True
     ):
         raise ValueError("Spectral-transplant evaluation differs from the frozen probe contract")
+    tail = evaluation.get("tail_protocol")
+    if (
+        not isinstance(tail, dict)
+        or tail.get("status") != "frozen-before-spectral-transplant-output"
+        or float(tail.get("tail_fraction", math.nan)) != 0.05
+        or tail.get("tail_count") != 12
+        or tail.get("quantiles")
+        != {
+            "loss_contrast": [0.95, 0.99],
+            "positive_margin_contrast": [0.01, 0.05],
+            "method": "linear interpolation at (n-1)q",
+        }
+    ):
+        raise ValueError("Spectral-transplant tail protocol differs from the frozen rule")
     freeze = spec["freeze_context"]
     if (
         freeze.get("discovery_beir_valid_units") != 1680
@@ -193,6 +207,15 @@ def load_spectral_transplant_protocol(path: str | Path) -> tuple[Path, dict[str,
         or freeze.get("short_branch_results_available") is not False
     ):
         raise ValueError("Spectral-transplant freeze disclosure is invalid")
+    amendments = freeze.get("amendments")
+    if (
+        not isinstance(amendments, list)
+        or len(amendments) != 1
+        or amendments[0].get("previous_protocol_sha256")
+        != "de0ff8d2caeb5a6feadc0635274b7536637aad5686542f536be6cb4216465520"
+        or amendments[0].get("spectral_transplant_outputs_available") is not False
+    ):
+        raise ValueError("Spectral-transplant amendment disclosure is invalid")
     if not isinstance(spec.get("claim_boundary"), str) or not spec["claim_boundary"]:
         raise ValueError("Spectral-transplant claim boundary is missing")
     return path, spec

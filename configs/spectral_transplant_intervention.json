@@ -137,12 +137,33 @@
       "positive_margin",
       "reciprocal_rank",
       "top1_accuracy"
-    ]
+    ],
+    "tail_protocol": {
+      "status": "frozen-before-spectral-transplant-output",
+      "tail_fraction": 0.05,
+      "tail_count": 12,
+      "tail_selection": "largest per-query contrastive-loss change from the unmodified anchor, selected independently for AdamW native and every challenger condition",
+      "quantiles": {
+        "loss_contrast": [
+          0.95,
+          0.99
+        ],
+        "positive_margin_contrast": [
+          0.01,
+          0.05
+        ],
+        "method": "linear interpolation at (n-1)q"
+      },
+      "primary_factorial_readout": "Compare Adam-basis/Muon-spectrum and Muon-basis/Adam-spectrum against AdamW native. Tail protection follows the spectrum only if the former improves loss p95 and margin p05 more consistently across anchors than the latter.",
+      "symmetric_tail_readout": "Report challenger-minus-AdamW loss contrast on AdamW's worst tail and on the challenger's independently selected worst tail, plus tail-set Jaccard overlap.",
+      "architecture_readout": "Compare DenseOn tail redistribution with LateOn shared-tail severity suppression without pooling architectures."
+    }
   },
   "primary_estimands": [
     "Within the AdamW singular-vector basis, the paired change in positive-margin effect as lambda moves from 0 to 1.",
     "The 2x2 spectrum-by-basis interaction formed by AdamW native, Muon native, Adam-basis/Muon-spectrum, and Muon-basis/Adam-spectrum directions.",
-    "The separate paired effects of transplanting the head, middle, and tail Muon singular-value bands into the AdamW basis."
+    "The separate paired effects of transplanting the head, middle, and tail Muon singular-value bands into the AdamW basis.",
+    "Whether the query-level adverse tail follows the Muon singular-value spectrum or the Muon singular-vector basis under the frozen symmetric-tail rule."
   ],
   "freeze_context": {
     "discovery_beir_valid_units": 1680,
@@ -158,7 +179,15 @@
     "hybrid_checkpoints_expected": 40,
     "confirmatory_results_available": false,
     "short_branch_results_available": false,
-    "note": "This explanatory intervention was designed after observing the local-to-global reversal and is not a preregistered discovery test. No spectral-transplant output existed at freeze time."
+    "note": "This explanatory intervention was designed after observing the local-to-global reversal and is not a preregistered discovery test. No spectral-transplant output existed at freeze time.",
+    "amendments": [
+      {
+        "amended_at_utc": "2026-08-30T19:57:16Z",
+        "previous_protocol_sha256": "de0ff8d2caeb5a6feadc0635274b7536637aad5686542f536be6cb4216465520",
+        "spectral_transplant_outputs_available": false,
+        "reason": "Freeze query-tail estimands motivated by the already-visible functional tail result before any spectrum/basis transplant outcome exists; leave the intervention conditions and claim boundary unchanged."
+      }
+    ]
   },
   "claim_boundary": "This intervention can causally attribute immediate fixed-state functional differences to singular values versus singular vectors. It cannot alone show that the attributed component causes a full-training BEIR gain; that requires the independently frozen shared-start branches or a later explicitly disclosed spectral-operator branch."
 }

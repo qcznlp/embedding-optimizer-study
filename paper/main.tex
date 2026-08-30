@@ -336,6 +336,30 @@ query-disjoint loss-tail and higher unseen margin-tail under the three-seed medi
 diagnostic can suggest a functional robustness account, while only the accumulated branch can test
 whether it persists.
 
+This tail result gives a more specific optimization hypothesis than ``Muon has flatter updates.''
+For any matrix direction $D$,
+$\lVert D\rVert_2=\lVert D\rVert_F/\sqrt{\operatorname{srank}(D)}$; hence, under our per-tensor
+Frobenius match, the measured higher stable rank of the Muon-family direction entails lower maximum
+singular amplification. Together with
+$\lVert D h\rVert_2\leq\lVert D\rVert_2\lVert h\rVert_2$, this suggests that AdamW can achieve
+better mean immediate descent by concentrating change in a few high-leverage directions while
+producing larger regressions for aligned queries or tokens. Muon may instead trade mean progress for
+a smaller adverse tail. Late interaction supplies a plausible architectural amplifier because a
+token-wise maximum exposes the score to extreme token perturbations; the pooled dense score need not
+preserve the same fragile-query set. Aggregate token-coverage and evidence-concentration probes do
+not consistently distinguish the tuned optimizers, so they do not support a simpler ``uses more
+tokens'' account.
+
+Before any spectrum/basis-transplant output existed, we froze a tail-specific amendment: loss
+p95/p99, margin p01/p05, and independently selected worst tails for AdamW and each transplanted
+condition. If the Adam-basis/Muon-spectrum cell inherits the LateOn tail effect but the reciprocal
+Muon-basis/Adam-spectrum cell does not, the immediate effect follows singular values rather than
+their basis. This remains a fixed-state causal attribution, not a long-horizon mediation result.
+More broadly, the tuned discovery point estimates show that an Adam-to-Muon switch need not always
+hurt retrieval even though prior full-rank studies find optimizer mismatch
+\citep{qu2026finetune}; the potentially novel claim is an architecture- and update-strength-dependent
+interior regime, pending multi-seed confirmation, rather than mismatch or spectral flattening alone.
+
 \paragraph{Shared-start branches.}
 Both architectures branch from the same 60\% AdamW checkpoint. AdamW, Muon, and NorMuon receive
 hidden learning rates calibrated to a common global $\lVert\Delta W\rVert_F/\lVert W\rVert_F$

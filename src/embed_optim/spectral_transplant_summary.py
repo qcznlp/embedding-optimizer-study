@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import statistics
 from collections import defaultdict
 from pathlib import Path
@@ -108,6 +109,136 @@ def _anchor_effects(
             )
         effects.append(effect)
     return effects
+
+
+def _linear_quantile(values: list[float], quantile: float) -> float:
+    if not values or not 0 <= quantile <= 1:
+        raise ValueError("Quantiles require finite non-empty values and q in [0, 1]")
+    ordered = sorted(float(value) for value in values)
+    if not all(math.isfinite(value) for value in ordered):
+        raise ValueError("Quantiles require finite values")
+    position = (len(ordered) - 1) * quantile
+    lower = math.floor(position)
+    upper = math.ceil(position)
+    if lower == upper:
+        return ordered[lower]
+    weight = position - lower
+    return ordered[lower] * (1 - weight) + ordered[upper] * weight
+
+
+def _worst_loss_tail(values: dict[int, float], count: int) -> set[int]:
+    if count < 1 or count > len(values):
+        raise ValueError("Worst-tail count is outside the sample range")
+    if not all(math.isfinite(value) for value in values.values()):
+        raise ValueError("Worst-tail values must be finite")
+    # The sample id is the deterministic tie-breaker; larger loss changes are worse.
+    return set(sorted(values, key=lambda sample_id: (-values[sample_id], sample_id))[:count])
+
+
+def _anchor_tail_effects(
+    label: str,
+    family: str,
+    records: list[dict[str, Any]],
+    spec: dict[str, Any],
+) -> list[dict[str, Any]]:
+    metadata = _condition_metadata(spec)
+    expected_conditions = ["baseline", *metadata]
+    by_condition: dict[str, dict[int, dict[str, Any]]] = defaultdict(dict)
+    for record in records:
+        condition = record.get("condition")
+        sample_id = int(record.get("sample_id"))
+        if condition not in expected_conditions or sample_id in by_condition[condition]:
+            raise ValueError(f"Duplicate or unexpected tail condition/sample in {label}")
+        for metric in ("contrastive_loss", "positive_margin"):
+            value = float(record.get(metric))
+            if not math.isfinite(value):
+                raise ValueError(f"Non-finite {metric} in {label}/{condition}/{sample_id}")
+        by_condition[condition][sample_id] = record
+    if set(by_condition) != set(expected_conditions):
+        raise ValueError(f"Tail condition coverage differs from the spectral protocol in {label}")
+    sample_ids = sorted(by_condition["baseline"])
+    if len(sample_ids) != spec["evaluation"]["examples"] or any(
+        set(rows) != set(sample_ids) for rows in by_condition.values()
+    ):
+        raise ValueError(f"Tail conditions do not contain the frozen paired samples in {label}")
+
+    tail_spec = spec["evaluation"]["tail_protocol"]
+    tail_count = int(tail_spec["tail_count"])
+    if tail_count != math.ceil(float(tail_spec["tail_fraction"]) * len(sample_ids)):
+        raise ValueError("Frozen spectral tail count disagrees with the sample count")
+    baseline = by_condition["baseline"]
+    adamw = by_condition["adamw-native"]
+    adam_loss_delta = {
+        sample_id: float(adamw[sample_id]["contrastive_loss"])
+        - float(baseline[sample_id]["contrastive_loss"])
+        for sample_id in sample_ids
+    }
+    adam_margin_delta = {
+        sample_id: float(adamw[sample_id]["positive_margin"])
+        - float(baseline[sample_id]["positive_margin"])
+        for sample_id in sample_ids
+    }
+    adam_tail = _worst_loss_tail(adam_loss_delta, tail_count)
+
+    output = []
+    for condition in expected_conditions[1:]:
+        if condition == "adamw-native":
+            continue
+        rows = by_condition[condition]
+        condition_loss_delta = {
+            sample_id: float(rows[sample_id]["contrastive_loss"])
+            - float(baseline[sample_id]["contrastive_loss"])
+            for sample_id in sample_ids
+        }
+        condition_margin_delta = {
+            sample_id: float(rows[sample_id]["positive_margin"])
+            - float(baseline[sample_id]["positive_margin"])
+            for sample_id in sample_ids
+        }
+        loss_contrast = {
+            sample_id: condition_loss_delta[sample_id] - adam_loss_delta[sample_id]
+            for sample_id in sample_ids
+        }
+        margin_contrast = {
+            sample_id: condition_margin_delta[sample_id] - adam_margin_delta[sample_id]
+            for sample_id in sample_ids
+        }
+        condition_tail = _worst_loss_tail(condition_loss_delta, tail_count)
+        union = adam_tail | condition_tail
+        output.append(
+            {
+                "family": family,
+                "anchor": label,
+                "condition": condition,
+                **metadata[condition],
+                "samples": len(sample_ids),
+                "tail_count": tail_count,
+                "mean_pairwise_loss_contrast": statistics.fmean(loss_contrast.values()),
+                "p95_pairwise_loss_contrast": _linear_quantile(list(loss_contrast.values()), 0.95),
+                "p99_pairwise_loss_contrast": _linear_quantile(list(loss_contrast.values()), 0.99),
+                "mean_pairwise_margin_contrast": statistics.fmean(margin_contrast.values()),
+                "p01_pairwise_margin_contrast": _linear_quantile(
+                    list(margin_contrast.values()), 0.01
+                ),
+                "p05_pairwise_margin_contrast": _linear_quantile(
+                    list(margin_contrast.values()), 0.05
+                ),
+                "mean_loss_contrast_on_adam_tail": statistics.fmean(
+                    loss_contrast[sample_id] for sample_id in adam_tail
+                ),
+                "mean_loss_contrast_on_condition_tail": statistics.fmean(
+                    loss_contrast[sample_id] for sample_id in condition_tail
+                ),
+                "worst_loss_tail_jaccard": len(adam_tail & condition_tail) / len(union),
+                "adam_tail_baseline_margin_mean": statistics.fmean(
+                    float(baseline[sample_id]["positive_margin"]) for sample_id in adam_tail
+                ),
+                "condition_tail_baseline_margin_mean": statistics.fmean(
+                    float(baseline[sample_id]["positive_margin"]) for sample_id in condition_tail
+                ),
+            }
+        )
+    return output
 
 
 def _factorial_effects(anchor_effects: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -233,6 +364,53 @@ def _group_summary(
     return output
 
 
+def _tail_group_summary(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    keys = (
+        "family",
+        "condition",
+        "category",
+        "basis_source",
+        "spectrum_operation",
+        "interpolation_lambda",
+        "band",
+    )
+    favorable_sign = {
+        "mean_pairwise_loss_contrast": "negative",
+        "p95_pairwise_loss_contrast": "negative",
+        "p99_pairwise_loss_contrast": "negative",
+        "mean_pairwise_margin_contrast": "positive",
+        "p01_pairwise_margin_contrast": "positive",
+        "p05_pairwise_margin_contrast": "positive",
+        "mean_loss_contrast_on_adam_tail": "negative",
+        "mean_loss_contrast_on_condition_tail": "negative",
+    }
+    descriptive = (
+        "worst_loss_tail_jaccard",
+        "adam_tail_baseline_margin_mean",
+        "condition_tail_baseline_margin_mean",
+    )
+    grouped: dict[tuple[Any, ...], list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped[tuple(row[key] for key in keys)].append(row)
+    output = []
+    for identity, members in sorted(grouped.items()):
+        summary = {key: value for key, value in zip(keys, identity, strict=True)}
+        summary["anchors"] = len(members)
+        for name, sign in favorable_sign.items():
+            observed = [float(row[name]) for row in members]
+            summary[f"mean_{name}"] = statistics.fmean(observed)
+            summary[f"median_{name}"] = statistics.median(observed)
+            summary[f"favorable_anchor_fraction_{name}"] = statistics.fmean(
+                value < 0 if sign == "negative" else value > 0 for value in observed
+            )
+        for name in descriptive:
+            observed = [float(row[name]) for row in members]
+            summary[f"mean_{name}"] = statistics.fmean(observed)
+            summary[f"median_{name}"] = statistics.median(observed)
+        output.append(summary)
+    return output
+
+
 def summarize_spectral_transplants(
     jobs: list[SpectralTransplantJob],
     output_dir: str | Path,
@@ -261,12 +439,16 @@ def summarize_spectral_transplants(
 
     sources = []
     anchor_effects = []
+    anchor_tail_effects = []
     for job in jobs:
         manifest_path = job.output_dir / "manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         sample_path = job.output_dir / manifest["outputs"]["sample_metrics"]["path"]
         records = _read_jsonl(sample_path)
         anchor_effects.extend(_anchor_effects(job.label, job.common_state.family, records, spec))
+        anchor_tail_effects.extend(
+            _anchor_tail_effects(job.label, job.common_state.family, records, spec)
+        )
         sources.append(
             {
                 "label": job.label,
@@ -285,6 +467,9 @@ def summarize_spectral_transplants(
     expected_effects = expected * (spec["intervention"]["expected_conditions_per_anchor"] - 1)
     if len(anchor_effects) != expected_effects:
         raise AssertionError("Spectral anchor-effect cardinality changed")
+    expected_tail_effects = expected * (spec["intervention"]["expected_conditions_per_anchor"] - 2)
+    if len(anchor_tail_effects) != expected_tail_effects:
+        raise AssertionError("Spectral anchor tail-effect cardinality changed")
 
     factorial = _factorial_effects(anchor_effects)
     path = _spectral_path_effects(anchor_effects)
@@ -318,6 +503,7 @@ def summarize_spectral_transplants(
         keys=("family", "metric", "band", "condition"),
         values=("effect_vs_baseline", "contrast_vs_adamw_native"),
     )
+    tail_summary = _tail_group_summary(anchor_tail_effects)
 
     tables = {
         "anchor_condition_effects": anchor_effects,
@@ -328,6 +514,8 @@ def summarize_spectral_transplants(
         "family_spectral_path": path_summary,
         "anchor_band_effects": bands,
         "family_band_summary": band_summary,
+        "anchor_query_tail_effects": anchor_tail_effects,
+        "family_query_tail_summary": tail_summary,
     }
     outputs = {}
     for name, rows in tables.items():
@@ -356,6 +544,8 @@ def summarize_spectral_transplants(
         },
         "anchors": len(jobs),
         "anchor_effect_records": len(anchor_effects),
+        "anchor_tail_effect_records": len(anchor_tail_effects),
+        "tail_protocol": spec["evaluation"]["tail_protocol"],
         "sources": sources,
         "outputs": outputs,
         "claim_boundary": spec["claim_boundary"],

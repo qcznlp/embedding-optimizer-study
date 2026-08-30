@@ -1112,9 +1112,13 @@ embed-optim-summarize-spectral-transplant
 ```
 
 The primary tables distinguish a singular-value-spectrum effect, a singular-vector-basis effect,
-their interaction, the continuous interpolation path, and the three spectral bands. The protocol
-records that discovery, common-state, exact-spectrum, representation, and original functional
-results were already visible when this experiment was designed. It can therefore support causal
+their interaction, the continuous interpolation path, and the three spectral bands. A disclosed
+pre-output amendment also freezes paired query-level loss p95/p99, margin p01/p05, and symmetric
+5% worst-tail comparisons. This directly tests whether LateOn's adverse-tail protection follows
+the transplanted singular values or the transplanted basis, rather than relying on a mean effect.
+The protocol records that discovery, common-state, exact-spectrum, representation, and original
+functional results were already visible when this experiment was designed, and separately records
+that no spectral-transplant output existed at the tail amendment. It can therefore support causal
 claims about an immediate fixed-state perturbation, but it cannot by itself attribute a complete
 training-run BEIR gain to spectral equalization; that stronger claim must also survive the
 independently frozen shared-start branches.

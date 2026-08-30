@@ -23,6 +23,7 @@ from embed_optim.spectral_transplant_matrix import (
 )
 from embed_optim.spectral_transplant_summary import (
     _anchor_effects,
+    _anchor_tail_effects,
     _band_effects,
     _factorial_effects,
     _spectral_path_effects,
@@ -47,6 +48,10 @@ def test_frozen_spectral_transplant_protocol_is_self_consistent():
     ]
     assert spec["intervention"]["expected_conditions_per_anchor"] == 11
     assert spec["intervention"]["expected_sample_records_per_anchor"] == 11 * 224
+    tail = spec["evaluation"]["tail_protocol"]
+    assert tail["status"] == "frozen-before-spectral-transplant-output"
+    assert tail["tail_count"] == 12
+    assert spec["freeze_context"]["amendments"][0]["spectral_transplant_outputs_available"] is False
     root = path.parent.parent
     source = spec["source_inputs"]
     assert _sha256(root / source["common_state_spec"]) == source["common_state_spec_sha256"]
@@ -334,11 +339,13 @@ def test_spectral_summary_builds_path_band_and_factorial_estimands():
         for sample_id in range(spec["evaluation"]["examples"])
     ]
     anchor = _anchor_effects("dense/test", "dense", records, spec)
+    tail = _anchor_tail_effects("dense/test", "dense", records, spec)
     factorial = _factorial_effects(anchor)
     path = _spectral_path_effects(anchor)
     bands = _band_effects(anchor)
 
     assert len(anchor) == 10
+    assert len(tail) == 9
     margin_factorial = next(row for row in factorial if row["metric"] == "positive_margin")
     assert margin_factorial["spectrum_main_effect"] == pytest.approx(0.2)
     assert margin_factorial["basis_main_effect"] == pytest.approx(0.1)
@@ -352,3 +359,9 @@ def test_spectral_summary_builds_path_band_and_factorial_estimands():
     assert [row["contrast_vs_adamw_native"] for row in margin_bands] == pytest.approx(
         [0.01, 0.02, 0.03]
     )
+    muon_tail = next(row for row in tail if row["condition"] == "muon-native")
+    assert muon_tail["p95_pairwise_loss_contrast"] == pytest.approx(-0.30)
+    assert muon_tail["p05_pairwise_margin_contrast"] == pytest.approx(0.30)
+    assert muon_tail["mean_loss_contrast_on_adam_tail"] == pytest.approx(-0.30)
+    assert muon_tail["mean_loss_contrast_on_condition_tail"] == pytest.approx(-0.30)
+    assert muon_tail["worst_loss_tail_jaccard"] == pytest.approx(1.0)
