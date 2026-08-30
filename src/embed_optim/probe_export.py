@@ -138,6 +138,9 @@ def _load_model(
         models = configure_pylate_compatibility()
         model = models.ColBERT(
             str(checkpoint),
+            query_length=8192,
+            document_length=8192,
+            do_query_expansion=False,
             trust_remote_code=True,
             model_kwargs=model_kwargs,
         )

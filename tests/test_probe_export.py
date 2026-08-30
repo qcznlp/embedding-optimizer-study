@@ -4,10 +4,12 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+import torch
 from datasets import Dataset
 
 from embed_optim.geometry import _sha256
 from embed_optim.probe_export import (
+    _load_model,
     encode_late_probe,
     export_probe,
     pack_variable_embeddings,
@@ -77,6 +79,96 @@ class FakeLate:
             np.full((offset + index % 3, 128), index + 1, dtype=np.float32)
             for index in range(len(texts))
         ]
+
+
+class FakeLoadedLate:
+    def __init__(self, **kwargs):
+        self.query_length = kwargs.get("query_length")
+        self.document_length = kwargs.get("document_length")
+        self.do_query_expansion = kwargs.get("do_query_expansion")
+        self.can_flatten_inputs = True
+        self.device = None
+        self.training = True
+
+    def _first_module(self):
+        return self
+
+    def to(self, device):
+        self.device = device
+        return self
+
+    def eval(self):
+        self.training = False
+        return self
+
+
+def test_late_loader_overrides_pretrained_context_contract(tmp_path: Path, monkeypatch):
+    calls = []
+
+    class FakeColBERT(FakeLoadedLate):
+        def __init__(self, checkpoint, **kwargs):
+            calls.append((checkpoint, dict(kwargs)))
+            super().__init__(**kwargs)
+
+    fake_models = type("FakeModels", (), {"ColBERT": FakeColBERT})
+    monkeypatch.setattr(
+        "embed_optim.pylate_compat.configure_pylate_compatibility",
+        lambda: fake_models,
+    )
+
+    checkpoint = tmp_path / "late-pretrained"
+    model = _load_model(
+        "late",
+        checkpoint,
+        dtype=torch.float32,
+        device="cpu",
+        flash_attention=False,
+    )
+
+    assert calls == [
+        (
+            str(checkpoint),
+            {
+                "query_length": 8192,
+                "document_length": 8192,
+                "do_query_expansion": False,
+                "trust_remote_code": True,
+                "model_kwargs": {"dtype": torch.float32, "attn_implementation": "sdpa"},
+            },
+        )
+    ]
+    assert model.query_length == 8192
+    assert model.document_length == 8192
+    assert model.do_query_expansion is False
+    assert model.can_flatten_inputs is False
+    assert model.device == "cpu"
+    assert model.training is False
+
+
+def test_late_loader_rejects_ignored_context_override(tmp_path: Path, monkeypatch):
+    class FakeColBERT(FakeLoadedLate):
+        def __init__(self, checkpoint, **kwargs):
+            del checkpoint, kwargs
+            super().__init__(
+                query_length=32,
+                document_length=300,
+                do_query_expansion=False,
+            )
+
+    fake_models = type("FakeModels", (), {"ColBERT": FakeColBERT})
+    monkeypatch.setattr(
+        "embed_optim.pylate_compat.configure_pylate_compatibility",
+        lambda: fake_models,
+    )
+
+    with pytest.raises(ValueError, match="query=32, document=300"):
+        _load_model(
+            "late",
+            tmp_path / "late-pretrained",
+            dtype=torch.float32,
+            device="cpu",
+            flash_attention=False,
+        )
 
 
 def test_pad_variable_embeddings_preserves_lengths_and_dtype():
