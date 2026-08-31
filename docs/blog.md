@@ -711,7 +711,10 @@ supported only if both Muon-family optimizers reverse their high-dose-versus-ret
 and margin ordering at width 2,048. A halfway movement toward zero is labeled attenuation, while an
 unchanged anti-calibrated ordering falsifies this explanation. These rules were fixed before any
 candidate-breadth data or scores were visible, but the diagnostic itself was designed after the
-shortlist--corpus gap was observed and therefore remains post hoc.
+shortlist--corpus gap was observed and therefore remains post hoc. The summary emits the exact
+calibration and paired-contrast tables together with deterministic SVG/PDF publication panels under
+`reports/candidate-breadth/`; the audit command verifies every output hash against the source-bound
+run manifests.
 
 ### Render the Dense paper and blog
 

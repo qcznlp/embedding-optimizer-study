@@ -343,7 +343,8 @@ missing-candidate coverage only if all 12 width-7 reproductions pass and both Mu
 their high-dose-versus-retrieval-optimal loss and margin ordering by width 2,048. Attenuation without
 reversal is reported separately, and an unchanged anti-calibrated ordering falsifies this proposed
 explanation. In every case the analysis remains post hoc and cannot replace the formal full-corpus
-optimizer comparison.
+optimizer comparison. The summary writes audited calibration and paired-contrast tables plus
+publication-ready SVG/PDF panels under `reports/candidate-breadth/`.
 
 ## Render the final Dense-only deliverables
 

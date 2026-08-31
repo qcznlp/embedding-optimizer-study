@@ -110,6 +110,147 @@ def _atomic_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> No
             temporary.unlink()
 
 
+def _atomic_figure(figure: Any, path: Path) -> dict[str, Any]:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    image_format = path.suffix.removeprefix(".")
+    if image_format not in {"svg", "pdf"}:
+        raise ValueError(f"Unsupported candidate-breadth figure format: {path}")
+    temporary = path.with_name(f".{path.name}.tmp.{os.getpid()}.{image_format}")
+    metadata = (
+        {"Date": None, "Creator": "embedding-optimizer-study"}
+        if image_format == "svg"
+        else {
+            "CreationDate": None,
+            "ModDate": None,
+            "Creator": "embedding-optimizer-study",
+        }
+    )
+    try:
+        figure.savefig(temporary, format=image_format, bbox_inches="tight", metadata=metadata)
+        os.replace(temporary, path)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+    return {"path": path.name, "bytes": path.stat().st_size, "sha256": _sha256(path)}
+
+
+def _candidate_breadth_figure(
+    calibration_rows: list[dict[str, Any]],
+    contrast_rows: list[dict[str, Any]],
+    output_dir: Path,
+) -> dict[str, dict[str, Any]]:
+    import matplotlib
+
+    matplotlib.use("Agg")
+    matplotlib.rcParams["svg.hashsalt"] = "candidate-breadth-v1"
+    import matplotlib.pyplot as plt
+
+    widths = sorted({int(row["negative_width"]) for row in calibration_rows})
+    contrast_widths = sorted({int(row["negative_width"]) for row in contrast_rows})
+    optimizers = ("adamw", "muon", "normuon")
+    challengers = ("muon", "normuon")
+    if (
+        widths != [7, 10, 32, 128, 512, 2048]
+        or contrast_widths != widths
+        or len(calibration_rows) != len(widths) * len(optimizers)
+        or len(contrast_rows) != len(widths) * len(challengers)
+    ):
+        raise ValueError("Candidate-breadth figure requires complete frozen width coverage")
+
+    colors = {"adamw": "#4C78A8", "muon": "#F58518", "normuon": "#54A24B"}
+    labels = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
+    calibration = {
+        (str(row["optimizer"]), int(row["negative_width"])): row for row in calibration_rows
+    }
+    contrasts = {(str(row["optimizer"]), int(row["negative_width"])): row for row in contrast_rows}
+    if set(calibration) != {(optimizer, width) for optimizer in optimizers for width in widths}:
+        raise ValueError("Candidate-breadth calibration rows are duplicated or incomplete")
+    if set(contrasts) != {(optimizer, width) for optimizer in challengers for width in widths}:
+        raise ValueError("Candidate-breadth contrast rows are duplicated or incomplete")
+
+    figure, axes = plt.subplots(2, 2, figsize=(8.0, 6.1), sharex=True)
+    top_panels = (
+        (axes[0, 0], "loss_beir_spearman", "Validation loss vs. BEIR", "ideal sign: negative"),
+        (axes[0, 1], "margin_beir_spearman", "Validation margin vs. BEIR", "ideal sign: positive"),
+    )
+    for axis, metric, title, subtitle in top_panels:
+        for optimizer in optimizers:
+            axis.plot(
+                widths,
+                [float(calibration[(optimizer, width)][metric]) for width in widths],
+                color=colors[optimizer],
+                marker="o",
+                linewidth=1.8,
+                markersize=4.5,
+                label=labels[optimizer],
+            )
+        axis.axhline(0.0, color="#555555", linestyle="--", linewidth=0.9, alpha=0.75)
+        axis.set_ylim(-1.05, 1.05)
+        axis.set_title(f"{title}\n{subtitle}", fontsize=10.2)
+        axis.set_ylabel("Spearman $\\rho$")
+        axis.grid(alpha=0.20)
+    axes[0, 0].legend(frameon=False, fontsize=8, ncol=3, loc="lower center")
+
+    bottom_panels = (
+        (
+            axes[1, 0],
+            "contrastive_loss_delta",
+            "High-dose loss contrast",
+            "positive favors retrieval-optimal dose",
+        ),
+        (
+            axes[1, 1],
+            "positive_margin_delta",
+            "High-dose margin contrast",
+            "negative favors retrieval-optimal dose",
+        ),
+    )
+    for axis, metric, title, subtitle in bottom_panels:
+        for optimizer in challengers:
+            axis.plot(
+                widths,
+                [float(contrasts[(optimizer, width)][metric]) for width in widths],
+                color=colors[optimizer],
+                marker="o",
+                linewidth=1.8,
+                markersize=4.5,
+                label=labels[optimizer],
+            )
+        axis.axhline(0.0, color="#555555", linestyle="--", linewidth=0.9, alpha=0.75)
+        axis.set_title(f"{title}\n{subtitle}", fontsize=10.2)
+        axis.set_ylabel(r"$3\!\times\!10^{-3} - 3\!\times\!10^{-4}$")
+        axis.grid(alpha=0.20)
+    axes[1, 0].legend(frameon=False, fontsize=8, ncol=2, loc="best")
+
+    for axis in axes.flat:
+        axis.set_xscale("log", base=2)
+        axis.set_xticks(widths, [str(width) for width in widths])
+        axis.minorticks_off()
+    for axis in axes[1, :]:
+        axis.set_xlabel("Number of negatives for the same query")
+    figure.suptitle(
+        "Does candidate breadth repair optimizer-specific validation calibration?", fontsize=12
+    )
+    figure.text(
+        0.5,
+        0.008,
+        "Post-hoc mechanism diagnostic; candidate sets are strictly nested and width 7 must "
+        "reproduce the frozen validation evaluator.",
+        ha="center",
+        fontsize=7.8,
+    )
+    figure.tight_layout(rect=(0, 0.035, 1, 0.95))
+    records = {
+        suffix: _atomic_figure(
+            figure,
+            output_dir / f"candidate_breadth_calibration.{suffix}",
+        )
+        for suffix in ("svg", "pdf")
+    }
+    plt.close(figure)
+    return records
+
+
 def _load_beir_scores(path: Path) -> dict[str, dict[str, Any]]:
     rows = {}
     with path.open(encoding="utf-8", newline="") as handle:
@@ -263,14 +404,26 @@ def build_candidate_breadth_summary(
         existing = json.loads(summary_path.read_text(encoding="utf-8"))
         if existing.get("decision") != decision or existing.get("inputs") != inputs:
             raise ValueError("Candidate-breadth summary differs from recomputed evidence")
+        if set(existing.get("outputs", {})) != {
+            "calibration",
+            "contrasts",
+            "figure_svg",
+            "figure_pdf",
+        }:
+            raise ValueError("Candidate-breadth summary output ledger is incomplete")
         for item in existing["outputs"].values():
             path = output_dir / item["path"]
-            if path.stat().st_size != item["bytes"] or _sha256(path) != item["sha256"]:
+            if (
+                not path.is_file()
+                or path.stat().st_size != item["bytes"]
+                or _sha256(path) != item["sha256"]
+            ):
                 raise ValueError(f"Candidate-breadth summary output changed: {path}")
         return existing
 
     _atomic_csv(calibration_path, calibration_rows, list(calibration_rows[0]))
     _atomic_csv(contrasts_path, contrast_rows, list(contrast_rows[0]))
+    figures = _candidate_breadth_figure(calibration_rows, contrast_rows, output_dir)
     summary = {
         "schema_version": SCHEMA_VERSION,
         "status": "complete",
@@ -300,6 +453,8 @@ def build_candidate_breadth_summary(
                 "bytes": contrasts_path.stat().st_size,
                 "sha256": _sha256(contrasts_path),
             },
+            "figure_svg": figures["svg"],
+            "figure_pdf": figures["pdf"],
         },
     }
     _atomic_json(summary_path, summary)
