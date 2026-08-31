@@ -124,6 +124,37 @@ def _group_summaries(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return summaries
 
 
+def _sample_records_from_scores(
+    scores: np.ndarray,
+    queries: Dataset,
+    widths: list[int],
+    *,
+    temperature: float,
+) -> list[dict[str, Any]]:
+    metrics_by_width = candidate_width_metrics(scores, widths, temperature=temperature)
+    records: list[dict[str, Any]] = []
+    for width in widths:
+        metrics = metrics_by_width[width]
+        for index in range(len(queries)):
+            records.append(
+                {
+                    "schema_version": SCHEMA_VERSION,
+                    "negative_width": width,
+                    "query_index": index,
+                    "sample_id": int(queries[index]["sample_id"]),
+                    "source": str(queries[index]["source"]),
+                    **{metric: float(metrics[metric][index]) for metric in METRICS},
+                }
+            )
+    return records
+
+
+def _jsonl_bytes(records: list[dict[str, Any]]) -> bytes:
+    return b"".join(
+        (json.dumps(record, sort_keys=True, allow_nan=False) + "\n").encode() for record in records
+    )
+
+
 def _identity(path: Path, root: Path) -> dict[str, Any]:
     return {
         "path": str(path.relative_to(root)),
@@ -179,6 +210,105 @@ def _baseline_check(
     }
 
 
+def _audit_existing_evaluation(
+    manifest: dict[str, Any],
+    identity: dict[str, Any],
+    output_dir: Path,
+    queries: Dataset,
+    *,
+    baseline_root: Path | None,
+    device: str,
+) -> dict[str, Any]:
+    expected_keys = {
+        *identity,
+        "sample_records",
+        "group_records",
+        "baseline_reproduction",
+        "outputs",
+        "runtime",
+    }
+    if set(manifest) != expected_keys or {key: manifest.get(key) for key in identity} != identity:
+        raise ValueError("Existing candidate-breadth evaluation has different inputs or schema")
+    outputs = manifest.get("outputs")
+    if not isinstance(outputs, dict) or set(outputs) != {
+        "sample_metrics",
+        "group_metrics",
+        "scores",
+    }:
+        raise ValueError("Candidate-breadth evaluation output contract changed")
+    for item in outputs.values():
+        _verify_file(output_dir, item)
+
+    score_path = output_dir / outputs["scores"]["path"]
+    with np.load(score_path, allow_pickle=False) as archive:
+        if set(archive.files) != {"scores", "sample_ids", "negative_widths"}:
+            raise ValueError("Candidate-breadth score archive schema changed")
+        scores = np.asarray(archive["scores"])
+        sample_ids = np.asarray(archive["sample_ids"])
+        archived_widths = np.asarray(archive["negative_widths"])
+    widths = [int(value) for value in identity["negative_widths"]]
+    expected_sample_ids = np.asarray(queries["sample_id"], dtype=np.int64)
+    if (
+        scores.dtype != np.float32
+        or scores.shape != (len(queries), max(widths) + 1)
+        or not np.isfinite(scores).all()
+        or sample_ids.dtype != np.int64
+        or not np.array_equal(sample_ids, expected_sample_ids)
+        or archived_widths.dtype != np.int64
+        or not np.array_equal(archived_widths, np.asarray(widths, dtype=np.int64))
+    ):
+        raise ValueError("Candidate-breadth score archive content changed")
+
+    sample_records = _sample_records_from_scores(
+        scores,
+        queries,
+        widths,
+        temperature=float(identity["temperature"]),
+    )
+    group_records = _group_summaries(sample_records)
+    sample_path = output_dir / outputs["sample_metrics"]["path"]
+    group_path = output_dir / outputs["group_metrics"]["path"]
+    if sample_path.read_bytes() != _jsonl_bytes(sample_records):
+        raise ValueError("Candidate-breadth sample metrics do not reproduce raw scores")
+    if group_path.read_bytes() != _jsonl_bytes(group_records):
+        raise ValueError("Candidate-breadth group metrics do not reproduce raw scores")
+
+    expected_baseline = None
+    if baseline_root is not None:
+        run_id = Path(identity["checkpoint"]["path"]).parent.name
+        baseline_path = baseline_root / run_id / "sample_metrics.jsonl"
+        if not baseline_path.is_file():
+            raise FileNotFoundError(baseline_path)
+        expected_baseline = _baseline_check(sample_records, baseline_path, tolerance=1e-5)
+    if manifest.get("baseline_reproduction") != expected_baseline:
+        raise ValueError("Candidate-breadth baseline reproduction record changed")
+    expected_outputs = {
+        "sample_metrics": _identity(sample_path, output_dir),
+        "group_metrics": _identity(group_path, output_dir),
+        "scores": _identity(score_path, output_dir),
+    }
+    runtime = manifest.get("runtime")
+    if (
+        outputs != expected_outputs
+        or manifest.get("sample_records") != len(sample_records)
+        or manifest.get("group_records") != len(group_records)
+        or not isinstance(runtime, dict)
+        or set(runtime)
+        != {
+            "torch",
+            "sentence_transformers",
+            "cuda",
+            "device",
+            "gpu_name",
+        }
+        or runtime.get("device") != device
+        or not isinstance(runtime.get("torch"), str)
+        or not isinstance(runtime.get("sentence_transformers"), str)
+    ):
+        raise ValueError("Candidate-breadth manifest does not reproduce audited outputs")
+    return manifest
+
+
 def run_candidate_breadth_evaluation(
     checkpoint: str | Path,
     data_root: str | Path,
@@ -192,6 +322,7 @@ def run_candidate_breadth_evaluation(
     checkpoint = Path(checkpoint).resolve()
     data_root = Path(data_root).resolve()
     output_dir = Path(output_dir).resolve()
+    baseline_root = Path(baseline_root).resolve() if baseline_root is not None else None
     protocol_path, protocol = load_candidate_breadth_protocol(protocol_path)
     # The release controller performs the expensive pinned-source reconstruction once
     # before launching the matrix.  Each checkpoint still re-audits every local file and
@@ -229,14 +360,20 @@ def run_candidate_breadth_evaluation(
         "negative_widths": protocol["candidate_construction"]["negative_widths"],
         "temperature": temperature,
     }
+    queries = Dataset.load_from_disk(str(data_root / "queries"))
+    if len(queries) != data_audit["queries"]:
+        raise ValueError("Candidate-breadth query Dataset changed")
     manifest_path = output_dir / "manifest.json"
     if manifest_path.is_file() and not overwrite:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        if {key: manifest.get(key) for key in identity} != identity:
-            raise ValueError("Existing candidate-breadth evaluation has different inputs")
-        for item in manifest.get("outputs", {}).values():
-            _verify_file(output_dir, item)
-        return manifest
+        return _audit_existing_evaluation(
+            manifest,
+            identity,
+            output_dir,
+            queries,
+            baseline_root=baseline_root,
+            device=device,
+        )
     if output_dir.exists() and not overwrite:
         raise FileExistsError(f"Partial candidate-breadth evaluation exists: {output_dir}")
     if overwrite and output_dir.exists():
@@ -246,9 +383,6 @@ def run_candidate_breadth_evaluation(
             else:
                 raise FileExistsError(f"Refusing to delete nested output directory: {path}")
 
-    queries = Dataset.load_from_disk(str(data_root / "queries"))
-    if len(queries) != data_audit["queries"]:
-        raise ValueError("Candidate-breadth query Dataset changed")
     model = _load_model(
         "dense",
         checkpoint,
@@ -291,30 +425,17 @@ def run_candidate_breadth_evaluation(
         del model
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-    metrics_by_width = candidate_width_metrics(
+    sample_records = _sample_records_from_scores(
         scores,
+        queries,
         identity["negative_widths"],
         temperature=temperature,
     )
-    sample_records: list[dict[str, Any]] = []
-    for width in identity["negative_widths"]:
-        metrics = metrics_by_width[width]
-        for index in range(len(queries)):
-            sample_records.append(
-                {
-                    "schema_version": SCHEMA_VERSION,
-                    "negative_width": width,
-                    "query_index": index,
-                    "sample_id": int(queries[index]["sample_id"]),
-                    "source": str(queries[index]["source"]),
-                    **{metric: float(metrics[metric][index]) for metric in METRICS},
-                }
-            )
     group_records = _group_summaries(sample_records)
     baseline = None
     if baseline_root is not None:
         run_id = checkpoint.parent.name
-        baseline_path = Path(baseline_root).resolve() / run_id / "sample_metrics.jsonl"
+        baseline_path = baseline_root / run_id / "sample_metrics.jsonl"
         if not baseline_path.is_file():
             raise FileNotFoundError(baseline_path)
         baseline = _baseline_check(sample_records, baseline_path, tolerance=1e-5)
@@ -354,7 +475,14 @@ def run_candidate_breadth_evaluation(
         },
     }
     _atomic_json(manifest_path, manifest)
-    return manifest
+    return _audit_existing_evaluation(
+        manifest,
+        identity,
+        output_dir,
+        queries,
+        baseline_root=baseline_root,
+        device=device,
+    )
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

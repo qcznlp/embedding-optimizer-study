@@ -144,7 +144,10 @@ def run_candidate_breadth_matrix(
     evaluation = protocol["evaluation"]
     data_root = (root / evaluation["data_output"]).resolve()
     baseline_root = (root / evaluation["baseline_root"]).resolve()
-    data_audit = audit_candidate_breadth_data(protocol_path, data_root)
+    # The immediately preceding release step performs the independent pinned-source
+    # reconstruction.  The matrix repeats the complete local semantic audit without
+    # rescanning the source parquet files before each group of checkpoint jobs.
+    data_audit = audit_candidate_breadth_data(protocol_path, data_root, verify_source=False)
     gpu_values = _parse_gpus(gpus)
     log_dir = root / "logs" / "candidate-breadth"
     log_dir.mkdir(parents=True, exist_ok=True)
