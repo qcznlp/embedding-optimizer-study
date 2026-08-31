@@ -373,7 +373,12 @@ AdamW versus Muon matches routing and the auxiliary rate, but each rule retains 
 swept learning-rate range; it compares separately tuned recipes rather than identifying
 orthogonalization, the matrix rule, or update scale alone. A full-length scale-matched component
 control would be needed for that attribution. The present control removes a routing confound from
-the recipe comparison but is not by itself a causal decomposition of Muon.
+the recipe comparison but is not by itself a causal decomposition of Muon. Across the four shared
+AdamW learning rates, hybrid-minus-native mean nDCG@10 is $+0.000201$, $-0.000331$, $+0.000383$, and
+$+0.000055$. The aggregate change over all 56 task--learning-rate units is $+0.000077$ (28 wins, 6
+ties, and 22 losses), and the best AdamW point changes only from 0.589867 to 0.589922. Thus routing
+and the fixed auxiliary rate are far too small and inconsistent to account for the optimizer-level
+retrieval differences.
 
 \subsection{Representation and score geometry}
 

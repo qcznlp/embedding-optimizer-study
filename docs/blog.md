@@ -455,6 +455,13 @@ auxiliary learning rate. Because hybrid AdamW and Muon use independently swept h
 learning-rate ranges, this is a matched-routing comparison of separately tuned recipes, not an
 identification of orthogonalization or update scale alone.
 
+The complete 14-task control is numerically negligible. Hybrid-minus-native AdamW mean nDCG@10 is
++0.000201, -0.000331, +0.000383, and +0.000055 at hidden learning rates 1e-6, 3e-6, 1e-5, and 3e-5,
+respectively. Averaged over all 56 task-by-learning-rate units, the change is +0.000077, with 28
+wins, 6 ties, and 22 losses. The best native AdamW point moves from 0.589867 to 0.589922 under hybrid
+routing. This rules out a routing effect of the scale needed to explain the optimizer-level results;
+it still does not identify orthogonalization separately from the matrix rule or update scale.
+
 ### Shared-start accumulation
 
 All nine DenseOn short branches start from the same 60% AdamW checkpoint. They use a fixed

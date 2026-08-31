@@ -58,6 +58,13 @@ validation rule instead selects AdamW 3e-5 (discovery BEIR 0.5899), Muon 3e-3 (0
 3e-3 (0.5634). Three new seeds using recipes frozen by that validation rule provide the confirmatory
 comparison.
 
+The completed 14-task routing control makes the main optimizer comparison essentially unchanged.
+Across all four AdamW learning rates, routing hidden matrices separately and fixing the auxiliary
+AdamW rate changes mean nDCG@10 by only +0.000077. Three learning-rate contrasts are positive and one
+is negative; the 56 task-by-learning-rate units contain 28 wins, 6 ties, and 22 losses. Parameter
+routing is therefore too small and inconsistent to explain the Muon-family discovery or selection
+effects, although this control does not isolate orthogonalization from update scale.
+
 The strongest current mechanism observation is a local-to-global reversal:
 
 - a Frobenius-matched Muon virtual step improves the mean immediate query margin less than AdamW;
