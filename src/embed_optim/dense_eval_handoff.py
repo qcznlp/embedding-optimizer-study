@@ -7,6 +7,7 @@ import fcntl
 import hashlib
 import json
 import os
+import shutil
 import signal
 import subprocess
 import sys
@@ -29,10 +30,27 @@ from .evaluate_matrix import (
     _record_evaluation_inputs,
     checkpoint_paths,
 )
-from .family_training_queue import QueueJob, load_queue_plan
+from .family_training_queue import (
+    QueueJob,
+    QueueTermination,
+    _terminate_and_reap_process_group,
+    load_queue_plan,
+)
 from .gpu_lease import validate_disjoint_gpu_pools
 from .matrix import _run_is_complete
 from .scope import resolve_scope
+
+EARLY_PARTIAL_TASKS = (
+    "SciFact",
+    "NFCorpus",
+    "SCIDOCS",
+    "ArguAna",
+    "FiQA2018",
+    "NQ",
+    "QuoraRetrieval",
+    "TRECCOVID",
+)
+EARLY_PARTIAL_EXPECTED_UNITS = 3 * 3 * len(EARLY_PARTIAL_TASKS)
 
 
 class ConditionNotReady(RuntimeError):
@@ -71,6 +89,36 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(temporary, path)
+
+
+def _file_identity(path: Path) -> dict[str, Any]:
+    resolved = path.resolve()
+    return {"path": str(resolved), "sha256": _sha256(resolved)}
+
+
+def _base_identity(args: argparse.Namespace, plan_path: Path) -> dict[str, Any]:
+    protocol_path, protocol = load_confirmatory_protocol(args.protocol)
+    matrix_dir = Path(args.matrix_dir or protocol["training"]["matrix_output_dir"]).resolve()
+    return {
+        "schema_version": 1,
+        "plan": _file_identity(plan_path),
+        "scope_amendment": _file_identity(args.scope_amendment),
+        "protocol": _file_identity(protocol_path),
+        "experiment_matrix": _file_identity(args.experiment_matrix),
+        "validation_spec": _file_identity(args.validation_spec),
+        "matrix_dir": str(matrix_dir),
+        "results_root": str(args.results_root.resolve()),
+        "receipt": str(args.receipt.resolve()),
+        "evaluation_log_dir": str(args.evaluation_log_dir.resolve()),
+        "gpu_lock_dir": str(args.gpu_lock_dir.resolve()),
+        "pool_gpus": {"a": args.gpus_a, "b": args.gpus_b},
+        "queue_pids": {"a": args.queue_pid_a, "b": args.queue_pid_b},
+        "python": str(Path(shutil.which(args.python) or args.python).resolve()),
+        "worker_python": str(
+            Path(shutil.which(args.worker_python) or args.worker_python).resolve()
+        ),
+        "tasks": list(EARLY_PARTIAL_TASKS),
+    }
 
 
 def _read_argv(pid: int) -> list[str] | None:
@@ -439,6 +487,8 @@ def _evaluation_command(args: argparse.Namespace, decision: HandoffDecision) -> 
         str(args.results_root.resolve()),
         "--families",
         "dense",
+        "--tasks",
+        *EARLY_PARTIAL_TASKS,
         "--scope-amendment",
         str(args.scope_amendment.resolve()),
         "--log-dir",
@@ -458,7 +508,33 @@ def _evaluation_command(args: argparse.Namespace, decision: HandoffDecision) -> 
     ]
 
 
-def _run_with_timeout(command: list[str], args: argparse.Namespace) -> int:
+def _process_identity(pid: int) -> dict[str, Any]:
+    argv = _read_argv(pid)
+    if argv is None:
+        raise RuntimeError(f"Evaluator PID {pid} disappeared before identity capture")
+    stat = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+    fields = stat[stat.rfind(")") + 2 :].split()
+    return {
+        "pid": pid,
+        "pgid": os.getpgid(pid),
+        "start_time_ticks": int(fields[19]),
+        "argv": argv,
+        "cwd": str(_read_cwd(pid)),
+    }
+
+
+def _termination_signal(signum: int, _frame: Any) -> None:
+    if signum == signal.SIGINT:
+        raise KeyboardInterrupt
+    raise QueueTermination(signum)
+
+
+def _run_with_timeout(
+    command: list[str],
+    args: argparse.Namespace,
+    *,
+    on_started: Callable[[subprocess.Popen[Any]], None] | None = None,
+) -> int:
     args.process_log.parent.mkdir(parents=True, exist_ok=True)
     with args.process_log.open("a", encoding="utf-8") as handle:
         process = subprocess.Popen(
@@ -468,24 +544,38 @@ def _run_with_timeout(command: list[str], args: argparse.Namespace) -> int:
             stderr=subprocess.STDOUT,
             start_new_session=True,
         )
+        previous_handlers = {
+            sig: signal.signal(sig, _termination_signal)
+            for sig in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP)
+        }
         try:
-            return process.wait(timeout=args.evaluation_timeout_seconds)
-        except subprocess.TimeoutExpired:
             try:
-                os.killpg(process.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-            try:
-                process.wait(timeout=args.termination_grace_seconds)
+                if on_started is not None:
+                    on_started(process)
+                return_code = process.wait(timeout=args.evaluation_timeout_seconds)
+                if return_code:
+                    _terminate_and_reap_process_group(
+                        process, termination_grace_seconds=args.termination_grace_seconds
+                    )
+                return return_code
             except subprocess.TimeoutExpired:
-                try:
-                    os.killpg(process.pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-                process.wait()
-            raise TimeoutError(
-                f"Dense evaluation handoff exceeded {args.evaluation_timeout_seconds}s"
-            ) from None
+                _terminate_and_reap_process_group(
+                    process, termination_grace_seconds=args.termination_grace_seconds
+                )
+                raise TimeoutError(
+                    f"Dense evaluation handoff exceeded {args.evaluation_timeout_seconds}s"
+                ) from None
+        except BaseException:
+            # A repeated termination signal must not interrupt process-group cleanup.
+            for sig in previous_handlers:
+                signal.signal(sig, signal.SIG_IGN)
+            _terminate_and_reap_process_group(
+                process, termination_grace_seconds=args.termination_grace_seconds
+            )
+            raise
+        finally:
+            for sig, handler in previous_handlers.items():
+                signal.signal(sig, handler)
 
 
 def _result_receipt(args: argparse.Namespace) -> dict[str, Any]:
@@ -497,9 +587,25 @@ def _result_receipt(args: argparse.Namespace) -> dict[str, Any]:
         results_root=args.results_root,
         families=("dense",),
         scope_amendment=args.scope_amendment,
+        tasks=EARLY_PARTIAL_TASKS,
     )
-    if audit.get("complete") is not True or audit.get("valid_units") != 126:
-        raise RuntimeError("Dense confirmatory handoff did not produce 126 canonical final units")
+    if (
+        audit.get("complete") is not True
+        or audit.get("tasks") != list(EARLY_PARTIAL_TASKS)
+        or audit.get("valid_units") != EARLY_PARTIAL_EXPECTED_UNITS
+        or audit.get("expected_units") != EARLY_PARTIAL_EXPECTED_UNITS
+    ):
+        raise RuntimeError(
+            "Dense confirmatory handoff did not produce 72 canonical partial final units"
+        )
+    try:
+        receipt_payload = json.loads(args.receipt.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError("Early evaluation receipt is missing or unreadable") from error
+    if receipt_payload != audit:
+        raise RuntimeError(
+            "Early evaluation receipt does not exactly match the fresh 72-unit audit"
+        )
     manifests = []
     expected_sources = _evaluation_source_manifest(args.workdir)
     for seed in (314159, 271828, 161803):
@@ -516,6 +622,7 @@ def _result_receipt(args: argparse.Namespace) -> dict[str, Any]:
                     raise RuntimeError(f"Canonical evaluation runtime provenance differs: {path}")
             manifests.append({"path": str(path), "sha256": _sha256(path)})
     return {
+        "tasks": list(EARLY_PARTIAL_TASKS),
         "valid_units": audit["valid_units"],
         "expected_units": audit["expected_units"],
         "receipt": {"path": str(args.receipt.resolve()), "sha256": _sha256(args.receipt)},
@@ -523,9 +630,201 @@ def _result_receipt(args: argparse.Namespace) -> dict[str, Any]:
     }
 
 
+def _decision_payload(decision: HandoffDecision) -> dict[str, Any]:
+    return {
+        "observed_at": _timestamp(),
+        "idle_pool": decision.idle_pool,
+        "active_pool": decision.active_pool,
+        "gpu_tokens": decision.gpu_tokens,
+        "remaining_identity": decision.remaining_identity,
+        "job_statuses": list(decision.job_statuses),
+        "queue_ledgers": decision.queue_ledgers,
+        "active_provenance": decision.active_provenance,
+    }
+
+
+def _restore_decision(args: argparse.Namespace, payload: Any) -> HandoffDecision:
+    if not isinstance(payload, dict):
+        raise RuntimeError("Resume ledger lacks a frozen handoff decision")
+    idle = payload.get("idle_pool")
+    active = payload.get("active_pool")
+    statuses = payload.get("job_statuses")
+    ledgers = payload.get("queue_ledgers")
+    provenance = payload.get("active_provenance")
+    expected_gpus = {"a": args.gpus_a, "b": args.gpus_b}
+    plan_path, _, jobs_by_pool = load_queue_plan(args.plan)
+    expected_status_identity = [
+        (pool, job.identity, job.phase) for pool in ("a", "b") for job in jobs_by_pool[pool]
+    ]
+    observed_status_identity = [
+        (row.get("pool"), row.get("identity"), row.get("phase"))
+        for row in statuses or []
+        if isinstance(row, dict)
+    ]
+    remaining_job = jobs_by_pool.get(active, [None])[-1] if active in jobs_by_pool else None
+    if (
+        {idle, active} != {"a", "b"}
+        or payload.get("gpu_tokens") != expected_gpus.get(idle)
+        or not isinstance(statuses, list)
+        or len(statuses) != 18
+        or not all(isinstance(row, dict) for row in statuses)
+        or observed_status_identity != expected_status_identity
+        or remaining_job is None
+        or remaining_job.phase != "short-branch"
+        or remaining_job.identity != payload.get("remaining_identity")
+        or not isinstance(ledgers, dict)
+        or set(ledgers) != {"a", "b"}
+        or not isinstance(provenance, dict)
+        or provenance.get("identity") != payload.get("remaining_identity")
+        or provenance.get("queue_pid") != {"a": args.queue_pid_a, "b": args.queue_pid_b}.get(active)
+    ):
+        raise RuntimeError("Frozen handoff decision is inconsistent with the requested resume")
+    for row in statuses:
+        should_be_complete = not (
+            row["pool"] == active and row["identity"] == remaining_job.identity
+        )
+        if (
+            row.get("artifact_complete") is not should_be_complete
+            or row.get("ledger_complete") is not should_be_complete
+        ):
+            raise RuntimeError("Frozen handoff statuses are not the canonical 17/18 boundary")
+
+    queue_argv = provenance.get("queue_argv")
+    trainer_argv = provenance.get("trainer_argv")
+    repository = plan_path.parent.parent.resolve()
+    active_ledger_path = (args.ledger_a if active == "a" else args.ledger_b).resolve()
+    if (
+        not isinstance(provenance.get("trainer_pid"), int)
+        or provenance["trainer_pid"] <= 1
+        or not isinstance(queue_argv, list)
+        or not all(isinstance(item, str) for item in queue_argv)
+        or not _is_module(queue_argv, "embed_optim.family_training_queue")
+        or _one_option(queue_argv, "--pool") != active
+        or _one_option(queue_argv, "--gpus") != expected_gpus[active]
+        or not isinstance(trainer_argv, list)
+        or not all(isinstance(item, str) for item in trainer_argv)
+        or not _is_module(trainer_argv, "embed_optim.matrix")
+        or _option_values(trainer_argv, "--families") != ["dense"]
+        or _option_values(trainer_argv, "--run-ids") != [remaining_job.config.run_id]
+        or _one_option(trainer_argv, "--gpus-a") != expected_gpus[active]
+        or _one_option(trainer_argv, "--gpus-b") != expected_gpus[active]
+    ):
+        raise RuntimeError("Frozen active-process provenance is not canonical")
+    declared_plan = _one_option(queue_argv, "--plan", default="configs/dense_training_queue.json")
+    declared_ledger = _one_option(queue_argv, "--ledger", default=str(active_ledger_path))
+    trainer_matrix = _one_option(trainer_argv, "--matrix")
+    if (
+        (repository / declared_plan).resolve() != plan_path.resolve()
+        if not Path(declared_plan).is_absolute()
+        else Path(declared_plan).resolve() != plan_path.resolve()
+    ):
+        raise RuntimeError("Frozen active queue uses a different plan")
+    if (
+        (repository / declared_ledger).resolve() != active_ledger_path
+        if not Path(declared_ledger).is_absolute()
+        else Path(declared_ledger).resolve() != active_ledger_path
+    ):
+        raise RuntimeError("Frozen active queue uses a different ledger")
+    if (
+        (repository / trainer_matrix).resolve() != remaining_job.matrix.resolve()
+        if not Path(trainer_matrix).is_absolute()
+        else Path(trainer_matrix).resolve() != remaining_job.matrix.resolve()
+    ):
+        raise RuntimeError("Frozen active trainer uses a different matrix")
+
+    for pool, path in (("a", args.ledger_a), ("b", args.ledger_b)):
+        frozen = ledgers[pool]
+        expected_frozen_complete = pool == idle
+        expected_frozen_jobs = 9 if pool == idle else 8
+        if (
+            frozen.get("path") != str(path.resolve())
+            or not isinstance(frozen.get("sha256"), str)
+            or frozen.get("complete") is not expected_frozen_complete
+            or frozen.get("completed_jobs") != expected_frozen_jobs
+        ):
+            raise RuntimeError("Frozen queue-ledger provenance differs from the requested resume")
+        # The live ledger may advance, but every frozen byte receipt must remain available
+        # in the handoff ledger and the current file must still be a valid queue ledger.
+        current = _load_queue_ledger(
+            path.resolve(),
+            pool=pool,
+            gpus=expected_gpus[pool],
+            plan_path=plan_path,
+            jobs=jobs_by_pool[pool],
+        )
+        current_complete = {
+            record["identity"] for record in current["jobs"] if record.get("complete") is True
+        }
+        frozen_complete = {
+            row["identity"]
+            for row in statuses
+            if row.get("pool") == pool and row.get("ledger_complete") is True
+        }
+        if not frozen_complete <= current_complete:
+            raise RuntimeError("Current queue ledger lost frozen completed-job provenance")
+        if pool == idle and (
+            current.get("complete") is not True or _sha256(path.resolve()) != frozen["sha256"]
+        ):
+            raise RuntimeError("Frozen idle-pool ledger changed after the handoff boundary")
+    return HandoffDecision(
+        idle,
+        active,
+        payload["gpu_tokens"],
+        payload["remaining_identity"],
+        tuple(statuses),
+        ledgers,
+        provenance,
+    )
+
+
+def _cleanup_resumed_attempt(attempt: dict[str, Any], args: argparse.Namespace) -> None:
+    frozen = attempt.get("process")
+    if not isinstance(frozen, dict):
+        return
+    pid = frozen.get("pid")
+    pgid = frozen.get("pgid")
+    if not isinstance(pid, int) or not isinstance(pgid, int) or pid <= 1 or pgid <= 1:
+        raise RuntimeError("Stored evaluator process identity is invalid")
+    try:
+        current = _process_identity(pid)
+    except (FileNotFoundError, ProcessLookupError, RuntimeError, ConditionNotReady):
+        try:
+            os.killpg(pgid, 0)
+        except ProcessLookupError:
+            return
+        raise RuntimeError("Evaluator leader vanished while its unverified process group remains")
+    if current != frozen:
+        raise RuntimeError("Evaluator PID was reused; refusing to signal an unverified process")
+    try:
+        os.killpg(pgid, signal.SIGTERM)
+    except ProcessLookupError:
+        return
+    deadline = time.monotonic() + args.termination_grace_seconds
+    while time.monotonic() < deadline:
+        try:
+            os.killpg(pgid, 0)
+        except ProcessLookupError:
+            return
+        time.sleep(min(0.05, max(0.0, deadline - time.monotonic())))
+    try:
+        os.killpg(pgid, signal.SIGKILL)
+    except ProcessLookupError:
+        return
+
+
+def _existing_result(args: argparse.Namespace) -> dict[str, Any] | None:
+    # The evaluator writes its receipt only after the selected coverage passes a
+    # strict audit.  Absence is therefore the sole resumable incomplete state;
+    # any present-but-invalid receipt is provenance corruption and must fail closed.
+    if not args.receipt.is_file():
+        return None
+    return _result_receipt(args)
+
+
 def run_handoff(args: argparse.Namespace) -> int:
     plan_path, _, _ = load_queue_plan(args.plan)
     resolve_scope(("dense",), args.scope_amendment)
+    base_identity = _base_identity(args, plan_path)
     ledger_path = args.handoff_ledger.resolve()
     lock_path = args.supervisor_lock.resolve()
     lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -539,15 +838,36 @@ def run_handoff(args: argparse.Namespace) -> int:
         previous = None
         if ledger_path.is_file():
             previous = json.loads(ledger_path.read_text(encoding="utf-8"))
+            if (
+                previous.get("schema_version") != 1
+                or previous.get("base_identity") != base_identity
+            ):
+                raise RuntimeError("Handoff ledger base identity differs from this invocation")
             if previous.get("status") == "complete":
+                decision = _restore_decision(args, previous.get("handoff_condition"))
+                command = _evaluation_command(args, decision)
+                attempts = previous.get("attempts")
+                if (
+                    not isinstance(attempts, list)
+                    or not attempts
+                    or attempts[-1].get("command") != command
+                ):
+                    raise RuntimeError(
+                        "Completed handoff ledger has altered canonical command provenance"
+                    )
                 _deep_audit_confirmatory(args)
-                _result_receipt(args)
+                result = _result_receipt(args)
+                if previous.get("result") != result:
+                    raise RuntimeError(
+                        "Completed handoff result provenance differs from fresh audit"
+                    )
                 print("Dense confirmatory handoff is already complete", flush=True)
                 return 0
             if not args.resume:
                 raise RuntimeError("Incomplete handoff ledger exists; pass --resume to retry")
         ledger: dict[str, Any] = {
             "schema_version": 1,
+            "base_identity": base_identity,
             "status": "waiting-condition",
             "started_at": _timestamp(),
             "plan": {"path": str(plan_path), "sha256": _sha256(plan_path)},
@@ -561,48 +881,64 @@ def run_handoff(args: argparse.Namespace) -> int:
             "queue_pids": {"a": args.queue_pid_a, "b": args.queue_pid_b},
             "attempts": list(previous.get("attempts", [])) if previous else [],
         }
+        if previous and previous.get("handoff_condition"):
+            ledger["handoff_condition"] = previous["handoff_condition"]
         _atomic_json(ledger_path, ledger)
         try:
-            deadline = time.monotonic() + args.condition_timeout_seconds
-            last_reason = None
-            while True:
-                try:
-                    decision = inspect_handoff_condition(args)
-                    break
-                except ConditionNotReady as error:
-                    reason = str(error)
-                    if reason != last_reason:
-                        print(reason, flush=True)
-                        ledger["last_not_ready"] = {"at": _timestamp(), "reason": reason}
-                        _atomic_json(ledger_path, ledger)
-                        last_reason = reason
-                    if time.monotonic() >= deadline:
-                        ledger.update(
-                            status="condition-timeout",
-                            complete=False,
-                            finished_at=_timestamp(),
-                            error=reason,
-                        )
-                        _atomic_json(ledger_path, ledger)
-                        return 2
-                    time.sleep(min(args.poll_seconds, max(0.0, deadline - time.monotonic())))
+            progressed = bool(
+                previous and (previous.get("handoff_condition") or ledger["attempts"])
+            )
+            if progressed:
+                decision = _restore_decision(args, previous.get("handoff_condition"))
+                existing = _existing_result(args)
+                if existing is not None:
+                    if previous.get("result") not in (None, existing):
+                        raise RuntimeError("Resumed result differs from frozen result provenance")
+                    ledger.update(
+                        status="complete", complete=True, finished_at=_timestamp(), result=existing
+                    )
+                    _atomic_json(ledger_path, ledger)
+                    return 0
+                if ledger["attempts"]:
+                    _cleanup_resumed_attempt(ledger["attempts"][-1], args)
+            else:
+                deadline = time.monotonic() + args.condition_timeout_seconds
+                last_reason = None
+                while True:
+                    try:
+                        decision = inspect_handoff_condition(args)
+                        break
+                    except ConditionNotReady as error:
+                        reason = str(error)
+                        if reason != last_reason:
+                            print(reason, flush=True)
+                            ledger["last_not_ready"] = {"at": _timestamp(), "reason": reason}
+                            _atomic_json(ledger_path, ledger)
+                            last_reason = reason
+                        if time.monotonic() >= deadline:
+                            ledger.update(
+                                status="condition-timeout",
+                                complete=False,
+                                finished_at=_timestamp(),
+                                error=reason,
+                            )
+                            _atomic_json(ledger_path, ledger)
+                            return 2
+                        time.sleep(min(args.poll_seconds, max(0.0, deadline - time.monotonic())))
 
             ledger.update(
                 status="deep-audit",
-                handoff_condition={
-                    "observed_at": _timestamp(),
-                    "idle_pool": decision.idle_pool,
-                    "active_pool": decision.active_pool,
-                    "gpu_tokens": decision.gpu_tokens,
-                    "remaining_identity": decision.remaining_identity,
-                    "job_statuses": list(decision.job_statuses),
-                    "queue_ledgers": decision.queue_ledgers,
-                    "active_provenance": decision.active_provenance,
-                },
+                handoff_condition=(
+                    previous.get("handoff_condition") if progressed else _decision_payload(decision)
+                ),
             )
             _atomic_json(ledger_path, ledger)
             audit = _deep_audit_confirmatory(args)
             command = _evaluation_command(args, decision)
+            if any(item.get("command") != command for item in ledger["attempts"]):
+                raise RuntimeError(
+                    "Prior evaluator attempt has altered canonical command provenance"
+                )
             attempt = {
                 "started_at": _timestamp(),
                 "command": command,
@@ -613,7 +949,12 @@ def run_handoff(args: argparse.Namespace) -> int:
             ledger["status"] = "evaluating"
             ledger["attempts"].append(attempt)
             _atomic_json(ledger_path, ledger)
-            return_code = _run_with_timeout(command, args)
+
+            def record_process(process: subprocess.Popen[Any]) -> None:
+                attempt["process"] = _process_identity(process.pid)
+                _atomic_json(ledger_path, ledger)
+
+            return_code = _run_with_timeout(command, args, on_started=record_process)
             attempt.update(finished_at=_timestamp(), return_code=return_code)
             if return_code:
                 raise RuntimeError(f"Dense confirmatory evaluator exited {return_code}")
@@ -667,7 +1008,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--receipt",
         type=Path,
-        default=Path("reports/confirmatory/evaluation-receipt.json"),
+        default=Path("reports/confirmatory/early-partial-evaluation-receipt.json"),
     )
     parser.add_argument(
         "--handoff-ledger",
@@ -716,6 +1057,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args.workdir = args.workdir.resolve()
     if not (args.workdir / "pyproject.toml").is_file():
         parser.error("--workdir must be the repository root")
+    receipt_path = args.receipt if args.receipt.is_absolute() else args.workdir / args.receipt
+    final_receipt = args.workdir / "reports/confirmatory/evaluation-receipt.json"
+    if receipt_path.resolve() == final_receipt.resolve():
+        parser.error("Early handoff receipt must not overwrite the canonical final receipt")
     for name in (
         "plan",
         "scope_amendment",

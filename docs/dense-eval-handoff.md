@@ -51,8 +51,12 @@ idempotently.
 ## Canonical reuse and collision safety
 
 The early job runs the normal `embed_optim.confirmatory_evaluation` entrypoint with
-`--families dense`, the Dense scope amendment, stage 5 only, and
-`results/confirmatory-beir`. Each selected checkpoint is content-addressed in an additive
+`--families dense`, the Dense scope amendment, stage 5 only, and a fixed eight-task
+subset: SciFact, NFCorpus, SCIDOCS, ArguAna, FiQA2018, NQ, QuoraRetrieval, and TRECCOVID.
+Across three seeds and three optimizers this is exactly 72 units, recorded separately in
+`reports/confirmatory/early-partial-evaluation-receipt.json`; it never overwrites the
+canonical 126-unit receipt. Results remain under `results/confirmatory-beir`. Each
+selected checkpoint is content-addressed in an additive
 `evaluation_inputs.json` manifest before MTEB cache reuse. A changed model payload or an
 older unbound result folder is rejected. The later canonical call therefore skips only
 tasks produced for the identical checkpoint content and evaluation runtime.
@@ -67,7 +71,15 @@ instead of sharing those GPUs. Lease state is stored under
 evaluation log directory, and the full handoff outcome is recorded in
 `logs/dense-only-runtime/early-evaluation-handoff.json`.
 
-Exit code `0` means strict 126-unit Dense confirmatory coverage and all provenance
+Exit code `0` means strict 72-unit early-subset Dense confirmatory coverage and all provenance
 manifests were verified. Exit code `2` means the one-run condition was not reached before
 the condition timeout. Other failures are recorded with a typed error in the handoff
 ledger.
+
+Resume is fail-closed. Once the 17/18 boundary has been observed, the ledger freezes the
+plan, scope, queue provenance, evaluator command, receipt path, and child process identity.
+An interrupted supervisor can continue after the final training run has ended without
+requiring that transient boundary again, but only after revalidating the frozen decision.
+Catchable termination signals, timeouts, and non-zero evaluator exits clean the complete
+evaluator process group before a retry. A present partial receipt must exactly equal a fresh
+72-unit audit; only an absent receipt is treated as incomplete work.

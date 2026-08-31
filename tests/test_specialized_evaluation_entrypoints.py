@@ -4,6 +4,8 @@ from argparse import Namespace
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
 from embed_optim import confirmatory_evaluation, hybrid_evaluation
 
 
@@ -139,7 +141,157 @@ def test_confirmatory_entrypoint_uses_specialized_preflight_for_each_seed(tmp_pa
 
 def test_confirmatory_evaluation_defaults_dense_with_explicit_two_family_opt_in():
     assert confirmatory_evaluation.parse_args([]).families == ["dense"]
+    assert len(confirmatory_evaluation.parse_args([]).tasks) == 14
     assert confirmatory_evaluation.parse_args(["--families", "dense", "late"]).families == [
         "dense",
         "late",
     ]
+
+
+@pytest.mark.parametrize(
+    "tasks",
+    [
+        ["SciFact", "SciFact"],
+        ["not-a-frozen-task"],
+        [],
+    ],
+)
+def test_confirmatory_task_selection_rejects_invalid_values(tasks):
+    with pytest.raises(ValueError):
+        confirmatory_evaluation.normalize_confirmatory_tasks(tasks)
+
+
+def test_confirmatory_explicit_task_subset_is_preserved():
+    selected = ["SciFact", "NFCorpus"]
+    assert confirmatory_evaluation.parse_args(["--tasks", *selected]).tasks == selected
+
+
+def test_confirmatory_subset_audit_ignores_valid_cached_superset(tmp_path, monkeypatch):
+    protocol_path = tmp_path / "protocol.json"
+    protocol_path.write_text("{}")
+    generated = tmp_path / "generated"
+    generated.mkdir()
+    matrix_path = generated / "seed314159.yaml"
+    matrix_path.write_text("runs: []\n")
+    configs = [SimpleNamespace(model_family="dense", run_id=f"run-{index}") for index in range(3)]
+    selected = ("SciFact", "NFCorpus")
+    rows = []
+    for config in configs:
+        for task in (*selected, "Touche2020"):
+            result = tmp_path / f"{config.run_id}-{task}.json"
+            result.write_text("{}")
+            rows.append(
+                {
+                    "model_family": "dense",
+                    "run_id": config.run_id,
+                    "task": task,
+                    "stage": 5,
+                    "result_path": str(result),
+                }
+            )
+
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "load_confirmatory_protocol",
+        lambda _path: (
+            protocol_path,
+            {
+                "confirmatory_data": {"seeds": [314159]},
+                "training": {"matrix_output_dir": str(generated)},
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_confirmatory_matrices",
+        lambda *args, **kwargs: {"manifest_sha256": "matrix-manifest"},
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "resolve_scope",
+        lambda families, amendment: (("dense",), {"active_scope": "test"}),
+    )
+    monkeypatch.setattr(confirmatory_evaluation, "load_matrix", lambda _path: configs)
+    monkeypatch.setattr(
+        confirmatory_evaluation, "collect_evaluations", lambda _root, _configs: rows
+    )
+
+    audit = confirmatory_evaluation.audit_confirmatory_evaluations(
+        protocol_path,
+        matrix_dir=generated,
+        results_root=tmp_path / "results",
+        families=("dense",),
+        tasks=selected,
+    )
+
+    assert audit["complete"] is True
+    assert audit["tasks"] == list(selected)
+    assert audit["valid_units"] == audit["expected_units"] == 6
+    assert len(audit["result_sources"]) == 6
+
+
+@pytest.mark.parametrize("mutation", ["missing", "duplicate", "nonfinal"])
+def test_confirmatory_subset_audit_rejects_incomplete_or_ambiguous_rows(
+    tmp_path, monkeypatch, mutation
+):
+    protocol_path = tmp_path / "protocol.json"
+    protocol_path.write_text("{}")
+    generated = tmp_path / "generated"
+    generated.mkdir()
+    (generated / "seed314159.yaml").write_text("runs: []\n")
+    configs = [SimpleNamespace(model_family="dense", run_id=f"run-{index}") for index in range(3)]
+    rows = []
+    for config in configs:
+        for task in ("SciFact", "NFCorpus"):
+            result = tmp_path / f"{config.run_id}-{task}.json"
+            result.write_text("{}")
+            rows.append(
+                {
+                    "model_family": "dense",
+                    "run_id": config.run_id,
+                    "task": task,
+                    "stage": 5,
+                    "result_path": str(result),
+                }
+            )
+    if mutation == "missing":
+        rows.pop()
+    elif mutation == "duplicate":
+        rows.append(dict(rows[-1]))
+    else:
+        rows[-1]["stage"] = 4
+
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "load_confirmatory_protocol",
+        lambda _path: (
+            protocol_path,
+            {
+                "confirmatory_data": {"seeds": [314159]},
+                "training": {"matrix_output_dir": str(generated)},
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_confirmatory_matrices",
+        lambda *args, **kwargs: {"manifest_sha256": "matrix-manifest"},
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "resolve_scope",
+        lambda families, amendment: (("dense",), {"active_scope": "test"}),
+    )
+    monkeypatch.setattr(confirmatory_evaluation, "load_matrix", lambda _path: configs)
+    monkeypatch.setattr(
+        confirmatory_evaluation, "collect_evaluations", lambda _root, _configs: rows
+    )
+
+    with pytest.raises(ValueError, match="coverage"):
+        confirmatory_evaluation.audit_confirmatory_evaluations(
+            protocol_path,
+            matrix_dir=generated,
+            results_root=tmp_path / "results",
+            families=("dense",),
+            tasks=("SciFact", "NFCorpus"),
+        )

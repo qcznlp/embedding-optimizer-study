@@ -1,7 +1,12 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
+import time
 from argparse import Namespace
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -225,6 +230,27 @@ def test_handoff_rejects_a_live_idle_queue_pid(tmp_path, monkeypatch):
         )
 
 
+def test_restore_decision_revalidates_the_canonical_17_of_18_boundary(tmp_path, monkeypatch):
+    fixture = _handoff_fixture(tmp_path, monkeypatch)
+    decision = dense_eval_handoff.inspect_handoff_condition(
+        fixture.args,
+        run_is_complete=lambda config: config is not fixture.remaining.config,
+        read_argv=lambda pid: fixture.argv.get(pid),
+        read_children=lambda pid: [fixture.child_pid],
+    )
+    payload = dense_eval_handoff._decision_payload(decision)
+
+    restored = dense_eval_handoff._restore_decision(fixture.args, payload)
+
+    assert restored.idle_pool == decision.idle_pool
+    assert restored.active_pool == decision.active_pool
+    assert restored.remaining_identity == fixture.remaining.identity
+
+    payload["job_statuses"][0]["ledger_complete"] = False
+    with pytest.raises(RuntimeError, match="17/18 boundary"):
+        dense_eval_handoff._restore_decision(fixture.args, payload)
+
+
 def test_early_evaluation_command_is_explicit_dense_only(tmp_path, monkeypatch):
     protocol = tmp_path / "protocol.json"
     protocol.write_text("{}")
@@ -255,7 +281,49 @@ def test_early_evaluation_command_is_explicit_dense_only(tmp_path, monkeypatch):
     assert command[command.index("--families") + 1] == "dense"
     assert command[command.index("--gpus-a") + 1] == "0,1,2,3"
     assert command[command.index("--gpus-b") + 1] == "0,1,2,3"
+    task_start = command.index("--tasks") + 1
+    task_end = command.index("--scope-amendment")
+    assert tuple(command[task_start:task_end]) == dense_eval_handoff.EARLY_PARTIAL_TASKS
+    assert len(command[task_start:task_end]) * 3 * 3 == 72
     assert "late" not in command
+
+
+def test_early_receipt_is_independent_from_final_receipt(tmp_path, monkeypatch):
+    (tmp_path / "pyproject.toml").write_text("[project]\nname='fixture'\n")
+    args = dense_eval_handoff.parse_args(
+        [
+            "--ledger-a",
+            "a.json",
+            "--ledger-b",
+            "b.json",
+            "--queue-pid-a",
+            "111",
+            "--queue-pid-b",
+            "222",
+            "--workdir",
+            str(tmp_path),
+        ]
+    )
+    assert args.receipt == Path("reports/confirmatory/early-partial-evaluation-receipt.json")
+    assert args.receipt.name != "evaluation-receipt.json"
+
+    with pytest.raises(SystemExit):
+        dense_eval_handoff.parse_args(
+            [
+                "--ledger-a",
+                "a.json",
+                "--ledger-b",
+                "b.json",
+                "--queue-pid-a",
+                "111",
+                "--queue-pid-b",
+                "222",
+                "--workdir",
+                str(tmp_path),
+                "--receipt",
+                "reports/confirmatory/evaluation-receipt.json",
+            ]
+        )
 
 
 def test_condition_timeout_is_durably_recorded(tmp_path, monkeypatch):
@@ -267,6 +335,7 @@ def test_condition_timeout_is_durably_recorded(tmp_path, monkeypatch):
         dense_eval_handoff, "load_queue_plan", lambda path: (plan.resolve(), {}, {})
     )
     monkeypatch.setattr(dense_eval_handoff, "resolve_scope", lambda *a, **k: (("dense",), {}))
+    monkeypatch.setattr(dense_eval_handoff, "_base_identity", lambda *a, **k: {"fixture": 1})
     monkeypatch.setattr(
         dense_eval_handoff,
         "inspect_handoff_condition",
@@ -291,3 +360,152 @@ def test_condition_timeout_is_durably_recorded(tmp_path, monkeypatch):
     payload = json.loads(ledger.read_text())
     assert payload["status"] == "condition-timeout"
     assert payload["error"] == "not yet"
+
+
+def test_result_receipt_must_equal_fresh_audit(tmp_path, monkeypatch):
+    receipt = tmp_path / "receipt.json"
+    receipt.write_text(json.dumps({"complete": True, "stale": True}))
+    fresh = {
+        "complete": True,
+        "tasks": list(dense_eval_handoff.EARLY_PARTIAL_TASKS),
+        "valid_units": 72,
+        "expected_units": 72,
+    }
+    monkeypatch.setattr(dense_eval_handoff, "audit_confirmatory_evaluations", lambda *a, **k: fresh)
+    args = Namespace(
+        protocol=tmp_path / "protocol.json",
+        experiment_matrix=tmp_path / "experiment.yaml",
+        validation_spec=tmp_path / "validation.json",
+        matrix_dir=tmp_path,
+        results_root=tmp_path / "results",
+        scope_amendment=tmp_path / "scope.json",
+        receipt=receipt,
+        workdir=tmp_path,
+    )
+
+    with pytest.raises(RuntimeError, match="exactly match"):
+        dense_eval_handoff._result_receipt(args)
+
+
+def test_run_cleanup_on_wait_exception(tmp_path, monkeypatch):
+    cleaned = []
+
+    class FakeProcess:
+        pid = 12345
+
+        def wait(self, timeout=None):
+            raise KeyboardInterrupt
+
+    monkeypatch.setattr(subprocess, "Popen", lambda *a, **k: FakeProcess())
+    monkeypatch.setattr(
+        dense_eval_handoff,
+        "_terminate_and_reap_process_group",
+        lambda process, **kwargs: cleaned.append(process.pid),
+    )
+    args = Namespace(
+        process_log=tmp_path / "process.log",
+        workdir=tmp_path,
+        evaluation_timeout_seconds=10,
+        termination_grace_seconds=0.01,
+    )
+
+    with pytest.raises(KeyboardInterrupt):
+        dense_eval_handoff._run_with_timeout(["ignored"], args)
+    assert cleaned == [12345]
+
+
+def test_nonzero_evaluator_cleans_residual_process_group(tmp_path):
+    child_file = tmp_path / "child.pid"
+    code = (
+        "import pathlib,subprocess,sys; "
+        "p=subprocess.Popen([sys.executable,'-c','import time; time.sleep(60)']); "
+        f"pathlib.Path({str(child_file)!r}).write_text(str(p.pid)); sys.exit(1)"
+    )
+    args = Namespace(
+        process_log=tmp_path / "process.log",
+        workdir=tmp_path,
+        evaluation_timeout_seconds=10,
+        termination_grace_seconds=0.05,
+    )
+
+    assert dense_eval_handoff._run_with_timeout([sys.executable, "-c", code], args) == 1
+    child_pid = int(child_file.read_text())
+    deadline = time.monotonic() + 2
+    while Path(f"/proc/{child_pid}").exists() and time.monotonic() < deadline:
+        time.sleep(0.02)
+    if Path(f"/proc/{child_pid}").exists():
+        # A killed orphan can briefly remain as a zombie, but it must not be running.
+        stat = Path(f"/proc/{child_pid}/stat").read_text()
+        assert stat[stat.rfind(")") + 2 :].split()[0] == "Z"
+
+
+def test_resume_pid_reuse_fails_closed(tmp_path, monkeypatch):
+    frozen = {"pid": 2222, "pgid": 2222, "start_time_ticks": 1, "argv": ["old"], "cwd": "/x"}
+    monkeypatch.setattr(
+        dense_eval_handoff,
+        "_process_identity",
+        lambda pid: {**frozen, "start_time_ticks": 2},
+    )
+    killed = []
+    monkeypatch.setattr(os, "killpg", lambda *values: killed.append(values))
+
+    with pytest.raises(RuntimeError, match="reused"):
+        dense_eval_handoff._cleanup_resumed_attempt(
+            {"process": frozen}, Namespace(termination_grace_seconds=0.01)
+        )
+    assert killed == []
+
+
+def test_resume_after_condition_reaches_zero_does_not_reinspect(tmp_path, monkeypatch):
+    plan = tmp_path / "plan.json"
+    plan.write_text("{}")
+    scope = tmp_path / "scope.json"
+    scope.write_text("{}")
+    ledger_path = tmp_path / "handoff.json"
+    base = {"fixture": 1}
+    ledger_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "base_identity": base,
+                "status": "error",
+                "complete": False,
+                "handoff_condition": {"frozen": True},
+                "attempts": [{"command": ["evaluate"]}],
+            }
+        )
+    )
+    decision = HandoffDecision("a", "b", "0,1,2,3", "remaining", (), {}, {})
+    monkeypatch.setattr(dense_eval_handoff, "load_queue_plan", lambda path: (plan, {}, {}))
+    monkeypatch.setattr(dense_eval_handoff, "resolve_scope", lambda *a, **k: (("dense",), {}))
+    monkeypatch.setattr(dense_eval_handoff, "_base_identity", lambda *a, **k: base)
+    monkeypatch.setattr(dense_eval_handoff, "_restore_decision", lambda *a, **k: decision)
+    monkeypatch.setattr(dense_eval_handoff, "_existing_result", lambda args: None)
+    monkeypatch.setattr(dense_eval_handoff, "_cleanup_resumed_attempt", lambda *a: None)
+    monkeypatch.setattr(dense_eval_handoff, "_deep_audit_confirmatory", lambda args: {"ok": True})
+    monkeypatch.setattr(dense_eval_handoff, "_evaluation_command", lambda *a: ["evaluate"])
+    monkeypatch.setattr(
+        dense_eval_handoff,
+        "inspect_handoff_condition",
+        lambda args: pytest.fail("resume must not recheck the now-zero remaining condition"),
+    )
+    monkeypatch.setattr(
+        dense_eval_handoff,
+        "_run_with_timeout",
+        lambda command, args, on_started: 0,
+    )
+    monkeypatch.setattr(dense_eval_handoff, "_result_receipt", lambda args: {"valid_units": 72})
+    args = Namespace(
+        plan=plan,
+        scope_amendment=scope,
+        handoff_ledger=ledger_path,
+        supervisor_lock=tmp_path / "handoff.lock",
+        resume=True,
+        gpus_a="0,1,2,3",
+        gpus_b="4,5,6,7",
+        queue_pid_a=111,
+        queue_pid_b=222,
+    )
+
+    assert dense_eval_handoff.run_handoff(args) == 0
+    assert json.loads(ledger_path.read_text())["complete"] is True

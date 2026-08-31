@@ -19,6 +19,20 @@ from .supplemental_training_audit import (
 )
 
 
+def normalize_confirmatory_tasks(tasks: tuple[str, ...] | list[str]) -> tuple[str, ...]:
+    """Validate an explicit, ordered subset of the frozen BEIR task set."""
+
+    selected = tuple(tasks)
+    if not selected:
+        raise ValueError("At least one confirmatory task is required")
+    if len(selected) != len(set(selected)):
+        raise ValueError("Confirmatory tasks must not contain duplicates")
+    unknown = sorted(set(selected) - set(DECONTAMINATED_TASK_NAMES))
+    if unknown:
+        raise ValueError(f"Unknown confirmatory tasks: {', '.join(unknown)}")
+    return selected
+
+
 def _matrix_paths(protocol: dict[str, Any], matrix_dir: Path) -> dict[int, Path]:
     return {
         int(seed): (matrix_dir / f"seed{int(seed)}.yaml").resolve()
@@ -69,7 +83,9 @@ def audit_confirmatory_evaluations(
     verify_results: bool = True,
     families: tuple[str, ...] = ALL_FAMILIES,
     scope_amendment: str | Path | None = None,
+    tasks: tuple[str, ...] = DECONTAMINATED_TASK_NAMES,
 ) -> dict[str, Any]:
+    tasks = normalize_confirmatory_tasks(tasks)
     families, scope = resolve_scope(families, scope_amendment)
     resolved_protocol, protocol = load_confirmatory_protocol(protocol_path)
     generated = Path(matrix_dir or protocol["training"]["matrix_output_dir"]).resolve()
@@ -99,25 +115,26 @@ def audit_confirmatory_evaluations(
                 "error": f"{type(error).__name__}: {error}",
             }
             continue
+        selected_rows = [row for row in rows if str(row["task"]) in tasks]
         expected = {
-            (config.model_family, config.run_id, task)
-            for config in configs
-            for task in DECONTAMINATED_TASK_NAMES
+            (config.model_family, config.run_id, task) for config in configs for task in tasks
         }
         observed = {
             (str(row["model_family"]), str(row["run_id"]), str(row["task"]))
-            for row in rows
+            for row in selected_rows
             if int(row["stage"]) == 5
         }
-        only_final = len(rows) == len(observed) and all(int(row["stage"]) == 5 for row in rows)
-        expected_seed_units = len(configs) * len(DECONTAMINATED_TASK_NAMES)
-        complete = observed == expected and only_final and len(rows) == expected_seed_units
+        only_final = len(selected_rows) == len(observed) and all(
+            int(row["stage"]) == 5 for row in selected_rows
+        )
+        expected_seed_units = len(configs) * len(tasks)
+        complete = observed == expected and only_final and len(selected_rows) == expected_seed_units
         if verify_results and not complete:
             raise ValueError(
                 f"Seed {seed}: confirmatory evaluation coverage is "
-                f"{len(rows)}/{expected_seed_units} final units"
+                f"{len(selected_rows)}/{expected_seed_units} final units"
             )
-        for row in rows:
+        for row in selected_rows:
             path = Path(row["result_path"]).resolve()
             sources.append(
                 {
@@ -127,9 +144,9 @@ def audit_confirmatory_evaluations(
                     "sha256": _sha256(path),
                 }
             )
-        per_seed[str(seed)] = {"complete": complete, "units": len(rows)}
-        total += len(rows)
-    expected_total = len(matrices) * len(families) * 3 * len(DECONTAMINATED_TASK_NAMES)
+        per_seed[str(seed)] = {"complete": complete, "units": len(selected_rows)}
+        total += len(selected_rows)
+    expected_total = len(matrices) * len(families) * 3 * len(tasks)
     complete = total == expected_total and all(item["complete"] for item in per_seed.values())
     if verify_results and not complete:
         raise ValueError(f"Confirmatory evaluation coverage is {total}/{expected_total}")
@@ -137,6 +154,7 @@ def audit_confirmatory_evaluations(
         "schema_version": SCHEMA_VERSION,
         "complete": complete,
         "families": list(families),
+        "tasks": list(tasks),
         "scope_amendment": scope,
         "protocol_sha256": _sha256(resolved_protocol),
         "matrix_manifest_sha256": matrix_audit["manifest_sha256"],
@@ -159,6 +177,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--matrix-dir", type=Path)
     parser.add_argument("--results-root", type=Path, default=Path("results/confirmatory-beir"))
     parser.add_argument("--families", nargs="+", choices=("dense", "late"), default=["dense"])
+    parser.add_argument("--tasks", nargs="+", default=list(DECONTAMINATED_TASK_NAMES))
     parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--log-dir", type=Path, default=Path("logs/confirmatory-evaluation"))
     parser.add_argument("--gpus-a", default="0,1,2,3")
@@ -179,11 +198,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.gpu_lock_timeout_seconds <= 0:
         parser.error("--gpu-lock-timeout-seconds must be positive")
+    try:
+        args.tasks = list(normalize_confirmatory_tasks(args.tasks))
+    except ValueError as error:
+        parser.error(str(error))
     return args
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    tasks = normalize_confirmatory_tasks(getattr(args, "tasks", list(DECONTAMINATED_TASK_NAMES)))
     families, _ = resolve_scope(
         getattr(args, "families", ["dense", "late"]),
         getattr(args, "scope_amendment", None),
@@ -214,7 +238,7 @@ def main(argv: list[str] | None = None) -> None:
                 families=list(families),
                 run_ids=[],
                 stages=[5],
-                tasks=list(DECONTAMINATED_TASK_NAMES),
+                tasks=list(tasks),
                 gpus_a=args.gpus_a,
                 gpus_b=args.gpus_b,
                 late_port_a=args.late_port_a,
@@ -242,6 +266,7 @@ def main(argv: list[str] | None = None) -> None:
         results_root=args.results_root,
         families=families,
         scope_amendment=getattr(args, "scope_amendment", None),
+        tasks=tasks,
     )
     _atomic_json(args.receipt, receipt)
     print(json.dumps(receipt, indent=2, sort_keys=True))
