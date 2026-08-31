@@ -5,7 +5,11 @@ import tarfile
 import zipfile
 from pathlib import Path
 
-from embed_optim.distribution_audit import _transitive_config_references, audit_distribution
+from embed_optim.distribution_audit import (
+    _candidate_breadth_distribution_problems,
+    _transitive_config_references,
+    audit_distribution,
+)
 
 
 def _fixture_project(
@@ -160,6 +164,36 @@ def test_distribution_audit_rejects_stale_archive_content(tmp_path: Path):
     assert result["problems"] == [
         "wheel content mismatch: demo_project-1.2.3.data/data/share/demo/blog.md != docs/blog.md",
         "sdist content mismatch: docs/blog.md",
+    ]
+
+
+def test_completed_candidate_breadth_outputs_must_be_packaged(tmp_path: Path) -> None:
+    report = tmp_path / "reports" / "candidate-breadth"
+    report.mkdir(parents=True)
+    expected = {
+        "data-audit.json",
+        "summary.json",
+        "calibration_by_width.csv",
+        "high_dose_contrasts.csv",
+        "candidate_breadth_calibration.svg",
+        "candidate_breadth_calibration.pdf",
+        "publication_manifest.json",
+    }
+    for name in expected:
+        (report / name).write_text(
+            '{"status":"complete"}\n' if name == "summary.json" else "artifact\n",
+            encoding="utf-8",
+        )
+    declared = {
+        f"reports/candidate-breadth/{name}": Path("share/candidate-breadth") / name
+        for name in expected
+    }
+    assert _candidate_breadth_distribution_problems(tmp_path, declared) == []
+
+    declared.pop("reports/candidate-breadth/data-audit.json")
+    assert _candidate_breadth_distribution_problems(tmp_path, declared) == [
+        "completed candidate-breadth distribution missing: "
+        "reports/candidate-breadth/data-audit.json"
     ]
 
 
