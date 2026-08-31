@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from .family_training_queue import load_queue_plan
 from .scope import resolve_scope, scope_amendments_equal
@@ -25,9 +27,14 @@ CORE_STEP_NAMES = (
     "short-branch-training-audit-seed-161803",
     "hybrid-adamw-evaluation",
     "hybrid-adamw-summary",
+    "hybrid-adamw-dynamics-evaluation",
     "confirmatory-evaluation",
     "confirmatory-evaluation-audit",
     "confirmatory-summary",
+    "confirmatory-dynamics-evaluation",
+    "dense-retrieval-dynamics-audit",
+    "dense-retrieval-dynamics-summary-build",
+    "dense-retrieval-dynamics-summary-audit",
     "short-branch-training-audit",
     "short-branch-evaluation",
     "short-branch-evaluation-audit",
@@ -227,6 +234,61 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
     os.replace(temporary, path)
 
 
+@contextmanager
+def _exclusive_controller_lease(
+    path: Path,
+    *,
+    controller: str,
+    workdir: Path,
+    step_contract_sha256: str,
+) -> Iterator[int]:
+    """Hold one non-blocking lease for the complete controller lifetime."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    handle = path.open("a+", encoding="utf-8")
+    try:
+        try:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            handle.seek(0)
+            owner = handle.read().strip() or "unknown owner"
+            raise RuntimeError(
+                f"Dense {controller} controller lease is already held: {path} ({owner})"
+            ) from error
+        payload = {
+            "schema_version": 1,
+            "acquired_at": _timestamp(),
+            "pid": os.getpid(),
+            "controller": controller,
+            "workdir": str(workdir.resolve()),
+            "step_contract_sha256": step_contract_sha256,
+        }
+        handle.seek(0)
+        handle.truncate()
+        json.dump(payload, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+        yield handle.fileno()
+    finally:
+        handle.close()
+
+
+def _assert_repository_step_contract_unchanged(
+    steps: list[PipelineStep],
+    expected: dict[str, Any],
+    *,
+    repository: Path,
+) -> None:
+    """Re-enumerate sources so additions and removals also fail closed."""
+
+    _assert_step_contract_unchanged(
+        steps,
+        expected,
+        implementation_paths=_repository_contract_sources(repository),
+    )
+
+
 def _module(python: str, module: str, *arguments: str) -> tuple[str, ...]:
     return python, "-m", module, *arguments
 
@@ -308,6 +370,25 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 ),
             ),
             PipelineStep(
+                "hybrid-adamw-dynamics-evaluation",
+                _module(
+                    args.python,
+                    "embed_optim.dense_retrieval_dynamics_evaluation",
+                    "--contract",
+                    "configs/dense_retrieval_dynamics_extension.json",
+                    "--suite",
+                    "hybrid",
+                    "--gpus-a",
+                    all_gpus,
+                    "--gpus-b",
+                    four_gpu_b,
+                    "--worker-python",
+                    worker_python,
+                    "--receipt",
+                    "reports/dense-retrieval-dynamics/hybrid-evaluation-receipt.json",
+                ),
+            ),
+            PipelineStep(
                 "confirmatory-evaluation",
                 _module(
                     args.python,
@@ -340,6 +421,62 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     args.python,
                     "embed_optim.confirmatory_summary",
                     *family_scope,
+                ),
+            ),
+            PipelineStep(
+                "confirmatory-dynamics-evaluation",
+                _module(
+                    args.python,
+                    "embed_optim.dense_retrieval_dynamics_evaluation",
+                    "--contract",
+                    "configs/dense_retrieval_dynamics_extension.json",
+                    "--suite",
+                    "confirmatory",
+                    "--gpus-a",
+                    all_gpus,
+                    "--gpus-b",
+                    four_gpu_b,
+                    "--worker-python",
+                    worker_python,
+                    "--receipt",
+                    "reports/dense-retrieval-dynamics/confirmatory-evaluation-receipt.json",
+                ),
+            ),
+            PipelineStep(
+                "dense-retrieval-dynamics-audit",
+                _module(
+                    args.python,
+                    "embed_optim.dense_retrieval_dynamics_evaluation",
+                    "--contract",
+                    "configs/dense_retrieval_dynamics_extension.json",
+                    "--suite",
+                    "all",
+                    "--audit-only",
+                    "--receipt",
+                    "reports/dense-retrieval-dynamics/evaluation-receipt.json",
+                ),
+            ),
+            PipelineStep(
+                "dense-retrieval-dynamics-summary-build",
+                _module(
+                    args.python,
+                    "embed_optim.dense_retrieval_dynamics_summary",
+                    "--contract",
+                    "configs/dense_retrieval_dynamics_extension.json",
+                    "--output-dir",
+                    "reports/dense-retrieval-dynamics",
+                ),
+            ),
+            PipelineStep(
+                "dense-retrieval-dynamics-summary-audit",
+                _module(
+                    args.python,
+                    "embed_optim.dense_retrieval_dynamics_summary",
+                    "--contract",
+                    "configs/dense_retrieval_dynamics_extension.json",
+                    "--output-dir",
+                    "reports/dense-retrieval-dynamics",
+                    "--audit-only",
                 ),
             ),
             PipelineStep(
@@ -707,24 +844,63 @@ def run_pipeline(args: argparse.Namespace) -> int:
     families, scope = resolve_scope(["dense"], scope_path)
     if families != ("dense",) or scope is None:
         raise AssertionError("Dense completion pipeline received a non-dense scope")
-    _wait_for_training(args)
+    steps = pipeline_steps(args)
+    startup_sources = _repository_contract_sources(workdir)
+    step_contract = _step_contract(steps, implementation_paths=startup_sources)
+    log_dir = _under_workdir(args.log_dir, workdir)
+    with _exclusive_controller_lease(
+        log_dir / "controller.lease",
+        controller="completion",
+        workdir=workdir,
+        step_contract_sha256=step_contract["sha256"],
+    ) as lease_fd:
+        _wait_for_training(args)
+        _assert_repository_step_contract_unchanged(
+            steps,
+            step_contract,
+            repository=workdir,
+        )
+        return _run_pipeline_after_wait(
+            args,
+            workdir=workdir,
+            scope_path=scope_path,
+            scope=scope,
+            steps=steps,
+            step_contract=step_contract,
+            log_dir=log_dir,
+            lease_fd=lease_fd,
+        )
+
+
+def _run_pipeline_after_wait(
+    args: argparse.Namespace,
+    *,
+    workdir: Path,
+    scope_path: Path,
+    scope: dict[str, Any],
+    steps: list[PipelineStep],
+    step_contract: dict[str, Any],
+    log_dir: Path,
+    lease_fd: int,
+) -> int:
     training_inputs = _validate_training_inputs(
         workdir=workdir,
         scope=scope,
         training_plan=args.training_plan,
         training_ledgers=args.training_ledgers,
     )
-    steps = pipeline_steps(args)
+    _assert_repository_step_contract_unchanged(
+        steps,
+        step_contract,
+        repository=workdir,
+    )
     pipeline_arguments = _pipeline_arguments(args, workdir=workdir, scope_path=scope_path)
-    contract_sources = _repository_contract_sources(workdir)
-    step_contract = _step_contract(steps, implementation_paths=contract_sources)
     input_binding = _completion_input_binding(
         scope=scope,
         training_inputs=training_inputs,
         step_contract=step_contract,
         pipeline_arguments=pipeline_arguments,
     )
-    log_dir = _under_workdir(args.log_dir, workdir)
     ledger_path = log_dir / "pipeline-ledger.json"
     previous = None
     completed_prefix = 0
@@ -755,10 +931,10 @@ def run_pipeline(args: argparse.Namespace) -> int:
     _atomic_json(ledger_path, ledger)
     for index, step in enumerate(steps[completed_prefix:], start=completed_prefix + 1):
         _assert_training_inputs_unchanged(args, scope=scope, expected=training_inputs)
-        _assert_step_contract_unchanged(
+        _assert_repository_step_contract_unchanged(
             steps,
             step_contract,
-            implementation_paths=contract_sources,
+            repository=workdir,
         )
         record = {
             "index": index,
@@ -780,6 +956,7 @@ def run_pipeline(args: argparse.Namespace) -> int:
                     cwd=args.workdir,
                     stdout=handle,
                     stderr=subprocess.STDOUT,
+                    pass_fds=(lease_fd,),
                     check=False,
                 )
             record["attempts"].append(
@@ -801,10 +978,10 @@ def run_pipeline(args: argparse.Namespace) -> int:
                     scope=scope,
                     expected=training_inputs,
                 )
-                _assert_step_contract_unchanged(
+                _assert_repository_step_contract_unchanged(
                     steps,
                     step_contract,
-                    implementation_paths=contract_sources,
+                    repository=workdir,
                 )
                 record["complete"] = True
                 record["finished_at"] = _timestamp()

@@ -17,6 +17,7 @@ from .dense_completion_pipeline import (
     VALIDATION_STEP_NAMES,
     _args_from_pipeline_arguments,
     _assert_step_contract_unchanged,
+    _exclusive_controller_lease,
     _repository_contract_sources,
     _step_contract,
     _validate_training_inputs,
@@ -65,6 +66,21 @@ def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(temporary, path)
+
+
+def _assert_repository_step_contract_unchanged(
+    steps: list[PipelineStep],
+    expected: dict[str, Any],
+    *,
+    repository: Path,
+) -> None:
+    """Re-enumerate current sources before trusting the startup snapshot."""
+
+    _assert_step_contract_unchanged(
+        steps,
+        expected,
+        implementation_paths=_repository_contract_sources(repository),
+    )
 
 
 def _module(python: str, module: str, *arguments: str) -> tuple[str, ...]:
@@ -456,23 +472,59 @@ def run_pipeline(args: argparse.Namespace) -> int:
     families, scope = resolve_scope(["dense"], scope_path)
     if families != ("dense",) or scope is None:
         raise AssertionError("Dense finalization pipeline received a non-dense scope")
+    steps = pipeline_steps(args)
+    startup_sources = _repository_contract_sources(workdir)
+    step_contract = _step_contract(steps, implementation_paths=startup_sources)
+    log_dir = _under_workdir(args.log_dir, workdir)
+    with _exclusive_controller_lease(
+        log_dir / "controller.lease",
+        controller="finalization",
+        workdir=workdir,
+        step_contract_sha256=step_contract["sha256"],
+    ) as lease_fd:
+        _wait_for_completion(args)
+        _assert_repository_step_contract_unchanged(
+            steps,
+            step_contract,
+            repository=workdir,
+        )
+        return _run_pipeline_after_wait(
+            args,
+            workdir=workdir,
+            scope=scope,
+            steps=steps,
+            step_contract=step_contract,
+            log_dir=log_dir,
+            lease_fd=lease_fd,
+        )
 
-    _wait_for_completion(args)
+
+def _run_pipeline_after_wait(
+    args: argparse.Namespace,
+    *,
+    workdir: Path,
+    scope: dict[str, Any],
+    steps: list[PipelineStep],
+    step_contract: dict[str, Any],
+    log_dir: Path,
+    lease_fd: int,
+) -> int:
     completion_path = _under_workdir(args.completion_ledger, workdir)
     _, completion_source = _read_completion_ledger(
         completion_path,
         expected_scope=scope,
         repository=workdir,
     )
-    steps = pipeline_steps(args)
-    implementation_paths = _repository_contract_sources(workdir)
-    step_contract = _step_contract(steps, implementation_paths=implementation_paths)
+    _assert_repository_step_contract_unchanged(
+        steps,
+        step_contract,
+        repository=workdir,
+    )
     input_binding = _finalization_input_binding(
         scope=scope,
         completion_source=completion_source,
         step_contract=step_contract,
     )
-    log_dir = _under_workdir(args.log_dir, workdir)
     ledger_path = log_dir / "pipeline-ledger.json"
 
     previous: dict[str, Any] | None = None
@@ -511,10 +563,10 @@ def run_pipeline(args: argparse.Namespace) -> int:
             repository=workdir,
             expected_source=completion_source,
         )
-        _assert_step_contract_unchanged(
+        _assert_repository_step_contract_unchanged(
             steps,
             step_contract,
-            implementation_paths=implementation_paths,
+            repository=workdir,
         )
         record: dict[str, Any] = {
             "index": index,
@@ -539,6 +591,7 @@ def run_pipeline(args: argparse.Namespace) -> int:
                         cwd=workdir,
                         stdout=handle,
                         stderr=subprocess.STDOUT,
+                        pass_fds=(lease_fd,),
                         check=False,
                     )
                     return_code = result.returncode
@@ -568,10 +621,10 @@ def run_pipeline(args: argparse.Namespace) -> int:
                     repository=workdir,
                     expected_source=completion_source,
                 )
-                _assert_step_contract_unchanged(
+                _assert_repository_step_contract_unchanged(
                     steps,
                     step_contract,
-                    implementation_paths=implementation_paths,
+                    repository=workdir,
                 )
                 record["complete"] = True
                 record["finished_at"] = _timestamp()

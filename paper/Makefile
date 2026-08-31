@@ -7,7 +7,10 @@ BUILD := build
 STYLE_FILES := $(VENDOR)/acl.sty $(VENDOR)/acl_natbib.bst
 RESULT_TABLES := generated/discovery.tex generated/per-task.tex generated/common-state.tex \
 	generated/representation.tex generated/intervention.tex generated/confirmation.tex \
-	generated/causal-chain.tex
+	generated/causal-chain.tex generated/retrieval-dynamics-extension.tex
+RESULT_FIGURES := ../reports/dense-discovery/figures/dense-training-dynamics-by-run.png \
+	../reports/dense-discovery/figures/dense-lr-sensitivity.png
+EXTENDED_RESULT_FIGURE := $(wildcard ../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf)
 PYTHON ?= python3
 
 .PHONY: all release vendor headlines clean distclean
@@ -20,6 +23,7 @@ release:
 		--families dense \
 		--scope-amendment configs/dense_scope_amendment.json
 	$(MAKE) $(BUILD)/main.pdf
+	$(PYTHON) -m embed_optim.paper_layout --paper-dir . --max-main-page 8
 
 vendor: $(STYLE_FILES)
 
@@ -38,7 +42,8 @@ $(VENDOR)/acl.sty: | $(VENDOR)/.ready
 $(VENDOR)/acl_natbib.bst: | $(VENDOR)/.ready
 	curl --fail --location --silent --show-error $(ACL_STYLE_BASE)/acl_natbib.bst --output $@
 
-$(BUILD)/main.pdf: main.tex results.tex $(RESULT_TABLES) references.bib $(STYLE_FILES)
+$(BUILD)/main.pdf: main.tex results.tex $(RESULT_TABLES) $(RESULT_FIGURES) \
+	$(EXTENDED_RESULT_FIGURE) references.bib $(STYLE_FILES)
 	mkdir -p $(BUILD)
 	TEXINPUTS=$(abspath $(VENDOR))//: BSTINPUTS=$(abspath $(VENDOR))//: \
 		latexmk -pdf -bibtex -interaction=nonstopmode -halt-on-error \

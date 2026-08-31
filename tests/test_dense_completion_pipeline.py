@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import sys
 from argparse import Namespace
 from pathlib import Path
@@ -13,6 +14,7 @@ from embed_optim.dense_completion_pipeline import (
     PipelineStep,
     ProcessIdentity,
     _completion_input_binding,
+    _exclusive_controller_lease,
     _matching_completed_prefix,
     _repository_contract_sources,
     _step_contract,
@@ -62,14 +64,51 @@ def test_dense_pipeline_never_schedules_late_family():
         "embed_optim.temporal_short_branch",
         "embed_optim.dose_band_analysis",
     }
+    contract_scoped_modules = {
+        "embed_optim.dense_retrieval_dynamics_evaluation",
+        "embed_optim.dense_retrieval_dynamics_summary",
+    }
     assert all(
         (
             step.command[2] in protocol_scoped_modules
             and "configs/causal_chain_analysis.json" in step.command
         )
+        or (
+            step.command[2] in contract_scoped_modules
+            and "configs/dense_retrieval_dynamics_extension.json" in step.command
+        )
         or any(token.endswith("/configs/dense_scope_amendment.json") for token in step.command)
         for step in steps[7:]
     )
+
+
+def test_extended_retrieval_dynamics_builds_and_audits_all_five_stages():
+    steps = pipeline_steps(_args())
+    by_name = {step.name: step for step in steps}
+    names = [step.name for step in steps]
+
+    expected = (
+        "hybrid-adamw-dynamics-evaluation",
+        "confirmatory-dynamics-evaluation",
+        "dense-retrieval-dynamics-audit",
+        "dense-retrieval-dynamics-summary-build",
+        "dense-retrieval-dynamics-summary-audit",
+    )
+    assert all(name in by_name for name in expected)
+    assert names.index(expected[0]) > names.index("hybrid-adamw-summary")
+    assert names.index(expected[1]) > names.index("confirmatory-summary")
+    assert [names.index(name) for name in expected] == sorted(
+        names.index(name) for name in expected
+    )
+    assert names.index("dense-retrieval-dynamics-summary-audit") == (
+        names.index("dense-retrieval-dynamics-summary-build") + 1
+    )
+    assert "--audit-only" in by_name["dense-retrieval-dynamics-audit"].command
+    assert "--audit-only" in by_name["dense-retrieval-dynamics-summary-audit"].command
+    for name in expected[:2]:
+        command = by_name[name].command
+        assert command[command.index("--gpus-a") + 1] == "0,1,2,3,4,5,6,7"
+        assert command[command.index("--gpus-b") + 1] == "4,5,6,7"
 
 
 def test_new_mechanism_analyses_build_then_audit_in_dependency_order():
@@ -216,6 +255,79 @@ def test_wait_for_training_rejects_wrong_or_reused_pid(monkeypatch):
         _wait_for_training(args)
 
 
+def test_completion_controller_lease_rejects_a_second_instance(monkeypatch, tmp_path: Path):
+    (tmp_path / "pyproject.toml").write_text("[project]\nname='fixture'\n", encoding="utf-8")
+    args = Namespace(
+        **{
+            **vars(_args()),
+            "workdir": tmp_path,
+            "scope_amendment": tmp_path / "scope.json",
+            "log_dir": Path("logs/completion"),
+        }
+    )
+    step = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    monkeypatch.setattr(
+        "embed_optim.dense_completion_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_completion_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_completion_pipeline._wait_for_training",
+        lambda _args: pytest.fail("the second controller must fail before waiting"),
+    )
+    lease_path = tmp_path / args.log_dir / "controller.lease"
+    with _exclusive_controller_lease(
+        lease_path,
+        controller="completion",
+        workdir=tmp_path,
+        step_contract_sha256="0" * 64,
+    ):
+        with pytest.raises(RuntimeError, match="controller lease is already held"):
+            run_pipeline(args)
+
+
+def test_controller_child_inherits_lease_after_parent_copy_closes(tmp_path: Path):
+    lease_path = tmp_path / "controller.lease"
+    child = None
+    try:
+        with _exclusive_controller_lease(
+            lease_path,
+            controller="completion",
+            workdir=tmp_path,
+            step_contract_sha256="0" * 64,
+        ) as lease_fd:
+            child = subprocess.Popen(
+                [sys.executable, "-c", "import sys; sys.stdin.buffer.read(1)"],
+                stdin=subprocess.PIPE,
+                pass_fds=(lease_fd,),
+            )
+
+        assert child.poll() is None
+        with pytest.raises(RuntimeError, match="controller lease is already held"):
+            with _exclusive_controller_lease(
+                lease_path,
+                controller="completion",
+                workdir=tmp_path,
+                step_contract_sha256="1" * 64,
+            ):
+                pass
+    finally:
+        if child is not None and child.poll() is None:
+            assert child.stdin is not None
+            child.stdin.close()
+            child.wait(timeout=5)
+
+    with _exclusive_controller_lease(
+        lease_path,
+        controller="completion",
+        workdir=tmp_path,
+        step_contract_sha256="2" * 64,
+    ):
+        pass
+
+
 def _write_training_inputs(tmp_path: Path, monkeypatch):
     config_dir = tmp_path / "configs"
     config_dir.mkdir()
@@ -292,6 +404,35 @@ def _run_args(tmp_path: Path, plan: Path, ledgers: list[Path], *, resume: bool =
         resume=resume,
         include_validation=False,
     )
+
+
+def test_completion_rejects_source_mutation_while_waiting(monkeypatch, tmp_path: Path):
+    scope, plan, ledgers = _write_training_inputs(tmp_path, monkeypatch)
+    source = tmp_path / "src" / "embed_optim" / "marker.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("VALUE = 1\n", encoding="utf-8")
+    args = _run_args(tmp_path, plan, ledgers)
+    step = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    monkeypatch.setattr(
+        "embed_optim.dense_completion_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), scope),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_completion_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_completion_pipeline._wait_for_training",
+        lambda _args: source.write_text("VALUE = 2\n", encoding="utf-8"),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_completion_pipeline._validate_training_inputs",
+        lambda **_kwargs: pytest.fail("mutated source must fail before ledger validation"),
+    )
+
+    with pytest.raises(RuntimeError, match="step contract changed"):
+        run_pipeline(args)
+
+    assert not (tmp_path / args.log_dir / "pipeline-ledger.json").exists()
 
 
 def test_training_input_gate_requires_unique_complete_a_and_b_ledgers(monkeypatch, tmp_path: Path):

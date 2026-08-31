@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
+import statistics
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +30,11 @@ from .mechanism_report import (
 from .scope import ALL_FAMILIES, resolve_scope
 
 OUTCOME_MARKERS = ("<!-- OUTCOMES:BEGIN -->", "<!-- OUTCOMES:END -->")
+FINAL_CONCLUSION_MARKERS = (
+    "<!-- FINAL-CONCLUSION:BEGIN -->",
+    "<!-- FINAL-CONCLUSION:END -->",
+)
+FINAL_CONCLUSION_PENDING = "FINAL_CONCLUSION_PENDING"
 MECHANISM_MARKERS = ("<!-- MECHANISM:BEGIN -->", "<!-- MECHANISM:END -->")
 FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
@@ -53,13 +60,204 @@ SPECTRAL_TAIL_CONDITIONS = (
 )
 
 
-def _replace_marked(text: str, content: str) -> str:
-    begin, end = OUTCOME_MARKERS
+def _replace_marked(
+    text: str,
+    content: str,
+    markers: tuple[str, str] = OUTCOME_MARKERS,
+    *,
+    context: str = "blog",
+) -> str:
+    begin, end = markers
     if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError("Expected exactly one outcome marker pair in the blog")
+        raise ValueError(f"Expected exactly one {context} marker pair")
     before, remainder = text.split(begin)
     _, after = remainder.split(end)
     return f"{before}{begin}\n\n{content}\n\n{end}{after}"
+
+
+def _interval_classification(cell: str) -> str:
+    if not (cell.startswith("[") and cell.endswith("]") and "," in cell):
+        raise ValueError(f"Invalid familywise interval: {cell!r}")
+    lower_text, upper_text = cell[1:-1].split(",", 1)
+    lower, upper = float(lower_text), float(upper_text)
+    if not math.isfinite(lower) or not math.isfinite(upper):
+        raise ValueError(f"Non-finite familywise interval: {cell!r}")
+    if lower > upper:
+        raise ValueError(f"Reversed familywise interval: {cell!r}")
+    if lower > 0:
+        return "positive"
+    if upper < 0:
+        return "negative"
+    return "inconclusive"
+
+
+def build_final_conclusion_contract(
+    confirmation_rows: list[list[str]],
+    hybrid_rows: list[list[str]],
+    tail_final_rows: list[list[str]],
+    causal_evidence: dict[str, Any],
+    *,
+    families: tuple[str, ...] = FAMILIES,
+) -> dict[str, Any]:
+    """Build one evidence-bound conclusion shared by the paper, blog, and README."""
+
+    if causal_evidence.get("complete") is not True:
+        pending = (
+            f"**Pending ({FINAL_CONCLUSION_PENDING}):** the result-driven conclusion will be "
+            "rendered only after the validation-frozen retrieval, shared-start endpoint, and "
+            "causal-chain manifests are complete."
+        )
+        return {"status": "pending", "markdown": pending, "plain": pending.replace("**", "")}
+
+    confirmation = {(row[0], row[1]): row for row in confirmation_rows if len(row) == 7}
+    hybrid: dict[tuple[str, float], list[str]] = {}
+    for row in hybrid_rows:
+        if len(row) != 6:
+            raise ValueError("Final conclusion contains an invalid hybrid-routing row")
+        try:
+            learning_rate = float(row[1])
+            native = float(row[2])
+            routed = float(row[3])
+            delta = float(row[4])
+            wins, ties, losses = (int(value) for value in row[5].split("/"))
+        except (TypeError, ValueError) as error:
+            raise ValueError("Final conclusion contains an invalid hybrid-routing row") from error
+        if (
+            not all(math.isfinite(value) for value in (learning_rate, native, routed, delta))
+            or wins < 0
+            or ties < 0
+            or losses < 0
+            or wins + ties + losses != 14
+            or not math.isclose(routed - native, delta, rel_tol=0.0, abs_tol=1.1e-4)
+            or (row[0], learning_rate) in hybrid
+        ):
+            raise ValueError("Final conclusion contains an invalid hybrid-routing row")
+        hybrid[(row[0], learning_rate)] = row
+    tails = {(row[0], row[1]): row for row in tail_final_rows if len(row) == 7}
+    family_labels = tuple(FAMILY_LABELS[family] for family in families)
+    expected_confirmation = {
+        (family, contrast)
+        for family in family_labels
+        for contrast in ("Muon - AdamW", "NorMuon - AdamW", "NorMuon - Muon")
+    }
+    expected_tails = {
+        (family, challenger) for family in family_labels for challenger in ("Muon", "NorMuon")
+    }
+    hybrid_learning_rates = (1e-6, 3e-6, 1e-5, 3e-5)
+    expected_hybrid = {
+        (family, learning_rate)
+        for family in family_labels
+        for learning_rate in hybrid_learning_rates
+    }
+    if (
+        set(confirmation) != expected_confirmation
+        or set(hybrid) != expected_hybrid
+        or set(tails) != expected_tails
+    ):
+        raise ValueError(
+            "Final conclusion lacks the exact active confirmatory, hybrid-routing, or tail rows"
+        )
+
+    result_sentences = []
+    routing_sentences = []
+    tail_sentences = []
+    classifications: dict[str, dict[str, str]] = {}
+    routing_controls: dict[str, dict[str, float | int | str]] = {}
+    tail_decisions: dict[str, dict[str, str]] = {}
+    for family in family_labels:
+        classifications[family] = {}
+        comparison_parts = []
+        for contrast in ("Muon - AdamW", "NorMuon - AdamW"):
+            row = confirmation[(family, contrast)]
+            classification = _interval_classification(row[4])
+            classifications[family][contrast] = classification
+            comparison_parts.append(
+                f"{contrast.replace(' - ', ' versus ')} was {classification} "
+                f"(mean delta nDCG@10 {row[2]}; familywise 95% CI {row[4]})"
+            )
+        result_sentences.append(
+            f"On the validation-frozen three-seed {family} retrieval comparison, "
+            + ", while ".join(comparison_parts)
+            + "."
+        )
+        routing_deltas = [
+            float(hybrid[(family, learning_rate)][4]) for learning_rate in hybrid_learning_rates
+        ]
+        routing_mean = statistics.fmean(routing_deltas)
+        positive = sum(delta > 0 for delta in routing_deltas)
+        negative = sum(delta < 0 for delta in routing_deltas)
+        zero = len(routing_deltas) - positive - negative
+        routing_controls[family] = {
+            "learning_rates": len(routing_deltas),
+            "mean_delta_ndcg_at_10": f"{routing_mean:+.4f}",
+            "positive_learning_rates": positive,
+            "negative_learning_rates": negative,
+            "zero_learning_rates": zero,
+        }
+        routing_sentences.append(
+            f"Across {family}'s four frozen learning rates, routing-matched hybrid AdamW minus "
+            f"native AdamW averaged {routing_mean:+.4f} nDCG@10, with {positive} positive, "
+            f"{negative} negative, and {zero} zero learning-rate points. This is descriptive "
+            "evidence about parameter routing as an alternative explanation; it does not by "
+            "itself identify the matrix rule or prove that routing accounts for the confirmatory "
+            "Muon-family contrast."
+        )
+        tail_decisions[family] = {}
+        tail_parts = []
+        for challenger in ("Muon", "NorMuon"):
+            decision = tails[(family, challenger)][6]
+            if not decision or FINAL_CONCLUSION_PENDING in decision:
+                raise ValueError("Final conclusion contains an invalid tail decision")
+            tail_decisions[family][challenger] = decision
+            tail_parts.append(f"{challenger}: {decision}")
+        tail_sentences.append(
+            f"The frozen shared-start tail endpoint for {family} concluded "
+            + "; ".join(tail_parts)
+            + "."
+        )
+
+    temporal = causal_evidence["temporal_short_branch"]
+    dose = causal_evidence["dose_band"]
+    for label, branch in (("temporal", temporal), ("fixed-state", dose)):
+        supported = branch.get("supported")
+        expected_status = "supported" if supported is True else "negative"
+        if (
+            branch.get("claimable") is not True
+            or not isinstance(supported, bool)
+            or branch.get("status") != expected_status
+        ):
+            raise ValueError(f"Final conclusion cannot use non-claimable {label} evidence")
+    overall_verdict = causal_evidence.get("overall_verdict")
+    expected_overall_verdict = (
+        "supported"
+        if temporal["supported"] is True and dose["supported"] is True
+        else "not_supported_claimable_negative"
+    )
+    if causal_evidence.get("claimable") is not True or overall_verdict != expected_overall_verdict:
+        raise ValueError("Final conclusion cannot use an inconsistent overall causal verdict")
+    temporal_label = "supported" if temporal["supported"] is True else "a claimable negative"
+    dose_label = "supported" if dose["supported"] is True else "a claimable negative"
+    overall = "supported" if overall_verdict == "supported" else "a claimable negative"
+    causal_sentence = (
+        f"The frozen temporal spectral bridge was {temporal_label}, the fixed-state dose/band "
+        f"chain was {dose_label}, and their joint spectral-component account was {overall}. "
+        "This explains only the tested chain: it does not identify formal mediation or establish "
+        "a universal optimizer ranking."
+    )
+    plain = " ".join((*result_sentences, *routing_sentences, *tail_sentences, causal_sentence))
+    return {
+        "status": "complete",
+        "plain": plain,
+        "markdown": plain,
+        "classifications": classifications,
+        "routing_controls": routing_controls,
+        "tail_decisions": tail_decisions,
+        "causal": {
+            "temporal": temporal["status"],
+            "dose_band": dose["status"],
+            "overall": causal_evidence.get("overall_verdict"),
+        },
+    }
 
 
 def _source(
@@ -211,15 +409,20 @@ def _hybrid_rows(
         wins = int(row["hybrid_task_wins"])
         ties = int(row["task_ties"])
         losses = int(row["hybrid_task_losses"])
+        native = _finite(row, "adamw_mean_ndcg_at_10")
+        routed = _finite(row, "hybrid_adamw_mean_ndcg_at_10")
+        delta = _finite(row, "hybrid_minus_adamw_mean")
         if int(row["tasks"]) != 14 or wins + ties + losses != 14:
             raise ValueError("Hybrid AdamW task counts are invalid")
+        if not math.isclose(routed - native, delta, rel_tol=1e-9, abs_tol=1e-12):
+            raise ValueError("Hybrid AdamW delta differs from routed minus native AdamW")
         output.append(
             [
                 FAMILY_LABELS[family],
                 f"{learning_rate:.0e}",
-                _format(_finite(row, "adamw_mean_ndcg_at_10")),
-                _format(_finite(row, "hybrid_adamw_mean_ndcg_at_10")),
-                _format(_finite(row, "hybrid_minus_adamw_mean")),
+                _format(native),
+                _format(routed),
+                _format(delta),
                 f"{wins}/{ties}/{losses}",
             ]
         )
@@ -770,6 +973,7 @@ def render_outcome_report(
     blog_path: Path,
     output_path: Path,
     *,
+    readme_path: Path | None = None,
     tail_stability_dir: Path = Path("reports/tail-stability"),
     spectral_transplant_dir: Path = Path("reports/spectral-transplant"),
     families: tuple[str, ...] = FAMILIES,
@@ -819,6 +1023,9 @@ def render_outcome_report(
     )
     confirmation, confirmation_table, confirmation_manifest = _confirmation_rows(
         confirmatory_dir, families, scope
+    )
+    conclusion = build_final_conclusion_contract(
+        confirmation, hybrid, tail_final, causal_evidence, families=families
     )
     familywise_sentence = (
         "familywise 95% interval over all six comparisons prespecified before the post-hoc "
@@ -950,9 +1157,32 @@ def render_outcome_report(
         ]
     )
     content += "\n\n" + causal_section
+    content += "\n\n## Conclusion\n\n" + conclusion["markdown"]
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
-    _atomic_text(blog_path, _replace_marked(blog_path.read_text(encoding="utf-8"), content))
+    blog_text = _replace_marked(blog_path.read_text(encoding="utf-8"), content)
+    if all(marker in blog_text for marker in FINAL_CONCLUSION_MARKERS):
+        blog_text = _replace_marked(
+            blog_text,
+            conclusion["markdown"],
+            FINAL_CONCLUSION_MARKERS,
+            context="final-conclusion blog",
+        )
+    _atomic_text(blog_path, blog_text)
+    resolved_readme: Path | None = None
+    if readme_path is not None:
+        resolved_readme = (
+            readme_path.resolve()
+            if readme_path.is_absolute()
+            else (repository_root / readme_path).resolve()
+        )
+        readme_text = _replace_marked(
+            resolved_readme.read_text(encoding="utf-8"),
+            conclusion["markdown"],
+            FINAL_CONCLUSION_MARKERS,
+            context="final-conclusion README",
+        )
+        _atomic_text(resolved_readme, readme_text)
     source_manifests = {
         "mechanism_report": _source(mechanism_manifest_path, repository_root=repository_root),
         "functional_intervention": _source(
@@ -1010,6 +1240,7 @@ def render_outcome_report(
             )
         ],
         "causal_chain": causal_display,
+        "conclusion": conclusion,
         "output": {
             "path": _portable_path(output_path, repository_root),
             "bytes": output_path.stat().st_size,
@@ -1026,6 +1257,16 @@ def render_outcome_report(
             "three-seed BEIR table is confirmatory retrieval evidence."
         ),
     }
+    if all(marker in blog_path.read_text(encoding="utf-8") for marker in FINAL_CONCLUSION_MARKERS):
+        manifest["blog_conclusion"] = {
+            **_marked_block_record(blog_path, FINAL_CONCLUSION_MARKERS),
+            "path": _portable_path(blog_path, repository_root),
+        }
+    if resolved_readme is not None:
+        manifest["readme_conclusion"] = {
+            **_marked_block_record(resolved_readme, FINAL_CONCLUSION_MARKERS),
+            "path": _portable_path(resolved_readme, repository_root),
+        }
     if scope is not None:
         manifest["families"] = list(families)
         manifest["scope_amendment"] = scope
@@ -1053,6 +1294,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--mechanism-report", type=Path, default=Path("reports/mechanism-summary.md")
     )
     parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
+    parser.add_argument("--readme", type=Path, default=Path("README.md"))
     parser.add_argument("--output", type=Path, default=Path("reports/outcome-summary.md"))
     parser.add_argument(
         "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
@@ -1071,6 +1313,7 @@ def main(argv: list[str] | None = None) -> None:
         args.mechanism_report,
         args.blog,
         args.output,
+        readme_path=args.readme,
         tail_stability_dir=args.tail_stability_dir,
         spectral_transplant_dir=args.spectral_transplant_dir,
         families=tuple(args.families),

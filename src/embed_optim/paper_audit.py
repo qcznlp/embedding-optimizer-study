@@ -20,13 +20,34 @@ from .causal_chain_rendering import (
 from .causal_chain_reporting import load_causal_chain_evidence
 from .config import load_matrix, resolve_matrix_path
 from .decontamination import DECONTAMINATED_TASK_NAMES
+from .dense_retrieval_dynamics_publication import (
+    DYNAMICS_EXTENSION_CSV,
+    DYNAMICS_EXTENSION_MANIFEST,
+    DYNAMICS_EXTENSION_MARKERS,
+    DYNAMICS_EXTENSION_PDF,
+    DYNAMICS_EXTENSION_SVG,
+    DYNAMICS_EXTENSION_TEX,
+    load_publication_rows,
+    render_publication_latex,
+    render_publication_markdown,
+    summarize_publication_rows,
+)
 from .geometry import SCHEMA_VERSION, _sha256
 from .mechanism_report import (
     MECHANISM_MARKERS,
     _marked_block_bytes,
     _marked_block_complete,
 )
-from .outcome_report import OUTCOME_MARKERS
+from .outcome_report import (
+    FINAL_CONCLUSION_MARKERS,
+    FINAL_CONCLUSION_PENDING,
+    OUTCOME_MARKERS,
+    _confirmation_rows,
+    _hybrid_rows,
+    _tail_stability_rows,
+    build_final_conclusion_contract,
+)
+from .paper_layout import MAIN_END_LABEL
 from .scope import ALL_FAMILIES, resolve_scope
 
 FAMILIES = ALL_FAMILIES
@@ -48,11 +69,35 @@ PAPER_RESULT_TABLE_PATHS = (
     Path("paper/generated/confirmation.tex"),
     Path("paper/generated/causal-chain.tex"),
 )
+PAPER_MAIN_GENERATED_INPUTS = tuple(
+    rf"\input{{{path.relative_to('paper').with_suffix('').as_posix()}}}"
+    for path in PAPER_RESULT_TABLE_PATHS
+)
+PAPER_MAIN_REQUIRED_ONCE = (
+    r"\input{results}",
+    *PAPER_MAIN_GENERATED_INPUTS,
+    r"\section{Conclusion}",
+    r"\ResultConclusion",
+    rf"\label{{{MAIN_END_LABEL}}}",
+)
+PAPER_DISCOVERY_FIGURE_INCLUDES = (
+    r"\centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-training-dynamics-by-run.png}",
+    r"\centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-lr-sensitivity.png}",
+)
+PAPER_DISCOVERY_FIGURE_CAPTION = (
+    r"\caption{DenseOn discovery dynamics. Panel (a) retains all 12 runs and all five checkpoints; "
+    r"panel (b) shows the final nDCG@10 response over each optimizer's frozen four-point "
+    r"learning-rate grid. These one-seed discovery curves are exploratory and do not replace the "
+    r"validation-frozen confirmation.}"
+)
+PAPER_DISCOVERY_FIGURE_LABEL = r"\label{fig:dense-discovery-dynamics}"
 PAPER_SOURCE_TABLE_PATHS = (
     Path("reports/retrieval-dynamics/checkpoint_dynamics.csv"),
     Path("reports/retrieval-dynamics/optimizer_first_passage.csv"),
     Path("reports/retrieval-dynamics/best_config_task_comparison.csv"),
     Path("reports/retrieval-dynamics/task_delta_stability.csv"),
+    Path("reports/training-dynamics/optimizer_system_summary.csv"),
+    Path("reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.csv"),
     Path("reports/common-state/anchor_contrasts.csv"),
     Path("reports/basis-sensitivity/summary.csv"),
     Path("results/common-state-spectra/summary/spectrum_metrics.csv"),
@@ -121,6 +166,7 @@ SCOPED_DENSE_DISCOVERY_EVIDENCE = (
     Path("reports/training-dynamics/summary_manifest.json"),
     Path("reports/training-dynamics/plot_manifest.json"),
     Path("reports/retrieval-dynamics-dense/summary_manifest.json"),
+    DYNAMICS_EXTENSION_MANIFEST,
 )
 BLOG_MARKERS = {
     "results": ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->"),
@@ -131,10 +177,15 @@ BLOG_MARKERS = {
     ),
     "mechanism": MECHANISM_MARKERS,
     "outcomes": OUTCOME_MARKERS,
+    "final_conclusion": FINAL_CONCLUSION_MARKERS,
+    "dense_retrieval_dynamics": DYNAMICS_EXTENSION_MARKERS,
 }
 MACRO_PATTERN = re.compile(r"^\\newcommand\{\\([A-Za-z]+)\}\{(.*)\}$")
 FINAL_DOCUMENT_STALE_PHRASES = {
-    Path("README.md"): ("remaining DenseOn confirmation is running",),
+    Path("README.md"): (
+        "remaining DenseOn confirmation is running",
+        "Once complete, the supplemental",
+    ),
     Path("docs/blog.md"): (
         "**Experiment status:** training matrix in progress.",
         "Results will be inserted here",
@@ -143,6 +194,7 @@ FINAL_DOCUMENT_STALE_PHRASES = {
         "Retrieval time-to-quality remains pending",
         "intervention are running under the post-hoc scope amendment",
         "remain gated on the running",
+        "When complete, those 728 rows",
     ),
     Path("paper/main.tex"): (
         "The final analysis will report",
@@ -163,6 +215,22 @@ def _macros(path: Path) -> dict[str, str]:
             raise ValueError(f"Duplicate paper result macro {name} at {path}:{number}")
         result[name] = value
     return result
+
+
+def _latex_escape_value(value: object) -> str:
+    replacements = {
+        "\\": r"\textbackslash{}",
+        "&": r"\&",
+        "%": r"\%",
+        "$": r"\$",
+        "#": r"\#",
+        "_": r"\_",
+        "{": r"\{",
+        "}": r"\}",
+        "~": r"\textasciitilde{}",
+        "^": r"\textasciicircum{}",
+    }
+    return "".join(replacements.get(character, character) for character in str(value))
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -699,6 +767,35 @@ def _complete_manifest(
         "retrieval-dynamics-dense",
     }:
         return _retrieval_dynamics_complete(path, payload, families, scope)
+    if path.name == "summary_manifest.json" and path.parent.name == "dense-retrieval-dynamics":
+        if families != ("dense",) or scope is None:
+            return False
+        try:
+            from .dense_retrieval_dynamics_summary import (
+                audit_dense_retrieval_dynamics_summary,
+            )
+
+            root = path.parents[2]
+            receipt = audit_dense_retrieval_dynamics_summary(
+                root / "configs/dense_retrieval_dynamics_extension.json",
+                path.parent,
+            )
+        except (OSError, TypeError, ValueError):
+            return False
+        return bool(
+            receipt.get("complete") is True
+            and receipt.get("read_only") is True
+            and receipt.get("coverage")
+            == {
+                "dynamics_units": 728,
+                "formal_hybrid_stage5_units": 56,
+                "formal_confirmatory_stage5_units": 126,
+                "task_units": 910,
+                "trajectory_rows": 65,
+            }
+            and receipt.get("formal_inference_reads_joined_outputs") is False
+            and _hashed_file_complete(root, receipt.get("manifest"), expected_path=path)
+        )
     if path.name == "summary_manifest.json" and path.parent.name in {
         "hybrid-adamw",
         "short-branch",
@@ -1727,6 +1824,7 @@ def _outcome_report_complete(
 
     report_path = root / "reports/outcome-summary.md"
     blog_path = root / "docs/blog.md"
+    readme_path = root / "README.md"
     if not _hashed_file_complete(
         root, payload.get("output"), expected_path=report_path
     ) or not _marked_block_complete(
@@ -1742,16 +1840,54 @@ def _outcome_report_complete(
         mechanism_manifest = _json(expected_sources["mechanism_report"])
         mechanism_path = _declared_path(root, mechanism_manifest.get("output"))
         mechanism = mechanism_path.read_text(encoding="utf-8").strip()
+        readme = readme_path.read_text(encoding="utf-8")
+        confirmation_rows, _confirmation_table, _confirmation_manifest = _confirmation_rows(
+            root / "reports/confirmatory", families, scope
+        )
+        hybrid_rows, _hybrid_table, _hybrid_manifest = _hybrid_rows(
+            root / "reports/hybrid-adamw", families, scope
+        )
+        _tail_discovery, tail_final_rows, _tail_tables, _tail_manifest = _tail_stability_rows(
+            root / "reports/tail-stability", families, scope
+        )
+        expected_conclusion = build_final_conclusion_contract(
+            confirmation_rows,
+            hybrid_rows,
+            tail_final_rows,
+            causal_evidence,
+            families=families,
+        )
     except (OSError, AttributeError, json.JSONDecodeError, TypeError, ValueError):
         return False
     outcome_begin, outcome_end = OUTCOME_MARKERS
     mechanism_begin, mechanism_end = MECHANISM_MARKERS
+    conclusion_begin, conclusion_end = FINAL_CONCLUSION_MARKERS
     return (
         blog.count(outcome_begin) == blog.count(outcome_end) == 1
         and blog.count(mechanism_begin) == blog.count(mechanism_end) == 1
         and blog.split(outcome_begin, 1)[1].split(outcome_end, 1)[0].strip() == outcome
         and blog.split(mechanism_begin, 1)[1].split(mechanism_end, 1)[0].strip() == mechanism
         and outcome.count(causal_markdown) == 1
+        and expected_conclusion.get("status") == "complete"
+        and FINAL_CONCLUSION_PENDING not in expected_conclusion.get("plain", "")
+        and payload.get("conclusion") == expected_conclusion
+        and _marked_block_complete(
+            blog_path,
+            payload.get("blog_conclusion"),
+            FINAL_CONCLUSION_MARKERS,
+            repository_root=root,
+        )
+        and _marked_block_complete(
+            readme_path,
+            payload.get("readme_conclusion"),
+            FINAL_CONCLUSION_MARKERS,
+            repository_root=root,
+        )
+        and blog.count(conclusion_begin) == blog.count(conclusion_end) == 1
+        and blog.split(conclusion_begin, 1)[1].split(conclusion_end, 1)[0].strip()
+        == expected_conclusion["markdown"]
+        and readme.split(conclusion_begin, 1)[1].split(conclusion_end, 1)[0].strip()
+        == expected_conclusion["markdown"]
     )
 
 
@@ -1776,6 +1912,7 @@ def _blog_marker_audit(
     )
     mechanism_path = root / "reports/mechanism-summary.manifest.json"
     outcome_path = root / "reports/outcome-summary.manifest.json"
+    paper_results_path = root / "reports/paper-results.manifest.json"
 
     def load(path: Path) -> dict[str, Any]:
         try:
@@ -1787,6 +1924,7 @@ def _blog_marker_audit(
     retrieval = load(retrieval_path)
     mechanism = load(mechanism_path)
     outcome = load(outcome_path)
+    paper_results = load(paper_results_path)
     discovery_complete = _renderer_marker_blocks_complete(
         root,
         discovery.get("blog_marker_blocks"),
@@ -1819,6 +1957,32 @@ def _blog_marker_audit(
             repository_root=root,
         )
     )
+    final_conclusion_complete = bool(
+        _scope_matches(outcome, families, scope)
+        and outcome.get("conclusion", {}).get("status") == "complete"
+        and FINAL_CONCLUSION_PENDING not in outcome.get("conclusion", {}).get("plain", "")
+        and _marked_block_complete(
+            blog_path,
+            outcome.get("blog_conclusion"),
+            FINAL_CONCLUSION_MARKERS,
+            repository_root=root,
+        )
+        and _marked_block_complete(
+            root / "README.md",
+            outcome.get("readme_conclusion"),
+            FINAL_CONCLUSION_MARKERS,
+            repository_root=root,
+        )
+    )
+    dynamics_extension_complete = bool(
+        _scope_matches(paper_results, families, scope)
+        and _marked_block_complete(
+            blog_path,
+            paper_results.get("dynamics_extension", {}).get("blog"),
+            DYNAMICS_EXTENSION_MARKERS,
+            repository_root=root,
+        )
+    )
     return {
         "results": {
             "complete": discovery_complete,
@@ -1845,7 +2009,31 @@ def _blog_marker_audit(
             "manifest": str(outcome_path),
             "markers": list(OUTCOME_MARKERS),
         },
+        "final_conclusion": {
+            "complete": final_conclusion_complete,
+            "manifest": str(outcome_path),
+            "markers": list(FINAL_CONCLUSION_MARKERS),
+        },
+        "dense_retrieval_dynamics": {
+            "complete": dynamics_extension_complete,
+            "manifest": str(paper_results_path),
+            "markers": list(DYNAMICS_EXTENSION_MARKERS),
+        },
     }
+
+
+def _paper_main_topology_complete(root: Path) -> bool:
+    try:
+        main_text = (root / "paper/main.tex").read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return False
+    if any(main_text.count(token) != 1 for token in PAPER_MAIN_REQUIRED_ONCE):
+        return False
+    conclusion = main_text.find(r"\section{Conclusion}")
+    rendered_conclusion = main_text.find(r"\ResultConclusion")
+    main_end_label = main_text.find(rf"\label{{{MAIN_END_LABEL}}}")
+    limitations = main_text.find(r"\section{Limitations}")
+    return 0 <= conclusion < rendered_conclusion < main_end_label < limitations
 
 
 def _paper_results_complete(
@@ -1862,6 +2050,22 @@ def _paper_results_complete(
         causal_display_expected = causal_chain_display_contract(causal_evidence)
         causal_headline_expected = render_causal_chain_headline_fragment(causal_evidence)
         causal_latex_expected = render_causal_chain_latex(causal_evidence)
+        confirmation_rows, _confirmation_table, _confirmation_manifest = _confirmation_rows(
+            root / "reports/confirmatory", families, scope
+        )
+        hybrid_rows, _hybrid_table, _hybrid_manifest = _hybrid_rows(
+            root / "reports/hybrid-adamw", families, scope
+        )
+        _tail_discovery, tail_final_rows, _tail_tables, _tail_manifest = _tail_stability_rows(
+            root / "reports/tail-stability", families, scope
+        )
+        conclusion_expected = build_final_conclusion_contract(
+            confirmation_rows,
+            hybrid_rows,
+            tail_final_rows,
+            causal_evidence,
+            families=families,
+        )
         main_text = (root / "paper/main.tex").read_text(encoding="utf-8")
         main_text_normalized = " ".join(main_text.split())
         causal_paper_contract = causal_chain_paper_contract()
@@ -1881,6 +2085,8 @@ def _paper_results_complete(
     results = payload.get("results_tex")
     causal_chain = payload.get("causal_chain")
     causal_display = payload.get("causal_chain_display")
+    conclusion = payload.get("conclusion")
+    conclusion_macro = payload.get("conclusion_macro")
     causal_paths = {
         "temporal_short_branch": root / "reports/temporal-short-branch/summary_manifest.json",
         "dose_band": root / "reports/dose-band/summary_manifest.json",
@@ -1902,6 +2108,10 @@ def _paper_results_complete(
         or any(not _hashed_file_complete(root, record) for record in evidence)
         or not _paper_source_tables_complete(root, tables)
         or not _paper_result_tables_complete(root, result_tables)
+        or not _paper_figures_complete(root, payload.get("figures"))
+        or not _paper_dynamics_extension_complete(root, payload.get("dynamics_extension"))
+        or not _paper_systems_complete(root, families)
+        or not _paper_main_topology_complete(root)
         or not isinstance(headlines, dict)
         or set(headlines) != set(HEADLINE_MACROS)
         or any(not isinstance(value, str) or not value for value in headlines.values())
@@ -1926,6 +2136,15 @@ def _paper_results_complete(
         )
         or causal_display != causal_display_expected
         or causal_latex_observed != causal_latex_expected
+        or conclusion_expected.get("status") != "complete"
+        or FINAL_CONCLUSION_PENDING in conclusion_expected.get("plain", "")
+        or conclusion != conclusion_expected
+        or not isinstance(conclusion_macro, dict)
+        or conclusion_macro.get("name") != "ResultConclusion"
+        or not isinstance(conclusion_macro.get("value"), str)
+        or not conclusion_macro["value"]
+        or conclusion_macro["value"] != _latex_escape_value(conclusion_expected["plain"])
+        or FINAL_CONCLUSION_PENDING in conclusion_macro["value"]
         or any(main_text.count(token) != 1 for token in causal_paper_contract["required_once"])
         or any(
             boundary not in main_text_normalized
@@ -1943,9 +2162,12 @@ def _paper_results_complete(
         macros = _macros(root / "paper/results.tex")
     except (OSError, TypeError, ValueError):
         return False
-    return all(
-        "\\ResultPending" not in value and macros.get(name) == value
-        for name, value in headlines.items()
+    return (
+        all(
+            "\\ResultPending" not in value and macros.get(name) == value
+            for name, value in headlines.items()
+        )
+        and macros.get("ResultConclusion") == conclusion_macro["value"]
     )
 
 
@@ -1962,6 +2184,156 @@ def _paper_result_tables_complete(root: Path, records: Any) -> bool:
         return all("\\ResultPending" not in path.read_text(encoding="utf-8") for path in expected)
     except (OSError, UnicodeDecodeError):
         return False
+
+
+def _paper_figures_complete(root: Path, contract: Any) -> bool:
+    coverage_path = root / "reports/dense-discovery/coverage.json"
+    if not isinstance(contract, dict) or not _hashed_file_complete(
+        root, contract.get("source_manifest"), expected_path=coverage_path
+    ):
+        return False
+    try:
+        outputs = _json(coverage_path).get("outputs", {})
+        discovery_tex = (root / "paper/generated/discovery.tex").read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, TypeError, ValueError):
+        return False
+    expected = (
+        (
+            "dense_training_dynamics_by_run",
+            root / "reports/dense-discovery/figures/dense-training-dynamics-by-run.png",
+        ),
+        (
+            "dense_lr_sensitivity",
+            root / "reports/dense-discovery/figures/dense-lr-sensitivity.png",
+        ),
+    )
+    panels = contract.get("panels")
+    if not isinstance(panels, list) or len(panels) != len(expected):
+        return False
+    for panel, (name, path) in zip(panels, expected, strict=True):
+        source = outputs.get(name)
+        if (
+            not isinstance(panel, dict)
+            or panel.get("name") != name
+            or not isinstance(source, dict)
+            or not _hashed_file_complete(root, panel, expected_path=path)
+            or any(panel.get(field) != source.get(field) for field in ("path", "bytes", "sha256"))
+        ):
+            return False
+    return bool(
+        all(discovery_tex.count(command) == 1 for command in PAPER_DISCOVERY_FIGURE_INCLUDES)
+        and discovery_tex.count(PAPER_DISCOVERY_FIGURE_CAPTION) == 1
+        and discovery_tex.count(PAPER_DISCOVERY_FIGURE_LABEL) == 1
+    )
+
+
+def _paper_dynamics_extension_complete(root: Path, contract: Any) -> bool:
+    if not isinstance(contract, dict):
+        return False
+    try:
+        rows, _manifest = load_publication_rows(root)
+        summary_rows = summarize_publication_rows(rows)
+        expected_latex = render_publication_latex(summary_rows)
+        expected_markdown = render_publication_markdown(summary_rows)
+        generated_tex = (root / DYNAMICS_EXTENSION_TEX).read_text(encoding="utf-8")
+        blog = (root / "docs/blog.md").read_text(encoding="utf-8")
+        main = (root / "paper/main.tex").read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError, TypeError, ValueError):
+        return False
+    expected_records = {
+        "manifest": root / DYNAMICS_EXTENSION_MANIFEST,
+        "trajectory_csv": root / DYNAMICS_EXTENSION_CSV,
+        "figure_svg": root / DYNAMICS_EXTENSION_SVG,
+        "figure_pdf": root / DYNAMICS_EXTENSION_PDF,
+        "generated_tex": root / DYNAMICS_EXTENSION_TEX,
+    }
+    if any(
+        not _hashed_file_complete(root, contract.get(name), expected_path=path)
+        for name, path in expected_records.items()
+    ):
+        return False
+    begin, end = DYNAMICS_EXTENSION_MARKERS
+    try:
+        rendered_markdown = blog.split(begin, 1)[1].split(end, 1)[0].strip()
+    except IndexError:
+        return False
+    return bool(
+        contract.get("summary_rows") == summary_rows
+        and contract.get("role") == "descriptive-only"
+        and contract.get("formal_inference_reads_joined_outputs") is False
+        and generated_tex == expected_latex
+        and "\\ResultPending" not in generated_tex
+        and generated_tex.count("five_stage_retrieval_dynamics.pdf") == 1
+        and generated_tex.count("not an inference input") == 1
+        and _marked_block_complete(
+            root / "docs/blog.md",
+            contract.get("blog"),
+            DYNAMICS_EXTENSION_MARKERS,
+            repository_root=root,
+        )
+        and blog.count(begin) == blog.count(end) == 1
+        and rendered_markdown == expected_markdown
+        and blog.count("five_stage_retrieval_dynamics.svg") == 1
+        and blog.count("five_stage_retrieval_dynamics.csv") == 1
+        and main.count(r"\input{generated/retrieval-dynamics-extension}") == 1
+    )
+
+
+def _paper_systems_complete(root: Path, families: tuple[str, ...]) -> bool:
+    table = root / "reports/training-dynamics/optimizer_system_summary.csv"
+    try:
+        with table.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle))
+        discovery_tex = (root / "paper/generated/discovery.tex").read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError, csv.Error):
+        return False
+    indexed = {(row.get("model_family"), row.get("optimizer")): row for row in rows}
+    expected = {
+        (family, optimizer) for family in FAMILIES for optimizer in ("adamw", "muon", "normuon")
+    }
+    if len(rows) != 6 or set(indexed) != expected:
+        return False
+    for family in families:
+        family_label = "DenseOn" if family == "dense" else "LateOn"
+        for optimizer, optimizer_label in (
+            ("adamw", "AdamW"),
+            ("muon", "Muon"),
+            ("normuon", "NorMuon"),
+        ):
+            row = indexed[(family, optimizer)]
+            try:
+                token = " & ".join(
+                    (
+                        family_label,
+                        optimizer_label,
+                        f"{float(row['wall_time_hours_median']):.2f}",
+                        f"{float(row['samples_per_second_median']):.2f}",
+                        f"{float(row['throughput_to_adamw_ratio']):.2f}x",
+                        f"{float(row['peak_allocated_gib_median']):.2f}",
+                        f"{float(row['optimizer_state_gib_median']):.2f}",
+                        f"{float(row['checkpoint_gib_median']):.2f}",
+                    )
+                )
+            except (KeyError, TypeError, ValueError):
+                return False
+            if discovery_tex.count(token) != 1:
+                return False
+        try:
+            muon = float(indexed[(family, "muon")]["throughput_to_adamw_ratio"])
+            normuon = float(indexed[(family, "normuon")]["throughput_to_adamw_ratio"])
+        except (KeyError, TypeError, ValueError):
+            return False
+        ratio_fragment = (
+            f"{family_label} Muon/NorMuon throughput ratios were {muon:.2f}x/{normuon:.2f}x AdamW"
+        )
+        speed_fragment = (
+            f"neither was faster for {family_label}"
+            if muon <= 1 and normuon <= 1
+            else f"at least one was faster for {family_label}"
+        )
+        if discovery_tex.count(ratio_fragment) != 1 or discovery_tex.count(speed_fragment) != 1:
+            return False
+    return True
 
 
 def _paper_source_tables_complete(root: Path, records: Any) -> bool:

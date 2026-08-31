@@ -37,6 +37,15 @@ is part of the original claim-protocol hash chain. It is historical, not the act
 The complete 12-run DenseOn discovery sweep contains four learning rates for each optimizer and five
 evaluated checkpoints per run: 60 checkpoints and 840 decontaminated BEIR task units.
 
+The completion protocol also restores five-stage retrieval coverage for all 4 routing-matched
+hybrid runs and all 9 validation-frozen confirmatory runs. Their 20%–80% checkpoints add 728
+strictly isolated task units to the existing 182 final-stage units. The source-bound supplemental
+trajectory is defined as 13 runs × 5 stages = 65 rows and 910 task units; together with discovery,
+the complete design contains 1,750 DenseOn BEIR units. Stages 1–4 are descriptive dynamics only:
+the hybrid and confirmatory inferential summaries continue to read their independently frozen
+stage-5 roots.
+Shared-start controls instead use five-stage query-disjoint and unseen probes, not BEIR inference.
+
 | Optimizer | Same-suite BEIR-best LR | Exploratory BEIR-best final | Four-LR final mean | Four-LR final median |
 | --- | ---: | ---: | ---: | ---: |
 | AdamW | 3e-5 | 0.5899 | 0.5816 | 0.5858 |
@@ -62,6 +71,15 @@ Shared-start branches and frozen spectrum-versus-basis transplants test whether 
 optimizer-induced state feedback explains the reversal. See the blog for values and claim
 boundaries.
 
+## Final result-driven conclusion
+
+<!-- FINAL-CONCLUSION:BEGIN -->
+
+**Pending (FINAL_CONCLUSION_PENDING):** the result-driven conclusion will be rendered only after
+the validation-frozen retrieval, shared-start endpoint, and causal-chain manifests are complete.
+
+<!-- FINAL-CONCLUSION:END -->
+
 ## Experimental contract
 
 | Variable | Value |
@@ -77,6 +95,8 @@ boundaries.
 | Epochs / nominal global batch | One / 128 |
 | Checkpoints | 20%, 40%, 60%, 80%, and 100% |
 | Evaluation | 14 pinned decontaminated BEIR tasks, nDCG@10 |
+| Full-length retrieval dynamics | 12 discovery + 4 hybrid + 9 confirmatory runs, five stages each |
+| Supplemental inference boundary | Hybrid/confirmatory stages 1–4 descriptive; stage 5 formal |
 | Confirmation | Three new negative-sampling/data-order seeds |
 | Default compute | Two independent four-GPU pools |
 
@@ -92,6 +112,7 @@ parameter-group recipe.
 | configs/experiment.yaml | Frozen historical discovery matrix; use an explicit Dense family filter |
 | configs/dense_scope_amendment.json | Active scope and strict expected counts |
 | configs/dense_training_queue.json | Frozen 18-run confirmation/short-branch queue |
+| configs/dense_retrieval_dynamics_extension.json | Source-bound five-stage hybrid/confirmation extension |
 | src/embed_optim/ | Training, evaluation, optimizers, audits, reports, and interventions |
 | scripts/eval/dense_parallel.py | Eight-GPU dense retrieval evaluator |
 | docs/blog.md | Dense-only Markdown article with generated result blocks |
@@ -225,13 +246,15 @@ embed-optim-dense-completion \
 The pipeline performs:
 
 1. deep checkpoint audits for hybrid, confirmatory, and short-branch runs;
-2. final-stage hybrid BEIR evaluation and summary;
-3. three-seed confirmatory BEIR evaluation and hierarchical summary;
-4. all five shared-start branch probes, frozen temporal-predictor extraction and audit, tail summary,
+2. final-stage hybrid BEIR evaluation and summary, followed by its isolated stages 1–4 dynamics;
+3. three-seed final-stage confirmatory BEIR evaluation and hierarchical summary, followed by its
+   isolated stages 1–4 dynamics;
+4. a strict 728-unit extension audit plus a 65-row, 910-unit five-stage trajectory build and audit;
+5. all five shared-start branch probes, frozen temporal-predictor extraction and audit, tail summary,
    and temporal short-branch analysis and audit;
-5. ten-anchor spectrum/basis transplant, audit, and summary;
-6. frozen dose/band analysis and audit; and
-7. optional tests, formatting checks, and distribution build.
+6. ten-anchor spectrum/basis transplant, audit, and summary;
+7. frozen dose/band analysis and audit; and
+8. optional tests, formatting checks, and distribution build.
 
 Every step has an atomic ledger, validated completion predicate, bounded retries, and resume mode.
 Do not edit the scope amendment, queue plan, or bound protocols while a run is active.

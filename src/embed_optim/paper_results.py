@@ -14,6 +14,14 @@ from .causal_chain_rendering import (
 )
 from .causal_chain_reporting import load_causal_chain_evidence
 from .decontamination import DECONTAMINATED_TASK_NAMES
+from .dense_retrieval_dynamics_publication import (
+    DYNAMICS_EXTENSION_MARKERS,
+    DYNAMICS_EXTENSION_TEX,
+    load_publication_rows,
+    render_publication_latex,
+    render_publication_markdown,
+    summarize_publication_rows,
+)
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .mechanism_report import (
     OPTIMIZER_LABELS,
@@ -21,6 +29,7 @@ from .mechanism_report import (
     _basis_rows,
     _bridge_rows,
     _common_state_rows,
+    _marked_block_record,
     _read_declared_csv,
     _retrieval_rows,
     _spectrum_rows,
@@ -29,12 +38,17 @@ from .outcome_report import (
     _confirmation_rows,
     _functional_rows,
     _hybrid_rows,
+    _replace_marked,
     _short_branch_rows,
     _spectral_transplant_rows,
     _tail_stability_rows,
+    build_final_conclusion_contract,
 )
 from .paper_audit import (
     HEADLINE_MACROS,
+    PAPER_DISCOVERY_FIGURE_CAPTION,
+    PAPER_DISCOVERY_FIGURE_INCLUDES,
+    PAPER_DISCOVERY_FIGURE_LABEL,
     PAPER_RESULT_TABLE_PATHS,
     PAPER_SOURCE_TABLE_PATHS,
     _macros,
@@ -269,6 +283,104 @@ def _ci_classification(cell: str) -> str:
     return "inconclusive"
 
 
+def _training_system_rows(
+    training_dir: Path,
+    families: tuple[str, ...] = FAMILIES,
+) -> tuple[list[list[str]], Path]:
+    manifest_path = training_dir / "summary_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    root = training_dir.resolve().parents[1]
+    required = {
+        "model_family",
+        "optimizer",
+        "learning_rate_points",
+        "wall_time_hours_median",
+        "samples_per_second_median",
+        "throughput_to_adamw_ratio",
+        "peak_allocated_gib_median",
+        "optimizer_state_gib_median",
+        "checkpoint_gib_median",
+    }
+    rows, table = _read_declared_csv(root, manifest, "optimizer_systems", required_fields=required)
+    expected = {(family, optimizer) for family in FAMILIES for optimizer in OPTIMIZERS}
+    indexed = {(row["model_family"], row["optimizer"]): row for row in rows}
+    if len(rows) != 6 or set(indexed) != expected:
+        raise ValueError("Training systems table requires all six historical optimizer groups")
+    output = []
+    for family in families:
+        for optimizer in OPTIMIZERS:
+            row = indexed[(family, optimizer)]
+            if int(row["learning_rate_points"]) != 4:
+                raise ValueError("Training systems summary requires four learning rates per group")
+            values = [
+                _finite(row[field])
+                for field in (
+                    "wall_time_hours_median",
+                    "samples_per_second_median",
+                    "throughput_to_adamw_ratio",
+                    "peak_allocated_gib_median",
+                    "optimizer_state_gib_median",
+                    "checkpoint_gib_median",
+                )
+            ]
+            output.append(
+                [
+                    FAMILY_LABELS[family],
+                    OPTIMIZER_LABELS[optimizer],
+                    f"{values[0]:.2f}",
+                    f"{values[1]:.2f}",
+                    f"{values[2]:.2f}x",
+                    f"{values[3]:.2f}",
+                    f"{values[4]:.2f}",
+                    f"{values[5]:.2f}",
+                ]
+            )
+    return output, table
+
+
+def _discovery_figure_contract(root: Path) -> dict[str, Any]:
+    coverage_path = root / "reports/dense-discovery/coverage.json"
+    coverage = json.loads(coverage_path.read_text(encoding="utf-8"))
+    outputs = coverage.get("outputs", {})
+    keys = ("dense_training_dynamics_by_run", "dense_lr_sensitivity")
+    panels = []
+    for key in keys:
+        record = outputs.get(key)
+        if not isinstance(record, dict) or not isinstance(record.get("path"), str):
+            raise ValueError(f"Dense discovery coverage lacks paper figure {key}")
+        path = (root / record["path"]).resolve()
+        expected = {
+            "path": str(path.relative_to(root)),
+            "bytes": path.stat().st_size,
+            "sha256": _sha256(path),
+        }
+        if any(record.get(field) != value for field, value in expected.items()):
+            raise ValueError(f"Dense discovery figure differs from coverage manifest: {key}")
+        panels.append({"name": key, **expected})
+    return {"source_manifest": _source(coverage_path, root), "panels": panels}
+
+
+def _discovery_figure_latex() -> str:
+    return "\n".join(
+        (
+            r"\begin{figure*}[t]",
+            r"\centering",
+            r"\begin{minipage}[t]{0.66\textwidth}",
+            PAPER_DISCOVERY_FIGURE_INCLUDES[0],
+            r"\centering (a) Five-stage trajectories for every learning rate.",
+            r"\end{minipage}\hfill",
+            r"\begin{minipage}[t]{0.31\textwidth}",
+            PAPER_DISCOVERY_FIGURE_INCLUDES[1],
+            r"\centering (b) Final-score learning-rate sensitivity.",
+            r"\end{minipage}",
+            PAPER_DISCOVERY_FIGURE_CAPTION,
+            PAPER_DISCOVERY_FIGURE_LABEL,
+            r"\end{figure*}",
+            "",
+        )
+    )
+
+
 def build_headline_macros(
     *,
     final_medians: dict[tuple[str, str], float],
@@ -281,6 +393,7 @@ def build_headline_macros(
     hybrid_rows: list[list[str]],
     short_rows: list[list[str]],
     confirmation_rows: list[list[str]],
+    system_rows: list[list[str]] | None = None,
     families: tuple[str, ...] = FAMILIES,
 ) -> dict[str, str]:
     retrieval = _indexed(retrieval_rows, context="retrieval")
@@ -305,6 +418,30 @@ def build_headline_macros(
             "learning rates reaching the frozen AdamW reference"
         )
     discovery = "For AdamW/Muon/NorMuon respectively, " + "; ".join(discovery_parts) + "."
+    if system_rows is not None:
+        indexed_systems = _indexed(system_rows, context="training systems")
+        system_parts = []
+        all_muon_family_not_faster = True
+        for family in families:
+            family_label = FAMILY_LABELS[family]
+            ratios = "/".join(
+                indexed_systems[(family_label, OPTIMIZER_LABELS[optimizer])][4]
+                for optimizer in OPTIMIZERS
+            )
+            system_parts.append(
+                f"{family_label} median throughput ratios to AdamW were {ratios} for "
+                "AdamW/Muon/NorMuon"
+            )
+            all_muon_family_not_faster = all_muon_family_not_faster and all(
+                _finite(indexed_systems[(family_label, optimizer)][4][:-1]) <= 1
+                for optimizer in ("Muon", "NorMuon")
+            )
+        speed_verdict = (
+            "Muon-family training was not faster on this stack"
+            if all_muon_family_not_faster
+            else "at least one Muon-family configuration was faster on this stack"
+        )
+        discovery += " " + "; ".join(system_parts) + f"; {speed_verdict}."
 
     common_parts = []
     family_labels = tuple(FAMILY_LABELS[family] for family in families)
@@ -468,6 +605,7 @@ def build_result_tables(
     spectral_factorial_rows: list[list[str]],
     spectral_tail_rows: list[list[str]],
     confirmation_rows: list[list[str]],
+    system_rows: list[list[str]] | None = None,
     families: tuple[str, ...] = FAMILIES,
 ) -> dict[str, str]:
     retrieval = _indexed(retrieval_rows, context="retrieval table")
@@ -514,6 +652,54 @@ def build_result_tables(
         for family in families
         for optimizer in OPTIMIZERS
     ]
+    system_table = ""
+    if system_rows is not None:
+        expected_systems = {
+            (family_label, optimizer)
+            for family_label in family_labels
+            for optimizer in optimizer_labels
+        }
+        indexed_systems = {(row[0], row[1]): row for row in system_rows if len(row) == 8}
+        if len(system_rows) != 3 * len(families) or set(indexed_systems) != expected_systems:
+            raise ValueError("Paper systems table requires every active optimizer group")
+        ratio_parts = []
+        speed_parts = []
+        for family_label in family_labels:
+            muon_ratio = _finite(indexed_systems[(family_label, "Muon")][4][:-1])
+            normuon_ratio = _finite(indexed_systems[(family_label, "NorMuon")][4][:-1])
+            ratio_parts.append(
+                f"{family_label} Muon/NorMuon throughput ratios were "
+                f"{muon_ratio:.2f}x/{normuon_ratio:.2f}x AdamW"
+            )
+            speed_parts.append(
+                f"neither was faster for {family_label}"
+                if muon_ratio <= 1 and normuon_ratio <= 1
+                else f"at least one was faster for {family_label}"
+            )
+        system_table = _latex_table(
+            environment="table*",
+            columns="llrrrrrr",
+            headers=(
+                "Model",
+                "Optimizer",
+                "Hours",
+                "Examples/s",
+                "Throughput / AdamW",
+                "Peak GiB",
+                "State GiB",
+                "Checkpoint GiB",
+            ),
+            rows=[tuple(row) for row in system_rows],
+            caption=(
+                "Median systems measurements over the four discovery learning rates on the pinned "
+                "four-GPU stack. "
+                + "; ".join(ratio_parts)
+                + "; "
+                + "; ".join(speed_parts)
+                + ". Optimizer-state and peak allocated memory are reported separately from speed."
+            ),
+            label="tab:training-systems-results",
+        )
     common_table_rows = [
         (
             family_label,
@@ -723,21 +909,27 @@ def build_result_tables(
     )
 
     table_contents = (
-        _latex_table(
-            environment="table*",
-            columns="llcc",
-            headers=(
-                "Model",
-                "Optimizer",
-                "Final nDCG@10",
-                "Rates reaching AdamW target",
-            ),
-            rows=discovery_rows,
-            caption=(
-                "Discovery retrieval outcomes. Final scores are medians over four learning-rate "
-                "points; target passage uses the frozen within-family AdamW reference."
-            ),
-            label="tab:discovery-results",
+        "\n".join(
+            (
+                _latex_table(
+                    environment="table*",
+                    columns="llcc",
+                    headers=(
+                        "Model",
+                        "Optimizer",
+                        "Final nDCG@10",
+                        "Rates reaching AdamW target",
+                    ),
+                    rows=discovery_rows,
+                    caption=(
+                        "Discovery retrieval outcomes. Final scores are medians over four learning-rate "
+                        "points; target passage uses the frozen within-family AdamW reference."
+                    ),
+                    label="tab:discovery-results",
+                ),
+                system_table,
+                _discovery_figure_latex(),
+            )
         ),
         per_task_tables,
         common_tables,
@@ -935,6 +1127,7 @@ def render_paper_results(
     repo_root: Path = Path("."),
     results_path: Path = Path("paper/results.tex"),
     output_manifest: Path = Path("reports/paper-results.manifest.json"),
+    blog_path: Path = Path("docs/blog.md"),
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
@@ -954,6 +1147,7 @@ def render_paper_results(
         )
     causal_latex = render_causal_chain_latex(causal_evidence)
     causal_display = causal_chain_display_contract(causal_evidence)
+    figure_contract = _discovery_figure_contract(root)
     current_audit = audit_paper(
         repo_root=root,
         families=families,
@@ -964,6 +1158,21 @@ def render_paper_results(
             "Paper headlines require every frozen evidence tier: "
             f"{current_audit['incomplete_evidence']}"
         )
+    extension_rows, _extension_manifest = load_publication_rows(root)
+    extension_summary_rows = summarize_publication_rows(extension_rows)
+    extension_latex = render_publication_latex(extension_summary_rows)
+    extension_markdown = render_publication_markdown(extension_summary_rows)
+    rendered_blog_path = (
+        blog_path.resolve() if blog_path.is_absolute() else (root / blog_path).resolve()
+    )
+    # Validate and render the exact marker pair before mutating any paper artifact.
+    # A missing or duplicated marker must not leave a partially refreshed release.
+    rendered_blog = _replace_marked(
+        rendered_blog_path.read_text(encoding="utf-8"),
+        extension_markdown,
+        DYNAMICS_EXTENSION_MARKERS,
+        context="Dense retrieval-dynamics blog",
+    )
     claim_path, claim_protocol, _claim_sources = load_paper_claim_protocol(repo_root=root)
     paper_results = (root / results_path).resolve()
     current_macros = _macros(paper_results)
@@ -1029,6 +1238,12 @@ def render_paper_results(
     confirmation_rows, confirmation_table, _confirmation_manifest = _confirmation_rows(
         root / "reports/confirmatory", families, scope
     )
+    system_rows, system_table = _training_system_rows(root / "reports/training-dynamics", families)
+    conclusion = build_final_conclusion_contract(
+        confirmation_rows, hybrid_rows, tail_final_rows, causal_evidence, families=families
+    )
+    if conclusion.get("status") != "complete":
+        raise IncompletePaperEvidenceError("Paper conclusion requires complete strict evidence")
     headlines = build_headline_macros(
         final_medians=final_medians,
         retrieval_rows=retrieval_rows,
@@ -1040,6 +1255,7 @@ def render_paper_results(
         hybrid_rows=hybrid_rows,
         short_rows=short_rows,
         confirmation_rows=confirmation_rows,
+        system_rows=system_rows,
         families=families,
     )
     headlines["InterventionHeadline"] += render_causal_chain_headline_fragment(causal_evidence)
@@ -1060,15 +1276,19 @@ def render_paper_results(
         spectral_factorial_rows=spectral_factorial_rows,
         spectral_tail_rows=spectral_tail_rows,
         confirmation_rows=confirmation_rows,
+        system_rows=system_rows,
         families=families,
     )
     result_tables[PAPER_RESULT_TABLE_PATHS[-1].as_posix()] = causal_latex
     if tuple(map(Path, result_tables)) != PAPER_RESULT_TABLE_PATHS:
         raise ValueError("Rendered paper result paths differ from the seven-table contract")
-    rendered_results = _replace_headlines(paper_results.read_text(encoding="utf-8"), headlines)
+    rendered_macros = {**headlines, "ResultConclusion": _latex_escape(conclusion["plain"])}
+    rendered_results = _replace_headlines(
+        paper_results.read_text(encoding="utf-8"), rendered_macros
+    )
     if any(
         rendered_results.count(f"\\newcommand{{\\{name}}}{{{value}}}") != 1
-        for name, value in headlines.items()
+        for name, value in rendered_macros.items()
     ):
         raise ValueError("Rendered paper headline macros do not round-trip in memory")
 
@@ -1084,6 +1304,8 @@ def render_paper_results(
         retrieval_table,
         task_table,
         task_stability_table,
+        system_table,
+        root / "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.csv",
         common_table,
         basis_table,
         spectrum_table,
@@ -1098,7 +1320,9 @@ def render_paper_results(
     ]
     expected_source_tables = [(root / path).resolve() for path in PAPER_SOURCE_TABLE_PATHS]
     if [path.resolve() for path in source_tables] != expected_source_tables:
-        raise ValueError("Paper source tables differ from the exact 22-table contract")
+        raise ValueError(
+            f"Paper source tables differ from the exact {len(PAPER_SOURCE_TABLE_PATHS)}-table contract"
+        )
     source_table_records = [_source(path, root) for path in source_tables]
     causal_chain = {}
     for label in ("temporal_short_branch", "dose_band"):
@@ -1114,8 +1338,10 @@ def render_paper_results(
 
     for relative, content in result_tables.items():
         _atomic_text(root / relative, content)
+    _atomic_text(root / DYNAMICS_EXTENSION_TEX, extension_latex)
     _atomic_text(paper_results, rendered_results)
-    if any(_macros(paper_results).get(name) != value for name, value in headlines.items()):
+    _atomic_text(rendered_blog_path, rendered_blog)
+    if any(_macros(paper_results).get(name) != value for name, value in rendered_macros.items()):
         raise ValueError("Rendered paper headline macros do not round-trip")
     if any(
         (root / relative).read_text(encoding="utf-8") != content
@@ -1134,8 +1360,39 @@ def render_paper_results(
         "source_tables": source_table_records,
         "causal_chain": causal_chain,
         "causal_chain_display": causal_display,
+        "figures": figure_contract,
+        "dynamics_extension": {
+            "manifest": _source(
+                root / "reports/dense-retrieval-dynamics/summary_manifest.json", root
+            ),
+            "trajectory_csv": _source(
+                root / "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.csv",
+                root,
+            ),
+            "figure_svg": _source(
+                root / "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.svg",
+                root,
+            ),
+            "figure_pdf": _source(
+                root / "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf",
+                root,
+            ),
+            "generated_tex": _source(root / DYNAMICS_EXTENSION_TEX, root),
+            "blog": {
+                **_marked_block_record(rendered_blog_path, DYNAMICS_EXTENSION_MARKERS),
+                "path": str(rendered_blog_path.relative_to(root)),
+            },
+            "summary_rows": extension_summary_rows,
+            "role": "descriptive-only",
+            "formal_inference_reads_joined_outputs": False,
+        },
         "result_tables": [_source(root / path, root) for path in PAPER_RESULT_TABLE_PATHS],
         "headlines": headlines,
+        "conclusion": conclusion,
+        "conclusion_macro": {
+            "name": "ResultConclusion",
+            "value": rendered_macros["ResultConclusion"],
+        },
         "results_tex": _source(paper_results, root),
         "claim_boundary": (
             "These macros report the complete prespecified contrasts and interval classifications; "
@@ -1158,6 +1415,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--results", type=Path, default=Path("paper/results.tex"))
     parser.add_argument("--output", type=Path, default=Path("reports/paper-results.manifest.json"))
+    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument(
         "--if-ready",
         action="store_true",
@@ -1177,6 +1435,7 @@ def main(argv: list[str] | None = None) -> None:
             repo_root=args.repo_root,
             results_path=args.results,
             output_manifest=args.output,
+            blog_path=args.blog,
             families=tuple(args.families),
             scope_amendment=args.scope_amendment,
         )

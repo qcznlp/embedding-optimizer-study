@@ -12,3 +12,31 @@ Model & Optimizer & Final nDCG@10 & Rates reaching AdamW target \\
 \caption{Discovery retrieval outcomes. Final scores are medians over four learning-rate points; target passage uses the frozen within-family AdamW reference.}
 \label{tab:discovery-results}
 \end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & Optimizer & Hours & Examples/s & Throughput / AdamW & Peak GiB & State GiB & Checkpoint GiB \\
+\midrule
+\multicolumn{8}{c}{\ResultPending{strict training-systems summary}} \\
+\bottomrule
+\end{tabular}
+\caption{Median systems measurements over the four discovery learning rates on the pinned four-GPU stack. The final renderer explicitly reports whether Muon-family training was faster and separates throughput from optimizer-state and memory savings.}
+\label{tab:training-systems-results}
+\end{table*}
+
+\begin{figure*}[t]
+\centering
+\begin{minipage}[t]{0.66\textwidth}
+\centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-training-dynamics-by-run.png}
+\centering (a) Five-stage trajectories for every learning rate.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.31\textwidth}
+\centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-lr-sensitivity.png}
+\centering (b) Final-score learning-rate sensitivity.
+\end{minipage}
+\caption{DenseOn discovery dynamics. Panel (a) retains all 12 runs and all five checkpoints; panel (b) shows final-score sensitivity over each optimizer's frozen four-point learning-rate grid. These one-seed discovery curves are exploratory.}
+\label{fig:dense-discovery-dynamics}
+\end{figure*}

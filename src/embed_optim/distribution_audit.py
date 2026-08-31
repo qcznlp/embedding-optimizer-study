@@ -68,17 +68,48 @@ def _project_scripts(text: str) -> dict[str, str]:
     return scripts
 
 
-def _data_files(text: str) -> dict[str, PurePosixPath]:
+def _data_files(text: str, root: Path) -> dict[str, PurePosixPath]:
     section = _section(text, "tool.setuptools.data-files")
     groups = re.findall(r'^"([^"]+)"\s*=\s*\[(.*?)^\]$', section, flags=re.MULTILINE | re.DOTALL)
-    files = {
-        source: PurePosixPath(destination) / Path(source).name
-        for destination, sources in groups
-        for source in re.findall(r'^\s+"([^"]+)",?$', sources, flags=re.MULTILINE)
-    }
+    files: dict[str, PurePosixPath] = {}
+    for destination, sources in groups:
+        for pattern in re.findall(r'^\s+"([^"]+)",?$', sources, flags=re.MULTILINE):
+            matches = (
+                sorted(path for path in root.glob(pattern) if path.is_file())
+                if any(character in pattern for character in "*?[")
+                else [root / pattern]
+            )
+            for path in matches:
+                source = path.relative_to(root).as_posix()
+                files[source] = PurePosixPath(destination) / path.name
     if not files:
         raise ValueError("No setuptools data files could be parsed from pyproject.toml")
     return files
+
+
+def _dense_dynamics_distribution_problems(
+    root: Path, data_files: dict[str, PurePosixPath]
+) -> list[str]:
+    manifest = root / "reports/dense-retrieval-dynamics/summary_manifest.json"
+    if not manifest.is_file():
+        return []
+    try:
+        payload = json.loads(manifest.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ["Dense retrieval-dynamics distribution manifest is unreadable"]
+    if payload.get("complete") is not True:
+        return []
+    expected = {
+        "reports/dense-retrieval-dynamics/summary_manifest.json",
+        "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.csv",
+        "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.svg",
+        "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf",
+    }
+    return [
+        f"completed Dense retrieval-dynamics distribution missing: {source}"
+        for source in sorted(expected)
+        if source not in data_files or not (root / source).is_file()
+    ]
 
 
 def _runtime_config_references(package_sources: list[Path], root: Path) -> set[str]:
@@ -123,13 +154,14 @@ def audit_distribution(
     text = pyproject.read_text(encoding="utf-8")
     project, version, distribution = _project_identity(text)
     scripts = _project_scripts(text)
-    data_files = _data_files(text)
+    data_files = _data_files(text, root)
     resolved_dist = Path(dist_dir)
     if not resolved_dist.is_absolute():
         resolved_dist = root / resolved_dist
     wheel, sdist = _artifact_paths(resolved_dist.resolve(), distribution, version)
 
     problems: list[str] = []
+    problems.extend(_dense_dynamics_distribution_problems(root, data_files))
     package_sources = sorted((root / "src" / "embed_optim").glob("*.py"))
     runtime_configs = _runtime_config_references(package_sources, root)
     problems.extend(

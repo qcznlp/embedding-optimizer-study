@@ -5,7 +5,11 @@ import posixpath
 import re
 from pathlib import Path, PurePosixPath
 
-from embed_optim.distribution_audit import _checkout_path_findings
+from embed_optim.distribution_audit import (
+    _checkout_path_findings,
+    _data_files,
+    _dense_dynamics_distribution_problems,
+)
 
 ROOT = Path(__file__).parents[1]
 
@@ -23,11 +27,18 @@ def _installed_data_paths() -> dict[str, PurePosixPath]:
     pyproject = (ROOT / "pyproject.toml").read_text()
     section = pyproject.split("[tool.setuptools.data-files]", 1)[1].split("\n[", 1)[0]
     groups = re.findall(r'^"([^"]+)" = \[(.*?)^\]$', section, flags=re.MULTILINE | re.DOTALL)
-    return {
-        source: PurePosixPath(destination) / Path(source).name
-        for destination, sources in groups
-        for source in re.findall(r'^\s+"([^"]+)",?$', sources, flags=re.MULTILINE)
-    }
+    installed = {}
+    for destination, sources in groups:
+        for pattern in re.findall(r'^\s+"([^"]+)",?$', sources, flags=re.MULTILINE):
+            matches = (
+                sorted(path for path in ROOT.glob(pattern) if path.is_file())
+                if any(character in pattern for character in "*?[")
+                else [ROOT / pattern]
+            )
+            for path in matches:
+                source = path.relative_to(ROOT).as_posix()
+                installed[source] = PurePosixPath(destination) / path.name
+    return installed
 
 
 def _resolve_relative(source: PurePosixPath, target: str) -> PurePosixPath:
@@ -187,6 +198,52 @@ def test_distribution_bundles_causal_chain_runtime_contracts_and_entry_points() 
         assert f"{command} = " in scripts
 
 
+def test_distribution_bundles_dense_retrieval_dynamics_extension() -> None:
+    installed = _installed_data_paths()
+    source = "configs/dense_retrieval_dynamics_extension.json"
+    assert installed[source] == PurePosixPath(
+        "share/embedding-optimizer-study/configs/dense_retrieval_dynamics_extension.json"
+    )
+    contract = json.loads((ROOT / source).read_text(encoding="utf-8"))
+    assert contract["evaluation"]["dynamics_stages"] == [1, 2, 3, 4]
+    assert contract["evaluation"]["formal_inference_stage"] == 5
+    assert contract["evaluation"]["expected_additional_units"] == 728
+    assert contract["evaluation"]["formal_inference_uses_dynamics_rows"] is False
+
+    scripts = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    scripts = scripts.split("[project.scripts]", 1)[1].split("\n[", 1)[0]
+    assert "embed-optim-evaluate-dense-retrieval-dynamics = " in scripts
+    assert "embed-optim-summarize-dense-retrieval-dynamics = " in scripts
+    placeholder = "reports/dense-retrieval-dynamics/README.md"
+    assert installed[placeholder] == PurePosixPath(
+        "share/embedding-optimizer-study/reports/dense-retrieval-dynamics/README.md"
+    )
+
+
+def test_completed_dense_dynamics_distribution_requires_manifest_csv_svg_pdf(tmp_path: Path):
+    report = tmp_path / "reports/dense-retrieval-dynamics"
+    report.mkdir(parents=True)
+    (report / "README.md").write_text("placeholder\n", encoding="utf-8")
+    manifest = report / "summary_manifest.json"
+    manifest.write_text('{"complete":true}\n', encoding="utf-8")
+    text = (
+        "[tool.setuptools.data-files]\n"
+        '"share/project/reports/dense-retrieval-dynamics" = [\n'
+        '  "reports/dense-retrieval-dynamics/*",\n'
+        "]\n"
+    )
+    pending = _data_files(text, tmp_path)
+    problems = _dense_dynamics_distribution_problems(tmp_path, pending)
+    assert len(problems) == 3
+
+    for suffix in ("csv", "svg", "pdf"):
+        (report / f"five_stage_retrieval_dynamics.{suffix}").write_text(
+            f"{suffix}\n", encoding="utf-8"
+        )
+    complete = _data_files(text, tmp_path)
+    assert _dense_dynamics_distribution_problems(tmp_path, complete) == []
+
+
 def test_distribution_bundles_result_safe_paper_sources() -> None:
     installed = _installed_data_paths()
     paper_files = (
@@ -204,6 +261,7 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         "paper/generated/intervention.tex",
         "paper/generated/per-task.tex",
         "paper/generated/representation.tex",
+        "paper/generated/retrieval-dynamics-extension.tex",
     )
     for source in paper_files:
         assert installed[source] == PurePosixPath(
@@ -216,6 +274,11 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
 
     main = (ROOT / "paper/main.tex").read_text()
     makefile = (ROOT / "paper/Makefile").read_text()
+    assert (
+        "EXTENDED_RESULT_FIGURE := $(wildcard "
+        "../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf)" in makefile
+    )
+    assert "$(EXTENDED_RESULT_FIGURE)" in makefile
     for source in result_tables:
         table = PurePosixPath(source).stem
         assert f"\\input{{generated/{table}}}" in main

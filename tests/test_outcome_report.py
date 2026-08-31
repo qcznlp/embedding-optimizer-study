@@ -8,7 +8,11 @@ import pytest
 
 from embed_optim.geometry import _sha256
 from embed_optim.mechanism_report import MECHANISM_MARKERS, _marked_block_record
-from embed_optim.outcome_report import render_outcome_report
+from embed_optim.outcome_report import (
+    FINAL_CONCLUSION_PENDING,
+    build_final_conclusion_contract,
+    render_outcome_report,
+)
 from embed_optim.scope import resolve_scope
 
 
@@ -439,6 +443,119 @@ def _inputs(
         mechanism_payload.update({"families": list(families), "scope_amendment": scope})
     _manifest(mechanism.with_suffix(".manifest.json"), mechanism_payload)
     return functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog
+
+
+def test_final_conclusion_is_result_driven_and_pending_is_explicit():
+    confirmation = [
+        [
+            "DenseOn",
+            "Muon - AdamW",
+            "+0.0100",
+            "[0.0010, 0.0190]",
+            "[0.0005, 0.0200]",
+            "3/0/0",
+            "9/0/5",
+        ],
+        [
+            "DenseOn",
+            "NorMuon - AdamW",
+            "+0.0050",
+            "[-0.0010, 0.0110]",
+            "[-0.0050, 0.0150]",
+            "2/0/1",
+            "8/0/6",
+        ],
+        [
+            "DenseOn",
+            "NorMuon - Muon",
+            "-0.0050",
+            "[-0.0110, 0.0010]",
+            "[-0.0150, 0.0050]",
+            "1/0/2",
+            "6/0/8",
+        ],
+    ]
+    tails = [
+        ["DenseOn", "Muon", "-0.0200", "3/3", "+0.0100", "3/3", "supported"],
+        ["DenseOn", "NorMuon", "-0.0100", "2/3", "+0.0050", "2/3", "mixed"],
+    ]
+    hybrid = [
+        ["DenseOn", "1e-06", "0.4000", "0.4100", "0.0100", "8/0/6"],
+        ["DenseOn", "3e-06", "0.4000", "0.3950", "-0.0050", "6/0/8"],
+        ["DenseOn", "1e-05", "0.4000", "0.4000", "0.0000", "7/0/7"],
+        ["DenseOn", "3e-05", "0.4000", "0.4150", "0.0150", "9/0/5"],
+    ]
+    pending = build_final_conclusion_contract(
+        confirmation, hybrid, tails, {"complete": False}, families=("dense",)
+    )
+    assert pending["status"] == "pending"
+    assert FINAL_CONCLUSION_PENDING in pending["markdown"]
+
+    evidence = {
+        "complete": True,
+        "claimable": True,
+        "overall_verdict": "not_supported_claimable_negative",
+        "temporal_short_branch": {
+            "claimable": True,
+            "supported": False,
+            "status": "negative",
+        },
+        "dose_band": {"claimable": True, "supported": True, "status": "supported"},
+    }
+    conclusion = build_final_conclusion_contract(
+        confirmation, hybrid, tails, evidence, families=("dense",)
+    )
+    assert conclusion["status"] == "complete"
+    assert conclusion["classifications"]["DenseOn"] == {
+        "Muon - AdamW": "positive",
+        "NorMuon - AdamW": "inconclusive",
+    }
+    assert conclusion["routing_controls"]["DenseOn"] == {
+        "learning_rates": 4,
+        "mean_delta_ndcg_at_10": "+0.0050",
+        "positive_learning_rates": 2,
+        "negative_learning_rates": 1,
+        "zero_learning_rates": 1,
+    }
+    assert "2 positive, 1 negative, and 1 zero learning-rate points" in conclusion["plain"]
+    assert (
+        "descriptive evidence about parameter routing as an alternative explanation"
+        in conclusion["plain"]
+    )
+    assert "joint spectral-component account was a claimable negative" in conclusion["plain"]
+
+    for invalid in (
+        {**evidence, "claimable": False},
+        {**evidence, "overall_verdict": "unexpected"},
+        {
+            **evidence,
+            "temporal_short_branch": {
+                **evidence["temporal_short_branch"],
+                "status": "supported",
+            },
+        },
+    ):
+        with pytest.raises(ValueError, match="causal verdict|non-claimable"):
+            build_final_conclusion_contract(
+                confirmation, hybrid, tails, invalid, families=("dense",)
+            )
+
+    bad_interval = [row.copy() for row in confirmation]
+    bad_interval[0][4] = "[nan, 0.0200]"
+    with pytest.raises(ValueError, match="Non-finite familywise interval"):
+        build_final_conclusion_contract(bad_interval, hybrid, tails, evidence, families=("dense",))
+
+    with pytest.raises(ValueError, match="hybrid-routing"):
+        build_final_conclusion_contract(
+            confirmation, hybrid[:-1], tails, evidence, families=("dense",)
+        )
+
+    inconsistent_hybrid = [row.copy() for row in hybrid]
+    inconsistent_hybrid[0][4] = "0.0200"
+    with pytest.raises(ValueError, match="hybrid-routing"):
+        build_final_conclusion_contract(
+            confirmation, inconsistent_hybrid, tails, evidence, families=("dense",)
+        )
 
 
 def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path):

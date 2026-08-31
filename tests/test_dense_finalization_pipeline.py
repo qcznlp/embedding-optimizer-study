@@ -11,7 +11,11 @@ from types import SimpleNamespace
 
 import pytest
 
-from embed_optim.dense_completion_pipeline import CORE_STEP_NAMES, _step_contract
+from embed_optim.dense_completion_pipeline import (
+    CORE_STEP_NAMES,
+    _exclusive_controller_lease,
+    _step_contract,
+)
 from embed_optim.dense_completion_pipeline import PipelineStep as CompletionStep
 from embed_optim.dense_finalization_pipeline import (
     PipelineStep,
@@ -135,6 +139,67 @@ def _run_args(tmp_path: Path, completion: Path, *, resume: bool = False) -> Name
 def _write_completion(path: Path, payload: dict[str, object] | None = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload or _valid_completion(path.parent)), encoding="utf-8")
+
+
+def test_finalization_controller_lease_rejects_a_second_instance(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    args = _run_args(tmp_path, completion)
+    step = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._wait_for_completion",
+        lambda _args: pytest.fail("the second controller must fail before waiting"),
+    )
+    lease_path = tmp_path / args.log_dir / "controller.lease"
+    with _exclusive_controller_lease(
+        lease_path,
+        controller="finalization",
+        workdir=tmp_path,
+        step_contract_sha256="0" * 64,
+    ):
+        with pytest.raises(RuntimeError, match="controller lease is already held"):
+            run_pipeline(args)
+
+
+def test_finalization_rejects_source_mutation_while_waiting(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    args = _run_args(tmp_path, completion)
+    source = tmp_path / "src" / "embed_optim" / "marker.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("VALUE = 1\n", encoding="utf-8")
+    step = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._repository_contract_sources",
+        lambda _repository: (source.resolve(),),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._wait_for_completion",
+        lambda _args: source.write_text("VALUE = 2\n", encoding="utf-8"),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_completion_ledger",
+        lambda *_args, **_kwargs: pytest.fail(
+            "mutated source must fail before completion-ledger validation"
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="step contract changed"):
+        run_pipeline(args)
+
+    assert not (tmp_path / args.log_dir / "pipeline-ledger.json").exists()
 
 
 def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):

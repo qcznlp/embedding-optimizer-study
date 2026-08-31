@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from embed_optim.dense_retrieval_dynamics_publication import DYNAMICS_EXTENSION_TEX
 from embed_optim.paper_results import (
     PAPER_RESULT_TABLE_PATHS,
     IncompletePaperEvidenceError,
@@ -243,6 +244,14 @@ def _spectral_result_rows():
     return factorial, tail
 
 
+def _system_result_rows():
+    return [
+        [family, optimizer, "3.52", "39.43", ratio, "7.41", "1.11", "1.67"]
+        for family in ("DenseOn", "LateOn")
+        for optimizer, ratio in (("AdamW", "1.00x"), ("Muon", "0.95x"), ("NorMuon", "0.93x"))
+    ]
+
+
 def test_headlines_report_every_frozen_evidence_tier_without_sign_overreach():
     final = {
         (family, optimizer): 0.4 + 0.01 * index
@@ -334,6 +343,7 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
         tail_final_rows=tail_final,
         spectral_factorial_rows=spectral_factorial,
         spectral_tail_rows=spectral_tail,
+        system_rows=_system_result_rows(),
         **rows,
     )
 
@@ -377,6 +387,10 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     assert "Post-hoc spectrum-versus-basis causal decomposition" in intervention
     assert "tail redistribution" in intervention
     assert "cannot establish BEIR mediation" in intervention
+    assert "DenseOn Muon/NorMuon throughput ratios were 0.95x/0.93x AdamW" in discovery
+    assert "neither was faster for DenseOn" in discovery
+    assert "dense-training-dynamics-by-run.png" in discovery
+    assert "dense-lr-sensitivity.png" in discovery
     assert all("ResultPending" not in content for content in tables.values())
 
 
@@ -407,6 +421,7 @@ def test_dense_scope_headlines_and_tables_exclude_late_results():
         tail_final_rows=[row for row in tail_final if row[0] == "DenseOn"],
         spectral_factorial_rows=[row for row in spectral_factorial if row[0] == "DenseOn"],
         spectral_tail_rows=[row for row in spectral_tail if row[0] == "DenseOn"],
+        system_rows=[row for row in _system_result_rows() if row[0] == "DenseOn"],
         families=families,
         **table_rows,
     )
@@ -414,7 +429,7 @@ def test_dense_scope_headlines_and_tables_exclude_late_results():
     assert all("LateOn" not in value for value in headlines.values())
     assert "for DenseOn" in headlines["RepresentationHeadline"]
     assert all("LateOn" not in value for value in tables.values())
-    assert tables["paper/generated/discovery.tex"].count("DenseOn &") == 3
+    assert tables["paper/generated/discovery.tex"].count("DenseOn &") == 6
     assert tables["paper/generated/confirmation.tex"].count("DenseOn &") == 3
     assert "all six comparisons prespecified" in tables["paper/generated/confirmation.tex"]
     assert "Late token coverage" not in tables["paper/generated/representation.tex"]
@@ -431,9 +446,25 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     results = tmp_path / "paper/results.tex"
     results.parent.mkdir(parents=True)
     results.write_text(
-        "\n".join(f"\\newcommand{{\\{name}}}{{pending}}" for name in headline_names) + "\n"
+        "\n".join(f"\\newcommand{{\\{name}}}{{pending}}" for name in headline_names)
+        + "\n\\newcommand{\\ResultConclusion}{pending}\n"
     )
     (tmp_path / "reports").mkdir()
+    dynamics_dir = tmp_path / "reports/dense-retrieval-dynamics"
+    dynamics_dir.mkdir()
+    for name in (
+        "summary_manifest.json",
+        "five_stage_retrieval_dynamics.csv",
+        "five_stage_retrieval_dynamics.svg",
+        "five_stage_retrieval_dynamics.pdf",
+    ):
+        (dynamics_dir / name).write_text(f"{name}\n", encoding="utf-8")
+    blog = tmp_path / "docs/blog.md"
+    blog.parent.mkdir()
+    blog.write_text(
+        "<!-- DENSE-RETRIEVAL-DYNAMICS:BEGIN -->\npending\n<!-- DENSE-RETRIEVAL-DYNAMICS:END -->\n",
+        encoding="utf-8",
+    )
     claim = tmp_path / "claim.json"
     claim.write_text("{}")
     source = tmp_path / "source.csv"
@@ -476,8 +507,29 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
         lambda _evidence: " causal headline",
     )
     monkeypatch.setattr(
+        "embed_optim.paper_results._discovery_figure_contract",
+        lambda _root: {"source_manifest": {}, "panels": []},
+    )
+    monkeypatch.setattr("embed_optim.paper_results.load_publication_rows", lambda _root: ([], {}))
+    monkeypatch.setattr(
+        "embed_optim.paper_results.summarize_publication_rows",
+        lambda _rows: [["Confirmatory AdamW", "3", "0.1", "0.2", "0.3", "0.4", "0.5"]],
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.render_publication_latex",
+        lambda _rows: "generated extension latex\n",
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.render_publication_markdown",
+        lambda _rows: "generated extension markdown",
+    )
+    monkeypatch.setattr(
         "embed_optim.paper_results.PAPER_SOURCE_TABLE_PATHS",
-        tuple(source.relative_to(tmp_path) for _ in range(22)),
+        (
+            *(source.relative_to(tmp_path) for _ in range(5)),
+            (dynamics_dir / "five_stage_retrieval_dynamics.csv").relative_to(tmp_path),
+            *(source.relative_to(tmp_path) for _ in range(18)),
+        ),
     )
 
     monkeypatch.setattr(
@@ -551,6 +603,18 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
         "embed_optim.paper_results._confirmation_rows",
         lambda *_args: ([], source, {}),
     )
+    monkeypatch.setattr(
+        "embed_optim.paper_results._training_system_rows",
+        lambda *_args: ([], source),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.build_final_conclusion_contract",
+        lambda *_args, **_kwargs: {
+            "status": "complete",
+            "plain": "final conclusion",
+            "markdown": "final conclusion",
+        },
+    )
 
     def headlines(**kwargs):
         captured["headline_keys"] = set(kwargs)
@@ -579,9 +643,18 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     assert "task_rows" not in captured["headline_keys"]
     assert captured["table_task_rows"] is task_rows
     assert captured["table_task_stability_rows"] is task_stability_rows
-    assert len(manifest["source_tables"]) == 22
+    assert len(manifest["source_tables"]) == 24
+    assert manifest["dynamics_extension"]["role"] == "descriptive-only"
     assert len(manifest["result_tables"]) == 7
     assert manifest["causal_chain_display"] == {"complete": True, "source_tables": 5}
+
+    mutation_targets = [results, tmp_path / DYNAMICS_EXTENSION_TEX]
+    mutation_targets.extend(tmp_path / relative for relative in PAPER_RESULT_TABLE_PATHS)
+    before = {path: path.read_bytes() for path in mutation_targets}
+    blog.write_text("missing dynamics marker\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="exactly one Dense retrieval-dynamics blog marker pair"):
+        render_paper_results(repo_root=tmp_path)
+    assert {path: path.read_bytes() for path in mutation_targets} == before
 
 
 def test_latex_escape_protects_generated_data_cells():

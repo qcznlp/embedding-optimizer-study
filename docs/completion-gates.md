@@ -25,6 +25,7 @@ identity.
 | Hybrid routing | reports/hybrid-adamw/summary_manifest.json | 4 runs and 56 final BEIR units, families=["dense"], scope hash matches |
 | Confirmatory training | generated matrices and deep checkpoint audits | 3 seeds × 3 optimizers = 9 terminal runs and 45 checkpoints |
 | Confirmatory evaluation | reports/confirmatory/summary_manifest.json | 9 × 14 = 126 units; seed-by-task bootstrap and the original six-comparison Bonferroni family remain valid while only Dense rows are shown |
+| Extended Dense retrieval dynamics | reports/dense-retrieval-dynamics/summary_manifest.json | 13 runs × 5 stages = 65 rows and 910 task units: 728 isolated stage-1–4 units plus 182 formal stage-5 units; stages 1–4 are descriptive only |
 | Shared-start training | generated matrices and deep checkpoint audits | 3 seeds × 3 operators = 9 runs and 45 checkpoints from one frozen AdamW start |
 | Shared-start probes | reports/short-branch/summary_manifest.json | 45 query-disjoint checkpoint rows plus 46 unseen-probe jobs (45 checkpoints and one pretrained reference), with the three-seed endpoint decision |
 | Temporal shared-start mechanism | reports/short-branch/temporal_mechanism_predictors.manifest.json and reports/temporal-short-branch/summary_manifest.json | Predictor extraction and the scope-bound temporal analysis are each complete; both strict `--audit` steps rehash every declared input and output, and tail-stability outcomes are built before the temporal join |
@@ -57,12 +58,20 @@ embed-optim-dense-completion \
 ~~~
 
 The ledger under logs/dense-completion-pipeline must finish every checkpoint audit, evaluation,
-short-branch summary, temporal predictor extraction, tail summary, temporal short-branch analysis,
+the 728-unit hybrid/confirmatory dynamics extension, its 65-row five-stage summary, short-branch
+summary, temporal predictor extraction, tail summary, temporal short-branch analysis,
 spectral-transplant step, and dose/band analysis. Each new build is followed immediately by its
 strict `--audit`; a pending
 receipt, failed audit, or incomplete step blocks final reporting. The commands and source hashes are
 part of the completion ledger's step contract, and the finalizer binds its provenance to the exact
 completed ledger before rendering the mechanism report, blog, and paper.
+
+The dynamics extension is frozen in
+[`configs/dense_retrieval_dynamics_extension.json`](../configs/dense_retrieval_dynamics_extension.json).
+It writes stages 1–4 to separate result roots, joins them to the already formal stage-5 results only
+for the descriptive trajectory, and never changes the hybrid-routing or confirmatory inference
+inputs. The resulting CSV and publication figures are
+`reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.{csv,pdf,svg}`.
 
 The machine-readable integration contract is
 [`configs/mechanism_analysis_integration.json`](../configs/mechanism_analysis_integration.json).

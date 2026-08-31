@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "status": "user_directed_dense_retrieval_dynamics_extension",
+  "recorded_at_utc": "2026-08-31T02:58:02Z",
+  "purpose": "Complete the original five-equal-stage checkpoint evaluation deliverable for every DenseOn hybrid and confirmatory run without changing the frozen final-only inference design.",
+  "decision_timing": {
+    "discovery_scores_visible": true,
+    "hybrid_training_complete": true,
+    "hybrid_beir_scores_visible": false,
+    "confirmatory_terminal_runs_visible": false,
+    "confirmatory_beir_scores_visible": false,
+    "extension_rule_result_contingent": false,
+    "reason": "The extension restores the user-requested five-stage evaluation coverage; it does not select stages, tasks, runs, or claims from hybrid or confirmatory outcomes."
+  },
+  "evaluation": {
+    "families": [
+      "dense"
+    ],
+    "tasks": [
+      "ArguAna",
+      "ClimateFEVER",
+      "DBPedia",
+      "FEVER",
+      "FiQA2018",
+      "HotpotQA",
+      "MSMARCO",
+      "NFCorpus",
+      "NQ",
+      "QuoraRetrieval",
+      "SCIDOCS",
+      "SciFact",
+      "TRECCOVID",
+      "Touche2020"
+    ],
+    "dynamics_stages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "formal_inference_stage": 5,
+    "expected_additional_units": 728,
+    "formal_inference_uses_dynamics_rows": false
+  },
+  "suites": {
+    "hybrid": {
+      "runs": 4,
+      "stages": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "tasks": 14,
+      "expected_units": 224,
+      "results_root": "results/hybrid-adamw-beir-dynamics",
+      "formal_results_root": "results/hybrid-adamw-beir",
+      "log_root": "logs/hybrid-adamw-dynamics-evaluation"
+    },
+    "confirmatory": {
+      "runs": 9,
+      "stages": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "tasks": 14,
+      "expected_units": 504,
+      "results_root": "results/confirmatory-beir-dynamics",
+      "formal_results_root": "results/confirmatory-beir",
+      "log_root": "logs/confirmatory-dynamics-evaluation"
+    }
+  },
+  "source_bindings": {
+    "implementation": {
+      "path": "src/embed_optim/dense_retrieval_dynamics_evaluation.py",
+      "sha256": "f9f5427906bc9935d1fe8193914600d06ff2befc8093c46231d9b0c867b83ad9"
+    },
+    "scope_amendment": {
+      "path": "configs/dense_scope_amendment.json",
+      "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+    },
+    "hybrid_matrix": {
+      "path": "configs/hybrid_adamw.yaml",
+      "sha256": "d512ff3fb9ab86a1f1c27408a3672e819a6dcf3538aa4c1897a1f06afd1d457c"
+    },
+    "hybrid_control": {
+      "path": "configs/hybrid_adamw_control.json",
+      "sha256": "24838ba1f8015d1e4198b1a5192daedf9b1c3cdeaceedf8858e72c406454b270"
+    },
+    "confirmatory_protocol": {
+      "path": "configs/confirmatory_protocol.json",
+      "sha256": "f512e98ec07635c82ce9af6b6c8ed745146c4dc34379efb78b583b33bf53e550"
+    },
+    "confirmatory_matrix_manifest": {
+      "path": "configs/generated/confirmatory/manifest.json",
+      "sha256": "e0ac75ccf5e0542fe9879d56e4e0d23a290dc02d531c58d197f819840f23f5ad"
+    }
+  },
+  "inference_boundary": "Stage 1-4 rows are trajectory-only descriptive evidence. Hybrid routing summaries and confirmatory optimizer contrasts continue to read only their existing disjoint stage-5 result roots."
+}

@@ -157,6 +157,25 @@ tasks. The headline interval retains the Bonferroni correction over all six comp
 before the post-hoc Dense-only scope amendment; narrowing the displayed model family does not make
 the statistical gate easier.
 
+The original five-way checkpoint requirement is also applied to the 4 routing-matched hybrid runs
+and 9 full-length confirmatory runs. Their missing 20%–80% evaluations are frozen as a 728-unit
+extension in `configs/dense_retrieval_dynamics_extension.json`, with separate result roots from the
+formal final-stage evaluation. The descriptive artifact joins those 728 rows to the existing 182
+stage-5 units and is defined as 13 runs × 5 stages = 65 trajectory rows and 910 task units; the
+complete Dense design has 1,750 BEIR units including discovery. This extension is descriptive and
+does not change model
+selection or inference: hybrid routing and three-seed contrasts still read only stage 5. The
+shared-start 50K controls have five query-disjoint and unseen-probe stages instead of full BEIR.
+
+## Extended full-length retrieval dynamics
+
+<!-- DENSE-RETRIEVAL-DYNAMICS:BEGIN -->
+
+**Pending:** the strict 13-run, five-stage retrieval-dynamics table and figure are rendered only
+after the source-bound 910-unit summary manifest passes its read-only audit.
+
+<!-- DENSE-RETRIEVAL-DYNAMICS:END -->
+
 ## Discovery results
 
 <!-- RESULTS:BEGIN -->
@@ -412,7 +431,9 @@ a mean-only win is insufficient.
 ### Three-seed confirmation
 
 Recipes are selected without BEIR using the frozen validation probe, then retrained with seeds
-314159, 271828, and 161803. Final checkpoints are evaluated on all 14 decontaminated tasks. The
+314159, 271828, and 161803. All five checkpoints are evaluated on all 14 decontaminated tasks for
+the descriptive trajectory, while only the independently rooted final checkpoint enters formal
+confirmation. The
 hierarchical seed-by-task bootstrap reports nominal and Bonferroni familywise intervals for AdamW,
 Muon, and NorMuon contrasts. The correction still covers the original six prespecified comparisons,
 although only the three DenseOn rows are reported. If a familywise interval crosses zero, the
@@ -584,6 +605,11 @@ it never accepts a previously completed prefix. Individual evaluation units are 
 their own content-addressed checkpoint/runtime/result audits pass. This full rerun also upgrades
 legacy completion ledgers instead of grandfathering them into the stricter contract.
 
+The same completion ledger evaluates and audits the additional 224 hybrid and 504 confirmatory
+stage-1–4 units, then builds and re-audits the 65-row trajectory CSV plus PDF/SVG figures under
+`reports/dense-retrieval-dynamics/`. Its read-only audit reconstructs all 910 joined task units and
+rejects changed checkpoints, result provenance, figures, tables, or manifests.
+
 ### Render the Dense paper and blog
 
 After the Dense completion ledger passes, use the canonical resume-safe finalizer. It regenerates all
@@ -689,15 +715,9 @@ embed-optim-audit-distribution
 
 ## Current defensible conclusion
 
-The discovery study supports a narrower descriptive claim: when the same BEIR suite selects one
-learning rate per optimizer, Muon and NorMuon slightly exceed the likewise BEIR-selected AdamW point
-estimate, but not because they take a better average one-step descent direction. This is not the
-validation-selected comparison. Query-disjoint validation selects 3e-3 for both Muon variants, and
-those discovery-BEIR scores are below AdamW. Together, the results suggest that Muon-family updates
-move into a distinct, state-dependent trajectory and redistribute which queries are fragile, while
-stronger adaptation can overfit the training-style objective and damage pretrained rankings.
+<!-- FINAL-CONCLUSION:BEGIN -->
 
-The generated [completion outcome](#audited-completion-status) records whether that trajectory
-explanation survives common-start accumulation and what final-quality contrast appears under
-validation-frozen recipes and new seeds. The blog and paper state a stronger claim only when those
-audited prospective gates pass.
+**Pending (FINAL_CONCLUSION_PENDING):** the result-driven conclusion will be rendered only after
+the validation-frozen retrieval, shared-start endpoint, and causal-chain manifests are complete.
+
+<!-- FINAL-CONCLUSION:END -->

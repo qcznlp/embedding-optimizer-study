@@ -15,6 +15,11 @@ from embed_optim.causal_chain_rendering import (
 )
 from embed_optim.paper_audit import (
     BLOG_MARKERS,
+    PAPER_DISCOVERY_FIGURE_CAPTION,
+    PAPER_DISCOVERY_FIGURE_INCLUDES,
+    PAPER_DISCOVERY_FIGURE_LABEL,
+    PAPER_MAIN_GENERATED_INPUTS,
+    PAPER_MAIN_REQUIRED_ONCE,
     PAPER_RESULT_TABLE_PATHS,
     PAPER_SOURCE_TABLE_PATHS,
     _causal_chain_evidence,
@@ -22,6 +27,8 @@ from embed_optim.paper_audit import (
     _complete_manifest,
     _final_document_language_problems,
     _macros,
+    _paper_figures_complete,
+    _paper_main_topology_complete,
     _paper_result_tables_complete,
     _paper_results_complete,
     _paper_source_tables_complete,
@@ -112,10 +119,11 @@ def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_aud
         "configs/training_data_contract.json"
     )
     discovery_evidence = result["evidence"]["DiscoveryHeadline"]
-    assert len(discovery_evidence) == 4
+    assert len(discovery_evidence) == 5
     assert discovery_evidence[1]["complete"] is True
     assert discovery_evidence[2]["complete"] is True
     assert isinstance(discovery_evidence[3]["complete"], bool)
+    assert discovery_evidence[4]["complete"] is False
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
@@ -738,6 +746,62 @@ def test_result_table_audit_requires_exact_hashes_and_no_pending_markers(tmp_pat
     assert _paper_result_tables_complete(tmp_path, records) is False
 
 
+def test_paper_figure_audit_binds_both_panels_to_dense_coverage(tmp_path: Path):
+    paths = {
+        "dense_training_dynamics_by_run": tmp_path
+        / "reports/dense-discovery/figures/dense-training-dynamics-by-run.png",
+        "dense_lr_sensitivity": tmp_path
+        / "reports/dense-discovery/figures/dense-lr-sensitivity.png",
+    }
+    outputs = {}
+    panels = []
+    for name, path in paths.items():
+        record = _hashed_record(path, f"{name}\n")
+        record["path"] = str(path.relative_to(tmp_path))
+        outputs[name] = dict(record)
+        panels.append({"name": name, **record})
+    coverage = tmp_path / "reports/dense-discovery/coverage.json"
+    coverage.parent.mkdir(parents=True, exist_ok=True)
+    coverage.write_text(json.dumps({"outputs": outputs}), encoding="utf-8")
+    discovery = tmp_path / "paper/generated/discovery.tex"
+    discovery.parent.mkdir(parents=True, exist_ok=True)
+    discovery.write_text(
+        "\n".join(
+            (
+                *PAPER_DISCOVERY_FIGURE_INCLUDES,
+                PAPER_DISCOVERY_FIGURE_CAPTION,
+                PAPER_DISCOVERY_FIGURE_LABEL,
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    contract = {"source_manifest": _hashed_record(coverage, coverage.read_text()), "panels": panels}
+
+    assert _paper_figures_complete(tmp_path, contract) is True
+    canonical = discovery.read_text(encoding="utf-8")
+    for token in (*PAPER_DISCOVERY_FIGURE_INCLUDES, PAPER_DISCOVERY_FIGURE_CAPTION):
+        discovery.write_text(canonical.replace(token, "", 1), encoding="utf-8")
+        assert _paper_figures_complete(tmp_path, contract) is False
+    discovery.write_text(canonical, encoding="utf-8")
+    paths["dense_lr_sensitivity"].write_text("drift\n", encoding="utf-8")
+    assert _paper_figures_complete(tmp_path, contract) is False
+
+
+def test_paper_main_topology_requires_every_generated_input_and_conclusion(tmp_path: Path):
+    main = tmp_path / "paper/main.tex"
+    main.parent.mkdir(parents=True)
+    canonical = "\n".join((*PAPER_MAIN_REQUIRED_ONCE, r"\section{Limitations}")) + "\n"
+    main.write_text(canonical, encoding="utf-8")
+
+    assert _paper_main_topology_complete(tmp_path) is True
+    for token in PAPER_MAIN_REQUIRED_ONCE:
+        main.write_text(canonical.replace(token, "", 1), encoding="utf-8")
+        assert _paper_main_topology_complete(tmp_path) is False
+    main.write_text(canonical + PAPER_MAIN_GENERATED_INPUTS[0] + "\n", encoding="utf-8")
+    assert _paper_main_topology_complete(tmp_path) is False
+
+
 def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_path: Path):
     readme = tmp_path / "README.md"
     blog = tmp_path / "docs/blog.md"
@@ -750,8 +814,14 @@ def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_p
 
     assert _final_document_language_problems(tmp_path) == []
 
-    readme.write_text("Status: remaining DenseOn confirmation is running.\n", encoding="utf-8")
-    blog.write_text("Results will be inserted here after evaluation.\n", encoding="utf-8")
+    readme.write_text(
+        "Status: remaining DenseOn confirmation is running. Once complete, the supplemental view changes.\n",
+        encoding="utf-8",
+    )
+    blog.write_text(
+        "Results will be inserted here after evaluation. When complete, those 728 rows change.\n",
+        encoding="utf-8",
+    )
     paper.write_text(
         "The final analysis will report everything; it is intentionally left unresolved.\n",
         encoding="utf-8",
@@ -760,13 +830,15 @@ def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_p
 
     assert problems == [
         "README.md: remaining DenseOn confirmation is running",
+        "README.md: Once complete, the supplemental",
         "docs/blog.md: Results will be inserted here",
+        "docs/blog.md: When complete, those 728 rows",
         "paper/main.tex: The final analysis will report",
         "paper/main.tex: intentionally left unresolved",
     ]
 
 
-def test_paper_source_table_audit_requires_all_twenty_two_tables_in_declared_order(
+def test_paper_source_table_audit_requires_all_twenty_four_tables_in_declared_order(
     tmp_path: Path,
 ):
     records = []
@@ -782,7 +854,7 @@ def test_paper_source_table_audit_requires_all_twenty_two_tables_in_declared_ord
             }
         )
 
-    assert len(records) == 22
+    assert len(records) == 24
     assert _paper_source_tables_complete(tmp_path, records) is True
     assert _paper_source_tables_complete(tmp_path, records[:-1]) is False
     assert _paper_source_tables_complete(tmp_path, list(reversed(records))) is False
@@ -800,6 +872,77 @@ def _hashed_record(path: Path, content: str = "source\n") -> dict[str, object]:
         "bytes": path.stat().st_size,
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
     }
+
+
+def test_paper_dynamics_extension_contract_is_exact_and_tamper_evident(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    summary_rows = [["Confirmatory AdamW", "3", "0.1000", "0.2000", "0.3000", "0.4000", "0.5000"]]
+    expected_latex = (
+        "\\includegraphics{../reports/dense-retrieval-dynamics/"
+        "five_stage_retrieval_dynamics.pdf}\n"
+        "This descriptive artifact is not an inference input.\n"
+    )
+    expected_markdown = (
+        "[Source-bound CSV](../reports/dense-retrieval-dynamics/"
+        "five_stage_retrieval_dynamics.csv)\n\n"
+        "![Five-stage dynamics](../reports/dense-retrieval-dynamics/"
+        "five_stage_retrieval_dynamics.svg)"
+    )
+    monkeypatch.setattr(paper_audit_module, "load_publication_rows", lambda _root: ([], {}))
+    monkeypatch.setattr(
+        paper_audit_module, "summarize_publication_rows", lambda _rows: summary_rows
+    )
+    monkeypatch.setattr(
+        paper_audit_module, "render_publication_latex", lambda _rows: expected_latex
+    )
+    monkeypatch.setattr(
+        paper_audit_module, "render_publication_markdown", lambda _rows: expected_markdown
+    )
+
+    report = tmp_path / "reports/dense-retrieval-dynamics"
+    manifest_record = _hashed_record(report / "summary_manifest.json", "{}\n")
+    csv_record = _hashed_record(report / "five_stage_retrieval_dynamics.csv", "csv\n")
+    svg_record = _hashed_record(report / "five_stage_retrieval_dynamics.svg", "svg\n")
+    pdf_path = report / "five_stage_retrieval_dynamics.pdf"
+    pdf_record = _hashed_record(pdf_path, "pdf\n")
+    generated_record = _hashed_record(
+        tmp_path / "paper/generated/retrieval-dynamics-extension.tex", expected_latex
+    )
+    main = tmp_path / "paper/main.tex"
+    main.write_text("\\input{generated/retrieval-dynamics-extension}\n", encoding="utf-8")
+    begin, end = paper_audit_module.DYNAMICS_EXTENSION_MARKERS
+    blog = tmp_path / "docs/blog.md"
+    blog.parent.mkdir(parents=True)
+    blog.write_text(f"{begin}\n\n{expected_markdown}\n\n{end}\n", encoding="utf-8")
+    block = blog.read_text(encoding="utf-8").split(end, 1)[0] + end
+    block_bytes = block.encode("utf-8")
+    contract = {
+        "manifest": manifest_record,
+        "trajectory_csv": csv_record,
+        "figure_svg": svg_record,
+        "figure_pdf": pdf_record,
+        "generated_tex": generated_record,
+        "blog": {
+            "path": "docs/blog.md",
+            "markers": [begin, end],
+            "block_bytes": len(block_bytes),
+            "block_sha256": hashlib.sha256(block_bytes).hexdigest(),
+        },
+        "summary_rows": summary_rows,
+        "role": "descriptive-only",
+        "formal_inference_reads_joined_outputs": False,
+    }
+
+    assert paper_audit_module._paper_dynamics_extension_complete(tmp_path, contract) is True
+
+    pdf_path.write_text("tampered pdf\n", encoding="utf-8")
+    assert paper_audit_module._paper_dynamics_extension_complete(tmp_path, contract) is False
+    pdf_path.write_text("pdf\n", encoding="utf-8")
+    assert paper_audit_module._paper_dynamics_extension_complete(tmp_path, contract) is True
+
+    blog.write_text(f"{begin}\n\n{expected_markdown}\n\nextra\n\n{end}\n", encoding="utf-8")
+    assert paper_audit_module._paper_dynamics_extension_complete(tmp_path, contract) is False
 
 
 @pytest.mark.parametrize(
@@ -887,6 +1030,39 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
         lambda *_args, **_kwargs: True,
     )
     monkeypatch.setattr(
+        "embed_optim.paper_audit._paper_figures_complete",
+        lambda *_args, **_kwargs: True,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._paper_dynamics_extension_complete",
+        lambda *_args, **_kwargs: True,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._paper_systems_complete",
+        lambda *_args, **_kwargs: True,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._confirmation_rows",
+        lambda *_args, **_kwargs: ([], Path("confirmation.csv"), {}),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._hybrid_rows",
+        lambda *_args, **_kwargs: ([], Path("hybrid.csv"), {}),
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._tail_stability_rows",
+        lambda *_args, **_kwargs: ([], [], (), {}),
+    )
+    conclusion = {
+        "status": "complete",
+        "plain": "final evidence-bound conclusion",
+        "markdown": "final evidence-bound conclusion",
+    }
+    monkeypatch.setattr(
+        "embed_optim.paper_audit.build_final_conclusion_contract",
+        lambda *_args, **_kwargs: conclusion,
+    )
+    monkeypatch.setattr(
         "embed_optim.paper_audit._causal_chain_source_complete",
         lambda *_args, **_kwargs: True,
     )
@@ -909,7 +1085,13 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
     paper_contract = causal_chain_paper_contract()
     canonical_main_text = "\n".join(
         (
-            *paper_contract["required_once"],
+            *PAPER_MAIN_REQUIRED_ONCE,
+            r"\section{Limitations}",
+            *(
+                token
+                for token in paper_contract["required_once"]
+                if token not in PAPER_MAIN_REQUIRED_ONCE
+            ),
             *paper_contract["required_boundary_substrings"],
         )
     )
@@ -935,6 +1117,7 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
         content = "".join(
             f"\\newcommand{{\\{name}}}{{{value}}}\n" for name, value in headlines.items()
         )
+        content += "\\newcommand{\\ResultConclusion}{final evidence-bound conclusion}\n"
         return _hashed_record(result_path, content)
 
     results_record = write_results()
@@ -951,11 +1134,22 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
         "results_tex": results_record,
         "causal_chain": {"temporal_short_branch": {}, "dose_band": {}},
         "causal_chain_display": causal_display,
+        "figures": {},
+        "conclusion": conclusion,
+        "conclusion_macro": {
+            "name": "ResultConclusion",
+            "value": "final evidence-bound conclusion",
+        },
         "claim_boundary": (
             "do not convert descriptive checkpoint associations into causal evidence"
         ),
     }
     assert _paper_results_complete(manifest_path, payload, ("dense", "late"), None) is True
+
+    for token in PAPER_MAIN_REQUIRED_ONCE:
+        main_tex.write_text(canonical_main_text.replace(token, "", 1) + "\n", encoding="utf-8")
+        assert _paper_results_complete(manifest_path, payload, ("dense", "late"), None) is False
+    main_tex.write_text(canonical_main_text + "\n", encoding="utf-8")
 
     forged = headlines["InterventionHeadline"].replace(
         f"joint result {fresh_label}.", f"joint result {forged_label}."

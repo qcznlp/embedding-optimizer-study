@@ -51,6 +51,8 @@ embed-optim-prepare-validation = "embed_optim.validation_data:main"
 embed-optim-prepare-confirmatory-data = "embed_optim.confirmatory_data:main"
 embed-optim-generate-confirmatory-matrices = "embed_optim.confirmatory_matrix:main"
 embed-optim-evaluate-confirmatory = "embed_optim.confirmatory_evaluation:main"
+embed-optim-evaluate-dense-retrieval-dynamics = "embed_optim.dense_retrieval_dynamics_evaluation:main"
+embed-optim-summarize-dense-retrieval-dynamics = "embed_optim.dense_retrieval_dynamics_summary:main"
 embed-optim-summarize-confirmatory = "embed_optim.confirmatory_summary:main"
 embed-optim-short-branch = "embed_optim.short_branch:main"
 embed-optim-short-branch-evaluate = "embed_optim.short_branch_evaluation:main"
@@ -134,6 +136,7 @@ where = ["src"]
   "configs/common_state_spectrum_probe.json",
   "configs/confirmatory_protocol.json",
   "configs/dense_scope_amendment.json",
+  "configs/dense_retrieval_dynamics_extension.json",
   "configs/dense_training_queue.json",
   "configs/functional_intervention.json",
   "configs/formal_runtime.json",
@@ -186,6 +189,7 @@ where = ["src"]
   "paper/generated/intervention.tex",
   "paper/generated/per-task.tex",
   "paper/generated/representation.tex",
+  "paper/generated/retrieval-dynamics-extension.tex",
 ]
 "share/embedding-optimizer-study/reports/weight-space" = [
   "reports/weight-space/README.md",
@@ -232,6 +236,9 @@ where = ["src"]
   "reports/retrieval-dynamics-dense/run_first_passage.csv",
   "reports/retrieval-dynamics-dense/summary_manifest.json",
   "reports/retrieval-dynamics-dense/task_delta_stability.csv",
+]
+"share/embedding-optimizer-study/reports/dense-retrieval-dynamics" = [
+  "reports/dense-retrieval-dynamics/*",
 ]
 "share/embedding-optimizer-study/reports/confirmatory-data" = [
   "reports/confirmatory-data/receipt.json",
