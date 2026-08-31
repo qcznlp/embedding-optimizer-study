@@ -172,6 +172,29 @@ def test_upstream_finalization_ledger_hashes_all_logs_and_completion(tmp_path: P
     assert source == _record(ledger)
 
 
+def test_upstream_finalization_treats_implementation_sources_as_historical(
+    tmp_path: Path,
+) -> None:
+    ledger = _write_upstream(tmp_path)
+    historical_source = tmp_path / "historical-finalizer.py"
+    frozen_sha256 = json.loads(ledger.read_text(encoding="utf-8"))["step_contract"][
+        "implementation_sources"
+    ][0]["sha256"]
+
+    # The post-hoc publication checkout is expected to differ from the earlier
+    # formal finalizer checkout.  Preserve and authenticate the recorded
+    # contract, but do not reinterpret it as a hash of the current worktree.
+    historical_source.write_text("FROZEN = False\n", encoding="utf-8")
+    payload, _ = _read_finalization_ledger(
+        ledger,
+        expected_scope=SCOPE,
+        repository=tmp_path,
+    )
+
+    assert payload["step_contract"]["implementation_sources"][0]["sha256"] == frozen_sha256
+    assert _record(historical_source)["sha256"] != frozen_sha256
+
+
 def test_upstream_finalization_accepts_a_logged_execution_error_before_success(
     tmp_path: Path,
 ) -> None:
