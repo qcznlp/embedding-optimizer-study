@@ -1,13 +1,18 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from embed_optim.candidate_breadth_summary import (
     _candidate_breadth_figure,
     _candidate_breadth_outputs,
+    _matrix_provenance,
     candidate_breadth_decision,
     spearman,
 )
+from embed_optim.geometry import _sha256
 
 
 def test_spearman_uses_average_ranks() -> None:
@@ -136,3 +141,92 @@ def test_candidate_breadth_output_audit_recomputes_bytes_instead_of_trusting_has
     calibration_path.write_bytes(calibration_path.read_bytes() + b"self-signed-tamper\n")
     with pytest.raises(ValueError, match="calibration output differs from recomputation"):
         _candidate_breadth_outputs(calibration, contrasts, tmp_path, audit_only=True)
+
+
+def test_summary_binds_matrix_jobs_to_the_full_source_audit(tmp_path) -> None:
+    protocol = json.loads(Path("configs/candidate_breadth_probe.json").read_text(encoding="utf-8"))
+    protocol_path = tmp_path / "configs" / "candidate_breadth_probe.json"
+    protocol_path.parent.mkdir()
+    protocol_path.write_text(json.dumps(protocol) + "\n", encoding="utf-8")
+    results_root = tmp_path / protocol["evaluation"]["results_root"]
+    results_root.mkdir(parents=True)
+    source_receipt = tmp_path / "reports" / "candidate-breadth" / "data-audit.json"
+    source_receipt.parent.mkdir(parents=True, exist_ok=True)
+    source_audit = {
+        "schema_version": 1,
+        "status": "complete",
+        "upstream_reconstruction_verified": True,
+        "protocol_sha256": _sha256(protocol_path),
+        "manifest_sha256": "a" * 64,
+    }
+    source_receipt.write_text(json.dumps(source_audit) + "\n", encoding="utf-8")
+    source_identity = {
+        "path": str(source_receipt.relative_to(tmp_path)),
+        "bytes": source_receipt.stat().st_size,
+        "sha256": _sha256(source_receipt),
+        "audit": source_audit,
+    }
+    jobs = []
+    step = protocol["evaluation"]["checkpoint_step"]
+    for index, run_id in enumerate(protocol["evaluation"]["run_ids"]):
+        manifest_path = results_root / run_id / "manifest.json"
+        manifest_path.parent.mkdir()
+        manifest_path.write_text(
+            json.dumps({"baseline_reproduction": {"maximum_absolute_error": 0.0}}) + "\n",
+            encoding="utf-8",
+        )
+        jobs.append(
+            {
+                "run_id": run_id,
+                "gpu": str(index % 8),
+                "attempts": [{"attempt": 1, "returncode": 0}],
+                "checkpoint": str(
+                    tmp_path
+                    / protocol["evaluation"]["checkpoint_root"]
+                    / run_id
+                    / f"checkpoint-{step}"
+                ),
+                "manifest": {
+                    "path": str(manifest_path.relative_to(tmp_path)),
+                    "bytes": manifest_path.stat().st_size,
+                    "sha256": _sha256(manifest_path),
+                },
+                "baseline_maximum_absolute_error": 0.0,
+            }
+        )
+    matrix_receipt = {
+        "schema_version": 1,
+        "status": "complete",
+        "protocol": {
+            "path": str(protocol_path.relative_to(tmp_path)),
+            "bytes": protocol_path.stat().st_size,
+            "sha256": _sha256(protocol_path),
+        },
+        "data_audit": {
+            **source_audit,
+            "upstream_reconstruction_verified": False,
+        },
+        "source_audit": source_identity,
+        "gpus": [str(index) for index in range(8)],
+        "jobs": jobs,
+    }
+    receipt_path = results_root / "matrix-receipt.json"
+    receipt_path.write_text(json.dumps(matrix_receipt) + "\n", encoding="utf-8")
+
+    provenance = _matrix_provenance(
+        root=tmp_path,
+        protocol_path=protocol_path,
+        protocol=protocol,
+        results_root=results_root,
+    )
+    assert provenance["source_audit"]["sha256"] == _sha256(source_receipt)
+
+    first_manifest = results_root / protocol["evaluation"]["run_ids"][0] / "manifest.json"
+    first_manifest.write_text("{}\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="matrix job changed"):
+        _matrix_provenance(
+            root=tmp_path,
+            protocol_path=protocol_path,
+            protocol=protocol,
+            results_root=results_root,
+        )

@@ -799,6 +799,12 @@ def audit_candidate_breadth_data(
         "candidate_rows": candidate_rows,
         "negative_widths": widths,
         "upstream_reconstruction_verified": verify_source,
+        "source_repo": protocol["source"]["repo"],
+        "source_revision": protocol["source"]["revision"],
+        "validation_spec_sha256": protocol["source"]["validation_spec_sha256"],
+        "validation_manifest_sha256": protocol["source"]["validation_manifest_sha256"],
+        "validation_rows_sha256": protocol["source"]["validation_rows_sha256"],
+        "row_manifest_sha256": digest.hexdigest(),
         "manifest_sha256": _sha256(manifest_path),
         "protocol_sha256": _sha256(protocol_path),
     }
@@ -822,11 +828,18 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="store_true",
         help="Audit an existing complete output, or prepare it when absent.",
     )
+    parser.add_argument(
+        "--receipt",
+        type=Path,
+        help="Write the full pinned-source audit result; valid only with --audit-only.",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
+    if args.receipt is not None and not args.audit_only:
+        raise ValueError("--receipt requires --audit-only")
     if args.audit_only:
         result = audit_candidate_breadth_data(args.protocol, args.output, verify_source=True)
     elif args.resume and args.output.exists():
@@ -836,6 +849,12 @@ def main(argv: list[str] | None = None) -> None:
             args.protocol, args.output, overwrite=args.overwrite
         )
         result = audit_candidate_breadth_data(args.protocol, output, verify_source=False)
+    if args.receipt is not None:
+        if not result["upstream_reconstruction_verified"]:
+            raise AssertionError(
+                "Cannot write a source-audit receipt without source reconstruction"
+            )
+        _atomic_json(args.receipt.resolve(), result)
     print(json.dumps(result, indent=2, sort_keys=True))
 
 

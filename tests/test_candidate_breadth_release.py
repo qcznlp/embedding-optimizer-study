@@ -134,7 +134,10 @@ def test_release_steps_bind_candidate_outputs_and_dense_release_gates(tmp_path: 
 
     assert tuple(step.name for step in steps) == RELEASE_STEP_NAMES
     assert steps[0].command[-1] == "--resume"
-    assert steps[1].command[-1] == "--audit-only"
+    assert "--audit-only" in steps[1].command
+    source_receipt = steps[1].command[steps[1].command.index("--receipt") + 1]
+    assert source_receipt.endswith("/reports/candidate-breadth/data-audit.json")
+    assert steps[2].command[steps[2].command.index("--source-audit-receipt") + 1] == source_receipt
     assert steps[2].command[steps[2].command.index("--gpus") + 1] == "0,1,2,3,4,5,6,7"
     assert steps[2].command[steps[2].command.index("--retries") + 1] == "2"
     assert steps[11].command == steps[10].command + ("--audit-only",)

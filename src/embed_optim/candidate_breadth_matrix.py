@@ -46,6 +46,37 @@ def candidate_breadth_jobs(
     return protocol_path, protocol, jobs
 
 
+def _verified_source_audit_receipt(
+    path: str | Path,
+    *,
+    root: Path,
+    protocol_path: Path,
+    data_audit: dict[str, Any],
+) -> dict[str, Any]:
+    path = Path(path)
+    if not path.is_absolute():
+        path = root / path
+    path = path.resolve()
+    try:
+        relative = path.relative_to(root)
+    except ValueError as error:
+        raise ValueError(
+            "Candidate-breadth source audit receipt must be under the study root"
+        ) from error
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    expected = {**data_audit, "upstream_reconstruction_verified": True}
+    if receipt != expected or receipt.get("protocol_sha256") != _sha256(protocol_path):
+        raise ValueError("Candidate-breadth source audit receipt does not match current data")
+    return {
+        "path": str(relative),
+        "bytes": path.stat().st_size,
+        "sha256": _sha256(path),
+        "audit": receipt,
+    }
+
+
 def _run_job(
     job: dict[str, Any],
     *,
@@ -136,6 +167,7 @@ def run_candidate_breadth_matrix(
     protocol_path: str | Path,
     *,
     gpus: str,
+    source_audit_receipt: str | Path = "reports/candidate-breadth/data-audit.json",
     python: str = sys.executable,
     retries: int = 1,
 ) -> dict[str, Any]:
@@ -148,6 +180,12 @@ def run_candidate_breadth_matrix(
     # reconstruction.  The matrix repeats the complete local semantic audit without
     # rescanning the source parquet files before each group of checkpoint jobs.
     data_audit = audit_candidate_breadth_data(protocol_path, data_root, verify_source=False)
+    source_audit = _verified_source_audit_receipt(
+        source_audit_receipt,
+        root=root,
+        protocol_path=protocol_path,
+        data_audit=data_audit,
+    )
     gpu_values = _parse_gpus(gpus)
     log_dir = root / "logs" / "candidate-breadth"
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -189,6 +227,7 @@ def run_candidate_breadth_matrix(
             "sha256": _sha256(protocol_path),
         },
         "data_audit": data_audit,
+        "source_audit": source_audit,
         "gpus": gpu_values,
         "jobs": completed_jobs,
     }
@@ -205,6 +244,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--protocol", type=Path, default=Path("configs/candidate_breadth_probe.json")
     )
     parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
+    parser.add_argument(
+        "--source-audit-receipt",
+        type=Path,
+        default=Path("reports/candidate-breadth/data-audit.json"),
+    )
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument("--retries", type=int, default=1)
     return parser.parse_args(argv)
@@ -215,6 +259,7 @@ def main(argv: list[str] | None = None) -> None:
     result = run_candidate_breadth_matrix(
         args.protocol,
         gpus=args.gpus,
+        source_audit_receipt=args.source_audit_receipt,
         python=args.python,
         retries=args.retries,
     )

@@ -328,6 +328,136 @@ def _load_beir_scores(path: Path) -> dict[str, dict[str, Any]]:
     return rows
 
 
+def _matrix_provenance(
+    *,
+    root: Path,
+    protocol_path: Path,
+    protocol: dict[str, Any],
+    results_root: Path,
+) -> dict[str, Any]:
+    receipt_path = results_root / "matrix-receipt.json"
+    if not receipt_path.is_file():
+        raise FileNotFoundError(receipt_path)
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    if not isinstance(receipt, dict):
+        raise ValueError("Candidate-breadth matrix receipt is not an object")
+    expected_protocol = {
+        "path": str(protocol_path.relative_to(root)),
+        "bytes": protocol_path.stat().st_size,
+        "sha256": _sha256(protocol_path),
+    }
+    source_audit = receipt.get("source_audit")
+    if not isinstance(source_audit, dict) or set(source_audit) != {
+        "path",
+        "bytes",
+        "sha256",
+        "audit",
+    }:
+        raise ValueError("Candidate-breadth matrix lost its source-audit binding")
+    if (
+        not isinstance(source_audit["path"], str)
+        or not isinstance(source_audit["bytes"], int)
+        or not isinstance(source_audit["sha256"], str)
+        or not isinstance(source_audit["audit"], dict)
+    ):
+        raise ValueError("Candidate-breadth source-audit identity is malformed")
+    source_path = (root / source_audit["path"]).resolve()
+    try:
+        source_path.relative_to(root)
+    except ValueError as error:
+        raise ValueError("Candidate-breadth source-audit receipt escaped the study root") from error
+    if (
+        not source_path.is_file()
+        or source_path.stat().st_size != source_audit["bytes"]
+        or _sha256(source_path) != source_audit["sha256"]
+        or json.loads(source_path.read_text(encoding="utf-8")) != source_audit["audit"]
+        or source_audit["audit"].get("upstream_reconstruction_verified") is not True
+        or source_audit["audit"].get("protocol_sha256") != _sha256(protocol_path)
+    ):
+        raise ValueError("Candidate-breadth source-audit receipt changed")
+    expected_local_audit = {
+        **source_audit["audit"],
+        "upstream_reconstruction_verified": False,
+    }
+    gpus = receipt.get("gpus")
+    jobs = receipt.get("jobs")
+    if (
+        set(receipt)
+        != {
+            "schema_version",
+            "status",
+            "protocol",
+            "data_audit",
+            "source_audit",
+            "gpus",
+            "jobs",
+        }
+        or receipt.get("schema_version") != SCHEMA_VERSION
+        or receipt.get("status") != "complete"
+        or receipt.get("protocol") != expected_protocol
+        or receipt.get("data_audit") != expected_local_audit
+        or not isinstance(gpus, list)
+        or not gpus
+        or len(set(gpus)) != len(gpus)
+        or any(not isinstance(gpu, str) or not gpu.isdigit() for gpu in gpus)
+        or not isinstance(jobs, list)
+    ):
+        raise ValueError("Candidate-breadth matrix receipt contract changed")
+
+    evaluation = protocol["evaluation"]
+    step = int(evaluation["checkpoint_step"])
+    by_run = {str(job.get("run_id")): job for job in jobs if isinstance(job, dict)}
+    if set(by_run) != set(evaluation["run_ids"]) or len(jobs) != len(by_run):
+        raise ValueError("Candidate-breadth matrix job coverage changed")
+    for run_id in evaluation["run_ids"]:
+        job = by_run[run_id]
+        manifest_path = results_root / run_id / "manifest.json"
+        checkpoint = root / evaluation["checkpoint_root"] / run_id / f"checkpoint-{step}"
+        expected_manifest = {
+            "path": str(manifest_path.relative_to(root)),
+            "bytes": manifest_path.stat().st_size if manifest_path.is_file() else -1,
+            "sha256": _sha256(manifest_path) if manifest_path.is_file() else None,
+        }
+        attempts = job.get("attempts")
+        if (
+            set(job)
+            != {
+                "run_id",
+                "gpu",
+                "attempts",
+                "checkpoint",
+                "manifest",
+                "baseline_maximum_absolute_error",
+            }
+            or job.get("gpu") not in gpus
+            or job.get("checkpoint") != str(checkpoint)
+            or job.get("manifest") != expected_manifest
+            or not isinstance(attempts, list)
+            or not attempts
+            or any(
+                not isinstance(attempt, dict)
+                or set(attempt) != {"attempt", "returncode"}
+                or int(attempt["attempt"]) != index
+                for index, attempt in enumerate(attempts, start=1)
+            )
+            or attempts[-1]["returncode"] != 0
+        ):
+            raise ValueError(f"Candidate-breadth matrix job changed: {run_id}")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        observed_error = (manifest.get("baseline_reproduction") or {}).get("maximum_absolute_error")
+        if job.get("baseline_maximum_absolute_error") != observed_error:
+            raise ValueError(f"Candidate-breadth matrix baseline changed: {run_id}")
+    return {
+        "path": str(receipt_path.relative_to(root)),
+        "bytes": receipt_path.stat().st_size,
+        "sha256": _sha256(receipt_path),
+        "source_audit": {
+            "path": source_audit["path"],
+            "sha256": source_audit["sha256"],
+        },
+    }
+
+
 def build_candidate_breadth_summary(
     protocol_path: str | Path,
     *,
@@ -341,6 +471,12 @@ def build_candidate_breadth_summary(
     beir_path = root / "reports" / "dense-discovery" / "checkpoint_summary.csv"
     beir = _load_beir_scores(beir_path)
     widths = protocol["candidate_construction"]["negative_widths"]
+    matrix_provenance = _matrix_provenance(
+        root=root,
+        protocol_path=protocol_path,
+        protocol=protocol,
+        results_root=results_root,
+    )
     group_by_run: dict[str, dict[int, dict[str, Any]]] = {}
     samples_by_run: dict[str, list[dict[str, Any]]] = {}
     inputs = []
@@ -465,6 +601,7 @@ def build_candidate_breadth_summary(
             "sha256": _sha256(protocol_path),
         },
         "inputs": inputs,
+        "matrix_provenance": matrix_provenance,
         "beir_checkpoint_summary": {
             "path": str(beir_path.relative_to(root)),
             "bytes": beir_path.stat().st_size,

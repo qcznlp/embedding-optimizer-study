@@ -321,7 +321,8 @@ embed-optim-prepare-candidate-breadth \
 embed-optim-prepare-candidate-breadth \
   --protocol configs/candidate_breadth_probe.json \
   --output data/candidate-breadth-224-seed20260901 \
-  --audit-only
+  --audit-only \
+  --receipt reports/candidate-breadth/data-audit.json
 ~~~
 
 The release audit does not trust hashes reported by the generated manifest. It reselects the 224
@@ -336,6 +337,7 @@ Evaluate all 12 discovery final checkpoints, then build and re-audit the frozen 
 ~~~bash
 embed-optim-candidate-breadth-matrix \
   --protocol configs/candidate_breadth_probe.json \
+  --source-audit-receipt reports/candidate-breadth/data-audit.json \
   --gpus 0,1,2,3,4,5,6,7
 
 embed-optim-summarize-candidate-breadth \
@@ -352,6 +354,11 @@ embed-optim-render-candidate-breadth \
   --protocol configs/candidate_breadth_probe.json \
   --audit-only
 ~~~
+
+Matrix resume is evidence-preserving rather than a manifest-only shortcut: every existing run reloads
+its `scores.npz`, checks the exact query and width axes, recomputes all sample and source aggregates,
+byte-compares both JSONL outputs, and reruns the width-7 frozen-baseline check before it may skip model
+inference.
 
 For the publication handoff, use the single post-hoc release controller after the canonical Dense
 finalizer has completed and its story changes have been integrated:

@@ -317,6 +317,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 "--output",
                 data_output,
                 "--audit-only",
+                "--receipt",
+                str(Path(summary_dir) / "data-audit.json"),
             ),
         ),
         PipelineStep(
@@ -326,6 +328,8 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 "embed_optim.candidate_breadth_matrix",
                 "--protocol",
                 protocol,
+                "--source-audit-receipt",
+                str(Path(summary_dir) / "data-audit.json"),
                 "--gpus",
                 args.gpus,
                 "--python",

@@ -53,6 +53,8 @@ def test_candidate_breadth_prepare_modes_are_mutually_exclusive() -> None:
     assert parse_args(["--audit-only"]).audit_only is True
     with pytest.raises(SystemExit):
         parse_args(["--resume", "--overwrite"])
+    with pytest.raises(ValueError, match="requires --audit-only"):
+        candidate_breadth_data.main(["--resume", "--receipt", "receipt.json"])
 
 
 def test_only_explicit_audit_mode_reconstructs_the_pinned_source(tmp_path, monkeypatch) -> None:
