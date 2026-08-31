@@ -231,6 +231,54 @@ def test_transitive_config_references_are_controlled_and_recursive(tmp_path: Pat
     assert provenance == {"configs/generated/manifest.json"}
 
 
+def test_transitive_config_references_include_runtime_reconstruction_inputs(tmp_path: Path):
+    configs = tmp_path / "configs"
+    configs.mkdir()
+    (configs / "formal_runtime.json").write_text(
+        """{
+  "reconstruction": {
+    "constraints": {"path": "formal_runtime_constraints.txt"},
+    "base_lock": {"path": "../requirements-formal.lock"},
+    "flash_lock": {"path": "../requirements-formal-flash.txt"}
+  }
+}
+"""
+    )
+
+    executable, provenance = _transitive_config_references(
+        {"configs/formal_runtime.json"},
+        tmp_path,
+    )
+
+    assert executable == {
+        "configs/formal_runtime_constraints.txt",
+        "requirements-formal-flash.txt",
+        "requirements-formal.lock",
+    }
+    assert provenance == set()
+
+
+def test_runtime_reconstruction_reference_cannot_escape_repository(tmp_path: Path):
+    configs = tmp_path / "configs"
+    configs.mkdir()
+    (configs / "formal_runtime.json").write_text(
+        """{
+  "reconstruction": {
+    "base_lock": {"path": "../../outside.lock"}
+  }
+}
+"""
+    )
+
+    executable, provenance = _transitive_config_references(
+        {"configs/formal_runtime.json"},
+        tmp_path,
+    )
+
+    assert executable == set()
+    assert provenance == set()
+
+
 def test_distribution_audit_rejects_missing_executable_config_closure(tmp_path: Path):
     _fixture_project(tmp_path, config_closure="entry-only")
 

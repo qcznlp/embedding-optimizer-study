@@ -14,7 +14,7 @@ from typing import Any
 import yaml
 
 _CONFIG_DOCUMENT_SUFFIXES = frozenset({".json", ".yaml", ".yml"})
-_CONFIG_DEPENDENCY_SUFFIXES = frozenset({*_CONFIG_DOCUMENT_SUFFIXES, ".txt"})
+_CONFIG_DEPENDENCY_SUFFIXES = frozenset({*_CONFIG_DOCUMENT_SUFFIXES, ".lock", ".txt"})
 _EXECUTABLE_CONFIG_REFERENCE_KEYS = frozenset(
     {
         "config",
@@ -258,6 +258,7 @@ def _config_reference(
     source: Path,
     root: Path,
     *,
+    allow_repository_root: bool,
     include_missing_relative: bool,
 ) -> str | None:
     if (
@@ -273,8 +274,8 @@ def _config_reference(
     explicit_repo_path = relative.parts[:1] == ("configs",)
     candidate = root / relative if explicit_repo_path else source.parent / relative
     resolved = candidate.resolve()
-    config_root = (root / "configs").resolve()
-    if not resolved.is_relative_to(config_root):
+    allowed_root = root.resolve() if allow_repository_root else (root / "configs").resolve()
+    if not resolved.is_relative_to(allowed_root):
         return None
     if not explicit_repo_path and not include_missing_relative and not resolved.is_file():
         return None
@@ -313,6 +314,7 @@ def _document_config_references(
             value,
             source,
             root,
+            allow_repository_root=False,
             # Generic ``path`` fields often describe dataset/report artifacts.
             # Missing relative paths are dependencies only for explicit config-loader keys.
             include_missing_relative=executable_key and key != "path",
@@ -325,6 +327,24 @@ def _document_config_references(
             executable.add(reference)
 
     visit(document)
+    if source.resolve() == (root / "configs/formal_runtime.json").resolve() and isinstance(
+        document, dict
+    ):
+        reconstruction = document.get("reconstruction")
+        if isinstance(reconstruction, dict):
+            for name in ("constraints", "base_lock", "flash_lock"):
+                identity = reconstruction.get(name)
+                if not isinstance(identity, dict) or not isinstance(identity.get("path"), str):
+                    continue
+                reference = _config_reference(
+                    identity["path"],
+                    source,
+                    root,
+                    allow_repository_root=True,
+                    include_missing_relative=True,
+                )
+                if reference is not None:
+                    executable.add(reference)
     return executable, provenance
 
 
