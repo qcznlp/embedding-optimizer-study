@@ -193,7 +193,10 @@ def run_candidate_breadth_evaluation(
     data_root = Path(data_root).resolve()
     output_dir = Path(output_dir).resolve()
     protocol_path, protocol = load_candidate_breadth_protocol(protocol_path)
-    data_audit = audit_candidate_breadth_data(protocol_path, data_root)
+    # The release controller performs the expensive pinned-source reconstruction once
+    # before launching the matrix.  Each checkpoint still re-audits every local file and
+    # semantic row, without rescanning the upstream score/document parquet files 12 times.
+    data_audit = audit_candidate_breadth_data(protocol_path, data_root, verify_source=False)
     evaluation = protocol["evaluation"]
     if device.startswith("cuda") and not torch.cuda.is_available():
         raise RuntimeError("CUDA candidate-breadth evaluation requested without CUDA")

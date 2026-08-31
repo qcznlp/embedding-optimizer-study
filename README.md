@@ -324,6 +324,13 @@ embed-optim-prepare-candidate-breadth \
   --audit-only
 ~~~
 
+The release audit does not trust hashes reported by the generated manifest. It reselects the 224
+rows from the frozen validation ledger, reconstructs all 2,048 negative IDs from the pinned mined
+score revision, verifies the source document text, and compares every materialized query and
+candidate row. Checkpoint evaluators repeat the complete local file and row audit but reuse that
+one release-gated upstream reconstruction, avoiding twelve redundant scans of the source parquet
+files.
+
 Evaluate all 12 discovery final checkpoints, then build and re-audit the frozen decision summary:
 
 ~~~bash

@@ -20,6 +20,29 @@ from .data import SOURCE_REPO, SOURCE_REVISION, SPLITS, _files
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 
 SELECTION_ALGORITHM = "blake2b-128-per-source-smallest-v1"
+SOURCE_RECONSTRUCTION_ALGORITHM = "pinned-score-order-and-document-text-v1"
+
+LEDGER_FIELDS = {
+    "query_index",
+    "sample_id",
+    "source",
+    "query_id",
+    "positive_id",
+    "negative_ids",
+    "source_score_file",
+    "source_score_row_group",
+    "source_score_row_offset",
+}
+QUERY_FIELDS = {"query_index", "sample_id", "source", "query_id", "query"}
+CANDIDATE_FIELDS = {
+    "query_index",
+    "sample_id",
+    "source",
+    "query_id",
+    "candidate_index",
+    "document_id",
+    "document",
+}
 
 
 class InsufficientEligibleCandidates(ValueError):
@@ -192,6 +215,108 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
     return rows
 
 
+def _source_inputs(
+    protocol_path: Path, protocol: dict[str, Any]
+) -> tuple[Path, Path, Path, dict[str, Any]]:
+    root = protocol_path.parent.parent
+    source_spec = protocol["source"]
+    validation_root = (root / source_spec["validation_root"]).resolve()
+    validation_spec = (root / source_spec["validation_spec"]).resolve()
+    validation_manifest = validation_root / "manifest.json"
+    validation_rows = validation_root / "rows.jsonl"
+    for path, expected in (
+        (validation_spec, source_spec["validation_spec_sha256"]),
+        (validation_manifest, source_spec["validation_manifest_sha256"]),
+        (validation_rows, source_spec["validation_rows_sha256"]),
+    ):
+        if not path.is_file() or _sha256(path) != expected:
+            raise ValueError(f"Candidate-breadth source binding changed: {path}")
+    source_manifest = json.loads(validation_manifest.read_text(encoding="utf-8"))
+    declared_files = source_manifest.get("dataset_files")
+    source_dataset = validation_root / "dataset"
+    observed_files = sorted(path for path in source_dataset.rglob("*") if path.is_file())
+    if not isinstance(declared_files, list) or {
+        str((validation_root / item.get("path", "")).resolve())
+        for item in declared_files
+        if isinstance(item, dict)
+    } != {str(path.resolve()) for path in observed_files}:
+        raise ValueError("Frozen validation Dataset file coverage changed")
+    for item in declared_files:
+        path = validation_root / item["path"]
+        if (
+            not path.is_file()
+            or path.stat().st_size != item.get("bytes")
+            or _sha256(path) != item.get("sha256")
+        ):
+            raise ValueError(f"Frozen validation Dataset file changed: {path}")
+    return validation_root, validation_spec, validation_rows, source_manifest
+
+
+def _selected_validation_rows(
+    protocol_path: Path, protocol: dict[str, Any]
+) -> tuple[list[dict[str, Any]], Path, Path, dict[str, Any]]:
+    validation_root, validation_spec, validation_rows, source_manifest = _source_inputs(
+        protocol_path, protocol
+    )
+    selection = protocol["query_selection"]
+    selected = select_validation_rows(
+        _read_jsonl(validation_rows),
+        count=int(selection["count"]),
+        seed=int(selection["seed"]),
+    )
+    return selected, validation_root, validation_spec, source_manifest
+
+
+def _indexed_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [{"query_index": index, **record} for index, record in enumerate(records)]
+
+
+def _validate_candidate_records(
+    records: list[dict[str, Any]],
+    selected: list[dict[str, Any]],
+    *,
+    maximum_width: int,
+    source_records: list[dict[str, Any]] | None = None,
+) -> None:
+    selected_by_sample = {int(row["sample_id"]): row for row in selected}
+    if len(selected_by_sample) != len(selected):
+        raise ValueError("Frozen candidate-breadth selection contains duplicate sample IDs")
+    if len(records) != len(selected):
+        raise ValueError("Candidate-breadth row ledger changed")
+    expected_sources = Counter(str(row["source"]) for row in selected)
+    observed_sources: Counter[str] = Counter()
+    for index, record in enumerate(records):
+        try:
+            if set(record) != LEDGER_FIELDS:
+                raise ValueError("ledger schema changed")
+            sample_id = int(record["sample_id"])
+            source_row = selected_by_sample[sample_id]
+            source = str(record["source"])
+            negatives = [int(value) for value in record["negative_ids"]]
+            if (
+                int(record["query_index"]) != index
+                or source != str(source_row["source"])
+                or int(record["query_id"]) != int(source_row["query_id"])
+                or int(record["positive_id"]) != int(source_row["positive_id"])
+                or negatives[:7] != [int(value) for value in source_row["negative_ids"]]
+                or len(negatives) != maximum_width
+                or len(set(negatives)) != maximum_width
+                or int(record["positive_id"]) in negatives
+                or not isinstance(record["source_score_file"], str)
+                or Path(record["source_score_file"]).name != record["source_score_file"]
+                or int(record["source_score_row_group"]) < 0
+                or int(record["source_score_row_offset"]) < 0
+            ):
+                raise ValueError("ledger identity, provenance, or candidates changed")
+        except (KeyError, TypeError, ValueError) as error:
+            raise ValueError(f"Invalid candidate-breadth ledger row {index + 1}") from error
+        observed_sources[source] += 1
+    if observed_sources != expected_sources:
+        raise ValueError("Candidate-breadth source allocation changed")
+    if source_records is not None and records != _indexed_records(source_records):
+        raise ValueError("Candidate-breadth ledger differs from pinned mined-score reconstruction")
+
+
 def _candidate_records_for_source(
     snapshot: Path,
     source: str,
@@ -267,6 +392,43 @@ def _candidate_records_for_source(
     return sorted(records, key=lambda row: int(row["sample_id"]))
 
 
+def _reconstruct_candidate_records(
+    protocol: dict[str, Any],
+    selected: list[dict[str, Any]],
+    *,
+    snapshot: Path | None = None,
+) -> tuple[Path, list[dict[str, Any]]]:
+    source_spec = protocol["source"]
+    if snapshot is None:
+        snapshot = Path(
+            snapshot_download(
+                source_spec["repo"],
+                repo_type="dataset",
+                revision=source_spec["revision"],
+            )
+        )
+    maximum_width = max(
+        int(value) for value in protocol["candidate_construction"]["negative_widths"]
+    )
+    reconstructed: list[dict[str, Any]] = []
+    for source in SPLITS:
+        source_rows = [row for row in selected if row["source"] == source]
+        print(f"Reconstructing {source}: {len(source_rows)} queries", flush=True)
+        reconstructed.extend(
+            _candidate_records_for_source(
+                snapshot,
+                source,
+                source_rows,
+                threshold=float(source_spec["negative_threshold"]),
+                maximum_width=maximum_width,
+            )
+        )
+    reconstructed.sort(key=lambda row: int(row["sample_id"]))
+    if len(reconstructed) != len(selected):
+        raise AssertionError("Candidate reconstruction lost selected queries")
+    return snapshot, reconstructed
+
+
 def _document_texts(snapshot: Path, source: str, required_ids: set[int]) -> dict[int, str]:
     lookup: dict[int, str] = {}
     value_set = pa.array(sorted(required_ids), type=pa.int64())
@@ -320,6 +482,57 @@ def _file_identities(root: Path, directory: Path) -> list[dict[str, Any]]:
     ]
 
 
+def _candidate_data_manifest(
+    *,
+    protocol_path: Path,
+    protocol: dict[str, Any],
+    validation_spec: Path,
+    records: list[dict[str, Any]],
+    ledger_path: Path,
+    row_manifest_sha256: str,
+    query_dataset: Dataset,
+    query_files: list[dict[str, Any]],
+    candidate_rows: int,
+    candidate_fingerprints: dict[str, str],
+    candidate_files: dict[str, list[dict[str, Any]]],
+) -> dict[str, Any]:
+    source_spec = protocol["source"]
+    selection = protocol["query_selection"]
+    widths = protocol["candidate_construction"]["negative_widths"]
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "status": "complete",
+        "protocol": {
+            "path": str(protocol_path),
+            "bytes": protocol_path.stat().st_size,
+            "sha256": _sha256(protocol_path),
+        },
+        "source_repo": source_spec["repo"],
+        "source_revision": source_spec["revision"],
+        "source_reconstruction_algorithm": SOURCE_RECONSTRUCTION_ALGORITHM,
+        "validation_spec_sha256": _sha256(validation_spec),
+        "validation_manifest_sha256": source_spec["validation_manifest_sha256"],
+        "validation_rows_sha256": source_spec["validation_rows_sha256"],
+        "selection_algorithm": selection["algorithm"],
+        "selection_seed": selection["seed"],
+        "queries": len(records),
+        "source_counts": dict(sorted(Counter(str(record["source"]) for record in records).items())),
+        "negative_widths": widths,
+        "maximum_negative_width": max(widths),
+        "candidate_rows": candidate_rows,
+        "row_manifest_sha256": row_manifest_sha256,
+        "rows": {
+            "path": "rows.jsonl",
+            "bytes": ledger_path.stat().st_size,
+            "sha256": _sha256(ledger_path),
+        },
+        "query_dataset_fingerprint": query_dataset._fingerprint,
+        "query_files": query_files,
+        "candidate_dataset_fingerprints": candidate_fingerprints,
+        "candidate_files": candidate_files,
+    }
+
+
 def prepare_candidate_breadth_data(
     protocol_path: str | Path,
     output: str | Path,
@@ -327,47 +540,12 @@ def prepare_candidate_breadth_data(
     overwrite: bool = False,
 ) -> Path:
     protocol_path, protocol = load_candidate_breadth_protocol(protocol_path)
-    root = protocol_path.parent.parent
-    source_spec = protocol["source"]
-    validation_root = (root / source_spec["validation_root"]).resolve()
-    validation_spec = (root / source_spec["validation_spec"]).resolve()
-    validation_manifest = validation_root / "manifest.json"
-    validation_rows = validation_root / "rows.jsonl"
-    for path, expected in (
-        (validation_spec, source_spec["validation_spec_sha256"]),
-        (validation_manifest, source_spec["validation_manifest_sha256"]),
-        (validation_rows, source_spec["validation_rows_sha256"]),
-    ):
-        if not path.is_file() or _sha256(path) != expected:
-            raise ValueError(f"Candidate-breadth source binding changed: {path}")
-
-    selection = protocol["query_selection"]
-    selected = select_validation_rows(
-        _read_jsonl(validation_rows),
-        count=int(selection["count"]),
-        seed=int(selection["seed"]),
-    )
-    snapshot = Path(
-        snapshot_download(
-            source_spec["repo"], repo_type="dataset", revision=source_spec["revision"]
-        )
+    selected, validation_root, validation_spec, _ = _selected_validation_rows(
+        protocol_path, protocol
     )
     widths = protocol["candidate_construction"]["negative_widths"]
     maximum_width = max(int(value) for value in widths)
-    reconstructed: list[dict[str, Any]] = []
-    for source in SPLITS:
-        source_rows = [row for row in selected if row["source"] == source]
-        print(f"Reconstructing {source}: {len(source_rows)} queries", flush=True)
-        reconstructed.extend(
-            _candidate_records_for_source(
-                snapshot,
-                source,
-                source_rows,
-                threshold=float(source_spec["negative_threshold"]),
-                maximum_width=maximum_width,
-            )
-        )
-    reconstructed.sort(key=lambda row: int(row["sample_id"]))
+    snapshot, reconstructed = _reconstruct_candidate_records(protocol, selected)
     selected_by_sample = {int(row["sample_id"]): row for row in selected}
     if len(reconstructed) != len(selected_by_sample):
         raise AssertionError("Candidate reconstruction lost selected queries")
@@ -411,6 +589,7 @@ def prepare_candidate_breadth_data(
         candidate_root = temporary / "candidates"
         candidate_root.mkdir()
         candidate_files: dict[str, list[dict[str, Any]]] = {}
+        candidate_fingerprints: dict[str, str] = {}
         for source in SPLITS:
             source_records = [row for row in reconstructed if row["source"] == source]
             required = {
@@ -441,37 +620,22 @@ def prepare_candidate_breadth_data(
             source_dir = candidate_root / source
             Dataset.from_list(materialized).save_to_disk(str(source_dir))
             candidate_files[source] = _file_identities(temporary, source_dir)
+            candidate_fingerprints[source] = Dataset.load_from_disk(str(source_dir))._fingerprint
 
         query_dataset = Dataset.load_from_disk(str(query_dir))
-        manifest = {
-            "schema_version": SCHEMA_VERSION,
-            "status": "complete",
-            "protocol": {
-                "path": str(protocol_path),
-                "bytes": protocol_path.stat().st_size,
-                "sha256": _sha256(protocol_path),
-            },
-            "source_repo": source_spec["repo"],
-            "source_revision": source_spec["revision"],
-            "validation_manifest_sha256": source_spec["validation_manifest_sha256"],
-            "validation_rows_sha256": source_spec["validation_rows_sha256"],
-            "selection_algorithm": selection["algorithm"],
-            "selection_seed": selection["seed"],
-            "queries": len(reconstructed),
-            "source_counts": dict(sorted(Counter(row["source"] for row in reconstructed).items())),
-            "negative_widths": widths,
-            "maximum_negative_width": maximum_width,
-            "candidate_rows": len(reconstructed) * (maximum_width + 1),
-            "row_manifest_sha256": ledger_digest.hexdigest(),
-            "rows": {
-                "path": "rows.jsonl",
-                "bytes": ledger_path.stat().st_size,
-                "sha256": _sha256(ledger_path),
-            },
-            "query_dataset_fingerprint": query_dataset._fingerprint,
-            "query_files": _file_identities(temporary, query_dir),
-            "candidate_files": candidate_files,
-        }
+        manifest = _candidate_data_manifest(
+            protocol_path=protocol_path,
+            protocol=protocol,
+            validation_spec=validation_spec,
+            records=_indexed_records(reconstructed),
+            ledger_path=ledger_path,
+            row_manifest_sha256=ledger_digest.hexdigest(),
+            query_dataset=query_dataset,
+            query_files=_file_identities(temporary, query_dir),
+            candidate_rows=len(reconstructed) * (maximum_width + 1),
+            candidate_fingerprints=candidate_fingerprints,
+            candidate_files=candidate_files,
+        )
         _atomic_json(temporary / "manifest.json", manifest)
         _replace_directory(temporary, output, overwrite)
     finally:
@@ -480,8 +644,29 @@ def prepare_candidate_breadth_data(
     return output
 
 
-def audit_candidate_breadth_data(protocol_path: str | Path, output: str | Path) -> dict[str, Any]:
+def _verified_file_identities(
+    root: Path,
+    directory: Path,
+    declared: Any,
+    *,
+    label: str,
+) -> list[dict[str, Any]]:
+    observed = _file_identities(root, directory)
+    if declared != observed:
+        raise ValueError(f"Candidate-breadth {label} file coverage or content changed")
+    return observed
+
+
+def audit_candidate_breadth_data(
+    protocol_path: str | Path,
+    output: str | Path,
+    *,
+    verify_source: bool = True,
+) -> dict[str, Any]:
     protocol_path, protocol = load_candidate_breadth_protocol(protocol_path)
+    selected, validation_root, validation_spec, _ = _selected_validation_rows(
+        protocol_path, protocol
+    )
     output = Path(output).resolve()
     manifest_path = output / "manifest.json"
     ledger_path = output / "rows.jsonl"
@@ -489,59 +674,131 @@ def audit_candidate_breadth_data(protocol_path: str | Path, output: str | Path) 
         raise FileNotFoundError(f"Candidate-breadth data is incomplete under {output}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     expected_queries = int(protocol["query_selection"]["count"])
-    maximum_width = max(protocol["candidate_construction"]["negative_widths"])
-    if (
-        manifest.get("status") != "complete"
-        or manifest.get("queries") != expected_queries
-        or manifest.get("candidate_rows") != expected_queries * (maximum_width + 1)
-        or manifest.get("protocol", {}).get("sha256") != _sha256(protocol_path)
-        or manifest.get("rows", {}).get("sha256") != _sha256(ledger_path)
-    ):
-        raise ValueError("Candidate-breadth manifest identity or cardinality changed")
+    widths = protocol["candidate_construction"]["negative_widths"]
+    maximum_width = max(widths)
     digest = hashlib.sha256()
     records = _read_jsonl(ledger_path)
-    for index, record in enumerate(records):
+    for record in records:
         digest.update(_canonical_row(record))
-        negatives = [int(value) for value in record["negative_ids"]]
-        if (
-            int(record["query_index"]) != index
-            or len(negatives) != maximum_width
-            or len(set(negatives)) != maximum_width
-            or int(record["positive_id"]) in negatives
-        ):
-            raise ValueError(f"Invalid candidate-breadth ledger row {index + 1}")
-    if len(records) != expected_queries or digest.hexdigest() != manifest["row_manifest_sha256"]:
-        raise ValueError("Candidate-breadth row ledger changed")
-    for item in manifest["query_files"]:
-        path = output / item["path"]
-        if (
-            not path.is_file()
-            or path.stat().st_size != item["bytes"]
-            or _sha256(path) != item["sha256"]
-        ):
-            raise ValueError(f"Candidate-breadth query file changed: {path}")
+    _validate_candidate_records(records, selected, maximum_width=maximum_width)
+    source_records = None
+    snapshot = None
+    if verify_source:
+        snapshot, source_records = _reconstruct_candidate_records(protocol, selected)
+        _validate_candidate_records(
+            records,
+            selected,
+            maximum_width=maximum_width,
+            source_records=source_records,
+        )
+
+    query_dir = output / "queries"
+    query_files = _verified_file_identities(
+        output, query_dir, manifest.get("query_files"), label="query Dataset"
+    )
+    query_dataset = Dataset.load_from_disk(str(query_dir))
+    if set(query_dataset.column_names) != QUERY_FIELDS:
+        raise ValueError("Candidate-breadth query Dataset schema changed")
+    frozen_dataset = Dataset.load_from_disk(str(validation_root / "dataset"))
+    frozen_by_sample = {int(row["sample_id"]): row for row in frozen_dataset}
+    if len(frozen_by_sample) != len(frozen_dataset):
+        raise ValueError("Frozen validation Dataset contains duplicate sample IDs")
+    if len(query_dataset) != expected_queries:
+        raise ValueError("Candidate-breadth query Dataset row count changed")
+    for index, row in enumerate(query_dataset):
+        source_row = selected[index]
+        frozen_row = frozen_by_sample[int(source_row["sample_id"])]
+        expected = {
+            "query_index": index,
+            "sample_id": int(source_row["sample_id"]),
+            "source": str(source_row["source"]),
+            "query_id": int(source_row["query_id"]),
+            "query": str(frozen_row["query"]),
+        }
+        if dict(row) != expected:
+            raise ValueError(f"Candidate-breadth query Dataset row {index + 1} changed")
+
     candidate_rows = 0
+    candidate_files: dict[str, list[dict[str, Any]]] = {}
+    candidate_fingerprints: dict[str, str] = {}
     for source in SPLITS:
-        for item in manifest["candidate_files"][source]:
-            path = output / item["path"]
-            if (
-                not path.is_file()
-                or path.stat().st_size != item["bytes"]
-                or _sha256(path) != item["sha256"]
-            ):
-                raise ValueError(f"Candidate-breadth candidate file changed: {path}")
-        dataset = Dataset.load_from_disk(str(output / "candidates" / source))
+        source_dir = output / "candidates" / source
+        declared = manifest.get("candidate_files", {}).get(source)
+        candidate_files[source] = _verified_file_identities(
+            output, source_dir, declared, label=f"{source} candidate Dataset"
+        )
+        dataset = Dataset.load_from_disk(str(source_dir))
+        if set(dataset.column_names) != CANDIDATE_FIELDS:
+            raise ValueError(f"Candidate-breadth {source} candidate Dataset schema changed")
+        candidate_fingerprints[source] = dataset._fingerprint
         candidate_rows += len(dataset)
         if len(dataset) != 32 * (maximum_width + 1):
             raise ValueError(f"Candidate-breadth {source} row count changed")
-    if candidate_rows != manifest["candidate_rows"]:
-        raise ValueError("Candidate-breadth candidate Dataset coverage changed")
+        document_lookup = None
+        source_ledger = [record for record in records if record["source"] == source]
+        if verify_source:
+            assert snapshot is not None
+            required = {
+                int(document_id)
+                for record in source_ledger
+                for document_id in (record["positive_id"], *record["negative_ids"])
+            }
+            document_lookup = _document_texts(snapshot, source, required)
+        offset = 0
+        for record in source_ledger:
+            document_ids = [int(record["positive_id"]), *map(int, record["negative_ids"])]
+            stop = offset + len(document_ids)
+            block = dataset[offset:stop]
+            expected_constant = {
+                "query_index": int(record["query_index"]),
+                "sample_id": int(record["sample_id"]),
+                "source": source,
+                "query_id": int(record["query_id"]),
+            }
+            if (
+                [int(value) for value in block["candidate_index"]] != list(range(maximum_width + 1))
+                or [int(value) for value in block["document_id"]] != document_ids
+                or any(
+                    any(value != expected for value in block[field])
+                    for field, expected in expected_constant.items()
+                )
+            ):
+                raise ValueError(
+                    f"Candidate-breadth {source} materialization changed for "
+                    f"sample {record['sample_id']}"
+                )
+            if document_lookup is not None and [str(value) for value in block["document"]] != [
+                document_lookup[document_id] for document_id in document_ids
+            ]:
+                raise ValueError(
+                    f"Candidate-breadth {source} document text differs from pinned source"
+                )
+            offset = stop
+        if offset != len(dataset):
+            raise ValueError(f"Candidate-breadth {source} materialization has trailing rows")
+
+    expected_manifest = _candidate_data_manifest(
+        protocol_path=protocol_path,
+        protocol=protocol,
+        validation_spec=validation_spec,
+        records=records,
+        ledger_path=ledger_path,
+        row_manifest_sha256=digest.hexdigest(),
+        query_dataset=query_dataset,
+        query_files=query_files,
+        candidate_rows=candidate_rows,
+        candidate_fingerprints=candidate_fingerprints,
+        candidate_files=candidate_files,
+    )
+    if manifest != expected_manifest:
+        raise ValueError("Candidate-breadth manifest does not reproduce audited artifacts")
     return {
         "schema_version": SCHEMA_VERSION,
         "status": "complete",
         "queries": len(records),
         "candidate_rows": candidate_rows,
-        "negative_widths": manifest["negative_widths"],
+        "negative_widths": widths,
+        "upstream_reconstruction_verified": verify_source,
         "manifest_sha256": _sha256(manifest_path),
         "protocol_sha256": _sha256(protocol_path),
     }
@@ -570,13 +827,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
-    if args.audit_only or (args.resume and args.output.exists()):
-        result = audit_candidate_breadth_data(args.protocol, args.output)
+    if args.audit_only:
+        result = audit_candidate_breadth_data(args.protocol, args.output, verify_source=True)
+    elif args.resume and args.output.exists():
+        result = audit_candidate_breadth_data(args.protocol, args.output, verify_source=False)
     else:
         output = prepare_candidate_breadth_data(
             args.protocol, args.output, overwrite=args.overwrite
         )
-        result = audit_candidate_breadth_data(args.protocol, output)
+        result = audit_candidate_breadth_data(args.protocol, output, verify_source=False)
     print(json.dumps(result, indent=2, sort_keys=True))
 
 

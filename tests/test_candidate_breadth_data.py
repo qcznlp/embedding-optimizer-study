@@ -4,7 +4,9 @@ import copy
 
 import pytest
 
+from embed_optim import candidate_breadth_data
 from embed_optim.candidate_breadth_data import (
+    _validate_candidate_records,
     load_candidate_breadth_protocol,
     nested_candidate_ids,
     parse_args,
@@ -51,6 +53,26 @@ def test_candidate_breadth_prepare_modes_are_mutually_exclusive() -> None:
     assert parse_args(["--audit-only"]).audit_only is True
     with pytest.raises(SystemExit):
         parse_args(["--resume", "--overwrite"])
+
+
+def test_only_explicit_audit_mode_reconstructs_the_pinned_source(tmp_path, monkeypatch) -> None:
+    output = tmp_path / "candidate-data"
+    output.mkdir()
+    calls = []
+
+    def fake_audit(protocol, observed_output, *, verify_source=True):
+        calls.append((protocol, observed_output, verify_source))
+        return {"status": "complete"}
+
+    monkeypatch.setattr(candidate_breadth_data, "audit_candidate_breadth_data", fake_audit)
+    candidate_breadth_data.main(
+        ["--protocol", "protocol.json", "--output", str(output), "--resume"]
+    )
+    candidate_breadth_data.main(
+        ["--protocol", "protocol.json", "--output", str(output), "--audit-only"]
+    )
+
+    assert [call[2] for call in calls] == [False, True]
 
 
 def test_balanced_selection_is_deterministic_and_source_complete() -> None:
@@ -105,4 +127,60 @@ def test_nested_candidates_reject_a_nonreproducible_canonical_seven() -> None:
             copy.deepcopy(row),
             threshold=0.95,
             maximum_width=2048,
+        )
+
+
+def _candidate_records() -> tuple[list[dict], list[dict]]:
+    selected = _validation_rows(per_source=1)
+    records = []
+    for index, row in enumerate(selected):
+        records.append(
+            {
+                "query_index": index,
+                "sample_id": row["sample_id"],
+                "source": row["source"],
+                "query_id": row["query_id"],
+                "positive_id": row["positive_id"],
+                "negative_ids": [*row["negative_ids"], 7, 8, 9],
+                "source_score_file": f"{row['source']}.parquet",
+                "source_score_row_group": 0,
+                "source_score_row_offset": index,
+            }
+        )
+    return selected, records
+
+
+def test_candidate_ledger_is_bound_to_frozen_selection_and_canonical_seven() -> None:
+    selected, records = _candidate_records()
+    _validate_candidate_records(records, selected, maximum_width=10)
+
+    tampered = copy.deepcopy(records)
+    tampered[0]["query_id"] += 1
+    with pytest.raises(ValueError, match="ledger row 1"):
+        _validate_candidate_records(tampered, selected, maximum_width=10)
+
+    tampered = copy.deepcopy(records)
+    tampered[0]["negative_ids"][0] = 99
+    with pytest.raises(ValueError, match="ledger row 1"):
+        _validate_candidate_records(tampered, selected, maximum_width=10)
+
+
+def test_full_source_reconstruction_detects_resigned_extended_candidates() -> None:
+    selected, records = _candidate_records()
+    source_records = [
+        {key: value for key, value in record.items() if key != "query_index"} for record in records
+    ]
+    tampered = copy.deepcopy(records)
+    tampered[0]["negative_ids"][-1] = 99
+
+    # The local semantic layer permits a different unique extension because it has
+    # deliberately avoided rescanning upstream parquet.  The mandatory release
+    # layer then compares all 2,048 positions with the pinned source reconstruction.
+    _validate_candidate_records(tampered, selected, maximum_width=10)
+    with pytest.raises(ValueError, match="pinned mined-score reconstruction"):
+        _validate_candidate_records(
+            tampered,
+            selected,
+            maximum_width=10,
+            source_records=source_records,
         )
