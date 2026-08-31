@@ -40,10 +40,15 @@ def test_missing_upstream_writes_auditable_pending_receipt(tmp_path):
 
 
 def test_checked_in_protocol_exposes_the_frozen_dose_claim_boundary():
-    dose, provenance, anchors = _load_protocol(Path("configs/causal_chain_analysis.json").resolve())
+    dose, provenance, anchor_contract = _load_protocol(
+        Path("configs/causal_chain_analysis.json").resolve()
+    )
     assert "formal mediation" in dose["claim_boundary"]
     assert provenance["protocol"]["sha256"] == _sha256(Path("configs/causal_chain_analysis.json"))
-    assert len(anchors) == 10
+    assert anchor_contract == {
+        "run_ids": ("adamw-lr1e-5", "muon-lr1e-3", "normuon-lr1e-3"),
+        "checkpoint_fractions": (0.2, 0.6, 1.0),
+    }
 
 
 def test_anchor_tail_summary_contract_synthesizes_omitted_adam_lambda_zero(tmp_path):

@@ -13,7 +13,6 @@ from typing import Any
 
 import numpy as np
 
-from .common_state_matrix import _checkpoint_for_fraction
 from .config import load_matrix
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
@@ -141,7 +140,7 @@ def _finite(row: dict[str, str], key: str) -> float:
     return value
 
 
-def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], set[str]]:
+def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     dose = payload.get("dose_band", {})
     if (
@@ -177,14 +176,36 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], set[str]
     }
     if set(selected) != set(anchor_protocol["run_ids"]):
         raise ValueError("Frozen Dense anchor runs are missing from the experiment matrix")
+    anchor_contract = {
+        "run_ids": tuple(anchor_protocol["run_ids"]),
+        "checkpoint_fractions": tuple(map(float, anchor_protocol["checkpoint_fractions"])),
+    }
+    return dose, {"protocol": _identity(path), "source_bindings": bindings}, anchor_contract
+
+
+def _expected_anchor_identities(evaluation: Path, anchor_contract: dict[str, Any]) -> set[str]:
+    rows = _read_csv(evaluation)
+    expected_tasks = set(DECONTAMINATED_TASK_NAMES)
     anchors = {"dense/pretrained"}
-    for run_id in anchor_protocol["run_ids"]:
-        for fraction in anchor_protocol["checkpoint_fractions"]:
-            checkpoint = _checkpoint_for_fraction(selected[run_id], float(fraction))
-            anchors.add(f"dense/{run_id}/{checkpoint.name}")
+    for run_id in anchor_contract["run_ids"]:
+        for fraction in anchor_contract["checkpoint_fractions"]:
+            members = [
+                row
+                for row in rows
+                if row["model_family"] == "dense"
+                and row["run_id"] == run_id
+                and float(row["fraction"]) == fraction
+            ]
+            steps = {int(row["checkpoint_step"]) for row in members}
+            tasks = {row["task"] for row in members}
+            if len(members) != len(expected_tasks) or tasks != expected_tasks or len(steps) != 1:
+                raise ValueError(
+                    f"Discovery evaluation does not bind one complete anchor for {run_id}/{fraction}"
+                )
+            anchors.add(f"dense/{run_id}/checkpoint-{steps.pop()}")
     if len(anchors) != 10:
         raise ValueError("Frozen Dense anchor identity count differs from 10")
-    return dose, {"protocol": _identity(path), "source_bindings": bindings}, anchors
+    return anchors
 
 
 def _validate_evaluation_manifest(manifest_path: Path, evaluation: Path) -> dict[str, Any]:
@@ -532,7 +553,7 @@ def analyze(
             evaluation_manifest=evaluation_manifest,
         )
     protocol = protocol.resolve()
-    dose_protocol, protocol_identity, expected_anchors = _load_protocol(protocol)
+    dose_protocol, protocol_identity, anchor_contract = _load_protocol(protocol)
     evaluation_manifest = evaluation_manifest.resolve()
     inputs = [
         summary_dir / "summary_manifest.json",
@@ -550,6 +571,7 @@ def analyze(
             dose_protocol["claim_boundary"],
         )
     evaluation_manifest_identity = _validate_evaluation_manifest(evaluation_manifest, evaluation)
+    expected_anchors = _expected_anchor_identities(evaluation, anchor_contract)
     upstream = json.loads(inputs[0].read_text(encoding="utf-8"))
     if upstream.get("complete") is not True:
         return _pending(
