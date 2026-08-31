@@ -11,6 +11,7 @@ from embed_optim.confirmatory_data import (
     _receipt_path,
     _scan_negative_pools,
     _selected_pool_indices,
+    audit_confirmatory_data,
     load_confirmatory_protocol,
     main,
 )
@@ -96,15 +97,57 @@ def test_blog_binds_the_audited_confirmatory_views():
         assert view["query_positive_identity_sha256"] == receipt["query_positive_identity_sha256"]
         assert view["dataset_fingerprint"] in blog
 
-    manifest = json.loads((root / "data/confirmatory-500k-seed314159/manifest.json").read_text())
     expected_pairs = {
         "314159_vs_271828": "0.991580",
         "314159_vs_161803": "0.991684",
         "271828_vs_161803": "0.991772",
     }
     for pair, rendered in expected_pairs.items():
-        assert manifest["changed_negative_group_fractions"][pair] == pytest.approx(float(rendered))
+        assert receipt["changed_negative_group_fractions"][pair] == pytest.approx(float(rendered))
         assert rendered in blog
+
+
+def test_audit_receipt_promotes_identical_pairwise_fractions(monkeypatch):
+    fractions = {"314159_vs_271828": 0.99158}
+    views = {
+        seed: {
+            "seed": seed,
+            "query_positive_identity_sha256": "q" * 64,
+            "changed_negative_group_fractions": fractions.copy(),
+        }
+        for seed in (314159, 271828, 161803)
+    }
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data.audit_negative_pool",
+        lambda *_args, **_kwargs: {"source_rescanned": False},
+    )
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data.audit_confirmatory_view",
+        lambda _protocol, seed: views[seed].copy(),
+    )
+
+    receipt = audit_confirmatory_data("configs/confirmatory_protocol.json")
+
+    assert receipt["changed_negative_group_fractions"] == fractions
+    assert all("changed_negative_group_fractions" not in view for view in receipt["views"])
+
+
+def test_audit_rejects_pairwise_fraction_disagreement(monkeypatch):
+    def view(_protocol, seed):
+        return {
+            "seed": seed,
+            "query_positive_identity_sha256": "q" * 64,
+            "changed_negative_group_fractions": {"pair": seed / 1_000_000},
+        }
+
+    monkeypatch.setattr(
+        "embed_optim.confirmatory_data.audit_negative_pool",
+        lambda *_args, **_kwargs: {"source_rescanned": False},
+    )
+    monkeypatch.setattr("embed_optim.confirmatory_data.audit_confirmatory_view", view)
+
+    with pytest.raises(ValueError, match="disagree on pairwise changed-negative fractions"):
+        audit_confirmatory_data("configs/confirmatory_protocol.json")
 
 
 def test_protocol_rejects_reusing_exploratory_seed(tmp_path: Path):

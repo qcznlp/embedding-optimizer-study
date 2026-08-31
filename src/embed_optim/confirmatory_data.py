@@ -808,6 +808,7 @@ def audit_confirmatory_view(
         "training_view_fingerprint": dataset.select_columns([*TEXT_COLUMNS, "length"])._fingerprint,
         "rows": sample_id,
         "query_positive_identity_sha256": identity_digest.hexdigest(),
+        "changed_negative_group_fractions": manifest["changed_negative_group_fractions"],
     }
 
 
@@ -825,6 +826,11 @@ def audit_confirmatory_data(
     query_positive = {view["query_positive_identity_sha256"] for view in views}
     if len(query_positive) != 1:
         raise ValueError("Confirmatory views do not share exact query/positive identities")
+    changed_fractions = {
+        json.dumps(view.pop("changed_negative_group_fractions"), sort_keys=True) for view in views
+    }
+    if len(changed_fractions) != 1:
+        raise ValueError("Confirmatory views disagree on pairwise changed-negative fractions")
     return {
         "schema_version": SCHEMA_VERSION,
         "status": "complete",
@@ -835,6 +841,7 @@ def audit_confirmatory_data(
         "negative_pool": pool,
         "views": views,
         "query_positive_identity_sha256": next(iter(query_positive)),
+        "changed_negative_group_fractions": json.loads(next(iter(changed_fractions))),
     }
 
 
