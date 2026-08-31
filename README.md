@@ -295,6 +295,49 @@ the orchestration again from step 1. Individual evaluators may still skip units 
 content-addressed audits prove the checkpoint, runtime, and result identity unchanged. This same
 full rerun upgrades legacy completion ledgers to the current provenance schema.
 
+## Run the post-hoc candidate-breadth diagnostic
+
+This diagnostic is deliberately separate from the frozen three-seed comparison. It asks whether the
+Muon-family validation ordering changes when the same 224 query-positive pairs are scored against
+nested sets of 7, 10, 32, 128, 512, and 2,048 mined negatives. The width-7 slice must first reproduce
+the original query-disjoint validation outputs within the frozen sample-level tolerance; otherwise
+the diagnostic fails closed and no breadth claim is reported.
+
+Prepare and independently audit the source-bound nested candidate data:
+
+~~~bash
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901
+
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901 \
+  --audit-only
+~~~
+
+Evaluate all 12 discovery final checkpoints, then build and re-audit the frozen decision summary:
+
+~~~bash
+embed-optim-candidate-breadth-matrix \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
+~~~
+
+The primary rule was frozen before any candidate-breadth data or scores were visible. It supports
+missing-candidate coverage only if all 12 width-7 reproductions pass and both Muon and NorMuon reverse
+their high-dose-versus-retrieval-optimal loss and margin ordering by width 2,048. Attenuation without
+reversal is reported separately, and an unchanged anti-calibrated ordering falsifies this proposed
+explanation. In every case the analysis remains post hoc and cannot replace the formal full-corpus
+optimizer comparison.
+
 ## Render the final Dense-only deliverables
 
 After the Dense completion ledger passes, the canonical, resume-safe finalizer regenerates every

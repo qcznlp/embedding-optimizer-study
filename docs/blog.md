@@ -665,6 +665,47 @@ stage-1–4 units, then builds and re-audits the 65-row trajectory CSV plus PDF/
 `reports/dense-retrieval-dynamics/`. Its read-only audit reconstructs all 910 joined task units and
 rejects changed checkpoints, result provenance, figures, tables, or manifests.
 
+### Run the post-hoc candidate-breadth diagnostic
+
+This mechanism diagnostic is not part of the frozen confirmatory comparison. It keeps 224 balanced,
+query-disjoint query-positive pairs fixed and expands each negative set through the nested widths 7,
+10, 32, 128, 512, and 2,048 from the pinned mined order. First materialize and audit the exact source
+rows:
+
+~~~bash
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901
+
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901 \
+  --audit-only
+~~~
+
+Then evaluate the 12 discovery final checkpoints and generate the frozen breadth decision:
+
+~~~bash
+embed-optim-candidate-breadth-matrix \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
+~~~
+
+All 12 width-7 evaluations must reproduce the existing validation evaluator within the predeclared
+sample-level tolerance before the analysis can be interpreted. The missing-candidate explanation is
+supported only if both Muon-family optimizers reverse their high-dose-versus-retrieval-optimal loss
+and margin ordering at width 2,048. A halfway movement toward zero is labeled attenuation, while an
+unchanged anti-calibrated ordering falsifies this explanation. These rules were fixed before any
+candidate-breadth data or scores were visible, but the diagnostic itself was designed after the
+shortlist--corpus gap was observed and therefore remains post hoc.
+
 ### Render the Dense paper and blog
 
 After the Dense completion ledger passes, use the canonical resume-safe finalizer. It regenerates all
