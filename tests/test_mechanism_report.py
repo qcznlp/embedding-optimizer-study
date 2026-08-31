@@ -15,6 +15,13 @@ from embed_optim.mechanism_report import (
 )
 
 
+@pytest.fixture(autouse=True)
+def _isolated_repository_root(tmp_path: Path) -> None:
+    """Keep pending causal evidence inside each synthetic repository."""
+
+    (tmp_path / "pyproject.toml").write_text("[project]\nname='fixture'\n", encoding="utf-8")
+
+
 def _write_csv(path: Path, rows: list[dict[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = list(rows[0])
@@ -437,7 +444,9 @@ def _accept_fixture_basis_audit(monkeypatch):
     monkeypatch.setattr("embed_optim.mechanism_report.audit_basis_sensitivity", audit)
 
 
-def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
+def test_mechanism_report_strictly_renders_fixed_blog_section(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
     output = tmp_path / "reports" / "mechanism-summary.md"
 
@@ -485,16 +494,24 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(tmp_path: Path):
         "block_bytes",
         "block_sha256",
     }
-    assert _marked_block_complete(blog, manifest["blog"], MECHANISM_MARKERS)
+    local_blog_record = {**manifest["blog"], "path": str(blog.resolve())}
+    assert _marked_block_complete(blog, local_blog_record, MECHANISM_MARKERS)
+    monkeypatch.chdir(tmp_path.parent)
+    assert _marked_block_complete(
+        blog,
+        manifest["blog"],
+        MECHANISM_MARKERS,
+        repository_root=tmp_path,
+    )
     assert json.loads(output.with_suffix(".manifest.json").read_text()) == manifest
 
     blog.write_text("other renderer\n" + blog.read_text(encoding="utf-8"), encoding="utf-8")
-    assert _marked_block_complete(blog, manifest["blog"], MECHANISM_MARKERS)
+    assert _marked_block_complete(blog, local_blog_record, MECHANISM_MARKERS)
     blog.write_text(
         blog.read_text(encoding="utf-8").replace("Same-state optimizer fingerprints", "changed"),
         encoding="utf-8",
     )
-    assert not _marked_block_complete(blog, manifest["blog"], MECHANISM_MARKERS)
+    assert not _marked_block_complete(blog, local_blog_record, MECHANISM_MARKERS)
 
 
 def test_mechanism_report_renders_strict_dense_scope(tmp_path: Path):

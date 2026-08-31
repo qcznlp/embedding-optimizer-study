@@ -194,7 +194,19 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
             "ruff-format-check",
             _module(args.python, "ruff", "format", "--check", *lint_targets),
         ),
-        PipelineStep("paper-build", ("make", "-C", "paper", "clean", "all")),
+        PipelineStep(
+            "paper-build",
+            ("make", "-C", "paper", "release", f"PYTHON={args.python}"),
+        ),
+        PipelineStep(
+            "paper-audit-post-build-strict",
+            _module(
+                args.python,
+                "embed_optim.paper_audit",
+                "--strict",
+                *dense_scope,
+            ),
+        ),
         PipelineStep("distribution-build", ("uv", "build")),
         PipelineStep(
             "distribution-audit",

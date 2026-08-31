@@ -9,6 +9,15 @@ import re
 from pathlib import Path
 from typing import Any
 
+from .causal_chain_rendering import (
+    CAUSAL_HEADLINE_PREFIX,
+    causal_chain_display_contract,
+    causal_chain_paper_contract,
+    render_causal_chain_headline_fragment,
+    render_causal_chain_latex,
+    render_causal_chain_markdown,
+)
+from .causal_chain_reporting import load_causal_chain_evidence
 from .config import load_matrix, resolve_matrix_path
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _sha256
@@ -21,6 +30,7 @@ from .outcome_report import OUTCOME_MARKERS
 from .scope import ALL_FAMILIES, resolve_scope
 
 FAMILIES = ALL_FAMILIES
+CausalEvidenceCache = dict[Path, tuple[dict[str, Any] | None, Exception | None]]
 
 HEADLINE_MACROS = (
     "DiscoveryHeadline",
@@ -36,6 +46,7 @@ PAPER_RESULT_TABLE_PATHS = (
     Path("paper/generated/representation.tex"),
     Path("paper/generated/intervention.tex"),
     Path("paper/generated/confirmation.tex"),
+    Path("paper/generated/causal-chain.tex"),
 )
 PAPER_SOURCE_TABLE_PATHS = (
     Path("reports/retrieval-dynamics/checkpoint_dynamics.csv"),
@@ -55,6 +66,11 @@ PAPER_SOURCE_TABLE_PATHS = (
     Path("reports/spectral-transplant/family_factorial_summary.csv"),
     Path("reports/spectral-transplant/family_query_tail_summary.csv"),
     Path("reports/confirmatory/paired_summary.csv"),
+    Path("reports/temporal-short-branch/paired_contrasts.csv"),
+    Path("reports/temporal-short-branch/loso_predictions.csv"),
+    Path("reports/temporal-short-branch/estimates.csv"),
+    Path("reports/dose-band/anchor_tests.csv"),
+    Path("reports/dose-band/heldout_predictions.csv"),
 )
 PAPER_CLAIM_PROTOCOL_SHA256 = "0ddff916eccedbe493b41a07538d0e4e9e058a784f5440e10d688f5270609949"
 PAPER_CLAIM_SOURCE_PATHS = (
@@ -118,16 +134,20 @@ BLOG_MARKERS = {
 }
 MACRO_PATTERN = re.compile(r"^\\newcommand\{\\([A-Za-z]+)\}\{(.*)\}$")
 FINAL_DOCUMENT_STALE_PHRASES = {
+    Path("README.md"): ("remaining DenseOn confirmation is running",),
     Path("docs/blog.md"): (
         "**Experiment status:** training matrix in progress.",
         "Results will be inserted here",
         "will be inserted after strict retrieval",
         "will be inserted here only after",
         "Retrieval time-to-quality remains pending",
+        "intervention are running under the post-hoc scope amendment",
+        "remain gated on the running",
     ),
     Path("paper/main.tex"): (
         "The final analysis will report",
         "The practical recommendation will therefore",
+        "intentionally left unresolved",
     ),
 }
 
@@ -150,6 +170,33 @@ def _json(path: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"Expected JSON object: {path}")
     return payload
+
+
+def _causal_evidence_snapshot(
+    root: Path,
+    cache: CausalEvidenceCache | None,
+    *,
+    require_complete: bool,
+) -> dict[str, Any]:
+    """Load causal evidence once per audit so every consumer sees one snapshot."""
+
+    root = root.resolve()
+    if cache is None:
+        evidence = load_causal_chain_evidence(root, allow_pending=True)
+    else:
+        if root not in cache:
+            try:
+                cache[root] = (load_causal_chain_evidence(root, allow_pending=True), None)
+            except (OSError, TypeError, ValueError) as error:
+                cache[root] = (None, error)
+        evidence, error = cache[root]
+        if error is not None:
+            raise ValueError(f"Invalid causal-chain evidence: {error}") from error
+        if evidence is None:  # pragma: no cover - defensive type narrowing
+            raise ValueError("Invalid empty causal-chain evidence snapshot")
+    if require_complete and evidence.get("complete") is not True:
+        raise ValueError("Causal-chain evidence is pending")
+    return evidence
 
 
 def load_paper_claim_protocol(
@@ -625,6 +672,7 @@ def _complete_manifest(
     *,
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: str | Path | None = None,
+    causal_cache: CausalEvidenceCache | None = None,
 ) -> bool:
     try:
         families, scope = resolve_scope(families, scope_amendment)
@@ -658,11 +706,18 @@ def _complete_manifest(
     }:
         return _active_result_summary_complete(path, payload, families, scope)
     if path.name == "outcome-summary.manifest.json":
-        return _outcome_report_complete(path, payload, families, scope, scope_amendment)
+        return _outcome_report_complete(
+            path,
+            payload,
+            families,
+            scope,
+            scope_amendment,
+            causal_cache=causal_cache,
+        )
     if path.name == "paper-results.manifest.json":
-        return _paper_results_complete(path, payload, families, scope)
+        return _paper_results_complete(path, payload, families, scope, causal_cache=causal_cache)
     if path.name == "mechanism-summary.manifest.json":
-        return _mechanism_report_complete(path, payload, families, scope)
+        return _mechanism_report_complete(path, payload, families, scope, causal_cache=causal_cache)
     if path.name == "summary_manifest.json" and path.parent.name == "tail-stability":
         return _tail_stability_complete(path, payload, families, scope)
     if path.name == "summary_manifest.json" and path.parent.name == "spectral-transplant":
@@ -1401,41 +1456,44 @@ def _causal_chain_source_complete(
     record: Any,
     expected_path: Path,
     label: str,
+    *,
+    causal_cache: CausalEvidenceCache | None = None,
 ) -> bool:
-    """Verify a rendered causal verdict against the hashed analysis manifest."""
-
+    """Verify a rendered causal branch against independently recomputed evidence."""
     if label not in {"temporal_short_branch", "dose_band"}:
         return False
-    if not _hash_only_file_complete(root, record, expected_path=expected_path):
-        return False
-    if "bytes" in record and not _hashed_file_complete(root, record, expected_path=expected_path):
-        return False
     try:
-        payload = _json(expected_path)
-    except (OSError, json.JSONDecodeError, TypeError, ValueError):
+        evidence = _causal_evidence_snapshot(root, causal_cache, require_complete=True)
+    except (OSError, TypeError, ValueError):
         return False
-    boundary = payload.get("claim_boundary")
-    supported = (
-        payload.get("decision", {}).get("spectral_temporal_bridge_supported")
-        if label == "temporal_short_branch"
-        else payload.get("supported")
-    )
-    claimable = (
-        payload.get("claimable") is True
-        if label == "temporal_short_branch"
-        else payload.get("claimability") == "claimable"
-    )
-    expected_status = "supported" if supported is True else "negative"
+    branch = evidence[label]
+    identity = branch.get("manifest")
+    if (
+        not isinstance(record, dict)
+        or set(record)
+        != {
+            "path",
+            "bytes",
+            "sha256",
+            "status",
+            "claimable",
+            "supported",
+            "claim_boundary",
+        }
+        or not isinstance(identity, dict)
+        or Path(str(identity.get("path", ""))).resolve() != expected_path.resolve()
+        or not _hashed_file_complete(root, record, expected_path=expected_path)
+        or record.get("bytes") != identity.get("bytes")
+        or record.get("sha256") != identity.get("sha256")
+    ):
+        return False
     return bool(
-        payload.get("schema_version") == SCHEMA_VERSION
-        and payload.get("complete") is True
-        and payload.get("status") == "complete"
-        and claimable
-        and isinstance(supported, bool)
-        and isinstance(boundary, str)
-        and boundary
-        and record.get("status") == expected_status
-        and record.get("claim_boundary") == boundary
+        evidence["complete"] is True
+        and branch["complete"] is True
+        and record.get("status") == branch["status"]
+        and record.get("claimable") == branch["claimable"]
+        and record.get("supported") == branch["supported"]
+        and record.get("claim_boundary") == branch["claim_boundary"]
     )
 
 
@@ -1444,12 +1502,23 @@ def _mechanism_report_complete(
     payload: dict[str, Any],
     families: tuple[str, ...],
     scope: dict[str, Any] | None,
+    *,
+    causal_cache: CausalEvidenceCache | None = None,
 ) -> bool:
     root = path.parents[1]
+    try:
+        causal_evidence = _causal_evidence_snapshot(root, causal_cache, require_complete=True)
+        causal_display = causal_chain_display_contract(causal_evidence)
+        causal_markdown = render_causal_chain_markdown(
+            causal_evidence, detailed=True, heading_level=3
+        )
+    except (OSError, TypeError, ValueError):
+        return False
     if (
         payload.get("schema_version") != SCHEMA_VERSION
         or payload.get("complete") is not True
         or not _scope_matches(payload, families, scope)
+        or payload.get("causal_chain") != causal_display
     ):
         return False
     expected_sources = {
@@ -1472,7 +1541,13 @@ def _mechanism_report_complete(
     ):
         return False
     if any(
-        not _causal_chain_source_complete(root, sources[label], expected_sources[label], label)
+        not _causal_chain_source_complete(
+            root,
+            sources[label],
+            expected_sources[label],
+            label,
+            causal_cache=causal_cache,
+        )
         for label in ("temporal_short_branch", "dose_band")
     ):
         return False
@@ -1501,6 +1576,7 @@ def _mechanism_report_complete(
         root / "reports/mechanism-bridge/checkpoint_bridge.csv",
         root / "reports/mechanism-bridge/descriptive_correlations.csv",
         root / "reports/mechanism-bridge/within_run_changes.csv",
+        *(Path(record["path"]) for record in causal_evidence["source_table_records"]),
     )
     tables = payload.get("source_tables")
     if (
@@ -1529,7 +1605,12 @@ def _mechanism_report_complete(
     blog_path = root / "docs/blog.md"
     if not _hashed_file_complete(
         root, payload.get("output"), expected_path=report_path
-    ) or not _marked_block_complete(blog_path, payload.get("blog"), MECHANISM_MARKERS):
+    ) or not _marked_block_complete(
+        blog_path,
+        payload.get("blog"),
+        MECHANISM_MARKERS,
+        repository_root=root,
+    ):
         return False
     try:
         blog = blog_path.read_text(encoding="utf-8")
@@ -1537,7 +1618,7 @@ def _mechanism_report_complete(
         report = report_path.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError, IndexError):
         return False
-    return rendered.strip() == report.strip()
+    return rendered.strip() == report.strip() and report.count(causal_markdown) == 1
 
 
 def _outcome_report_complete(
@@ -1546,8 +1627,18 @@ def _outcome_report_complete(
     families: tuple[str, ...],
     scope: dict[str, Any] | None,
     scope_amendment: str | Path | None,
+    *,
+    causal_cache: CausalEvidenceCache | None = None,
 ) -> bool:
     root = path.parents[1]
+    try:
+        causal_evidence = _causal_evidence_snapshot(root, causal_cache, require_complete=True)
+        causal_display = causal_chain_display_contract(causal_evidence)
+        causal_markdown = render_causal_chain_markdown(
+            causal_evidence, detailed=False, heading_level=3
+        )
+    except (OSError, TypeError, ValueError):
+        return False
     sources = payload.get("sources", {})
     expected_sources = {
         "mechanism_report": root / "reports/mechanism-summary.manifest.json",
@@ -1564,6 +1655,7 @@ def _outcome_report_complete(
         payload.get("schema_version") != SCHEMA_VERSION
         or payload.get("complete") is not True
         or not _scope_matches(payload, families, scope)
+        or payload.get("causal_chain") != causal_display
         or not isinstance(sources, dict)
         or set(sources) != set(expected_sources)
         or any(
@@ -1572,13 +1664,20 @@ def _outcome_report_complete(
                 source_path,
                 families=families,
                 scope_amendment=scope_amendment,
+                causal_cache=causal_cache,
             )
             for name, source_path in expected_sources.items()
         )
     ):
         return False
     if any(
-        not _causal_chain_source_complete(root, sources[label], expected_sources[label], label)
+        not _causal_chain_source_complete(
+            root,
+            sources[label],
+            expected_sources[label],
+            label,
+            causal_cache=causal_cache,
+        )
         for label in ("temporal_short_branch", "dose_band")
     ):
         return False
@@ -1613,6 +1712,7 @@ def _outcome_report_complete(
         root / "reports/spectral-transplant/family_factorial_summary.csv",
         root / "reports/spectral-transplant/family_query_tail_summary.csv",
         root / "reports/confirmatory/paired_summary.csv",
+        *(Path(record["path"]) for record in causal_evidence["source_table_records"]),
     )
     tables = payload.get("source_tables")
     if (
@@ -1629,7 +1729,12 @@ def _outcome_report_complete(
     blog_path = root / "docs/blog.md"
     if not _hashed_file_complete(
         root, payload.get("output"), expected_path=report_path
-    ) or not _marked_block_complete(blog_path, payload.get("blog"), OUTCOME_MARKERS):
+    ) or not _marked_block_complete(
+        blog_path,
+        payload.get("blog"),
+        OUTCOME_MARKERS,
+        repository_root=root,
+    ):
         return False
     try:
         blog = blog_path.read_text(encoding="utf-8")
@@ -1646,6 +1751,7 @@ def _outcome_report_complete(
         and blog.count(mechanism_begin) == blog.count(mechanism_end) == 1
         and blog.split(outcome_begin, 1)[1].split(outcome_end, 1)[0].strip() == outcome
         and blog.split(mechanism_begin, 1)[1].split(mechanism_end, 1)[0].strip() == mechanism
+        and outcome.count(causal_markdown) == 1
     )
 
 
@@ -1697,11 +1803,21 @@ def _blog_marker_audit(
     blog_path = root / "docs/blog.md"
     mechanism_complete = bool(
         _scope_matches(mechanism, families, scope)
-        and _marked_block_complete(blog_path, mechanism.get("blog"), MECHANISM_MARKERS)
+        and _marked_block_complete(
+            blog_path,
+            mechanism.get("blog"),
+            MECHANISM_MARKERS,
+            repository_root=root,
+        )
     )
     outcome_complete = bool(
         _scope_matches(outcome, families, scope)
-        and _marked_block_complete(blog_path, outcome.get("blog"), OUTCOME_MARKERS)
+        and _marked_block_complete(
+            blog_path,
+            outcome.get("blog"),
+            OUTCOME_MARKERS,
+            repository_root=root,
+        )
     )
     return {
         "results": {
@@ -1737,8 +1853,21 @@ def _paper_results_complete(
     payload: dict[str, Any],
     families: tuple[str, ...],
     scope: dict[str, Any] | None,
+    *,
+    causal_cache: CausalEvidenceCache | None = None,
 ) -> bool:
     root = path.parents[1]
+    try:
+        causal_evidence = _causal_evidence_snapshot(root, causal_cache, require_complete=True)
+        causal_display_expected = causal_chain_display_contract(causal_evidence)
+        causal_headline_expected = render_causal_chain_headline_fragment(causal_evidence)
+        causal_latex_expected = render_causal_chain_latex(causal_evidence)
+        main_text = (root / "paper/main.tex").read_text(encoding="utf-8")
+        main_text_normalized = " ".join(main_text.split())
+        causal_paper_contract = causal_chain_paper_contract()
+        causal_latex_observed = (root / PAPER_RESULT_TABLE_PATHS[-1]).read_text(encoding="utf-8")
+    except (KeyError, OSError, UnicodeDecodeError, TypeError, ValueError):
+        return False
     expected_evidence = {
         (root / relative).resolve()
         for paths in _strict_evidence_paths(families).values()
@@ -1751,6 +1880,7 @@ def _paper_results_complete(
     headlines = payload.get("headlines")
     results = payload.get("results_tex")
     causal_chain = payload.get("causal_chain")
+    causal_display = payload.get("causal_chain_display")
     causal_paths = {
         "temporal_short_branch": root / "reports/temporal-short-branch/summary_manifest.json",
         "dose_band": root / "reports/dose-band/summary_manifest.json",
@@ -1775,6 +1905,8 @@ def _paper_results_complete(
         or not isinstance(headlines, dict)
         or set(headlines) != set(HEADLINE_MACROS)
         or any(not isinstance(value, str) or not value for value in headlines.values())
+        or headlines["InterventionHeadline"].count(CAUSAL_HEADLINE_PREFIX) != 1
+        or not headlines["InterventionHeadline"].endswith(causal_headline_expected)
         or not _hashed_file_complete(
             root,
             results,
@@ -1783,8 +1915,25 @@ def _paper_results_complete(
         or not isinstance(causal_chain, dict)
         or set(causal_chain) != set(causal_paths)
         or any(
-            not _causal_chain_source_complete(root, causal_chain[label], path, label)
+            not _causal_chain_source_complete(
+                root,
+                causal_chain[label],
+                path,
+                label,
+                causal_cache=causal_cache,
+            )
             for label, path in causal_paths.items()
+        )
+        or causal_display != causal_display_expected
+        or causal_latex_observed != causal_latex_expected
+        or any(main_text.count(token) != 1 for token in causal_paper_contract["required_once"])
+        or any(
+            boundary not in main_text_normalized
+            for boundary in causal_paper_contract["required_boundary_substrings"]
+        )
+        or any(
+            overclaim in main_text_normalized.lower()
+            for overclaim in causal_paper_contract["forbidden_overclaim_substrings"]
         )
         or "do not convert descriptive checkpoint associations into causal evidence"
         not in str(payload.get("claim_boundary", ""))
@@ -1840,22 +1989,58 @@ def _final_document_language_problems(root: Path) -> list[str]:
     return problems
 
 
-def _causal_chain_evidence(root: Path) -> dict[str, dict[str, Any]]:
-    evidence = {}
-    for label, relative in (
-        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
-        ("dose_band", "reports/dose-band/summary_manifest.json"),
-    ):
-        path = root / relative
-        payload = _json(path) if path.is_file() else {}
-        evidence[label] = {
-            "path": str(path),
-            "complete": payload.get("complete") is True
-            and isinstance(payload.get("claim_boundary"), str)
-            and bool(payload.get("claim_boundary")),
-            "sha256": _sha256(path) if path.is_file() else None,
+def _causal_chain_evidence(
+    root: Path, causal_cache: CausalEvidenceCache | None = None
+) -> dict[str, dict[str, Any]]:
+    paths = {
+        "temporal_short_branch": root / "reports/temporal-short-branch/summary_manifest.json",
+        "dose_band": root / "reports/dose-band/summary_manifest.json",
+    }
+    try:
+        strict = _causal_evidence_snapshot(root, causal_cache, require_complete=False)
+    except (OSError, TypeError, ValueError) as error:
+        return {
+            label: {
+                "path": str(path),
+                "complete": False,
+                "claimable": False,
+                "status": "invalid",
+                "sha256": _sha256(path) if path.is_file() else None,
+                "error": f"{type(error).__name__}: {error}",
+            }
+            for label, path in paths.items()
         }
-    return evidence
+    return {
+        label: {
+            "path": str(path),
+            "complete": branch["complete"] is True,
+            "claimable": branch["claimable"],
+            "status": branch["status"],
+            "supported": branch["supported"],
+            "sha256": _sha256(path) if path.is_file() else None,
+            "claim_boundary": branch["claim_boundary"],
+        }
+        for label, path in paths.items()
+        for branch in (strict[label],)
+    }
+
+
+def _causal_snapshot_still_current(root: Path, evidence: dict[str, Any]) -> bool:
+    """Rehash the snapshot inputs at audit exit to close the read/use window."""
+
+    declared_root = Path(str(evidence.get("repository_root", "")))
+    if not declared_root.is_absolute() or declared_root.resolve() != root.resolve():
+        return False
+    records: list[Any] = [
+        evidence.get("protocol"),
+        *evidence.get("source_records", []),
+        *evidence.get("source_table_records", []),
+        evidence.get("temporal_short_branch", {}).get("manifest"),
+        evidence.get("dose_band", {}).get("manifest"),
+        *evidence.get("temporal_short_branch", {}).get("outputs", {}).values(),
+        *evidence.get("dose_band", {}).get("outputs", {}).values(),
+    ]
+    return bool(records and all(_hashed_file_complete(root, record) for record in records))
 
 
 def audit_paper(
@@ -1869,8 +2054,16 @@ def audit_paper(
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
-    families, scope = resolve_scope(families, scope_amendment)
     root = Path(repo_root).resolve()
+    if scope_amendment is not None:
+        requested_scope = Path(scope_amendment)
+        scope_amendment = (
+            requested_scope.resolve()
+            if requested_scope.is_absolute()
+            else (root / requested_scope).resolve()
+        )
+    families, scope = resolve_scope(families, scope_amendment)
+    causal_cache: CausalEvidenceCache = {}
     paper = (root / paper_dir).resolve()
     results_path = paper / "results.tex"
     claim_path, claim_protocol, claim_sources = load_paper_claim_protocol(repo_root=root)
@@ -1906,6 +2099,7 @@ def audit_paper(
                         path,
                         families=families,
                         scope_amendment=scope_amendment,
+                        causal_cache=causal_cache,
                     ),
                     "sha256": _sha256(path) if path.is_file() else None,
                 }
@@ -1921,14 +2115,21 @@ def audit_paper(
         paper_results_path,
         families=families,
         scope_amendment=scope_amendment,
+        causal_cache=causal_cache,
     )
     blog_marker_blocks = _blog_marker_audit(root, families, scope_amendment)
     incomplete_blog_marker_blocks = sorted(
         name for name, item in blog_marker_blocks.items() if item.get("complete") is not True
     )
     document_language_problems = _final_document_language_problems(root)
-    causal_chain = _causal_chain_evidence(root)
-    causal_chain_complete = all(item["complete"] for item in causal_chain.values())
+    causal_chain = _causal_chain_evidence(root, causal_cache)
+    snapshot, snapshot_error = causal_cache.get(root, (None, None))
+    causal_chain_complete = bool(
+        all(item["complete"] for item in causal_chain.values())
+        and snapshot_error is None
+        and snapshot is not None
+        and _causal_snapshot_still_current(root, snapshot)
+    )
     complete = (
         not pending
         and not incomplete_evidence

@@ -7,6 +7,12 @@ import statistics
 from pathlib import Path
 from typing import Any
 
+from .causal_chain_rendering import (
+    causal_chain_display_contract,
+    render_causal_chain_headline_fragment,
+    render_causal_chain_latex,
+)
+from .causal_chain_reporting import load_causal_chain_evidence
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .mechanism_report import (
@@ -30,6 +36,7 @@ from .outcome_report import (
 from .paper_audit import (
     HEADLINE_MACROS,
     PAPER_RESULT_TABLE_PATHS,
+    PAPER_SOURCE_TABLE_PATHS,
     _macros,
     audit_paper,
     expected_constant_macros,
@@ -41,6 +48,7 @@ FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
 FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CONTRAST_LABELS = ("Muon - AdamW", "NorMuon - AdamW", "NorMuon - Muon")
+BASE_RESULT_TABLE_PATHS = PAPER_RESULT_TABLE_PATHS[:-1]
 
 
 class IncompletePaperEvidenceError(ValueError):
@@ -874,11 +882,11 @@ def build_result_tables(
             label="tab:confirmation-results",
         ),
     )
-    if len(table_contents) != len(PAPER_RESULT_TABLE_PATHS):
+    if len(table_contents) != len(BASE_RESULT_TABLE_PATHS):
         raise ValueError("Generated paper table count differs from the frozen path contract")
     return {
         path.as_posix(): content
-        for path, content in zip(PAPER_RESULT_TABLE_PATHS, table_contents, strict=True)
+        for path, content in zip(BASE_RESULT_TABLE_PATHS, table_contents, strict=True)
     }
 
 
@@ -930,8 +938,22 @@ def render_paper_results(
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
-    families, scope = resolve_scope(families, scope_amendment)
     root = repo_root.resolve()
+    if scope_amendment is not None:
+        requested_scope = Path(scope_amendment)
+        scope_amendment = (
+            requested_scope.resolve()
+            if requested_scope.is_absolute()
+            else (root / requested_scope).resolve()
+        )
+    families, scope = resolve_scope(families, scope_amendment)
+    causal_evidence = load_causal_chain_evidence(root, allow_pending=True)
+    if causal_evidence["complete"] is not True:
+        raise IncompletePaperEvidenceError(
+            "Paper headlines require complete frozen temporal and dose causal-chain evidence"
+        )
+    causal_latex = render_causal_chain_latex(causal_evidence)
+    causal_display = causal_chain_display_contract(causal_evidence)
     current_audit = audit_paper(
         repo_root=root,
         families=families,
@@ -1020,6 +1042,7 @@ def render_paper_results(
         confirmation_rows=confirmation_rows,
         families=families,
     )
+    headlines["InterventionHeadline"] += render_causal_chain_headline_fragment(causal_evidence)
     result_tables = build_result_tables(
         final_medians=final_medians,
         retrieval_rows=retrieval_rows,
@@ -1039,19 +1062,15 @@ def render_paper_results(
         confirmation_rows=confirmation_rows,
         families=families,
     )
-    for relative, content in result_tables.items():
-        _atomic_text(root / relative, content)
-    _atomic_text(
-        paper_results,
-        _replace_headlines(paper_results.read_text(encoding="utf-8"), headlines),
-    )
-    if any(_macros(paper_results).get(name) != value for name, value in headlines.items()):
-        raise ValueError("Rendered paper headline macros do not round-trip")
+    result_tables[PAPER_RESULT_TABLE_PATHS[-1].as_posix()] = causal_latex
+    if tuple(map(Path, result_tables)) != PAPER_RESULT_TABLE_PATHS:
+        raise ValueError("Rendered paper result paths differ from the seven-table contract")
+    rendered_results = _replace_headlines(paper_results.read_text(encoding="utf-8"), headlines)
     if any(
-        (root / relative).read_text(encoding="utf-8") != content
-        for relative, content in result_tables.items()
+        rendered_results.count(f"\\newcommand{{\\{name}}}{{{value}}}") != 1
+        for name, value in headlines.items()
     ):
-        raise ValueError("Rendered paper result tables do not round-trip")
+        raise ValueError("Rendered paper headline macros do not round-trip in memory")
 
     evidence_paths = sorted(
         {
@@ -1075,41 +1094,34 @@ def render_paper_results(
         *tail_tables,
         *spectral_tables,
         confirmation_table,
+        *(Path(record["path"]) for record in causal_evidence["source_table_records"]),
     ]
+    expected_source_tables = [(root / path).resolve() for path in PAPER_SOURCE_TABLE_PATHS]
+    if [path.resolve() for path in source_tables] != expected_source_tables:
+        raise ValueError("Paper source tables differ from the exact 22-table contract")
+    source_table_records = [_source(path, root) for path in source_tables]
     causal_chain = {}
-    for label, relative in (
-        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
-        ("dose_band", "reports/dose-band/summary_manifest.json"),
-    ):
-        path = (root / relative).resolve()
-        payload = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
-        supported = (
-            payload.get("decision", {}).get("spectral_temporal_bridge_supported")
-            if label == "temporal_short_branch"
-            else payload.get("supported")
-        )
+    for label in ("temporal_short_branch", "dose_band"):
+        branch = causal_evidence[label]
+        record = branch["manifest"]
         causal_chain[label] = {
-            **(_source(path, root) if path.is_file() else {}),
-            "status": "supported"
-            if supported is True
-            else "negative"
-            if payload.get("complete") is True
-            else "pending",
-            "claim_boundary": payload.get("claim_boundary")
-            or "No claim is permitted until the frozen analysis manifest is complete.",
+            **_source(Path(record["path"]), root),
+            "status": branch["status"],
+            "claimable": branch["claimable"],
+            "supported": branch["supported"],
+            "claim_boundary": branch["claim_boundary"],
         }
-    verdict = "; ".join(
-        f"{label.replace('_', ' ')}={record['status']}" for label, record in causal_chain.items()
-    )
-    headlines["InterventionHeadline"] = (
-        headlines["InterventionHeadline"]
-        + f" Frozen causal-chain verdicts: {verdict}. These tests constrain a spectral-component "
-        "explanation but do not identify formal mediation of full-training BEIR gains."
-    )
-    _atomic_text(
-        paper_results,
-        _replace_headlines(paper_results.read_text(encoding="utf-8"), headlines),
-    )
+
+    for relative, content in result_tables.items():
+        _atomic_text(root / relative, content)
+    _atomic_text(paper_results, rendered_results)
+    if any(_macros(paper_results).get(name) != value for name, value in headlines.items()):
+        raise ValueError("Rendered paper headline macros do not round-trip")
+    if any(
+        (root / relative).read_text(encoding="utf-8") != content
+        for relative, content in result_tables.items()
+    ):
+        raise ValueError("Rendered paper result tables do not round-trip")
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,
@@ -1119,8 +1131,9 @@ def render_paper_results(
             "frozen_at": claim_protocol["frozen_at"],
         },
         "evidence_manifests": [_source(path, root) for path in evidence_paths],
-        "source_tables": [_source(path, root) for path in source_tables],
+        "source_tables": source_table_records,
         "causal_chain": causal_chain,
+        "causal_chain_display": causal_display,
         "result_tables": [_source(root / path, root) for path in PAPER_RESULT_TABLE_PATHS],
         "headlines": headlines,
         "results_tex": _source(paper_results, root),

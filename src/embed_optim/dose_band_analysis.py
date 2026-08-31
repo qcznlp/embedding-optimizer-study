@@ -75,17 +75,90 @@ def _write_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> Non
         writer.writerows(rows)
 
 
-def _identity(path: Path) -> dict[str, Any]:
-    return {"path": str(path), "bytes": path.stat().st_size, "sha256": _sha256(path)}
+def _portable_path(path: Path, repository_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(repository_root.resolve()).as_posix()
+    except ValueError:
+        return str(resolved)
 
 
-def _validate_identity(record: dict[str, Any], path: Path) -> None:
+def _identity(path: Path, *, repository_root: Path | None = None) -> dict[str, Any]:
+    path = path.resolve()
+    declared = str(path) if repository_root is None else _portable_path(path, repository_root)
+    return {"path": declared, "bytes": path.stat().st_size, "sha256": _sha256(path)}
+
+
+def _record_declares_path(record: Any, path: Path, repository_root: Path) -> bool:
+    if not isinstance(record, dict) or not isinstance(record.get("path"), str):
+        return False
+    expected = path.resolve()
+    root = repository_root.resolve()
+    declared = Path(record["path"])
+    try:
+        relative = expected.relative_to(root)
+    except ValueError:
+        return declared.is_absolute() and declared.resolve() == expected
+    if not declared.is_absolute():
+        return declared.as_posix() == relative.as_posix()
+    suffix = relative.parts
+    return bool(
+        declared.resolve() == expected
+        or (len(declared.parts) >= len(suffix) and tuple(declared.parts[-len(suffix) :]) == suffix)
+    )
+
+
+def _validate_identity(
+    record: dict[str, Any], path: Path, *, repository_root: Path | None = None
+) -> None:
     if (
         not path.is_file()
+        or (
+            repository_root is not None and not _record_declares_path(record, path, repository_root)
+        )
         or record.get("bytes") != path.stat().st_size
         or record.get("sha256") != _sha256(path)
     ):
         raise ValueError(f"Content identity differs for {path}")
+
+
+def _resolve_identity_path(record: Any, repository_root: Path) -> Path:
+    """Resolve a canonical record or a uniquely relocatable legacy absolute record."""
+
+    if not isinstance(record, dict) or not isinstance(record.get("path"), str):
+        raise ValueError("Content identity record is malformed")
+    root = repository_root.resolve()
+    declared = Path(record["path"])
+    candidates: list[Path] = []
+    if declared.is_absolute():
+        candidates.append(declared.resolve())
+        parts = declared.parts
+        for index in range(1, len(parts) - 1):
+            candidate = (root / Path(*parts[index:])).resolve()
+            try:
+                candidate.relative_to(root)
+            except ValueError:
+                continue
+            candidates.append(candidate)
+    else:
+        candidate = (root / declared).resolve()
+        try:
+            candidate.relative_to(root)
+        except ValueError as error:
+            raise ValueError("Content identity path escapes the repository root") from error
+        candidates.append(candidate)
+    matches = []
+    for candidate in dict.fromkeys(candidates):
+        if (
+            candidate.is_file()
+            and type(record.get("bytes")) is int
+            and candidate.stat().st_size == record["bytes"]
+            and record.get("sha256") == _sha256(candidate)
+        ):
+            matches.append(candidate)
+    if len(matches) != 1:
+        raise ValueError("Content identity path is missing or ambiguously relocatable")
+    return matches[0]
 
 
 def audit_receipt(
@@ -96,6 +169,9 @@ def audit_receipt(
     protocol: Path,
     evaluation_manifest: Path,
 ) -> dict[str, Any]:
+    output = output.resolve()
+    protocol = protocol.resolve()
+    repository_root = protocol.parent.parent.resolve()
     manifest_path = output / "summary_manifest.json"
     if not manifest_path.is_file():
         raise ValueError("Dose/band summary manifest is missing")
@@ -121,7 +197,11 @@ def audit_receipt(
         if actual_comparable != expected_comparable:
             raise ValueError("Dose/band manifest differs from fresh recomputation")
         for name in OUTPUTS:
-            _validate_identity(manifest.get("outputs", {}).get(name, {}), output / name)
+            _validate_identity(
+                manifest.get("outputs", {}).get(name, {}),
+                output / name,
+                repository_root=repository_root,
+            )
     return manifest
 
 
@@ -131,6 +211,8 @@ def _pending(
     missing: list[Path],
     protocol_identity: dict[str, Any] | None = None,
     claim_boundary: str | None = None,
+    *,
+    repository_root: Path,
 ) -> dict[str, Any]:
     _write_csv(output / OUTPUTS[0], [], ["family", "anchor", "criterion", "passed"])
     _write_csv(
@@ -150,11 +232,15 @@ def _pending(
         "complete": False,
         "claimability": "pending",
         "falsification": "not_tested",
-        "missing_inputs": [str(path) for path in missing],
-        "available_sources": [_identity(path) for path in sources if path.is_file()],
+        "missing_inputs": [_portable_path(path, repository_root) for path in missing],
+        "available_sources": [
+            _identity(path, repository_root=repository_root) for path in sources if path.is_file()
+        ],
         "protocol": protocol_identity,
         "claim_boundary": claim_boundary,
-        "outputs": {name: _identity(output / name) for name in OUTPUTS},
+        "outputs": {
+            name: _identity(output / name, repository_root=repository_root) for name in OUTPUTS
+        },
     }
     _atomic_json(output / "summary_manifest.json", receipt)
     return receipt
@@ -200,6 +286,7 @@ def _evaluation_identity(row: tuple[Any, ...]) -> tuple[str, str, int, str]:
 
 
 def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    path = path.resolve()
     payload = json.loads(path.read_text(encoding="utf-8"))
     dose = payload.get("dose_band", {})
     if (
@@ -215,7 +302,7 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str
         or not dose["claim_boundary"]
     ):
         raise ValueError("Dose/band protocol differs from the frozen contract")
-    root = path.parent.parent
+    root = path.parent.parent.resolve()
     source_bindings = payload.get("source_bindings")
     if (
         not isinstance(source_bindings, list)
@@ -227,7 +314,7 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str
         source = (root / item["path"]).resolve()
         if not source.is_file() or _sha256(source) != item.get("sha256"):
             raise ValueError(f"Frozen causal-chain source binding differs: {source}")
-        bindings.append(_identity(source))
+        bindings.append(_identity(source, repository_root=root))
     common_spec = json.loads((root / "configs/common_state_probe.json").read_text(encoding="utf-8"))
     anchor_protocol = common_spec["anchor_protocol"]
     if anchor_protocol["run_ids"] != dose["anchor_scope"]["source_runs"] or anchor_protocol[
@@ -262,7 +349,14 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str
         "discovery_run_ids": discovery_run_ids,
         "discovery_run_identities": discovery_run_identities,
     }
-    return dose, {"protocol": _identity(path), "source_bindings": bindings}, anchor_contract
+    return (
+        dose,
+        {
+            "protocol": _identity(path, repository_root=root),
+            "source_bindings": bindings,
+        },
+        anchor_contract,
+    )
 
 
 def _expected_anchor_identities(evaluation: Path, anchor_contract: dict[str, Any]) -> set[str]:
@@ -294,12 +388,18 @@ def _validate_evaluation_manifest(
     manifest_path: Path,
     evaluation: Path,
     discovery_run_identities: tuple[tuple[str, str], ...],
+    *,
+    repository_root: Path | None = None,
 ) -> dict[str, Any]:
+    manifest_path = manifest_path.resolve()
+    evaluation = evaluation.resolve()
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     record = payload.get("outputs", {}).get("evaluation_long", {})
-    repository = manifest_path.parent.parent.parent
-    declared = Path(record.get("path", ""))
-    declared = declared if declared.is_absolute() else repository / declared
+    repository = (
+        manifest_path.parent.parent.parent.resolve()
+        if repository_root is None
+        else repository_root.resolve()
+    )
     required = {
         "complete": True,
         "contract_complete": True,
@@ -339,7 +439,7 @@ def _validate_evaluation_manifest(
         or scope.get("sha256") != DENSE_SCOPE_SHA256
         or scope.get("status") != "user_directed_post_hoc_scope_amendment"
         or any(source_full.get(key) != value for key, value in source_full_required.items())
-        or declared.resolve() != evaluation.resolve()
+        or not _record_declares_path(record, evaluation, repository)
         or record.get("rows") != 840
     ):
         raise ValueError("Dense discovery evaluation manifest differs from the frozen contract")
@@ -356,7 +456,7 @@ def _validate_evaluation_manifest(
         source_record = reports[label]
         if source_record.get("path") != relative:
             raise ValueError("Dense discovery source report path differs from the frozen contract")
-        _validate_identity(source_record, repository / relative)
+        _validate_identity(source_record, repository / relative, repository_root=repository)
     full_coverage = json.loads(
         (repository / expected_reports["coverage"]).read_text(encoding="utf-8")
     )
@@ -385,7 +485,7 @@ def _validate_evaluation_manifest(
     }
     if any(full_coverage.get(key) != value for key, value in full_required.items()):
         raise ValueError("Full discovery coverage differs from its strict 1,680-unit contract")
-    _validate_identity(record, evaluation)
+    _validate_identity(record, evaluation, repository_root=repository)
     rows = _read_csv(evaluation)
     normalized_rows = [_normalized_evaluation_row(row) for row in rows]
     discovery_run_ids = tuple(
@@ -452,7 +552,7 @@ def _validate_evaluation_manifest(
     selected = {_evaluation_identity(row): row for row in normalized_rows}
     if len(dense_projection) != 840 or selected != dense_projection:
         raise ValueError("Dense discovery evaluation is not the exact full-report Dense projection")
-    return _identity(manifest_path)
+    return _identity(manifest_path, repository_root=repository)
 
 
 def _anchor_tests(
@@ -557,6 +657,8 @@ def _anchor_tests(
 
 def _task_features(
     upstream: dict[str, Any],
+    *,
+    repository_root: Path,
 ) -> tuple[dict[str, dict[str, dict[str, float]]], list[dict[str, Any]]]:
     output, identities = {}, []
     sources = upstream.get("sources", [])
@@ -566,9 +668,9 @@ def _task_features(
     for source in sources:
         anchor = source["label"]
         record = source["sample_metrics"]
-        path = Path(record["path"])
-        _validate_identity(record, path)
-        identities.append(_identity(path))
+        path = _resolve_identity_path(record, repository_root)
+        _validate_identity(record, path, repository_root=repository_root)
+        identities.append(_identity(path, repository_root=repository_root))
         grouped: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
         with path.open(encoding="utf-8") as handle:
             for line in handle:
@@ -772,6 +874,12 @@ def analyze(
     evaluation_manifest: Path = Path("reports/dense-discovery/coverage.json"),
     audit: bool = False,
 ) -> dict[str, Any]:
+    protocol = protocol.resolve()
+    repository_root = protocol.parent.parent.resolve()
+    summary_dir = summary_dir.resolve()
+    evaluation = evaluation.resolve()
+    evaluation_manifest = evaluation_manifest.resolve()
+    output = output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     if audit:
         return audit_receipt(
@@ -781,9 +889,7 @@ def analyze(
             protocol=protocol,
             evaluation_manifest=evaluation_manifest,
         )
-    protocol = protocol.resolve()
     dose_protocol, protocol_identity, anchor_contract = _load_protocol(protocol)
-    evaluation_manifest = evaluation_manifest.resolve()
     inputs = [
         summary_dir / "summary_manifest.json",
         summary_dir / "anchor_query_tail_effects.csv",
@@ -798,9 +904,13 @@ def analyze(
             missing,
             protocol_identity,
             dose_protocol["claim_boundary"],
+            repository_root=repository_root,
         )
     evaluation_manifest_identity = _validate_evaluation_manifest(
-        evaluation_manifest, evaluation, anchor_contract["discovery_run_identities"]
+        evaluation_manifest,
+        evaluation,
+        anchor_contract["discovery_run_identities"],
+        repository_root=repository_root,
     )
     expected_anchors = _expected_anchor_identities(evaluation, anchor_contract)
     upstream = json.loads(inputs[0].read_text(encoding="utf-8"))
@@ -811,18 +921,16 @@ def analyze(
             [inputs[0]],
             protocol_identity,
             dose_protocol["claim_boundary"],
+            repository_root=repository_root,
         )
     declared_outputs = upstream.get("outputs", {})
     for filename in SPECTRAL_TABLES:
         key = filename.removesuffix(".csv")
         record = declared_outputs.get(key, {})
-        declared = Path(record.get("path", ""))
         expected = summary_dir / filename
-        if declared.resolve() != expected.resolve():
-            raise ValueError(f"Spectral summary output path differs for {filename}")
-        _validate_identity(record, expected)
+        _validate_identity(record, expected, repository_root=repository_root)
     tests, _ = _anchor_tests(summary_dir, expected_anchors)
-    task_features, raw_sources = _task_features(upstream)
+    task_features, raw_sources = _task_features(upstream, repository_root=repository_root)
     if set(task_features) != expected_anchors:
         raise ValueError("Raw spectral sample anchors differ from the frozen 10-anchor grid")
     expected_tasks = tuple(DECONTAMINATED_TASK_NAMES)
@@ -912,9 +1020,12 @@ def analyze(
         "expected_prediction_rows": expected_predictions,
         "protocol": protocol_identity,
         "evaluation_manifest": evaluation_manifest_identity,
-        "evaluation_input": _identity(evaluation),
-        "sources": [_identity(path) for path in inputs] + raw_sources,
-        "outputs": {name: _identity(output / name) for name in OUTPUTS},
+        "evaluation_input": _identity(evaluation, repository_root=repository_root),
+        "sources": [_identity(path, repository_root=repository_root) for path in inputs]
+        + raw_sources,
+        "outputs": {
+            name: _identity(output / name, repository_root=repository_root) for name in OUTPUTS
+        },
     }
     _atomic_json(output / "summary_manifest.json", manifest)
     return manifest

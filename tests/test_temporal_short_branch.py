@@ -270,6 +270,13 @@ def test_complete_report_is_hash_bound_and_auditable(tmp_path: Path, monkeypatch
         output_dir=output,
     )
     assert result["complete"] is result["claimable"] is True
+    persisted_paths = [
+        result["protocol"]["path"],
+        *(record["path"] for record in result["sources"]),
+        *(record["path"] for record in result["outputs"].values()),
+    ]
+    assert all(not Path(path).is_absolute() for path in persisted_paths)
+    assert all(Path(path).as_posix() == path for path in persisted_paths)
     assert (
         _audit(
             output,

@@ -5,6 +5,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .causal_chain_rendering import (
+    causal_chain_display_contract,
+    render_causal_chain_markdown,
+)
+from .causal_chain_reporting import load_causal_chain_evidence
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .mechanism_report import (
     FAMILY_LABELS,
@@ -79,9 +84,16 @@ def _validate_mechanism_section(
     scope_amendment: dict[str, Any] | None = None,
 ) -> Path:
     report_path = report_path.resolve()
+    repository_root = _repository_root(report_path)
     manifest_path = report_path.with_suffix(".manifest.json")
     manifest = _load_manifest(manifest_path)
     output = manifest.get("output", {})
+    output_path = Path(str(output.get("path", "")))
+    resolved_output = (
+        output_path.resolve()
+        if output_path.is_absolute()
+        else (repository_root / output_path).resolve()
+    )
     if (
         manifest.get("complete") is not True
         or (
@@ -91,13 +103,18 @@ def _validate_mechanism_section(
                 or manifest.get("scope_amendment") != scope_amendment
             )
         )
-        or Path(str(output.get("path", ""))).resolve() != report_path
+        or resolved_output != report_path
         or not report_path.is_file()
         or report_path.stat().st_size != output.get("bytes")
         or _sha256(report_path) != output.get("sha256")
     ):
         raise ValueError("Mechanism report differs from its strict manifest")
-    if not _marked_block_complete(blog_path, manifest.get("blog"), MECHANISM_MARKERS):
+    if not _marked_block_complete(
+        blog_path,
+        manifest.get("blog"),
+        MECHANISM_MARKERS,
+        repository_root=repository_root,
+    ):
         raise ValueError("Final blog mechanism marker differs from its rendered manifest")
     blog = blog_path.read_text(encoding="utf-8")
     begin, end = MECHANISM_MARKERS
@@ -760,38 +777,37 @@ def render_outcome_report(
 ) -> dict[str, Any]:
     families, scope = resolve_scope(families, scope_amendment)
     repository_root = _repository_root(mechanism_report)
+    causal_evidence = load_causal_chain_evidence(repository_root, allow_pending=True)
+    causal_section = render_causal_chain_markdown(causal_evidence, detailed=False, heading_level=3)
+    causal_display = causal_chain_display_contract(causal_evidence)
     blog_path = blog_path.resolve()
     mechanism_manifest_path = _validate_mechanism_section(
         mechanism_report, blog_path, families, scope
     )
-    causal_chain = {}
-    causal_sentences = []
-    for label, relative in (
-        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
-        ("dose_band", "reports/dose-band/summary_manifest.json"),
-    ):
-        path = (repository_root / relative).resolve()
-        payload = _load_manifest(path) if path.is_file() else {}
-        complete = payload.get("complete") is True
-        supported = (
-            payload.get("decision", {}).get("spectral_temporal_bridge_supported")
-            if label == "temporal_short_branch"
-            else payload.get("supported")
-        )
-        status = (
-            "supported" if complete and supported is True else "negative" if complete else "pending"
-        )
-        boundary = payload.get("claim_boundary") or (
-            "No claim is permitted until the frozen analysis manifest is complete."
-        )
-        causal_sentences.append(f"- **{label.replace('_', ' ')}:** {status}. {boundary}")
-        if path.is_file():
-            causal_chain[label] = _source(
-                path,
-                repository_root=repository_root,
-                status=status,
-                claim_boundary=boundary,
+    causal_chain: dict[str, dict[str, Any]] = {}
+    causal_table_paths: list[Path] = []
+    if causal_evidence["complete"]:
+        mechanism_manifest = _load_manifest(mechanism_manifest_path)
+        if mechanism_manifest.get("causal_chain") != causal_display:
+            raise ValueError(
+                "Mechanism report causal-chain display differs from fresh strict evidence"
             )
+        for label in ("temporal_short_branch", "dose_band"):
+            branch = causal_evidence[label]
+            record = branch["manifest"]
+            path = Path(record["path"])
+            causal_chain[label] = {
+                "path": _portable_path(path, repository_root),
+                "bytes": record["bytes"],
+                "sha256": record["sha256"],
+                "status": branch["status"],
+                "claimable": branch["claimable"],
+                "supported": branch["supported"],
+                "claim_boundary": branch["claim_boundary"],
+            }
+        causal_table_paths = [
+            Path(record["path"]) for record in causal_evidence["source_table_records"]
+        ]
     functional, functional_table, functional_manifest = _functional_rows(functional_dir, families)
     hybrid, hybrid_table, hybrid_manifest = _hybrid_rows(hybrid_dir, families, scope)
     short, short_table, short_manifest = _short_branch_rows(short_branch_dir, families, scope)
@@ -933,7 +949,7 @@ def render_outcome_report(
             "contrast and all win counts remain visible.",
         ]
     )
-    content += "\n\n### Causal-chain verdicts\n\n" + "\n".join(causal_sentences)
+    content += "\n\n" + causal_section
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
     _atomic_text(blog_path, _replace_marked(blog_path.read_text(encoding="utf-8"), content))
@@ -990,8 +1006,10 @@ def render_outcome_report(
                 *tail_tables,
                 *spectral_tables,
                 confirmation_table,
+                *causal_table_paths,
             )
         ],
+        "causal_chain": causal_display,
         "output": {
             "path": _portable_path(output_path, repository_root),
             "bytes": output_path.stat().st_size,

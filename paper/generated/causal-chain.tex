@@ -1,0 +1,60 @@
+% This placeholder is replaced atomically by embed-optim-render-paper-results.
+% It defines one compact main-text table and detailed appendix diagnostics.
+\newcommand{\CausalChainSummaryTable}{%
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.18\linewidth}p{0.34\linewidth}p{0.18\linewidth}p{0.23\linewidth}}
+\toprule
+Test & Frozen comparison & Audited result & Permitted inference \\
+\midrule
+Shared-start temporal & Tail energy versus optimizer labels and both Frobenius-norm controls under leave-one-seed-out prediction & \ResultPending{temporal all-required verdict} & Accumulated spectral bridge, or claimable negative \\
+Fixed-state component & Five spectrum doses, tail versus other bands, and spectrum versus basis at ten anchors & \ResultPending{dose/band/basis verdict} & Immediate component attribution only \\
+Forward retrieval & 84 task-aligned next-checkpoint changes under leave-one-source-run-out prediction & \ResultPending{held-run bridge verdict} & Out-of-run bridge, not formal mediation \\
+\bottomrule
+\end{tabular}
+\caption{Frozen causal-chain stress tests. Every row is reported whether supported or negative; the spectral-component explanation requires all declared tests to pass.}
+\label{tab:causal-chain-summary}
+\end{table*}%
+}
+
+\newcommand{\CausalChainDiagnostics}{%
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.19\linewidth}p{0.52\linewidth}p{0.21\linewidth}}
+\toprule
+Temporal diagnostic & Frozen rule & Audited result \\
+\midrule
+Treatment shift & Positive tail-energy contrast for both challengers in at least two of three seeds & \ResultPending{seed signs} \\
+Outcome shift & Both stage-5 outcomes favor each challenger in at least two of three seeds & \ResultPending{endpoint signs} \\
+Held-seed prediction & Tail energy improves pooled LOSO RMSE over optimizer labels for both outcomes & \ResultPending{RMSE comparison} \\
+Norm controls & Neither update nor weight norm matches the primary improvement on either outcome & \ResultPending{negative controls} \\
+Coefficient behavior & Adding tail energy does not increase either absolute challenger coefficient for either outcome & \ResultPending{coefficient check} \\
+Joint decision & All five conditions above are required & \ResultPending{supported or claimable negative} \\
+\bottomrule
+\end{tabular}
+\caption{Complete shared-start temporal diagnostics. Secondary spectral metrics are reported in the released artifact but cannot replace a failed primary tail-energy rule.}
+\label{tab:causal-temporal-diagnostics}
+\end{table*}
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.19\linewidth}p{0.52\linewidth}p{0.21\linewidth}}
+\toprule
+Component diagnostic & Frozen rule & Audited result \\
+\midrule
+Dose response & Loss p95 nonincreasing and margin p05 nondecreasing over $\lambda=0,.25,.5,.75,1$ at at least 8/10 anchors & \ResultPending{anchor counts} \\
+Band localization & Tail is more favorable than head and middle on both metrics at at least 8/10 anchors & \ResultPending{band counts} \\
+Basis control & Spectrum transplant beats basis swap on both metrics at at least 8/10 anchors & \ResultPending{basis-control counts} \\
+Held-run bridge & A spectrum predictor improves pooled 84-row RMSE, and its matched basis control does not equal or exceed the gain & \ResultPending{held-run RMSE} \\
+Joint decision & Dose, band, basis, and forward bridge all pass & \ResultPending{supported or claimable negative} \\
+\bottomrule
+\end{tabular}
+\caption{Fixed-state component and task-aligned forward-retrieval diagnostics. The forward model leaves out an entire source run, including its 14 tasks and both eligible transitions.}
+\label{tab:causal-dose-diagnostics}
+\end{table*}%
+}

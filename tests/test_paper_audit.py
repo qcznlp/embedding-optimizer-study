@@ -8,15 +8,22 @@ from pathlib import Path
 
 import pytest
 
+from embed_optim import paper_audit as paper_audit_module
+from embed_optim.causal_chain_rendering import (
+    causal_chain_paper_contract,
+    render_causal_chain_headline_fragment,
+)
 from embed_optim.paper_audit import (
     BLOG_MARKERS,
     PAPER_RESULT_TABLE_PATHS,
     PAPER_SOURCE_TABLE_PATHS,
+    _causal_chain_evidence,
     _causal_chain_source_complete,
     _complete_manifest,
     _final_document_language_problems,
     _macros,
     _paper_result_tables_complete,
+    _paper_results_complete,
     _paper_source_tables_complete,
     _renderer_marker_blocks_complete,
     _spectral_transplant_complete,
@@ -37,6 +44,48 @@ def test_macro_parser_rejects_duplicate_definition(tmp_path: Path):
     )
     with pytest.raises(ValueError, match="Duplicate paper result macro"):
         _macros(path)
+
+
+def test_audit_resolves_scope_amendment_against_repo_root_before_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "checkout"
+    expected = repository / "configs/scope.json"
+    captured: dict[str, Path] = {}
+
+    def capture(_families, scope_path):
+        captured["path"] = Path(scope_path)
+        raise RuntimeError("captured")
+
+    monkeypatch.setattr("embed_optim.paper_audit.resolve_scope", capture)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(RuntimeError, match="captured"):
+        audit_paper(
+            repo_root=repository,
+            families=("dense",),
+            scope_amendment=Path("configs/scope.json"),
+        )
+
+    assert captured["path"] == expected.resolve()
+
+
+def test_audit_uses_one_causal_evidence_snapshot(monkeypatch: pytest.MonkeyPatch) -> None:
+    original = paper_audit_module.load_causal_chain_evidence
+    calls = 0
+
+    def counted(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return original(*args, **kwargs)
+
+    monkeypatch.setattr(paper_audit_module, "load_causal_chain_evidence", counted)
+
+    audit_paper(
+        families=("dense",),
+        scope_amendment="configs/dense_scope_amendment.json",
+    )
+
+    assert calls == 1
 
 
 @pytest.fixture
@@ -127,12 +176,22 @@ def synthetic_future_final_audit(monkeypatch):
         "embed_optim.paper_audit._final_document_language_problems",
         lambda _root: [],
     )
-    monkeypatch.setattr(
-        "embed_optim.paper_audit._causal_chain_evidence",
-        lambda _root: {
+
+    def causal_receipt(root, causal_cache=None):
+        if causal_cache is not None:
+            causal_cache[Path(root).resolve()] = (
+                {"repository_root": str(Path(root).resolve())},
+                None,
+            )
+        return {
             "temporal_short_branch": {"complete": True},
             "dose_band": {"complete": True},
-        },
+        }
+
+    monkeypatch.setattr("embed_optim.paper_audit._causal_chain_evidence", causal_receipt)
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._causal_snapshot_still_current",
+        lambda *_args, **_kwargs: True,
     )
     return audit_paper(
         families=("dense",),
@@ -551,7 +610,9 @@ def test_paper_results_manifest_requires_generated_tex_and_all_evidence(tmp_path
     assert _complete_manifest(path) is False
 
 
-def test_rendered_causal_verdict_must_match_hashed_manifest_status_and_boundary(tmp_path: Path):
+def test_rendered_causal_verdict_must_match_strict_branch_status_and_boundary(
+    tmp_path: Path, monkeypatch
+):
     root = tmp_path
     cases = {
         "temporal_short_branch": {
@@ -582,11 +643,34 @@ def test_rendered_causal_verdict_must_match_hashed_manifest_status_and_boundary(
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(case["payload"]), encoding="utf-8")
         expected_status = "negative" if label == "temporal_short_branch" else "supported"
-        record = {
-            "path": str(path.relative_to(root)),
+        supported = expected_status == "supported"
+        identity = {
+            "path": str(path.resolve()),
             "bytes": path.stat().st_size,
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        }
+        branch = {
+            "complete": True,
+            "claimable": True,
+            "supported": supported,
             "status": expected_status,
+            "claim_boundary": case["payload"]["claim_boundary"],
+            "manifest": identity,
+        }
+        monkeypatch.setattr(
+            "embed_optim.paper_audit.load_causal_chain_evidence",
+            lambda *_args, _label=label, _branch=branch, **_kwargs: {
+                "complete": True,
+                _label: _branch,
+            },
+        )
+        record = {
+            "path": str(path.relative_to(root)),
+            "bytes": identity["bytes"],
+            "sha256": identity["sha256"],
+            "status": expected_status,
+            "claimable": True,
+            "supported": supported,
             "claim_boundary": case["payload"]["claim_boundary"],
         }
         assert _causal_chain_source_complete(root, record, path, label)
@@ -599,6 +683,36 @@ def test_rendered_causal_verdict_must_match_hashed_manifest_status_and_boundary(
         assert not _causal_chain_source_complete(
             root, {**record, "claim_boundary": "changed"}, path, label
         )
+
+
+def test_causal_audit_preserves_completed_branch_in_partial_state(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(
+        "embed_optim.paper_audit.load_causal_chain_evidence",
+        lambda *_args, **_kwargs: {
+            "complete": False,
+            "temporal_short_branch": {
+                "complete": True,
+                "claimable": True,
+                "status": "supported",
+                "supported": True,
+                "claim_boundary": "temporal boundary",
+            },
+            "dose_band": {
+                "complete": False,
+                "claimable": False,
+                "status": "pending",
+                "supported": None,
+                "claim_boundary": "dose boundary",
+            },
+        },
+    )
+
+    evidence = _causal_chain_evidence(tmp_path)
+
+    assert evidence["temporal_short_branch"]["complete"] is True
+    assert evidence["temporal_short_branch"]["claimable"] is True
+    assert evidence["dose_band"]["complete"] is False
+    assert evidence["dose_band"]["claimable"] is False
 
 
 def test_result_table_audit_requires_exact_hashes_and_no_pending_markers(tmp_path: Path):
@@ -625,26 +739,34 @@ def test_result_table_audit_requires_exact_hashes_and_no_pending_markers(tmp_pat
 
 
 def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_path: Path):
+    readme = tmp_path / "README.md"
     blog = tmp_path / "docs/blog.md"
     paper = tmp_path / "paper/main.tex"
     blog.parent.mkdir(parents=True)
     paper.parent.mkdir(parents=True)
+    readme.write_text("Final repository status.\n", encoding="utf-8")
     blog.write_text("Final prose.\n", encoding="utf-8")
     paper.write_text("Final manuscript.\n", encoding="utf-8")
 
     assert _final_document_language_problems(tmp_path) == []
 
+    readme.write_text("Status: remaining DenseOn confirmation is running.\n", encoding="utf-8")
     blog.write_text("Results will be inserted here after evaluation.\n", encoding="utf-8")
-    paper.write_text("The final analysis will report everything.\n", encoding="utf-8")
+    paper.write_text(
+        "The final analysis will report everything; it is intentionally left unresolved.\n",
+        encoding="utf-8",
+    )
     problems = _final_document_language_problems(tmp_path)
 
     assert problems == [
+        "README.md: remaining DenseOn confirmation is running",
         "docs/blog.md: Results will be inserted here",
         "paper/main.tex: The final analysis will report",
+        "paper/main.tex: intentionally left unresolved",
     ]
 
 
-def test_paper_source_table_audit_requires_all_seventeen_tables_in_declared_order(
+def test_paper_source_table_audit_requires_all_twenty_two_tables_in_declared_order(
     tmp_path: Path,
 ):
     records = []
@@ -660,7 +782,7 @@ def test_paper_source_table_audit_requires_all_seventeen_tables_in_declared_orde
             }
         )
 
-    assert len(records) == 17
+    assert len(records) == 22
     assert _paper_source_tables_complete(tmp_path, records) is True
     assert _paper_source_tables_complete(tmp_path, records[:-1]) is False
     assert _paper_source_tables_complete(tmp_path, list(reversed(records))) is False
@@ -678,6 +800,182 @@ def _hashed_record(path: Path, content: str = "source\n") -> dict[str, object]:
         "bytes": path.stat().st_size,
         "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
     }
+
+
+@pytest.mark.parametrize(
+    ("fresh_verdict", "fresh_label", "forged_label"),
+    (
+        ("supported", "supported", "claimable negative"),
+        ("not_supported_claimable_negative", "claimable negative", "supported"),
+    ),
+)
+def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
+    tmp_path: Path,
+    monkeypatch,
+    fresh_verdict: str,
+    fresh_label: str,
+    forged_label: str,
+):
+    evidence = {
+        "complete": True,
+        "overall_verdict": fresh_verdict,
+        "temporal_short_branch": {
+            "criteria_rows": [{"passed": True} for _ in range(5)],
+            "estimate_rows": [
+                {
+                    "outcome": outcome,
+                    "predictor": "update_tail_energy_fraction",
+                    "relative_rmse_improvement": improvement,
+                }
+                for outcome, improvement in (
+                    ("validation_loss_p95", 0.125),
+                    ("unseen_margin_p05", 0.25),
+                )
+            ],
+        },
+        "dose_band": {
+            "decision_counts": {
+                "loss_dose_monotone_anchors": 8,
+                "margin_dose_monotone_anchors": 7,
+                "tail_band_anchors": 6,
+                "basis_control_anchors": 9,
+            },
+            "rmse_rows": [
+                {"predictor": predictor, "rmse_improvement": improvement}
+                for predictor, improvement in (
+                    ("baseline", 0.0),
+                    ("spectrum_loss", 0.3),
+                    ("spectrum_margin", 0.2),
+                    ("basis_loss", 0.1),
+                    ("basis_margin", 0.05),
+                )
+            ],
+            "bridge_rows": [
+                {
+                    "spectrum_predictor": spectrum,
+                    "spectrum_rmse_improvement": spectrum_gain,
+                    "matched_basis_rmse_improvement": basis_gain,
+                }
+                for spectrum, spectrum_gain, basis_gain in (
+                    ("spectrum_loss", 0.3, 0.1),
+                    ("spectrum_margin", 0.2, 0.05),
+                )
+            ],
+        },
+    }
+    causal_latex = "fresh causal table\n"
+    causal_display = {"complete": True, "evidence_sha256": "fresh"}
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._causal_evidence_snapshot",
+        lambda *_args, **_kwargs: evidence,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit.causal_chain_display_contract",
+        lambda _evidence: causal_display,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit.render_causal_chain_latex",
+        lambda _evidence: causal_latex,
+    )
+    monkeypatch.setattr("embed_optim.paper_audit._strict_evidence_paths", lambda _families: {})
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._paper_source_tables_complete",
+        lambda *_args, **_kwargs: True,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._paper_result_tables_complete",
+        lambda *_args, **_kwargs: True,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._causal_chain_source_complete",
+        lambda *_args, **_kwargs: True,
+    )
+
+    protocol = tmp_path / "configs/paper_claim_protocol.json"
+    protocol.parent.mkdir(parents=True)
+    shutil.copy2(
+        Path(__file__).resolve().parents[1] / "configs/paper_claim_protocol.json",
+        protocol,
+    )
+    protocol_record = {
+        "path": str(protocol),
+        "bytes": protocol.stat().st_size,
+        "sha256": hashlib.sha256(protocol.read_bytes()).hexdigest(),
+        "status": "prospective_completion_lock",
+        "frozen_at": "2026-08-25T00:00:00Z",
+    }
+    main_tex = tmp_path / "paper/main.tex"
+    main_tex.parent.mkdir(parents=True)
+    paper_contract = causal_chain_paper_contract()
+    canonical_main_text = "\n".join(
+        (
+            *paper_contract["required_once"],
+            *paper_contract["required_boundary_substrings"],
+        )
+    )
+    main_tex.write_text(canonical_main_text + "\n", encoding="utf-8")
+    causal_table = tmp_path / PAPER_RESULT_TABLE_PATHS[-1]
+    causal_table.parent.mkdir(parents=True, exist_ok=True)
+    causal_table.write_text(causal_latex, encoding="utf-8")
+    result_path = tmp_path / "paper/results.tex"
+    fragment = render_causal_chain_headline_fragment(evidence)
+    headlines = {
+        name: f"final {name}"
+        for name in (
+            "DiscoveryHeadline",
+            "CommonStateHeadline",
+            "RepresentationHeadline",
+            "InterventionHeadline",
+            "ConfirmationHeadline",
+        )
+    }
+    headlines["InterventionHeadline"] = "intervention base." + fragment
+
+    def write_results() -> dict[str, object]:
+        content = "".join(
+            f"\\newcommand{{\\{name}}}{{{value}}}\n" for name, value in headlines.items()
+        )
+        return _hashed_record(result_path, content)
+
+    results_record = write_results()
+    manifest_path = tmp_path / "reports/paper-results.manifest.json"
+    manifest_path.parent.mkdir(parents=True)
+    payload = {
+        "schema_version": 1,
+        "complete": True,
+        "claim_protocol": protocol_record,
+        "evidence_manifests": [],
+        "source_tables": [],
+        "result_tables": [],
+        "headlines": dict(headlines),
+        "results_tex": results_record,
+        "causal_chain": {"temporal_short_branch": {}, "dose_band": {}},
+        "causal_chain_display": causal_display,
+        "claim_boundary": (
+            "do not convert descriptive checkpoint associations into causal evidence"
+        ),
+    }
+    assert _paper_results_complete(manifest_path, payload, ("dense", "late"), None) is True
+
+    forged = headlines["InterventionHeadline"].replace(
+        f"joint result {fresh_label}.", f"joint result {forged_label}."
+    )
+    assert forged != headlines["InterventionHeadline"]
+    headlines["InterventionHeadline"] = forged
+    payload["headlines"] = dict(headlines)
+    payload["results_tex"] = write_results()
+
+    assert _paper_results_complete(manifest_path, payload, ("dense", "late"), None) is False
+
+    headlines["InterventionHeadline"] = "intervention base." + fragment
+    payload["headlines"] = dict(headlines)
+    payload["results_tex"] = write_results()
+    main_tex.write_text(
+        canonical_main_text + "\nThe causal chain proves formal mediation.\n",
+        encoding="utf-8",
+    )
+    assert all(main_tex.read_text().count(token) == 1 for token in paper_contract["required_once"])
+    assert _paper_results_complete(manifest_path, payload, ("dense", "late"), None) is False
 
 
 def _csv_record(

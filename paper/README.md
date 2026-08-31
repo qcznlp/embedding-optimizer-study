@@ -48,9 +48,12 @@ The central result sequence is deliberately gated:
 6. hybrid AdamW tests whether parameter routing is sufficient; and
 7. three new negative-sampling seeds determine the final retrieval claim.
 
-Exact state-feedback cosines, shared-start outcomes, hybrid results, and confirmatory intervals must
-enter through audited macros or generated tables. Do not copy them directly into prose. Spectral
-flattening and row adaptation are implementation fingerprints, not standalone paper contributions.
+Exact state-feedback cosines, shared-start outcomes, hybrid results, confirmatory intervals, and the
+temporal and dose/band causal-chain estimates must enter through audited macros or generated tables.
+A supported/negative verdict alone is insufficient: the paper must display the numerical predictor
+and negative-control errors, treatment-coefficient changes, anchor support counts, and forward-bridge
+errors that determine each verdict. Do not copy them directly into prose. Spectral flattening and row
+adaptation are implementation fingerprints, not standalone paper contributions.
 
 The claim protocol and its content-hashed amendments bind experiment and intervention protocols to
 headline decision rules. If a bound source receives a factual documentation correction, the original
@@ -65,7 +68,9 @@ evidence manifests, and source tables.
 
 `make -C paper` invokes the renderer with `--if-ready`: incomplete experiments keep audited red
 placeholders, while complete evidence can be rendered before LaTeX compilation. This preserves a
-buildable draft without weakening the final strict gate.
+buildable developer draft. `make -C paper release` instead cleans the build, runs the renderer without
+`--if-ready`, and builds the PDF only from complete evidence. The release finalizer then repeats the
+strict paper audit after the PDF build and before constructing either distribution.
 
 ## DenseOn evidence contract
 
@@ -75,7 +80,7 @@ verify the DenseOn subset explicitly.
 | Claim family | Authoritative evidence | DenseOn final gate |
 |---|---|---|
 | Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and manifests under `reports/training-dynamics/` | 12 DenseOn runs and 60 checkpoints; every history, terminal record, systems summary, and source-bound figure passes audit |
-| Discovery retrieval behavior | `reports/coverage.json`, strict aggregate tables, and plot sidecars | exactly 840 DenseOn checkpoint--task cells across 14 decontaminated-BEIR tasks |
+| Discovery retrieval behavior | [`reports/dense-discovery/coverage.json`](../reports/dense-discovery/coverage.json), strict aggregate tables, and plot sidecars | exactly 840 DenseOn checkpoint--task cells across 14 decontaminated-BEIR tasks |
 | Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics-dense/summary_manifest.json` | 60 DenseOn checkpoint means and all 840 source task files pass hashes; right-censored AdamW-median rule and post-hoc timing are disclosed |
 | Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 12 DenseOn runs and 60 checkpoints with verified model inputs |
 | Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | every frozen DenseOn anchor, gradient replay, transform, and spectrum passes Cartesian and source-hash audits |
@@ -84,6 +89,8 @@ verify the DenseOn subset explicitly.
 | Post-hoc symmetric tail diagnostic | `configs/tail_stability_analysis.json` and `reports/tail-stability/summary_manifest.json` | fixed DenseOn quantiles and Adam/challenger cross-tails are labeled post hoc; no robustness claim without the accumulated gate |
 | Spectrum/basis attribution | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | complete DenseOn spectrum, basis, interaction, path, and band cells; this fixed-state tier is insufficient for long-horizon causality |
 | Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 9 DenseOn runs and 45 checkpoints on both frozen probes; three-seed joint loss-p95/unseen-margin-p05 endpoint |
+| Temporal causal-chain bridge | `reports/temporal-short-branch/summary_manifest.json`, `paired_contrasts.csv`, `loso_predictions.csv`, and `estimates.csv` in that directory | every frozen predictor and norm control is reported across held-out seeds; numerical RMSE changes and optimizer-coefficient changes are displayed even when the bridge is negative |
+| Dose/band causal-chain bridge | `reports/dose-band/summary_manifest.json`, `reports/dose-band/anchor_tests.csv`, and `reports/dose-band/heldout_predictions.csv` | all 10 frozen anchors and 84 forward-retrieval rows pass audit; numerical dose, band, basis-control, and held-out RMSE results are displayed rather than reduced to a verdict |
 | Routing fairness | `reports/hybrid-adamw/summary_manifest.json` | all 4 DenseOn hybrid-AdamW learning-rate runs and 56 final BEIR cells |
 | Confirmatory retrieval claims | `reports/confirmatory/summary_manifest.json` | 3 seeds × 3 optimizers = 9 DenseOn runs and 126 final BEIR cells; two primary contrasts receive nominal intervals and the original six-comparison Bonferroni familywise intervals |
 | Final outcome rendering | `reports/outcome-summary.manifest.json` and `reports/paper-results.manifest.json` | all DenseOn tables/headlines are source-hashed; no unresolved marker or LateOn contribution to primary inference |

@@ -13,6 +13,7 @@
 \usepackage{url}
 
 \input{results}
+\input{generated/causal-chain}
 
 \title{From Local Update Disadvantage to Global Retrieval Differences:\\
 Understanding Muon in Dense Retriever Adaptation}
@@ -35,7 +36,8 @@ in discovery. Their
 immediate errors also redistribute rather than uniformly dominate AdamW's worst-query tail. We test
 whether repeated, trajectory-changing adaptation---rather than a universally better one-step
 direction---explains those discovery differences, using routing-matched AdamW, shared-start branches,
-and a frozen three-seed confirmation. \DiscoveryHeadline. \ConfirmationHeadline. The original project also ran
+frozen spectrum-to-retrieval stress tests, and a three-seed confirmation. \DiscoveryHeadline
+\ConfirmationHeadline The original project also ran
 exploratory LateOn experiments; a user-directed, post-hoc scope amendment excludes them from all
 primary and confirmatory inference and retains them only as historical supplementary material.
 \end{abstract}
@@ -89,6 +91,9 @@ Our contributions are:
     \item A query-level analysis showing that the relevant immediate phenomenon is tail
     redistribution rather than uniform Muon dominance, together with a frozen shared-start test of
     whether repeated updates improve the acquisition--preservation frontier.
+    \item A falsifiable causal-chain test that requires early spectra to predict held-out branch
+    outcomes beyond optimizer labels and norm controls, then requires fixed-state dose, band, basis,
+    and held-run retrieval evidence. A completed failure is retained as a claimable negative result.
     \item Routing-matched hybrid AdamW and three new negative-sampling seeds that separate the matrix
     rule from parameter routing and keep the final optimizer comparison independent of BEIR-based
     discovery selection.
@@ -145,6 +150,12 @@ suppression. This distinction is central for DenseOn: a pooled representation ca
 margin while moving failure mass among queries. The prospectively frozen shared-start endpoint asks
 the stronger question of whether the three-seed median simultaneously improves query-disjoint loss
 p95 and unseen margin p05 after repeated updates.
+
+\paragraph{Causal-chain research question.}
+Does a specific change in the singular-value distribution explain an accumulated functional effect
+and predict a later retrieval change, rather than merely restating Muon's known spectral signature?
+We require held-out prediction and interventions that can reject this explanation; no checkpoint
+correlation, optimizer label, or fixed-state geometric fingerprint answers this question by itself.
 
 \section{Related Work}
 
@@ -228,9 +239,38 @@ though only DenseOn rows enter the paper. Positive, negative, or inconclusive he
 determined only after the frozen three-seed matrix is complete. Aggregate MTEB outputs do not contain
 per-query rankings, so we make no query-level significance claim for BEIR.
 
+\subsection{Frozen causal-chain protocol}
+
+The shared-start temporal test uses all 45 adjacent displacements from nine randomized branches and
+five checkpoints, with the first displacement measured from the common start. For each challenger,
+the primary predictor is hidden-matrix tail singular-value energy averaged over stages 1--2; the
+outcomes are stage-5 query-disjoint loss p95 and unseen margin p05. We fit paired-contrast ordinary
+least squares while leaving one complete order seed out. The reference is an optimizer-label-only
+mean fit on the two training seeds; total hidden-update and current-weight Frobenius norms are frozen
+negative controls. Stable rank, entropy rank, other spectral bands, and row imbalance are reported as
+secondaries but cannot rescue the primary test.
+
+Temporal support requires all five frozen conditions: (i) both challenger predictor shifts are
+positive in at least two of three seeds; (ii) both final outcomes favor each challenger in at least
+two seeds; (iii) the primary predictor improves pooled leave-one-seed-out RMSE over optimizer labels
+for both outcomes; (iv) neither norm control equals or exceeds that improvement for either outcome;
+and (v) adding the primary predictor does not increase either absolute challenger coefficient for
+either outcome. Failure of any condition is a complete negative temporal result, not missing evidence.
+
+The fixed-state test interpolates the Muon spectrum into the AdamW basis at
+$\lambda\in\{0,.25,.5,.75,1\}$, with every direction Frobenius-matched. Both loss-p95 and margin-p05
+responses must be weakly monotone at at least eight of ten frozen anchors; the prespecified tail band
+must beat the head and middle bands, and the spectrum transplant must beat the matched basis-swap
+control, each on both metrics at at least eight anchors. Finally, 84 observations join 14 tasks to
+the two eligible next-checkpoint transitions in each of three source runs. Leaving one full source
+run out, a spectrum-based immediate effect must improve same-task next-checkpoint nDCG@10 RMSE beyond
+task and transition effects, while its basis-control counterpart must not match that improvement.
+Only joint passage of dose, band, basis, and held-run bridge rules supports the spectral-component
+account.
+
 \section{Retrieval Outcomes and Training Dynamics}
 
-\DiscoveryHeadline.
+\DiscoveryHeadline
 
 \input{generated/discovery}
 
@@ -258,7 +298,7 @@ replay the same ordered sequence of eight gradients into each optimizer. This fr
 warm-up is the formal common-state protocol; one-gradient cold starts are auxiliary. Weight decay is
 kept separate, and directions are compared raw and after global or per-tensor Frobenius matching.
 Primary measurements are effective rank, condition number, row-energy concentration, layer
-allocation, and pairwise angle. \CommonStateHeadline.
+allocation, and pairwise angle. \CommonStateHeadline
 
 \input{generated/common-state}
 
@@ -287,7 +327,7 @@ four-learning-rate-median discovery BEIR point estimates, this pattern is consis
 \emph{optimizer-induced state feedback}: committing an operator's
 direction moves DenseOn into states that elicit different future gradients, so the accumulated path
 cannot be reduced to the quality of one frozen-state step. The cosine synthesis was defined after
-inspection and is descriptive. Exact values remain behind the audited result gate
+inspection and is descriptive. Exact values enter only through the audited result table
 (Table~\ref{tab:common-state-results}); shared-start branches test the prospective accumulation
 hypothesis, while the frozen spectrum/basis transplant distinguishes a
 singular-value account from a singular-vector-basis account.
@@ -320,9 +360,21 @@ the same 50K groups under three order seeds. All five checkpoints are scored on 
 unseen functional probes. The frozen endpoint requires simultaneous improvement in query-disjoint
 loss p95 and unseen margin p05 under the three-seed median. This directly tests whether the immediate
 tail redistribution becomes a beneficial accumulated adaptation rather than assuming that a local
-step predicts the final trajectory. \InterventionHeadline.
+step predicts the final trajectory. \InterventionHeadline
 
 \input{generated/intervention}
+
+\subsection{Falsifiable spectrum-to-retrieval chain}
+
+Table~\ref{tab:causal-chain-summary} reports the frozen temporal, component, and forward-retrieval
+verdicts without assuming that the hypothesis succeeds. A supported result means that early spectral
+redistribution predicts accumulated tail outcomes beyond labels and norms, and that controlled
+singular-value changes pass the dose, localization, specificity, and held-run bridge tests. If either
+analysis is a claimable negative, we instead reject the tested spectral explanation while retaining
+any independently established local direction, shared-start, or retrieval result. In neither case do
+we interpret the chain as a formally identified mediation effect.
+
+\CausalChainSummaryTable
 
 \subsection{Routing-matched AdamW}
 
@@ -338,7 +390,7 @@ orthogonalization.
 On fixed in-distribution and unseen probes, we measure the full query-margin distribution, embedding
 effective rank and isotropy, hubness, and top-$k$ agreement with the pretrained model. We join these
 quantities to DenseOn trajectories and separately analyze within-run first differences.
-\RepresentationHeadline.
+\RepresentationHeadline
 
 \input{generated/representation}
 
@@ -349,9 +401,9 @@ functional effect.
 \section{Three-Seed Retrieval Confirmation}
 
 The validation-frozen recipes are retrained on three independently resampled negative views. The
-confirmatory table is intentionally left unresolved until all DenseOn training, strict BEIR
-evaluation, and source-hash audits finish. Discovery point estimates, LateOn history, and the
-exploratory tail analysis cannot determine its wording. \ConfirmationHeadline.
+confirmatory headline and table are rendered only after all DenseOn training, strict BEIR evaluation,
+and source-hash audits pass. Discovery point estimates, LateOn history, and the exploratory tail
+analysis cannot determine their wording. \ConfirmationHeadline
 
 \input{generated/confirmation}
 
@@ -365,6 +417,13 @@ hybrid AdamW matches Muon, routing rather than the matrix operator is sufficient
 tail endpoint fails, the local redistribution remains real but cannot explain the final gain. If the
 three-seed interval is inconclusive, the mechanism study constrains explanations of the discovery
 effect without establishing a general recipe advantage.
+
+The causal-chain verdict further separates an optimizer outcome from its explanation. If the temporal
+or fixed-state chain is negative, Muon's known spectral flattening does not explain the retrieval
+result tested here, even if the optimizer comparison itself is positive. If every frozen component
+passes, the evidence supports a spectral-component chain across randomized branches, fixed-state
+interventions, and held-run prediction, but still does not identify formal mediation of the final
+BEIR contrast.
 
 This conditional structure also prevents definition-level properties from masquerading as novelty.
 Muon's spectral flattening and NorMuon's row adaptation are known features of the algorithms. The
@@ -387,6 +446,13 @@ Muon-from-scratch pretraining. Four learning rates provide a broad but finite se
 confirmation seeds may leave small effects uncertain. Intrinsic geometry metrics are not causal by
 themselves; causal language is restricted to fixed-state interventions and shared-start branches.
 Decontamination reduces known overlap but cannot prove the absence of every semantic duplicate.
+
+The temporal bridge uses nine branches and only three randomized order seeds, and its spectral
+predictor is measured after optimizer assignment; leave-one-seed-out performance is therefore a
+small-sample stress test rather than an identified mediator estimate. The 84-row forward bridge holds
+out source runs but reuses the same 14 benchmark tasks, while the dose and band interventions change
+components at frozen weights rather than training a controlled spectral operator. Even joint passage
+supports causal-chain triangulation, not formal mediation of the full-training retrieval effect.
 
 The Dense-only scope was adopted post hoc after some two-architecture results were visible. Its
 operational motivation does not erase the risk of selective emphasis. We mitigate that risk by
@@ -420,12 +486,24 @@ Better DenseOn recipe & validation-frozen recipe, new seeds, paired seed/task un
 Local direction helps & Frobenius-matched same-state functional intervention & flatter update spectrum \\
 Tail robustness & frozen three-seed shared-start loss-p95 and margin-p05 endpoint & one inspected worst-tail set \\
 Accumulation explains gain & shared-start branches plus temporal functional evidence & endpoint checkpoint correlation \\
+Spectral component explains retrieval & all five temporal rules plus dose, band, basis, and 84-row held-run bridge & intrinsic flattening, in-sample fit, or one local transplant \\
 Matrix rule matters & hybrid-AdamW routing control & native AdamW comparison alone \\
 \bottomrule
 \end{tabular}
 \caption{Minimum evidence required for each DenseOn headline claim.}
 \label{tab:claim-firewall}
 \end{table*}
+
+The temporal and held-run predictors triangulate links in a prespecified chain; because the spectral
+quantity is post-treatment and the fixed-state transplant is not a trained optimizer assignment,
+even complete support is explicitly not a formal causal mediation estimate.
+
+\section{Causal-Chain Diagnostics}
+
+The main text reports one compact decision table. The complete all-required checks appear below so a
+claimable negative cannot be hidden by an overall label or replaced by a favorable secondary metric.
+
+\CausalChainDiagnostics
 
 \section{Historical LateOn Exploration}
 

@@ -197,6 +197,7 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         "paper/results.tex",
     )
     result_tables = (
+        "paper/generated/causal-chain.tex",
         "paper/generated/common-state.tex",
         "paper/generated/confirmation.tex",
         "paper/generated/discovery.tex",

@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from embed_optim.paper_results import (
+    PAPER_RESULT_TABLE_PATHS,
     IncompletePaperEvidenceError,
     _ci_classification,
     _latex_escape,
@@ -12,6 +15,29 @@ from embed_optim.paper_results import (
     main,
     render_paper_results,
 )
+
+
+def test_renderer_resolves_scope_amendment_against_repo_root_before_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repository = tmp_path / "checkout"
+    expected = repository / "configs/scope.json"
+    captured: dict[str, Path] = {}
+
+    def capture(_families, scope_path):
+        captured["path"] = Path(scope_path)
+        raise RuntimeError("captured")
+
+    monkeypatch.setattr("embed_optim.paper_results.resolve_scope", capture)
+    monkeypatch.chdir(tmp_path)
+    with pytest.raises(RuntimeError, match="captured"):
+        render_paper_results(
+            repo_root=repository,
+            families=("dense",),
+            scope_amendment=Path("configs/scope.json"),
+        )
+
+    assert captured["path"] == expected.resolve()
 
 
 def _rows():
@@ -414,6 +440,45 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     source.write_text("value\n1\n")
     task_rows = _task_rows()
     captured = {}
+    causal_evidence = {
+        "complete": True,
+        "source_table_records": [{"path": str(source)} for _ in range(5)],
+        "temporal_short_branch": {
+            "manifest": {"path": str(source)},
+            "status": "supported",
+            "claimable": True,
+            "supported": True,
+            "claim_boundary": "temporal boundary",
+        },
+        "dose_band": {
+            "manifest": {"path": str(source)},
+            "status": "negative",
+            "claimable": True,
+            "supported": False,
+            "claim_boundary": "dose boundary",
+        },
+    }
+
+    monkeypatch.setattr(
+        "embed_optim.paper_results.load_causal_chain_evidence",
+        lambda *_args, **_kwargs: causal_evidence,
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.render_causal_chain_latex",
+        lambda _evidence: "generated causal table\n",
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.causal_chain_display_contract",
+        lambda _evidence: {"complete": True, "source_tables": 5},
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.render_causal_chain_headline_fragment",
+        lambda _evidence: " causal headline",
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_results.PAPER_SOURCE_TABLE_PATHS",
+        tuple(source.relative_to(tmp_path) for _ in range(22)),
+    )
 
     monkeypatch.setattr(
         "embed_optim.paper_results.audit_paper",
@@ -514,8 +579,9 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     assert "task_rows" not in captured["headline_keys"]
     assert captured["table_task_rows"] is task_rows
     assert captured["table_task_stability_rows"] is task_stability_rows
-    assert len(manifest["source_tables"]) == 17
-    assert len(manifest["result_tables"]) == 6
+    assert len(manifest["source_tables"]) == 22
+    assert len(manifest["result_tables"]) == 7
+    assert manifest["causal_chain_display"] == {"complete": True, "source_tables": 5}
 
 
 def test_latex_escape_protects_generated_data_cells():
@@ -542,6 +608,45 @@ def test_if_ready_only_suppresses_incomplete_evidence(monkeypatch, capsys):
     main(["--if-ready"])
 
     assert "retaining audited draft headlines" in capsys.readouterr().out
+
+
+def test_pending_causal_evidence_causes_no_paper_writes(tmp_path, monkeypatch):
+    targets = [tmp_path / "paper/results.tex", tmp_path / "reports/paper-results.manifest.json"]
+    targets.extend(tmp_path / relative for relative in PAPER_RESULT_TABLE_PATHS)
+    before = {}
+    for index, path in enumerate(targets):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"sentinel {index}\n", encoding="utf-8")
+        before[path] = path.read_bytes()
+    monkeypatch.setattr(
+        "embed_optim.paper_results.load_causal_chain_evidence",
+        lambda *_args, **_kwargs: {"complete": False},
+    )
+
+    with pytest.raises(IncompletePaperEvidenceError, match="causal-chain evidence"):
+        render_paper_results(repo_root=tmp_path)
+
+    assert {path: path.read_bytes() for path in targets} == before
+
+
+def test_malformed_complete_causal_evidence_causes_no_paper_writes(tmp_path, monkeypatch):
+    targets = [tmp_path / "paper/results.tex", tmp_path / "reports/paper-results.manifest.json"]
+    targets.extend(tmp_path / relative for relative in PAPER_RESULT_TABLE_PATHS)
+    before = {}
+    for index, path in enumerate(targets):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(f"sentinel {index}\n", encoding="utf-8")
+        before[path] = path.read_bytes()
+
+    def malformed(*_args, **_kwargs):
+        raise ValueError("malformed complete causal evidence")
+
+    monkeypatch.setattr("embed_optim.paper_results.load_causal_chain_evidence", malformed)
+
+    with pytest.raises(ValueError, match="malformed complete causal evidence"):
+        render_paper_results(repo_root=tmp_path)
+
+    assert {path: path.read_bytes() for path in targets} == before
 
 
 def test_default_cli_and_if_ready_do_not_suppress_other_failures(monkeypatch):

@@ -6,19 +6,27 @@ VENDOR := vendor
 BUILD := build
 STYLE_FILES := $(VENDOR)/acl.sty $(VENDOR)/acl_natbib.bst
 RESULT_TABLES := generated/discovery.tex generated/per-task.tex generated/common-state.tex \
-	generated/representation.tex generated/intervention.tex generated/confirmation.tex
+	generated/representation.tex generated/intervention.tex generated/confirmation.tex \
+	generated/causal-chain.tex
 PYTHON ?= python3
 
-.PHONY: all vendor headlines clean distclean
+.PHONY: all release vendor headlines clean distclean
 
 all: headlines $(BUILD)/main.pdf
+
+release:
+	$(MAKE) clean
+	$(PYTHON) -m embed_optim.paper_results --repo-root .. \
+		--families dense \
+		--scope-amendment configs/dense_scope_amendment.json
+	$(MAKE) $(BUILD)/main.pdf
 
 vendor: $(STYLE_FILES)
 
 headlines:
 	$(PYTHON) -m embed_optim.paper_results --repo-root .. --if-ready \
 		--families dense \
-		--scope-amendment ../configs/dense_scope_amendment.json
+		--scope-amendment configs/dense_scope_amendment.json
 
 $(VENDOR)/.ready:
 	mkdir -p $(VENDOR)

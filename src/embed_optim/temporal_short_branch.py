@@ -17,9 +17,60 @@ from .tail_stability import SHORT_BRANCH_FIELDS
 IDENTITY = ("family", "seed", "operator", "stage")
 
 
-def _identity(path: Path) -> dict[str, Any]:
+def _repository_root(protocol: Path) -> Path:
+    """Return the checkout root that owns the frozen causal protocol."""
+
+    return protocol.resolve().parent.parent
+
+
+def _portable_path(path: Path, repository_root: Path) -> str:
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(repository_root.resolve()).as_posix()
+    except ValueError:
+        # Unit tests and explicit API callers may intentionally place scratch
+        # outputs outside the checkout. Repository-owned records are always
+        # portable; external scratch inputs retain an unambiguous absolute path.
+        return str(resolved)
+
+
+def _identity(path: Path, *, repository_root: Path | None = None) -> dict[str, Any]:
     path = path.resolve()
-    return {"path": str(path), "bytes": path.stat().st_size, "sha256": _sha256(path)}
+    declared = str(path) if repository_root is None else _portable_path(path, repository_root)
+    return {"path": declared, "bytes": path.stat().st_size, "sha256": _sha256(path)}
+
+
+def _record_matches_path(record: Any, path: Path, repository_root: Path) -> bool:
+    """Validate a canonical record, accepting only a safe relocated legacy absolute path."""
+
+    if not isinstance(record, dict) or not isinstance(record.get("path"), str):
+        return False
+    expected = path.resolve()
+    root = repository_root.resolve()
+    declared = Path(record["path"])
+    try:
+        relative = expected.relative_to(root)
+    except ValueError:
+        path_matches = declared.is_absolute() and declared.resolve() == expected
+    else:
+        if declared.is_absolute():
+            # Older receipts embedded their checkout root. Relocate only when
+            # the complete repository-relative suffix is identical; content is
+            # still verified against the current checkout below.
+            suffix = relative.parts
+            path_matches = declared.resolve() == expected or (
+                len(declared.parts) >= len(suffix)
+                and tuple(declared.parts[-len(suffix) :]) == suffix
+            )
+        else:
+            path_matches = declared.as_posix() == relative.as_posix()
+    return bool(
+        path_matches
+        and expected.is_file()
+        and type(record.get("bytes")) is int
+        and record["bytes"] == expected.stat().st_size
+        and record.get("sha256") == _sha256(expected)
+    )
 
 
 def _read_csv(path: Path) -> list[dict[str, str]]:
@@ -27,7 +78,7 @@ def _read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
-def _write_csv(path: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
+def _write_csv(path: Path, rows: list[dict[str, Any]], *, repository_root: Path) -> dict[str, Any]:
     if not rows:
         raise ValueError(f"Refusing to write empty temporal table: {path}")
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -40,7 +91,7 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> dict[str, Any]:
         writer.writeheader()
         writer.writerows(rows)
     temporary.replace(path)
-    return _identity(path)
+    return _identity(path, repository_root=repository_root)
 
 
 def _csv_bytes(rows: list[dict[str, Any]]) -> bytes:
@@ -161,20 +212,18 @@ def _load_spec(path: Path) -> dict[str, Any]:
 
 
 def _verify_declared_csv(
-    manifest_path: Path, csv_path: Path, *, expected_rows: int
+    manifest_path: Path,
+    csv_path: Path,
+    *,
+    expected_rows: int,
+    repository_root: Path,
 ) -> list[dict[str, str]]:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     declared = manifest.get("output")
-    declared_path = Path(declared.get("path", "")) if isinstance(declared, dict) else Path()
-    if not declared_path.is_absolute():
-        declared_path = manifest_path.resolve().parent / declared_path
     if (
         manifest.get("schema_version") != SCHEMA_VERSION
         or manifest.get("complete") is not True
-        or not isinstance(declared, dict)
-        or declared_path.resolve() != csv_path.resolve()
-        or declared.get("bytes") != csv_path.stat().st_size
-        or declared.get("sha256") != _sha256(csv_path)
+        or not _record_matches_path(declared, csv_path, repository_root)
         or declared.get("rows") != expected_rows
     ):
         raise ValueError(f"Input manifest does not bind the expected table: {manifest_path}")
@@ -190,20 +239,21 @@ def _load_inputs(
     predictor_manifest: Path,
     outcome_csv: Path,
     outcome_manifest: Path,
+    *,
+    repository_root: Path,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
-    predictors = _verify_declared_csv(predictor_manifest, predictor_csv, expected_rows=45)
+    predictors = _verify_declared_csv(
+        predictor_manifest,
+        predictor_csv,
+        expected_rows=45,
+        repository_root=repository_root,
+    )
     outcome_manifest_payload = json.loads(outcome_manifest.read_text(encoding="utf-8"))
     declared = (outcome_manifest_payload.get("outputs") or {}).get("short_branch_checkpoint_tail")
-    declared_path = Path(declared.get("path", "")) if isinstance(declared, dict) else Path()
-    if not declared_path.is_absolute():
-        declared_path = outcome_manifest.resolve().parent / declared_path
     if (
         outcome_manifest_payload.get("schema_version") != SCHEMA_VERSION
         or outcome_manifest_payload.get("complete") is not True
-        or not isinstance(declared, dict)
-        or declared_path.resolve() != outcome_csv.resolve()
-        or declared.get("sha256") != _sha256(outcome_csv)
-        or declared.get("bytes") != outcome_csv.stat().st_size
+        or not _record_matches_path(declared, outcome_csv, repository_root)
         or declared.get("rows") != 45
     ):
         raise ValueError("Tail-stability manifest does not bind 45 Dense checkpoint outcomes")
@@ -224,7 +274,7 @@ def _load_inputs(
         if observed != expected or len(observed) != 45:
             raise ValueError(f"Temporal {label} identities do not cover the frozen 45 checkpoints")
     sources = [
-        _identity(path)
+        _identity(path, repository_root=repository_root)
         for path in (predictor_manifest, predictor_csv, outcome_manifest, outcome_csv)
     ]
     return predictors, outcomes, sources
@@ -456,11 +506,12 @@ def build_report(
     output_dir: Path,
 ) -> dict[str, Any]:
     protocol = protocol.resolve()
+    repository_root = _repository_root(protocol)
     output_dir = output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     spec = _load_spec(protocol)
     missing = [
-        str(p.resolve())
+        _portable_path(p, repository_root)
         for p in (predictor_csv, predictor_manifest, outcome_csv, outcome_manifest)
         if not p.is_file()
     ]
@@ -473,15 +524,17 @@ def build_report(
             "complete": False,
             "status": "pending-not-claimable",
             "claimable": False,
-            "protocol": _identity(protocol),
+            "protocol": _identity(protocol, repository_root=repository_root),
             "missing": missing,
             "reason": reason,
-            "outputs": {"README.md": _identity(readme)},
+            "outputs": {"README.md": _identity(readme, repository_root=repository_root)},
         }
         _atomic_json(output_dir / "summary_manifest.json", receipt)
         return receipt
     predictor_receipt = json.loads(predictor_manifest.read_text(encoding="utf-8"))
-    if predictor_receipt.get("analysis_protocol") != _identity(protocol):
+    if not _record_matches_path(
+        predictor_receipt.get("analysis_protocol"), protocol, repository_root
+    ):
         raise ValueError("Temporal predictor receipt is bound to a different causal-chain protocol")
     predictors, outcomes, sources = _load_inputs(
         spec,
@@ -489,24 +542,31 @@ def build_report(
         predictor_manifest.resolve(),
         outcome_csv.resolve(),
         outcome_manifest.resolve(),
+        repository_root=repository_root,
     )
     paired, predictions, estimates = analyze_rows(spec, predictors, outcomes)
     decision = support_decision(spec, paired, estimates)
     outputs = {
-        "paired_contrasts.csv": _write_csv(output_dir / "paired_contrasts.csv", paired),
-        "loso_predictions.csv": _write_csv(output_dir / "loso_predictions.csv", predictions),
-        "estimates.csv": _write_csv(output_dir / "estimates.csv", estimates),
+        "paired_contrasts.csv": _write_csv(
+            output_dir / "paired_contrasts.csv", paired, repository_root=repository_root
+        ),
+        "loso_predictions.csv": _write_csv(
+            output_dir / "loso_predictions.csv", predictions, repository_root=repository_root
+        ),
+        "estimates.csv": _write_csv(
+            output_dir / "estimates.csv", estimates, repository_root=repository_root
+        ),
     }
     readme = output_dir / "README.md"
     readme.write_text(_markdown(spec, estimates, "complete", decision=decision), encoding="utf-8")
-    outputs["README.md"] = _identity(readme)
+    outputs["README.md"] = _identity(readme, repository_root=repository_root)
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,
         "status": "complete",
         "claimable": True,
         "family": "dense",
-        "protocol": _identity(protocol),
+        "protocol": _identity(protocol, repository_root=repository_root),
         "sources": sources,
         "coverage": {
             "seeds": 3,
@@ -534,6 +594,8 @@ def audit_report(
     outcome_csv: Path,
     outcome_manifest: Path,
 ) -> dict[str, Any]:
+    protocol = protocol.resolve()
+    repository_root = _repository_root(protocol)
     path = output_dir.resolve() / "summary_manifest.json"
     payload = json.loads(path.read_text(encoding="utf-8"))
     if (
@@ -558,54 +620,46 @@ def audit_report(
     }
     if set(payload) != expected_keys:
         raise RuntimeError("Temporal short-branch manifest schema differs")
-    expected_protocol = _identity(protocol)
     expected_source_paths = tuple(
         source.resolve()
         for source in (predictor_manifest, predictor_csv, outcome_manifest, outcome_csv)
     )
     declared_sources = payload.get("sources")
-    declared_source_paths = (
-        tuple(Path(item.get("path", "")).resolve() for item in declared_sources)
-        if isinstance(declared_sources, list)
-        and all(isinstance(item, dict) for item in declared_sources)
-        else ()
-    )
     if (
-        payload.get("protocol") != expected_protocol
-        or declared_source_paths != expected_source_paths
+        not _record_matches_path(payload.get("protocol"), protocol, repository_root)
+        or not isinstance(declared_sources, list)
+        or len(declared_sources) != len(expected_source_paths)
+        or any(
+            not _record_matches_path(record, expected, repository_root)
+            for record, expected in zip(declared_sources, expected_source_paths, strict=True)
+        )
     ):
         raise RuntimeError("Temporal short-branch receipt differs from CLI protocol/input bindings")
-    for item in payload.get("outputs", {}).values():
-        target = Path(item["path"])
-        if (
-            not target.is_file()
-            or target.stat().st_size != item["bytes"]
-            or _sha256(target) != item["sha256"]
-        ):
+    outputs = payload.get("outputs")
+    if not isinstance(outputs, dict):
+        raise RuntimeError("Temporal short-branch output receipt is malformed")
+    for name, item in outputs.items():
+        target = output_dir.resolve() / name
+        if not _record_matches_path(item, target, repository_root):
             raise RuntimeError(f"Temporal short-branch output differs: {target}")
-    for item in [payload.get("protocol"), *payload.get("sources", [])]:
-        source = Path(item.get("path", "")) if isinstance(item, dict) else Path()
-        if (
-            not source.is_file()
-            or source.stat().st_size != item.get("bytes")
-            or _sha256(source) != item.get("sha256")
-        ):
-            raise RuntimeError(f"Temporal short-branch source differs: {source}")
-    protocol = protocol.resolve()
     spec = _load_spec(protocol)
-    sources = payload["sources"]
-    if len(sources) != 4:
+    if len(declared_sources) != 4:
         raise RuntimeError("Temporal short-branch input source cardinality differs")
-    predictor_manifest, predictor_csv, outcome_manifest, outcome_csv = map(
-        lambda item: Path(item["path"]), sources
-    )
+    predictor_manifest, predictor_csv, outcome_manifest, outcome_csv = expected_source_paths
     predictor_receipt = json.loads(predictor_manifest.read_text(encoding="utf-8"))
-    if predictor_receipt.get("analysis_protocol") != expected_protocol or predictor_receipt.get(
-        "scope_amendment"
-    ) != _identity(scope_amendment):
+    if not _record_matches_path(
+        predictor_receipt.get("analysis_protocol"), protocol, repository_root
+    ) or not _record_matches_path(
+        predictor_receipt.get("scope_amendment"), scope_amendment, repository_root
+    ):
         raise RuntimeError("Temporal predictor receipt uses a different protocol/scope")
     predictors, outcomes, fresh_sources = _load_inputs(
-        spec, predictor_csv, predictor_manifest, outcome_csv, outcome_manifest
+        spec,
+        predictor_csv,
+        predictor_manifest,
+        outcome_csv,
+        outcome_manifest,
+        repository_root=repository_root,
     )
     paired, predictions, estimates = analyze_rows(spec, predictors, outcomes)
     decision = support_decision(spec, paired, estimates)
@@ -615,10 +669,10 @@ def audit_report(
         "estimates.csv": estimates,
     }
     for name, rows in tables.items():
-        if Path(payload["outputs"][name]["path"]).read_bytes() != _csv_bytes(rows):
+        if (output_dir.resolve() / name).read_bytes() != _csv_bytes(rows):
             raise RuntimeError(f"Temporal short-branch recomputed table differs: {name}")
     expected_readme = _markdown(spec, estimates, "complete", decision=decision).encode()
-    if Path(payload["outputs"]["README.md"]["path"]).read_bytes() != expected_readme:
+    if (output_dir.resolve() / "README.md").read_bytes() != expected_readme:
         raise RuntimeError("Temporal short-branch recomputed Markdown differs")
     expected_coverage = {
         "seeds": 3,
@@ -628,9 +682,7 @@ def audit_report(
         "loso_predictions": len(predictions),
     }
     if (
-        payload["protocol"] != _identity(protocol)
-        or payload["sources"] != fresh_sources
-        or payload["coverage"] != expected_coverage
+        payload["coverage"] != expected_coverage
         or payload["decision"] != decision
         or payload["claim_rule"] != spec["analysis"]["claim_rule"]
         or payload["claim_boundary"] != spec["claim_boundary"]

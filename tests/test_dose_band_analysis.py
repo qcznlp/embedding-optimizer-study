@@ -47,6 +47,10 @@ def test_checked_in_protocol_exposes_the_frozen_dose_claim_boundary():
     )
     assert "formal mediation" in dose["claim_boundary"]
     assert provenance["protocol"]["sha256"] == _sha256(Path("configs/causal_chain_analysis.json"))
+    assert provenance["protocol"]["path"] == "configs/causal_chain_analysis.json"
+    assert [record["path"] for record in provenance["source_bindings"]] == list(
+        dose_band_analysis.CAUSAL_SOURCE_PATHS
+    )
     assert anchor_contract["run_ids"] == (
         "adamw-lr1e-5",
         "muon-lr1e-3",

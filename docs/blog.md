@@ -3,9 +3,10 @@
 > A controlled DenseOn study of AdamW, Muon, and NorMuon, from one-step update geometry to
 > five-stage decontaminated BEIR dynamics.
 
-**Study status:** the original DenseOn discovery sweep is complete. Dense-only hybrid-routing
-controls, three-seed confirmation, shared-start branches, and the frozen spectrum-versus-basis
-intervention are running under the post-hoc scope amendment.
+**Study status:** the original DenseOn discovery sweep is complete. The generated
+[completion outcome](#audited-completion-status) records the audited state and claimability of the
+Dense-only hybrid-routing controls, three-seed confirmation, shared-start branches, and frozen
+spectrum-versus-basis intervention under the post-hoc scope amendment.
 
 ## What changed, and why
 
@@ -434,13 +435,18 @@ stable/entropy rank, band energy, and row imbalance are reported in full, while 
 weight norms are negative controls. Second, the transplant must exhibit a 0/.25/.5/.75/1 dose
 response, prespecified tail-band localization, and spectrum-over-basis specificity at at least eight
 of ten anchors. Its task-level immediate effects must then improve leave-one-run-out prediction of
-84 same-task, next-checkpoint BEIR changes.
+84 same-task, next-checkpoint BEIR changes, and each passing spectrum predictor must improve over
+both the task-transition baseline and its matched basis predictor.
 
 These tests can finish successfully while rejecting the hypothesis. In that case the report will
 say that Muon changes local update geometry but the tested spectral behavior does **not** explain
 the retrieval outcome. We call this falsifiable causal-chain triangulation, not formal causal
 mediation; the dated rules and negative controls are bound in
 `configs/causal_chain_analysis.json`.
+
+## Audited completion status
+
+The marker-owned block below is regenerated from the scoped, content-audited outcome manifest.
 
 <!-- OUTCOMES:BEGIN -->
 
@@ -599,15 +605,41 @@ canonical finalization orchestration is rerun from the beginning.
 If the completion ledger predates those bindings, upgrade it with completion `--resume` before
 retrying the finalizer.
 
-Its reporting sequence begins with the scoped discovery aggregate and retrieval dynamics; these two
-steps regenerate the `RESULTS`, `SYSTEMS`, and `TASK-DELTA-STABILITY` blocks that the later renderers
-consume and audit:
+Its reporting sequence begins with fresh temporal-predictor and temporal short-branch audits. The
+scoped discovery aggregate then regenerates `RESULTS` and `SYSTEMS` before the dose/band fresh audit
+binds itself to that coverage; retrieval dynamics next regenerates `TASK-DELTA-STABILITY`. The later
+renderers consume and audit those blocks:
 
 ~~~bash
+embed-optim-temporal-short-branch-predictors \
+  --protocol configs/short_branch_protocol.json \
+  --analysis-protocol configs/causal_chain_analysis.json \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --output-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --cache-dir reports/short-branch/temporal-predictor-cache \
+  --audit
+
+embed-optim-temporal-short-branch \
+  --protocol configs/causal_chain_analysis.json \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --predictor-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --predictor-manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --outcome-csv reports/tail-stability/short_branch_checkpoint_tail.csv \
+  --outcome-manifest reports/tail-stability/summary_manifest.json \
+  --output-dir reports/temporal-short-branch \
+  --audit
+
 embed-optim-aggregate \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json \
   --strict
+
+embed-optim-dose-band-analysis \
+  --protocol configs/causal_chain_analysis.json \
+  --audit
 
 embed-optim-summarize-retrieval-dynamics \
   --families dense \
@@ -630,7 +662,14 @@ embed-optim-audit-paper \
   --scope-amendment configs/dense_scope_amendment.json \
   --strict
 
-make -C paper
+pytest -q
+ruff check src tests scripts/eval
+ruff format --check src tests scripts/eval
+make -C paper release
+embed-optim-audit-paper \
+  --strict \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
 uv build
 embed-optim-audit-distribution
 ~~~
@@ -658,7 +697,7 @@ those discovery-BEIR scores are below AdamW. Together, the results suggest that 
 move into a distinct, state-dependent trajectory and redistribute which queries are fragile, while
 stronger adaptation can overfit the training-style objective and damage pretrained rankings.
 
-Whether that trajectory explanation survives common-start accumulation and what final quality
-contrast appears under validation-frozen recipes and new seeds remain gated on the running
-Dense-only experiments. The final blog and paper will state a stronger claim only if those
-prospective gates pass.
+The generated [completion outcome](#audited-completion-status) records whether that trajectory
+explanation survives common-start accumulation and what final-quality contrast appears under
+validation-frozen recipes and new seeds. The blog and paper state a stronger claim only when those
+audited prospective gates pass.

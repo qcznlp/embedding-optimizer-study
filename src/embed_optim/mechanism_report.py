@@ -12,6 +12,11 @@ from pathlib import Path
 from typing import Any
 
 from .basis_sensitivity import audit_basis_sensitivity
+from .causal_chain_rendering import (
+    causal_chain_display_contract,
+    render_causal_chain_markdown,
+)
+from .causal_chain_reporting import load_causal_chain_evidence
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 
@@ -32,7 +37,10 @@ def _repository_root(path: Path) -> Path:
     for candidate in (resolved, *resolved.parents):
         if (candidate / "pyproject.toml").is_file():
             return candidate
-    return Path.cwd().resolve()
+    for candidate in (resolved, *resolved.parents):
+        if candidate.name == "reports":
+            return candidate.parent
+    raise ValueError(f"Cannot resolve repository root from {path}")
 
 
 def _portable_path(path: Path, repository_root: Path) -> str:
@@ -747,11 +755,19 @@ def _marked_block_complete(
     path: Path,
     record: Any,
     markers: tuple[str, str],
+    *,
+    repository_root: Path | None = None,
 ) -> bool:
+    declared = Path(str(record.get("path", ""))) if isinstance(record, dict) else Path()
+    declared_path = (
+        declared.resolve()
+        if declared.is_absolute() or repository_root is None
+        else (repository_root.resolve() / declared).resolve()
+    )
     if (
         not isinstance(record, dict)
         or not isinstance(record.get("path"), str)
-        or Path(record["path"]).resolve() != path.resolve()
+        or declared_path != path.resolve()
         or record.get("markers") != list(markers)
     ):
         return False
@@ -809,34 +825,28 @@ def render_mechanism_report(
     families = normalize_families(families)
     families, scope = resolve_scope(families, scope_amendment)
     repository_root = _repository_root(common_state_dir)
+    causal_evidence = load_causal_chain_evidence(repository_root, allow_pending=True)
+    causal_section = render_causal_chain_markdown(causal_evidence, detailed=True, heading_level=3)
+    causal_display = causal_chain_display_contract(causal_evidence)
     causal_manifests = {}
-    causal_lines = []
-    for label, relative in (
-        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
-        ("dose_band", "reports/dose-band/summary_manifest.json"),
-    ):
-        path = (repository_root / relative).resolve()
-        payload = _load_manifest(path) if path.is_file() else {}
-        complete = payload.get("complete") is True
-        supported = (
-            payload.get("decision", {}).get("spectral_temporal_bridge_supported")
-            if label == "temporal_short_branch"
-            else payload.get("supported")
-        )
-        state = (
-            "supported" if complete and supported is True else "negative" if complete else "pending"
-        )
-        boundary = payload.get("claim_boundary") or (
-            "No claim is permitted until the frozen analysis manifest is complete."
-        )
-        causal_lines.append(f"- **{label.replace('_', ' ')}:** {state}. {boundary}")
-        if path.is_file():
+    causal_table_paths: list[Path] = []
+    if causal_evidence["complete"]:
+        for label in ("temporal_short_branch", "dose_band"):
+            branch = causal_evidence[label]
+            record = branch["manifest"]
+            path = Path(record["path"])
             causal_manifests[label] = {
                 "path": _portable_path(path, repository_root),
-                "sha256": _sha256(path),
-                "status": state,
-                "claim_boundary": boundary,
+                "bytes": record["bytes"],
+                "sha256": record["sha256"],
+                "status": branch["status"],
+                "claimable": branch["claimable"],
+                "supported": branch["supported"],
+                "claim_boundary": branch["claim_boundary"],
             }
+        causal_table_paths = [
+            Path(record["path"]) for record in causal_evidence["source_table_records"]
+        ]
     family_count = len(families)
     common_rows, common_manifest, common_table = _common_state_rows(common_state_dir, families)
     basis_rows, basis_manifest, basis_table = _basis_rows(basis_dir, families)
@@ -1097,7 +1107,7 @@ def render_mechanism_report(
                 "matched shared-start branches and fixed-state spectral interventions.",
             ]
         )
-    content += "\n\n### Frozen causal-chain tests\n\n" + "\n".join(causal_lines)
+    content += "\n\n" + causal_section
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
     blog_path = blog_path.resolve()
@@ -1151,8 +1161,10 @@ def render_mechanism_report(
                 basis_table,
                 spectrum_table,
                 *bridge_tables,
+                *causal_table_paths,
             ]
         ],
+        "causal_chain": causal_display,
         "figures": figures,
         "output": {
             "path": _portable_path(output_path, repository_root),

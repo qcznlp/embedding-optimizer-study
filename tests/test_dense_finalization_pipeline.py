@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
 import sys
 from argparse import Namespace
 from pathlib import Path
@@ -21,6 +23,8 @@ from embed_optim.dense_finalization_pipeline import (
     pipeline_steps,
     run_pipeline,
 )
+
+ROOT = Path(__file__).parents[1]
 
 SCOPE = {
     "path": "/scope.json",
@@ -150,6 +154,7 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
         "ruff-check",
         "ruff-format-check",
         "paper-build",
+        "paper-audit-post-build-strict",
         "distribution-build",
         "distribution-audit",
     ]
@@ -185,9 +190,85 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
         "tests",
         "scripts/eval",
     )
-    assert steps[12].command == ("make", "-C", "paper", "clean", "all")
-    assert steps[13].command == ("uv", "build")
+    assert steps[12].command == (
+        "make",
+        "-C",
+        "paper",
+        "release",
+        "PYTHON=/usr/bin/python3",
+    )
+    assert steps[13].name == "paper-audit-post-build-strict"
+    assert steps[13].command == steps[8].command
+    assert steps[14].command == ("uv", "build")
     assert all("wandb_sync" not in step.command for step in steps)
+
+
+def test_release_build_rejects_a_causal_source_removed_after_strict_audit(tmp_path: Path):
+    paper = tmp_path / "paper"
+    paper.mkdir()
+    (paper / "Makefile").write_bytes((ROOT / "paper/Makefile").read_bytes())
+    causal_source = tmp_path / "reports/temporal-short-branch/loso_predictions.csv"
+    causal_source.parent.mkdir(parents=True)
+    causal_source.write_text("held_out_prediction\nvalid\n", encoding="utf-8")
+    fake_cli = tmp_path / "fake_paper_cli.py"
+    fake_cli.write_text(
+        """\
+import os
+import sys
+from pathlib import Path
+
+arguments = sys.argv[1:]
+module = arguments[arguments.index("-m") + 1]
+source = Path(os.environ["CAUSAL_SOURCE"])
+if module == "embed_optim.paper_audit":
+    if "--strict" not in arguments or not source.is_file():
+        raise SystemExit(40)
+elif module == "embed_optim.paper_results":
+    if "--if-ready" in arguments:
+        print("if-ready would retain stale tables")
+    elif not source.is_file():
+        print("strict renderer rejected missing causal source")
+        raise SystemExit(41)
+else:
+    raise SystemExit(42)
+""",
+        encoding="utf-8",
+    )
+    environment = {**os.environ, "CAUSAL_SOURCE": str(causal_source)}
+    subprocess.run(
+        [sys.executable, str(fake_cli), "-m", "embed_optim.paper_audit", "--strict"],
+        check=True,
+        env=environment,
+    )
+    causal_source.unlink()
+
+    result = subprocess.run(
+        [
+            "make",
+            "-C",
+            str(paper),
+            "release",
+            f"PYTHON={sys.executable} {fake_cli}",
+        ],
+        check=False,
+        capture_output=True,
+        env=environment,
+        text=True,
+    )
+
+    output = result.stdout + result.stderr
+    assert result.returncode != 0
+    assert "strict renderer rejected missing causal source" in output
+    assert "if-ready would retain stale tables" not in output
+
+
+def test_makefile_keeps_if_ready_only_for_the_developer_build():
+    makefile = (ROOT / "paper/Makefile").read_text(encoding="utf-8")
+    release_recipe = makefile.split("\nrelease:\n", 1)[1].split("\n\n", 1)[0]
+    developer_recipe = makefile.split("\nheadlines:\n", 1)[1].split("\n\n", 1)[0]
+
+    assert "--if-ready" not in release_recipe
+    assert "--if-ready" in developer_recipe
 
 
 def test_wandb_is_an_explicit_opt_in_and_dense_only(tmp_path: Path):

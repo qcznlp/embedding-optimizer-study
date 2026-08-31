@@ -497,6 +497,32 @@ def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path
     assert "\nold\n" not in blog.read_text(encoding="utf-8")
 
 
+def test_outcome_accepts_portable_mechanism_paths_outside_repository_cwd(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
+    manifest_path = mechanism.with_suffix(".manifest.json")
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    payload["output"]["path"] = str(mechanism.relative_to(tmp_path))
+    payload["blog"]["path"] = str(blog.relative_to(tmp_path))
+    _manifest(manifest_path, payload)
+    monkeypatch.chdir(tmp_path.parent)
+
+    result = render_outcome_report(
+        functional,
+        hybrid,
+        short,
+        confirmatory,
+        mechanism,
+        blog,
+        tmp_path / "reports/outcome-summary.md",
+        tail_stability_dir=tail,
+        spectral_transplant_dir=spectral,
+    )
+
+    assert result["complete"] is True
+
+
 def test_outcome_report_renders_strict_dense_scope_without_late_rows(tmp_path: Path):
     families, scope = resolve_scope(("dense",), "configs/dense_scope_amendment.json")
     functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(

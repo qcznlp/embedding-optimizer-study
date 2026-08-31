@@ -14,7 +14,7 @@ identity.
 | Scope | configs/dense_scope_amendment.json | families=["dense"]; historical Late is retained, not used in primary inference |
 | Shared data | materialized 500K manifest and row ledger | 500,000 rows, seven source quotas, seven distinct seeded negatives, one training-view fingerprint |
 | Discovery training | configs/experiment.yaml plus completion/checkpoint audit | 12 runs, 60 checkpoints, all model/optimizer/scheduler/Trainer/RNG payloads deep-valid |
-| Discovery evaluation | reports/coverage.json and provenance-valid MTEB files | 12 × 5 × 14 = 840 DenseOn units selected only after the full historical source contract passes |
+| Discovery evaluation | [reports/dense-discovery/coverage.json](../reports/dense-discovery/coverage.json) and provenance-valid MTEB files | 12 × 5 × 14 = 840 DenseOn units selected only after the full historical source contract passes |
 | Training dynamics | reports/training-dynamics manifests | 12 DenseOn run rows and 60 five-stage rows after strict full-source audit and filtering |
 | Retrieval dynamics | reports/retrieval-dynamics-dense/summary_manifest.json | 60 checkpoints, 840 source units, 12 first-passage rows, 8 adjacent-stage task-stability rows |
 | Weight trajectories | reports/weight-space/summary_manifest.json | 12 runs, 60 checkpoints, 20 matched Muon/NorMuon checkpoint pairs |
@@ -34,7 +34,7 @@ identity.
 | Mechanism report | reports/mechanism-summary.manifest.json | families=["dense"], same scope hash, 10 anchors, 180 spectra, 60 bridge checkpoints, 840 retrieval units |
 | Outcome report | reports/outcome-summary.manifest.json | hybrid, shared-start, spectral transplant, and confirmation are all strict and rendered into the blog |
 | Blog | [docs/blog.md](blog.md) | each generated marker has exactly one pair and matches its hashed report byte-for-byte |
-| Paper | reports/paper-results.manifest.json and paper/ | Dense constants are 12/60/840/20; no pending macro; strict paper audit and ACL build pass |
+| Paper | reports/paper-results.manifest.json and paper/ | Dense constants are 12/60/840/20; no pending macro; strict paper audit, strict ACL release build, and the post-build strict re-audit pass |
 | W&B | remote content-addressed histories | exactly 12 Dense canonical discovery identities; historical Late runs are retained and clearly tagged |
 | Distribution | wheel, sdist, tests, CI | tests/lint/format, PDF, package build, and distribution audit all pass |
 | Publication hygiene | tracked tree, Git history, distributions, GitHub settings | no credentials; repository remains private until the user requests publication |
@@ -109,10 +109,35 @@ If an older completion ledger is rejected for missing provenance, upgrade it wit
 For independent inspection, its complete ordered finalization sequence is:
 
 ~~~bash
+python -m embed_optim.temporal_short_branch_predictors \
+  --protocol configs/short_branch_protocol.json \
+  --analysis-protocol configs/causal_chain_analysis.json \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --output-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --cache-dir reports/short-branch/temporal-predictor-cache \
+  --audit
+
+python -m embed_optim.temporal_short_branch \
+  --protocol configs/causal_chain_analysis.json \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --predictor-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --predictor-manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --outcome-csv reports/tail-stability/short_branch_checkpoint_tail.csv \
+  --outcome-manifest reports/tail-stability/summary_manifest.json \
+  --output-dir reports/temporal-short-branch \
+  --audit
+
 python -m embed_optim.aggregate \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json \
   --strict
+
+python -m embed_optim.dose_band_analysis \
+  --protocol configs/causal_chain_analysis.json \
+  --audit
 
 python -m embed_optim.retrieval_dynamics \
   --families dense \
@@ -138,7 +163,11 @@ python -m embed_optim.paper_audit \
 pytest -q
 ruff check src tests scripts/eval
 ruff format --check src tests scripts/eval
-make -C paper clean all
+make -C paper release
+python -m embed_optim.paper_audit \
+  --strict \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
 uv build
 python -m embed_optim.distribution_audit
 ~~~

@@ -6,11 +6,12 @@ A reproducible study of AdamW, Muon, and NorMuon for supervised adaptation of
 The project compares complete training dynamics, zero-shot retrieval quality, systems cost, and
 weight/update geometry. Its central question is not whether Muon produces flatter update spectra—that
 is largely built into the operator—but why a matrix-aware optimizer can lose a matched one-step
-functional comparison while showing higher one-seed, four-learning-rate-median final BEIR. Whether
-the recipe frozen by query-disjoint validation is better remains a prospective question.
+functional comparison while showing higher one-seed, four-learning-rate-median final BEIR. The
+[generated completion outcome](docs/blog.md#audited-completion-status) records whether the recipe
+frozen by query-disjoint validation passes its prospective gates.
 
-The repository is private while the remaining DenseOn confirmation is running. It is structured for
-a later public release under Apache-2.0.
+The repository remains private until the project owner requests publication. It is structured for a
+later public release under Apache-2.0.
 
 - Full study write-up: [docs/blog.md](docs/blog.md)
 - Dense-only NAACL plan: [docs/naacl-dense-paper-plan.md](docs/naacl-dense-paper-plan.md)
@@ -226,9 +227,11 @@ The pipeline performs:
 1. deep checkpoint audits for hybrid, confirmatory, and short-branch runs;
 2. final-stage hybrid BEIR evaluation and summary;
 3. three-seed confirmatory BEIR evaluation and hierarchical summary;
-4. all five shared-start branch probes and tail summary;
+4. all five shared-start branch probes, frozen temporal-predictor extraction and audit, tail summary,
+   and temporal short-branch analysis and audit;
 5. ten-anchor spectrum/basis transplant, audit, and summary;
-6. optional tests, formatting checks, and distribution build.
+6. frozen dose/band analysis and audit; and
+7. optional tests, formatting checks, and distribution build.
 
 Every step has an atomic ledger, validated completion predicate, bounded retries, and resume mode.
 Do not edit the scope amendment, queue plan, or bound protocols while a run is active.
@@ -265,13 +268,38 @@ revalidates the current training-plan, pool-ledger, scope, and step-contract pro
 its full orchestration rather than trusting an old finalization prefix. If an older completion
 ledger lacks those bindings, upgrade it with the completion `--resume` command first.
 
-For an independent step-by-step audit, the reporting portion of that finalizer is:
+For an independent step-by-step audit, the complete ordered finalizer is:
 
 ~~~bash
+embed-optim-temporal-short-branch-predictors \
+  --protocol configs/short_branch_protocol.json \
+  --analysis-protocol configs/causal_chain_analysis.json \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --output-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --cache-dir reports/short-branch/temporal-predictor-cache \
+  --audit
+
+embed-optim-temporal-short-branch \
+  --protocol configs/causal_chain_analysis.json \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --predictor-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --predictor-manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --outcome-csv reports/tail-stability/short_branch_checkpoint_tail.csv \
+  --outcome-manifest reports/tail-stability/summary_manifest.json \
+  --output-dir reports/temporal-short-branch \
+  --audit
+
 embed-optim-aggregate \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json \
   --strict
+
+embed-optim-dose-band-analysis \
+  --protocol configs/causal_chain_analysis.json \
+  --audit
 
 embed-optim-summarize-retrieval-dynamics \
   --families dense \
@@ -294,14 +322,25 @@ embed-optim-audit-paper \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json
 
-make -C paper clean all
+pytest -q
+ruff check src tests scripts/eval
+ruff format --check src tests scripts/eval
+make -C paper release
+embed-optim-audit-paper \
+  --strict \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+uv build
+embed-optim-audit-distribution
 ~~~
 
-The aggregate and retrieval-dynamics steps first validate the complete historical discovery sources,
-then filter DenseOn and regenerate the `RESULTS`, `SYSTEMS`, and `TASK-DELTA-STABILITY` blog blocks.
-The later renderers regenerate the mechanism, outcome, and manuscript artifacts. New hybrid,
-short-branch, confirmatory, and intervention manifests must themselves declare families=["dense"] and
-bind the exact scope-amendment hash. A partial or mixed-scope report fails closed.
+The finalizer first re-audits the temporal predictor and temporal short-branch artifacts against the
+frozen causal protocol. It then regenerates the scoped discovery aggregate before re-auditing the
+dose/band analysis against that fresh Dense coverage. Retrieval dynamics regenerates the
+`TASK-DELTA-STABILITY` block after the aggregate regenerates `RESULTS` and `SYSTEMS`; the later
+renderers regenerate the mechanism, outcome, and manuscript artifacts. New hybrid, short-branch,
+confirmatory, and intervention manifests must themselves declare families=["dense"] and bind the exact
+scope-amendment hash. A partial or mixed-scope report fails closed.
 
 ## Weights & Biases
 
@@ -354,7 +393,11 @@ Run the full local gate:
 pytest -q
 ruff check src tests scripts/eval
 ruff format --check src tests scripts/eval
-make -C paper clean all
+make -C paper release
+embed-optim-audit-paper \
+  --strict \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
 uv build
 embed-optim-audit-distribution
 ~~~
