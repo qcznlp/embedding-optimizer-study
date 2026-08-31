@@ -95,10 +95,16 @@ def _resolve_matrix_path(path: str | Path, prefix: Path | None = None) -> Path:
     """Resolve a source-tree config, falling back to wheel data for bundled defaults."""
 
     path = Path(path)
-    if path.is_file() or path.is_absolute() or path.parent != Path("configs"):
+    if path.is_file() or path.is_absolute():
+        return path
+    try:
+        relative = path.relative_to("configs")
+    except ValueError:
+        return path
+    if not relative.parts or ".." in relative.parts:
         return path
     prefix = Path(sys.prefix) if prefix is None else prefix
-    installed = prefix / "share" / "embedding-optimizer-study" / "configs" / path.name
+    installed = prefix / "share" / "embedding-optimizer-study" / "configs" / relative
     return installed if installed.is_file() else path
 
 

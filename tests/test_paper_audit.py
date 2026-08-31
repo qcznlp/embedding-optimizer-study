@@ -826,7 +826,10 @@ def test_paper_main_topology_requires_every_generated_input_and_conclusion(tmp_p
                 r"\ResultConclusion",
                 r"\label{paper-main-end}",
                 r"\section{Limitations}",
+                r"\section{Ethical Considerations}",
+                r"\bibliography{references}",
                 r"\appendix",
+                r"\section{Artifact and Reproducibility}",
                 *PAPER_APPENDIX_GENERATED_INPUTS,
                 r"\CausalChainDiagnostics",
                 r"\input{generated/retrieval-dynamics-extension}",
@@ -842,6 +845,97 @@ def test_paper_main_topology_requires_every_generated_input_and_conclusion(tmp_p
         assert _paper_main_topology_complete(tmp_path) is False
     main.write_text(canonical + PAPER_MAIN_GENERATED_INPUTS[0] + "\n", encoding="utf-8")
     assert _paper_main_topology_complete(tmp_path) is False
+
+    main.write_text(
+        canonical.replace(
+            r"\section{Ethical Considerations}",
+            r"\section{Ethics and Reproducibility}",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    assert _paper_main_topology_complete(tmp_path) is False
+
+    main.write_text(
+        canonical.replace(
+            r"\section{Ethical Considerations}",
+            r"\section{Reproducibility}\section{Ethical Considerations}",
+            1,
+        ),
+        encoding="utf-8",
+    )
+    assert _paper_main_topology_complete(tmp_path) is False
+
+
+@pytest.mark.parametrize(
+    "bypass",
+    (
+        r"\section[Reproducibility]{Additional Reproducibility}",
+        r"\section*{Additional Reproducibility}",
+        r"\input{additional-reproducibility}",
+        r"\include{additional-reproducibility}",
+    ),
+)
+def test_paper_main_topology_rejects_exempt_region_bypasses(tmp_path: Path, bypass: str) -> None:
+    main = tmp_path / "paper/main.tex"
+    main.parent.mkdir(parents=True)
+    canonical = "\n".join(
+        (
+            r"\input{results}",
+            *PAPER_DEFINITION_GENERATED_INPUTS,
+            *PAPER_MAIN_GENERATED_INPUTS,
+            r"\CausalChainSummaryTable",
+            r"\section{Conclusion}",
+            r"\ResultConclusion",
+            r"\label{paper-main-end}",
+            r"\section{Limitations}",
+            r"\section{Ethical Considerations}",
+            r"\bibliography{references}",
+            r"\appendix",
+            r"\section{Artifact and Reproducibility}",
+            *PAPER_APPENDIX_GENERATED_INPUTS,
+            r"\CausalChainDiagnostics",
+            r"\input{generated/retrieval-dynamics-extension}",
+        )
+    )
+    main.write_text(
+        canonical.replace(r"\section{Limitations}", f"{bypass}\n\\section{{Limitations}}") + "\n",
+        encoding="utf-8",
+    )
+
+    assert _paper_main_topology_complete(tmp_path) is False
+
+
+def test_paper_main_topology_uses_only_active_latex_source(tmp_path: Path) -> None:
+    main = tmp_path / "paper/main.tex"
+    main.parent.mkdir(parents=True)
+    canonical = "\n".join(
+        (
+            r"\input{results}",
+            *PAPER_DEFINITION_GENERATED_INPUTS,
+            *PAPER_MAIN_GENERATED_INPUTS,
+            r"\CausalChainSummaryTable",
+            r"\section{Conclusion}",
+            r"\ResultConclusion",
+            r"\label{paper-main-end}",
+            "% \\section[Hidden]{Hidden section}",
+            "% \\section*{Hidden starred section}",
+            "% \\input{hidden-input}",
+            "% \\include{hidden-include}",
+            r"\section{Limitations}",
+            r"\section{Ethical Considerations}",
+            r"\bibliography{references}",
+            r"\appendix",
+            r"\section{Artifact and Reproducibility}",
+            *PAPER_APPENDIX_GENERATED_INPUTS,
+            r"\CausalChainDiagnostics",
+            r"\input{generated/retrieval-dynamics-extension}",
+            "% \\section{Conclusion}",
+        )
+    )
+    main.write_text(canonical + "\n", encoding="utf-8")
+
+    assert _paper_main_topology_complete(tmp_path) is True
 
 
 def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_path: Path):
@@ -1134,7 +1228,10 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
         r"\ResultConclusion",
         r"\label{paper-main-end}",
         r"\section{Limitations}",
+        r"\section{Ethical Considerations}",
+        r"\bibliography{references}",
         r"\appendix",
+        r"\section{Artifact and Reproducibility}",
         *PAPER_APPENDIX_GENERATED_INPUTS,
         r"\CausalChainDiagnostics",
         r"\input{generated/retrieval-dynamics-extension}",

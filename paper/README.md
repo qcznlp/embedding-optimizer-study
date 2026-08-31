@@ -81,6 +81,11 @@ appendix. Every developer build runs the layout gate. It audits every classified
 only the conclusion page, so a deferred main-text float after the audited endpoint or on page 9
 cannot be hidden by an end label that remained within the limit.
 
+The source audit also fixes the post-conclusion submission boundary: the only sections between the
+eight-page endpoint and the references are `Limitations` and `Ethical Considerations`. Artifact and
+reproducibility details live after `\appendix`, so they cannot be mistaken for page-limit-exempt
+ethics prose.
+
 ## DenseOn evidence contract
 
 The final renderer/auditor may read legacy two-model manifests, but each primary gate must select and

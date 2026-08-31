@@ -105,7 +105,11 @@ PAPER_MAIN_REQUIRED_ONCE = (
     r"\section{Conclusion}",
     r"\ResultConclusion",
     rf"\label{{{MAIN_END_LABEL}}}",
+    r"\section{Limitations}",
+    r"\section{Ethical Considerations}",
+    r"\bibliography{references}",
     r"\appendix",
+    r"\section{Artifact and Reproducibility}",
 )
 PAPER_DISCOVERY_FIGURE_INCLUDES = (
     r"\centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-training-dynamics-by-run.png}",
@@ -229,6 +233,39 @@ FINAL_DOCUMENT_STALE_PHRASES = {
         "intentionally left unresolved",
     ),
 }
+
+_LATEX_SECTION_COMMAND = re.compile(r"\\section(?![A-Za-z@])")
+_LATEX_FILE_INPUT_COMMAND = re.compile(r"\\(?:input|include)(?![A-Za-z@])")
+
+
+def _strip_latex_comments(source: str) -> str:
+    """Return the active TeX source after removing unescaped comments."""
+    active: list[str] = []
+    index = 0
+    while index < len(source):
+        character = source[index]
+        if character != "%":
+            active.append(character)
+            index += 1
+            continue
+
+        backslashes = 0
+        cursor = index - 1
+        while cursor >= 0 and source[cursor] == "\\":
+            backslashes += 1
+            cursor -= 1
+        if backslashes % 2:
+            active.append(character)
+            index += 1
+            continue
+
+        while index < len(source) and source[index] not in "\r\n":
+            index += 1
+        if index < len(source) and source[index] == "\r":
+            index += 1
+        if index < len(source) and source[index] == "\n":
+            index += 1
+    return "".join(active)
 
 
 def _macros(path: Path) -> dict[str, str]:
@@ -2051,7 +2088,7 @@ def _blog_marker_audit(
 
 def _paper_main_topology_complete(root: Path) -> bool:
     try:
-        main_text = (root / "paper/main.tex").read_text(encoding="utf-8")
+        main_text = _strip_latex_comments((root / "paper/main.tex").read_text(encoding="utf-8"))
     except (OSError, UnicodeDecodeError):
         return False
     if any(main_text.count(token) != 1 for token in PAPER_MAIN_REQUIRED_ONCE):
@@ -2060,14 +2097,33 @@ def _paper_main_topology_complete(root: Path) -> bool:
     rendered_conclusion = main_text.find(r"\ResultConclusion")
     main_end_label = main_text.find(rf"\label{{{MAIN_END_LABEL}}}")
     limitations = main_text.find(r"\section{Limitations}")
+    ethics = main_text.find(r"\section{Ethical Considerations}")
+    bibliography = main_text.find(r"\bibliography{references}")
     appendix = main_text.find(r"\appendix")
+    artifact = main_text.find(r"\section{Artifact and Reproducibility}")
     dynamics_input = (
         rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}"
     )
     main_inputs = (r"\input{results}", *PAPER_MAIN_GENERATED_INPUTS)
     appendix_inputs = (*PAPER_APPENDIX_GENERATED_INPUTS, dynamics_input)
+    exempt_region_start = main_end_label + len(rf"\label{{{MAIN_END_LABEL}}}")
+    exempt_region = main_text[exempt_region_start:appendix]
+    exempt_section_positions = [
+        exempt_region_start + match.start()
+        for match in _LATEX_SECTION_COMMAND.finditer(exempt_region)
+    ]
     return (
-        0 <= conclusion < rendered_conclusion < main_end_label < limitations < appendix
+        0
+        <= conclusion
+        < rendered_conclusion
+        < main_end_label
+        < limitations
+        < ethics
+        < bibliography
+        < appendix
+        < artifact
+        and exempt_section_positions == [limitations, ethics]
+        and _LATEX_FILE_INPUT_COMMAND.search(exempt_region) is None
         and all(main_text.find(token) < main_end_label for token in main_inputs)
         and all(
             main_text.find(token) < main_end_label for token in PAPER_DEFINITION_GENERATED_INPUTS

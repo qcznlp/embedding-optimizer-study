@@ -115,6 +115,63 @@ def test_bundled_default_matrix_falls_back_to_wheel_data(tmp_path, monkeypatch):
     assert _resolve_matrix_path("custom.yaml", prefix) == Path("custom.yaml")
 
 
+def test_nested_bundled_matrix_loads_from_wheel_data(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    prefix = tmp_path / "venv"
+    installed = (
+        prefix
+        / "share"
+        / "embedding-optimizer-study"
+        / "configs"
+        / "generated"
+        / "confirmatory"
+        / "seed314159.yaml"
+    )
+    installed.parent.mkdir(parents=True)
+    installed.write_text(
+        """
+formal_runtime: ../../formal_runtime.json
+common:
+  dataset_path: data
+  seed: 314159
+models:
+  dense:
+    model_name: model
+runs:
+  - id: adamw-selected
+    model_family: dense
+    optimizer:
+      name: adamw
+      lr: 3.0e-5
+""".lstrip(),
+        encoding="utf-8",
+    )
+    runtime = prefix / "share" / "embedding-optimizer-study" / "configs" / "formal_runtime.json"
+    runtime.write_text("{}\n", encoding="utf-8")
+    monkeypatch.setattr("embed_optim.config.sys.prefix", str(prefix))
+
+    matrix = "configs/generated/confirmatory/seed314159.yaml"
+    runs = load_matrix(matrix)
+
+    assert len(runs) == 1
+    assert runs[0].run_id == "adamw-selected"
+    assert resolve_matrix_path(matrix) == installed
+    resolved_runtime = matrix_runtime_spec(matrix)
+    assert resolved_runtime is not None
+    assert resolved_runtime.resolve() == runtime
+    assert resolved_runtime.is_file()
+
+
+def test_bundled_matrix_fallback_rejects_parent_traversal(tmp_path):
+    prefix = tmp_path / "venv"
+    escaped = prefix / "share" / "embedding-optimizer-study" / "outside.yaml"
+    escaped.parent.mkdir(parents=True)
+    escaped.write_text("escaped: true\n", encoding="utf-8")
+    requested = Path("configs/../outside.yaml")
+
+    assert _resolve_matrix_path(requested, prefix) == requested
+
+
 def test_only_formal_matrix_declares_runtime_contract():
     root = Path(__file__).parents[1]
 

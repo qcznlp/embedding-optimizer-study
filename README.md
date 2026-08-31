@@ -470,7 +470,12 @@ embed-optim-audit-distribution
 
 CI repeats package build, distribution audit, tests, lint, and formatting. The distribution audit
 compares the wheel and source archive against every package module, console entry point, and declared
-data file.
+data file. It also follows executable config-to-config references transitively, so the six frozen
+confirmatory/shared-start seed matrices and their formal-runtime dependency cannot disappear from a
+release archive. Producer-local generated manifests are immutable provenance receipts rather than
+portable executable inputs; they remain in the Git repository, are reported explicitly by the
+distribution audit as repository-only provenance, and are not copied into the wheel or source
+archive. The Git repository is therefore authoritative for the complete historical hash chain.
 
 ## Reproducibility and integrity
 

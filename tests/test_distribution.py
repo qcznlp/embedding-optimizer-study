@@ -220,6 +220,30 @@ def test_distribution_bundles_dense_retrieval_dynamics_extension() -> None:
     )
 
 
+def test_distribution_bundles_portable_generated_training_matrix_closure() -> None:
+    installed = _installed_data_paths()
+    phases = ("confirmatory", "short-branch")
+    seeds = (161803, 271828, 314159)
+    expected = {f"configs/generated/{phase}/seed{seed}.yaml" for phase in phases for seed in seeds}
+    queue = json.loads((ROOT / "configs/dense_training_queue.json").read_text(encoding="utf-8"))
+    assert {binding["path"] for binding in queue["source_bindings"]} == expected
+
+    installed_runtime = installed["configs/formal_runtime.json"]
+    for source in expected:
+        assert installed[source] == PurePosixPath(
+            "share/embedding-optimizer-study/configs/generated"
+        ) / PurePosixPath(*PurePosixPath(source).parts[-2:])
+        formal_runtime_line = (ROOT / source).read_text(encoding="utf-8").splitlines()[0]
+        key, relative_runtime = formal_runtime_line.split(": ", 1)
+        assert key == "formal_runtime"
+        assert _resolve_relative(installed[source], relative_runtime) == installed_runtime
+
+    # Frozen generated manifests retain producer-local provenance and remain
+    # canonical in the repository rather than being executable distribution inputs.
+    assert "configs/generated/confirmatory/manifest.json" not in installed
+    assert "configs/generated/short-branch/manifest.json" not in installed
+
+
 def test_completed_dense_dynamics_distribution_requires_manifest_csv_svg_pdf(tmp_path: Path):
     report = tmp_path / "reports/dense-retrieval-dynamics"
     report.mkdir(parents=True)

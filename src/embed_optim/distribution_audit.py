@@ -11,6 +11,23 @@ from collections import Counter
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+import yaml
+
+_CONFIG_DOCUMENT_SUFFIXES = frozenset({".json", ".yaml", ".yml"})
+_CONFIG_DEPENDENCY_SUFFIXES = frozenset({*_CONFIG_DOCUMENT_SUFFIXES, ".txt"})
+_EXECUTABLE_CONFIG_REFERENCE_KEYS = frozenset(
+    {
+        "config",
+        "formal_runtime",
+        "matrix",
+        "path",
+        "protocol",
+        "scope_amendment",
+        "spec",
+    }
+)
+_EXECUTABLE_CONFIG_REFERENCE_SUFFIXES = ("_config", "_matrix", "_protocol", "_spec")
+
 
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
@@ -226,6 +243,135 @@ def _runtime_config_references(package_sources: list[Path], root: Path) -> set[s
     return {source for source in references if (root / source).is_file()}
 
 
+def _is_repository_only_provenance_key(key: str) -> bool:
+    return key == "source_bindings" or key.endswith(("_bindings", "_manifest", "_manifest_path"))
+
+
+def _is_executable_config_reference_key(key: str) -> bool:
+    return key in _EXECUTABLE_CONFIG_REFERENCE_KEYS or key.endswith(
+        _EXECUTABLE_CONFIG_REFERENCE_SUFFIXES
+    )
+
+
+def _config_reference(
+    value: str,
+    source: Path,
+    root: Path,
+    *,
+    include_missing_relative: bool,
+) -> str | None:
+    if (
+        not value
+        or value != value.strip()
+        or "\\" in value
+        or any(char.isspace() for char in value)
+    ):
+        return None
+    relative = PurePosixPath(value)
+    if relative.is_absolute() or relative.suffix.lower() not in _CONFIG_DEPENDENCY_SUFFIXES:
+        return None
+    explicit_repo_path = relative.parts[:1] == ("configs",)
+    candidate = root / relative if explicit_repo_path else source.parent / relative
+    resolved = candidate.resolve()
+    config_root = (root / "configs").resolve()
+    if not resolved.is_relative_to(config_root):
+        return None
+    if not explicit_repo_path and not include_missing_relative and not resolved.is_file():
+        return None
+    return resolved.relative_to(root).as_posix()
+
+
+def _document_config_references(
+    document: Any,
+    *,
+    source: Path,
+    root: Path,
+) -> tuple[set[str], set[str]]:
+    executable: set[str] = set()
+    provenance: set[str] = set()
+
+    def visit(value: Any, *, key: str | None = None, repository_only: bool = False) -> None:
+        if isinstance(value, dict):
+            for raw_child_key, child in value.items():
+                child_key = str(raw_child_key)
+                visit(
+                    child,
+                    key=child_key,
+                    repository_only=(
+                        repository_only or _is_repository_only_provenance_key(child_key)
+                    ),
+                )
+            return
+        if isinstance(value, list):
+            for child in value:
+                visit(child, key=key, repository_only=repository_only)
+            return
+        if not isinstance(value, str) or key is None:
+            return
+        executable_key = _is_executable_config_reference_key(key)
+        reference = _config_reference(
+            value,
+            source,
+            root,
+            # Generic ``path`` fields often describe dataset/report artifacts.
+            # Missing relative paths are dependencies only for explicit config-loader keys.
+            include_missing_relative=executable_key and key != "path",
+        )
+        if reference is None:
+            return
+        if repository_only:
+            provenance.add(reference)
+        elif executable_key:
+            executable.add(reference)
+
+    visit(document)
+    return executable, provenance
+
+
+def _transitive_config_references(
+    declared_sources: set[str], root: Path
+) -> tuple[set[str], set[str]]:
+    roots = {
+        source
+        for source in declared_sources
+        if source.startswith("configs/")
+        and PurePosixPath(source).suffix.lower() in _CONFIG_DOCUMENT_SUFFIXES
+    }
+    pending = sorted(roots, reverse=True)
+    visited: set[str] = set()
+    executable: set[str] = set()
+    provenance: set[str] = set()
+    while pending:
+        source = pending.pop()
+        if source in visited:
+            continue
+        visited.add(source)
+        path = root / source
+        if not path.is_file() or path.suffix.lower() not in _CONFIG_DOCUMENT_SUFFIXES:
+            continue
+        text = path.read_text(encoding="utf-8")
+        document = json.loads(text) if path.suffix.lower() == ".json" else yaml.safe_load(text)
+        direct_executable, direct_provenance = _document_config_references(
+            document,
+            source=path,
+            root=root,
+        )
+        executable.update(direct_executable)
+        provenance.update(direct_provenance)
+        pending.extend(
+            sorted(
+                (
+                    reference
+                    for reference in direct_executable
+                    if PurePosixPath(reference).suffix.lower() in _CONFIG_DOCUMENT_SUFFIXES
+                    and reference not in visited
+                ),
+                reverse=True,
+            )
+        )
+    return executable, provenance
+
+
 def _entry_points(archive: zipfile.ZipFile, path: str) -> dict[str, str]:
     parser = configparser.ConfigParser()
     parser.read_string(archive.read(path).decode("utf-8"))
@@ -265,10 +411,20 @@ def audit_distribution(
     problems.extend(_wandb_source_receipt_distribution_problems(root, data_files))
     package_sources = sorted((root / "src" / "embed_optim").glob("*.py"))
     runtime_configs = _runtime_config_references(package_sources, root)
+    declared_sources = set(data_files)
     problems.extend(
         f"pyproject data-files missing runtime config: {source}"
-        for source in sorted(runtime_configs - set(data_files))
+        for source in sorted(runtime_configs - declared_sources)
     )
+    executable_configs, provenance_configs = _transitive_config_references(
+        declared_sources,
+        root,
+    )
+    problems.extend(
+        f"pyproject data-files missing executable config dependency: {source}"
+        for source in sorted(executable_configs - declared_sources)
+    )
+    repository_only_provenance = sorted(provenance_configs - declared_sources)
     wheel_prefix = f"{distribution}-{version}"
     package_members = {path: path.relative_to(root / "src").as_posix() for path in package_sources}
     data_members = {
@@ -356,6 +512,8 @@ def audit_distribution(
         "declared_console_scripts": len(scripts),
         "declared_data_files": len(data_files),
         "runtime_config_references": len(runtime_configs),
+        "transitive_executable_config_references": len(executable_configs),
+        "repository_only_provenance_config_references": repository_only_provenance,
         "package_modules": len(package_sources),
         "wheel": {
             "path": str(wheel),
