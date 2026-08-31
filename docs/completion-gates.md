@@ -70,10 +70,11 @@ When the queues are still running, add the exact queue process IDs as
 also requires exactly two unique ledgers, one each for pools `a` and `b`, and verifies Dense family,
 nine complete jobs per pool, the common frozen-plan hash, scope identity, and exact ledger-content
 hashes. For recovery, first resume the failed queue until both queue ledgers are clean and complete,
-then rerun the command above with `--resume`. Any change to either ledger, the plan, the scope, or the
-completion step contract prevents reuse of the old audit/evaluation prefix.
-An older completion ledger without a per-step input binding is not grandfathered in; rerun the
-completion command once with `--resume` to validate the current inputs and rewrite the ledger.
+then rerun the command above with `--resume`. Resume always rebuilds the current input/source/command
+contract and reruns orchestration from step 1; it never trusts a completed prefix from the old
+ledger. Content-addressed evaluators may independently skip only units whose checkpoint, runtime,
+and result identities still pass their strict audits. The same full rerun upgrades older completion
+ledgers to the current per-step provenance schema.
 
 ## Final independent audit
 
@@ -90,8 +91,8 @@ embed-optim-dense-finalize \
 If finalization is queued behind a still-running completion process, add its exact process ID with
 `--wait-pid COMPLETION_PID`. If either process fails, recover completion first and then rerun the
 finalizer with `--resume`. The finalizer revalidates current upstream provenance even when its own
-ledger says `complete`; a changed completion ledger or finalization step contract causes the final
-steps to rerun instead of reusing stale reports.
+ledger says `complete`; every resume reruns the full canonical finalization orchestration instead of
+reusing an old completed prefix.
 If an older completion ledger is rejected for missing provenance, upgrade it with completion
 `--resume` before retrying finalization.
 

@@ -238,12 +238,11 @@ process IDs as `--wait-pids POOL_A_PID POOL_B_PID`. The process-ID wait is only 
 completion pipeline always requires exactly two unique ledgers for pools `a` and `b`, verifies both
 are complete Dense-only nine-job queues, and rehashes the shared frozen plan and both ledger files.
 If a queue, completion step, or host session fails, first recover the queue until both ledgers are
-clean and complete, then rerun the same completion command with `--resume`. A changed plan, scope, or
-ledger invalidates the old completed-step prefix, so audits and evaluations are rerun rather than
-silently reused.
-Completion ledgers created before per-step provenance binding are intentionally not reusable: run
-the completion command above once with `--resume` to validate the current queues and rewrite a
-fully bound ledger.
+clean and complete, then rerun the same completion command with `--resume`. Resume never trusts an
+old completed-step prefix: it reconstructs the current input/source/command contract and executes
+the orchestration again from step 1. Individual evaluators may still skip units only after their own
+content-addressed audits prove the checkpoint, runtime, and result identity unchanged. This same
+full rerun upgrades legacy completion ledgers to the current provenance schema.
 
 ## Render the final Dense-only deliverables
 
@@ -261,10 +260,10 @@ embed-optim-dense-finalize \
 
 When finalization is started before completion exits, pass the exact completion process ID with
 `--wait-pid COMPLETION_PID`. On recovery, rerun the same finalizer command with `--resume` only after
-the completion ledger is complete. The finalizer revalidates that ledger's current training-plan,
-pool-ledger, scope, and step-contract provenance before reusing any completed finalization step.
-If it reports that an older completion ledger lacks provenance, upgrade that ledger with the
-completion `--resume` command first, then rerun finalization.
+the completion ledger is complete. The finalizer reconstructs the canonical completion commands,
+revalidates the current training-plan, pool-ledger, scope, and step-contract provenance, and reruns
+its full orchestration rather than trusting an old finalization prefix. If an older completion
+ledger lacks those bindings, upgrade it with the completion `--resume` command first.
 
 For an independent step-by-step audit, the reporting portion of that finalizer is:
 

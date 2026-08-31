@@ -553,11 +553,11 @@ If completion is launched before the queues exit, add their exact process IDs as
 `--wait-pids POOL_A_PID POOL_B_PID`. That wait does not replace the ledger gate: completion requires
 exactly two unique, complete Dense-only ledgers for pools `a` and `b`, verifies their nine jobs and
 shared frozen-plan hash, and hashes both ledger contents. To recover after interruption, finish or
-repair both queues first and rerun this same command with `--resume`. Any plan, scope, ledger-content,
-or step-contract change invalidates the previously completed prefix and reruns the affected analysis
-instead of accepting stale audit or evaluation state.
-Legacy completion ledgers without per-step provenance are deliberately rerun once under `--resume`
-so they cannot be grandfathered into the stricter contract.
+repair both queues first and rerun this same command with `--resume`. Resume reconstructs the current
+plan, scope, ledger-content, source, and step-command contract and reruns orchestration from step 1;
+it never accepts a previously completed prefix. Individual evaluation units are reused only when
+their own content-addressed checkpoint/runtime/result audits pass. This full rerun also upgrades
+legacy completion ledgers instead of grandfathering them into the stricter contract.
 
 ### Render the Dense paper and blog
 
@@ -575,7 +575,8 @@ embed-optim-dense-finalize \
 Use `--wait-pid COMPLETION_PID` only when the exact completion process is still running. After a
 failure, rerun the finalizer with `--resume` only once the completion ledger is clean and complete;
 even an already-complete finalization ledger is accepted only after its current completion-ledger,
-training-plan, pool-ledger, scope, and step-contract provenance is revalidated.
+training-plan, pool-ledger, scope, and step-contract provenance is revalidated, after which the full
+canonical finalization orchestration is rerun from the beginning.
 If the completion ledger predates those bindings, upgrade it with completion `--resume` before
 retrying the finalizer.
 
