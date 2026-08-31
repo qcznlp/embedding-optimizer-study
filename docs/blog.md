@@ -722,6 +722,24 @@ embed-optim-render-candidate-breadth \
   --audit-only
 ~~~
 
+After the canonical Dense finalizer completes, the publication-safe one-command handoff is:
+
+~~~bash
+embed-optim-candidate-breadth-release \
+  --upstream-finalization-ledger logs/dense-finalization-pipeline/pipeline-ledger.json \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7 \
+  --workdir "$PWD" \
+  --resume
+~~~
+
+This controller first validates the exact 18-step upstream finalization ledger, the hashed
+completion source, and every attempt log. It records that historical ledger as an immutable input
+rather than recomputing its old implementation hash after the post-hoc source addition. Every new
+candidate, rendering, paper, test, and distribution step is instead bound to the complete current
+source contract and is rechecked before and after execution. Resume reruns the orchestration; only
+evaluator units whose own content-addressed audits pass may be reused.
+
 All 12 width-7 evaluations must reproduce the existing validation evaluator within the predeclared
 sample-level tolerance before the analysis can be interpreted. The missing-candidate explanation is
 supported only if both Muon-family optimizers reverse their high-dose-versus-retrieval-optimal loss

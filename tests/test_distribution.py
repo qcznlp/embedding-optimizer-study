@@ -220,6 +220,15 @@ def test_distribution_bundles_dense_retrieval_dynamics_extension() -> None:
     )
 
 
+def test_distribution_exposes_candidate_breadth_release_controller() -> None:
+    scripts = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    scripts = scripts.split("[project.scripts]", 1)[1].split("\n[", 1)[0]
+    assert (
+        "embed-optim-candidate-breadth-release = "
+        '"embed_optim.candidate_breadth_release:main"' in scripts
+    )
+
+
 def test_distribution_bundles_portable_generated_training_matrix_closure() -> None:
     installed = _installed_data_paths()
     phases = ("confirmatory", "short-branch")

@@ -346,6 +346,27 @@ embed-optim-render-candidate-breadth \
   --audit-only
 ~~~
 
+For the publication handoff, use the single post-hoc release controller after the canonical Dense
+finalizer has completed and its story changes have been integrated:
+
+~~~bash
+embed-optim-candidate-breadth-release \
+  --upstream-finalization-ledger logs/dense-finalization-pipeline/pipeline-ledger.json \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7 \
+  --workdir "$PWD" \
+  --resume
+~~~
+
+The controller requires the exact 18-step upstream ledger, rehashes its completion source and every
+attempt log, and binds that immutable historical release into a new ledger. It intentionally does
+not compare the historical implementation hashes with the post-hoc checkout: adding the frozen
+candidate diagnostic changes those source bytes without invalidating the already completed formal
+experiment. Before and after every new step it nevertheless rehashes both ledgers, the candidate
+protocol, and the complete current source/command contract. It prepares or audits the data,
+content-resumes the 12-checkpoint matrix, rebuilds the current result blocks, renders the candidate
+figure and publication text, and reruns the paper, test, style, build, and distribution gates.
+
 The primary rule was frozen before any candidate-breadth data or scores were visible. It supports
 missing-candidate coverage only if all 12 width-7 reproductions pass and both Muon and NorMuon reverse
 their high-dose-versus-retrieval-optimal loss and margin ordering by width 2,048. Attenuation without
@@ -379,6 +400,9 @@ its full orchestration rather than trusting an old finalization prefix. If an ol
 ledger lacks those bindings, upgrade it with the completion `--resume` command first.
 W&B verification is mandatory for publication completion: the finalizer cannot report a complete
 release while offline or while any frozen source run is missing, unfinished, or inconsistent.
+The candidate-breadth release command above is the only additional controller needed after this
+canonical finalizer; it treats this finalization ledger as immutable upstream evidence and does not
+repeat the already audited W&B mutations.
 
 For an independent step-by-step audit, the complete ordered finalizer is:
 

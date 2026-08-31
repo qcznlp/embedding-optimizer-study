@@ -73,6 +73,10 @@ After the separately frozen candidate-breadth matrix completes, run
 command's `--audit-only` mode. The publication renderer owns only the marked blog block and
 `generated/candidate-breadth.tex`; its manifest binds both to all 12 evaluation manifests, the
 discovery BEIR table, the nested-width protocol, and the deterministic SVG/PDF figure.
+For the final publication handoff, `embed-optim-candidate-breadth-release --resume` performs those
+steps after validating the complete canonical Dense finalization ledger and all of its hashed logs,
+then reruns the current report renderers, strict paper audits, release PDF build, tests, style checks,
+and distribution audit under a new content-addressed ledger.
 
 `make -C paper` invokes the renderer with `--if-ready`: incomplete experiments keep audited red
 placeholders, while complete evidence can be rendered before LaTeX compilation. This preserves a
