@@ -78,6 +78,9 @@ embed-optim-local-global-reversal = "embed_optim.local_global_reversal:main"
 embed-optim-tail-stability = "embed_optim.tail_stability:main"
 embed-optim-spectral-transplant = "embed_optim.spectral_transplant_matrix:main"
 embed-optim-summarize-spectral-transplant = "embed_optim.spectral_transplant_summary:main"
+embed-optim-dose-band-analysis = "embed_optim.dose_band_analysis:main"
+embed-optim-temporal-short-branch-predictors = "embed_optim.temporal_short_branch_predictors:main"
+embed-optim-temporal-short-branch = "embed_optim.temporal_short_branch:main"
 embed-optim-render-mechanism-report = "embed_optim.mechanism_report:main"
 embed-optim-render-outcome-report = "embed_optim.outcome_report:main"
 embed-optim-render-paper-results = "embed_optim.paper_results:main"
@@ -125,6 +128,7 @@ where = ["src"]
 "share/embedding-optimizer-study/configs" = [
   "configs/beir_representation_probe.json",
   "configs/basis_sensitivity.json",
+  "configs/causal_chain_analysis.json",
   "configs/experiment.yaml",
   "configs/common_state_probe.json",
   "configs/common_state_spectrum_probe.json",
@@ -136,6 +140,8 @@ where = ["src"]
   "configs/hybrid_adamw_control.json",
   "configs/hybrid_adamw.yaml",
   "configs/local_global_reversal.json",
+  "configs/loss_retrieval_diagnostic.json",
+  "configs/mechanism_analysis_integration.json",
   "configs/tail_stability_analysis.json",
   "configs/spectral_transplant_intervention.json",
   "configs/paper_claim_protocol.json",

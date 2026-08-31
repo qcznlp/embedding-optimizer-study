@@ -356,6 +356,7 @@ def test_spectral_summary_builds_path_band_and_factorial_estimands():
 
     assert len(anchor) == 10
     assert len(tail) == 9
+    assert "adamw-native" not in {row["condition"] for row in tail}
     margin_factorial = next(row for row in factorial if row["metric"] == "positive_margin")
     assert margin_factorial["spectrum_main_effect"] == pytest.approx(0.2)
     assert margin_factorial["basis_main_effect"] == pytest.approx(0.1)

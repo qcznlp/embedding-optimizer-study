@@ -79,8 +79,62 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
     workdir = args.workdir.resolve()
     scope = str(_under_workdir(args.scope_amendment, workdir))
     dense_scope = ("--families", "dense", "--scope-amendment", scope)
+    causal_protocol = "configs/causal_chain_analysis.json"
     lint_targets = ("src", "tests", "scripts/eval")
     steps = [
+        PipelineStep(
+            "temporal-predictors-fresh-audit",
+            _module(
+                args.python,
+                "embed_optim.temporal_short_branch_predictors",
+                "--protocol",
+                "configs/short_branch_protocol.json",
+                "--analysis-protocol",
+                causal_protocol,
+                *dense_scope,
+                "--experiment-matrix",
+                "configs/experiment.yaml",
+                "--output-csv",
+                "reports/short-branch/temporal_mechanism_predictors.csv",
+                "--manifest",
+                "reports/short-branch/temporal_mechanism_predictors.manifest.json",
+                "--cache-dir",
+                "reports/short-branch/temporal-predictor-cache",
+                "--audit",
+            ),
+        ),
+        PipelineStep(
+            "temporal-short-branch-fresh-audit",
+            _module(
+                args.python,
+                "embed_optim.temporal_short_branch",
+                "--protocol",
+                causal_protocol,
+                "--scope-amendment",
+                scope,
+                "--predictor-csv",
+                "reports/short-branch/temporal_mechanism_predictors.csv",
+                "--predictor-manifest",
+                "reports/short-branch/temporal_mechanism_predictors.manifest.json",
+                "--outcome-csv",
+                "reports/tail-stability/short_branch_checkpoint_tail.csv",
+                "--outcome-manifest",
+                "reports/tail-stability/summary_manifest.json",
+                "--output-dir",
+                "reports/temporal-short-branch",
+                "--audit",
+            ),
+        ),
+        PipelineStep(
+            "dose-band-fresh-audit",
+            _module(
+                args.python,
+                "embed_optim.dose_band_analysis",
+                "--protocol",
+                causal_protocol,
+                "--audit",
+            ),
+        ),
         PipelineStep(
             "discovery-report",
             _module(

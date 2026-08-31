@@ -137,6 +137,9 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
     steps = pipeline_steps(_step_args(tmp_path))
 
     assert [step.name for step in steps] == [
+        "temporal-predictors-fresh-audit",
+        "temporal-short-branch-fresh-audit",
+        "dose-band-fresh-audit",
         "discovery-report",
         "retrieval-dynamics",
         "mechanism-report",
@@ -150,24 +153,38 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
         "distribution-build",
         "distribution-audit",
     ]
-    for step in steps[:6]:
+    for step in steps[3:9]:
         assert "--families" in step.command
         family_index = step.command.index("--families")
         assert step.command[family_index + 1] == "dense"
         assert "--scope-amendment" in step.command
-    assert "--strict" in steps[0].command
-    assert "--strict" in steps[5].command
-    assert steps[6].command[-2:] == ("pytest", "-q")
-    assert steps[7].command[-4:] == ("check", "src", "tests", "scripts/eval")
-    assert steps[8].command[-5:] == (
+    assert all(step.command[-1] == "--audit" for step in steps[:3])
+    predictor_audit, temporal_audit, dose_audit = steps[:3]
+    assert predictor_audit.command[predictor_audit.command.index("--families") + 1] == "dense"
+    assert predictor_audit.command[predictor_audit.command.index("--scope-amendment") + 1].endswith(
+        "/configs/dense_scope_amendment.json"
+    )
+    assert temporal_audit.command[temporal_audit.command.index("--scope-amendment") + 1].endswith(
+        "/configs/dense_scope_amendment.json"
+    )
+    for step in (predictor_audit, temporal_audit, dose_audit):
+        protocol_flag = "--analysis-protocol" if step is predictor_audit else "--protocol"
+        assert step.command[step.command.index(protocol_flag) + 1] == (
+            "configs/causal_chain_analysis.json"
+        )
+    assert "--strict" in steps[3].command
+    assert "--strict" in steps[8].command
+    assert steps[9].command[-2:] == ("pytest", "-q")
+    assert steps[10].command[-4:] == ("check", "src", "tests", "scripts/eval")
+    assert steps[11].command[-5:] == (
         "format",
         "--check",
         "src",
         "tests",
         "scripts/eval",
     )
-    assert steps[9].command == ("make", "-C", "paper", "clean", "all")
-    assert steps[10].command == ("uv", "build")
+    assert steps[12].command == ("make", "-C", "paper", "clean", "all")
+    assert steps[13].command == ("uv", "build")
     assert all("wandb_sync" not in step.command for step in steps)
 
 

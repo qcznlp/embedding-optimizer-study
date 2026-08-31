@@ -424,6 +424,24 @@ construct Adam basis/Muon spectrum, Muon basis/Adam spectrum, and head/middle/ta
 then Frobenius-match the interventions before measuring margins and tail losses. This is a post-hoc
 causal decomposition whose design was frozen before its outputs existed.
 
+### Falsifiable mechanism bridge
+
+The optimizer's familiar spectral signature is not itself a retrieval contribution. We therefore
+freeze two downstream tests before any short-branch or transplant output exists. First, exact
+spectra of all 45 adjacent short-branch displacements ask whether early tail singular-value energy
+predicts final loss p95 and unseen-margin p05 across a held-out seed better than optimizer labels;
+stable/entropy rank, band energy, and row imbalance are reported in full, while total update and
+weight norms are negative controls. Second, the transplant must exhibit a 0/.25/.5/.75/1 dose
+response, prespecified tail-band localization, and spectrum-over-basis specificity at at least eight
+of ten anchors. Its task-level immediate effects must then improve leave-one-run-out prediction of
+84 same-task, next-checkpoint BEIR changes.
+
+These tests can finish successfully while rejecting the hypothesis. In that case the report will
+say that Muon changes local update geometry but the tested spectral behavior does **not** explain
+the retrieval outcome. We call this falsifiable causal-chain triangulation, not formal causal
+mediation; the dated rules and negative controls are bound in
+`configs/causal_chain_analysis.json`.
+
 <!-- OUTCOMES:BEGIN -->
 
 ### Completion outcome
@@ -526,7 +544,8 @@ embed-optim-family-training-queue --pool b --gpus 4,5,6,7 --port 30120
 ~~~
 
 After both ledgers are complete, the Dense completion pipeline audits training, evaluates hybrid and
-confirmatory checkpoints, runs the short-branch probes, and performs the spectral transplant:
+confirmatory checkpoints, runs the short-branch probes, extracts and audits the 45 exact temporal
+spectra, performs the spectral transplant, and runs both frozen mechanism-bridge analyses:
 
 ~~~bash
 embed-optim-dense-completion \

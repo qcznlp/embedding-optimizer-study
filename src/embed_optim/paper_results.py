@@ -1076,6 +1076,40 @@ def render_paper_results(
         *spectral_tables,
         confirmation_table,
     ]
+    causal_chain = {}
+    for label, relative in (
+        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
+        ("dose_band", "reports/dose-band/summary_manifest.json"),
+    ):
+        path = (root / relative).resolve()
+        payload = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
+        supported = (
+            payload.get("decision", {}).get("spectral_temporal_bridge_supported")
+            if label == "temporal_short_branch"
+            else payload.get("supported")
+        )
+        causal_chain[label] = {
+            **(_source(path, root) if path.is_file() else {}),
+            "status": "supported"
+            if supported is True
+            else "negative"
+            if payload.get("complete") is True
+            else "pending",
+            "claim_boundary": payload.get("claim_boundary")
+            or "No claim is permitted until the frozen analysis manifest is complete.",
+        }
+    verdict = "; ".join(
+        f"{label.replace('_', ' ')}={record['status']}" for label, record in causal_chain.items()
+    )
+    headlines["InterventionHeadline"] = (
+        headlines["InterventionHeadline"]
+        + f" Frozen causal-chain verdicts: {verdict}. These tests constrain a spectral-component "
+        "explanation but do not identify formal mediation of full-training BEIR gains."
+    )
+    _atomic_text(
+        paper_results,
+        _replace_headlines(paper_results.read_text(encoding="utf-8"), headlines),
+    )
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,
@@ -1086,6 +1120,7 @@ def render_paper_results(
         },
         "evidence_manifests": [_source(path, root) for path in evidence_paths],
         "source_tables": [_source(path, root) for path in source_tables],
+        "causal_chain": causal_chain,
         "result_tables": [_source(root / path, root) for path in PAPER_RESULT_TABLE_PATHS],
         "headlines": headlines,
         "results_tex": _source(paper_results, root),

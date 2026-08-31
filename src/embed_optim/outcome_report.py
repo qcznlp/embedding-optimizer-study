@@ -764,6 +764,34 @@ def render_outcome_report(
     mechanism_manifest_path = _validate_mechanism_section(
         mechanism_report, blog_path, families, scope
     )
+    causal_chain = {}
+    causal_sentences = []
+    for label, relative in (
+        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
+        ("dose_band", "reports/dose-band/summary_manifest.json"),
+    ):
+        path = (repository_root / relative).resolve()
+        payload = _load_manifest(path) if path.is_file() else {}
+        complete = payload.get("complete") is True
+        supported = (
+            payload.get("decision", {}).get("spectral_temporal_bridge_supported")
+            if label == "temporal_short_branch"
+            else payload.get("supported")
+        )
+        status = (
+            "supported" if complete and supported is True else "negative" if complete else "pending"
+        )
+        boundary = payload.get("claim_boundary") or (
+            "No claim is permitted until the frozen analysis manifest is complete."
+        )
+        causal_sentences.append(f"- **{label.replace('_', ' ')}:** {status}. {boundary}")
+        if path.is_file():
+            causal_chain[label] = _source(
+                path,
+                repository_root=repository_root,
+                status=status,
+                claim_boundary=boundary,
+            )
     functional, functional_table, functional_manifest = _functional_rows(functional_dir, families)
     hybrid, hybrid_table, hybrid_manifest = _hybrid_rows(hybrid_dir, families, scope)
     short, short_table, short_manifest = _short_branch_rows(short_branch_dir, families, scope)
@@ -905,6 +933,7 @@ def render_outcome_report(
             "contrast and all win counts remain visible.",
         ]
     )
+    content += "\n\n### Causal-chain verdicts\n\n" + "\n".join(causal_sentences)
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
     _atomic_text(blog_path, _replace_marked(blog_path.read_text(encoding="utf-8"), content))
@@ -943,6 +972,7 @@ def render_outcome_report(
             units=confirmation_manifest["coverage"]["evaluation_units"],
         ),
     }
+    source_manifests.update(causal_chain)
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,

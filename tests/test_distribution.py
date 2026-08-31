@@ -164,6 +164,29 @@ def test_distribution_bundles_frozen_paper_claim_protocol() -> None:
     }
 
 
+def test_distribution_bundles_causal_chain_runtime_contracts_and_entry_points() -> None:
+    installed = _installed_data_paths()
+    expected_configs = {
+        "configs/causal_chain_analysis.json",
+        "configs/mechanism_analysis_integration.json",
+        "configs/loss_retrieval_diagnostic.json",
+    }
+    assert expected_configs <= set(installed)
+    assert {installed[source] for source in expected_configs} == {
+        PurePosixPath("share/embedding-optimizer-study/configs") / Path(source).name
+        for source in expected_configs
+    }
+
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    scripts = pyproject.split("[project.scripts]", 1)[1].split("\n[", 1)[0]
+    for command in (
+        "embed-optim-dose-band-analysis",
+        "embed-optim-temporal-short-branch-predictors",
+        "embed-optim-temporal-short-branch",
+    ):
+        assert f"{command} = " in scripts
+
+
 def test_distribution_bundles_result_safe_paper_sources() -> None:
     installed = _installed_data_paths()
     paper_files = (

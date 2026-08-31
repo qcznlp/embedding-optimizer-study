@@ -32,10 +32,16 @@ CORE_STEP_NAMES = (
     "short-branch-evaluation",
     "short-branch-evaluation-audit",
     "short-branch-summary",
+    "temporal-short-branch-predictors",
+    "temporal-short-branch-predictors-audit",
     "tail-stability-summary",
+    "temporal-short-branch-analysis",
+    "temporal-short-branch-audit",
     "spectral-transplant-matrix",
     "spectral-transplant-audit",
     "spectral-transplant-summary",
+    "dose-band-analysis",
+    "dose-band-audit",
 )
 VALIDATION_STEP_NAMES = (
     "tests",
@@ -228,8 +234,10 @@ def _module(python: str, module: str, *arguments: str) -> tuple[str, ...]:
 def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
     scope = str(args.scope_amendment.resolve())
     family_scope = ("--families", "dense", "--scope-amendment", scope)
+    causal_chain_protocol = ("--protocol", "configs/causal_chain_analysis.json")
     all_gpus = args.gpus
     four_gpu_b = args.gpus_b
+    predictor_device = f"cuda:{all_gpus.split(',', 1)[0].strip()}"
     worker_python = args.python
     steps: list[PipelineStep] = [
         PipelineStep(
@@ -374,12 +382,54 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 ),
             ),
             PipelineStep(
+                "temporal-short-branch-predictors",
+                _module(
+                    args.python,
+                    "embed_optim.temporal_short_branch_predictors",
+                    *family_scope,
+                    "--analysis-protocol",
+                    "configs/causal_chain_analysis.json",
+                    "--device",
+                    predictor_device,
+                ),
+            ),
+            PipelineStep(
+                "temporal-short-branch-predictors-audit",
+                _module(
+                    args.python,
+                    "embed_optim.temporal_short_branch_predictors",
+                    *family_scope,
+                    "--analysis-protocol",
+                    "configs/causal_chain_analysis.json",
+                    "--audit",
+                ),
+            ),
+            PipelineStep(
                 "tail-stability-summary",
                 _module(
                     args.python,
                     "embed_optim.tail_stability",
                     *family_scope,
                     "--require-short-branch",
+                ),
+            ),
+            PipelineStep(
+                "temporal-short-branch-analysis",
+                _module(
+                    args.python,
+                    "embed_optim.temporal_short_branch",
+                    *causal_chain_protocol,
+                ),
+            ),
+            PipelineStep(
+                "temporal-short-branch-audit",
+                _module(
+                    args.python,
+                    "embed_optim.temporal_short_branch",
+                    *causal_chain_protocol,
+                    "--scope-amendment",
+                    scope,
+                    "--audit",
                 ),
             ),
             PipelineStep(
@@ -410,6 +460,23 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     args.python,
                     "embed_optim.spectral_transplant_summary",
                     *family_scope,
+                ),
+            ),
+            PipelineStep(
+                "dose-band-analysis",
+                _module(
+                    args.python,
+                    "embed_optim.dose_band_analysis",
+                    *causal_chain_protocol,
+                ),
+            ),
+            PipelineStep(
+                "dose-band-audit",
+                _module(
+                    args.python,
+                    "embed_optim.dose_band_analysis",
+                    *causal_chain_protocol,
+                    "--audit",
                 ),
             ),
         ]

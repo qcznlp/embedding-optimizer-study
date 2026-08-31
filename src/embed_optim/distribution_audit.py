@@ -81,6 +81,20 @@ def _data_files(text: str) -> dict[str, PurePosixPath]:
     return files
 
 
+def _runtime_config_references(package_sources: list[Path], root: Path) -> set[str]:
+    # Runtime defaults are expressed both as ``Path("configs/...")`` and as
+    # plain strings accepted by argparse/helper APIs.  Scan quoted literals
+    # instead of only the former spelling so a valid console entry point cannot
+    # silently depend on a config omitted from the wheel.
+    pattern = re.compile(r"""["'](configs/[^"']+)["']""")
+    references = {
+        match
+        for path in package_sources
+        for match in pattern.findall(path.read_text(encoding="utf-8"))
+    }
+    return {source for source in references if (root / source).is_file()}
+
+
 def _entry_points(archive: zipfile.ZipFile, path: str) -> dict[str, str]:
     parser = configparser.ConfigParser()
     parser.read_string(archive.read(path).decode("utf-8"))
@@ -117,6 +131,11 @@ def audit_distribution(
 
     problems: list[str] = []
     package_sources = sorted((root / "src" / "embed_optim").glob("*.py"))
+    runtime_configs = _runtime_config_references(package_sources, root)
+    problems.extend(
+        f"pyproject data-files missing runtime config: {source}"
+        for source in sorted(runtime_configs - set(data_files))
+    )
     wheel_prefix = f"{distribution}-{version}"
     package_members = {path: path.relative_to(root / "src").as_posix() for path in package_sources}
     data_members = {
@@ -203,6 +222,7 @@ def audit_distribution(
         "version": version,
         "declared_console_scripts": len(scripts),
         "declared_data_files": len(data_files),
+        "runtime_config_references": len(runtime_configs),
         "package_modules": len(package_sources),
         "wheel": {
             "path": str(wheel),

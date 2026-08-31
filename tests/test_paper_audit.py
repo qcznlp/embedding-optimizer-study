@@ -12,6 +12,7 @@ from embed_optim.paper_audit import (
     BLOG_MARKERS,
     PAPER_RESULT_TABLE_PATHS,
     PAPER_SOURCE_TABLE_PATHS,
+    _causal_chain_source_complete,
     _complete_manifest,
     _final_document_language_problems,
     _macros,
@@ -125,6 +126,13 @@ def synthetic_future_final_audit(monkeypatch):
     monkeypatch.setattr(
         "embed_optim.paper_audit._final_document_language_problems",
         lambda _root: [],
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._causal_chain_evidence",
+        lambda _root: {
+            "temporal_short_branch": {"complete": True},
+            "dose_band": {"complete": True},
+        },
     )
     return audit_paper(
         families=("dense",),
@@ -541,6 +549,56 @@ def test_paper_results_manifest_requires_generated_tex_and_all_evidence(tmp_path
     path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
 
     assert _complete_manifest(path) is False
+
+
+def test_rendered_causal_verdict_must_match_hashed_manifest_status_and_boundary(tmp_path: Path):
+    root = tmp_path
+    cases = {
+        "temporal_short_branch": {
+            "path": root / "reports/temporal-short-branch/summary_manifest.json",
+            "payload": {
+                "schema_version": 1,
+                "status": "complete",
+                "complete": True,
+                "claimable": True,
+                "decision": {"spectral_temporal_bridge_supported": False},
+                "claim_boundary": "not formal mediation",
+            },
+        },
+        "dose_band": {
+            "path": root / "reports/dose-band/summary_manifest.json",
+            "payload": {
+                "schema_version": 1,
+                "status": "complete",
+                "complete": True,
+                "claimability": "claimable",
+                "supported": True,
+                "claim_boundary": "fixed-state only",
+            },
+        },
+    }
+    for label, case in cases.items():
+        path = case["path"]
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(case["payload"]), encoding="utf-8")
+        expected_status = "negative" if label == "temporal_short_branch" else "supported"
+        record = {
+            "path": str(path.relative_to(root)),
+            "bytes": path.stat().st_size,
+            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "status": expected_status,
+            "claim_boundary": case["payload"]["claim_boundary"],
+        }
+        assert _causal_chain_source_complete(root, record, path, label)
+        assert not _causal_chain_source_complete(
+            root,
+            {**record, "status": "supported" if expected_status == "negative" else "negative"},
+            path,
+            label,
+        )
+        assert not _causal_chain_source_complete(
+            root, {**record, "claim_boundary": "changed"}, path, label
+        )
 
 
 def test_result_table_audit_requires_exact_hashes_and_no_pending_markers(tmp_path: Path):

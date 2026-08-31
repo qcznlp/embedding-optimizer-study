@@ -58,10 +58,94 @@ def test_dense_pipeline_never_schedules_late_family():
         "short-branch-training-audit-seed-271828",
         "short-branch-training-audit-seed-161803",
     ]
+    protocol_scoped_modules = {
+        "embed_optim.temporal_short_branch",
+        "embed_optim.dose_band_analysis",
+    }
     assert all(
-        any(token.endswith("/configs/dense_scope_amendment.json") for token in step.command)
+        (
+            step.command[2] in protocol_scoped_modules
+            and "configs/causal_chain_analysis.json" in step.command
+        )
+        or any(token.endswith("/configs/dense_scope_amendment.json") for token in step.command)
         for step in steps[7:]
     )
+
+
+def test_new_mechanism_analyses_build_then_audit_in_dependency_order():
+    steps = pipeline_steps(_args())
+    names = [step.name for step in steps]
+
+    temporal = names.index("temporal-short-branch-analysis")
+    predictors = names.index("temporal-short-branch-predictors")
+    dose = names.index("dose-band-analysis")
+    assert names[predictors - 1] == "short-branch-summary"
+    assert names[predictors + 1] == "temporal-short-branch-predictors-audit"
+    assert names[temporal - 1] == "tail-stability-summary"
+    assert names[temporal + 1] == "temporal-short-branch-audit"
+    assert names[dose - 1] == "spectral-transplant-summary"
+    assert names[dose + 1] == "dose-band-audit"
+    assert steps[temporal].command[2] == "embed_optim.temporal_short_branch"
+    assert steps[temporal + 1].command[-1] == "--audit"
+    assert (
+        steps[temporal + 1]
+        .command[steps[temporal + 1].command.index("--scope-amendment") + 1]
+        .endswith("/configs/dense_scope_amendment.json")
+    )
+    assert steps[dose].command[2] == "embed_optim.dose_band_analysis"
+    assert steps[dose + 1].command[-1] == "--audit"
+    assert steps[predictors].command[2] == "embed_optim.temporal_short_branch_predictors"
+    assert steps[predictors + 1].command[-1] == "--audit"
+    for step in (steps[predictors], steps[predictors + 1]):
+        assert step.command[step.command.index("--families") + 1] == "dense"
+        assert step.command[step.command.index("--analysis-protocol") + 1] == (
+            "configs/causal_chain_analysis.json"
+        )
+    assert steps[predictors].command[-2:] == ("--device", "cuda:0")
+    assert "--device" not in steps[predictors + 1].command
+    for step in (
+        steps[temporal],
+        steps[temporal + 1],
+        steps[dose],
+        steps[dose + 1],
+    ):
+        assert "--families" not in step.command
+        assert step.command[step.command.index("--protocol") + 1] == (
+            "configs/causal_chain_analysis.json"
+        )
+
+
+def test_temporal_predictor_uses_a_declared_pipeline_gpu():
+    args = _args()
+    args.gpus = "8,9,10,11,12,13,14,15"
+
+    step = next(
+        step for step in pipeline_steps(args) if step.name == "temporal-short-branch-predictors"
+    )
+
+    assert step.command[-2:] == ("--device", "cuda:8")
+
+
+def test_mechanism_analysis_integration_contract_matches_pipeline():
+    contract = json.loads(
+        Path("configs/mechanism_analysis_integration.json").read_text(encoding="utf-8")
+    )
+    steps = {step.name: step for step in pipeline_steps(_args())}
+
+    assert contract["families"] == ["dense"]
+    assert contract["protocol"] == "configs/causal_chain_analysis.json"
+    for analysis in contract["analyses"]:
+        build = steps[f"{analysis['name']}-analysis"]
+        audit = steps[f"{analysis['name']}-audit"]
+        assert build.command[2] == analysis["module"]
+        assert audit.command[2] == analysis["module"]
+        assert audit.command[-1] == analysis["audit_flag"]
+        prerequisite = analysis.get("prerequisite")
+        if prerequisite:
+            build = steps[prerequisite["name"]]
+            audit = steps[f"{prerequisite['name']}-audit"]
+            assert build.command[2] == prerequisite["module"]
+            assert audit.command[-1] == prerequisite["audit_flag"]
 
 
 def test_dense_pipeline_resume_prefix_requires_same_command():

@@ -38,7 +38,7 @@ decides the recipe outcome. No discovery-oracle result can upgrade either conclu
 
 Muon spectral equalization and NorMuon row-wise adaptation are properties of the optimizers. Showing
 them again during embedding training is implementation validation, not the contribution. The
-retrieval-specific novelty is the conjunction of six observations and tests:
+retrieval-specific novelty is the conjunction of seven observations and tests:
 
 1. **Same-state local disadvantage.** Under common weights, common gradient histories, and
    Frobenius-matched update budgets, Muon-family directions need not beat AdamW in mean immediate
@@ -62,6 +62,13 @@ retrieval-specific novelty is the conjunction of six observations and tests:
 6. **Fair operator attribution.** Hybrid AdamW matches Muon's parameter routing and auxiliary rate;
    three independently resampled training views test the validation-frozen BEIR contrasts on new
    seeds.
+7. **A falsifiable spectrum-to-retrieval bridge.** Before any shared-start or spectral-transplant
+   outcome exists, freeze two tests that can reject the proposed explanation: early
+   adjacent-update spectra must predict the final branch tail across held-out seeds beyond optimizer
+   labels and norm controls, while a fixed-state spectrum transplant must show a dose response,
+   tail-band localization, basis-swap specificity, and held-out prediction of the next same-task
+   BEIR change. A familiar Muon spectrum without these downstream tests is explicitly a null
+   mechanism result.
 
 The local--global reversal rules out the easy explanation that Muon wins simply because its next
 step descends the retrieval objective more effectively. It makes the changing gradient sequence the
@@ -84,8 +91,10 @@ scientific object.
    terminal gradient than AdamW. Repeated updates can therefore change later gradients and the
    identity of hard queries even when the first mean step is weaker. These post-hoc observations
    motivate, but do not prove, optimizer-induced state feedback.
-5. **Controls decide the claim.** Shared-start branches test accumulation, hybrid AdamW removes a
-   routing confound, and three new negative-sampling seeds determine the final BEIR wording.
+5. **Controls decide the claim.** Shared-start branches test accumulation, the frozen temporal and
+   dose/band bridges test whether spectrum actually predicts downstream retrieval behavior, hybrid
+   AdamW removes a routing confound, and three new negative-sampling seeds determine the final BEIR
+   wording.
 
 ## Research questions
 
@@ -142,6 +151,22 @@ final checkpoints on strict decontaminated BEIR and use a seed-by-task hierarchi
 No confirmatory result may be stated until all runs, task cells, hashes, and familywise intervals are
 complete.
 
+### RQ7: Does a specific spectral behavior explain any accumulated retrieval effect?
+
+Use all five checkpoints from the nine randomized shared-start branches. Extract exact spectra of
+each adjacent hidden-matrix displacement, with stage 1 measured from the common start. The primary
+early predictor is tail singular-value energy averaged over stages 1 and 2; stable rank, entropy
+rank, head/middle energy, and row-norm variation are fully reported secondaries, while total update
+and weight norms are negative controls. Test stage-5 loss p95 and unseen-margin p05 using
+leave-one-seed-out prediction against an optimizer-label-only baseline.
+
+Separately, interpolate the Muon spectrum into the AdamW basis at fixed doses, transplant frozen
+head/middle/tail bands, and swap basis versus spectrum. Require the prespecified local response at
+at least eight of ten anchors, then ask whether task-level immediate effects improve held-out-run
+prediction of the next same-task BEIR change. This is called **falsifiable causal-chain
+triangulation**, not formal causal mediation. Failure of the held-out bridge means that spectral
+flattening does not explain the retrieval result, even if its local optimizer fingerprint is strong.
+
 ## Identification strategy
 
 Keep four spaces separate:
@@ -158,7 +183,9 @@ The evidence ladder is:
 1. **Descriptive:** complete discovery curves and checkpoint geometry.
 2. **Locally causal:** common-state, scale-matched virtual interventions.
 3. **Accumulated causal:** shared-start three-seed branches and routing-matched AdamW.
-4. **Confirmatory outcome:** validation-frozen three-seed BEIR comparison.
+4. **Causal-chain stress test:** frozen early-to-late held-out prediction and fixed-state
+   dose/band/basis intervention, with norm and basis negative controls.
+5. **Confirmatory outcome:** validation-frozen three-seed BEIR comparison.
 
 Do not call checkpoint correlations a causal mediation analysis. The defensible phrase is
 “a mechanistic chain supported by interventions.”
@@ -221,6 +248,25 @@ The main contrasts are:
 2. hybrid AdamW versus Muon: orthogonalized hidden-matrix rule under matched routing; and
 3. Muon versus NorMuon: additional row-wise adaptation.
 
+### Falsifiable spectrum-to-retrieval bridge
+
+The authoritative lock is `configs/causal_chain_analysis.json`. It was written after exploratory
+geometry and tail redistribution were visible, but before any randomized branch,
+spectral-transplant, or confirmatory outcome existed. It fixes:
+
+- 45 adjacent-displacement spectra from nine runs and five checkpoints;
+- stages 1--2 as predictors and stage 5 as the outcome;
+- tail energy as the only primary spectral mediator, with all secondary and control metrics
+  reported;
+- leave-one-seed-out prediction versus an optimizer-label baseline;
+- dose values 0/.25/.5/.75/1, the tail band, the basis-swap negative control, and an 8/10 anchor
+  threshold; and
+- 84 task-aligned forward observations from stage 1 to 2 and stage 3 to 4, evaluated by
+  leave-one-source-run-out prediction.
+
+The analysis may finish with `supported=false`; that is a complete, claimable negative mechanism
+result. Missing coverage is instead `pending-not-claimable` and blocks finalization.
+
 ## Result-safe claims
 
 | Claim | Current status | Required final evidence |
@@ -233,7 +279,8 @@ The main contrasts are:
 | Tail redistribution becomes accumulated robustness | Pending | frozen three-seed shared-start joint endpoint |
 | Matrix transform, not routing, causes the accumulated effect | Pending | complete hybrid AdamW control and shared-start comparison |
 | Muon or NorMuon is a better DenseOn recipe | Pending | complete three-seed strict BEIR matrix and familywise interval |
-| A singular-value mechanism explains the tail | Pending/conditional | frozen spectrum/basis transplant plus functional tail response |
+| Early spectral redistribution predicts accumulated tail behavior | Pending/conditional | frozen 45-checkpoint temporal analysis must beat optimizer labels and both norm controls across held-out seeds |
+| A singular-value component explains later retrieval change | Pending/conditional | frozen dose, tail-band, basis-control, and held-out same-task BEIR bridge must all pass; otherwise report a local-only or negative mechanism result |
 
 Do not replace any pending claim with a plausible qualitative sentence. Retain `\ResultPending`
 macros until the corresponding strict renderer succeeds.
@@ -246,7 +293,9 @@ Use only if all of the following hold:
 
 - one Muon-family optimizer has a positive familywise three-seed BEIR interval versus AdamW;
 - hybrid AdamW does not explain the full gain;
-- the shared-start branch passes its joint accumulated tail endpoint; and
+- the shared-start branch passes its joint accumulated tail endpoint;
+- the temporal and dose/band bridges pass their frozen negative controls and held-out
+  predictions; and
 - the local matched-step mean remains no better than AdamW.
 
 Then the headline is a genuine local--global reversal explained by accumulated adaptation, with tail
@@ -283,7 +332,8 @@ to rescue the headline.
    the four fixed learning-rate sweep points for unseen margin and final BEIR on the right.
 3. **State feedback and tail redistribution:** trajectory-conditioned update cosines plus Adam-selected
    and challenger-selected cross-tail effects with set overlap.
-4. **Accumulation:** three-seed shared-start loss p95 and margin p05 trajectories.
+4. **Accumulation and mechanism stress test:** three-seed shared-start loss p95/margin p05
+   trajectories, early-spectrum held-out predictions, and the fixed dose/band/basis decision.
 
 ### Main tables
 
@@ -315,7 +365,8 @@ for the DenseOn thesis.
 4. **Retrieval Outcomes and Training Dynamics:** full DenseOn discovery and systems evidence.
 5. **From Same-State Updates to Query Effects:** operator fingerprints, local disadvantage, symmetric
    tails.
-6. **Does the Effect Accumulate?:** shared-start branches, hybrid AdamW, representation bridge.
+6. **Does the Effect Accumulate, and Why?:** shared-start branches, temporal held-out bridge,
+   spectrum dose/band intervention, and hybrid AdamW.
 7. **Three-Seed Confirmation:** strict BEIR intervals and frozen wording.
 8. **Discussion:** result-contingent interpretation and practical recommendation.
 9. **Limitations and Reproducibility:** single-model scope and explicit post-hoc amendment.
@@ -328,6 +379,7 @@ for the DenseOn thesis.
 | Was the scope narrowed after seeing results? | Yes. State this plainly, preserve LateOn artifacts, and exclude them from primary inference. |
 | Were learning rates selected on BEIR? | No for confirmation. The frozen validation rule selects recipes; discovery BEIR remains exploratory. |
 | Is Muon's known spectral flattening the claimed novelty? | No. The contribution is the local--global reversal and its accumulated retrieval test. |
+| How can spectrum explain retrieval rather than merely restate Muon? | It must beat optimizer labels and norm controls across held-out branch seeds, then pass frozen dose, band, basis-swap, and next-task BEIR prediction tests. Otherwise the paper explicitly rejects the spectral explanation. |
 | Could routing explain the result? | Hybrid AdamW matches the hidden/auxiliary partition and auxiliary rate. |
 | Does a one-step intervention establish final behavior? | No. It establishes only the local direction; shared-start branches test accumulation. |
 | Does “tail improvement” use a favorable tail chosen after inspection? | Report fixed quantiles and symmetric Adam/challenger cross-tails; reserve robustness language for the frozen branch endpoint. |
@@ -345,6 +397,10 @@ for the DenseOn thesis.
 - [ ] Complete and audit all DenseOn three-seed confirmatory runs and strict BEIR cells.
 - [ ] Complete and audit all DenseOn shared-start branches and frozen tail endpoints.
 - [ ] Complete the DenseOn spectrum/basis transplant or label the mechanism unresolved.
+- [ ] Complete and audit the 45-checkpoint temporal spectrum predictor and its held-out-seed
+      negative controls.
+- [ ] Complete and audit the frozen dose/band/basis and held-out-run BEIR bridge; preserve a failed
+      hypothesis as a claimable negative result.
 - [ ] Render result macros and tables only after every bound evidence gate passes.
 - [ ] Ensure the final abstract uses familywise confirmatory wording, not discovery point estimates.
 - [ ] Retain a visible historical LateOn appendix/archive and the scope-amendment hash.

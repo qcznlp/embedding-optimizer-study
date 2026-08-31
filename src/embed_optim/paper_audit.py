@@ -1396,6 +1396,49 @@ def _spectral_transplant_complete(
     } and tail == {(family, condition) for family in families for condition in expected_conditions}
 
 
+def _causal_chain_source_complete(
+    root: Path,
+    record: Any,
+    expected_path: Path,
+    label: str,
+) -> bool:
+    """Verify a rendered causal verdict against the hashed analysis manifest."""
+
+    if label not in {"temporal_short_branch", "dose_band"}:
+        return False
+    if not _hash_only_file_complete(root, record, expected_path=expected_path):
+        return False
+    if "bytes" in record and not _hashed_file_complete(root, record, expected_path=expected_path):
+        return False
+    try:
+        payload = _json(expected_path)
+    except (OSError, json.JSONDecodeError, TypeError, ValueError):
+        return False
+    boundary = payload.get("claim_boundary")
+    supported = (
+        payload.get("decision", {}).get("spectral_temporal_bridge_supported")
+        if label == "temporal_short_branch"
+        else payload.get("supported")
+    )
+    claimable = (
+        payload.get("claimable") is True
+        if label == "temporal_short_branch"
+        else payload.get("claimability") == "claimable"
+    )
+    expected_status = "supported" if supported is True else "negative"
+    return bool(
+        payload.get("schema_version") == SCHEMA_VERSION
+        and payload.get("complete") is True
+        and payload.get("status") == "complete"
+        and claimable
+        and isinstance(supported, bool)
+        and isinstance(boundary, str)
+        and boundary
+        and record.get("status") == expected_status
+        and record.get("claim_boundary") == boundary
+    )
+
+
 def _mechanism_report_complete(
     path: Path,
     payload: dict[str, Any],
@@ -1415,6 +1458,8 @@ def _mechanism_report_complete(
         "exact_spectra": root / "results/common-state-spectra/summary/summary_manifest.json",
         "basis_sensitivity": root / "reports/basis-sensitivity/summary_manifest.json",
         "mechanism_bridge": root / "reports/mechanism-bridge/summary_manifest.json",
+        "temporal_short_branch": root / "reports/temporal-short-branch/summary_manifest.json",
+        "dose_band": root / "reports/dose-band/summary_manifest.json",
     }
     sources = payload.get("sources")
     if (
@@ -1424,6 +1469,11 @@ def _mechanism_report_complete(
             not _hash_only_file_complete(root, sources[name], expected_path=source_path)
             for name, source_path in expected_sources.items()
         )
+    ):
+        return False
+    if any(
+        not _causal_chain_source_complete(root, sources[label], expected_sources[label], label)
+        for label in ("temporal_short_branch", "dose_band")
     ):
         return False
     family_count = len(families)
@@ -1507,6 +1557,8 @@ def _outcome_report_complete(
         "tail_stability": root / "reports/tail-stability/summary_manifest.json",
         "spectral_transplant": root / "reports/spectral-transplant/summary_manifest.json",
         "confirmation": root / "reports/confirmatory/summary_manifest.json",
+        "temporal_short_branch": root / "reports/temporal-short-branch/summary_manifest.json",
+        "dose_band": root / "reports/dose-band/summary_manifest.json",
     }
     if (
         payload.get("schema_version") != SCHEMA_VERSION
@@ -1523,6 +1575,11 @@ def _outcome_report_complete(
             )
             for name, source_path in expected_sources.items()
         )
+    ):
+        return False
+    if any(
+        not _causal_chain_source_complete(root, sources[label], expected_sources[label], label)
+        for label in ("temporal_short_branch", "dose_band")
     ):
         return False
 
@@ -1693,6 +1750,11 @@ def _paper_results_complete(
     result_tables = payload.get("result_tables")
     headlines = payload.get("headlines")
     results = payload.get("results_tex")
+    causal_chain = payload.get("causal_chain")
+    causal_paths = {
+        "temporal_short_branch": root / "reports/temporal-short-branch/summary_manifest.json",
+        "dose_band": root / "reports/dose-band/summary_manifest.json",
+    }
     if (
         payload.get("schema_version") != SCHEMA_VERSION
         or payload.get("complete") is not True
@@ -1717,6 +1779,12 @@ def _paper_results_complete(
             root,
             results,
             expected_path=root / "paper/results.tex",
+        )
+        or not isinstance(causal_chain, dict)
+        or set(causal_chain) != set(causal_paths)
+        or any(
+            not _causal_chain_source_complete(root, causal_chain[label], path, label)
+            for label, path in causal_paths.items()
         )
         or "do not convert descriptive checkpoint associations into causal evidence"
         not in str(payload.get("claim_boundary", ""))
@@ -1770,6 +1838,24 @@ def _final_document_language_problems(root: Path) -> list[str]:
             continue
         problems.extend(f"{relative}: {phrase}" for phrase in phrases if phrase in text)
     return problems
+
+
+def _causal_chain_evidence(root: Path) -> dict[str, dict[str, Any]]:
+    evidence = {}
+    for label, relative in (
+        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
+        ("dose_band", "reports/dose-band/summary_manifest.json"),
+    ):
+        path = root / relative
+        payload = _json(path) if path.is_file() else {}
+        evidence[label] = {
+            "path": str(path),
+            "complete": payload.get("complete") is True
+            and isinstance(payload.get("claim_boundary"), str)
+            and bool(payload.get("claim_boundary")),
+            "sha256": _sha256(path) if path.is_file() else None,
+        }
+    return evidence
 
 
 def audit_paper(
@@ -1841,12 +1927,15 @@ def audit_paper(
         name for name, item in blog_marker_blocks.items() if item.get("complete") is not True
     )
     document_language_problems = _final_document_language_problems(root)
+    causal_chain = _causal_chain_evidence(root)
+    causal_chain_complete = all(item["complete"] for item in causal_chain.values())
     complete = (
         not pending
         and not incomplete_evidence
         and paper_results_complete
         and not incomplete_blog_marker_blocks
         and not document_language_problems
+        and causal_chain_complete
     )
     result = {
         "schema_version": SCHEMA_VERSION,
@@ -1876,6 +1965,7 @@ def audit_paper(
         "blog_marker_blocks": blog_marker_blocks,
         "incomplete_blog_marker_blocks": incomplete_blog_marker_blocks,
         "document_language_problems": document_language_problems,
+        "causal_chain": causal_chain,
     }
     if scope is not None:
         result["families"] = list(families)
@@ -1887,6 +1977,7 @@ def audit_paper(
             f"paper_results_complete={paper_results_complete}, "
             f"incomplete_blog_marker_blocks={incomplete_blog_marker_blocks}, "
             f"document_language_problems={document_language_problems}"
+            f", causal_chain_complete={causal_chain_complete}"
         )
     return result
 

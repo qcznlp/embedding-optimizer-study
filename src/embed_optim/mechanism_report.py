@@ -809,6 +809,34 @@ def render_mechanism_report(
     families = normalize_families(families)
     families, scope = resolve_scope(families, scope_amendment)
     repository_root = _repository_root(common_state_dir)
+    causal_manifests = {}
+    causal_lines = []
+    for label, relative in (
+        ("temporal_short_branch", "reports/temporal-short-branch/summary_manifest.json"),
+        ("dose_band", "reports/dose-band/summary_manifest.json"),
+    ):
+        path = (repository_root / relative).resolve()
+        payload = _load_manifest(path) if path.is_file() else {}
+        complete = payload.get("complete") is True
+        supported = (
+            payload.get("decision", {}).get("spectral_temporal_bridge_supported")
+            if label == "temporal_short_branch"
+            else payload.get("supported")
+        )
+        state = (
+            "supported" if complete and supported is True else "negative" if complete else "pending"
+        )
+        boundary = payload.get("claim_boundary") or (
+            "No claim is permitted until the frozen analysis manifest is complete."
+        )
+        causal_lines.append(f"- **{label.replace('_', ' ')}:** {state}. {boundary}")
+        if path.is_file():
+            causal_manifests[label] = {
+                "path": _portable_path(path, repository_root),
+                "sha256": _sha256(path),
+                "status": state,
+                "claim_boundary": boundary,
+            }
     family_count = len(families)
     common_rows, common_manifest, common_table = _common_state_rows(common_state_dir, families)
     basis_rows, basis_manifest, basis_table = _basis_rows(basis_dir, families)
@@ -1069,6 +1097,7 @@ def render_mechanism_report(
                 "matched shared-start branches and fixed-state spectral interventions.",
             ]
         )
+    content += "\n\n### Frozen causal-chain tests\n\n" + "\n".join(causal_lines)
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
     blog_path = blog_path.resolve()
@@ -1106,6 +1135,7 @@ def render_mechanism_report(
             "checkpoints": bridge_manifest["checkpoints"] * family_count // len(FAMILIES),
         },
     }
+    source_manifests.update(causal_manifests)
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "complete": True,

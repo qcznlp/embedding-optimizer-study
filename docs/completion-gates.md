@@ -27,8 +27,10 @@ identity.
 | Confirmatory evaluation | reports/confirmatory/summary_manifest.json | 9 × 14 = 126 units; seed-by-task bootstrap and the original six-comparison Bonferroni family remain valid while only Dense rows are shown |
 | Shared-start training | generated matrices and deep checkpoint audits | 3 seeds × 3 operators = 9 runs and 45 checkpoints from one frozen AdamW start |
 | Shared-start probes | reports/short-branch/summary_manifest.json | 45 query-disjoint checkpoint rows plus 46 unseen-probe jobs (45 checkpoints and one pretrained reference), with the three-seed endpoint decision |
+| Temporal shared-start mechanism | reports/short-branch/temporal_mechanism_predictors.manifest.json and reports/temporal-short-branch/summary_manifest.json | Predictor extraction and the scope-bound temporal analysis are each complete; both strict `--audit` steps rehash every declared input and output, and tail-stability outcomes are built before the temporal join |
 | Tail summary | reports/tail-stability/summary_manifest.json | discovery tier labeled post hoc; accumulated tier satisfies the fixed joint tail rule |
 | Spectrum/basis transplant | reports/spectral-transplant/summary_manifest.json | all conditions at 10 anchors; native, 2×2, path, and band summaries complete |
+| Dose/band mechanism | reports/dose-band/summary_manifest.json | Dense-only, scope-bound dose/band analysis is complete; its strict `--audit` rehashes every declared input and output |
 | Mechanism report | reports/mechanism-summary.manifest.json | families=["dense"], same scope hash, 10 anchors, 180 spectra, 60 bridge checkpoints, 840 retrieval units |
 | Outcome report | reports/outcome-summary.manifest.json | hybrid, shared-start, spectral transplant, and confirmation are all strict and rendered into the blog |
 | Blog | [docs/blog.md](blog.md) | each generated marker has exactly one pair and matches its hashed report byte-for-byte |
@@ -55,8 +57,16 @@ embed-optim-dense-completion \
 ~~~
 
 The ledger under logs/dense-completion-pipeline must finish every checkpoint audit, evaluation,
-short-branch summary, tail summary, and spectral-transplant step. A failed or incomplete step blocks
-final reporting.
+short-branch summary, temporal predictor extraction, tail summary, temporal short-branch analysis,
+spectral-transplant step, and dose/band analysis. Each new build is followed immediately by its
+strict `--audit`; a pending
+receipt, failed audit, or incomplete step blocks final reporting. The commands and source hashes are
+part of the completion ledger's step contract, and the finalizer binds its provenance to the exact
+completed ledger before rendering the mechanism report, blog, and paper.
+
+The machine-readable integration contract is
+[`configs/mechanism_analysis_integration.json`](../configs/mechanism_analysis_integration.json).
+It fixes the module names, output manifests, ordering dependencies, Dense-only scope, and audit flag.
 
 Each training-pool queue has a non-blocking exclusive lease and clears its aggregate completion bit
 at entry. It may adopt or skip an on-disk run only after an uncached deep audit of all five scheduled
