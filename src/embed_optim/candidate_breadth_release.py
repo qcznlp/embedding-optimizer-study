@@ -234,12 +234,17 @@ def _read_finalization_ledger(
         ):
             raise RuntimeError(f"Upstream finalization step {index} is invalid")
         for attempt_index, attempt in enumerate(attempts, start=1):
+            return_code = attempt.get("return_code") if isinstance(attempt, dict) else None
+            execution_error = attempt.get("execution_error") if isinstance(attempt, dict) else None
             if (
                 not isinstance(attempt, dict)
                 or attempt.get("attempt") != attempt_index
                 or not isinstance(attempt.get("started_at"), str)
                 or not isinstance(attempt.get("finished_at"), str)
-                or not isinstance(attempt.get("return_code"), int)
+                or not (
+                    isinstance(return_code, int)
+                    or (return_code is None and isinstance(execution_error, str))
+                )
             ):
                 raise RuntimeError(
                     f"Upstream finalization step {index} attempt record is malformed"
@@ -615,6 +620,19 @@ def run_pipeline(args: argparse.Namespace) -> int:
                 _atomic_json(ledger_path, ledger)
                 return 1
 
+        _assert_frozen_inputs_unchanged(
+            upstream_path=upstream_path,
+            upstream_source=upstream_source,
+            protocol_path=protocol_path,
+            protocol_source=protocol_source,
+            scope=scope,
+            repository=workdir,
+        )
+        _assert_repository_step_contract_unchanged(
+            steps,
+            step_contract,
+            repository=workdir,
+        )
         ledger.pop("failed_step", None)
         ledger["complete"] = True
         ledger["finished_at"] = _timestamp()

@@ -169,6 +169,37 @@ def test_upstream_finalization_ledger_hashes_all_logs_and_completion(tmp_path: P
     assert source == _record(ledger)
 
 
+def test_upstream_finalization_accepts_a_logged_execution_error_before_success(
+    tmp_path: Path,
+) -> None:
+    ledger = _write_upstream(tmp_path)
+    payload = json.loads(ledger.read_text(encoding="utf-8"))
+    record = payload["steps"][0]
+    failed_log = tmp_path / "logs" / "01-start-failure.log"
+    failed_log.write_text("pipeline execution error: unavailable\n", encoding="utf-8")
+    record["attempts"].insert(
+        0,
+        {
+            "attempt": 1,
+            "started_at": "2026-08-31T00:00:00Z",
+            "finished_at": "2026-08-31T00:00:01Z",
+            "return_code": None,
+            "execution_error": "OSError: unavailable",
+            "log": _record(failed_log),
+        },
+    )
+    record["attempts"][1]["attempt"] = 2
+    ledger.write_text(json.dumps(payload), encoding="utf-8")
+
+    observed, _ = _read_finalization_ledger(
+        ledger,
+        expected_scope=SCOPE,
+        repository=tmp_path,
+    )
+
+    assert observed["steps"][0]["attempts"][-1]["return_code"] == 0
+
+
 @pytest.mark.parametrize(
     "mutation,match",
     [
