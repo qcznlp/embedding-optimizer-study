@@ -557,14 +557,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--output", type=Path, default=Path("data/candidate-breadth-224-seed20260901")
     )
-    parser.add_argument("--audit-only", action="store_true")
-    parser.add_argument("--overwrite", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--audit-only", action="store_true")
+    mode.add_argument("--overwrite", action="store_true")
+    mode.add_argument(
+        "--resume",
+        action="store_true",
+        help="Audit an existing complete output, or prepare it when absent.",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
-    if args.audit_only:
+    if args.audit_only or (args.resume and args.output.exists()):
         result = audit_candidate_breadth_data(args.protocol, args.output)
     else:
         output = prepare_candidate_breadth_data(

@@ -315,7 +315,8 @@ Prepare and independently audit the source-bound nested candidate data:
 ~~~bash
 embed-optim-prepare-candidate-breadth \
   --protocol configs/candidate_breadth_probe.json \
-  --output data/candidate-breadth-224-seed20260901
+  --output data/candidate-breadth-224-seed20260901 \
+  --resume
 
 embed-optim-prepare-candidate-breadth \
   --protocol configs/candidate_breadth_probe.json \

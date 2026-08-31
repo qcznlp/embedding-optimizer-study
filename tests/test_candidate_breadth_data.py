@@ -7,6 +7,7 @@ import pytest
 from embed_optim.candidate_breadth_data import (
     load_candidate_breadth_protocol,
     nested_candidate_ids,
+    parse_args,
     select_validation_rows,
 )
 from embed_optim.data import SPLITS
@@ -43,6 +44,13 @@ def test_protocol_is_post_hoc_and_fixes_nested_widths() -> None:
         2048,
     ]
     assert protocol["timing"]["candidate_breadth_data_or_scores_visible"] is False
+
+
+def test_candidate_breadth_prepare_modes_are_mutually_exclusive() -> None:
+    assert parse_args(["--resume"]).resume is True
+    assert parse_args(["--audit-only"]).audit_only is True
+    with pytest.raises(SystemExit):
+        parse_args(["--resume", "--overwrite"])
 
 
 def test_balanced_selection_is_deterministic_and_source_complete() -> None:
