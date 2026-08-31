@@ -15,8 +15,8 @@
 \input{results}
 \input{generated/causal-chain}
 
-\title{From Local Update Disadvantage to Global Retrieval Differences:\\
-Understanding Muon in Dense Retriever Adaptation}
+\title{When Better Contrastive Optimization Hurts Retrieval:\\
+Muon and the Shortlist--Corpus Gap in Dense Retriever Adaptation}
 
 \author{Anonymous ACL submission}
 
@@ -24,76 +24,72 @@ Understanding Muon in Dense Retriever Adaptation}
 \maketitle
 
 \begin{abstract}
-Dense retrievers are usually adapted with AdamW, whereas Muon changes the geometry of hidden-matrix
-updates through approximate orthogonalization. It is unclear whether this inductive bias helps when
-the starting encoder was itself pretrained with an Adam-family optimizer. We study AdamW, Muon, and
-NorMuon on DenseOn using one deterministic \NumTrainingQueries-query training view, four learning
-rates per optimizer, five training stages, and \NumBEIRTasks{} decontaminated zero-shot retrieval
-tasks. The discovery results expose a local--global reversal: at common weights and matched update
-norms, Muon-family directions need not improve the mean query margin as much as AdamW, while their
-accumulated trajectories have higher one-seed, four-learning-rate-median final BEIR point estimates
-in discovery. Their
-immediate errors also redistribute rather than uniformly dominate AdamW's worst-query tail. We test
-whether repeated, trajectory-changing adaptation---rather than a universally better one-step
-direction---explains those discovery differences, using routing-matched AdamW, shared-start branches,
-frozen spectrum-to-retrieval stress tests, and a three-seed confirmation. \DiscoveryHeadline
-\ConfirmationHeadline The original project also ran
-exploratory LateOn experiments; a user-directed, post-hoc scope amendment excludes them from all
-primary and confirmatory inference and retains them only as historical supplementary material.
+Dense retrievers learn from a small shortlist of labeled negatives but are judged against an entire
+corpus. We ask whether changing the optimizer changes the calibration between these two regimes.
+We compare AdamW, Muon, and NorMuon while adapting the Adam-pretrained DenseOn encoder on one
+deterministic \NumTrainingQueries-query training view, with four learning rates per optimizer, five
+training stages, and \NumBEIRTasks{} decontaminated zero-shot retrieval tasks. Direct full-corpus
+selection gives Muon-family optimizers modest exploratory gains. In contrast, a query-disjoint
+eight-way contrastive validation set selects a ten-times larger Muon-family learning rate: its loss
+and positive margin improve while full-corpus retrieval falls, including on corpora from the same
+data sources. This optimizer-specific shortlist--corpus gap is accompanied by nearly matched score
+drift but roughly twice the weight-space displacement at retrieval-optimal points. We distinguish
+the validation shortlist, an unseen fixed-candidate functional probe, and full-corpus retrieval, and
+test the proposed optimization-dose account with routing-matched AdamW, three-seed retraining,
+shared-start scale-matched branches, and frozen spectral interventions. \DiscoveryHeadline
+\ConfirmationHeadline The project originally included exploratory LateOn runs; a user-directed,
+post-hoc scope amendment excludes them from primary and confirmatory inference.
 \end{abstract}
 
 \section{Introduction}
 
-AdamW is the default optimizer for adapting text embedding models. Its coordinate-wise
-second-moment normalization is effective, but it ignores the matrix organization of Transformer
-projections. Muon instead approximately orthogonalizes momentum updates for hidden matrices, and
-NorMuon follows that transform with neuron-wise adaptation
-\citep{loshchilov2019decoupled,liu2025muon,li2025normuon}. These matrix-aware rules have shown
-promising efficiency in language-model pretraining. That result does not imply an advantage during
-retrieval fine-tuning: the encoder begins at an Adam-pretrained solution, the training signal is a
-contrastive ranking loss, and useful zero-shot rankings must be retained while new margins are
-acquired.
+AdamW is the default optimizer for adapting text embedding models. Muon instead approximately
+orthogonalizes momentum updates for hidden matrices, and NorMuon follows that transform with
+neuron-wise adaptation \citep{loshchilov2019decoupled,liu2025muon,li2025normuon}. Their matrix-aware
+updates have shown attractive scaling and memory behavior in language-model training. Dense
+retrieval introduces a different constraint: the learner sees one positive and a small set of hard
+negatives, whereas deployment ranks that query against millions of documents. A lower contrastive
+loss is useful only when its ordering transfers beyond the observed shortlist.
 
-Recent work makes this optimizer switch a genuine tension rather than a routine hyperparameter
-choice. Muon can disrupt Adam-pretrained models as update strength grows, while optimizer
-consistency can improve the learning--forgetting trade-off
-\citep{qu2026finetune,liu2026consistency}. Conversely, Muon's higher-rank matrix directions could
-spread adaptation over more features and avoid concentrating damage in a few high-leverage
-directions. Dense retrieval offers a direct functional test: every update is ultimately judged by
-query--document margins and rankings, not by its spectrum or training loss alone.
+Recent work shows that switching an Adam-pretrained model to Muon can disrupt pretrained knowledge
+as update strength grows \citep{qu2026finetune,liu2026consistency}. That observation does not answer
+the retrieval question. A retriever may preserve its score function on a fixed eight-document probe
+yet change the ordering of unseen corpus documents, or it may move far in weight space while making
+a small functional change. We therefore treat optimizer geometry, shortlist metrics, and
+full-corpus rankings as separate objects rather than interchangeable measures of progress.
 
-Our central observation is deliberately not ``Muon takes a better step.'' In the completed
-discovery diagnostics, Frobenius-matched Muon-family virtual steps can be weaker than AdamW in mean
-immediate margin improvement, yet the one-seed, four-learning-rate-median final BEIR point estimates
-are 0.5901/0.5910 for Muon/NorMuon versus 0.5858 for AdamW. We call this tension the
-\emph{local--global reversal}; it is an exploratory aggregate over the frozen grid, not the
-validation-selected comparison. It rules out the simplest
-one-step-descent explanation and moves the mechanism question to what repeated updates do: the first
-step changes the parameters, which changes the next gradient, the set of difficult queries, and the
-future optimizer state.
+Our central observation is an optimizer-specific calibration failure. On the query-disjoint
+validation shortlist, minimizing loss selects learning rate $3\!\times\!10^{-3}$ for both Muon and
+NorMuon; direct full-corpus discovery instead selects $3\!\times\!10^{-4}$. Moving between these
+rates suppresses the selected hard negatives and improves the observed margin in every inspected
+optimizer--source transition, but lowers full-corpus nDCG in every transition, including those whose
+queries and corpus come from the same source. AdamW's shortlist metric remains correctly ordered
+over its learning-rate sweep, while the Muon-family ordering reverses. Query disjointness therefore
+does not by itself make a small candidate set a faithful retrieval-selection proxy.
 
-We therefore separate four objects that are often conflated: the update prescribed at the same
-weights, the per-query distribution of its immediate effects, the accumulated trajectory induced by
-repeated adaptation, and the final retrieval ranking. This separation also sharpens the robustness
-question. A matrix-aware update can sacrifice average immediate progress without uniformly reducing
-AdamW's worst errors; it may instead change which queries occupy the adverse tail. Whether this tail
-redistribution becomes beneficial only after accumulation is a testable retrieval-specific claim,
-not a restatement of Muon's definition.
+This result is not a restatement of Muon's spectral equalization. At the retrieval-optimal points,
+all three optimizers induce almost the same score drift on a fixed unseen probe, while Muon and
+NorMuon move about twice as far from the pretrained weights. At excessive learning rates, weight
+distance continues to rise even as score drift falls and retrieval partly recovers, so parameter
+distance alone is not an explanation either. The mechanism question is instead whether the
+Muon-family update geometry delivers a larger functional dose to the unobserved candidate space,
+making a narrow negative shortlist systematically over-optimistic.
 
 Our contributions are:
 \begin{itemize}
     \item A controlled DenseOn comparison of AdamW, Muon, and NorMuon over a complete learning-rate
     sweep, five-stage training dynamics, and a decontaminated BEIR evaluation, with optimizer-state,
     throughput, and time-to-quality reported separately.
-    \item A common-state analysis that distinguishes definition-level spectral flattening from
-    functional evidence and reveals a local--global reversal between matched one-step effects and
-    accumulated retrieval outcomes.
-    \item A query-level analysis showing that the relevant immediate phenomenon is tail
-    redistribution rather than uniform Muon dominance, together with a frozen shared-start test of
-    whether repeated updates improve the acquisition--preservation frontier.
-    \item A falsifiable causal-chain test that requires early spectra to predict held-out branch
-    outcomes beyond optimizer labels and norm controls, then requires fixed-state dose, band, basis,
-    and held-run retrieval evidence. A completed failure is retained as a claimable negative result.
+    \item Evidence for an optimizer-specific shortlist--corpus gap: a query-disjoint contrastive
+    proxy can rank Muon-family learning rates in the opposite order from full-corpus retrieval, even
+    on the same source domains.
+    \item A weight/function-space decomposition showing that useful Muon-family solutions reach a
+    similar fixed-probe score drift through substantially larger parameter displacement, while
+    displacement alone fails to predict high-dose retrieval behavior.
+    \item Falsifiable tests of this optimization-dose account using shared-start scale-matched
+    branches, query-tail outcomes, spectral dose/band/basis transplants, and a prospectively declared
+    held-run bridge. Failed links remain reportable negative results rather than being replaced
+    post hoc.
     \item Routing-matched hybrid AdamW that measures grouping and auxiliary-rate effects within
     AdamW and supplies a separately tuned, matched-routing comparator for Muon-family recipes,
     together with three new negative-sampling seeds that keep the final optimizer comparison
@@ -123,40 +119,40 @@ or noisy directions, and row balancing can change strongly without affecting a r
 fingerprints. They become explanatory only if a controlled change reaches margins or rankings and
 persists under repeated updates.
 
-\subsection{Local direction versus accumulated adaptation}
+\subsection{Shortlist loss versus corpus retrieval}
 
-At parameters $\theta_t$, a same-state intervention compares operators on the same gradient history:
+For query $q_i$, positive document $d_i^+$, and sampled negative set $C_i^-$, the training and
+validation objective observes only
 \begin{equation}
 \begin{aligned}
-\theta_t' &= \theta_t + \alpha c_t^o\Delta\theta_t^o, \\
-c_t^o &=
-\frac{\lVert \Delta\theta_t^{\mathrm{AdamW}}\rVert_F}
-     {\lVert \Delta\theta_t^{o}\rVert_F},
-\quad o\in\{\mathrm{Muon},\mathrm{NorMuon}\}.
+  \ell_i &=-s(q_i,d_i^+)/\tau+\log Z_i,\\
+  Z_i &=\exp(s(q_i,d_i^+)/\tau)
+       +\sum_{d\in C_i^-}\exp(s(q_i,d)/\tau).
 \end{aligned}
 \end{equation}
-This identifies an immediate directional effect at a matched global or per-tensor budget. It does
-not predict an entire trajectory, because committing the update changes the next gradient and each
-optimizer's history. The local--global reversal therefore motivates an accumulated-adaptation
-hypothesis: Muon-family directions may be locally conservative on average but steer subsequent
-gradients toward a trajectory with better held-out margins and zero-shot rankings.
+Full-corpus retrieval instead depends on the rank of $d_i^+$ among every document in a corpus
+$\mathcal D_i$. Holding out queries prevents direct query memorization, but it does not ensure that
+$C_i^-$ represents the score changes over $\mathcal D_i\setminus C_i^-$. Consequently, two
+optimizers can agree on the observed positive and selected hard negatives while changing the
+unobserved score field differently.
 
-\subsection{Tail redistribution}
+We call the difference between optimizer ordering under $\ell_i$ and under full-corpus nDCG the
+\emph{shortlist--corpus gap}. It is a selection failure, not a claim that the shortlist loss is
+incorrect: the loss is exactly the objective supplied to the optimizer. A candidate-breadth
+diagnostic expands a fixed query's nested comparison set from the original seven sampled negatives
+to the ten-candidate source pool and then to 32, 128, 512, and 2,048 candidates from the same pinned
+mined list. If missing-candidate coverage drives the reversal, the apparent high-dose advantage
+should shrink or reverse as breadth grows. Because this diagnostic was designed after the initial
+gap was observed, we label it post hoc and keep it outside confirmatory optimizer inference.
 
-For a per-query loss change $\delta_i^o$, mean improvement and adverse-tail behavior are distinct.
-We report fixed quantiles and symmetric cross-tails: the worst set selected under AdamW is evaluated
-under every operator, and each Muon-family operator's own worst set is evaluated under AdamW. Low
-overlap or opposite cross-tail orderings imply redistribution of fragile queries, not uniform tail
-suppression. This distinction is central for DenseOn: a pooled representation can improve its mean
-margin while moving failure mass among queries. The prospectively frozen shared-start endpoint asks
-the stronger question of whether the three-seed median simultaneously improves query-disjoint loss
-p95 and unseen margin p05 after repeated updates.
+\subsection{From directions to trajectories}
 
-\paragraph{Causal-chain research question.}
-Does a specific change in the singular-value distribution explain an accumulated functional effect
-and predict a later retrieval change, rather than merely restating Muon's known spectral signature?
-We require held-out prediction and interventions that can reject this explanation; no checkpoint
-correlation, optimizer label, or fixed-state geometric fingerprint answers this question by itself.
+We compare optimizer directions at identical weights and matched Frobenius budgets, then distinguish
+their mean and adverse-tail query effects. These one-step interventions identify immediate direction
+differences but not accumulated adaptation, because every committed update changes future gradients
+and optimizer state. Shared-start branches test accumulation; spectral dose, band, and basis
+transplants test whether a specific update component reaches the retrieval function. Geometry is
+explanatory only when it predicts held-out outcomes beyond optimizer labels and norm controls.
 
 \section{Related Work}
 
@@ -242,32 +238,14 @@ per-query rankings, so we make no query-level significance claim for BEIR.
 
 \subsection{Frozen causal-chain protocol}
 
-The shared-start temporal test uses all 45 adjacent displacements from nine randomized branches and
-five checkpoints, with the first displacement measured from the common start. For each challenger,
-the primary predictor is hidden-matrix tail singular-value energy averaged over stages 1--2; the
-outcomes are stage-5 query-disjoint loss p95 and unseen margin p05. We fit paired-contrast ordinary
-least squares while leaving one complete order seed out. The reference is an optimizer-label-only
-mean fit on the two training seeds; total hidden-update and current-weight Frobenius norms are frozen
-negative controls. Stable rank, entropy rank, other spectral bands, and row imbalance are reported as
-secondaries but cannot rescue the primary test.
-
-Temporal support requires all five frozen conditions: (i) both challenger predictor shifts are
-positive in at least two of three seeds; (ii) both final outcomes favor each challenger in at least
-two seeds; (iii) the primary predictor improves pooled leave-one-seed-out RMSE over optimizer labels
-for both outcomes; (iv) neither norm control equals or exceeds that improvement for either outcome;
-and (v) adding the primary predictor does not increase either absolute challenger coefficient for
-either outcome. Failure of any condition is a complete negative temporal result, not missing evidence.
-
-The fixed-state test interpolates the Muon spectrum into the AdamW basis at
-$\lambda\in\{0,.25,.5,.75,1\}$, with every direction Frobenius-matched. Both loss-p95 and margin-p05
-responses must be weakly monotone at at least eight of ten frozen anchors; the prespecified tail band
-must beat the head and middle bands, and the spectrum transplant must beat the matched basis-swap
-control, each on both metrics at at least eight anchors. Finally, 84 observations join 14 tasks to
-the two eligible next-checkpoint transitions in each of three source runs. Leaving one full source
-run out, a spectrum-based immediate effect must improve same-task next-checkpoint nDCG@10 RMSE beyond
-task and transition effects, while its basis-control counterpart must not match that improvement.
-Only joint passage of dose, band, basis, and held-run bridge rules supports the spectral-component
-account.
+Nine shared-start branches provide 45 adjacent displacements. The frozen temporal test asks whether
+early hidden-matrix tail spectral energy predicts final query-disjoint loss p95 and unseen margin p05
+under leave-one-seed-out evaluation, beyond optimizer labels and update/weight norm controls. A
+separate fixed-state test interpolates Muon singular values into the AdamW basis and requires
+prespecified dose monotonicity, tail-band localization, spectrum-over-basis specificity, and improved
+leave-one-source-run-out prediction of next-checkpoint BEIR. Every condition and negative control is
+reported; failure of any required link rejects the spectral-component account rather than triggering
+a replacement explanation. Full decision rules appear in Appendix~\ref{sec:causal-chain-diagnostics}.
 
 \section{Retrieval Outcomes and Training Dynamics}
 
@@ -291,6 +269,25 @@ not superior on mean immediate margin. Query-disjoint validation instead selects
 Muon-family rate, whose discovery-BEIR score is lower than AdamW; the new-seed matrix using those
 frozen validation recipes remains the only basis for a final optimizer claim.
 
+\subsection{When the validation proxy wins and retrieval loses}
+
+The discrepancy is systematic across the completed discovery sweep. Spearman correlation between
+validation loss and final BEIR is $-1.0$ for AdamW, so lower loss orders its four learning rates in
+the desired retrieval direction. The correlation is $+0.8$ for both Muon and NorMuon. Validation
+margin shows the corresponding sign reversal: $+1.0$ for AdamW and $-0.8$ for each Muon-family
+optimizer. Thus the same query-disjoint proxy is calibrated for one update rule and anti-calibrated
+for the other two over this grid.
+
+We also isolate five source-aligned tasks for which the validation queries and full retrieval corpus
+come from the same underlying source. Comparing the validation-selected $3\!\times\!10^{-3}$ rate
+with the retrieval-optimal $3\!\times\!10^{-4}$ rate yields ten optimizer--source transitions. In
+all ten, the selected hardest negative is suppressed and the eight-way positive margin increases;
+in all ten, full-corpus nDCG decreases. The mean selected-negative score change is $-0.0369$, the
+mean positive-score change is $-0.0115$, the mean margin change is $+0.0254$, and the mean nDCG
+change is $-0.0255$. Because positive scores increase in three transitions, the effect is not merely
+uniform positive forgetting. These are exploratory, post-selection diagnostics, but they rule out
+ordinary source-domain shift as a sufficient explanation of the observed gap.
+
 \section{Three-Seed Retrieval Confirmation}
 \label{sec:confirmation}
 
@@ -307,67 +304,38 @@ their wording. Table~\ref{tab:confirmation-results} reports the complete contras
 
 \section{From Same-State Updates to Query Effects}
 
-\subsection{Common-state update fingerprints}
+\subsection{Weight distance is not functional distance}
 
-At the pretrained state and selected 20, 60, and 100\% DenseOn checkpoints, we freeze weights and
-replay the same ordered sequence of eight gradients into each optimizer. This frozen-weight state
-warm-up is the formal common-state protocol; one-gradient cold starts are auxiliary. Weight decay is
-kept separate, and directions are compared raw and after global or per-tensor Frobenius matching.
-Primary measurements are effective rank, condition number, row-energy concentration, layer
-allocation, and pairwise angle. \CommonStateHeadline
+At each optimizer's retrieval-optimal discovery point, the mean absolute score drift on the fixed
+224-query unseen probe is 0.0604 for AdamW, 0.0619 for Muon, and 0.0606 for NorMuon: a relative
+range of only 2.5\%. The corresponding pretrained-reference hidden-weight displacement ratios are
+0.00960, 0.01881, and 0.01885. Across all five checkpoints of these runs, the median ratio of
+weight displacement to score drift is 1.90 times AdamW for Muon and 1.94 times AdamW for NorMuon.
+The matrix-aware optimizers therefore use substantially more parameter motion for a similar change
+on this fixed functional probe.
+
+This relationship is not monotone outside the useful regime. At $3\!\times\!10^{-3}$, Muon-family
+weight distance keeps increasing after the first checkpoint while fixed-probe score drift falls and
+BEIR partly recovers. We therefore use displacement as an optimization-dose diagnostic, not as a
+surrogate outcome. The shortlist--corpus hypothesis specifically predicts that a fixed eight-way
+probe can miss score changes over documents that never enter its candidate set.
+
+\subsection{Same-state directions and query tails}
+
+At ten pretrained or trajectory anchors, we freeze weights and replay the same eight-gradient
+history into every optimizer, separating weight decay and matching direction norms. Muon-family
+directions have much flatter spectra but do not exceed AdamW's mean immediate margin gain. Symmetric
+worst-tail comparisons instead show redistribution: each optimizer helps some queries that are
+fragile under the other while selecting a different adverse set. A post-hoc cosine analysis is
+consistent with optimizer-induced state feedback, but neither spectrum nor direction angle is a
+retrieval explanation by itself. \CommonStateHeadline
 
 \input{generated/common-state}
 
-These measurements verify that the implementations impose different update geometry. They cannot
-explain retrieval by themselves. In particular, a higher stable rank is an operator fingerprint,
-whereas a margin or ranking change under a matched intervention is functional evidence. The complete
-function-preserving coordinate diagnostic appears in Appendix~\ref{tab:basis-sensitivity-results}.
-
-\subsection{Matched one-step intervention and the local disadvantage}
-
-At each common-state anchor, we intervene along AdamW, Muon, and NorMuon directions while holding
-weights, examples, gradient history, and update norm fixed. Baseline, three positive scales, and a
-sign-reversed condition are evaluated on the same unseen queries. The completed discovery diagnostic
-shows the key local disadvantage: Muon-family directions do not exceed AdamW's mean immediate margin
-gain under the largest frozen Frobenius-matched step. Because this is a fixed-state intervention, it
-identifies a directional difference; because it is one step, it does not identify the long-horizon
-effect of committing that direction.
-
-\subsection{Post-hoc state-feedback evidence}
-
-A post-hoc common-state synthesis provides a more specific candidate explanation. The AdamW--Muon
-update cosine decreases from the pretrained anchor along both AdamW- and Muon-induced trajectories,
-whereas Muon and NorMuon remain nearly collinear with one another. At the final anchors, the two
-matrix-aware directions also align less with the same terminal gradient than AdamW does. Together
-with the worse Frobenius-matched immediate mean margin but higher one-seed,
-four-learning-rate-median discovery BEIR point estimates, this pattern is consistent with
-\emph{optimizer-induced state feedback}: committing an operator's
-direction moves DenseOn into states that elicit different future gradients, so the accumulated path
-cannot be reduced to the quality of one frozen-state step. The cosine synthesis was defined after
-inspection and is descriptive. Exact values enter only through the audited result table
-(Table~\ref{tab:common-state-results}); shared-start branches test the prospective accumulation
-hypothesis, while the frozen spectrum/basis transplant distinguishes a
-singular-value account from a singular-vector-basis account.
-
-\subsection{Tail redistribution, not uniform dominance}
-
-Mean effects conceal which queries regress. We therefore report loss p95/p99, margin p01/p05, and
-symmetric worst-tail comparisons selected separately under AdamW and each Muon-family rule. In the
-DenseOn discovery anchors, Muon and NorMuon improve outcomes on AdamW's worst set while AdamW can do
-better on each challenger's own worst set, with limited overlap between selected sets. This pattern
-is tail redistribution: the operator changes the identity of fragile queries rather than uniformly
-suppressing one shared tail. It is descriptive of the inspected anchors and is not yet a robustness
-claim.
-
-For any matrix direction $D$,
-$\lVert D\rVert_2=\lVert D\rVert_F/\sqrt{\operatorname{srank}(D)}$. Under per-tensor Frobenius
-matching, a higher stable rank entails lower maximum singular amplification, and
-$\lVert Dh\rVert_2\leq\lVert D\rVert_2\lVert h\rVert_2$. This supplies a candidate link between
-update spectrum and extreme feature changes, but it does not prove that the spectrum causes the
-observed tail membership. The frozen spectrum/basis transplant tests that attribution; it remains a
-fixed-state explanation even if successful.
-The full cross-tail, accumulated-tail, and spectrum-versus-basis readouts are reported in Appendix
-Tables~\ref{tab:tail-identity-results}--\ref{tab:spectral-tail-results}.
+The complete basis-sensitivity, cross-tail, and spectrum readouts appear in Appendix
+Tables~\ref{tab:basis-sensitivity-results} and
+\ref{tab:tail-identity-results}--\ref{tab:spectral-tail-results}. The prospective shared-start and
+spectral tests below determine whether any immediate difference accumulates and reaches retrieval.
 
 \section{Does the Effect Accumulate?}
 
@@ -421,34 +389,38 @@ functional effect.
 
 \section{Discussion}
 
-The local--global reversal changes what a successful explanation must show. If the three-seed
-retrieval advantage and the shared-start endpoint both hold, the result cannot be explained by
-better immediate mean descent. The supported account would instead be that Muon-family updates alter
-future gradients and redistribute query risk, producing a better trajectory after accumulation. If
-hybrid AdamW matches Muon, the routing/auxiliary-rate recipe is sufficient to reproduce the observed
-difference within this grid; that does not identify the matrix operator as the alternative cause. If
-the shared-start tail endpoint fails, the local redistribution remains real but cannot explain the
-final gain. If the three-seed interval is inconclusive, the mechanism study constrains explanations
-of the discovery
-effect without establishing a general recipe advantage.
+The experiments separate two questions that a single ``best optimizer'' number conflates. The first
+is attainable quality after tuning directly on full-corpus retrieval. Discovery suggests a small
+Muon-family advantage under that oracle-like procedure. The second is whether an ordinary
+query-disjoint contrastive validation set can select the useful recipe. Here it cannot: the narrow
+proxy rewards a ten-times larger Muon-family learning rate whose full-corpus ranking is worse. The
+formal three-seed result determines the size and uncertainty of that prospective selection failure;
+it does not retroactively convert the BEIR-selected discovery comparison into confirmation.
 
-The causal-chain verdict further separates an optimizer outcome from its explanation. If the temporal
-or fixed-state chain is negative, Muon's known spectral flattening does not explain the retrieval
-result tested here, even if the optimizer comparison itself is positive. If every frozen component
-passes, the evidence supports a spectral-component chain across randomized branches, fixed-state
-interventions, and held-run prediction, but still does not identify formal mediation of the final
-BEIR contrast.
+The same-source analysis narrows the explanation. The failure does not require a domain change,
+query overlap, or a worse observed positive margin. Instead, the optimizer can improve every score
+quantity visible to the eight-way objective while degrading rankings against documents outside that
+set. Candidate breadth is therefore part of optimizer evaluation, not merely a dataset
+hyperparameter. If the post-hoc nested-candidate curve removes the Muon-family advantage as breadth
+increases, it directly supports missing-candidate coverage as the mechanism; if it does not, the
+shortlist--corpus gap remains an empirical selection result but requires another explanation.
 
-This conditional structure also prevents definition-level properties from masquerading as novelty.
-Muon's spectral flattening and NorMuon's row adaptation are known features of the algorithms. The
-retrieval-specific contribution is evidence about whether a locally weaker direction changes which
-queries fail, whether that effect accumulates from a shared checkpoint, and whether the resulting
-trajectory improves decontaminated retrieval under new negative-sampling seeds.
+Weight-space geometry helps explain why the gap can be optimizer dependent without itself being the
+headline novelty. Muon and NorMuon move roughly twice as far in parameter space for nearly the same
+fixed-probe score drift at their useful points. This makes a larger change outside the measured
+candidate set plausible, but high-dose trajectories show that weight distance and score drift can
+decouple. The shared-start branches test accumulated operator effects at matched initial scale, and
+the spectral transplants test whether singular-value redistribution---rather than operator label or
+norm---carries the relevant query-tail effect. A failed causal-chain component rejects that specific
+spectral explanation while leaving the observed calibration failure intact.
 
-Practical recommendations therefore depend on the completed controls. Muon is recommended over
-AdamW only if it survives routing matching, accumulated shared-start testing, and familywise
-three-seed confirmation; otherwise the paper reports a conditional or negative result rather than a
-universal winner.
+The robustness result must likewise be stated at the correct level. Lower variation in training
+loss does not imply lower variation in retrieval quality. An optimizer can look smoother and more
+predictable on its observed contrastive objective while being less stable under full-corpus
+evaluation. For practice, Muon-family fine-tuning should therefore use retrieval-aware validation,
+substantially broader or refreshed candidates, or an explicit preservation constraint. A larger
+learning-rate range is useful capacity, not evidence that its largest validation-selected value is
+safe.
 
 \section{Conclusion}
 
@@ -544,6 +516,7 @@ tail, and spectrum-versus-basis readouts appear below.
 \input{generated/representation}
 
 \section{Causal-Chain Diagnostics}
+\label{sec:causal-chain-diagnostics}
 
 The main text reports one compact decision table. The complete all-required checks appear below so a
 claimable negative cannot be hidden by an overall label or replaced by a favorable secondary metric.

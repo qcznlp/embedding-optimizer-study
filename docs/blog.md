@@ -1,7 +1,7 @@
-# Can Muon train a better dense retriever?
+# When better contrastive optimization hurts retrieval
 
-> A controlled DenseOn study of AdamW, Muon, and NorMuon, from one-step update geometry to
-> five-stage decontaminated BEIR dynamics.
+> A controlled DenseOn study of AdamW, Muon, and NorMuon—and why a seven-negative validation set
+> can select the wrong optimizer dose for full-corpus retrieval.
 
 **Study status:** the original DenseOn discovery sweep is complete. The generated
 [completion outcome](#audited-completion-status) records the audited state and claimability of the
@@ -28,18 +28,20 @@ claim protocol can still be audited.
 
 Muon approximately orthogonalizes momentum updates for hidden weight matrices. NorMuon adds a
 row-wise historical normalizer and restores the matrix-level update norm. Those operator properties
-are interesting, but they are not a retrieval result. The study asks a narrower question:
+are interesting, but they are not a retrieval result. The study asks two questions that should not
+be collapsed into one:
 
-> When an Adam-pretrained dense encoder is adapted with a contrastive retrieval loss, can a
-> matrix-aware optimizer improve zero-shot rankings, and what optimization process explains any
-> improvement?
+> After appropriate retrieval-aware tuning, can a matrix-aware optimizer improve zero-shot
+> rankings? And can the usual held-out contrastive loss select that useful configuration without
+> seeing the full retrieval corpus?
 
-The evidence is organized to separate four things that are often conflated:
+The evidence is organized to separate five things that are often conflated:
 
 1. the update prescribed by each optimizer at the same weights;
 2. the per-query distribution of the immediate functional change;
 3. the trajectory created by repeatedly changing both weights and future gradients;
-4. the final retrieval ranking on unseen corpora.
+4. ranking inside the observed positive-plus-seven-negative shortlist;
+5. the final ranking against every document in an unseen corpus.
 
 ## Experimental contract
 
@@ -283,7 +285,29 @@ The recorded wall time includes training and five full checkpoint writes. Peak C
 Spectral flattening is part of Muon's construction; observing it is not a new contribution. The
 retrieval-specific evidence begins where the obvious operator property stops.
 
-### 1. Local matched steps lose while the one-seed grid median reverses
+### 1. A narrow validation proxy is calibrated differently for different optimizers
+
+The query-disjoint validation probe is deliberately ordinary: 4,096 unseen queries, one positive,
+and seven seeded negatives per query. It selects AdamW at 3e-5, but selects Muon and NorMuon at
+3e-3. Direct full-corpus discovery instead places both Muon-family optima at 3e-4.
+
+Across the four learning rates, validation loss versus final BEIR has Spearman correlation -1.0 for
+AdamW and +0.8 for both Muon and NorMuon; validation margin versus BEIR is +1.0 for AdamW and -0.8
+for both challengers. Minimizing exactly the same held-out loss therefore orders AdamW correctly
+and the Muon-family rates almost in reverse.
+
+This is not just domain shift. On FiQA, HotpotQA, MS MARCO, NQ, and FEVER—the five validation sources
+with a matching full-corpus task—the 3e-3-minus-3e-4 comparison gives ten optimizer-by-source
+transitions. All ten suppress the selected hardest negative, all ten improve the observed margin,
+and all ten reduce full-corpus nDCG@10. The mean changes are -0.0369 for the selected-negative score,
+-0.0115 for the positive score, +0.0254 for margin, and -0.0255 for nDCG. Positive scores rise in
+three of the ten transitions, so uniform positive forgetting is not enough to explain the result.
+
+The novel finding is therefore not that Muon orthogonalizes updates. It is that optimizer choice can
+change whether a query-disjoint, narrow contrastive validation set is a faithful proxy for ranking
+over the complete corpus.
+
+### 2. Local matched steps lose while the one-seed grid median reverses
 
 At ten common DenseOn states, we apply AdamW, Muon, and NorMuon to the same eight-gradient history.
 After matching every hidden tensor to AdamW's Frobenius norm and taking a relative 1e-3 virtual step,
@@ -300,7 +324,7 @@ final BEIR is +0.00435 for Muon and +0.00521 for NorMuon relative to AdamW. The 
 the matched local intervention to this one-seed grid aggregate. A “better immediate descent
 direction” cannot explain that discovery ordering.
 
-### 2. The optimizers enter different directions, not better-aligned gradients
+### 3. The optimizers enter different directions, not better-aligned gradients
 
 At the same state, the parameter-weighted cosine between AdamW and Muon directions has median 0.470;
 Muon and NorMuon remain much closer at 0.972. Median cosine with the common final gradient is 0.401
@@ -311,7 +335,7 @@ trajectory and 0.463 along the Muon trajectory. This is post-hoc evidence for op
 feedback: committing a Muon-family step changes the state on which future gradients and updates are
 computed. It is not yet causal proof that this feedback improves retrieval.
 
-### 3. DenseOn shows tail redistribution, not uniform dominance
+### 4. DenseOn shows tail redistribution, not uniform dominance
 
 The same-state Muon step has a worse mean margin effect, yet improves the fixed p05 margin and p95/p99
 loss quantiles at all ten anchors. A symmetric cross-tail check changes the interpretation. On
@@ -323,7 +347,7 @@ Muon therefore moves which queries are fragile; it does not uniformly suppress o
 tail. This query-level redistribution is specific to the retrieval function and cannot be read from
 the optimizer definition alone.
 
-### 4. Flatter spectra alone do not explain the one-seed discovery contrast
+### 5. Flatter spectra alone do not explain the one-seed discovery contrast
 
 For exact selected matrices, the median normalized stable-rank statistic is about 0.0195 for AdamW,
 0.5772 for Muon, and 0.4153 for NorMuon. Yet across DenseOn anchors, the magnitude of spectral
@@ -333,15 +357,26 @@ track BEIR over checkpoints, but within-run first differences are weak and incon
 Those negative results matter: “Muon flattens the spectrum” is an operator fingerprint, not a
 mechanistic explanation of the observed four-learning-rate-median discovery contrast.
 
-### 5. Learning a new objective can damage pretrained rankings
+### 6. Weight distance and fixed-probe function distance come apart
 
 Query-disjoint validation selects the largest tested Muon-family rate, 3e-3, because it optimizes the
 training-style objective. The discovery-BEIR oracle lies at 3e-4. The validation-selected rates lose
 0.0315 mean BEIR for Muon and 0.0300 for NorMuon relative to their own discovery oracle, while
 roughly doubling score drift from the pretrained ranker.
 
-The emerging trade-off is acquisition versus preservation: strong matrix-aware adaptation can learn
-the narrow contrastive objective while eroding zero-shot ranking structure.
+At the retrieval-optimal points, however, mean absolute score drift on the fixed 224-query unseen
+probe is 0.0604 for AdamW, 0.0619 for Muon, and 0.0606 for NorMuon—a relative range of only 2.5%.
+The corresponding hidden-weight displacement ratios are 0.00960, 0.01881, and 0.01885. Across the
+five checkpoints, Muon and NorMuon move about 1.90× and 1.94× as far in weight space per unit of
+fixed-probe score drift as AdamW.
+
+That ratio is descriptive, not the answer by itself. At 3e-3, weight distance continues to rise
+while fixed-probe score drift falls and BEIR partly recovers. The stronger hypothesis is that a
+narrow probe fails to observe a larger change over documents outside its candidate set. The pinned
+source records make this testable: every query has 2,048 mined candidates, and the original seven
+negatives can be nested exactly inside candidate sets of size 10, 32, 128, 512, and 2,048. This
+candidate-breadth diagnostic is post hoc and cannot replace the formal three-seed comparison, but it
+can test whether the apparent high-dose advantage disappears as more of the score field is exposed.
 
 <!-- MECHANISM:BEGIN -->
 
