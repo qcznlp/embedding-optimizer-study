@@ -378,6 +378,15 @@ negatives can be nested exactly inside candidate sets of size 10, 32, 128, 512, 
 candidate-breadth diagnostic is post hoc and cannot replace the formal three-seed comparison, but it
 can test whether the apparent high-dose advantage disappears as more of the score field is exposed.
 
+<!-- CANDIDATE-BREADTH:BEGIN -->
+
+### Candidate-breadth outcome
+
+Pending the source-bound 224-query nested-candidate evaluation. This post-hoc block is rendered only
+after all 12 width-7 baselines reproduce and every width through 2,048 passes its manifest audit.
+
+<!-- CANDIDATE-BREADTH:END -->
+
 <!-- MECHANISM:BEGIN -->
 
 Under the disclosed post-hoc DenseOn scope, the formal mechanism tier evaluates every optimizer transform at the same frozen weights and on the same ordered eight-gradient history. The complete historical source artifacts still pass their content-hash and cardinality audits before the renderer selects the active DenseOn slice: 10 common-state anchors, 270 basis comparisons, 180 exact spectra, 60 bridge checkpoints, and 840 retrieval evaluation units.
@@ -704,6 +713,13 @@ embed-optim-summarize-candidate-breadth \
 embed-optim-summarize-candidate-breadth \
   --protocol configs/candidate_breadth_probe.json \
   --audit-only
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
 ~~~
 
 All 12 width-7 evaluations must reproduce the existing validation evaluator within the predeclared
@@ -715,7 +731,8 @@ candidate-breadth data or scores were visible, but the diagnostic itself was des
 shortlist--corpus gap was observed and therefore remains post hoc. The summary emits the exact
 calibration and paired-contrast tables together with deterministic SVG/PDF publication panels under
 `reports/candidate-breadth/`; the audit command verifies every output hash against the source-bound
-run manifests.
+run manifests. The publication renderer owns only the candidate-breadth blog marker and generated
+LaTeX file; its audit recomputes both and verifies the publication manifest before paper build.
 
 ### Render the Dense paper and blog
 

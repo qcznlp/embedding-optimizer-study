@@ -46,7 +46,9 @@ The central result sequence is deliberately gated:
 4. a post-hoc cosine synthesis motivates optimizer-induced state feedback but is not causal;
 5. three-seed shared-start branches test whether the advantage accumulates;
 6. hybrid AdamW tests whether parameter routing is sufficient; and
-7. three new negative-sampling seeds determine the final retrieval claim.
+7. three new negative-sampling seeds determine the final retrieval claim; while
+8. the post-hoc nested candidate-breadth diagnostic tests, but cannot establish prospectively,
+   whether missing candidate coverage explains the proxy reversal.
 
 Exact state-feedback cosines, shared-start outcomes, hybrid results, confirmatory intervals, and the
 temporal and dose/band causal-chain estimates must enter through audited macros or generated tables.
@@ -65,6 +67,12 @@ Run `embed-optim-audit-paper` during drafting. It reports unresolved evidence wi
 exists, run `embed-optim-render-paper-results`; it replaces only authorized headline macros and table
 files, writes `reports/paper-results.manifest.json`, and binds rendered bytes to the claim protocol,
 evidence manifests, and source tables.
+
+After the separately frozen candidate-breadth matrix completes, run
+`embed-optim-summarize-candidate-breadth` and `embed-optim-render-candidate-breadth`, followed by each
+command's `--audit-only` mode. The publication renderer owns only the marked blog block and
+`generated/candidate-breadth.tex`; its manifest binds both to all 12 evaluation manifests, the
+discovery BEIR table, the nested-width protocol, and the deterministic SVG/PDF figure.
 
 `make -C paper` invokes the renderer with `--if-ready`: incomplete experiments keep audited red
 placeholders, while complete evidence can be rendered before LaTeX compilation. This preserves a
@@ -101,6 +109,7 @@ verify the DenseOn subset explicitly.
 | Immediate causal intervention | `reports/functional-intervention/manifest.json` | every DenseOn anchor and paired query record passes scale, sign, pairing, and source audits |
 | Post-hoc state-feedback synthesis | common-state cosine summary and `reports/local-global-reversal/summary_manifest.json` | trajectory-conditioned AdamW--Muon, Muon--NorMuon, and terminal-gradient alignments are source-bound and labeled post hoc |
 | Post-hoc symmetric tail diagnostic | `configs/tail_stability_analysis.json` and `reports/tail-stability/summary_manifest.json` | fixed DenseOn quantiles and Adam/challenger cross-tails are labeled post hoc; no robustness claim without the accumulated gate |
+| Post-hoc candidate-breadth diagnostic | `configs/candidate_breadth_probe.json`, `reports/candidate-breadth/summary.json`, and `publication_manifest.json` | 12 width-7 baseline reproductions plus nested widths 10--2,048 for 224 balanced queries; support requires both Muon-family endpoint reversals and never replaces three-seed inference |
 | Spectrum/basis attribution | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | complete DenseOn spectrum, basis, interaction, path, and band cells; this fixed-state tier is insufficient for long-horizon causality |
 | Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 9 DenseOn runs and 45 checkpoints on both frozen probes; three-seed joint loss-p95/unseen-margin-p05 endpoint |
 | Temporal causal-chain bridge | `reports/temporal-short-branch/summary_manifest.json`, `paired_contrasts.csv`, `loso_predictions.csv`, and `estimates.csv` in that directory | every frozen predictor and norm control is reported across held-out seeds; numerical RMSE changes and optimizer-coefficient changes are displayed even when the bridge is negative |

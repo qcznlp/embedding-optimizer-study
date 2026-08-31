@@ -337,6 +337,13 @@ embed-optim-summarize-candidate-breadth \
 embed-optim-summarize-candidate-breadth \
   --protocol configs/candidate_breadth_probe.json \
   --audit-only
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
 ~~~
 
 The primary rule was frozen before any candidate-breadth data or scores were visible. It supports
@@ -345,7 +352,9 @@ their high-dose-versus-retrieval-optimal loss and margin ordering by width 2,048
 reversal is reported separately, and an unchanged anti-calibrated ordering falsifies this proposed
 explanation. In every case the analysis remains post hoc and cannot replace the formal full-corpus
 optimizer comparison. The summary writes audited calibration and paired-contrast tables plus
-publication-ready SVG/PDF panels under `reports/candidate-breadth/`.
+publication-ready SVG/PDF panels under `reports/candidate-breadth/`. The final two commands update
+only the owned blog marker and `paper/generated/candidate-breadth.tex`, then verify both against a
+content-addressed publication manifest.
 
 ## Render the final Dense-only deliverables
 

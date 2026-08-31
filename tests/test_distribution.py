@@ -279,6 +279,7 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
     )
     result_tables = (
         "paper/generated/causal-chain.tex",
+        "paper/generated/candidate-breadth.tex",
         "paper/generated/common-state.tex",
         "paper/generated/confirmation.tex",
         "paper/generated/diagnostics.tex",
@@ -304,6 +305,11 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         "../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf)" in makefile
     )
     assert "$(EXTENDED_RESULT_FIGURE)" in makefile
+    assert (
+        "CANDIDATE_BREADTH_FIGURE := $(wildcard "
+        "../reports/candidate-breadth/candidate_breadth_calibration.pdf)" in makefile
+    )
+    assert "$(CANDIDATE_BREADTH_FIGURE)" in makefile
     for source in result_tables:
         table = PurePosixPath(source).stem
         assert f"\\input{{generated/{table}}}" in main
