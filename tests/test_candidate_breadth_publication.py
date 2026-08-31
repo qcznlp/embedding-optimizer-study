@@ -4,6 +4,8 @@ import csv
 import json
 from pathlib import Path
 
+import pytest
+
 from embed_optim.candidate_breadth_publication import (
     CANDIDATE_BREADTH_MARKERS,
     candidate_breadth_latex,
@@ -59,9 +61,37 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert "does not establish that contribution causally" in markdown
     assert r"\label{fig:candidate-breadth}" in latex
     assert "candidate_breadth_calibration.pdf" in latex
+    assert latex.count(r"\newcommand{\CandidateBreadthFigure}") == 1
     assert "Frozen decision: Supported" in latex
     assert "post hoc" in latex
     assert "does not establish that contribution causally" in latex
+    assert r"\newcommand{\CandidateBreadthConclusion}" in latex
+    assert "supplements but does not alter" in latex
+
+
+@pytest.mark.parametrize(
+    ("decision", "label", "outcome"),
+    (
+        ("supported", "supported", "does not establish that contribution causally"),
+        (
+            "partial_attenuation",
+            "partial attenuation",
+            "required broad-set reversal does not occur",
+        ),
+        ("not_supported", "not supported", "do not support missing-candidate coverage"),
+    ),
+)
+def test_candidate_conclusion_macro_reports_every_frozen_decision(
+    decision: str, label: str, outcome: str
+) -> None:
+    calibration, contrasts = _rows()
+    latex = candidate_breadth_latex(calibration, contrasts, _summary(decision))
+
+    assert latex.count(r"\newcommand{\CandidateBreadthConclusion}") == 1
+    assert latex.count(r"\newcommand{\CandidateBreadthFigure}") == 1
+    assert f"nested-candidate decision was {label}" in latex
+    assert outcome in latex
+    assert "supplements but does not alter" in latex
 
 
 def _write_csv(path: Path, rows: list[dict]) -> None:
@@ -136,5 +166,9 @@ def test_renderer_round_trips_blog_paper_and_manifest(monkeypatch, tmp_path: Pat
     assert rendered == audited
     assert rendered["status"] == "complete"
     assert "Frozen decision: Supported" in blog.read_text(encoding="utf-8")
-    assert r"\label{fig:candidate-breadth}" in paper.read_text(encoding="utf-8")
+    paper_text = paper.read_text(encoding="utf-8")
+    assert r"\label{fig:candidate-breadth}" in paper_text
+    assert r"\newcommand{\CandidateBreadthConclusion}" in paper_text
+    assert r"\newcommand{\CandidateBreadthFigure}" in paper_text
+    assert "The post-hoc nested-candidate decision was supported" in paper_text
     assert json.loads(manifest.read_text(encoding="utf-8")) == rendered

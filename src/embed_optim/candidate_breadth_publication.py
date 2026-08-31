@@ -192,6 +192,11 @@ def candidate_breadth_latex(
     summary: dict[str, Any],
 ) -> str:
     title, sentence = _decision_text(summary)
+    conclusion = (
+        f"The post-hoc nested-candidate decision was {title.lower()}. {sentence} "
+        "This diagnostic supplements but does not alter the validation-frozen three-seed "
+        "comparison."
+    )
     calibration = {(row["optimizer"], row["negative_width"]): row for row in calibration_rows}
     contrasts = {(row["optimizer"], row["negative_width"]): row for row in contrast_rows}
     endpoints = []
@@ -210,6 +215,11 @@ def candidate_breadth_latex(
     )
     return "\n".join(
         (
+            r"\newcommand{\CandidateBreadthConclusion}{%",
+            conclusion,
+            r"}",
+            "",
+            r"\newcommand{\CandidateBreadthFigure}{%",
             r"\begin{figure*}[t]",
             r"\centering",
             r"\includegraphics[width=0.88\textwidth]{../reports/candidate-breadth/"
@@ -221,6 +231,7 @@ def candidate_breadth_latex(
             rf"broader set. Frozen decision: {title}.}}",
             r"\label{fig:candidate-breadth}",
             r"\end{figure*}",
+            r"}",
             "",
             r"\paragraph{Candidate-breadth decision.}",
             sentence.replace("--", r"--")

@@ -21,6 +21,7 @@ MAIN_TEXT_FLOAT_LABELS = (
     "tab:confirmation-results",
 )
 APPENDIX_FLOAT_LABELS = (
+    "fig:candidate-breadth",
     "tab:claim-firewall",
     "tab:training-systems-results",
     "tab:basis-sensitivity-results",
