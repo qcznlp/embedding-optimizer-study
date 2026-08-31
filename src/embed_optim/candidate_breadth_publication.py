@@ -122,7 +122,9 @@ def _decision_text(summary: dict[str, Any]) -> tuple[str, str]:
         return (
             "Supported",
             "Both Muon-family optimizers reverse their high-dose ordering at 2,048 negatives, "
-            "supporting missing-candidate coverage as the explanation of the shortlist--corpus gap.",
+            "which is consistent with missing-candidate coverage contributing to the "
+            "shortlist--corpus gap. Because this diagnostic is post hoc, it does not establish "
+            "that contribution causally.",
         )
     if decision == "partial_attenuation":
         return (

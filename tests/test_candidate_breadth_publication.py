@@ -55,10 +55,13 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert "| NorMuon | 2,048 |" in markdown
     assert "candidate_breadth_calibration.svg" in markdown
     assert "post hoc" in markdown
+    assert "contributing to the shortlist--corpus gap" in markdown
+    assert "does not establish that contribution causally" in markdown
     assert r"\label{fig:candidate-breadth}" in latex
     assert "candidate_breadth_calibration.pdf" in latex
     assert "Frozen decision: Supported" in latex
     assert "post hoc" in latex
+    assert "does not establish that contribution causally" in latex
 
 
 def _write_csv(path: Path, rows: list[dict]) -> None:
