@@ -93,6 +93,19 @@ def _source_identity(path: Path) -> dict[str, Any]:
     }
 
 
+def _declared_data_output(protocol_path: Path) -> Path:
+    try:
+        protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
+        declared = protocol["evaluation"]["data_output"]
+    except (OSError, json.JSONDecodeError, KeyError, TypeError) as error:
+        raise RuntimeError(
+            f"Cannot resolve candidate-breadth data output from {protocol_path}"
+        ) from error
+    if not isinstance(declared, str) or not declared:
+        raise RuntimeError("Candidate-breadth protocol data output is malformed")
+    return (protocol_path.parent.parent / declared).resolve()
+
+
 def _canonical_hash(payload: dict[str, Any]) -> str:
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()
@@ -456,6 +469,12 @@ def run_pipeline(args: argparse.Namespace) -> int:
     protocol_path = _under_workdir(args.protocol, workdir)
     if not protocol_path.is_file():
         raise FileNotFoundError(protocol_path)
+    configured_data_output = _under_workdir(args.data_output, workdir)
+    declared_data_output = _declared_data_output(protocol_path)
+    if configured_data_output != declared_data_output:
+        raise ValueError(
+            f"--data-output must match the immutable candidate protocol: {declared_data_output}"
+        )
     upstream_path = _under_workdir(args.upstream_finalization_ledger, workdir)
     steps = pipeline_steps(args)
     step_contract = _step_contract(

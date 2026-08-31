@@ -13,6 +13,7 @@ from embed_optim.candidate_breadth_release import (
     UPSTREAM_FINALIZATION_STEP_NAMES,
     PipelineStep,
     _canonical_hash,
+    _declared_data_output,
     _read_finalization_ledger,
     parse_args,
     pipeline_steps,
@@ -231,7 +232,10 @@ def test_upstream_finalization_rejects_changed_log_or_completion(tmp_path: Path)
 def test_release_pipeline_writes_content_bound_ledger(monkeypatch, tmp_path: Path) -> None:
     protocol = tmp_path / "configs" / "candidate_breadth_probe.json"
     protocol.parent.mkdir(parents=True)
-    protocol.write_text("{}\n", encoding="utf-8")
+    protocol.write_text(
+        json.dumps({"evaluation": {"data_output": "data/candidate-breadth"}}) + "\n",
+        encoding="utf-8",
+    )
     marker = tmp_path / "src" / "marker.py"
     marker.parent.mkdir(parents=True)
     marker.write_text("VALUE = 1\n", encoding="utf-8")
@@ -284,3 +288,18 @@ def test_cli_rejects_invalid_gpu_and_retry_values() -> None:
         parse_args(["--worker-retries", "-1"])
     with pytest.raises(SystemExit):
         parse_args(["--step-retries", "-1"])
+
+
+def test_protocol_declares_the_only_accepted_candidate_data_output(tmp_path: Path) -> None:
+    protocol = tmp_path / "configs" / "candidate_breadth_probe.json"
+    protocol.parent.mkdir(parents=True)
+    protocol.write_text(
+        json.dumps({"evaluation": {"data_output": "data/frozen-candidates"}}),
+        encoding="utf-8",
+    )
+
+    assert _declared_data_output(protocol) == (tmp_path / "data/frozen-candidates").resolve()
+
+    protocol.write_text("{}\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="Cannot resolve"):
+        _declared_data_output(protocol)
