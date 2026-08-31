@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import pytest
 
 from embed_optim.candidate_breadth_matrix import (
     _parse_gpus,
+    _preflight_candidate_breadth_jobs,
     _verified_source_audit_receipt,
     candidate_breadth_jobs,
 )
@@ -29,6 +31,31 @@ def test_gpu_parser_requires_unique_integer_devices() -> None:
     for value in ("", "0,0", "cuda:0", "0,x"):
         with pytest.raises(ValueError, match="GPUs"):
             _parse_gpus(value)
+
+
+def test_matrix_preflight_rejects_missing_inputs_before_gpu_launch(tmp_path: Path) -> None:
+    jobs = [
+        {
+            "run_id": run_id,
+            "checkpoint": tmp_path / "outputs" / run_id / "checkpoint-3907",
+            "output_dir": tmp_path / "results" / run_id,
+        }
+        for run_id in ("adamw-lr1e-5", "muon-lr3e-4")
+    ]
+    baseline_root = tmp_path / "baseline"
+
+    with pytest.raises(FileNotFoundError, match="before GPU launch") as error:
+        _preflight_candidate_breadth_jobs(jobs, baseline_root=baseline_root)
+    assert "checkpoint-3907" in str(error.value)
+    assert "sample_metrics.jsonl" in str(error.value)
+
+    for job in jobs:
+        Path(job["checkpoint"]).mkdir(parents=True)
+        baseline = baseline_root / str(job["run_id"]) / "sample_metrics.jsonl"
+        baseline.parent.mkdir(parents=True)
+        baseline.write_text("{}\n", encoding="utf-8")
+
+    _preflight_candidate_breadth_jobs(jobs, baseline_root=baseline_root)
 
 
 def test_matrix_binds_the_full_source_audit_receipt(tmp_path) -> None:

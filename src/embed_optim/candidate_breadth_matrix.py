@@ -46,6 +46,22 @@ def candidate_breadth_jobs(
     return protocol_path, protocol, jobs
 
 
+def _preflight_candidate_breadth_jobs(jobs: list[dict[str, Any]], *, baseline_root: Path) -> None:
+    missing: list[Path] = []
+    for job in jobs:
+        checkpoint = Path(job["checkpoint"])
+        if not checkpoint.is_dir():
+            missing.append(checkpoint)
+        baseline = baseline_root / str(job["run_id"]) / "sample_metrics.jsonl"
+        if not baseline.is_file():
+            missing.append(baseline)
+    if missing:
+        rendered = ", ".join(str(path) for path in missing)
+        raise FileNotFoundError(
+            "Candidate-breadth matrix required inputs are missing before GPU launch: " + rendered
+        )
+
+
 def _verified_source_audit_receipt(
     path: str | Path,
     *,
@@ -176,6 +192,7 @@ def run_candidate_breadth_matrix(
     evaluation = protocol["evaluation"]
     data_root = (root / evaluation["data_output"]).resolve()
     baseline_root = (root / evaluation["baseline_root"]).resolve()
+    _preflight_candidate_breadth_jobs(jobs, baseline_root=baseline_root)
     # The immediately preceding release step performs the independent pinned-source
     # reconstruction.  The matrix repeats the complete local semantic audit without
     # rescanning the source parquet files before each group of checkpoint jobs.
