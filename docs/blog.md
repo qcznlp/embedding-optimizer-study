@@ -872,6 +872,11 @@ build package the secret-free, self-hashed 34-run audit receipt.
 - Weight-space and representation correlations are descriptive unless an intervention changes the
   retrieval function as predicted.
 - The five retained checkpoints give a coarse trajectory, not a per-step path length.
+- The nested candidate-breadth experiment was designed after the shortlist--corpus gap was visible.
+  Its mined lists contain one designated positive but no exhaustive relevance judgments for the
+  remaining documents and may therefore include unjudged relevant passages. Even a passing frozen
+  rule supports a coverage explanation only as post-hoc mechanism evidence; it is neither
+  confirmation nor formal mediation.
 - Runtime conclusions are specific to the pinned hardware/software stack.
 
 ## Current defensible conclusion

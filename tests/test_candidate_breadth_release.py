@@ -345,3 +345,17 @@ def test_completion_gates_require_the_posthoc_release_after_canonical_finalizati
     assert gates.index("embed-optim-dense-finalize") < gates.index(
         "embed-optim-candidate-breadth-release"
     )
+
+
+def test_publication_keeps_candidate_breadth_claim_boundaries_visible() -> None:
+    root = Path(__file__).parents[1]
+    paper = (root / "paper/main.tex").read_text(encoding="utf-8")
+    blog = (root / "docs/blog.md").read_text(encoding="utf-8")
+
+    for document in (paper, blog):
+        normalized = " ".join(document.split()).lower()
+        assert "designed after" in normalized
+        assert "unjudged relevant" in normalized
+        assert "formal mediation" in normalized
+    assert "Missing-candidate coverage explains the gap" in paper
+    assert "width-2,048 endpoint reversals" in paper

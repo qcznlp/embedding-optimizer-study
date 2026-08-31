@@ -82,7 +82,8 @@ Our contributions are:
     throughput, and time-to-quality reported separately.
     \item Evidence for an optimizer-specific shortlist--corpus gap: a query-disjoint contrastive
     proxy can rank Muon-family learning rates in the opposite order from full-corpus retrieval, even
-    on the same source domains.
+    on the same source domains, plus a frozen post-hoc nested-candidate diagnostic that tests whether
+    the reversal attenuates as each query exposes more of its mined candidate field.
     \item A weight/function-space decomposition showing that useful Muon-family solutions reach a
     similar fixed-probe score drift through substantially larger parameter displacement, while
     displacement alone fails to predict high-dose retrieval behavior.
@@ -445,6 +446,11 @@ Muon-from-scratch pretraining. Four learning rates provide a broad but finite se
 confirmation seeds may leave small effects uncertain. Intrinsic geometry metrics are not causal by
 themselves; causal language is restricted to fixed-state interventions and shared-start branches.
 Decontamination reduces known overlap but cannot prove the absence of every semantic duplicate.
+The nested candidate-breadth diagnostic was designed after observing the shortlist--corpus gap and
+therefore cannot confirm the optimizer comparison or establish mediation. Its mined lists designate
+one positive per query but do not exhaustively judge every other document; an apparent negative can
+contain an unjudged relevant passage. The experiment tests score-field coverage under a fixed mined
+ordering, not recall over a fully adjudicated relevance set.
 
 The temporal bridge uses nine branches and only three randomized order seeds, and its spectral
 predictor is measured after optimizer assignment; leave-one-seed-out performance is therefore a
@@ -500,6 +506,7 @@ Tail robustness & frozen three-seed shared-start loss-p95 and margin-p05 endpoin
 Accumulation explains gain & shared-start branches plus temporal functional evidence & endpoint checkpoint correlation \\
 Spectral component explains retrieval & all five temporal rules plus dose, band, basis, and 84-row held-run bridge & intrinsic flattening, in-sample fit, or one local transplant \\
 Difference survives matched routing & separately tuned hybrid-AdamW comparison & native AdamW comparison alone \\
+Missing-candidate coverage explains the gap & all width-7 reproductions plus both frozen Muon-family width-2,048 endpoint reversals & a favorable narrow-set curve, one optimizer, or the exploratory BEIR correlation alone \\
 \bottomrule
 \end{tabular}
 \caption{Minimum evidence required for each DenseOn headline claim.}

@@ -19,7 +19,7 @@ EXPECTED_FLOAT_ROWS = {
     "tab:intervention-results": 1,
     "tab:causal-chain-summary": 3,
     "tab:confirmation-results": 3,
-    "tab:claim-firewall": 7,
+    "tab:claim-firewall": 8,
     "tab:training-systems-results": 3,
     "tab:basis-sensitivity-results": 3,
     "tab:representation-results": 3,
