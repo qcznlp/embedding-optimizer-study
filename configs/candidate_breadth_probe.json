@@ -84,7 +84,14 @@
     "primary_readout": "within-optimizer Spearman correlation between candidate-set metric and final 14-task BEIR as a function of width",
     "secondary_readout": "high-dose minus retrieval-optimal paired query contrast as a function of width",
     "prediction": "Muon and NorMuon prefer 3e-3 at width 7, but that advantage shrinks or reverses toward the 3e-4 full-corpus ordering as width increases; AdamW ordering changes less",
-    "falsification": "The missing-candidate explanation is not supported if Muon-family ordering remains equally anti-calibrated through width 2048 or if the width-7 reproduction check fails."
+    "primary_support_rule": {
+      "baseline_reproduction": "all 12 width-7 evaluations pass the 1e-5 sample-level check",
+      "width_7_ordering": "for both Muon and NorMuon, 3e-3 minus 3e-4 has lower mean loss and higher mean margin",
+      "width_2048_reversal": "for both Muon and NorMuon, 3e-3 minus 3e-4 has higher mean loss and lower mean margin",
+      "decision": "all three conditions are required to support missing-candidate coverage as the explanation"
+    },
+    "partial_evidence_rule": "If the width-2048 contrasts move at least halfway from their width-7 values toward zero for both challengers and both metrics but do not reverse, report attenuation without claiming mechanism support.",
+    "falsification": "The missing-candidate explanation is not supported if Muon-family ordering remains equally anti-calibrated through width 2048 or if any width-7 reproduction check fails."
   },
   "claim_boundary": "This diagnostic was designed after the shortlist-corpus gap was observed. It is post hoc mechanism evidence and cannot replace the frozen three-seed full-corpus optimizer comparison. Mined candidates have one designated positive; unjudged relevance among other candidates is a limitation."
 }
