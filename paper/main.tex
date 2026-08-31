@@ -410,8 +410,9 @@ query overlap, or a worse observed positive margin. Instead, the optimizer can i
 quantity visible to the eight-way objective while degrading rankings against documents outside that
 set. Candidate breadth is therefore part of optimizer evaluation, not merely a dataset
 hyperparameter. If the post-hoc nested-candidate curve removes the Muon-family advantage as breadth
-increases, it directly supports missing-candidate coverage as the mechanism; if it does not, the
-shortlist--corpus gap remains an empirical selection result but requires another explanation.
+increases, it provides post-hoc evidence consistent with missing-candidate coverage contributing to
+the gap, but it cannot identify that contribution causally. If it does not, the shortlist--corpus
+gap remains an empirical selection result but requires another explanation.
 
 Weight-space geometry helps explain why the gap can be optimizer dependent without itself being the
 headline novelty. Muon and NorMuon move roughly twice as far in parameter space for nearly the same
@@ -506,7 +507,7 @@ Tail robustness & frozen three-seed shared-start loss-p95 and margin-p05 endpoin
 Accumulation explains gain & shared-start branches plus temporal functional evidence & endpoint checkpoint correlation \\
 Spectral component explains retrieval & all five temporal rules plus dose, band, basis, and 84-row held-run bridge & intrinsic flattening, in-sample fit, or one local transplant \\
 Difference survives matched routing & separately tuned hybrid-AdamW comparison & native AdamW comparison alone \\
-Missing-candidate coverage explains the gap & all width-7 reproductions plus both frozen Muon-family width-2,048 endpoint reversals & a favorable narrow-set curve, one optimizer, or the exploratory BEIR correlation alone \\
+Muon-family high-dose ordering reverses with candidate breadth & all width-7 reproductions plus both frozen Muon-family width-2,048 endpoint reversals & a favorable narrow-set curve, one optimizer, or the exploratory BEIR correlation alone \\
 \bottomrule
 \end{tabular}
 \caption{Minimum evidence required for each DenseOn headline claim.}

@@ -381,12 +381,13 @@ protocol, and the complete current source/command contract. It prepares or audit
 content-resumes the 12-checkpoint matrix, rebuilds the current result blocks, renders the candidate
 figure and publication text, and reruns the paper, test, style, build, and distribution gates.
 
-The primary rule was frozen before any candidate-breadth data or scores were visible. It supports
-missing-candidate coverage only if all 12 width-7 reproductions pass and both Muon and NorMuon reverse
+The primary rule was frozen before any candidate-breadth data or scores were visible. Its decision
+is labelled supported only if all 12 width-7 reproductions pass and both Muon and NorMuon reverse
 their high-dose-versus-retrieval-optimal loss and margin ordering by width 2,048. Attenuation without
 reversal is reported separately, and an unchanged anti-calibrated ordering falsifies this proposed
-explanation. In every case the analysis remains post hoc and cannot replace the formal full-corpus
-optimizer comparison. The summary writes audited calibration and paired-contrast tables plus
+account. A passing rule is consistent with missing-candidate coverage contributing to the gap; the
+post-hoc diagnostic does not establish that contribution causally and cannot replace the formal
+full-corpus optimizer comparison. The summary writes audited calibration and paired-contrast tables plus
 publication-ready SVG/PDF panels under `reports/candidate-breadth/`. The final two commands update
 only the owned blog marker and `paper/generated/candidate-breadth.tex`, then verify both against a
 content-addressed publication manifest.

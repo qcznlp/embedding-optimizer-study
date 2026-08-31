@@ -360,5 +360,7 @@ def test_publication_keeps_candidate_breadth_claim_boundaries_visible() -> None:
         assert "designed after" in normalized
         assert "unjudged relevant" in normalized
         assert "formal mediation" in normalized
-    assert "Missing-candidate coverage explains the gap" in paper
+    assert "Muon-family high-dose ordering reverses with candidate breadth" in paper
     assert "width-2,048 endpoint reversals" in paper
+    assert "directly supports missing-candidate coverage as the mechanism" not in paper
+    assert "does not establish that contribution causally" in " ".join(blog.split())

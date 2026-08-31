@@ -741,12 +741,14 @@ source contract and is rechecked before and after execution. Resume reruns the o
 evaluator units whose own content-addressed audits pass may be reused.
 
 All 12 width-7 evaluations must reproduce the existing validation evaluator within the predeclared
-sample-level tolerance before the analysis can be interpreted. The missing-candidate explanation is
+sample-level tolerance before the analysis can be interpreted. The frozen decision is labelled
 supported only if both Muon-family optimizers reverse their high-dose-versus-retrieval-optimal loss
 and margin ordering at width 2,048. A halfway movement toward zero is labeled attenuation, while an
-unchanged anti-calibrated ordering falsifies this explanation. These rules were fixed before any
-candidate-breadth data or scores were visible, but the diagnostic itself was designed after the
-shortlist--corpus gap was observed and therefore remains post hoc. The summary emits the exact
+unchanged anti-calibrated ordering falsifies the proposed account. A passing rule is consistent with
+missing-candidate coverage contributing to the gap; it does not establish that contribution
+causally. These rules were fixed before any candidate-breadth data or scores were visible, but the
+diagnostic itself was designed after the shortlist--corpus gap was observed and therefore remains
+post hoc. The summary emits the exact
 calibration and paired-contrast tables together with deterministic SVG/PDF publication panels under
 `reports/candidate-breadth/`; the audit command verifies every output hash against the source-bound
 run manifests. The publication renderer owns only the candidate-breadth blog marker and generated
