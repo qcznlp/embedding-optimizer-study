@@ -15,6 +15,8 @@ from embed_optim.causal_chain_rendering import (
 )
 from embed_optim.paper_audit import (
     BLOG_MARKERS,
+    PAPER_APPENDIX_GENERATED_INPUTS,
+    PAPER_DEFINITION_GENERATED_INPUTS,
     PAPER_DISCOVERY_FIGURE_CAPTION,
     PAPER_DISCOVERY_FIGURE_INCLUDES,
     PAPER_DISCOVERY_FIGURE_LABEL,
@@ -813,7 +815,25 @@ def test_paper_figure_audit_binds_both_panels_to_dense_coverage(tmp_path: Path):
 def test_paper_main_topology_requires_every_generated_input_and_conclusion(tmp_path: Path):
     main = tmp_path / "paper/main.tex"
     main.parent.mkdir(parents=True)
-    canonical = "\n".join((*PAPER_MAIN_REQUIRED_ONCE, r"\section{Limitations}")) + "\n"
+    canonical = (
+        "\n".join(
+            (
+                r"\input{results}",
+                *PAPER_DEFINITION_GENERATED_INPUTS,
+                *PAPER_MAIN_GENERATED_INPUTS,
+                r"\CausalChainSummaryTable",
+                r"\section{Conclusion}",
+                r"\ResultConclusion",
+                r"\label{paper-main-end}",
+                r"\section{Limitations}",
+                r"\appendix",
+                *PAPER_APPENDIX_GENERATED_INPUTS,
+                r"\CausalChainDiagnostics",
+                r"\input{generated/retrieval-dynamics-extension}",
+            )
+        )
+        + "\n"
+    )
     main.write_text(canonical, encoding="utf-8")
 
     assert _paper_main_topology_complete(tmp_path) is True
@@ -1105,15 +1125,24 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
     main_tex = tmp_path / "paper/main.tex"
     main_tex.parent.mkdir(parents=True)
     paper_contract = causal_chain_paper_contract()
+    ordered_topology = (
+        r"\input{results}",
+        *PAPER_DEFINITION_GENERATED_INPUTS,
+        *PAPER_MAIN_GENERATED_INPUTS,
+        r"\CausalChainSummaryTable",
+        r"\section{Conclusion}",
+        r"\ResultConclusion",
+        r"\label{paper-main-end}",
+        r"\section{Limitations}",
+        r"\appendix",
+        *PAPER_APPENDIX_GENERATED_INPUTS,
+        r"\CausalChainDiagnostics",
+        r"\input{generated/retrieval-dynamics-extension}",
+    )
     canonical_main_text = "\n".join(
         (
-            *PAPER_MAIN_REQUIRED_ONCE,
-            r"\section{Limitations}",
-            *(
-                token
-                for token in paper_contract["required_once"]
-                if token not in PAPER_MAIN_REQUIRED_ONCE
-            ),
+            *ordered_topology,
+            *(token for token in paper_contract["required_once"] if token not in ordered_topology),
             *paper_contract["required_boundary_substrings"],
         )
     )

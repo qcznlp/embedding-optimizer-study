@@ -1,14 +1,17 @@
-% This placeholder is replaced atomically by embed-optim-render-paper-results.
+% Topology-faithful worst-case placeholder replaced atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
-\small
-\begin{tabular}{llcccc}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{llccccc}
 \toprule
-Model & Contrast & Mean $\Delta$ nDCG@10 & 95\% CI & Seed W/T/L & Task W/T/L \\
+Model & Contrast & Mean $\Delta$ nDCG@10 & Nominal 95\% CI & FWER 95\% CI & Seed W/T/L & Task W/T/L \\
 \midrule
-\multicolumn{6}{c}{\ResultPending{three-seed confirmation table}} \\
+DenseOn & Muon $-$ AdamW & \ResultPending{x} & -- & -- & -- & -- \\
+DenseOn & NorMuon $-$ AdamW & \ResultPending{x} & -- & -- & -- & -- \\
+DenseOn & NorMuon $-$ Muon & \ResultPending{x} & -- & -- & -- & -- \\
 \bottomrule
 \end{tabular}
-\caption{Validation-frozen, three-seed confirmatory retrieval contrasts.}
+\caption{Validation-frozen, three-seed confirmatory retrieval contrasts. The FWER interval applies a Bonferroni correction over all six comparisons prespecified before the post-hoc Dense-only scope amendment and governs headline sign language.}
 \label{tab:confirmation-results}
 \end{table*}

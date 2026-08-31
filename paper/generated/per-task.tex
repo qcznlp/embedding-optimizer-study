@@ -1,4 +1,4 @@
-% This placeholder is replaced atomically by embed-optim-render-paper-results.
+% Topology-faithful worst-case placeholder replaced atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -6,9 +6,43 @@
 \toprule
 Task & AdamW & Muon & NorMuon & Muon $-$ AdamW & NorMuon $-$ AdamW \\
 \midrule
-\multicolumn{6}{c}{\ResultPending{strict best-config per-task discovery tables}} \\
+ArguAna & -- & -- & -- & -- & \ResultPending{task} \\
+ClimateFEVER & -- & -- & -- & -- & \ResultPending{task} \\
+DBPedia & -- & -- & -- & -- & \ResultPending{task} \\
+FEVER & -- & -- & -- & -- & \ResultPending{task} \\
+FiQA2018 & -- & -- & -- & -- & \ResultPending{task} \\
+HotpotQA & -- & -- & -- & -- & \ResultPending{task} \\
+MSMARCO & -- & -- & -- & -- & \ResultPending{task} \\
+NFCorpus & -- & -- & -- & -- & \ResultPending{task} \\
+NQ & -- & -- & -- & -- & \ResultPending{task} \\
+QuoraRetrieval & -- & -- & -- & -- & \ResultPending{task} \\
+SCIDOCS & -- & -- & -- & -- & \ResultPending{task} \\
+SciFact & -- & -- & -- & -- & \ResultPending{task} \\
+TRECCOVID & -- & -- & -- & -- & \ResultPending{task} \\
+Touche2020 & -- & -- & -- & -- & \ResultPending{task} \\
 \bottomrule
 \end{tabular}
-\caption{DenseOn discovery per-task final nDCG@10 with same-suite selection disclosed.}
-\label{tab:per-task-results}
+\caption{DenseOn discovery per-task final nDCG@10 for each optimizer's best learning-rate point on this same BEIR suite. These are exploratory, test-selected comparisons rather than an unbiased recipe estimate.}
+\label{tab:denseon-per-task-results}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lllccc}
+\toprule
+Model & Comparison & Stages & Same direction & Pearson $r$ & Spearman $\rho$ \\
+\midrule
+DenseOn & Muon $-$ AdamW & 20--40\% & -- & -- & \ResultPending{stability} \\
+DenseOn & Muon $-$ AdamW & 40--60\% & -- & -- & \ResultPending{stability} \\
+DenseOn & Muon $-$ AdamW & 60--80\% & -- & -- & \ResultPending{stability} \\
+DenseOn & Muon $-$ AdamW & 80--100\% & -- & -- & \ResultPending{stability} \\
+DenseOn & NorMuon $-$ AdamW & 20--40\% & -- & -- & \ResultPending{stability} \\
+DenseOn & NorMuon $-$ AdamW & 40--60\% & -- & -- & \ResultPending{stability} \\
+DenseOn & NorMuon $-$ AdamW & 60--80\% & -- & -- & \ResultPending{stability} \\
+DenseOn & NorMuon $-$ AdamW & 80--100\% & -- & -- & \ResultPending{stability} \\
+\bottomrule
+\end{tabular}
+\caption{Post-hoc adjacent-checkpoint stability of the 14 task effects for each optimizer/LR run selected by final nDCG@10 on this same BEIR suite against the likewise selected AdamW run. This exploratory diagnostic was added after heterogeneous task directions became visible and is outside the confirmatory family.}
+\label{tab:task-delta-stability}
 \end{table*}

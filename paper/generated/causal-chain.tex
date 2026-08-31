@@ -1,20 +1,20 @@
-% This placeholder is replaced atomically by embed-optim-render-paper-results.
-% It defines one compact main-text table and detailed appendix diagnostics.
+% Topology-faithful worst-case placeholder replaced atomically by embed-optim-render-paper-results.
+% It defines one compact main-text table and all six detailed appendix tables.
 \newcommand{\CausalChainSummaryTable}{%
 \begin{table*}[t]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{0.18\linewidth}p{0.34\linewidth}p{0.18\linewidth}p{0.23\linewidth}}
+\begin{tabular}{p{0.16\linewidth}p{0.25\linewidth}p{0.32\linewidth}p{0.20\linewidth}}
 \toprule
-Test & Frozen comparison & Audited result & Permitted inference \\
+Test & Frozen comparison & Audited numerical result & Permitted inference \\
 \midrule
 Shared-start temporal & Tail energy versus optimizer labels and both Frobenius-norm controls under leave-one-seed-out prediction & \ResultPending{temporal all-required verdict} & Accumulated spectral bridge, or claimable negative \\
 Fixed-state component & Five spectrum doses, tail versus other bands, and spectrum versus basis at ten anchors & \ResultPending{dose/band/basis verdict} & Immediate component attribution only \\
 Forward retrieval & 84 task-aligned next-checkpoint changes under leave-one-source-run-out prediction & \ResultPending{held-run bridge verdict} & Out-of-run bridge, not formal mediation \\
 \bottomrule
 \end{tabular}
-\caption{Frozen causal-chain stress tests. Every row is reported whether supported or negative; the spectral-component explanation requires all declared tests to pass.}
+\caption{Frozen causal-chain stress tests. Every decision and its numerical basis is reported whether supported or negative; joint passage is not formal mediation.}
 \label{tab:causal-chain-summary}
 \end{table*}%
 }
@@ -24,9 +24,9 @@ Forward retrieval & 84 task-aligned next-checkpoint changes under leave-one-sour
 \centering
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{0.19\linewidth}p{0.52\linewidth}p{0.21\linewidth}}
+\begin{tabular}{p{0.18\linewidth}p{0.62\linewidth}p{0.12\linewidth}}
 \toprule
-Temporal diagnostic & Frozen rule & Audited result \\
+Temporal criterion & Audited numerical evidence & Decision \\
 \midrule
 Treatment shift & Positive tail-energy contrast for both challengers in at least two of three seeds & \ResultPending{seed signs} \\
 Outcome shift & Both stage-5 outcomes favor each challenger in at least two of three seeds & \ResultPending{endpoint signs} \\
@@ -36,25 +36,115 @@ Coefficient behavior & Adding tail energy does not increase either absolute chal
 Joint decision & All five conditions above are required & \ResultPending{supported or claimable negative} \\
 \bottomrule
 \end{tabular}
-\caption{Complete shared-start temporal diagnostics. Secondary spectral metrics are reported in the released artifact but cannot replace a failed primary tail-energy rule.}
+\caption{All five frozen temporal criteria and their all-required decision.}
 \label{tab:causal-temporal-diagnostics}
+\end{table*}
+\begin{table*}[t]
+\centering
+\tiny
+\setlength{\tabcolsep}{1.2pt}
+\begin{tabular}{p{0.10\linewidth}p{0.12\linewidth}p{0.07\linewidth}p{0.09\linewidth}p{0.09\linewidth}p{0.09\linewidth}p{0.16\linewidth}p{0.16\linewidth}}
+\toprule
+Outcome & Predictor & Kind & Label RMSE & Pred. RMSE & Rel. gain & Muon $\beta$ before$\rightarrow$after (shrink) & NorMuon $\beta$ before$\rightarrow$after (shrink) \\
+\midrule
+loss p95 & tail energy & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+loss p95 & stable rank & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+loss p95 & entropy rank & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+loss p95 & head energy & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+loss p95 & middle energy & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+loss p95 & row CV & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+loss p95 & update norm & norm control & -- & -- & -- & -- & \ResultPending{estimate} \\
+loss p95 & weight norm & norm control & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & tail energy & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & stable rank & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & entropy rank & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & head energy & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & middle energy & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & row CV & mech. & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & update norm & norm control & -- & -- & -- & -- & \ResultPending{estimate} \\
+margin p05 & weight norm & norm control & -- & -- & -- & -- & \ResultPending{estimate} \\
+\bottomrule
+\end{tabular}
+\caption{All 16 frozen temporal predictor estimates, including both norm controls.}
+\label{tab:causal-temporal-estimates}
+\end{table*}
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{llrrr}
+\toprule
+Seed & Challenger & $\Delta$ tail energy & $\Delta$ loss p95 & $\Delta$ margin p05 \\
+\midrule
+161803 & Muon & -- & -- & \ResultPending{pair} \\
+161803 & NorMuon & -- & -- & \ResultPending{pair} \\
+271828 & Muon & -- & -- & \ResultPending{pair} \\
+271828 & NorMuon & -- & -- & \ResultPending{pair} \\
+314159 & Muon & -- & -- & \ResultPending{pair} \\
+314159 & NorMuon & -- & -- & \ResultPending{pair} \\
+\bottomrule
+\end{tabular}
+\caption{All six randomized shared-start paired contrasts.}
+\label{tab:causal-temporal-pairs}
 \end{table*}
 \begin{table*}[t]
 \centering
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{0.19\linewidth}p{0.52\linewidth}p{0.21\linewidth}}
+\begin{tabular}{p{0.22\linewidth}p{0.16\linewidth}p{0.40\linewidth}p{0.12\linewidth}}
 \toprule
-Component diagnostic & Frozen rule & Audited result \\
+Component criterion & Support & Threshold & Decision \\
 \midrule
-Dose response & Loss p95 nonincreasing and margin p05 nondecreasing over $\lambda=0,.25,.5,.75,1$ at at least 8/10 anchors & \ResultPending{anchor counts} \\
-Band localization & Tail is more favorable than head and middle on both metrics at at least 8/10 anchors & \ResultPending{band counts} \\
-Basis control & Spectrum transplant beats basis swap on both metrics at at least 8/10 anchors & \ResultPending{basis-control counts} \\
-Held-run bridge & A spectrum predictor improves pooled 84-row RMSE, and its matched basis control does not equal or exceed the gain & \ResultPending{held-run RMSE} \\
-Joint decision & Dose, band, basis, and forward bridge all pass & \ResultPending{supported or claimable negative} \\
+loss dose & --/10 & monotone at least 8/10 & \ResultPending{decision} \\
+margin dose & --/10 & monotone at least 8/10 & \ResultPending{decision} \\
+tail band & --/10 & best on both metrics at least 8/10 & \ResultPending{decision} \\
+basis control & --/10 & spectrum beats basis at least 8/10 & \ResultPending{decision} \\
+held-run bridge & 84 rows & spectrum gain $>0$ and $>$ matched basis gain & \ResultPending{decision} \\
+joint decision & local plus forward & all required & \ResultPending{verdict} \\
 \bottomrule
 \end{tabular}
-\caption{Fixed-state component and task-aligned forward-retrieval diagnostics. The forward model leaves out an entire source run, including its 14 tasks and both eligible transitions.}
+\caption{Dose, band, basis, and held-run bridge decisions.}
 \label{tab:causal-dose-diagnostics}
+\end{table*}
+\begin{table*}[t]
+\centering
+\tiny
+\setlength{\tabcolsep}{1.2pt}
+\begin{tabular}{p{0.13\linewidth}p{0.17\linewidth}p{0.17\linewidth}p{0.11\linewidth}p{0.11\linewidth}p{0.08\linewidth}p{0.16\linewidth}}
+\toprule
+Anchor & Loss doses (0, .25, .5, .75, 1) & Margin doses (0, .25, .5, .75, 1) & Loss H/M/T & Margin H/M/T & Tests & Min gaps L/M/T/B \\
+\midrule
+pretrained & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+AdamW 20\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+AdamW 60\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+AdamW 100\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+Muon 20\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+Muon 60\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+Muon 100\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+NorMuon 20\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+NorMuon 60\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+NorMuon 100\% & -- & -- & -- & -- & -- & \ResultPending{gaps} \\
+\bottomrule
+\end{tabular}
+\caption{All ten fixed-state dose, band, and basis-control anchors. Test order is loss-dose, margin-dose, tail, basis, and all; signed minimum gaps make strict ties auditable.}
+\label{tab:causal-dose-anchors}
+\end{table*}
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.18\linewidth}p{0.16\linewidth}p{0.10\linewidth}p{0.12\linewidth}p{0.22\linewidth}}
+\toprule
+Predictor & Kind & RMSE & $\Delta$RMSE & Matched control \\
+\midrule
+baseline & baseline & -- & -- & \ResultPending{RMSE} \\
+spectrum loss & spectrum & -- & -- & \ResultPending{RMSE} \\
+spectrum margin & spectrum & -- & -- & \ResultPending{RMSE} \\
+basis loss & basis control & -- & -- & \ResultPending{RMSE} \\
+basis margin & basis control & -- & -- & \ResultPending{RMSE} \\
+\bottomrule
+\end{tabular}
+\caption{Five models over all 84 held-run retrieval rows. Positive $\Delta$RMSE is improvement.}
+\label{tab:causal-forward-rmse}
 \end{table*}%
 }

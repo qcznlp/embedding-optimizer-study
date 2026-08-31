@@ -257,6 +257,7 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         "paper/generated/causal-chain.tex",
         "paper/generated/common-state.tex",
         "paper/generated/confirmation.tex",
+        "paper/generated/diagnostics.tex",
         "paper/generated/discovery.tex",
         "paper/generated/intervention.tex",
         "paper/generated/per-task.tex",

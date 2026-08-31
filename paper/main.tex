@@ -281,7 +281,8 @@ an additional inferential family. We report complete five-stage quality trajecto
 passage to the median final AdamW reference, unstable configurations, memory, optimizer-state size,
 and all task scores. Lower training loss is never substituted for retrieval quality. The
 first-passage rule and later loss--BEIR join retain their recorded post-hoc status and cannot affect
-recipe selection or confirmatory wording.
+recipe selection or confirmatory wording. Full throughput, memory, optimizer-state, and checkpoint
+measurements appear in Appendix~\ref{tab:training-systems-results}.
 
 The discovery point estimates motivate, but do not settle, the paper's central tension: when the
 same BEIR suite selects one learning rate per optimizer, Muon-family trajectories can finish above
@@ -305,7 +306,8 @@ allocation, and pairwise angle. \CommonStateHeadline
 
 These measurements verify that the implementations impose different update geometry. They cannot
 explain retrieval by themselves. In particular, a higher stable rank is an operator fingerprint,
-whereas a margin or ranking change under a matched intervention is functional evidence.
+whereas a margin or ranking change under a matched intervention is functional evidence. The complete
+function-preserving coordinate diagnostic appears in Appendix~\ref{tab:basis-sensitivity-results}.
 
 \subsection{Matched one-step intervention and the local disadvantage}
 
@@ -350,6 +352,8 @@ $\lVert Dh\rVert_2\leq\lVert D\rVert_2\lVert h\rVert_2$. This supplies a candida
 update spectrum and extreme feature changes, but it does not prove that the spectrum causes the
 observed tail membership. The frozen spectrum/basis transplant tests that attribution; it remains a
 fixed-state explanation even if successful.
+The full cross-tail, accumulated-tail, and spectrum-versus-basis readouts are reported in Appendix
+Tables~\ref{tab:tail-identity-results}--\ref{tab:spectral-tail-results}.
 
 \section{Does the Effect Accumulate?}
 
@@ -394,9 +398,8 @@ the recipe comparison but is not by itself a causal decomposition of Muon.
 On fixed in-distribution and unseen probes, we measure the full query-margin distribution, embedding
 effective rank and isotropy, hubness, and top-$k$ agreement with the pretrained model. We join these
 quantities to DenseOn trajectories and separately analyze within-run first differences.
-\RepresentationHeadline
-
-\input{generated/representation}
+\RepresentationHeadline The complete representation readout is reported in
+Appendix~\ref{tab:representation-results}.
 
 Checkpoint correlations are observational. A representation metric enters the mechanism only if it
 changes under a controlled direction or shared-start branch and aligns temporally with a later
@@ -509,6 +512,16 @@ Difference survives matched routing & separately tuned hybrid-AdamW comparison &
 The temporal and held-run predictors triangulate links in a prespecified chain; because the spectral
 quantity is post-treatment and the fixed-state transplant is not a trained optimizer assignment,
 even complete support is explicitly not a formal causal mediation estimate.
+
+\section{Detailed Systems and Mechanism Readouts}
+
+The main text retains the tables that determine the discovery, common-state, accumulated-control,
+causal-chain, and confirmatory headlines. The complete systems, basis-sensitivity, representation,
+tail, and spectrum-versus-basis readouts appear below.
+
+\input{generated/diagnostics}
+
+\input{generated/representation}
 
 \section{Causal-Chain Diagnostics}
 

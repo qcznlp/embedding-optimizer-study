@@ -4,6 +4,7 @@ import copy
 import csv
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -398,6 +399,21 @@ def test_canonical_consumers_display_the_full_numeric_contract(complete_root: Pa
     assert "84 leave-source-run-out" in latex
     assert latex.count(r"\newcommand{\CausalChainSummaryTable}") == 1
     assert latex.count(r"\newcommand{\CausalChainDiagnostics}") == 1
+    causal_rows = {}
+    for table in re.findall(r"\\begin\{table\*?\}.*?\\end\{table\*?\}", latex, flags=re.DOTALL):
+        labels = re.findall(r"\\label\{(tab:[^{}]+)\}", table)
+        assert len(labels) == 1
+        body = table.split(r"\midrule", 1)[1].split(r"\bottomrule", 1)[0]
+        causal_rows[labels[0]] = sum(line.rstrip().endswith(r"\\") for line in body.splitlines())
+    assert causal_rows == {
+        "tab:causal-chain-summary": 3,
+        "tab:causal-temporal-diagnostics": 6,
+        "tab:causal-temporal-estimates": 16,
+        "tab:causal-temporal-pairs": 6,
+        "tab:causal-dose-diagnostics": 6,
+        "tab:causal-dose-anchors": 10,
+        "tab:causal-forward-rmse": 5,
+    }
     expected_counts = {
         "complete": True,
         "temporal_criteria": 5,

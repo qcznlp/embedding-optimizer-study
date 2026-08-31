@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -16,6 +17,16 @@ from embed_optim.paper_results import (
     main,
     render_paper_results,
 )
+
+
+def _rendered_table_rows(text: str) -> dict[str, int]:
+    result = {}
+    for table in re.findall(r"\\begin\{table\*?\}.*?\\end\{table\*?\}", text, flags=re.DOTALL):
+        labels = re.findall(r"\\label\{(tab:[^{}]+)\}", table)
+        assert len(labels) == 1
+        body = table.split(r"\midrule", 1)[1].split(r"\bottomrule", 1)[0]
+        result[labels[0]] = sum(line.rstrip().endswith(r"\\") for line in body.splitlines())
+    return result
 
 
 def test_renderer_resolves_scope_amendment_against_repo_root_before_read(
@@ -354,12 +365,14 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
         "paper/generated/representation.tex",
         "paper/generated/intervention.tex",
         "paper/generated/confirmation.tex",
+        "paper/generated/diagnostics.tex",
     }
     discovery = tables["paper/generated/discovery.tex"]
     per_task = tables["paper/generated/per-task.tex"]
     confirmation = tables["paper/generated/confirmation.tex"]
     common = tables["paper/generated/common-state.tex"]
     intervention = tables["paper/generated/intervention.tex"]
+    diagnostics = tables["paper/generated/diagnostics.tex"]
     assert (
         sum(
             f"{family} & {optimizer}" in discovery
@@ -382,13 +395,16 @@ def test_result_tables_cover_all_frozen_groups_and_contrasts():
     )
     assert "FWER 95\\% CI" in confirmation
     assert "Bonferroni correction" in confirmation
-    assert "Function-preserving basis sensitivity" in common
-    assert "0.99000 & 0.01000 & 0.00100 & 0.00200 & 0.00300" in common
-    assert "Post-hoc spectrum-versus-basis causal decomposition" in intervention
-    assert "tail redistribution" in intervention
-    assert "cannot establish BEIR mediation" in intervention
-    assert "DenseOn Muon/NorMuon throughput ratios were 0.95x/0.93x AdamW" in discovery
-    assert "neither was faster for DenseOn" in discovery
+    assert r"\scriptsize" in confirmation
+    assert r"\setlength{\tabcolsep}{2pt}" in confirmation
+    assert "Function-preserving basis sensitivity" not in common
+    assert "0.99000 & 0.01000 & 0.00100 & 0.00200 & 0.00300" in diagnostics
+    assert "Post-hoc spectrum-versus-basis causal decomposition" not in intervention
+    assert "Post-hoc spectrum-versus-basis causal decomposition" in diagnostics
+    assert "tail redistribution" in diagnostics
+    assert "cannot establish BEIR mediation" in diagnostics
+    assert "DenseOn Muon/NorMuon throughput ratios were 0.95x/0.93x AdamW" in diagnostics
+    assert "neither was faster for DenseOn" in diagnostics
     assert "dense-training-dynamics-by-run.png" in discovery
     assert "dense-lr-sensitivity.png" in discovery
     assert all("ResultPending" not in content for content in tables.values())
@@ -429,10 +445,42 @@ def test_dense_scope_headlines_and_tables_exclude_late_results():
     assert all("LateOn" not in value for value in headlines.values())
     assert "for DenseOn" in headlines["RepresentationHeadline"]
     assert all("LateOn" not in value for value in tables.values())
-    assert tables["paper/generated/discovery.tex"].count("DenseOn &") == 6
+    assert tables["paper/generated/discovery.tex"].count("DenseOn &") == 3
     assert tables["paper/generated/confirmation.tex"].count("DenseOn &") == 3
     assert "all six comparisons prespecified" in tables["paper/generated/confirmation.tex"]
     assert "Late token coverage" not in tables["paper/generated/representation.tex"]
+    rendered = "\n".join(tables.values())
+    assert set(re.findall(r"\\label\{((?:tab|fig):[^{}]+)\}", rendered)) == {
+        "tab:discovery-results",
+        "fig:dense-discovery-dynamics",
+        "tab:denseon-per-task-results",
+        "tab:task-delta-stability",
+        "tab:common-state-results",
+        "tab:representation-results",
+        "tab:intervention-results",
+        "tab:confirmation-results",
+        "tab:training-systems-results",
+        "tab:basis-sensitivity-results",
+        "tab:tail-identity-results",
+        "tab:tail-persistence-results",
+        "tab:spectral-factorial-results",
+        "tab:spectral-tail-results",
+    }
+    assert _rendered_table_rows(rendered) == {
+        "tab:discovery-results": 3,
+        "tab:denseon-per-task-results": 14,
+        "tab:task-delta-stability": 8,
+        "tab:common-state-results": 2,
+        "tab:representation-results": 3,
+        "tab:intervention-results": 1,
+        "tab:confirmation-results": 3,
+        "tab:training-systems-results": 3,
+        "tab:basis-sensitivity-results": 3,
+        "tab:tail-identity-results": 2,
+        "tab:tail-persistence-results": 2,
+        "tab:spectral-factorial-results": 2,
+        "tab:spectral-tail-results": 3,
+    }
 
 
 def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, monkeypatch):
@@ -632,6 +680,7 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
                 "paper/generated/representation.tex",
                 "paper/generated/intervention.tex",
                 "paper/generated/confirmation.tex",
+                "paper/generated/diagnostics.tex",
             )
         }
 
@@ -645,7 +694,7 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     assert captured["table_task_stability_rows"] is task_stability_rows
     assert len(manifest["source_tables"]) == 24
     assert manifest["dynamics_extension"]["role"] == "descriptive-only"
-    assert len(manifest["result_tables"]) == 7
+    assert len(manifest["result_tables"]) == 8
     assert manifest["causal_chain_display"] == {"complete": True, "source_tables": 5}
 
     mutation_targets = [results, tmp_path / DYNAMICS_EXTENSION_TEX]

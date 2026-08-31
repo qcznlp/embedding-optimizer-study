@@ -70,6 +70,10 @@ def test_publication_accepts_same_run_id_across_three_distinct_confirmatory_seed
     assert "neither the CSV nor either figure is an inference input" in markdown
     assert "five_stage_retrieval_dynamics.pdf" in latex
     assert "not an inference input" in latex
+    assert latex.count(r"\label{fig:extended-retrieval-dynamics}") == 1
+    assert latex.count(r"\label{tab:extended-retrieval-dynamics}") == 1
+    body = latex.split(r"\midrule", 1)[1].split(r"\bottomrule", 1)[0]
+    assert sum(line.rstrip().endswith(r"\\") for line in body.splitlines()) == 4
 
 
 def test_publication_rejects_non_distinct_confirmatory_seed_or_boundary_drift():

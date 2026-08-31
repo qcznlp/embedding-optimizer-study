@@ -1,4 +1,4 @@
-% This placeholder is replaced atomically by embed-optim-render-paper-results.
+% Topology-faithful worst-case placeholder replaced atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -6,25 +6,13 @@
 \toprule
 Model & Optimizer & Final nDCG@10 & Rates reaching AdamW target \\
 \midrule
-\multicolumn{4}{c}{\ResultPending{strict discovery result table}} \\
+DenseOn & AdamW & \ResultPending{final score} & \ResultPending{rate count} \\
+DenseOn & Muon & \ResultPending{final score} & \ResultPending{rate count} \\
+DenseOn & NorMuon & \ResultPending{final score} & \ResultPending{rate count} \\
 \bottomrule
 \end{tabular}
 \caption{Discovery retrieval outcomes. Final scores are medians over four learning-rate points; target passage uses the frozen within-family AdamW reference.}
 \label{tab:discovery-results}
-\end{table*}
-
-\begin{table*}[t]
-\centering
-\small
-\begin{tabular}{llrrrrrr}
-\toprule
-Model & Optimizer & Hours & Examples/s & Throughput / AdamW & Peak GiB & State GiB & Checkpoint GiB \\
-\midrule
-\multicolumn{8}{c}{\ResultPending{strict training-systems summary}} \\
-\bottomrule
-\end{tabular}
-\caption{Median systems measurements over the four discovery learning rates on the pinned four-GPU stack. The final renderer explicitly reports whether Muon-family training was faster and separates throughput from optimizer-state and memory savings.}
-\label{tab:training-systems-results}
 \end{table*}
 
 \begin{figure*}[t]
@@ -37,6 +25,6 @@ Model & Optimizer & Hours & Examples/s & Throughput / AdamW & Peak GiB & State G
 \centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-lr-sensitivity.png}
 \centering (b) Final-score learning-rate sensitivity.
 \end{minipage}
-\caption{DenseOn discovery dynamics. Panel (a) retains all 12 runs and all five checkpoints; panel (b) shows final-score sensitivity over each optimizer's frozen four-point learning-rate grid. These one-seed discovery curves are exploratory.}
+\caption{DenseOn discovery dynamics. Panel (a) retains all 12 runs and all five checkpoints; panel (b) shows the final nDCG@10 response over each optimizer's frozen four-point learning-rate grid. These one-seed discovery curves are exploratory and do not replace the validation-frozen confirmation.}
 \label{fig:dense-discovery-dynamics}
 \end{figure*}

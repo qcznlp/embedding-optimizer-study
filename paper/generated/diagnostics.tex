@@ -1,0 +1,93 @@
+% Topology-faithful worst-case placeholder replaced atomically by embed-optim-render-paper-results.
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & Optimizer & Hours & Examples/s & Throughput / AdamW & Peak GiB & State GiB & Checkpoint GiB \\
+\midrule
+DenseOn & AdamW & -- & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & Muon & -- & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & NorMuon & -- & -- & -- & -- & -- & \ResultPending{x} \\
+\bottomrule
+\end{tabular}
+\caption{Median systems measurements over the four discovery learning rates on the pinned four-GPU stack. The final renderer reports the DenseOn Muon/NorMuon throughput ratios and whether either was faster than AdamW. Optimizer-state and peak allocated memory are reported separately from speed.}
+\label{tab:training-systems-results}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llccccc}
+\toprule
+Model & Rule & Mapped cosine & Direction error & Norm-ratio error & Descent error & Q/K spectrum error \\
+\midrule
+DenseOn & AdamW & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & Muon & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & NorMuon & -- & -- & -- & -- & \ResultPending{x} \\
+\bottomrule
+\end{tabular}
+\caption{Function-preserving basis sensitivity under the frozen RoPE-commuting Q/K rotation grid. Values are medians over 90 comparisons per model and rule; this coordinate diagnostic is not a retrieval intervention.}
+\label{tab:basis-sensitivity-results}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llcccl}
+\toprule
+Model & Rule & $\Delta$ AdamW tail & $\Delta$ rule tail & Jaccard & Regime \\
+\midrule
+DenseOn & Muon & -- & -- & -- & \ResultPending{x} \\
+DenseOn & NorMuon & -- & -- & -- & \ResultPending{x} \\
+\bottomrule
+\end{tabular}
+\caption{Post-hoc fixed-state worst-query-tail decomposition. This exploratory diagnostic classifies shared-tail severity suppression versus tail redistribution; it is not confirmatory retrieval evidence.}
+\label{tab:tail-identity-results}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llccccl}
+\toprule
+Model & Rule & Validation p95 loss $\Delta$ & Loss wins & Unseen p05 margin $\Delta$ & Margin wins & Decision \\
+\midrule
+DenseOn & Muon & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & NorMuon & -- & -- & -- & -- & \ResultPending{x} \\
+\bottomrule
+\end{tabular}
+\caption{Three-seed shared-start endpoint test of the tail signature. The endpoint rule was frozen before branch outcomes, while the motivating tail account is post hoc; persistence does not establish mediation of BEIR.}
+\label{tab:tail-persistence-results}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Model & Immediate metric & Spectrum effect & Basis effect & Interaction \\
+\midrule
+DenseOn & contrastive loss & -- & -- & \ResultPending{x} \\
+DenseOn & positive margin & -- & -- & \ResultPending{x} \\
+\bottomrule
+\end{tabular}
+\caption{Post-hoc spectrum-versus-basis causal decomposition at fixed checkpoint states. The transplant identifies immediate functional effects, not the cause of a full-training BEIR difference.}
+\label{tab:spectral-factorial-results}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llccccc}
+\toprule
+Model & Condition & p95 loss & p05 margin & AdamW tail & Condition tail & Jaccard \\
+\midrule
+DenseOn & Muon native & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & Adam basis + Muon spectrum & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & Muon basis + Adam spectrum & -- & -- & -- & -- & \ResultPending{x} \\
+\bottomrule
+\end{tabular}
+\caption{Post-hoc query-tail readout for the fixed-state spectral transplant. Contrasts are relative to native AdamW and cannot establish BEIR mediation.}
+\label{tab:spectral-tail-results}
+\end{table*}

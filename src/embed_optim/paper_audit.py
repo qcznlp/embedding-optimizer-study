@@ -67,18 +67,45 @@ PAPER_RESULT_TABLE_PATHS = (
     Path("paper/generated/representation.tex"),
     Path("paper/generated/intervention.tex"),
     Path("paper/generated/confirmation.tex"),
+    Path("paper/generated/diagnostics.tex"),
     Path("paper/generated/causal-chain.tex"),
 )
+PAPER_MAIN_RESULT_TABLE_PATHS = (
+    Path("paper/generated/discovery.tex"),
+    Path("paper/generated/common-state.tex"),
+    Path("paper/generated/intervention.tex"),
+    Path("paper/generated/confirmation.tex"),
+)
+PAPER_APPENDIX_RESULT_TABLE_PATHS = (
+    Path("paper/generated/diagnostics.tex"),
+    Path("paper/generated/representation.tex"),
+    Path("paper/generated/per-task.tex"),
+)
+PAPER_DEFINITION_RESULT_TABLE_PATHS = (Path("paper/generated/causal-chain.tex"),)
 PAPER_MAIN_GENERATED_INPUTS = tuple(
     rf"\input{{{path.relative_to('paper').with_suffix('').as_posix()}}}"
-    for path in PAPER_RESULT_TABLE_PATHS
+    for path in PAPER_MAIN_RESULT_TABLE_PATHS
+)
+PAPER_APPENDIX_GENERATED_INPUTS = tuple(
+    rf"\input{{{path.relative_to('paper').with_suffix('').as_posix()}}}"
+    for path in PAPER_APPENDIX_RESULT_TABLE_PATHS
+)
+PAPER_DEFINITION_GENERATED_INPUTS = tuple(
+    rf"\input{{{path.relative_to('paper').with_suffix('').as_posix()}}}"
+    for path in PAPER_DEFINITION_RESULT_TABLE_PATHS
 )
 PAPER_MAIN_REQUIRED_ONCE = (
     r"\input{results}",
     *PAPER_MAIN_GENERATED_INPUTS,
+    *PAPER_APPENDIX_GENERATED_INPUTS,
+    *PAPER_DEFINITION_GENERATED_INPUTS,
+    rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}",
+    r"\CausalChainSummaryTable",
+    r"\CausalChainDiagnostics",
     r"\section{Conclusion}",
     r"\ResultConclusion",
     rf"\label{{{MAIN_END_LABEL}}}",
+    r"\appendix",
 )
 PAPER_DISCOVERY_FIGURE_INCLUDES = (
     r"\centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-training-dynamics-by-run.png}",
@@ -2033,7 +2060,22 @@ def _paper_main_topology_complete(root: Path) -> bool:
     rendered_conclusion = main_text.find(r"\ResultConclusion")
     main_end_label = main_text.find(rf"\label{{{MAIN_END_LABEL}}}")
     limitations = main_text.find(r"\section{Limitations}")
-    return 0 <= conclusion < rendered_conclusion < main_end_label < limitations
+    appendix = main_text.find(r"\appendix")
+    dynamics_input = (
+        rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}"
+    )
+    main_inputs = (r"\input{results}", *PAPER_MAIN_GENERATED_INPUTS)
+    appendix_inputs = (*PAPER_APPENDIX_GENERATED_INPUTS, dynamics_input)
+    return (
+        0 <= conclusion < rendered_conclusion < main_end_label < limitations < appendix
+        and all(main_text.find(token) < main_end_label for token in main_inputs)
+        and all(
+            main_text.find(token) < main_end_label for token in PAPER_DEFINITION_GENERATED_INPUTS
+        )
+        and main_text.find(r"\CausalChainSummaryTable") < main_end_label
+        and all(main_text.find(token) > appendix for token in appendix_inputs)
+        and main_text.find(r"\CausalChainDiagnostics") > appendix
+    )
 
 
 def _paper_results_complete(

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import statistics
 from pathlib import Path
 from typing import Any
@@ -560,8 +561,15 @@ def _latex_table(
     rows: list[tuple[object, ...]],
     caption: str,
     label: str,
+    size: str = "small",
+    tabcolsep: str | None = None,
 ) -> str:
-    if environment not in {"table", "table*"} or len(columns) != len(headers):
+    if (
+        environment not in {"table", "table*"}
+        or len(columns) != len(headers)
+        or size not in {"small", "scriptsize", "tiny"}
+        or (tabcolsep is not None and not re.fullmatch(r"[0-9]+(?:\.[0-9]+)?pt", tabcolsep))
+    ):
         raise ValueError("Invalid generated LaTeX table shape")
     if not rows or any(len(row) != len(headers) for row in rows):
         raise ValueError("Generated LaTeX table rows do not match their headers")
@@ -571,7 +579,8 @@ def _latex_table(
             "% Generated atomically by embed-optim-render-paper-results.",
             f"\\begin{{{environment}}}[t]",
             r"\centering",
-            r"\small",
+            f"\\{size}",
+            *([f"\\setlength{{\\tabcolsep}}{{{tabcolsep}}}"] if tabcolsep else []),
             f"\\begin{{tabular}}{{{columns}}}",
             r"\toprule",
             " & ".join(headers) + r" \\",
@@ -875,37 +884,33 @@ def build_result_tables(
         ]
     )
 
-    common_tables = "\n".join(
-        (
-            _latex_table(
-                environment="table*",
-                columns="llcc",
-                headers=("Model", "Rule", "Row-CV / AdamW", "Normalized stable rank"),
-                rows=common_table_rows,
-                caption="Same-state update fingerprints under shared gradients.",
-                label="tab:common-state-results",
-            ),
-            _latex_table(
-                environment="table*",
-                columns="llccccc",
-                headers=(
-                    "Model",
-                    "Rule",
-                    "Mapped cosine",
-                    "Direction error",
-                    "Norm-ratio error",
-                    "Descent error",
-                    "Q/K spectrum error",
-                ),
-                rows=basis_table_rows,
-                caption=(
-                    "Function-preserving basis sensitivity under the frozen RoPE-commuting Q/K "
-                    "rotation grid. Values are medians over 90 comparisons per model and rule; "
-                    "this coordinate diagnostic is not a retrieval intervention."
-                ),
-                label="tab:basis-sensitivity-results",
-            ),
-        )
+    common_table = _latex_table(
+        environment="table*",
+        columns="llcc",
+        headers=("Model", "Rule", "Row-CV / AdamW", "Normalized stable rank"),
+        rows=common_table_rows,
+        caption="Same-state update fingerprints under shared gradients.",
+        label="tab:common-state-results",
+    )
+    basis_table = _latex_table(
+        environment="table*",
+        columns="llccccc",
+        headers=(
+            "Model",
+            "Rule",
+            "Mapped cosine",
+            "Direction error",
+            "Norm-ratio error",
+            "Descent error",
+            "Q/K spectrum error",
+        ),
+        rows=basis_table_rows,
+        caption=(
+            "Function-preserving basis sensitivity under the frozen RoPE-commuting Q/K "
+            "rotation grid. Values are medians over 90 comparisons per model and rule; "
+            "this coordinate diagnostic is not a retrieval intervention."
+        ),
+        label="tab:basis-sensitivity-results",
     )
 
     table_contents = (
@@ -927,12 +932,11 @@ def build_result_tables(
                     ),
                     label="tab:discovery-results",
                 ),
-                system_table,
                 _discovery_figure_latex(),
             )
         ),
         per_task_tables,
-        common_tables,
+        common_table,
         _latex_table(
             environment="table*",
             columns="llccc" if families == FAMILIES else "llcc",
@@ -944,21 +948,41 @@ def build_result_tables(
             ),
             label="tab:representation-results",
         ),
+        _latex_table(
+            environment="table*",
+            columns="lccc",
+            headers=(
+                "Model",
+                r"Matched-step margin $\Delta$ (A/M/N)",
+                r"Shared-start margin $\Delta$ (M--A/N--M)",
+                r"Hybrid AdamW $\Delta$",
+            ),
+            rows=intervention_rows,
+            caption="Immediate, accumulated, and routing-matched causal controls.",
+            label="tab:intervention-results",
+        ),
+        _latex_table(
+            environment="table*",
+            columns="llccccc",
+            headers=(
+                "Model",
+                "Contrast",
+                r"Mean $\Delta$ nDCG@10",
+                r"Nominal 95\% CI",
+                r"FWER 95\% CI",
+                "Seed W/T/L",
+                "Task W/T/L",
+            ),
+            rows=confirmation_table_rows,
+            caption=confirmation_caption,
+            label="tab:confirmation-results",
+            size="scriptsize",
+            tabcolsep="2pt",
+        ),
         "\n".join(
             (
-                _latex_table(
-                    environment="table*",
-                    columns="lccc",
-                    headers=(
-                        "Model",
-                        r"Matched-step margin $\Delta$ (A/M/N)",
-                        r"Shared-start margin $\Delta$ (M--A/N--M)",
-                        r"Hybrid AdamW $\Delta$",
-                    ),
-                    rows=intervention_rows,
-                    caption="Immediate, accumulated, and routing-matched causal controls.",
-                    label="tab:intervention-results",
-                ),
+                system_table,
+                basis_table,
                 _latex_table(
                     environment="table*",
                     columns="llcccl",
@@ -1056,22 +1080,6 @@ def build_result_tables(
                     label="tab:spectral-tail-results",
                 ),
             )
-        ),
-        _latex_table(
-            environment="table*",
-            columns="llccccc",
-            headers=(
-                "Model",
-                "Contrast",
-                r"Mean $\Delta$ nDCG@10",
-                r"Nominal 95\% CI",
-                r"FWER 95\% CI",
-                "Seed W/T/L",
-                "Task W/T/L",
-            ),
-            rows=confirmation_table_rows,
-            caption=confirmation_caption,
-            label="tab:confirmation-results",
         ),
     )
     if len(table_contents) != len(BASE_RESULT_TABLE_PATHS):
@@ -1281,7 +1289,9 @@ def render_paper_results(
     )
     result_tables[PAPER_RESULT_TABLE_PATHS[-1].as_posix()] = causal_latex
     if tuple(map(Path, result_tables)) != PAPER_RESULT_TABLE_PATHS:
-        raise ValueError("Rendered paper result paths differ from the seven-table contract")
+        raise ValueError(
+            f"Rendered paper result paths differ from the {len(PAPER_RESULT_TABLE_PATHS)}-artifact contract"
+        )
     rendered_macros = {**headlines, "ResultConclusion": _latex_escape(conclusion["plain"])}
     rendered_results = _replace_headlines(
         paper_results.read_text(encoding="utf-8"), rendered_macros

@@ -72,6 +72,12 @@ buildable developer draft. `make -C paper release` instead cleans the build, run
 `--if-ready`, and builds the PDF only from complete evidence. The release finalizer then repeats the
 strict paper audit after the PDF build and before constructing either distribution.
 
+The pending tables are topology-faithful: they reserve the same main/appendix float labels and row
+cardinalities as the final Dense-only renderer. Main text retains six headline floats; systems,
+per-task, representation, basis, tail, and full causal diagnostics are placed in the appendix. The
+layout gate audits every classified float label, not only the conclusion page, so a deferred
+main-text float on page 9 cannot be hidden by an end label that remained on page 8.
+
 ## DenseOn evidence contract
 
 The final renderer/auditor may read legacy two-model manifests, but each primary gate must select and
