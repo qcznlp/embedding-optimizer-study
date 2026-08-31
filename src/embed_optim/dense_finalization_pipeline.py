@@ -126,6 +126,15 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
             ),
         ),
         PipelineStep(
+            "discovery-report",
+            _module(
+                args.python,
+                "embed_optim.aggregate",
+                *dense_scope,
+                "--strict",
+            ),
+        ),
+        PipelineStep(
             "dose-band-fresh-audit",
             _module(
                 args.python,
@@ -133,15 +142,6 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 "--protocol",
                 causal_protocol,
                 "--audit",
-            ),
-        ),
-        PipelineStep(
-            "discovery-report",
-            _module(
-                args.python,
-                "embed_optim.aggregate",
-                *dense_scope,
-                "--strict",
             ),
         ),
         PipelineStep(

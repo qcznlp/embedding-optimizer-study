@@ -7,8 +7,10 @@ from pathlib import Path
 import pytest
 
 from embed_optim import dose_band_analysis
+from embed_optim.decontamination import DECONTAMINATED_TASK_NAMES
 from embed_optim.dose_band_analysis import (
     _anchor_tests,
+    _expected_anchor_identities,
     _forward_bridge_supported,
     _load_protocol,
     _predictions,
@@ -45,10 +47,43 @@ def test_checked_in_protocol_exposes_the_frozen_dose_claim_boundary():
     )
     assert "formal mediation" in dose["claim_boundary"]
     assert provenance["protocol"]["sha256"] == _sha256(Path("configs/causal_chain_analysis.json"))
-    assert anchor_contract == {
-        "run_ids": ("adamw-lr1e-5", "muon-lr1e-3", "normuon-lr1e-3"),
-        "checkpoint_fractions": (0.2, 0.6, 1.0),
+    assert anchor_contract["run_ids"] == (
+        "adamw-lr1e-5",
+        "muon-lr1e-3",
+        "normuon-lr1e-3",
+    )
+    assert anchor_contract["checkpoint_fractions"] == (0.2, 0.6, 1.0)
+    assert len(anchor_contract["discovery_run_ids"]) == 12
+    assert len(anchor_contract["discovery_run_identities"]) == 24
+    assert {family for family, _ in anchor_contract["discovery_run_identities"]} == {
+        "dense",
+        "late",
     }
+
+
+def test_expected_anchor_identities_reject_duplicate_or_incomplete_task_membership(tmp_path):
+    runs = ("adamw-lr1e-5", "muon-lr1e-3", "normuon-lr1e-3")
+    fractions = (0.2, 0.6, 1.0)
+    rows = [
+        {
+            "model_family": "dense",
+            "run_id": run_id,
+            "fraction": fraction,
+            "checkpoint_step": int(3907 * fraction),
+            "task": task,
+        }
+        for run_id in runs
+        for fraction in fractions
+        for task in DECONTAMINATED_TASK_NAMES
+    ]
+    evaluation = tmp_path / "evaluation.csv"
+    _csv(evaluation, rows)
+    contract = {"run_ids": runs, "checkpoint_fractions": fractions}
+    assert len(_expected_anchor_identities(evaluation, contract)) == 10
+
+    _csv(evaluation, [*rows, dict(rows[0])])
+    with pytest.raises(ValueError, match="one complete anchor"):
+        _expected_anchor_identities(evaluation, contract)
 
 
 def test_anchor_tail_summary_contract_synthesizes_omitted_adam_lambda_zero(tmp_path):
@@ -211,14 +246,126 @@ def test_audit_recomputes_and_rejects_manifest_only_tampering(tmp_path, monkeypa
 def test_discovery_evaluation_is_bound_to_coverage_manifest(tmp_path):
     repository = tmp_path
     report = repository / "reports/dense-discovery"
-    rows = [{"model_family": "dense", "run_id": f"run-{index}"} for index in range(840)]
+    run_ids = tuple(f"run-{index}" for index in range(12))
+    rows = [
+        {
+            "model_family": "dense",
+            "optimizer": "adamw",
+            "learning_rate": 1e-5,
+            "aux_learning_rate": 3e-6,
+            "run_id": run_id,
+            "stage": stage,
+            "fraction": stage / 5,
+            "checkpoint_step": dose_band_analysis.DISCOVERY_CHECKPOINT_STEPS[stage - 1],
+            "task": task,
+            "ndcg_at_10": 0.5,
+            "subsets": 1,
+            "result_path": f"results/{run_id}/{stage}/{task}.json",
+        }
+        for run_id in run_ids
+        for stage in range(1, 6)
+        for task in DECONTAMINATED_TASK_NAMES
+    ]
     evaluation = report / "evaluation_long.csv"
     _csv(evaluation, rows)
+    full_coverage_path = repository / "reports/coverage.json"
+    full_coverage_path.write_text(
+        json.dumps(
+            {
+                "complete": True,
+                "contract_complete": True,
+                "dataset_complete": True,
+                "training_complete": True,
+                "deep_training_artifact_validation": True,
+                "evaluation_complete": True,
+                "verified_experiment_runs": 24,
+                "expected_experiment_runs": 24,
+                "verified_training_runs": 24,
+                "expected_training_runs": 24,
+                "verified_training_checkpoints": 120,
+                "expected_training_checkpoints": 120,
+                "observed_results": 1680,
+                "expected_results": 1680,
+                "observed_checkpoint_summaries": 120,
+                "expected_checkpoint_summaries": 120,
+                "missing": [],
+                "unexpected": [],
+                "contract_errors": [],
+                "dataset_errors": [],
+                "training_errors": [],
+            }
+        )
+    )
+    late_rows = [
+        {
+            **row,
+            "model_family": "late",
+            "run_id": row["run_id"].replace("run-", "late-run-"),
+            "result_path": row["result_path"].replace("results/", "results/late/"),
+        }
+        for row in rows
+    ]
+    run_identities = tuple(
+        [("dense", run_id) for run_id in run_ids]
+        + [("late", f"late-{run_id}") for run_id in run_ids]
+    )
+    full_evaluation = repository / "reports/evaluation_long.csv"
+    _csv(full_evaluation, [*rows, *late_rows])
+    for relative in ("reports/system_metrics.csv", "reports/training_history.csv"):
+        path = repository / relative
+        path.write_text("fixture\n")
+    source_reports = {}
+    for label, relative in {
+        "coverage": "reports/coverage.json",
+        "evaluation_long": "reports/evaluation_long.csv",
+        "system_metrics": "reports/system_metrics.csv",
+        "training_history": "reports/training_history.csv",
+    }.items():
+        path = repository / relative
+        source_reports[label] = {
+            "path": relative,
+            "bytes": path.stat().st_size,
+            "sha256": _sha256(path),
+        }
     coverage = report / "coverage.json"
     coverage.write_text(
         json.dumps(
             {
                 "complete": True,
+                "contract_complete": True,
+                "dataset_complete": True,
+                "training_complete": True,
+                "evaluation_complete": True,
+                "verified_experiment_runs": 12,
+                "expected_experiment_runs": 12,
+                "verified_training_runs": 12,
+                "expected_training_runs": 12,
+                "verified_training_checkpoints": 60,
+                "expected_training_checkpoints": 60,
+                "observed_results": 840,
+                "expected_results": 840,
+                "families": ["dense"],
+                "selected_experiment_runs": 12,
+                "selected_training_checkpoints": 60,
+                "scope_amendment": {
+                    "path": "configs/dense_scope_amendment.json",
+                    "sha256": dose_band_analysis.DENSE_SCOPE_SHA256,
+                    "status": "user_directed_post_hoc_scope_amendment",
+                },
+                "source_full_discovery": {
+                    "complete": True,
+                    "verified_experiment_runs": 24,
+                    "expected_experiment_runs": 24,
+                    "verified_training_runs": 24,
+                    "expected_training_runs": 24,
+                    "verified_training_checkpoints": 120,
+                    "expected_training_checkpoints": 120,
+                    "observed_results": 1680,
+                    "expected_results": 1680,
+                    "observed_checkpoint_summaries": 120,
+                    "expected_checkpoint_summaries": 120,
+                    "reports": source_reports,
+                },
                 "outputs": {
                     "evaluation_long": {
                         "path": "reports/dense-discovery/evaluation_long.csv",
@@ -230,12 +377,47 @@ def test_discovery_evaluation_is_bound_to_coverage_manifest(tmp_path):
             }
         )
     )
-    assert _validate_evaluation_manifest(coverage, evaluation)["sha256"] == _sha256(coverage)
+    assert _validate_evaluation_manifest(coverage, evaluation, run_identities)["sha256"] == (
+        _sha256(coverage)
+    )
+    tampered_rows = [dict(row) for row in rows]
+    tampered_rows[0]["ndcg_at_10"] = 0.4
+    _csv(evaluation, tampered_rows)
     payload = json.loads(coverage.read_text())
+    payload["outputs"]["evaluation_long"].update(
+        bytes=evaluation.stat().st_size,
+        sha256=_sha256(evaluation),
+    )
+    coverage.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="exact full-report Dense projection"):
+        _validate_evaluation_manifest(coverage, evaluation, run_identities)
+
+    _csv(evaluation, rows)
+    payload = json.loads(coverage.read_text())
+    payload["outputs"]["evaluation_long"].update(
+        bytes=evaluation.stat().st_size,
+        sha256=_sha256(evaluation),
+    )
+    fabricated_full_rows = [dict(row) for row in [*rows, *late_rows]]
+    fabricated_full_rows[-1]["run_id"] = "fabricated-late-run"
+    _csv(full_evaluation, fabricated_full_rows)
+    payload["source_full_discovery"]["reports"]["evaluation_long"].update(
+        bytes=full_evaluation.stat().st_size,
+        sha256=_sha256(full_evaluation),
+    )
+    coverage.write_text(json.dumps(payload))
+    with pytest.raises(ValueError, match="exact 1,680-unit grid"):
+        _validate_evaluation_manifest(coverage, evaluation, run_identities)
+
+    _csv(full_evaluation, [*rows, *late_rows])
+    payload["source_full_discovery"]["reports"]["evaluation_long"].update(
+        bytes=full_evaluation.stat().st_size,
+        sha256=_sha256(full_evaluation),
+    )
     payload["outputs"]["evaluation_long"]["rows"] = 839
     coverage.write_text(json.dumps(payload))
     with pytest.raises(ValueError, match="frozen contract"):
-        _validate_evaluation_manifest(coverage, evaluation)
+        _validate_evaluation_manifest(coverage, evaluation, run_identities)
 
 
 def test_forward_bridge_is_84_task_transition_rows_with_run_lr_holdout(tmp_path):

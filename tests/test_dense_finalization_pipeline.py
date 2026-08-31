@@ -139,8 +139,8 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
     assert [step.name for step in steps] == [
         "temporal-predictors-fresh-audit",
         "temporal-short-branch-fresh-audit",
-        "dose-band-fresh-audit",
         "discovery-report",
+        "dose-band-fresh-audit",
         "retrieval-dynamics",
         "mechanism-report",
         "outcome-report",
@@ -153,13 +153,15 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
         "distribution-build",
         "distribution-audit",
     ]
-    for step in steps[3:9]:
+    for step in (steps[2], *steps[4:9]):
         assert "--families" in step.command
         family_index = step.command.index("--families")
         assert step.command[family_index + 1] == "dense"
         assert "--scope-amendment" in step.command
-    assert all(step.command[-1] == "--audit" for step in steps[:3])
-    predictor_audit, temporal_audit, dose_audit = steps[:3]
+    predictor_audit, temporal_audit, dose_audit = steps[0], steps[1], steps[3]
+    assert all(
+        step.command[-1] == "--audit" for step in (predictor_audit, temporal_audit, dose_audit)
+    )
     assert predictor_audit.command[predictor_audit.command.index("--families") + 1] == "dense"
     assert predictor_audit.command[predictor_audit.command.index("--scope-amendment") + 1].endswith(
         "/configs/dense_scope_amendment.json"
@@ -172,7 +174,7 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
         assert step.command[step.command.index(protocol_flag) + 1] == (
             "configs/causal_chain_analysis.json"
         )
-    assert "--strict" in steps[3].command
+    assert "--strict" in steps[2].command
     assert "--strict" in steps[8].command
     assert steps[9].command[-2:] == ("pytest", "-q")
     assert steps[10].command[-4:] == ("check", "src", "tests", "scripts/eval")

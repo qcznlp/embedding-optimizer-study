@@ -20,6 +20,33 @@ from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 DOSES = (0.0, 0.25, 0.5, 0.75, 1.0)
 BANDS = ("head", "middle", "tail")
 MIN_SUPPORT = 8
+CAUSAL_PROTOCOL_SHA256 = "813538910dbd32d6fcfb65ee8736816cd573ae122ec907d25d7208229720cd7f"
+DENSE_SCOPE_SHA256 = "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+DISCOVERY_CHECKPOINT_STEPS = (782, 1563, 2345, 3126, 3907)
+EVALUATION_FIELDS = (
+    "model_family",
+    "optimizer",
+    "learning_rate",
+    "aux_learning_rate",
+    "run_id",
+    "stage",
+    "fraction",
+    "checkpoint_step",
+    "task",
+    "ndcg_at_10",
+    "subsets",
+    "result_path",
+)
+CAUSAL_SOURCE_PATHS = (
+    "configs/short_branch_protocol.json",
+    "configs/spectral_transplant_intervention.json",
+    "configs/dense_scope_amendment.json",
+    "configs/validation_probe.json",
+    "configs/beir_representation_probe.json",
+    "configs/retrieval_dynamics_protocol.json",
+    "configs/experiment.yaml",
+    "configs/common_state_probe.json",
+)
 OUTPUTS = ("anchor_tests.csv", "heldout_predictions.csv", "report.md")
 SPECTRAL_TABLES = ("anchor_query_tail_effects.csv",)
 TAIL_CONDITIONS = {
@@ -140,11 +167,44 @@ def _finite(row: dict[str, str], key: str) -> float:
     return value
 
 
+def _normalized_evaluation_row(row: dict[str, str]) -> tuple[Any, ...]:
+    if tuple(row) != EVALUATION_FIELDS:
+        raise ValueError("Discovery evaluation columns differ from the frozen contract")
+    try:
+        normalized = (
+            row["model_family"],
+            row["optimizer"],
+            float(row["learning_rate"]),
+            float(row["aux_learning_rate"]),
+            row["run_id"],
+            int(row["stage"]),
+            float(row["fraction"]),
+            int(row["checkpoint_step"]),
+            row["task"],
+            float(row["ndcg_at_10"]),
+            int(row["subsets"]),
+            row["result_path"],
+        )
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError("Discovery evaluation row is malformed") from error
+    if not all(
+        math.isfinite(value)
+        for value in (normalized[2], normalized[3], normalized[6], normalized[9])
+    ):
+        raise ValueError("Discovery evaluation row contains a non-finite value")
+    return normalized
+
+
+def _evaluation_identity(row: tuple[Any, ...]) -> tuple[str, str, int, str]:
+    return row[0], row[4], row[5], row[8]
+
+
 def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     dose = payload.get("dose_band", {})
     if (
-        payload.get("schema_version") != 1
+        _sha256(path) != CAUSAL_PROTOCOL_SHA256
+        or payload.get("schema_version") != 1
         or payload.get("family") != "dense"
         or dose.get("anchor_scope", {}).get("expected_anchors") != 10
         or tuple(dose.get("dose_response", {}).get("lambdas", ())) != DOSES
@@ -156,8 +216,14 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str
     ):
         raise ValueError("Dose/band protocol differs from the frozen contract")
     root = path.parent.parent
+    source_bindings = payload.get("source_bindings")
+    if (
+        not isinstance(source_bindings, list)
+        or tuple(item.get("path") for item in source_bindings) != CAUSAL_SOURCE_PATHS
+    ):
+        raise ValueError("Dose/band source ledger differs from the frozen contract")
     bindings = []
-    for item in payload.get("source_bindings", []):
+    for item in source_bindings:
         source = (root / item["path"]).resolve()
         if not source.is_file() or _sha256(source) != item.get("sha256"):
             raise ValueError(f"Frozen causal-chain source binding differs: {source}")
@@ -176,9 +242,25 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str
     }
     if set(selected) != set(anchor_protocol["run_ids"]):
         raise ValueError("Frozen Dense anchor runs are missing from the experiment matrix")
+    discovery_run_ids = tuple(
+        sorted(config.run_id for config in configs if config.model_family == "dense")
+    )
+    if len(discovery_run_ids) != 12:
+        raise ValueError("Frozen Dense discovery run count differs from 12")
+    discovery_run_identities = tuple(
+        sorted((config.model_family, config.run_id) for config in configs)
+    )
+    if (
+        len(discovery_run_identities) != 24
+        or len(set(discovery_run_identities)) != 24
+        or {family for family, _ in discovery_run_identities} != {"dense", "late"}
+    ):
+        raise ValueError("Frozen full discovery run identities differ from 24")
     anchor_contract = {
         "run_ids": tuple(anchor_protocol["run_ids"]),
         "checkpoint_fractions": tuple(map(float, anchor_protocol["checkpoint_fractions"])),
+        "discovery_run_ids": discovery_run_ids,
+        "discovery_run_identities": discovery_run_identities,
     }
     return dose, {"protocol": _identity(path), "source_bindings": bindings}, anchor_contract
 
@@ -208,21 +290,168 @@ def _expected_anchor_identities(evaluation: Path, anchor_contract: dict[str, Any
     return anchors
 
 
-def _validate_evaluation_manifest(manifest_path: Path, evaluation: Path) -> dict[str, Any]:
+def _validate_evaluation_manifest(
+    manifest_path: Path,
+    evaluation: Path,
+    discovery_run_identities: tuple[tuple[str, str], ...],
+) -> dict[str, Any]:
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     record = payload.get("outputs", {}).get("evaluation_long", {})
     repository = manifest_path.parent.parent.parent
     declared = Path(record.get("path", ""))
     declared = declared if declared.is_absolute() else repository / declared
+    required = {
+        "complete": True,
+        "contract_complete": True,
+        "dataset_complete": True,
+        "training_complete": True,
+        "evaluation_complete": True,
+        "verified_experiment_runs": 12,
+        "expected_experiment_runs": 12,
+        "verified_training_runs": 12,
+        "expected_training_runs": 12,
+        "verified_training_checkpoints": 60,
+        "expected_training_checkpoints": 60,
+        "observed_results": 840,
+        "expected_results": 840,
+        "families": ["dense"],
+        "selected_experiment_runs": 12,
+        "selected_training_checkpoints": 60,
+    }
+    source_full_required = {
+        "complete": True,
+        "verified_experiment_runs": 24,
+        "expected_experiment_runs": 24,
+        "verified_training_runs": 24,
+        "expected_training_runs": 24,
+        "verified_training_checkpoints": 120,
+        "expected_training_checkpoints": 120,
+        "observed_results": 1680,
+        "expected_results": 1680,
+        "observed_checkpoint_summaries": 120,
+        "expected_checkpoint_summaries": 120,
+    }
+    scope = payload.get("scope_amendment", {})
+    source_full = payload.get("source_full_discovery", {})
     if (
-        payload.get("complete") is not True
+        any(payload.get(key) != value for key, value in required.items())
+        or scope.get("path") != "configs/dense_scope_amendment.json"
+        or scope.get("sha256") != DENSE_SCOPE_SHA256
+        or scope.get("status") != "user_directed_post_hoc_scope_amendment"
+        or any(source_full.get(key) != value for key, value in source_full_required.items())
         or declared.resolve() != evaluation.resolve()
         or record.get("rows") != 840
     ):
         raise ValueError("Dense discovery evaluation manifest differs from the frozen contract")
+    expected_reports = {
+        "coverage": "reports/coverage.json",
+        "evaluation_long": "reports/evaluation_long.csv",
+        "system_metrics": "reports/system_metrics.csv",
+        "training_history": "reports/training_history.csv",
+    }
+    reports = source_full.get("reports", {})
+    if set(reports) != set(expected_reports):
+        raise ValueError("Dense discovery source report ledger differs from the frozen contract")
+    for label, relative in expected_reports.items():
+        source_record = reports[label]
+        if source_record.get("path") != relative:
+            raise ValueError("Dense discovery source report path differs from the frozen contract")
+        _validate_identity(source_record, repository / relative)
+    full_coverage = json.loads(
+        (repository / expected_reports["coverage"]).read_text(encoding="utf-8")
+    )
+    full_required = {
+        "complete": True,
+        "contract_complete": True,
+        "dataset_complete": True,
+        "training_complete": True,
+        "deep_training_artifact_validation": True,
+        "evaluation_complete": True,
+        "verified_experiment_runs": 24,
+        "expected_experiment_runs": 24,
+        "verified_training_runs": 24,
+        "expected_training_runs": 24,
+        "verified_training_checkpoints": 120,
+        "expected_training_checkpoints": 120,
+        "observed_results": 1680,
+        "expected_results": 1680,
+        "observed_checkpoint_summaries": 120,
+        "expected_checkpoint_summaries": 120,
+        "missing": [],
+        "unexpected": [],
+        "contract_errors": [],
+        "dataset_errors": [],
+        "training_errors": [],
+    }
+    if any(full_coverage.get(key) != value for key, value in full_required.items()):
+        raise ValueError("Full discovery coverage differs from its strict 1,680-unit contract")
     _validate_identity(record, evaluation)
-    if len(_read_csv(evaluation)) != 840:
-        raise ValueError("Dense discovery evaluation CSV does not contain 840 rows")
+    rows = _read_csv(evaluation)
+    normalized_rows = [_normalized_evaluation_row(row) for row in rows]
+    discovery_run_ids = tuple(
+        run_id for family, run_id in discovery_run_identities if family == "dense"
+    )
+    if len(discovery_run_ids) != 12:
+        raise ValueError("Dense discovery run identity contract differs from 12")
+    expected_identities = {
+        (run_id, stage, task)
+        for run_id in discovery_run_ids
+        for stage in range(1, 6)
+        for task in DECONTAMINATED_TASK_NAMES
+    }
+    observed_identities = []
+    checkpoint_steps: dict[tuple[str, int], set[int]] = defaultdict(set)
+    for row in normalized_rows:
+        family, run_id, stage, task = _evaluation_identity(row)
+        fraction, checkpoint_step, score = row[6], row[7], row[9]
+        if (
+            family != "dense"
+            or fraction != stage / 5
+            or stage not in range(1, 6)
+            or checkpoint_step != DISCOVERY_CHECKPOINT_STEPS[stage - 1]
+            or not 0.0 <= score <= 1.0
+        ):
+            raise ValueError("Dense discovery evaluation row differs from the frozen contract")
+        identity = (run_id, stage, task)
+        observed_identities.append(identity)
+        checkpoint_steps[(run_id, stage)].add(checkpoint_step)
+    if (
+        len(rows) != 840
+        or len(observed_identities) != len(set(observed_identities))
+        or set(observed_identities) != expected_identities
+        or any(len(steps) != 1 for steps in checkpoint_steps.values())
+    ):
+        raise ValueError("Dense discovery evaluation CSV differs from the exact 12x5x14 grid")
+    full_rows = [
+        _normalized_evaluation_row(row)
+        for row in _read_csv(repository / expected_reports["evaluation_long"])
+    ]
+    full_identities = [_evaluation_identity(row) for row in full_rows]
+    expected_full_identities = {
+        (family, run_id, stage, task)
+        for family, run_id in discovery_run_identities
+        for stage in range(1, 6)
+        for task in DECONTAMINATED_TASK_NAMES
+    }
+    if (
+        len(full_rows) != 1680
+        or len(full_identities) != len(set(full_identities))
+        or set(full_identities) != expected_full_identities
+    ):
+        raise ValueError("Full discovery evaluation differs from its exact 1,680-unit grid")
+    for row in full_rows:
+        stage, fraction, checkpoint_step, score = row[5], row[6], row[7], row[9]
+        if (
+            fraction != stage / 5
+            or stage not in range(1, 6)
+            or checkpoint_step != DISCOVERY_CHECKPOINT_STEPS[stage - 1]
+            or not 0.0 <= score <= 1.0
+        ):
+            raise ValueError("Full discovery evaluation row differs from the frozen contract")
+    dense_projection = {_evaluation_identity(row): row for row in full_rows if row[0] == "dense"}
+    selected = {_evaluation_identity(row): row for row in normalized_rows}
+    if len(dense_projection) != 840 or selected != dense_projection:
+        raise ValueError("Dense discovery evaluation is not the exact full-report Dense projection")
     return _identity(manifest_path)
 
 
@@ -570,7 +799,9 @@ def analyze(
             protocol_identity,
             dose_protocol["claim_boundary"],
         )
-    evaluation_manifest_identity = _validate_evaluation_manifest(evaluation_manifest, evaluation)
+    evaluation_manifest_identity = _validate_evaluation_manifest(
+        evaluation_manifest, evaluation, anchor_contract["discovery_run_identities"]
+    )
     expected_anchors = _expected_anchor_identities(evaluation, anchor_contract)
     upstream = json.loads(inputs[0].read_text(encoding="utf-8"))
     if upstream.get("complete") is not True:
