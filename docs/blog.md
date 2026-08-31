@@ -441,6 +441,17 @@ Muon, and NorMuon contrasts. The correction still covers the original six prespe
 although only the three DenseOn rows are reported. If a familywise interval crosses zero, the
 headline is inconclusive.
 
+The three seeds do not select different queries or positives. Each view contains the same 500,000
+ordered query/positive groups, bound by the shared identity SHA-256
+`e2f95eefc78c8362bc5c57d90c704756fcea2f2375301f074213205df20ae790`; only the seven negatives per
+group are resampled, without replacement, from the same ten-candidate pools. The pairwise fractions
+of groups whose seven-negative tuple changes are 0.991580 (314159 versus 271828), 0.991684 (314159
+versus 161803), and 0.991772 (271828 versus 161803). The three materialized dataset fingerprints are
+`9d966b7fc5642163`, `3e876a77982f6e63`, and `c82e3781917f30a0`, respectively. A full read-only audit
+recomputes every dataset-file hash, row-ledger hash, query/positive identity, distinct non-positive
+negative constraint, and pairwise-change floor before a run is accepted. Thus seed uncertainty here
+measures data order and hard-negative sampling, not a change in the underlying query population.
+
 ### Spectrum-versus-basis transplant
 
 At ten frozen common states, each Muon-family update is decomposed as U diag(s) V-transpose. We

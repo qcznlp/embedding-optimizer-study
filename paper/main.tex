@@ -294,11 +294,14 @@ frozen validation recipes remains the only basis for a final optimizer claim.
 \section{Three-Seed Retrieval Confirmation}
 \label{sec:confirmation}
 
-The validation-frozen recipes are retrained on three independently resampled negative views. The
-confirmatory headline and table are rendered only after all DenseOn training, strict BEIR evaluation,
-and source-hash audits pass. Discovery point estimates, LateOn history, and the exploratory tail
-analysis cannot determine their wording. Table~\ref{tab:confirmation-results} reports the complete
-contrast family. \ConfirmationHeadline
+The validation-frozen recipes are retrained on three independently resampled negative views. All
+views retain the same ordered 500,000 query--positive groups and ten-candidate pools; only the seven
+distinct negatives per group and the training shuffle change with the seed. The pairwise fraction
+of groups with a changed seven-negative tuple is 99.158--99.177\%. The confirmatory headline and
+table are rendered only after all DenseOn training, strict BEIR evaluation, and source-hash audits
+pass. Discovery point estimates, LateOn history, and the exploratory tail analysis cannot determine
+their wording. Table~\ref{tab:confirmation-results} reports the complete contrast family.
+\ConfirmationHeadline
 
 \input{generated/confirmation}
 

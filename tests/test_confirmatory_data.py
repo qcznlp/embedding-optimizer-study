@@ -82,6 +82,31 @@ def test_frozen_confirmatory_protocol_has_three_new_seeds():
     assert protocol["freeze_context"]["confirmatory_model_outputs_exist"] is False
 
 
+def test_blog_binds_the_audited_confirmatory_views():
+    root = Path(__file__).parents[1]
+    receipt = json.loads((root / "reports/confirmatory-data/receipt.json").read_text())
+    blog = (root / "docs/blog.md").read_text()
+
+    assert receipt["status"] == "complete"
+    assert len(receipt["views"]) == 3
+    assert receipt["query_positive_identity_sha256"] in blog
+    for view in receipt["views"]:
+        assert view["rows"] == 500_000
+        assert str(view["seed"]) in blog
+        assert view["query_positive_identity_sha256"] == receipt["query_positive_identity_sha256"]
+        assert view["dataset_fingerprint"] in blog
+
+    manifest = json.loads((root / "data/confirmatory-500k-seed314159/manifest.json").read_text())
+    expected_pairs = {
+        "314159_vs_271828": "0.991580",
+        "314159_vs_161803": "0.991684",
+        "271828_vs_161803": "0.991772",
+    }
+    for pair, rendered in expected_pairs.items():
+        assert manifest["changed_negative_group_fractions"][pair] == pytest.approx(float(rendered))
+        assert rendered in blog
+
+
 def test_protocol_rejects_reusing_exploratory_seed(tmp_path: Path):
     _, protocol = load_confirmatory_protocol("configs/confirmatory_protocol.json")
     protocol["confirmatory_data"]["seeds"] = [42, 271828, 161803]
