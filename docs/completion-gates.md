@@ -26,6 +26,7 @@ identity.
 | Confirmatory training | generated matrices and deep checkpoint audits | 3 seeds × 3 optimizers = 9 terminal runs and 45 checkpoints |
 | Confirmatory evaluation | reports/confirmatory/summary_manifest.json | 9 × 14 = 126 units; seed-by-task bootstrap and the original six-comparison Bonferroni family remain valid while only Dense rows are shown |
 | Extended Dense retrieval dynamics | reports/dense-retrieval-dynamics/summary_manifest.json | 13 runs × 5 stages = 65 rows and 910 task units: 728 isolated stage-1–4 units plus 182 formal stage-5 units; stages 1–4 are descriptive only |
+| Candidate breadth | configs/candidate_breadth_probe.json, results/candidate-breadth/matrix-receipt.json, reports/candidate-breadth/summary.json, publication_manifest.json, and logs/candidate-breadth-release/pipeline-ledger.json | 12 discovery final checkpoints × 6 nested widths = 72 run-width cells over the same 224 queries; all width-7 baselines reproduce within 1e-5; the frozen supported/partial/not-supported rule is reported without promoting this post-hoc diagnostic to confirmation; all 21 release steps and their hashed logs are complete |
 | Shared-start training | generated matrices and deep checkpoint audits | 3 seeds × 3 operators = 9 runs and 45 checkpoints from one frozen AdamW start |
 | Shared-start probes | reports/short-branch/summary_manifest.json | 45 query-disjoint checkpoint rows plus 46 unseen-probe jobs (45 checkpoints and one pretrained reference), with the three-seed endpoint decision |
 | Temporal shared-start mechanism | reports/short-branch/temporal_mechanism_predictors.manifest.json and reports/temporal-short-branch/summary_manifest.json | Predictor extraction and the scope-bound temporal analysis are each complete; both strict `--audit` steps rehash every declared input and output, and tail-stability outcomes are built before the temporal join |
@@ -119,7 +120,30 @@ W&B verification is a mandatory publication gate. The compatibility flag is show
 the canonical command, but the finalizer cannot produce a publication-complete ledger without the
 read-only 34-source audit and the 12-run canonical synchronization/readback audit.
 
-For independent inspection, its complete ordered finalization sequence is:
+After that canonical finalizer has completed and the post-hoc story branch has been integrated, run
+the separate candidate-breadth publication release:
+
+~~~bash
+embed-optim-candidate-breadth-release \
+  --upstream-finalization-ledger logs/dense-finalization-pipeline/pipeline-ledger.json \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7 \
+  --workdir "$PWD" \
+  --resume
+~~~
+
+This second controller requires the exact complete 18-step finalization ledger, rehashes its bound
+completion ledger and every attempt log, and records that historical release as an immutable input.
+It does not compare the old implementation-source bytes with the post-hoc checkout, because adding
+the already frozen candidate diagnostic must not retroactively invalidate the formal experiment.
+Its own 21-step contract is instead bound to the complete current source tree. It materializes and
+audits the 224-query nested dataset, evaluates all 12 final discovery checkpoints, applies the
+frozen breadth decision, regenerates current report blocks, renders and re-audits the candidate Blog
+and paper block, then reruns the strict paper, test, style, PDF, distribution-build, and distribution
+audit gates. Resume reruns the controller while individual evaluation outputs are reused only after
+their content-addressed audits pass.
+
+For independent inspection, the canonical upstream finalizer's complete ordered sequence is:
 
 ~~~bash
 python -m embed_optim.temporal_short_branch_predictors \
@@ -205,6 +229,8 @@ Finally verify:
 
 - the GitHub repository is still private;
 - CI belongs to the final commit;
+- `logs/candidate-breadth-release/pipeline-ledger.json` is complete, contains exactly 21 successful
+  steps, and still hashes the complete upstream finalization ledger and frozen candidate protocol;
 - the blog, paper, manifests, built archives, and W&B histories all identify the same Dense scope;
 - a secret-pattern scan of the tracked tree, reachable Git history, and distributions returns no
   credentials;

@@ -334,3 +334,14 @@ def test_protocol_declares_the_only_accepted_candidate_data_output(tmp_path: Pat
     protocol.write_text("{}\n", encoding="utf-8")
     with pytest.raises(RuntimeError, match="Cannot resolve"):
         _declared_data_output(protocol)
+
+
+def test_completion_gates_require_the_posthoc_release_after_canonical_finalization() -> None:
+    gates = (Path(__file__).parents[1] / "docs/completion-gates.md").read_text(encoding="utf-8")
+
+    assert "12 discovery final checkpoints × 6 nested widths = 72 run-width cells" in gates
+    assert "all 21 release steps" in gates
+    assert "logs/candidate-breadth-release/pipeline-ledger.json" in gates
+    assert gates.index("embed-optim-dense-finalize") < gates.index(
+        "embed-optim-candidate-breadth-release"
+    )
