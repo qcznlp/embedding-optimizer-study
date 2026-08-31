@@ -1,12 +1,89 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import importlib.metadata
 import json
 import platform
 import sys
 from pathlib import Path
 from typing import Any
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _constraint_versions(path: Path) -> dict[str, str]:
+    versions: dict[str, str] = {}
+    for line_number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.count("==") != 1:
+            raise RuntimeError(
+                f"Invalid formal runtime constraint at {path}:{line_number}: {line!r}"
+            )
+        package, version = (part.strip() for part in line.split("==", maxsplit=1))
+        if not package or not version or package in versions:
+            raise RuntimeError(
+                f"Invalid formal runtime constraint at {path}:{line_number}: {line!r}"
+            )
+        versions[package] = version
+    return versions
+
+
+def _validate_reconstruction(spec: dict[str, Any], spec_path: Path) -> None:
+    reconstruction = spec.get("reconstruction")
+    if reconstruction is None:
+        return
+    if not isinstance(reconstruction, dict) or set(reconstruction) != {
+        "platform",
+        "torch_backend",
+        "constraints",
+        "base_lock",
+        "flash_lock",
+    }:
+        raise RuntimeError(f"Invalid formal runtime reconstruction schema: {spec_path}")
+    if not all(
+        isinstance(reconstruction.get(key), str) and reconstruction[key]
+        for key in ("platform", "torch_backend")
+    ):
+        raise RuntimeError(f"Invalid formal runtime reconstruction schema: {spec_path}")
+
+    resolved_inputs: dict[str, Path] = {}
+    for name in ("constraints", "base_lock", "flash_lock"):
+        identity = reconstruction.get(name)
+        if (
+            not isinstance(identity, dict)
+            or set(identity) != {"path", "sha256"}
+            or not isinstance(identity.get("path"), str)
+            or not identity["path"]
+            or not isinstance(identity.get("sha256"), str)
+            or len(identity["sha256"]) != 64
+        ):
+            raise RuntimeError(f"Invalid formal runtime reconstruction schema: {spec_path}")
+        path = (spec_path.parent / identity["path"]).resolve()
+        if not path.is_file():
+            raise RuntimeError(f"Formal runtime reconstruction input is missing: {path}")
+        observed = _sha256(path)
+        if observed != identity["sha256"]:
+            raise RuntimeError(
+                f"Formal runtime reconstruction input hash mismatch for {path}: "
+                f"expected {identity['sha256']}, observed {observed}"
+            )
+        resolved_inputs[name] = path
+
+    constraints = _constraint_versions(resolved_inputs["constraints"])
+    if constraints != spec["packages"]:
+        raise RuntimeError(
+            "Formal runtime constraints differ from the package-version specification: "
+            f"{resolved_inputs['constraints']}"
+        )
 
 
 def _resolve_spec(path: str | Path, prefix: Path | None = None) -> Path:
@@ -36,6 +113,7 @@ def load_runtime_spec(path: str | Path) -> dict[str, Any]:
         )
     ):
         raise RuntimeError(f"Invalid formal runtime specification schema: {resolved}")
+    _validate_reconstruction(spec, resolved)
     return spec
 
 

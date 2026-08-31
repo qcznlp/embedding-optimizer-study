@@ -220,6 +220,8 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
         "ruff-format-check",
         "paper-build",
         "paper-audit-post-build-strict",
+        "wandb-audit-dense-sources",
+        "wandb-sync-dense",
         "distribution-build",
         "distribution-audit",
     ]
@@ -264,8 +266,8 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
     )
     assert steps[13].name == "paper-audit-post-build-strict"
     assert steps[13].command == steps[8].command
-    assert steps[14].command == ("uv", "build")
-    assert all("wandb_sync" not in step.command for step in steps)
+    assert steps[-2].command == ("uv", "build")
+    assert steps[-1].name == "distribution-audit"
 
 
 def test_release_build_rejects_a_causal_source_removed_after_strict_audit(tmp_path: Path):
@@ -336,15 +338,45 @@ def test_makefile_keeps_if_ready_only_for_the_developer_build():
     assert "--if-ready" in developer_recipe
 
 
-def test_wandb_is_an_explicit_opt_in_and_dense_only(tmp_path: Path):
-    steps = pipeline_steps(_step_args(tmp_path, include_wandb=True))
+def test_wandb_audits_are_mandatory_dense_only_and_precede_distribution(tmp_path: Path):
+    steps = pipeline_steps(_step_args(tmp_path, include_wandb=False))
 
-    assert steps[-1].name == "wandb-sync-dense"
-    assert steps[-1].command[2] == "embed_optim.wandb_sync"
-    assert steps[-1].command[-4:-2] == ("--families", "dense")
-    assert steps[-1].command[-2] == "--scope-amendment"
-    assert steps[-1].command[-1].endswith("/configs/dense_scope_amendment.json")
-    assert "late" not in steps[-1].command
+    sources, canonical = steps[-4:-2]
+    assert sources.name == "wandb-audit-dense-sources"
+    assert sources.command[2] == "embed_optim.wandb_dense_provenance_audit"
+    assert sources.command[sources.command.index("--repository") + 1] == str(tmp_path.resolve())
+    assert sources.command[sources.command.index("--scope-amendment") + 1].endswith(
+        "/configs/dense_scope_amendment.json"
+    )
+    assert sources.command[sources.command.index("--experiment-matrix") + 1] == (
+        "configs/experiment.yaml"
+    )
+    assert sources.command[sources.command.index("--hybrid-matrix") + 1] == (
+        "configs/hybrid_adamw.yaml"
+    )
+    assert sources.command[sources.command.index("--training-plan") + 1] == (
+        "configs/dense_training_queue.json"
+    )
+    assert sources.command[sources.command.index("--receipt") + 1] == (
+        "reports/wandb/dense_source_provenance_audit.json"
+    )
+
+    assert canonical.name == "wandb-sync-dense"
+    assert canonical.command[2] == "embed_optim.wandb_sync"
+    assert canonical.command[-4:-2] == ("--families", "dense")
+    assert canonical.command[-2] == "--scope-amendment"
+    assert canonical.command[-1].endswith("/configs/dense_scope_amendment.json")
+    assert "late" not in canonical.command
+    assert [step.name for step in steps[-4:]] == [
+        "wandb-audit-dense-sources",
+        "wandb-sync-dense",
+        "distribution-build",
+        "distribution-audit",
+    ]
+
+
+def test_cli_publication_finalizer_enables_wandb_verification_by_default():
+    assert parse_args([]).include_wandb is True
 
 
 def test_wait_tracks_process_start_identity_until_exit(monkeypatch, tmp_path: Path):

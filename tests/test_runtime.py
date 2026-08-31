@@ -1,8 +1,12 @@
 import json
+from hashlib import sha256
+from pathlib import Path
 
 import pytest
 
 from embed_optim.runtime import _resolve_spec, load_runtime_spec, runtime_problems
+
+ROOT = Path(__file__).parents[1]
 
 
 def _spec():
@@ -57,3 +61,51 @@ def test_runtime_spec_resolves_installed_package_data(tmp_path, monkeypatch):
 
     assert _resolve_spec("configs/formal_runtime.json", prefix=tmp_path) == expected
     assert load_runtime_spec(expected) == _spec()
+
+
+def test_checked_in_formal_reconstruction_is_hash_bound_and_matches_packages():
+    spec = load_runtime_spec(ROOT / "configs" / "formal_runtime.json")
+
+    assert spec["reconstruction"]["torch_backend"] == "cu129"
+    assert spec["reconstruction"]["platform"] == "x86_64-manylinux_2_28"
+    assert set(spec["packages"]) == {
+        line.split("==", maxsplit=1)[0]
+        for line in (ROOT / "configs" / "formal_runtime_constraints.txt")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line and not line.startswith("#")
+    }
+
+
+def test_runtime_spec_rejects_changed_reconstruction_input(tmp_path):
+    constraints = tmp_path / "constraints.txt"
+    base_lock = tmp_path / "base.lock"
+    flash_lock = tmp_path / "flash.lock"
+    constraints.write_text("pylate==1.6.0\ntorch==2.9.1+cu129\n", encoding="utf-8")
+    base_lock.write_text("locked base\n", encoding="utf-8")
+    flash_lock.write_text("locked flash\n", encoding="utf-8")
+
+    spec = _spec()
+    spec["reconstruction"] = {
+        "platform": "x86_64-manylinux_2_28",
+        "torch_backend": "cu129",
+        "constraints": {
+            "path": constraints.name,
+            "sha256": sha256(constraints.read_bytes()).hexdigest(),
+        },
+        "base_lock": {
+            "path": base_lock.name,
+            "sha256": sha256(base_lock.read_bytes()).hexdigest(),
+        },
+        "flash_lock": {
+            "path": flash_lock.name,
+            "sha256": sha256(flash_lock.read_bytes()).hexdigest(),
+        },
+    }
+    path = tmp_path / "runtime.json"
+    path.write_text(json.dumps(spec), encoding="utf-8")
+    assert load_runtime_spec(path) == spec
+
+    base_lock.write_text("mutated base\n", encoding="utf-8")
+    with pytest.raises(RuntimeError, match="hash mismatch"):
+        load_runtime_spec(path)

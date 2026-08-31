@@ -98,6 +98,7 @@ embed-optim-evaluate = "embed_optim.evaluate_matrix:main"
 embed-optim-evaluation-progress = "embed_optim.evaluation_progress:main"
 embed-optim-aggregate = "embed_optim.aggregate:main"
 embed-optim-sync-wandb = "embed_optim.wandb_sync:main"
+embed-optim-audit-wandb-dense-sources = "embed_optim.wandb_dense_provenance_audit:main"
 embed-optim-watch-checkpoints = "embed_optim.checkpoint_watch:main"
 embed-optim-supervise = "embed_optim.supervisor:main"
 embed-optim-verify-runtime = "embed_optim.runtime:main"
@@ -140,6 +141,7 @@ where = ["src"]
   "configs/dense_training_queue.json",
   "configs/functional_intervention.json",
   "configs/formal_runtime.json",
+  "configs/formal_runtime_constraints.txt",
   "configs/hybrid_adamw_control.json",
   "configs/hybrid_adamw.yaml",
   "configs/local_global_reversal.json",
@@ -164,6 +166,8 @@ where = ["src"]
   "CITATION.cff",
   "CODE_OF_CONDUCT.md",
   "CONTRIBUTING.md",
+  "requirements-formal.lock",
+  "requirements-formal-flash.txt",
   "SECURITY.md",
   "THIRD_PARTY_NOTICES.md",
 ]
@@ -239,6 +243,9 @@ where = ["src"]
 ]
 "share/embedding-optimizer-study/reports/dense-retrieval-dynamics" = [
   "reports/dense-retrieval-dynamics/*",
+]
+"share/embedding-optimizer-study/reports/wandb" = [
+  "reports/wandb/*.json",
 ]
 "share/embedding-optimizer-study/reports/confirmatory-data" = [
   "reports/confirmatory-data/receipt.json",

@@ -59,9 +59,9 @@ retrieval-specific novelty is the conjunction of seven observations and tests:
    on which later updates act; it is not yet a causal accumulation result.
 5. **Accumulated adaptation test.** Three-seed shared-start branches ask whether repeated updates turn
    the local redistribution into simultaneous query-disjoint loss-p95 and unseen-margin-p05 gains.
-6. **Fair operator attribution.** Hybrid AdamW matches Muon's parameter routing and auxiliary rate;
-   three independently resampled training views test the validation-frozen BEIR contrasts on new
-   seeds.
+6. **Fair recipe comparison.** Hybrid AdamW matches Muon's parameter routing and auxiliary rate,
+   while remaining separately tuned rather than scale matched; three independently resampled
+   training views test the validation-frozen BEIR contrasts on new seeds.
 7. **A falsifiable spectrum-to-retrieval bridge.** Before any shared-start or spectral-transplant
    outcome exists, freeze two tests that can reject the proposed explanation: early
    adjacent-update spectra must predict the final branch tail across held-out seeds beyond optimizer
@@ -134,13 +134,17 @@ query-disjoint and unseen probes.
 The frozen tail endpoint requires the three-seed median to improve both query-disjoint loss p95 and
 unseen margin p05. Mean-only improvement is insufficient for a robustness claim.
 
-### RQ5: Is the effect the matrix rule or the routing scheme?
+### RQ5: Does the effect survive a routing-matched AdamW comparator?
 
 Compare native AdamW with hybrid AdamW, which adopts the Muon-family hidden/auxiliary parameter split
-and auxiliary learning rate. Then compare hybrid AdamW with Muon under the matched routing scheme.
+and auxiliary learning rate. Then compare hybrid AdamW with Muon under the matched routing scheme,
+while retaining the independently swept learning-rate range for each rule.
 
-If hybrid AdamW closes the gap, routing is sufficient; if Muon remains better, the matrix transform
-has evidence beyond the routing confound.
+If hybrid AdamW closes the gap, the routing/auxiliary-rate recipe is a sufficient empirical
+explanation within this grid. If Muon remains better, the result survives the routing confound but
+does not isolate orthogonalization from rule-specific learning rate or update scale. That stronger
+claim requires the scale-matched shared-start evidence or a full-length scale-matched component
+control.
 
 ### RQ6: Does the DenseOn recipe generalize across new training views?
 
@@ -182,7 +186,7 @@ The evidence ladder is:
 
 1. **Descriptive:** complete discovery curves and checkpoint geometry.
 2. **Locally causal:** common-state, scale-matched virtual interventions.
-3. **Accumulated causal:** shared-start three-seed branches and routing-matched AdamW.
+3. **Accumulated causal:** scale-matched shared-start three-seed branches.
 4. **Causal-chain stress test:** frozen early-to-late held-out prediction and fixed-state
    dose/band/basis intervention, with norm and basis negative controls.
 5. **Confirmatory outcome:** validation-frozen three-seed BEIR comparison.
@@ -245,7 +249,8 @@ Hybrid AdamW must use exactly the Muon-family parameter partition and auxiliary 
 The main contrasts are:
 
 1. native AdamW versus hybrid AdamW: routing and auxiliary-rate effect;
-2. hybrid AdamW versus Muon: orthogonalized hidden-matrix rule under matched routing; and
+2. hybrid AdamW versus Muon: separately tuned hidden-matrix rules under matched routing (not a
+   scale-matched orthogonalization contrast); and
 3. Muon versus NorMuon: additional row-wise adaptation.
 
 ### Falsifiable spectrum-to-retrieval bridge
@@ -277,7 +282,7 @@ result. Missing coverage is instead `pending-not-claimable` and blocks finalizat
 | Trajectory-dependent direction drift supports optimizer-induced state feedback | Completed post-hoc synthesis | audited common-state cosine summary; causal wording remains prohibited |
 | Muon/NorMuon have higher one-seed four-LR-median and same-suite BEIR-selected discovery point estimates | Completed exploratory observation | disclose both aggregation and test selection; neither is validation-selected |
 | Tail redistribution becomes accumulated robustness | Pending | frozen three-seed shared-start joint endpoint |
-| Matrix transform, not routing, causes the accumulated effect | Pending | complete hybrid AdamW control and shared-start comparison |
+| Muon-family retrieval differences persist after matching routing | Pending | complete hybrid AdamW control; attribute the matrix transform only with separate scale-matched causal evidence |
 | Muon or NorMuon is a better DenseOn recipe | Pending | complete three-seed strict BEIR matrix and familywise interval |
 | Early spectral redistribution predicts accumulated tail behavior | Pending/conditional | frozen 45-checkpoint temporal analysis must beat optimizer labels and both norm controls across held-out seeds |
 | A singular-value component explains later retrieval change | Pending/conditional | frozen dose, tail-band, basis-control, and held-out same-task BEIR bridge must all pass; otherwise report a local-only or negative mechanism result |
@@ -314,7 +319,8 @@ trajectory difference without recommending Muon as a generally better retriever 
 ### Routing explanation
 
 If hybrid AdamW matches Muon, the paper becomes a fairness result: much of the apparent optimizer
-gain arises from hidden/auxiliary routing rather than orthogonalization.
+gain is consistent with the hidden/auxiliary routing recipe. This comparison does not by itself
+identify orthogonalization as the alternative cause.
 
 ### Negative or inconclusive result
 
@@ -380,7 +386,7 @@ for the DenseOn thesis.
 | Were learning rates selected on BEIR? | No for confirmation. The frozen validation rule selects recipes; discovery BEIR remains exploratory. |
 | Is Muon's known spectral flattening the claimed novelty? | No. The contribution is the local--global reversal and its accumulated retrieval test. |
 | How can spectrum explain retrieval rather than merely restate Muon? | It must beat optimizer labels and norm controls across held-out branch seeds, then pass frozen dose, band, basis-swap, and next-task BEIR prediction tests. Otherwise the paper explicitly rejects the spectral explanation. |
-| Could routing explain the result? | Hybrid AdamW matches the hidden/auxiliary partition and auxiliary rate. |
+| Could routing explain the result? | Hybrid AdamW matches the hidden/auxiliary partition and auxiliary rate. A residual gap survives that confound but remains a separately tuned recipe contrast, not an isolated orthogonalization effect. |
 | Does a one-step intervention establish final behavior? | No. It establishes only the local direction; shared-start branches test accumulation. |
 | Does “tail improvement” use a favorable tail chosen after inspection? | Report fixed quantiles and symmetric Adam/challenger cross-tails; reserve robustness language for the frozen branch endpoint. |
 | Are three seeds enough? | Report paired seed/task uncertainty and acknowledge that small effects may remain inconclusive. |

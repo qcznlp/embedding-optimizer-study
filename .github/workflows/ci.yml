@@ -17,6 +17,10 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --extra dev --extra eval --extra analysis
+      - name: Audit formal CUDA 12.9 reconstruction locks
+        run: |
+          uv pip sync --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --dry-run requirements-formal.lock
+          uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn --dry-run -r requirements-formal-flash.txt
       - run: uv build
       - run: uv run embed-optim-audit-distribution
       - run: uv run pytest

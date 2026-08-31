@@ -416,7 +416,9 @@ The first three geometry associations were fixed in the renderer and use within-
 The Muon-family recipes route hidden matrices to one optimizer and all other parameters to auxiliary
 AdamW at 3e-6. Four hybrid AdamW controls use the same routing and two learning rates—one for hidden
 matrices and 3e-6 for auxiliary parameters—so that a gain cannot be attributed merely to freezing the
-auxiliary learning rate.
+auxiliary learning rate. Because hybrid AdamW and Muon use independently swept hidden-matrix
+learning-rate ranges, this is a matched-routing comparison of separately tuned recipes, not an
+identification of orthogonalization or update scale alone.
 
 ### Shared-start accumulation
 
@@ -522,11 +524,18 @@ The repository is currently private during completion. Credentials are never sto
 ~~~bash
 git clone https://github.com/qcznlp/embedding-optimizer-study.git
 cd embedding-optimizer-study
-uv sync --extra dev --extra eval --extra analysis
-uv pip install flash-attn==2.7.4.post1 --no-build-isolation
-source .venv/bin/activate
-embed-optim-verify-runtime --spec configs/formal_runtime.json
+uv venv --python 3.12 .venv-formal
+uv pip sync --python .venv-formal/bin/python --no-config \
+  --require-hashes --torch-backend cu129 requirements-formal.lock
+uv pip install --python .venv-formal/bin/python --no-config --no-deps \
+  --require-hashes --no-build-isolation-package flash-attn \
+  -r requirements-formal-flash.txt
+uv pip install --python .venv-formal/bin/python --no-config --no-deps -e .
+.venv-formal/bin/embed-optim-verify-runtime --spec configs/formal_runtime.json
 ~~~
+
+The portable `uv.lock` remains the faster developer/CI environment; it is intentionally distinct
+from this hash-locked CUDA 12.9 reconstruction and is not used for formal training or evaluation.
 
 ### Prepare and audit the shared 500K data
 
@@ -620,6 +629,7 @@ embed-optim-dense-finalize \
   --scope-amendment configs/dense_scope_amendment.json \
   --completion-ledger logs/dense-completion-pipeline/pipeline-ledger.json \
   --workdir "$PWD" \
+  --include-wandb \
   --resume
 ~~~
 
@@ -630,6 +640,8 @@ training-plan, pool-ledger, scope, and step-contract provenance is revalidated, 
 canonical finalization orchestration is rerun from the beginning.
 If the completion ledger predates those bindings, upgrade it with completion `--resume` before
 retrying the finalizer.
+Publication completion also requires live W&B access and all 34 frozen Dense source runs to be
+finished and provenance-consistent; an offline or partial pass cannot produce a complete release.
 
 Its reporting sequence begins with fresh temporal-predictor and temporal short-branch audits. The
 scoped discovery aggregate then regenerates `RESULTS` and `SYSTEMS` before the dose/band fresh audit
@@ -696,9 +708,25 @@ embed-optim-audit-paper \
   --strict \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json
+embed-optim-audit-wandb-dense-sources \
+  --repository "$PWD" \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --hybrid-matrix configs/hybrid_adamw.yaml \
+  --training-plan configs/dense_training_queue.json \
+  --receipt reports/wandb/dense_source_provenance_audit.json
+embed-optim-sync-wandb \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
 uv build
 embed-optim-audit-distribution
 ~~~
+
+This ordering is deliberate: the first W&B step is a read-only audit of the 12 discovery, 4 hybrid,
+9 confirmatory, and 9 shared-start source runs. It checks their exact full configs, Git provenance,
+finished state, required tags/group, and normalized histories before any remote update. The next
+step synchronizes and reads back the 12 canonical discovery histories, and only then does the release
+build package the secret-free, self-hashed 34-run audit receipt.
 
 ## Limitations
 

@@ -215,6 +215,23 @@ def test_confirmatory_subset_audit_ignores_valid_cached_superset(tmp_path, monke
     monkeypatch.setattr(
         confirmatory_evaluation, "collect_evaluations", lambda _root, _configs: rows
     )
+    provenance_calls = []
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "checkpoint_paths",
+        lambda config, stages: [Path(f"/{config.run_id}/checkpoint-5")],
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_evaluation_artifacts",
+        lambda root, checkpoints, selected_rows: (
+            provenance_calls.append((root, checkpoints, selected_rows))
+            or {
+                "input_manifest": {"path": "inputs.json", "sha256": "a" * 64},
+                "result_files": {"root": str(root), "files": len(selected_rows)},
+            }
+        ),
+    )
 
     audit = confirmatory_evaluation.audit_confirmatory_evaluations(
         protocol_path,
@@ -228,6 +245,10 @@ def test_confirmatory_subset_audit_ignores_valid_cached_superset(tmp_path, monke
     assert audit["tasks"] == list(selected)
     assert audit["valid_units"] == audit["expected_units"] == 6
     assert len(audit["result_sources"]) == 6
+    assert len(provenance_calls) == 1
+    assert len(provenance_calls[0][1]) == 3
+    assert len(provenance_calls[0][2]) == 9
+    assert audit["per_seed"]["314159"]["formal_artifacts"]["input_manifest"]["sha256"] == "a" * 64
 
 
 @pytest.mark.parametrize("mutation", ["missing", "duplicate", "nonfinal"])
@@ -285,6 +306,19 @@ def test_confirmatory_subset_audit_rejects_incomplete_or_ambiguous_rows(
     monkeypatch.setattr(confirmatory_evaluation, "load_matrix", lambda _path: configs)
     monkeypatch.setattr(
         confirmatory_evaluation, "collect_evaluations", lambda _root, _configs: rows
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "checkpoint_paths",
+        lambda config, stages: [Path(f"/{config.run_id}/checkpoint-5")],
+    )
+    monkeypatch.setattr(
+        confirmatory_evaluation,
+        "audit_evaluation_artifacts",
+        lambda root, checkpoints, selected_rows: {
+            "input_manifest": {"path": "inputs.json", "sha256": "a" * 64},
+            "result_files": {"root": str(root), "files": len(selected_rows)},
+        },
     )
 
     with pytest.raises(ValueError, match="coverage"):

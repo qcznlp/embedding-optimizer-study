@@ -42,6 +42,28 @@ from embed_optim.paper_audit import (
 )
 from embed_optim.scope import resolve_scope
 
+REPOSITORY = Path(__file__).resolve().parents[1]
+
+
+def test_active_manuscript_sources_do_not_overclaim_hybrid_identification():
+    active_sources = (
+        REPOSITORY / "paper" / "main.tex",
+        REPOSITORY / "README.md",
+        REPOSITORY / "docs" / "blog.md",
+        REPOSITORY / "docs" / "naacl-dense-paper-plan.md",
+    )
+    forbidden = (
+        "isolates the matrix rule",
+        "separate the matrix rule from parameter routing",
+        "orthogonalized hidden-matrix rule under matched routing",
+        "matrix transform, not routing, causes",
+        "matrix rule matters",
+    )
+
+    for path in active_sources:
+        source = path.read_text(encoding="utf-8").lower()
+        assert not any(phrase in source for phrase in forbidden), path
+
 
 def test_macro_parser_rejects_duplicate_definition(tmp_path: Path):
     path = tmp_path / "results.tex"

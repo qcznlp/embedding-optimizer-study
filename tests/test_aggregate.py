@@ -37,7 +37,7 @@ from embed_optim.aggregate import (
 )
 from embed_optim.config import MUON_NS_IMPLEMENTATION, OptimizerConfig, RunConfig, load_matrix
 from embed_optim.decontamination import DECONTAMINATED_BEIR
-from embed_optim.evaluate_matrix import _evaluation_source_manifest
+from embed_optim.evaluation_source_provenance import archived_evaluation_source_manifest
 
 
 def test_run_id_matching_does_not_confuse_muon_and_normuon():
@@ -712,7 +712,7 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
         "fast-plaid": "1",
         "late-interaction-kernels": "1",
     }
-    source_files = _evaluation_source_manifest(Path(__file__).resolve().parents[1])
+    source_files = archived_evaluation_source_manifest()
     (tmp_path / "results" / "evaluation_runtime.json").write_text(
         json.dumps(
             {

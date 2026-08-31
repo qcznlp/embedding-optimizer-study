@@ -84,8 +84,21 @@ def test_evaluation_input_manifest_rejects_checkpoint_content_changes(tmp_path):
     identity = manifest["checkpoints"][str(checkpoint.resolve())]
     assert identity["run_id"] == "adamw-selected"
     assert len(identity["model_sha256"]) == 64
+    audit = evaluate_matrix.audit_evaluation_inputs(results, [checkpoint])
+    assert audit["checkpoints"] == 1
+    assert audit["bytes"] == (results / "evaluation_inputs.json").stat().st_size
+    assert len(audit["sha256"]) == 64
+
+    manifest["checkpoints"][str(tmp_path / "stale-checkpoint")] = identity
+    (results / "evaluation_inputs.json").write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="exact checkpoints"):
+        evaluate_matrix.audit_evaluation_inputs(results, [checkpoint])
+    del manifest["checkpoints"][str(tmp_path / "stale-checkpoint")]
+    (results / "evaluation_inputs.json").write_text(json.dumps(manifest))
 
     weights.write_bytes(b"different payload")
+    with pytest.raises(ValueError, match="content differs"):
+        evaluate_matrix.audit_evaluation_inputs(results, [checkpoint])
     with pytest.raises(RuntimeError, match="content changed"):
         evaluate_matrix._record_evaluation_inputs(results, {"dense": [checkpoint]})
 
@@ -103,6 +116,23 @@ def test_evaluation_input_manifest_will_not_adopt_unbound_cached_results(tmp_pat
 
     with pytest.raises(RuntimeError, match="without a pre-existing"):
         evaluate_matrix._record_evaluation_inputs(tmp_path / "results", {"dense": [checkpoint]})
+
+
+def test_formal_result_file_audit_rejects_unselected_json(tmp_path):
+    root = tmp_path / "results"
+    selected = root / "run-a" / "SciFactDecontaminated.json"
+    selected.parent.mkdir(parents=True)
+    selected.write_text("{}")
+    rows = [{"result_path": str(selected)}]
+
+    audit = evaluate_matrix.audit_evaluation_result_files(root, rows)
+    assert audit == {"root": str(root.resolve()), "files": 1}
+
+    unexpected = root / "stale-run" / "NFCorpusDecontaminated.json"
+    unexpected.parent.mkdir()
+    unexpected.write_text("{}")
+    with pytest.raises(ValueError, match="result-file coverage"):
+        evaluate_matrix.audit_evaluation_result_files(root, rows)
 
 
 def test_early_lease_blocks_later_short_branch_and_spectral_gpu_steps(tmp_path, monkeypatch):

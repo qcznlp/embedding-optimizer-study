@@ -223,14 +223,33 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 *dense_scope,
             ),
         ),
-        PipelineStep("distribution-build", ("uv", "build")),
-        PipelineStep(
-            "distribution-audit",
-            _module(args.python, "embed_optim.distribution_audit"),
-        ),
     ]
-    if args.include_wandb:
-        steps.append(
+    # Publication finalization always proves the immutable 34 source runs first.
+    # Canonical discovery sync can update remote state, so it runs only after the
+    # read-only source audit passes. The receipt is then present for packaging.
+    steps.extend(
+        [
+            PipelineStep(
+                "wandb-audit-dense-sources",
+                _module(
+                    args.python,
+                    "embed_optim.wandb_dense_provenance_audit",
+                    "--repository",
+                    str(workdir),
+                    "--scope-amendment",
+                    scope,
+                    "--experiment-matrix",
+                    "configs/experiment.yaml",
+                    "--hybrid-matrix",
+                    "configs/hybrid_adamw.yaml",
+                    "--training-plan",
+                    "configs/dense_training_queue.json",
+                    "--expected-git-remote",
+                    "https://github.com/qcznlp/embedding-optimizer-study.git",
+                    "--receipt",
+                    "reports/wandb/dense_source_provenance_audit.json",
+                ),
+            ),
             PipelineStep(
                 "wandb-sync-dense",
                 _module(
@@ -238,8 +257,14 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                     "embed_optim.wandb_sync",
                     *dense_scope,
                 ),
-            )
-        )
+            ),
+            PipelineStep("distribution-build", ("uv", "build")),
+            PipelineStep(
+                "distribution-audit",
+                _module(args.python, "embed_optim.distribution_audit"),
+            ),
+        ]
+    )
     return steps
 
 
@@ -680,7 +705,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--include-wandb",
         action="store_true",
-        help="Append the external Dense-only W&B synchronization step",
+        default=True,
+        help=(
+            "Compatibility flag; W&B source verification and canonical sync are "
+            "mandatory for publication finalization"
+        ),
     )
     args = parser.parse_args(argv)
     if args.poll_seconds <= 0 or args.retry_delay < 0 or args.step_retries < 0:

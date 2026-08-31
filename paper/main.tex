@@ -94,9 +94,10 @@ Our contributions are:
     \item A falsifiable causal-chain test that requires early spectra to predict held-out branch
     outcomes beyond optimizer labels and norm controls, then requires fixed-state dose, band, basis,
     and held-run retrieval evidence. A completed failure is retained as a claimable negative result.
-    \item Routing-matched hybrid AdamW and three new negative-sampling seeds that separate the matrix
-    rule from parameter routing and keep the final optimizer comparison independent of BEIR-based
-    discovery selection.
+    \item Routing-matched hybrid AdamW that measures grouping and auxiliary-rate effects within
+    AdamW and supplies a separately tuned, matched-routing comparator for Muon-family recipes,
+    together with three new negative-sampling seeds that keep the final optimizer comparison
+    independent of BEIR-based discovery selection.
 \end{itemize}
 
 \section{Background and Mechanistic Predictions}
@@ -380,10 +381,13 @@ we interpret the chain as a formally identified mediation effect.
 
 Native AdamW applies one learning rate to every trainable parameter, whereas Muon-family runs route
 hidden matrices through one rule and auxiliary parameters through AdamW. A hybrid AdamW control uses
-the identical partition and auxiliary learning rate. Thus native AdamW versus hybrid AdamW measures
-routing and auxiliary-rate effects, while hybrid AdamW versus Muon isolates the matrix rule under
-matched routing. This control is required before attributing any accumulated retrieval difference to
-orthogonalization.
+the identical partition and auxiliary learning rate. Native AdamW versus hybrid AdamW therefore
+measures routing and auxiliary-rate effects within AdamW at each shared AdamW learning rate. Hybrid
+AdamW versus Muon matches routing and the auxiliary rate, but each rule retains its independently
+swept learning-rate range; it compares separately tuned recipes rather than identifying
+orthogonalization, the matrix rule, or update scale alone. A full-length scale-matched component
+control would be needed for that attribution. The present control removes a routing confound from
+the recipe comparison but is not by itself a causal decomposition of Muon.
 
 \subsection{Representation and score geometry}
 
@@ -413,9 +417,11 @@ The local--global reversal changes what a successful explanation must show. If t
 retrieval advantage and the shared-start endpoint both hold, the result cannot be explained by
 better immediate mean descent. The supported account would instead be that Muon-family updates alter
 future gradients and redistribute query risk, producing a better trajectory after accumulation. If
-hybrid AdamW matches Muon, routing rather than the matrix operator is sufficient. If the shared-start
-tail endpoint fails, the local redistribution remains real but cannot explain the final gain. If the
-three-seed interval is inconclusive, the mechanism study constrains explanations of the discovery
+hybrid AdamW matches Muon, the routing/auxiliary-rate recipe is sufficient to reproduce the observed
+difference within this grid; that does not identify the matrix operator as the alternative cause. If
+the shared-start tail endpoint fails, the local redistribution remains real but cannot explain the
+final gain. If the three-seed interval is inconclusive, the mechanism study constrains explanations
+of the discovery
 effect without establishing a general recipe advantage.
 
 The causal-chain verdict further separates an optimizer outcome from its explanation. If the temporal
@@ -493,7 +499,7 @@ Local direction helps & Frobenius-matched same-state functional intervention & f
 Tail robustness & frozen three-seed shared-start loss-p95 and margin-p05 endpoint & one inspected worst-tail set \\
 Accumulation explains gain & shared-start branches plus temporal functional evidence & endpoint checkpoint correlation \\
 Spectral component explains retrieval & all five temporal rules plus dose, band, basis, and 84-row held-run bridge & intrinsic flattening, in-sample fit, or one local transplant \\
-Matrix rule matters & hybrid-AdamW routing control & native AdamW comparison alone \\
+Difference survives matched routing & separately tuned hybrid-AdamW comparison & native AdamW comparison alone \\
 \bottomrule
 \end{tabular}
 \caption{Minimum evidence required for each DenseOn headline claim.}

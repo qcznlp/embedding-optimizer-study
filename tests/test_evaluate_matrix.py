@@ -1,3 +1,4 @@
+import hashlib
 import importlib
 import json
 import sys
@@ -9,6 +10,10 @@ from types import SimpleNamespace
 import pytest
 
 from embed_optim import evaluate_matrix
+from embed_optim.evaluation_source_provenance import (
+    CURRENT_SOURCE_LABELS,
+    EvaluationSourceProvenanceError,
+)
 from embed_optim.evaluation_utils import (
     FAST_PLAID_INDEX_KWARGS,
     configure_atomic_mteb_results,
@@ -45,6 +50,11 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
     monkeypatch.setattr(evaluate_matrix, "_validate_formal_runtime", lambda python, matrix: None)
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_sources", lambda python, sources: None)
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "verify_evaluation_source_manifest",
+        lambda sources, repo_root: {"complete": True},
+    )
     monkeypatch.setattr(evaluate_matrix, "_record_evaluation_inputs", lambda results, models: None)
 
     launches = []
@@ -85,6 +95,64 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
         str(late_two),
     ]
     assert all(command[command.index("--num_processes") + 1] == "4" for command, _ in late_launches)
+
+
+def test_unreachable_evaluator_source_fails_before_result_write_or_worker(tmp_path, monkeypatch):
+    checkpoint = tmp_path / "checkpoint-1"
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_selected_models",
+        lambda args: {"dense": [checkpoint], "late": []},
+    )
+    monkeypatch.setattr(evaluate_matrix, "_validate_training_inputs", lambda args: None)
+    monkeypatch.setattr(evaluate_matrix, "_worker_python", lambda executable=None: "/python")
+    monkeypatch.setattr(evaluate_matrix, "_validate_formal_runtime", lambda python, matrix: None)
+    monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
+    monkeypatch.setattr(evaluate_matrix, "_validate_worker_sources", lambda python, sources: None)
+    impossible_digest = hashlib.sha256(b"not a reachable evaluator Git blob").hexdigest()
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_evaluation_source_manifest",
+        lambda repo: {
+            label: {"bytes": 1, "sha256": impossible_digest} for label in CURRENT_SOURCE_LABELS
+        },
+    )
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_record_runtime",
+        lambda *args, **kwargs: pytest.fail("runtime must not be written"),
+    )
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_record_evaluation_inputs",
+        lambda *args, **kwargs: pytest.fail("evaluation inputs must not be written"),
+    )
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_coordinate_evaluation_workers",
+        lambda *args, **kwargs: pytest.fail("GPU worker must not launch"),
+    )
+    results = tmp_path / "results"
+    logs = tmp_path / "logs"
+    args = Namespace(
+        matrix="unused.yaml",
+        families=["dense", "late"],
+        run_ids=[],
+        stages=None,
+        tasks=["SciFact"],
+        gpus_a="0,1,2,3",
+        gpus_b="4,5,6,7",
+        late_port_a=29610,
+        late_port=29620,
+        results_root=str(results),
+        log_dir=str(logs),
+        worker_python="/python",
+    )
+
+    with pytest.raises(EvaluationSourceProvenanceError, match="untracked, unavailable"):
+        evaluate_matrix.run_evaluation(args)
+    assert not results.exists()
+    assert not logs.exists()
 
 
 def test_evaluation_cli_defaults_dense_and_validates_scope_before_gpu_work(monkeypatch):

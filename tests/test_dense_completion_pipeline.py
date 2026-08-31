@@ -647,7 +647,28 @@ def test_repository_contract_changes_with_downstream_module_source(tmp_path: Pat
     assert before["sha256"] != after["sha256"]
 
 
-def test_repository_contract_excludes_generated_paper_outputs(tmp_path: Path):
+def test_repository_contract_binds_formal_reconstruction_locks(tmp_path: Path):
+    module = tmp_path / "src" / "embed_optim" / "downstream.py"
+    module.parent.mkdir(parents=True)
+    module.write_text("VALUE = 1\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text("[project]\nname='fixture'\n", encoding="utf-8")
+    lock = tmp_path / "requirements-formal.lock"
+    flash = tmp_path / "requirements-formal-flash.txt"
+    constraints = tmp_path / "configs" / "formal_runtime_constraints.txt"
+    constraints.parent.mkdir(parents=True)
+    lock.write_text("base v1\n", encoding="utf-8")
+    flash.write_text("flash v1\n", encoding="utf-8")
+    constraints.write_text("torch==2.9.1+cu129\n", encoding="utf-8")
+    steps = [PipelineStep("downstream", ("python", "-m", "embed_optim.downstream"))]
+    before = _step_contract(steps, implementation_paths=_repository_contract_sources(tmp_path))
+
+    lock.write_text("base v2\n", encoding="utf-8")
+    after = _step_contract(steps, implementation_paths=_repository_contract_sources(tmp_path))
+
+    assert before["sha256"] != after["sha256"]
+
+
+def test_repository_contract_excludes_generated_paper_outputs_and_fetched_vendor(tmp_path: Path):
     module = tmp_path / "src" / "embed_optim" / "downstream.py"
     module.parent.mkdir(parents=True)
     module.write_text("VALUE = 1\n", encoding="utf-8")
@@ -661,8 +682,15 @@ def test_repository_contract_excludes_generated_paper_outputs(tmp_path: Path):
     before = _repository_contract_sources(tmp_path)
     generated.write_text("new generated result\n", encoding="utf-8")
     results.write_text("new result include\n", encoding="utf-8")
+    vendor_style = tmp_path / "paper" / "vendor" / "acl.sty"
+    vendor_bibliography = tmp_path / "paper" / "vendor" / "acl_natbib.bst"
+    vendor_style.parent.mkdir(parents=True)
+    vendor_style.write_text("fetched style\n", encoding="utf-8")
+    vendor_bibliography.write_text("fetched bibliography style\n", encoding="utf-8")
     after = _repository_contract_sources(tmp_path)
 
     assert before == after
     assert generated.resolve() not in before
     assert results.resolve() not in before
+    assert vendor_style.resolve() not in after
+    assert vendor_bibliography.resolve() not in after

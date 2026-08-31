@@ -110,20 +110,24 @@ def _repository_contract_sources(repository: Path) -> tuple[Path, ...]:
         (root / "tests", "*.py"),
         (root / "configs", "*.json"),
         (root / "configs", "*.yaml"),
+        (root / "configs", "*.txt"),
     ):
         if directory.is_dir():
             sources.update(path.resolve() for path in directory.rglob(pattern) if path.is_file())
     # Keep generated paper fragments out of this set: paper_results legitimately
     # rewrites paper/results.tex and paper/generated/*.tex during finalization.
-    # Only immutable templates and vendored style inputs belong to the contract.
+    # The ignored paper/vendor directory is also populated by ``make release``;
+    # including files only after that download would make a fresh-clone contract
+    # invalidate itself.  The pinned URL/commit and fetch recipe remain bound via
+    # paper/Makefile, while the paper build validates the downloaded style files.
     for relative in (
         "pyproject.toml",
         "uv.lock",
+        "requirements-formal.lock",
+        "requirements-formal-flash.txt",
         "paper/main.tex",
         "paper/references.bib",
         "paper/Makefile",
-        "paper/vendor/acl.sty",
-        "paper/vendor/acl_natbib.bst",
     ):
         path = (root / relative).resolve()
         if path.is_file():

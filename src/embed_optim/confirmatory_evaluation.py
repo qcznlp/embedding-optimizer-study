@@ -11,6 +11,7 @@ from .config import RunConfig, load_matrix
 from .confirmatory_data import audit_confirmatory_view, load_confirmatory_protocol
 from .confirmatory_matrix import audit_confirmatory_matrices
 from .decontamination import DECONTAMINATED_TASK_NAMES
+from .evaluate_matrix import audit_evaluation_artifacts, checkpoint_paths
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 from .supplemental_training_audit import (
@@ -99,13 +100,26 @@ def audit_confirmatory_evaluations(
     matrices = _matrix_paths(protocol, generated)
     per_seed: dict[str, Any] = {}
     sources: list[dict[str, Any]] = []
+    formal_artifacts: list[dict[str, Any]] = []
     total = 0
     for seed, matrix_path in matrices.items():
         configs = [config for config in load_matrix(matrix_path) if config.model_family in families]
         seed_root = root / f"seed{seed}"
         try:
             rows = collect_evaluations(seed_root, configs)
-        except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError) as error:
+            provenance = audit_evaluation_artifacts(
+                seed_root,
+                [checkpoint for config in configs for checkpoint in checkpoint_paths(config, [5])],
+                rows,
+            )
+        except (
+            OSError,
+            KeyError,
+            TypeError,
+            ValueError,
+            RuntimeError,
+            json.JSONDecodeError,
+        ) as error:
             if verify_results:
                 raise
             rows = []
@@ -127,8 +141,14 @@ def audit_confirmatory_evaluations(
         only_final = len(selected_rows) == len(observed) and all(
             int(row["stage"]) == 5 for row in selected_rows
         )
+        formal_root_only = all(int(row["stage"]) == 5 for row in rows)
         expected_seed_units = len(configs) * len(tasks)
-        complete = observed == expected and only_final and len(selected_rows) == expected_seed_units
+        complete = (
+            observed == expected
+            and only_final
+            and formal_root_only
+            and len(selected_rows) == expected_seed_units
+        )
         if verify_results and not complete:
             raise ValueError(
                 f"Seed {seed}: confirmatory evaluation coverage is "
@@ -144,7 +164,13 @@ def audit_confirmatory_evaluations(
                     "sha256": _sha256(path),
                 }
             )
-        per_seed[str(seed)] = {"complete": complete, "units": len(selected_rows)}
+        per_seed[str(seed)] = {
+            "complete": complete,
+            "units": len(selected_rows),
+            "recognized_result_files": len(rows),
+            "formal_artifacts": provenance,
+        }
+        formal_artifacts.append({"seed": seed, **provenance})
         total += len(selected_rows)
     expected_total = len(matrices) * len(families) * 3 * len(tasks)
     complete = total == expected_total and all(item["complete"] for item in per_seed.values())
@@ -161,6 +187,7 @@ def audit_confirmatory_evaluations(
         "expected_units": expected_total,
         "valid_units": total,
         "per_seed": per_seed,
+        "formal_artifacts": sorted(formal_artifacts, key=lambda item: item["seed"]),
         "result_sources": sorted(sources, key=lambda item: (item["seed"], item["path"])),
     }
 

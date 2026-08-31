@@ -7,6 +7,7 @@ import json
 import re
 import tarfile
 import zipfile
+from collections import Counter
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -112,6 +113,105 @@ def _dense_dynamics_distribution_problems(
     ]
 
 
+def _wandb_source_receipt_distribution_problems(
+    root: Path,
+    data_files: dict[str, PurePosixPath],
+) -> list[str]:
+    """Validate and require packaging of a source-audit receipt when present."""
+
+    source = "reports/wandb/dense_source_provenance_audit.json"
+    path = root / source
+    if not path.is_file():
+        return []
+    problems: list[str] = []
+    if source not in data_files:
+        problems.append(f"W&B source-audit receipt is not declared for distribution: {source}")
+    try:
+        envelope = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return [*problems, "W&B source-audit receipt is unreadable"]
+    if not isinstance(envelope, dict):
+        return [*problems, "W&B source-audit receipt is not an object"]
+    audit = envelope.get("audit")
+    expected_hash = envelope.get("audit_sha256")
+    if not isinstance(audit, dict) or not isinstance(expected_hash, str):
+        return [*problems, "W&B source-audit receipt envelope is malformed"]
+    try:
+        canonical_audit = json.dumps(
+            audit,
+            sort_keys=True,
+            separators=(",", ":"),
+            allow_nan=False,
+        ).encode("utf-8")
+    except (TypeError, ValueError):
+        canonical_audit = None
+    observed_hash = (
+        hashlib.sha256(canonical_audit).hexdigest() if canonical_audit is not None else None
+    )
+    if (
+        envelope.get("schema_version") != 1
+        or envelope.get("kind") != "dense-wandb-source-provenance-audit"
+        or set(envelope) != {"schema_version", "kind", "audit", "audit_sha256"}
+        or expected_hash != observed_hash
+    ):
+        problems.append("W&B source-audit receipt envelope/hash differs")
+
+    runs = audit.get("runs")
+    expected_counts = {
+        "discovery": 12,
+        "hybrid": 4,
+        "confirmatory": 9,
+        "short-branch": 9,
+    }
+    valid_runs = (
+        isinstance(runs, list) and len(runs) == 34 and all(isinstance(run, dict) for run in runs)
+    )
+    phase_values = [run.get("phase") for run in runs] if valid_runs else []
+    valid_phases = valid_runs and all(isinstance(phase, str) for phase in phase_values)
+    observed_counts = Counter(phase_values) if valid_phases else Counter()
+    source_ids = [run.get("source_wandb_run_id") for run in runs] if valid_runs else []
+    valid_source_ids = valid_runs and all(
+        isinstance(source_id, str) and bool(source_id) for source_id in source_ids
+    )
+    digest_fields_valid = valid_runs and all(
+        isinstance(run.get(key), str) and re.fullmatch(r"[0-9a-f]{64}", run[key]) is not None
+        for run in runs
+        for key in ("config_sha256", "run_config_sha256", "history_sha256")
+    )
+    remote_contract_valid = valid_runs and all(
+        run.get("group") == "dense"
+        and isinstance(run.get("optimizer"), str)
+        and bool(run["optimizer"])
+        and isinstance(run.get("seed"), int)
+        and not isinstance(run["seed"], bool)
+        and run.get("required_tags") == sorted({"dense", run["optimizer"], f"seed-{run['seed']}"})
+        and run.get("config_keys") == 179
+        and isinstance(run.get("git_commit"), str)
+        and re.fullmatch(r"[0-9a-f]{40}", run["git_commit"]) is not None
+        and run.get("git_commit_validation") == "reachable-local-ref"
+        for run in runs
+    )
+    if (
+        audit.get("schema_version") != 1
+        or audit.get("status") != "passed"
+        or audit.get("remote_access") != "read-only"
+        or audit.get("entity") != "stevezenguom"
+        or audit.get("project") != "embedding-optimizer-study"
+        or audit.get("expected_git_remote")
+        != "https://github.com/qcznlp/embedding-optimizer-study.git"
+        or audit.get("expected_counts") != expected_counts
+        or audit.get("verified_runs") != 34
+        or observed_counts != Counter(expected_counts)
+        or not valid_source_ids
+        or len(set(source_ids)) != 34
+        or not digest_fields_valid
+        or not remote_contract_valid
+        or any(run.get("state") != "finished" for run in runs if isinstance(run, dict))
+    ):
+        problems.append("W&B source-audit receipt does not prove the frozen 34-run contract")
+    return problems
+
+
 def _runtime_config_references(package_sources: list[Path], root: Path) -> set[str]:
     # Runtime defaults are expressed both as ``Path("configs/...")`` and as
     # plain strings accepted by argparse/helper APIs.  Scan quoted literals
@@ -162,6 +262,7 @@ def audit_distribution(
 
     problems: list[str] = []
     problems.extend(_dense_dynamics_distribution_problems(root, data_files))
+    problems.extend(_wandb_source_receipt_distribution_problems(root, data_files))
     package_sources = sorted((root / "src" / "embed_optim").glob("*.py"))
     runtime_configs = _runtime_config_references(package_sources, root)
     problems.extend(

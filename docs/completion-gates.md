@@ -36,7 +36,7 @@ identity.
 | Outcome report | reports/outcome-summary.manifest.json | hybrid, shared-start, spectral transplant, and confirmation are all strict and rendered into the blog |
 | Blog | [docs/blog.md](blog.md) | each generated marker has exactly one pair and matches its hashed report byte-for-byte |
 | Paper | reports/paper-results.manifest.json and paper/ | Dense constants are 12/60/840/20; no pending macro; strict paper audit, strict ACL release build, and the post-build strict re-audit pass |
-| W&B | remote content-addressed histories | exactly 12 Dense canonical discovery identities; historical Late runs are retained and clearly tagged |
+| W&B | reports/wandb/dense_source_provenance_audit.json plus remote content-addressed histories | exact config, Git, finished-state, tags/group, and normalized history for all 34 frozen Dense source runs (12 discovery + 4 hybrid + 9 confirmatory + 9 shared-start), followed by exactly 12 Dense canonical discovery identities; historical Late runs are retained and clearly tagged |
 | Distribution | wheel, sdist, tests, CI | tests/lint/format, PDF, package build, and distribution audit all pass |
 | Publication hygiene | tracked tree, Git history, distributions, GitHub settings | no credentials; repository remains private until the user requests publication |
 
@@ -104,6 +104,7 @@ embed-optim-dense-finalize \
   --scope-amendment configs/dense_scope_amendment.json \
   --completion-ledger logs/dense-completion-pipeline/pipeline-ledger.json \
   --workdir "$PWD" \
+  --include-wandb \
   --resume
 ~~~
 
@@ -114,6 +115,9 @@ ledger says `complete`; every resume reruns the full canonical finalization orch
 reusing an old completed prefix.
 If an older completion ledger is rejected for missing provenance, upgrade it with completion
 `--resume` before retrying finalization.
+W&B verification is a mandatory publication gate. The compatibility flag is shown explicitly in
+the canonical command, but the finalizer cannot produce a publication-complete ledger without the
+read-only 34-source audit and the 12-run canonical synchronization/readback audit.
 
 For independent inspection, its complete ordered finalization sequence is:
 
@@ -177,12 +181,25 @@ python -m embed_optim.paper_audit \
   --strict \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json
+python -m embed_optim.wandb_dense_provenance_audit \
+  --repository "$PWD" \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --hybrid-matrix configs/hybrid_adamw.yaml \
+  --training-plan configs/dense_training_queue.json \
+  --expected-git-remote https://github.com/qcznlp/embedding-optimizer-study.git \
+  --receipt reports/wandb/dense_source_provenance_audit.json
+python -m embed_optim.wandb_sync \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
 uv build
 python -m embed_optim.distribution_audit
 ~~~
 
-If W&B synchronization is included, authenticate outside the repository and explicitly select
-DenseOn. Do not delete historical Late runs.
+Authenticate to W&B outside the repository. The source audit is read-only and runs before canonical
+discovery synchronization, so provenance failure occurs before any remote update. Its secret-free,
+self-hashed 34-run receipt is packaged by the subsequent distribution build. Do not delete
+historical Late runs.
 
 Finally verify:
 

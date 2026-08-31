@@ -102,8 +102,9 @@ the validation-frozen retrieval, shared-start endpoint, and causal-chain manifes
 
 Muon and NorMuon operate on the 88 two-dimensional Transformer hidden matrices
 (110,297,088 parameters). Embeddings, pooling projection, norms, and biases use auxiliary AdamW at
-3e-6. Hybrid AdamW controls reproduce that routing so optimizer effects are not confused with the
-parameter-group recipe.
+3e-6. Hybrid AdamW reproduces that routing and measures its effect within AdamW. Its comparison with
+Muon-family runs is a separately tuned, matched-routing recipe comparison—not a scale-matched
+identification of orthogonalization alone.
 
 ## Repository layout
 
@@ -122,8 +123,8 @@ parameter-group recipe.
 
 ## Installation
 
-Python 3.10–3.13 and CUDA GPUs with bfloat16 support are expected. Formal runs record Python 3.12,
-PyTorch 2.9.1+cu129, SentenceTransformers 5.7, FlashAttention 2.7.4.post1, and four GPUs per job.
+Python 3.10–3.13 and CUDA GPUs with bfloat16 support are expected. The portable developer/CI
+environment is installed with the checked-in `uv.lock`:
 
 ~~~bash
 git clone https://github.com/qcznlp/embedding-optimizer-study.git
@@ -132,12 +133,36 @@ cd embedding-optimizer-study
 uv sync --extra dev --extra eval --extra analysis
 uv pip install flash-attn==2.7.4.post1 --no-build-isolation
 source .venv/bin/activate
-
-embed-optim-verify-runtime --spec configs/formal_runtime.json
 ~~~
 
-The checked-in uv lock is the portable development/CI environment. Formal training and evaluation
-must use the interpreter that passes the pinned runtime check.
+Formal runs use a separate, hash-locked Python 3.12 / CUDA 12.9 reconstruction environment. This
+also reproduces the otherwise intentional FastPlaid/Torch version override present on the experiment
+host. Building FlashAttention is a second step because its build imports the already-installed
+PyTorch package:
+
+~~~bash
+uv venv --python 3.12 .venv-formal
+uv pip sync \
+  --python .venv-formal/bin/python \
+  --no-config \
+  --require-hashes \
+  --torch-backend cu129 \
+  requirements-formal.lock
+uv pip install \
+  --python .venv-formal/bin/python \
+  --no-config \
+  --no-deps \
+  --require-hashes \
+  --no-build-isolation-package flash-attn \
+  -r requirements-formal-flash.txt
+uv pip install --python .venv-formal/bin/python --no-config --no-deps -e .
+
+.venv-formal/bin/embed-optim-verify-runtime --spec configs/formal_runtime.json
+~~~
+
+The verifier also hashes the constraints and both reconstruction locks before checking Python,
+PyTorch/CUDA, and every formal package version. Formal training and evaluation must use the
+interpreter that passes this check; the ordinary `.venv` is not presented as a formal runtime.
 
 Late-interaction packages remain dependencies only so the historical discovery artifacts and code
 paths can be audited. They are not used by the active DenseOn pipeline.
@@ -281,6 +306,7 @@ embed-optim-dense-finalize \
   --scope-amendment configs/dense_scope_amendment.json \
   --completion-ledger logs/dense-completion-pipeline/pipeline-ledger.json \
   --workdir "$PWD" \
+  --include-wandb \
   --resume
 ~~~
 
@@ -290,6 +316,8 @@ the completion ledger is complete. The finalizer reconstructs the canonical comp
 revalidates the current training-plan, pool-ledger, scope, and step-contract provenance, and reruns
 its full orchestration rather than trusting an old finalization prefix. If an older completion
 ledger lacks those bindings, upgrade it with the completion `--resume` command first.
+W&B verification is mandatory for publication completion: the finalizer cannot report a complete
+release while offline or while any frozen source run is missing, unfinished, or inconsistent.
 
 For an independent step-by-step audit, the complete ordered finalizer is:
 
@@ -353,6 +381,16 @@ embed-optim-audit-paper \
   --strict \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json
+embed-optim-audit-wandb-dense-sources \
+  --repository "$PWD" \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --hybrid-matrix configs/hybrid_adamw.yaml \
+  --training-plan configs/dense_training_queue.json \
+  --receipt reports/wandb/dense_source_provenance_audit.json
+embed-optim-sync-wandb \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
 uv build
 embed-optim-audit-distribution
 ~~~
@@ -375,7 +413,12 @@ wandb login
 
 Canonical synchronization uploads only content-verified histories and reads them back before marking
 them current. Existing LateOn remote runs are historical; they are retained rather than deleted.
-The final Dense-only sync must use an explicit family selection and the final report should not count
+Before that update, the publication finalizer performs a read-only exact provenance audit of all 34
+frozen Dense source runs: 12 discovery, 4 hybrid, 9 confirmatory, and 9 shared-start runs. Only after
+their full configs, Git metadata, finished state, tags/group, and normalized histories match does it
+synchronize and read back the 12 canonical discovery runs. The receipt is written to
+`reports/wandb/dense_source_provenance_audit.json` before the distribution build. The final
+Dense-only sync must use an explicit family selection and the final report should not count
 historical LateOn tags as active confirmation.
 
 ~~~bash

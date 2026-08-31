@@ -25,6 +25,7 @@ from .aggregate import (
 )
 from .config import RunConfig, load_matrix
 from .decontamination import DECONTAMINATED_TASK_NAMES
+from .evaluate_matrix import audit_evaluation_artifacts, checkpoint_paths
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 
@@ -399,6 +400,20 @@ def _system_contrasts(
     return output
 
 
+def audit_hybrid_formal_evaluation_artifacts(
+    results_root: str | Path,
+    configs: list[RunConfig],
+    rows: list[dict[str, Any]],
+) -> dict[str, object]:
+    """Bind the hybrid stage-5 result root to its exact checkpoint payloads."""
+
+    return audit_evaluation_artifacts(
+        results_root,
+        [checkpoint for config in configs for checkpoint in checkpoint_paths(config, [5])],
+        rows,
+    )
+
+
 def build_hybrid_report(
     discovery_matrix: Path,
     control_matrix: Path,
@@ -438,6 +453,11 @@ def build_hybrid_report(
         raise ValueError("Native AdamW evaluation source is not the complete five-stage matrix")
     native_final = [row for row in native_all if row["stage"] == 5]
     hybrid_all = collect_evaluations(control_results, control)
+    hybrid_formal_artifacts = audit_hybrid_formal_evaluation_artifacts(
+        control_results,
+        control,
+        hybrid_all,
+    )
     expected_hybrid_evaluations = expected_runs * len(DECONTAMINATED_TASK_NAMES)
     if len(hybrid_all) != expected_hybrid_evaluations or any(
         row["stage"] != 5 for row in hybrid_all
@@ -485,6 +505,7 @@ def build_hybrid_report(
             "native_final_units": len(native_final),
             "hybrid_final_units": len(hybrid_all),
             "tasks": len(DECONTAMINATED_TASK_NAMES),
+            "hybrid_formal_artifacts": hybrid_formal_artifacts,
             "result_sources": [{"path": str(path), "sha256": _sha256(path)} for path in sources],
         },
         "outputs": {

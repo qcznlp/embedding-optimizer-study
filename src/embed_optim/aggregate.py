@@ -1496,11 +1496,20 @@ def _evaluation_runtime(results_root: Path) -> dict[str, str]:
         )
     ):
         raise ValueError(f"Incomplete evaluation runtime manifest: {path}")
-    from .evaluate_matrix import _evaluation_source_manifest
+    from .evaluation_source_provenance import (
+        EvaluationSourceProvenanceError,
+        verify_evaluation_source_manifest,
+    )
 
-    current_sources = _evaluation_source_manifest(Path(__file__).resolve().parents[2])
-    if source_files != current_sources:
-        raise ValueError(f"Evaluation source files differ from runtime manifest: {path}")
+    try:
+        verify_evaluation_source_manifest(
+            source_files,
+            repo_root=Path(__file__).resolve().parents[2],
+        )
+    except EvaluationSourceProvenanceError as error:
+        raise ValueError(
+            f"Unauthenticated evaluation source files in runtime manifest: {path}: {error}"
+        ) from error
     return versions
 
 

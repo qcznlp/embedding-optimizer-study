@@ -11,12 +11,14 @@ import shutil
 import subprocess
 import sys
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
 from .aggregate import audit_dataset_artifacts, audit_training_artifacts
 from .config import RunConfig, load_matrix, matrix_runtime_spec
 from .decontamination import DECONTAMINATED_TASK_NAMES, decontaminated_corpus_size
+from .evaluation_source_provenance import verify_evaluation_source_manifest
 from .gpu_lease import acquire_gpu_lease, evaluation_gpu_tokens
 from .scope import resolve_scope
 
@@ -295,6 +297,91 @@ def _record_evaluation_inputs(results: Path, models: dict[str, list[Path]]) -> N
             fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
 
+def audit_evaluation_inputs(
+    results: str | Path,
+    checkpoints: Sequence[str | Path],
+) -> dict[str, object]:
+    """Re-hash the exact checkpoint set recorded before resumable evaluation.
+
+    Result JSON contains a checkpoint-shaped model name, but only this manifest
+    binds that name to the actual safetensors payload.  Formal summaries call
+    this independently of the evaluator so a missing, stale, or over-broad
+    cache ledger cannot be promoted into an inference artifact.
+    """
+
+    root = Path(results).resolve()
+    path = root / "evaluation_inputs.json"
+    try:
+        content = path.read_bytes()
+        payload = json.loads(content)
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Missing/invalid evaluation input manifest: {path}") from error
+    if (
+        not isinstance(payload, dict)
+        or set(payload) != {"schema_version", "checkpoints"}
+        or payload.get("schema_version") != 1
+        or not isinstance(payload.get("checkpoints"), dict)
+    ):
+        raise ValueError(f"Invalid evaluation input manifest schema: {path}")
+
+    resolved = [Path(checkpoint).resolve() for checkpoint in checkpoints]
+    expected_keys = [str(checkpoint) for checkpoint in resolved]
+    if len(expected_keys) != len(set(expected_keys)):
+        raise ValueError("Evaluation input audit requested duplicate checkpoints")
+    recorded = payload["checkpoints"]
+    if set(recorded) != set(expected_keys):
+        raise ValueError(
+            f"Evaluation input manifest covers {len(recorded)}/{len(expected_keys)} "
+            f"exact checkpoints: {path}"
+        )
+    for checkpoint in resolved:
+        key = str(checkpoint)
+        if recorded[key] != _checkpoint_input_identity(checkpoint):
+            raise ValueError(f"Evaluation checkpoint content differs from manifest: {key}")
+    return {
+        "path": str(path),
+        "bytes": len(content),
+        "sha256": hashlib.sha256(content).hexdigest(),
+        "checkpoints": len(resolved),
+    }
+
+
+def audit_evaluation_result_files(
+    results: str | Path,
+    rows: Sequence[dict],
+) -> dict[str, object]:
+    """Require every result JSON in a formal root to be selected exactly once."""
+
+    root = Path(results).resolve()
+    candidates = {path.resolve() for path in root.rglob("*Decontaminated.json")}
+    try:
+        selected = {Path(str(row["result_path"])).resolve() for row in rows}
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError("Evaluation rows contain an invalid result path") from error
+    if candidates != selected:
+        unexpected = sorted(str(path) for path in candidates - selected)
+        missing = sorted(str(path) for path in selected - candidates)
+        raise ValueError(
+            "Evaluation result-file coverage differs from selected rows: "
+            f"observed={len(candidates)} selected={len(selected)} "
+            f"unexpected={unexpected[:3]} missing={missing[:3]}"
+        )
+    return {"root": str(root), "files": len(candidates)}
+
+
+def audit_evaluation_artifacts(
+    results: str | Path,
+    checkpoints: Sequence[str | Path],
+    rows: Sequence[dict],
+) -> dict[str, object]:
+    """Audit the two cache-to-checkpoint bindings needed by formal summaries."""
+
+    return {
+        "input_manifest": audit_evaluation_inputs(results, checkpoints),
+        "result_files": audit_evaluation_result_files(results, rows),
+    }
+
+
 def _evaluation_script(repo: Path, name: str, prefix: Path | None = None) -> Path:
     """Locate an evaluation worker in a source checkout or an installed wheel."""
 
@@ -557,13 +644,14 @@ def run_evaluation(args: argparse.Namespace) -> int:
     _validate_training_inputs(args)
     worker_python = _worker_python(getattr(args, "worker_python", None))
     _validate_formal_runtime(worker_python, args.matrix)
+    versions = _validate_worker_runtime(worker_python, models)
+    source_files = _evaluation_source_manifest(repo)
+    _validate_worker_sources(worker_python, source_files)
+    verify_evaluation_source_manifest(source_files, repo_root=repo)
     results = Path(args.results_root).resolve()
     log_dir = Path(args.log_dir).resolve()
     results.mkdir(parents=True, exist_ok=True)
     log_dir.mkdir(parents=True, exist_ok=True)
-    versions = _validate_worker_runtime(worker_python, models)
-    source_files = _evaluation_source_manifest(repo)
-    _validate_worker_sources(worker_python, source_files)
     _record_runtime(results, worker_python, versions, source_files)
     _record_evaluation_inputs(results, models)
     gpu_tokens = evaluation_gpu_tokens(
