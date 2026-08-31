@@ -4,6 +4,7 @@ import pytest
 
 from embed_optim.candidate_breadth_summary import (
     _candidate_breadth_figure,
+    _candidate_breadth_outputs,
     candidate_breadth_decision,
     spearman,
 )
@@ -100,3 +101,38 @@ def test_candidate_breadth_publication_figure_requires_and_writes_complete_rows(
 
     with pytest.raises(ValueError, match="complete frozen width coverage"):
         _candidate_breadth_figure(calibration[:-1], contrasts, tmp_path)
+
+
+def test_candidate_breadth_output_audit_recomputes_bytes_instead_of_trusting_hashes(
+    tmp_path,
+) -> None:
+    widths = [7, 10, 32, 128, 512, 2048]
+    calibration = [
+        {
+            "optimizer": optimizer,
+            "negative_width": width,
+            "loss_beir_spearman": -0.8 + index * 0.05,
+            "margin_beir_spearman": 0.8 - index * 0.05,
+        }
+        for optimizer in ("adamw", "muon", "normuon")
+        for index, width in enumerate(widths)
+    ]
+    contrasts = [
+        {
+            "optimizer": optimizer,
+            "negative_width": width,
+            "contrastive_loss_delta": -0.1 + index * 0.03,
+            "positive_margin_delta": 0.1 - index * 0.03,
+        }
+        for optimizer in ("muon", "normuon")
+        for index, width in enumerate(widths)
+    ]
+
+    written = _candidate_breadth_outputs(calibration, contrasts, tmp_path, audit_only=False)
+    audited = _candidate_breadth_outputs(calibration, contrasts, tmp_path, audit_only=True)
+    assert audited == written
+
+    calibration_path = tmp_path / written["calibration"]["path"]
+    calibration_path.write_bytes(calibration_path.read_bytes() + b"self-signed-tamper\n")
+    with pytest.raises(ValueError, match="calibration output differs from recomputation"):
+        _candidate_breadth_outputs(calibration, contrasts, tmp_path, audit_only=True)

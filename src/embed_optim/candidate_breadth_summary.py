@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
+import io
 import json
 import math
 import os
+import tempfile
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
@@ -94,14 +97,21 @@ def candidate_breadth_decision(
     }
 
 
+def _csv_payload(rows: list[dict[str, Any]], fields: list[str]) -> bytes:
+    stream = io.StringIO(newline="")
+    writer = csv.DictWriter(stream, fieldnames=fields)
+    writer.writeheader()
+    writer.writerows(rows)
+    return stream.getvalue().encode()
+
+
 def _atomic_csv(path: Path, rows: list[dict[str, Any]], fields: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.tmp.{os.getpid()}")
+    payload = _csv_payload(rows, fields)
     try:
-        with temporary.open("w", encoding="utf-8", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=fields)
-            writer.writeheader()
-            writer.writerows(rows)
+        with temporary.open("wb") as handle:
+            handle.write(payload)
             handle.flush()
             os.fsync(handle.fileno())
         os.replace(temporary, path)
@@ -251,6 +261,57 @@ def _candidate_breadth_figure(
     return records
 
 
+def _candidate_breadth_outputs(
+    calibration_rows: list[dict[str, Any]],
+    contrast_rows: list[dict[str, Any]],
+    output_dir: Path,
+    *,
+    audit_only: bool,
+) -> dict[str, dict[str, Any]]:
+    calibration_path = output_dir / "calibration_by_width.csv"
+    contrasts_path = output_dir / "high_dose_contrasts.csv"
+    payloads = {
+        "calibration": _csv_payload(calibration_rows, list(calibration_rows[0])),
+        "contrasts": _csv_payload(contrast_rows, list(contrast_rows[0])),
+    }
+    csv_paths = {"calibration": calibration_path, "contrasts": contrasts_path}
+    if audit_only:
+        for name, path in csv_paths.items():
+            if not path.is_file() or path.read_bytes() != payloads[name]:
+                raise ValueError(f"Candidate-breadth {name} output differs from recomputation")
+    else:
+        _atomic_csv(calibration_path, calibration_rows, list(calibration_rows[0]))
+        _atomic_csv(contrasts_path, contrast_rows, list(contrast_rows[0]))
+
+    csv_records = {
+        name: {
+            "path": path.name,
+            "bytes": len(payloads[name]),
+            "sha256": hashlib.sha256(payloads[name]).hexdigest(),
+        }
+        for name, path in csv_paths.items()
+    }
+    if not audit_only:
+        figures = _candidate_breadth_figure(calibration_rows, contrast_rows, output_dir)
+        return {**csv_records, "figure_svg": figures["svg"], "figure_pdf": figures["pdf"]}
+
+    with tempfile.TemporaryDirectory(prefix="candidate-breadth-summary-audit-") as directory:
+        temporary_dir = Path(directory)
+        expected_figures = _candidate_breadth_figure(calibration_rows, contrast_rows, temporary_dir)
+        for suffix, record in expected_figures.items():
+            expected = temporary_dir / record["path"]
+            observed = output_dir / record["path"]
+            if not observed.is_file() or observed.read_bytes() != expected.read_bytes():
+                raise ValueError(
+                    f"Candidate-breadth figure_{suffix} output differs from recomputation"
+                )
+        return {
+            **csv_records,
+            "figure_svg": expected_figures["svg"],
+            "figure_pdf": expected_figures["pdf"],
+        }
+
+
 def _load_beir_scores(path: Path) -> dict[str, dict[str, Any]]:
     rows = {}
     with path.open(encoding="utf-8", newline="") as handle:
@@ -395,36 +456,8 @@ def build_candidate_breadth_summary(
     output_dir = Path(output_dir)
     if not output_dir.is_absolute():
         output_dir = (root / output_dir).resolve()
-    calibration_path = output_dir / "calibration_by_width.csv"
-    contrasts_path = output_dir / "high_dose_contrasts.csv"
     summary_path = output_dir / "summary.json"
-    if audit_only:
-        if not all(path.is_file() for path in (calibration_path, contrasts_path, summary_path)):
-            raise FileNotFoundError("Candidate-breadth summary outputs are incomplete")
-        existing = json.loads(summary_path.read_text(encoding="utf-8"))
-        if existing.get("decision") != decision or existing.get("inputs") != inputs:
-            raise ValueError("Candidate-breadth summary differs from recomputed evidence")
-        if set(existing.get("outputs", {})) != {
-            "calibration",
-            "contrasts",
-            "figure_svg",
-            "figure_pdf",
-        }:
-            raise ValueError("Candidate-breadth summary output ledger is incomplete")
-        for item in existing["outputs"].values():
-            path = output_dir / item["path"]
-            if (
-                not path.is_file()
-                or path.stat().st_size != item["bytes"]
-                or _sha256(path) != item["sha256"]
-            ):
-                raise ValueError(f"Candidate-breadth summary output changed: {path}")
-        return existing
-
-    _atomic_csv(calibration_path, calibration_rows, list(calibration_rows[0]))
-    _atomic_csv(contrasts_path, contrast_rows, list(contrast_rows[0]))
-    figures = _candidate_breadth_figure(calibration_rows, contrast_rows, output_dir)
-    summary = {
+    summary_fields = {
         "schema_version": SCHEMA_VERSION,
         "status": "complete",
         "protocol": {
@@ -442,20 +475,30 @@ def build_candidate_breadth_summary(
         "calibration_rows": len(calibration_rows),
         "contrast_rows": len(contrast_rows),
         "claim_boundary": protocol["claim_boundary"],
-        "outputs": {
-            "calibration": {
-                "path": calibration_path.name,
-                "bytes": calibration_path.stat().st_size,
-                "sha256": _sha256(calibration_path),
-            },
-            "contrasts": {
-                "path": contrasts_path.name,
-                "bytes": contrasts_path.stat().st_size,
-                "sha256": _sha256(contrasts_path),
-            },
-            "figure_svg": figures["svg"],
-            "figure_pdf": figures["pdf"],
-        },
+    }
+    if audit_only:
+        if not summary_path.is_file():
+            raise FileNotFoundError("Candidate-breadth summary outputs are incomplete")
+        existing = json.loads(summary_path.read_text(encoding="utf-8"))
+        outputs = _candidate_breadth_outputs(
+            calibration_rows,
+            contrast_rows,
+            output_dir,
+            audit_only=True,
+        )
+        if existing != {**summary_fields, "outputs": outputs}:
+            raise ValueError("Candidate-breadth summary differs from exact recomputation")
+        return existing
+
+    outputs = _candidate_breadth_outputs(
+        calibration_rows,
+        contrast_rows,
+        output_dir,
+        audit_only=False,
+    )
+    summary = {
+        **summary_fields,
+        "outputs": outputs,
     }
     _atomic_json(summary_path, summary)
     return summary
