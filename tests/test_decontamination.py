@@ -1,10 +1,12 @@
 from pathlib import Path
 
 import pytest
+from datasets import Dataset
 
 from embed_optim.decontamination import (
     DECONTAMINATED_BEIR,
     DECONTAMINATED_CORPUS_SIZES,
+    _configure_legacy_beir_layout,
     decontaminated_corpus_size,
     get_decontaminated_task,
 )
@@ -41,6 +43,37 @@ def test_decontaminated_task_preserves_protocol_and_replaces_dataset():
     }
     assert task.metadata.main_score == "ndcg_at_10"
     assert task.metadata.eval_splits == ["test"]
+
+
+def test_msmarco_dev_qrels_use_the_legacy_validation_config():
+    from mteb.abstasks.retrieval_dataset_loaders import RetrievalDatasetLoader
+
+    class Loader:
+        split = "dev"
+        dataset_configs = {"corpus", "queries", "qrels-validation"}
+        config = None
+
+        def __init__(self):
+            self.loaded = []
+
+        def _load_dataset_split(self, config, num_proc):
+            self.loaded.append((config, num_proc))
+            return Dataset.from_dict(
+                {
+                    "query-id": [7, 7, 9],
+                    "corpus-id": [70, 71, 90],
+                    "score": [1, 2, 1],
+                    "ignored": ["a", "b", "c"],
+                }
+            )
+
+    _configure_legacy_beir_layout()
+    loader = Loader()
+
+    qrels = RetrievalDatasetLoader._load_qrels(loader, num_proc=3)
+
+    assert loader.loaded == [("qrels-validation", 3)]
+    assert qrels == {"7": {"70": 1, "71": 2}, "9": {"90": 1}}
 
 
 def test_unknown_decontaminated_task_is_rejected():
