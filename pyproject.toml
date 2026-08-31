@@ -48,6 +48,9 @@ embed-optim-prepare = "embed_optim.data:main"
 embed-optim-prepare-probe = "embed_optim.probes:main"
 embed-optim-prepare-beir-probe = "embed_optim.beir_probe:main"
 embed-optim-prepare-validation = "embed_optim.validation_data:main"
+embed-optim-prepare-candidate-breadth = "embed_optim.candidate_breadth_data:main"
+embed-optim-evaluate-candidate-breadth = "embed_optim.candidate_breadth_evaluation:main"
+embed-optim-candidate-breadth-matrix = "embed_optim.candidate_breadth_matrix:main"
 embed-optim-prepare-confirmatory-data = "embed_optim.confirmatory_data:main"
 embed-optim-generate-confirmatory-matrices = "embed_optim.confirmatory_matrix:main"
 embed-optim-evaluate-confirmatory = "embed_optim.confirmatory_evaluation:main"
@@ -129,6 +132,7 @@ where = ["src"]
 
 [tool.setuptools.data-files]
 "share/embedding-optimizer-study/configs" = [
+  "configs/candidate_breadth_probe.json",
   "configs/beir_representation_probe.json",
   "configs/basis_sensitivity.json",
   "configs/causal_chain_analysis.json",

@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "status": "post_hoc_shortlist_corpus_mechanism_probe",
+  "frozen_at_utc": "2026-08-31T20:57:41Z",
+  "purpose": "Test whether the Muon-family validation advantage shrinks or reverses as a fixed query is scored against progressively more candidates from the same pinned mined list.",
+  "timing": {
+    "discovery_beir_visible": true,
+    "query_disjoint_validation_visible": true,
+    "same_source_shortlist_corpus_diagnostic_visible": true,
+    "confirmatory_14_task_matrix_complete": false,
+    "candidate_breadth_data_or_scores_visible": false
+  },
+  "source": {
+    "repo": "lightonai/embeddings-fine-tuning",
+    "revision": "1ca463331ed637d25c1058567e932e0d3bad2983",
+    "validation_root": "data/validation-4096-seed20260826",
+    "validation_spec": "configs/validation_probe.json",
+    "validation_spec_sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1",
+    "validation_manifest_sha256": "a3e574c472131116a4381a3c919121923412677ffdd5b56a5dd596b694b157aa",
+    "validation_rows_sha256": "a42ceb54123091ca70ee58a83bcbf32f3cad43c2ec77e64031e9c9c24284c4e0",
+    "negative_threshold": 0.95,
+    "raw_documents_per_query": 2049
+  },
+  "query_selection": {
+    "count": 224,
+    "allocation": "balanced_32_per_source",
+    "seed": 20260901,
+    "algorithm": "blake2b-128-per-source-smallest-v1"
+  },
+  "candidate_construction": {
+    "negative_widths": [7, 10, 32, 128, 512, 2048],
+    "positive_index": 0,
+    "nesting": [
+      "width 7 is the canonical validation row's seven negatives in their stored order",
+      "width 10 appends the three unselected documents from the reconstructed first-ten eligible pool in mined order",
+      "larger widths append unique documents in the pinned mined-score order, excluding the positive and already selected documents"
+    ],
+    "requirements": {
+      "canonical_seven_reconstruct_exactly": true,
+      "candidate_ids_unique_within_query": true,
+      "positive_excluded_from_negatives": true,
+      "available_unique_negatives_per_query": 2048,
+      "sets_are_strictly_nested": true
+    }
+  },
+  "evaluation": {
+    "family": "dense",
+    "data_output": "data/candidate-breadth-224-seed20260901",
+    "checkpoint_root": "outputs/dense",
+    "checkpoint_step": 3907,
+    "run_ids": [
+      "adamw-lr1e-6",
+      "adamw-lr3e-6",
+      "adamw-lr1e-5",
+      "adamw-lr3e-5",
+      "muon-lr1e-4",
+      "muon-lr3e-4",
+      "muon-lr1e-3",
+      "muon-lr3e-3",
+      "normuon-lr1e-4",
+      "normuon-lr3e-4",
+      "normuon-lr1e-3",
+      "normuon-lr3e-3"
+    ],
+    "results_root": "results/candidate-breadth",
+    "baseline_root": "results/recipe-validation/dense",
+    "query_batch_size": 128,
+    "document_batch_size": 256,
+    "model_dtype": "float32",
+    "forward_dtype": "bfloat16",
+    "flash_attention": true,
+    "normalize_embeddings": true,
+    "temperature": 0.02,
+    "metrics": [
+      "contrastive_loss",
+      "positive_margin",
+      "reciprocal_rank",
+      "top1_accuracy"
+    ],
+    "baseline_check": "width-7 sample metrics must reproduce the existing validation evaluator on the selected 224 rows within 1e-5 absolute tolerance"
+  },
+  "analysis": {
+    "unit": "optimizer-learning-rate-width",
+    "primary_readout": "within-optimizer Spearman correlation between candidate-set metric and final 14-task BEIR as a function of width",
+    "secondary_readout": "high-dose minus retrieval-optimal paired query contrast as a function of width",
+    "prediction": "Muon and NorMuon prefer 3e-3 at width 7, but that advantage shrinks or reverses toward the 3e-4 full-corpus ordering as width increases; AdamW ordering changes less",
+    "falsification": "The missing-candidate explanation is not supported if Muon-family ordering remains equally anti-calibrated through width 2048 or if the width-7 reproduction check fails."
+  },
+  "claim_boundary": "This diagnostic was designed after the shortlist-corpus gap was observed. It is post hoc mechanism evidence and cannot replace the frozen three-seed full-corpus optimizer comparison. Mined candidates have one designated positive; unjudged relevance among other candidates is a limitation."
+}
