@@ -104,7 +104,15 @@ def test_layout_gate_rejects_main_float_deferred_past_page_limit(tmp_path: Path)
     escaped = MAIN_TEXT_FLOAT_LABELS[-1]
     _complete_aux(tmp_path, main_float_pages={escaped: 9})
 
-    with pytest.raises(ValueError, match="Main-text floats land beyond"):
+    with pytest.raises(ValueError, match="Main-text floats land after"):
+        audit_paper_layout(tmp_path / "paper")
+
+
+def test_layout_gate_rejects_main_float_after_earlier_main_endpoint(tmp_path: Path):
+    escaped = MAIN_TEXT_FLOAT_LABELS[-1]
+    _complete_aux(tmp_path, main_end_page=7, main_float_pages={escaped: 8})
+
+    with pytest.raises(ValueError, match="endpoint on page 7"):
         audit_paper_layout(tmp_path / "paper")
 
 
@@ -164,9 +172,39 @@ def test_checked_in_sources_reserve_final_float_topology_and_row_counts():
     assert observed_rows == EXPECTED_FLOAT_ROWS
 
 
+def test_pending_results_reserve_final_shaped_headline_and_conclusion_footprint():
+    results = (ROOT / "paper/results.tex").read_text(encoding="utf-8")
+    expected_fragments = {
+        "DiscoveryHeadline": ("median throughput ratios", "-0.0000/-0.0000/-0.0000"),
+        "CommonStateHeadline": ("normalized exact stable ranks", "0.0000/0.0000"),
+        "RepresentationHeadline": ("trailing-training-loss-to-BEIR", "-0.0000"),
+        "InterventionHeadline": ("-0.0000 (0/0/3)/-0.0000 (0/0/3)", "84-row spectrum"),
+        "ConfirmationHeadline": ("[-0.0000, +0.0000]", "inconclusive"),
+        "ResultConclusion": ("routing-matched hybrid AdamW", "universal optimizer ranking"),
+    }
+    for macro, fragments in expected_fragments.items():
+        match = re.search(rf"^\\newcommand\{{\\{macro}\}}\{{(.+)\}}$", results, re.MULTILINE)
+        assert match is not None
+        value = match.group(1)
+        assert value.startswith(r"\ResultPending{")
+        assert all(fragment in value for fragment in fragments)
+
+    confirmation = (ROOT / "paper/generated/confirmation.tex").read_text(encoding="utf-8")
+    assert confirmation.count(r"\phantom{[-0.0000, +0.0000]}") == 6
+    causal = (ROOT / "paper/generated/causal-chain.tex").read_text(encoding="utf-8")
+    assert "gain L/M -0.0000/-0.0000" in causal
+    assert "support L/M/T/B 0/0/0/0 of 10" in causal
+    assert "gaps -1.000000e-308/-1.000000e-308" in causal
+    assert "Pass: accumulated bridge; fail: tested bridge rejected" in causal
+    assert "Pass: component attribution; fail: tested component rejected" in causal
+    assert "Pass: out-of-run bridge; fail: tested bridge rejected" in causal
+
+
 def test_release_runs_layout_gate_only_after_pdf_build():
     makefile = (ROOT / "paper/Makefile").read_text(encoding="utf-8")
+    all_target = makefile.split("\nall:", 1)[1].split("\n\nrelease:", 1)[0]
+    assert "$(BUILD)/main.pdf" in all_target
+    assert "embed_optim.paper_layout" in all_target
     release = makefile.split("\nrelease:\n", 1)[1].split("\n\nvendor:", 1)[0]
 
     assert release.index("$(MAKE) $(BUILD)/main.pdf") < release.index("-m embed_optim.paper_layout")
-    assert "paper_layout" not in makefile.split("\nrelease:\n", 1)[0]

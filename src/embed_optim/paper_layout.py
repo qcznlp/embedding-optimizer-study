@@ -112,11 +112,12 @@ def audit_paper_layout(
     escaped_main = {
         float_label: float_page
         for float_label, float_page in main_float_pages.items()
-        if float_page > max_main_page
+        if float_page > page
     }
     if escaped_main:
         raise ValueError(
-            f"Main-text floats land beyond the {max_main_page}-page limit: {escaped_main}"
+            "Main-text floats land after the audited main-text endpoint "
+            f"on page {page}: {escaped_main}"
         )
     premature_appendix = {
         float_label: float_page

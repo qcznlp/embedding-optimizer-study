@@ -16,6 +16,7 @@ PYTHON ?= python3
 .PHONY: all release vendor headlines clean distclean
 
 all: headlines $(BUILD)/main.pdf
+	$(PYTHON) -m embed_optim.paper_layout --paper-dir . --max-main-page 8
 
 release:
 	$(MAKE) clean

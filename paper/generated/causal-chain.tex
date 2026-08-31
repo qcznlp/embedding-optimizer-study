@@ -3,18 +3,18 @@
 \newcommand{\CausalChainSummaryTable}{%
 \begin{table*}[t]
 \centering
-\small
+\scriptsize
 \setlength{\tabcolsep}{3pt}
 \begin{tabular}{p{0.16\linewidth}p{0.25\linewidth}p{0.32\linewidth}p{0.20\linewidth}}
 \toprule
 Test & Frozen comparison & Audited numerical result & Permitted inference \\
 \midrule
-Shared-start temporal & Tail energy versus optimizer labels and both Frobenius-norm controls under leave-one-seed-out prediction & \ResultPending{temporal all-required verdict} & Accumulated spectral bridge, or claimable negative \\
-Fixed-state component & Five spectrum doses, tail versus other bands, and spectrum versus basis at ten anchors & \ResultPending{dose/band/basis verdict} & Immediate component attribution only \\
-Forward retrieval & 84 task-aligned next-checkpoint changes under leave-one-source-run-out prediction & \ResultPending{held-run bridge verdict} & Out-of-run bridge, not formal mediation \\
+Shared-start temporal & LOSO: labels + two norms & \ResultPending{0/5; gain L/M -0.0000/-0.0000; claimable negative} & Pass: accumulated bridge; fail: tested bridge rejected \\
+Fixed-state component & 5 doses; tail/basis controls & \ResultPending{support L/M/T/B 0/0/0/0 of 10; claimable negative} & Pass: component attribution; fail: tested component rejected \\
+Forward retrieval & 84 leave-source-run-out rows & \ResultPending{dRMSE S(L/M) -0.0000/-0.0000; B(L/M) -0.0000/-0.0000; gaps -1.000000e-308/-1.000000e-308; fail} & Pass: out-of-run bridge; fail: tested bridge rejected \\
 \bottomrule
 \end{tabular}
-\caption{Frozen causal-chain stress tests. Every decision and its numerical basis is reported whether supported or negative; joint passage is not formal mediation.}
+\caption{Frozen causal-chain stress tests. L/M denote loss/margin and S/B denote spectrum/basis. Every decision and its numerical basis is reported whether supported or negative; joint passage is not formal mediation.}
 \label{tab:causal-chain-summary}
 \end{table*}%
 }

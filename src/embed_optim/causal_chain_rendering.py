@@ -614,10 +614,10 @@ def render_causal_chain_latex(evidence: dict[str, Any]) -> str:
     summary_rows = [
         (
             "Shared-start temporal",
-            "LOSO versus optimizer labels and two norm controls",
-            f"{temporal_passes}/5; relative RMSE gain: loss "
-            f"{_number(primary['validation_loss_p95']['relative_rmse_improvement'], signed=True)}; "
-            f"margin {_number(primary['unseen_margin_p05']['relative_rmse_improvement'], signed=True)}; "
+            "LOSO: labels + two norms",
+            f"{temporal_passes}/5; gain L/M "
+            f"{_number(primary['validation_loss_p95']['relative_rmse_improvement'], signed=True)}/"
+            f"{_number(primary['unseen_margin_p05']['relative_rmse_improvement'], signed=True)}; "
             f"{_verdict(temporal)}",
             (
                 "Accumulated spectral bridge supported, not formal mediation"
@@ -627,10 +627,10 @@ def render_causal_chain_latex(evidence: dict[str, Any]) -> str:
         ),
         (
             "Fixed-state component",
-            "Five doses, tail localization, spectrum-versus-basis",
-            f"support of 10: loss {counts['loss_dose_monotone_anchors']}; margin "
-            f"{counts['margin_dose_monotone_anchors']}; tail {counts['tail_band_anchors']}; "
-            f"basis {counts['basis_control_anchors']}; {local_verdict}",
+            "5 doses; tail/basis controls",
+            f"support L/M/T/B {counts['loss_dose_monotone_anchors']}/"
+            f"{counts['margin_dose_monotone_anchors']}/{counts['tail_band_anchors']}/"
+            f"{counts['basis_control_anchors']} of 10; {local_verdict}",
             (
                 "Fixed-weight component attribution supported"
                 if dose["local_supported"]
@@ -639,13 +639,13 @@ def render_causal_chain_latex(evidence: dict[str, Any]) -> str:
         ),
         (
             "Forward retrieval",
-            "84 leave-source-run-out task-transition rows",
-            f"spectrum dRMSE: loss {_number(spectrum_improvements['spectrum_loss'], signed=True)}; "
-            f"margin {_number(spectrum_improvements['spectrum_margin'], signed=True)}; basis: "
-            f"{_number(basis_improvements['basis_loss'], signed=True)}; "
-            f"{_number(basis_improvements['basis_margin'], signed=True)}; decision gaps "
-            f"loss {_margin_number(min(bridge_by_predictor['spectrum_loss']['spectrum_rmse_improvement'], bridge_by_predictor['spectrum_loss']['spectrum_rmse_improvement'] - bridge_by_predictor['spectrum_loss']['matched_basis_rmse_improvement']))}; "
-            f"margin {_margin_number(min(bridge_by_predictor['spectrum_margin']['spectrum_rmse_improvement'], bridge_by_predictor['spectrum_margin']['spectrum_rmse_improvement'] - bridge_by_predictor['spectrum_margin']['matched_basis_rmse_improvement']))}; "
+            "84 leave-source-run-out rows",
+            f"dRMSE S(L/M) {_number(spectrum_improvements['spectrum_loss'], signed=True)}/"
+            f"{_number(spectrum_improvements['spectrum_margin'], signed=True)}; B(L/M) "
+            f"{_number(basis_improvements['basis_loss'], signed=True)}/"
+            f"{_number(basis_improvements['basis_margin'], signed=True)}; gaps "
+            f"{_margin_number(min(bridge_by_predictor['spectrum_loss']['spectrum_rmse_improvement'], bridge_by_predictor['spectrum_loss']['spectrum_rmse_improvement'] - bridge_by_predictor['spectrum_loss']['matched_basis_rmse_improvement']))}/"
+            f"{_margin_number(min(bridge_by_predictor['spectrum_margin']['spectrum_rmse_improvement'], bridge_by_predictor['spectrum_margin']['spectrum_rmse_improvement'] - bridge_by_predictor['spectrum_margin']['matched_basis_rmse_improvement']))}; "
             f"{_decision(dose['forward_bridge_supported'])}",
             (
                 "Out-of-run retrieval bridge supported, not formal mediation"
@@ -752,12 +752,13 @@ def render_causal_chain_latex(evidence: dict[str, Any]) -> str:
     return (
         "% Generated from strict causal-chain evidence; do not edit.\n"
         "\\newcommand{\\CausalChainSummaryTable}{%\n"
-        "\\begin{table*}[t]\n\\centering\n\\small\n\\setlength{\\tabcolsep}{3pt}\n"
+        "\\begin{table*}[t]\n\\centering\n\\scriptsize\n\\setlength{\\tabcolsep}{3pt}\n"
         "\\begin{tabular}{p{0.16\\linewidth}p{0.25\\linewidth}p{0.32\\linewidth}p{0.20\\linewidth}}\n"
         "\\toprule\nTest & Frozen comparison & Audited numerical result & Permitted inference \\\\\n\n"
         "\\midrule\n" + _latex_rows(summary_rows) + "\n\\bottomrule\n\\end{tabular}\n"
-        "\\caption{Frozen causal-chain stress tests. Every decision and its numerical basis is "
-        "reported whether supported or negative; joint passage is not formal mediation.}\n"
+        "\\caption{Frozen causal-chain stress tests. L/M denote loss/margin and S/B denote "
+        "spectrum/basis. Every decision and its numerical basis is reported whether supported or "
+        "negative; joint passage is not formal mediation.}\n"
         "\\label{tab:causal-chain-summary}\n\\end{table*}%\n}\n\n"
         "\\newcommand{\\CausalChainDiagnostics}{%\n"
         "\\begin{table*}[t]\n\\centering\n\\scriptsize\n\\setlength{\\tabcolsep}{3pt}\n"

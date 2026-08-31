@@ -399,6 +399,10 @@ def test_canonical_consumers_display_the_full_numeric_contract(complete_root: Pa
     assert "84 leave-source-run-out" in latex
     assert latex.count(r"\newcommand{\CausalChainSummaryTable}") == 1
     assert latex.count(r"\newcommand{\CausalChainDiagnostics}") == 1
+    summary = latex.split(r"\newcommand{\CausalChainSummaryTable}", 1)[1].split(
+        r"\newcommand{\CausalChainDiagnostics}", 1
+    )[0]
+    assert r"\scriptsize" in summary
     causal_rows = {}
     for table in re.findall(r"\\begin\{table\*?\}.*?\\end\{table\*?\}", latex, flags=re.DOTALL):
         labels = re.findall(r"\\label\{(tab:[^{}]+)\}", table)

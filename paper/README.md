@@ -73,10 +73,13 @@ buildable developer draft. `make -C paper release` instead cleans the build, run
 strict paper audit after the PDF build and before constructing either distribution.
 
 The pending tables are topology-faithful: they reserve the same main/appendix float labels and row
-cardinalities as the final Dense-only renderer. Main text retains six headline floats; systems,
-per-task, representation, basis, tail, and full causal diagnostics are placed in the appendix. The
-layout gate audits every classified float label, not only the conclusion page, so a deferred
-main-text float on page 9 cannot be hidden by an end label that remained on page 8.
+cardinalities as the final Dense-only renderer. The pending headline and conclusion macros are also
+final-shaped layout fixtures: their prose and numeric tokens reserve the deterministic renderer's
+full result footprint rather than using abbreviated status text. Main text retains six headline
+floats; systems, per-task, representation, basis, tail, and full causal diagnostics are placed in the
+appendix. Every developer build runs the layout gate. It audits every classified float label, not
+only the conclusion page, so a deferred main-text float after the audited endpoint or on page 9
+cannot be hidden by an end label that remained within the limit.
 
 ## DenseOn evidence contract
 
