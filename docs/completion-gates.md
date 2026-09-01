@@ -12,6 +12,7 @@ identity.
 | Requirement | Authoritative evidence | DenseOn passing condition |
 | --- | --- | --- |
 | Scope | configs/dense_scope_amendment.json | families=["dense"]; historical Late is retained, not used in primary inference |
+| Execution contract | configs/experiment.yaml, README.md, and docs/blog.md | eight H100-equivalent GPUs are documented as two disjoint four-GPU training pools; each run retains four ranks; exact task-parallel evaluation and numerical acceleration boundaries are disclosed |
 | Shared data | materialized 500K manifest and row ledger | 500,000 rows, seven source quotas, seven distinct seeded negatives, one training-view fingerprint |
 | Discovery training | configs/experiment.yaml plus completion/checkpoint audit | 12 runs, 60 checkpoints, all model/optimizer/scheduler/Trainer/RNG payloads deep-valid |
 | Discovery evaluation | [reports/dense-discovery/coverage.json](../reports/dense-discovery/coverage.json) and provenance-valid MTEB files | 12 × 5 × 14 = 840 DenseOn units selected only after the full historical source contract passes |

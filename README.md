@@ -110,7 +110,7 @@ the validation-frozen retrieval, shared-start endpoint, and causal-chain manifes
 | Full-length retrieval dynamics | 12 discovery + 4 hybrid + 9 confirmatory runs, five stages each |
 | Supplemental inference boundary | Hybrid/confirmatory stages 1–4 descriptive; stage 5 formal |
 | Confirmation | Three new negative-sampling/data-order seeds |
-| Default compute | Two independent four-GPU pools |
+| Compute | Eight H100-equivalent GPUs, split into two disjoint four-GPU pools |
 
 Muon and NorMuon operate on the 88 two-dimensional Transformer hidden matrices
 (110,297,088 parameters). Embeddings, pooling projection, norms, and biases use auxiliary AdamW at

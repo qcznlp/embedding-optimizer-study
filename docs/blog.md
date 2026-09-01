@@ -115,6 +115,21 @@ linear decay. Four gradient-accumulation steps turn per-GPU microbatches of eigh
 batch. The last optimizer step contains the remaining 32 examples; no example is duplicated or
 dropped.
 
+### Compute and acceleration
+
+The execution environment exposes eight H100-equivalent GPUs. Training uses two disjoint four-GPU
+pools, so two distributed runs can proceed independently; task-parallel retrieval evaluation can
+fan out over all eight devices. Every recorded training run still uses exactly four ranks, which is
+why the global-batch and checkpoint RNG contracts above remain constant across the matrix.
+
+The accelerated path uses FlashAttention-2, bfloat16 autocast, TF32 matrix multiplication, fused
+CUDA AdamW when all tensors are on device, and length-aware evaluation batches with automatic OOM
+budget backoff. BEIR evaluation assigns independent tasks to available GPUs and performs exact
+retrieval rather than approximate ranking. Muon-family runs use the pinned decomposed-bfloat16
+Newton--Schulz path described in the engineering section; the change avoids the unstable fused
+`addmm` decomposition without changing the polynomial or training objective. None of these systems
+optimizations introduces in-batch negatives or changes the fixed query/positive/negative groups.
+
 Complete resumable checkpoints are retained at 20%, 40%, 60%, 80%, and 100% of the 3,907 optimizer
 steps. A checkpoint counts only if the model, optimizer, scheduler, trainer state, four rank-local RNG
 archives, schedule, and dataset identities all pass the deep audit.
