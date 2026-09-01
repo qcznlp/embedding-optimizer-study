@@ -51,6 +51,20 @@ the hybrid and confirmatory inferential summaries continue to read their indepen
 stage-5 roots.
 Shared-start controls instead use five-stage query-disjoint and unseen probes, not BEIR inference.
 
+Audit the complete study status without conflating those two evaluation contracts:
+
+```bash
+embed-optim-evaluation-progress \
+  --study-root "$PWD" \
+  --output logs/evaluation/study-live-audit.json
+```
+
+This mode provenance-validates the exact 1,750-unit DenseOn BEIR grid, reports discovery, hybrid,
+and each confirmatory seed separately, and shows progress through the 31-step completion, 18-step
+finalization, and 21-step candidate-breadth release controllers. It also reports the 45
+query-disjoint and 46 unseen shared-start probe jobs as a separate mechanism contract; controller
+counts are informational and never replace their own content-addressed audits.
+
 | Optimizer | Same-suite BEIR-best LR | Exploratory BEIR-best final | Four-LR final mean | Four-LR final median |
 | --- | ---: | ---: | ---: | ---: |
 | AdamW | 3e-5 | 0.5899 | 0.5816 | 0.5858 |
