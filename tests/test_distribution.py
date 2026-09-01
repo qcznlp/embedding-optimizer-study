@@ -54,6 +54,29 @@ def test_private_release_citation_metadata_has_no_premature_release_date() -> No
     assert "date-released" not in citation
 
 
+def test_public_governance_reproduces_release_checks_and_private_reporting() -> None:
+    contributing = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
+    security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
+    required_commands = (
+        "uv sync --extra dev --extra eval --extra analysis",
+        "uv run cffconvert --validate --infile CITATION.cff",
+        "uv build",
+        "uv run embed-optim-audit-distribution",
+        "uv run pytest",
+        "uv run ruff check src tests scripts/eval",
+        "uv run ruff format --check src tests scripts/eval",
+        "uv run embed-optim-render-paper-results",
+        "uv run embed-optim-audit-paper",
+    )
+    for command in required_commands:
+        assert command in contributing
+    assert "Do not hand-edit generated result blocks" in contributing
+    assert "active DenseOn confirmatory claims" in contributing
+    normalized_security = " ".join(security.split())
+    assert "stevezenguom@gmail.com" in normalized_security
+    assert "do not fall back to a public issue" in normalized_security
+
+
 def test_distribution_scanner_rejects_producer_checkout_paths() -> None:
     assert _checkout_path_findings(
         "wheel",
