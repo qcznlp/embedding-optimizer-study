@@ -22,6 +22,7 @@ MAIN_TEXT_FLOAT_LABELS = (
 )
 APPENDIX_FLOAT_LABELS = (
     "fig:candidate-breadth",
+    "fig:corpus-size-diagnostic",
     "tab:claim-firewall",
     "tab:training-systems-results",
     "tab:basis-sensitivity-results",

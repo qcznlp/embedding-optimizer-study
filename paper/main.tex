@@ -405,11 +405,12 @@ proxy rewards a ten-times larger Muon-family learning rate whose full-corpus ran
 formal three-seed result determines the size and uncertainty of that prospective selection failure;
 it does not retroactively convert the BEIR-selected discovery comparison into confirmation.
 
-The same-source analysis narrows the explanation. The failure does not require a domain change,
-query overlap, or a worse observed positive margin. Instead, the optimizer can improve every score
-quantity visible to the eight-way objective while degrading rankings against documents outside that
-set. Candidate breadth is therefore part of optimizer evaluation, not merely a dataset
-hyperparameter. If the post-hoc nested-candidate curve removes the Muon-family advantage as breadth
+The same-source analysis narrows the explanation. A post-hoc 14-task diagnostic also associates
+final Muon/NorMuon gains with log corpus size ($\rho=.587/.574$; Appendix~\ref{fig:corpus-size-diagnostic}).
+Neither proves missing-candidate coverage: the optimizer can improve every score visible to the
+eight-way objective while degrading rankings against documents outside that set. Candidate breadth
+is therefore part of optimizer evaluation, not merely a dataset hyperparameter. If the post-hoc
+nested-candidate curve removes the Muon-family advantage as breadth
 increases, it provides post-hoc evidence consistent with missing-candidate coverage contributing to
 the gap, but it cannot identify that contribution causally. If it does not, the shortlist--corpus
 gap remains an empirical selection result but requires another explanation.
@@ -494,6 +495,8 @@ the exploratory BEIR matrix. Released code supports strict artifact audits befor
 or figures. Historical LateOn artifacts are retained rather than deleted after the scope amendment.
 
 \CandidateBreadthFigure
+
+\input{generated/corpus-size-diagnostic-appendix}
 
 \section{Claim--Evidence Firewall}
 

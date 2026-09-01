@@ -132,6 +132,13 @@ def test_layout_gate_rejects_appendix_float_before_main_endpoint(tmp_path: Path)
         audit_paper_layout(tmp_path / "paper")
 
 
+def test_corpus_size_diagnostic_is_frozen_as_appendix_only():
+    label = "fig:corpus-size-diagnostic"
+
+    assert label in APPENDIX_FLOAT_LABELS
+    assert label not in MAIN_TEXT_FLOAT_LABELS
+
+
 def test_layout_gate_rejects_missing_or_unclassified_float(tmp_path: Path):
     aux = _complete_aux(tmp_path)
     text = aux.read_text(encoding="utf-8")

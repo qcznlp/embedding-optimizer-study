@@ -17,6 +17,7 @@ identity.
 | Discovery evaluation | [reports/dense-discovery/coverage.json](../reports/dense-discovery/coverage.json) and provenance-valid MTEB files | 12 × 5 × 14 = 840 DenseOn units selected only after the full historical source contract passes |
 | Training dynamics | reports/training-dynamics manifests | 12 DenseOn run rows and 60 five-stage rows after strict full-source audit and filtering |
 | Retrieval dynamics | reports/retrieval-dynamics-dense/summary_manifest.json | 60 checkpoints, 840 source units, 12 first-passage rows, 8 adjacent-stage task-stability rows |
+| Corpus-size diagnostic | configs/corpus_size_diagnostic.json and reports/corpus-size-diagnostic/publication_manifest.json | 2 optimizers × 5 stages × 14 tasks; 200,000-permutation associations and robustness summaries reproduce exactly and are labeled post hoc, same-suite-selected, and non-causal |
 | Weight trajectories | reports/weight-space/summary_manifest.json | 12 runs, 60 checkpoints, 20 matched Muon/NorMuon checkpoint pairs |
 | Common state | reports/common-state/summary_manifest.json | 10 DenseOn anchors and all three transforms at every anchor |
 | Exact spectra | results/common-state-spectra/summary/summary_manifest.json | 180 spectra: 10 anchors × 3 optimizers × 6 selected matrices |

@@ -318,6 +318,20 @@ The novel finding is therefore not that Muon orthogonalizes updates. It is that 
 change whether a query-disjoint, narrow contrastive validation set is a faithful proxy for ranking
 over the complete corpus.
 
+<!-- CORPUS-SIZE-DIAGNOSTIC:BEGIN -->
+
+### Exploratory signal: gains concentrate on larger corpora
+
+![Post-hoc optimizer gains versus corpus size](../reports/corpus-size-diagnostic/corpus_size_association.svg)
+
+Across the 14 discovery tasks, the final Muon-minus-AdamW delta has Spearman ρ=0.587 with log corpus size (200,000-permutation p=0.030); NorMuon has ρ=0.574 (p=0.035). The association is weak at 20% of training and appears mainly late in the trajectory.
+
+The largest seven corpora show positive deltas for both optimizers in 7/7 tasks, whereas the smallest seven show 3/7 for Muon and 4/7 for NorMuon. The result is not driven by NQ: excluding it raises the correlations to 0.670 and 0.654. Every leave-one-task-out correlation remains positive (Muon 0.484–0.670; NorMuon 0.473–0.654).
+
+This diagnostic was added after the association was noticed, uses learning rates selected on the same BEIR suite, and has only 14 heterogeneous task units. Corpus size can proxy for many task properties, so the result is a descriptive clue—not evidence that a larger corpus causes Muon to help. Its value is that it makes the shortlist–corpus account more specific: the independently frozen candidate-breadth experiment must test candidate coverage directly.
+
+<!-- CORPUS-SIZE-DIAGNOSTIC:END -->
+
 ### 2. Local matched steps lose while the one-seed grid median reverses
 
 At ten common DenseOn states, we apply AdamW, Muon, and NorMuon to the same eight-gradient history.
@@ -691,6 +705,17 @@ The same completion ledger evaluates and audits the additional 224 hybrid and 50
 stage-1–4 units, then builds and re-audits the 65-row trajectory CSV plus PDF/SVG figures under
 `reports/dense-retrieval-dynamics/`. Its read-only audit reconstructs all 910 joined task units and
 rejects changed checkpoints, result provenance, figures, tables, or manifests.
+
+### Rebuild the post-hoc corpus-size diagnostic
+
+This CPU-only diagnostic reads the immutable 840-cell Dense discovery table, recomputes the
+task-stage associations and robustness checks, and verifies the generated Blog, paper, CSV, figure,
+and manifest bytes:
+
+~~~bash
+embed-optim-corpus-size-diagnostic
+embed-optim-corpus-size-diagnostic --audit-only
+~~~
 
 ### Run the post-hoc candidate-breadth diagnostic
 

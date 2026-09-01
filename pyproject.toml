@@ -54,6 +54,7 @@ embed-optim-candidate-breadth-matrix = "embed_optim.candidate_breadth_matrix:mai
 embed-optim-summarize-candidate-breadth = "embed_optim.candidate_breadth_summary:main"
 embed-optim-render-candidate-breadth = "embed_optim.candidate_breadth_publication:main"
 embed-optim-candidate-breadth-release = "embed_optim.candidate_breadth_release:main"
+embed-optim-corpus-size-diagnostic = "embed_optim.corpus_size_diagnostic:main"
 embed-optim-prepare-confirmatory-data = "embed_optim.confirmatory_data:main"
 embed-optim-generate-confirmatory-matrices = "embed_optim.confirmatory_matrix:main"
 embed-optim-evaluate-confirmatory = "embed_optim.confirmatory_evaluation:main"
@@ -136,6 +137,7 @@ where = ["src"]
 [tool.setuptools.data-files]
 "share/embedding-optimizer-study/configs" = [
   "configs/candidate_breadth_probe.json",
+  "configs/corpus_size_diagnostic.json",
   "configs/beir_representation_probe.json",
   "configs/basis_sensitivity.json",
   "configs/causal_chain_analysis.json",
