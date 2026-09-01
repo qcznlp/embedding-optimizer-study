@@ -1,14 +1,17 @@
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
 import pytest
 
+from embed_optim.candidate_breadth_evaluation import METRICS
 from embed_optim.candidate_breadth_summary import (
     _candidate_breadth_figure,
     _candidate_breadth_outputs,
     _matrix_provenance,
+    build_candidate_breadth_summary,
     candidate_breadth_decision,
     source_stratified_paired_bootstrap_ci,
     spearman,
@@ -283,3 +286,191 @@ def test_summary_binds_matrix_jobs_to_the_full_source_audit(tmp_path) -> None:
             protocol=protocol,
             results_root=results_root,
         )
+
+
+def test_summary_builds_and_audits_stratified_intervals_end_to_end(
+    tmp_path: Path, monkeypatch
+) -> None:
+    pytest.importorskip("matplotlib")
+    protocol = json.loads(Path("configs/candidate_breadth_probe.json").read_text(encoding="utf-8"))
+    protocol_path = tmp_path / "configs" / "candidate_breadth_probe.json"
+    protocol_path.parent.mkdir()
+    protocol_path.write_text(json.dumps(protocol, sort_keys=True) + "\n", encoding="utf-8")
+    widths = protocol["candidate_construction"]["negative_widths"]
+    run_ids = protocol["evaluation"]["run_ids"]
+    results_root = tmp_path / protocol["evaluation"]["results_root"]
+    results_root.mkdir(parents=True)
+
+    def write_jsonl(path: Path, rows: list[dict]) -> None:
+        path.write_text(
+            "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows),
+            encoding="utf-8",
+        )
+
+    def record(path: Path) -> dict:
+        return {"path": path.name, "bytes": path.stat().st_size, "sha256": _sha256(path)}
+
+    jobs = []
+    beir_rows = []
+    for run_index, run_id in enumerate(run_ids):
+        optimizer, learning_rate = run_id.split("-lr", 1)
+        optimizer_index = run_index % 4
+        beir_rows.append(
+            {
+                "model_family": "dense",
+                "stage": 5,
+                "run_id": run_id,
+                "optimizer": optimizer,
+                "learning_rate": float(learning_rate),
+                "mean_ndcg_at_10": 0.5 + optimizer_index * 0.01,
+            }
+        )
+        run_root = results_root / run_id
+        run_root.mkdir()
+        group_path = run_root / "group_metrics.jsonl"
+        sample_path = run_root / "sample_metrics.jsonl"
+        write_jsonl(
+            group_path,
+            [
+                {
+                    "source": "__all__",
+                    "negative_width": width,
+                    "contrastive_loss": optimizer_index + width / 100_000,
+                    "positive_margin": -optimizer_index - width / 100_000,
+                }
+                for width in widths
+            ],
+        )
+        sample_rows = []
+        for width_index, width in enumerate(widths):
+            for sample_id in range(224):
+                query_offset = sample_id / 100_000
+                loss = 1.0 + optimizer_index / 100 + query_offset
+                margin = 0.3 - optimizer_index / 100 - query_offset
+                if optimizer in {"muon", "normuon"} and learning_rate == "3e-3":
+                    progress = width_index / (len(widths) - 1)
+                    loss += -0.2 + 0.4 * progress + query_offset / 10
+                    margin += 0.1 - 0.2 * progress - query_offset / 10
+                metric_values = {
+                    "contrastive_loss": loss,
+                    "positive_score": 0.7 + query_offset,
+                    "hardest_negative_score": 0.4 + query_offset,
+                    "positive_margin": margin,
+                    "reciprocal_rank": 0.5,
+                    "top1_accuracy": 0.0,
+                }
+                assert set(metric_values) == set(METRICS)
+                sample_rows.append(
+                    {
+                        "negative_width": width,
+                        "sample_id": sample_id,
+                        "source": SPLITS[sample_id // 32],
+                        **metric_values,
+                    }
+                )
+        write_jsonl(sample_path, sample_rows)
+        manifest = {
+            "status": "complete",
+            "protocol": {"sha256": _sha256(protocol_path)},
+            "negative_widths": widths,
+            "baseline_reproduction": {"maximum_absolute_error": 0.0},
+            "outputs": {
+                "group_metrics": record(group_path),
+                "sample_metrics": record(sample_path),
+            },
+        }
+        manifest_path = run_root / "manifest.json"
+        manifest_path.write_text(json.dumps(manifest, sort_keys=True) + "\n", encoding="utf-8")
+        jobs.append(
+            {
+                "run_id": run_id,
+                "gpu": str(run_index % 8),
+                "attempts": [{"attempt": 1, "returncode": 0}],
+                "checkpoint": str(
+                    tmp_path
+                    / protocol["evaluation"]["checkpoint_root"]
+                    / run_id
+                    / f"checkpoint-{protocol['evaluation']['checkpoint_step']}"
+                ),
+                "manifest": {
+                    "path": str(manifest_path.relative_to(tmp_path)),
+                    "bytes": manifest_path.stat().st_size,
+                    "sha256": _sha256(manifest_path),
+                },
+                "baseline_maximum_absolute_error": 0.0,
+            }
+        )
+
+    beir_path = tmp_path / "reports" / "dense-discovery" / "checkpoint_summary.csv"
+    beir_path.parent.mkdir(parents=True)
+    with beir_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(beir_rows[0]))
+        writer.writeheader()
+        writer.writerows(beir_rows)
+
+    source_receipt = tmp_path / "reports" / "candidate-breadth" / "data-audit.json"
+    source_receipt.parent.mkdir(parents=True)
+    source_audit = {
+        "schema_version": 1,
+        "status": "complete",
+        "upstream_reconstruction_verified": True,
+        "protocol_sha256": _sha256(protocol_path),
+        "manifest_sha256": "a" * 64,
+    }
+    source_receipt.write_text(json.dumps(source_audit, sort_keys=True) + "\n", encoding="utf-8")
+    source_identity = {
+        "path": str(source_receipt.relative_to(tmp_path)),
+        "bytes": source_receipt.stat().st_size,
+        "sha256": _sha256(source_receipt),
+        "audit": source_audit,
+    }
+    receipt = {
+        "schema_version": 1,
+        "status": "complete",
+        "protocol": {
+            "path": str(protocol_path.relative_to(tmp_path)),
+            "bytes": protocol_path.stat().st_size,
+            "sha256": _sha256(protocol_path),
+        },
+        "data_audit": {**source_audit, "upstream_reconstruction_verified": False},
+        "source_audit": source_identity,
+        "gpus": [str(index) for index in range(8)],
+        "jobs": jobs,
+    }
+    (results_root / "matrix-receipt.json").write_text(
+        json.dumps(receipt, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+    calls = []
+
+    def bootstrap(deltas_by_source, **kwargs):
+        assert list(deltas_by_source) == list(SPLITS)
+        assert {source: len(values) for source, values in deltas_by_source.items()} == {
+            source: 32 for source in SPLITS
+        }
+        assert kwargs["replicates"] == 50_000
+        assert kwargs["seed"] == 20_260_902
+        assert kwargs["confidence"] == 0.95
+        calls.append(kwargs["label"])
+        values = [value for source in SPLITS for value in deltas_by_source[source]]
+        mean = sum(values) / len(values)
+        return mean - 0.01, mean + 0.01
+
+    monkeypatch.setattr(
+        "embed_optim.candidate_breadth_summary.source_stratified_paired_bootstrap_ci",
+        bootstrap,
+    )
+    summary = build_candidate_breadth_summary(protocol_path)
+    assert summary["status"] == "complete"
+    assert summary["decision"]["decision"] == "supported"
+    assert len(calls) == 24
+    contrast_path = source_receipt.parent / summary["outputs"]["contrasts"]["path"]
+    with contrast_path.open(encoding="utf-8", newline="") as handle:
+        contrasts = list(csv.DictReader(handle))
+    assert len(contrasts) == 12
+    assert all(row["contrastive_loss_delta_ci95_lower"] for row in contrasts)
+    assert all(row["positive_margin_delta_ci95_upper"] for row in contrasts)
+
+    audited = build_candidate_breadth_summary(protocol_path, audit_only=True)
+    assert audited == summary
+    assert len(calls) == 48
