@@ -394,11 +394,18 @@ def candidate_breadth_latex(
     )
     calibration = {(row["optimizer"], row["negative_width"]): row for row in calibration_rows}
     contrasts = {(row["optimizer"], row["negative_width"]): row for row in contrast_rows}
-    endpoints = []
+    endpoint_points = []
+    endpoint_intervals = []
     for optimizer in CHALLENGERS:
         narrow = contrasts[(optimizer, 7)]
         broad = contrasts[(optimizer, 2048)]
-        endpoints.append(
+        endpoint_points.append(
+            f"{LABELS[optimizer]} "
+            f"{narrow['contrastive_loss_delta']:+.5f}/{narrow['positive_margin_delta']:+.5f}"
+            r"$\rightarrow$"
+            f"{broad['contrastive_loss_delta']:+.5f}/{broad['positive_margin_delta']:+.5f}"
+        )
+        endpoint_intervals.append(
             f"{LABELS[optimizer]} loss/margin deltas move from "
             f"{_delta_interval(narrow, 'contrastive_loss', digits=5)}/"
             f"{_delta_interval(narrow, 'positive_margin', digits=5)} to "
@@ -433,19 +440,26 @@ def candidate_breadth_latex(
             rf"bootstrap intervals. Frozen decision: {title}.}}",
             r"\label{fig:candidate-breadth}",
             r"\end{figure*}",
+            r"\paragraph{Candidate-breadth uncertainty and paired prevalence.}",
+            sentence.replace("--", r"--")
+            + " Exact endpoint intervals are "
+            + "; ".join(endpoint_intervals)
+            + ". Intervals use 50,000 resamples, independently preserving each of the seven "
+            "32-query source strata; they are descriptive and do not enter the frozen support "
+            "rule.",
+            "",
+            _paired_transition_latex(contrast_rows),
             r"}",
             "",
             r"\paragraph{Candidate-breadth decision.}",
-            sentence.replace("--", r"--")
-            + " At width 7, loss/margin Spearman pairs are "
+            f"Frozen decision: {title}. Width 7 "
+            r"$\rightarrow$ 2,048 loss/margin deltas are "
+            + "; ".join(endpoint_points)
+            + ". Source-stratified intervals and paired prevalence appear in "
+            r"Figure~\ref{fig:candidate-breadth}; this post-hoc diagnostic cannot alter the "
+            "three-seed comparison. Width-7 loss/margin Spearman pairs are "
             + narrow_calibration
-            + ". "
-            + "; ".join(endpoints)
-            + ". Intervals use 50,000 resamples, independently preserving each of the seven "
-            "32-query source strata; they are descriptive and do not enter the frozen support "
-            "rule. The diagnostic is post hoc and does not alter the frozen three-seed comparison.",
-            "",
-            _paired_transition_latex(contrast_rows),
+            + ".",
             "",
         )
     )

@@ -418,14 +418,11 @@ eight-way objective while degrading rankings against documents outside that set.
 is therefore part of optimizer evaluation, not merely a dataset hyperparameter.
 \CandidateBreadthDiscussion
 
-Weight-space geometry helps explain why the gap can be optimizer dependent without itself being the
-headline novelty. Muon and NorMuon move roughly twice as far in parameter space for nearly the same
-fixed-probe score drift at their useful points. This makes a larger change outside the measured
-candidate set plausible, but high-dose trajectories show that weight distance and score drift can
-decouple. The shared-start branches test accumulated operator effects at matched initial scale, and
-the spectral transplants test whether singular-value redistribution---rather than operator label or
-norm---carries the relevant query-tail effect. A failed causal-chain component rejects that specific
-spectral explanation while leaving the observed calibration failure intact.
+Weight-space geometry suggests why the gap can be optimizer dependent: at their useful points, Muon
+and NorMuon move roughly twice as far for nearly the same fixed-probe score drift, making unseen-score
+changes plausible. Yet high-dose trajectories decouple distance and drift. Shared-start branches and
+spectral transplants therefore test accumulated and singular-value effects; a failed chain rejects
+that mechanism, not the observed calibration failure.
 
 The robustness result must likewise be stated at the correct level. Lower variation in training
 loss does not imply lower variation in retrieval quality. An optimizer can look smoother and more

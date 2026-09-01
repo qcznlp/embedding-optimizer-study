@@ -96,10 +96,11 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert "-0.10000 [-0.11000, -0.09000]" in latex
     assert "shaded bands are descriptive 95\\% source-stratified" in latex
     assert "do not enter the frozen support rule" in latex
+    assert r"\paragraph{Candidate-breadth uncertainty and paired prevalence.}" in latex
     assert r"\paragraph{Descriptive paired prevalence.}" in latex
     assert r"80.0\%/75.0\% at width 7 to 30.0\%/30.0\% at width 2,048" in latex
     assert latex.count(r"\newcommand{\CandidateBreadthFigure}") == 1
-    assert "Frozen decision: Supported" in latex
+    assert "Frozen decision: Supported. Width 7" in latex
     assert "post hoc" in latex
     assert "does not establish that contribution causally" in latex
     assert r"\newcommand{\CandidateBreadthConclusion}" in latex

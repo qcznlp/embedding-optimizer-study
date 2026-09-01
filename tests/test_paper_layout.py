@@ -211,6 +211,8 @@ def test_pending_results_reserve_final_shaped_headline_and_conclusion_footprint(
     assert r"\newcommand{\CandidateBreadthFigure}" in candidate
     assert r"\label{fig:candidate-breadth}" in candidate
     assert "supported, partial-attenuation, or not-supported" in candidate
+    assert "Candidate-breadth uncertainty and paired prevalence" in candidate
+    assert "width-7-to-2,048 loss/margin point" in candidate
 
 
 def test_release_runs_layout_gate_only_after_pdf_build():
