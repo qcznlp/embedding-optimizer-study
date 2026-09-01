@@ -76,6 +76,10 @@ evidence paragraph, result-bound `\CandidateBreadthDiscussion`, and bounded
 `\CandidateBreadthConclusion` used by the final Conclusion. Its
 manifest binds both publication outputs to all 12 evaluation manifests, the discovery BEIR table,
 the nested-width protocol, and the deterministic SVG/PDF figure.
+The paired loss and margin contrasts carry descriptive 95% source-stratified paired percentile
+bootstrap intervals from 50,000 resamples, with the seven fixed 32-query source strata resampled
+independently. The interval plan is frozen before candidate data or scores are visible and does not
+change the supported/partial/not-supported rule.
 For the final publication handoff, `embed-optim-candidate-breadth-release --resume` performs those
 steps after validating the complete canonical Dense finalization ledger and all of its hashed logs,
 then reruns the current report renderers, strict paper audits, release PDF build, tests, style checks,
@@ -117,7 +121,7 @@ verify the DenseOn subset explicitly.
 | Immediate causal intervention | `reports/functional-intervention/manifest.json` | every DenseOn anchor and paired query record passes scale, sign, pairing, and source audits |
 | Post-hoc state-feedback synthesis | common-state cosine summary and `reports/local-global-reversal/summary_manifest.json` | trajectory-conditioned AdamW--Muon, Muon--NorMuon, and terminal-gradient alignments are source-bound and labeled post hoc |
 | Post-hoc symmetric tail diagnostic | `configs/tail_stability_analysis.json` and `reports/tail-stability/summary_manifest.json` | fixed DenseOn quantiles and Adam/challenger cross-tails are labeled post hoc; no robustness claim without the accumulated gate |
-| Post-hoc candidate-breadth diagnostic | `configs/candidate_breadth_probe.json`, `reports/candidate-breadth/summary.json`, and `publication_manifest.json` | 12 width-7 baseline reproductions plus nested widths 10--2,048 for 224 balanced queries; support requires both Muon-family endpoint reversals and never replaces three-seed inference |
+| Post-hoc candidate-breadth diagnostic | `configs/candidate_breadth_probe.json`, `reports/candidate-breadth/summary.json`, and `publication_manifest.json` | 12 width-7 baseline reproductions plus nested widths 10--2,048 for 224 balanced queries; paired loss/margin deltas include descriptive 50,000-resample source-stratified 95% intervals; support requires both Muon-family endpoint reversals and never replaces three-seed inference |
 | Spectrum/basis attribution | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | complete DenseOn spectrum, basis, interaction, path, and band cells; this fixed-state tier is insufficient for long-horizon causality |
 | Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 9 DenseOn runs and 45 checkpoints on both frozen probes; three-seed joint loss-p95/unseen-margin-p05 endpoint |
 | Temporal causal-chain bridge | `reports/temporal-short-branch/summary_manifest.json`, `paired_contrasts.csv`, `loso_predictions.csv`, and `estimates.csv` in that directory | every frozen predictor and norm control is reported across held-out seeds; numerical RMSE changes and optimizer-coefficient changes are displayed even when the bridge is negative |

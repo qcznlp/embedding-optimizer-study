@@ -813,11 +813,14 @@ unchanged anti-calibrated ordering falsifies the proposed account. A passing rul
 missing-candidate coverage contributing to the gap; it does not establish that contribution
 causally. These rules were fixed before any candidate-breadth data or scores were visible, but the
 diagnostic itself was designed after the shortlist--corpus gap was observed and therefore remains
-post hoc. The summary emits the exact
-calibration and paired-contrast tables together with deterministic SVG/PDF publication panels under
-`reports/candidate-breadth/`; the audit command verifies every output hash against the source-bound
-run manifests. The publication renderer owns only the candidate-breadth blog marker and generated
-LaTeX file; its audit recomputes both and verifies the publication manifest before paper build.
+post hoc. For the paired loss and margin contrasts, the pre-result analysis plan also records
+descriptive 95% source-stratified paired percentile bootstrap intervals: 50,000 resamples preserve
+the seven fixed 32-query source strata independently. These intervals do not enter the frozen
+supported/attenuation/not-supported rule. The summary emits the exact calibration and paired-contrast
+tables together with deterministic SVG/PDF publication panels under `reports/candidate-breadth/`;
+the audit command verifies every output hash against the source-bound run manifests. The publication
+renderer owns only the candidate-breadth blog marker and generated LaTeX file; its audit recomputes
+both and verifies the publication manifest before paper build.
 
 ### Render the Dense paper and blog
 

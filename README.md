@@ -422,10 +422,14 @@ their high-dose-versus-retrieval-optimal loss and margin ordering by width 2,048
 reversal is reported separately, and an unchanged anti-calibrated ordering falsifies this proposed
 account. A passing rule is consistent with missing-candidate coverage contributing to the gap; the
 post-hoc diagnostic does not establish that contribution causally and cannot replace the formal
-full-corpus optimizer comparison. The summary writes audited calibration and paired-contrast tables plus
-publication-ready SVG/PDF panels under `reports/candidate-breadth/`. The final two commands update
-only the owned blog marker and `paper/generated/candidate-breadth.tex`, then verify both against a
-content-addressed publication manifest.
+full-corpus optimizer comparison. Paired loss and margin contrasts additionally receive descriptive
+95% source-stratified paired percentile bootstrap intervals: 50,000 resamples independently preserve
+each of the seven fixed 32-query source strata. This uncertainty plan was recorded before candidate
+data or scores were visible and does not enter the frozen decision rule. The summary writes audited
+calibration and paired-contrast tables plus publication-ready SVG/PDF panels under
+`reports/candidate-breadth/`. The final two commands update only the owned blog marker and
+`paper/generated/candidate-breadth.tex`, then verify both against a content-addressed publication
+manifest.
 
 ## Render the final Dense-only deliverables
 
