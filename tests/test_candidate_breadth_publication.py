@@ -34,7 +34,11 @@ def _rows() -> tuple[list[dict], list[dict]]:
             "negative_width": width,
             "samples": 224,
             "contrastive_loss_delta": -0.1 + index * 0.03,
+            "contrastive_loss_delta_ci95_lower": -0.11 + index * 0.03,
+            "contrastive_loss_delta_ci95_upper": -0.09 + index * 0.03,
             "positive_margin_delta": 0.1 - index * 0.03,
+            "positive_margin_delta_ci95_lower": 0.09 - index * 0.03,
+            "positive_margin_delta_ci95_upper": 0.11 - index * 0.03,
             "contrastive_loss_high_dose_better_fraction": 0.8 - index * 0.1,
             "positive_margin_high_dose_better_fraction": 0.75 - index * 0.09,
         }
@@ -48,6 +52,23 @@ def _summary(decision: str = "supported") -> dict:
     return {
         "baseline_maximum_absolute_error": 1e-6,
         "decision": {"decision": decision},
+        "paired_uncertainty": {
+            "recorded_at_utc": "2026-09-01T16:21:44Z",
+            "candidate_breadth_data_or_scores_visible": False,
+            "decision_rule_changed": False,
+            "metrics": ["contrastive_loss", "positive_margin"],
+            "method": "source-stratified paired percentile bootstrap",
+            "strata": (
+                "the seven training-data sources, resampled independently at their fixed "
+                "32-query sizes"
+            ),
+            "replicates": 50_000,
+            "seed": 20_260_902,
+            "confidence": 0.95,
+            "role": (
+                "descriptive uncertainty only; intervals do not enter the frozen support rule"
+            ),
+        },
         "claim_boundary": "Post hoc only.",
     }
 
@@ -60,6 +81,9 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert "**Frozen decision: Supported.**" in markdown
     assert "| NorMuon | 2,048 |" in markdown
     assert "candidate_breadth_calibration.svg" in markdown
+    assert "-0.100000 [-0.110000, -0.090000]" in markdown
+    assert "source-stratified paired percentile bootstrap intervals" in markdown
+    assert "do not enter the frozen support rule" in markdown
     assert "earliest retained width" in markdown
     assert "Muon: 512 negatives" in markdown
     assert "80.0%/75.0% at width 7 → 30.0%/30.0% at width 2,048" in markdown
@@ -69,6 +93,9 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert "does not establish that contribution causally" in markdown
     assert r"\label{fig:candidate-breadth}" in latex
     assert "candidate_breadth_calibration.pdf" in latex
+    assert "-0.10000 [-0.11000, -0.09000]" in latex
+    assert "shaded bands are descriptive 95\\% source-stratified" in latex
+    assert "do not enter the frozen support rule" in latex
     assert r"\paragraph{Descriptive paired prevalence.}" in latex
     assert r"80.0\%/75.0\% at width 7 to 30.0\%/30.0\% at width 2,048" in latex
     assert latex.count(r"\newcommand{\CandidateBreadthFigure}") == 1
@@ -94,6 +121,13 @@ def test_paired_transition_reports_nonmonotone_grid_crossing_and_validates_preva
     contrasts[0]["samples"] = 223
     with pytest.raises(ValueError, match="sample count"):
         _paired_transition_records(contrasts)
+
+
+def test_publication_rejects_reversed_paired_bootstrap_interval() -> None:
+    calibration, contrasts = _rows()
+    contrasts[0]["contrastive_loss_delta_ci95_lower"] = 0.2
+    with pytest.raises(ValueError, match="confidence interval is reversed"):
+        candidate_breadth_markdown(calibration, contrasts, _summary())
 
 
 @pytest.mark.parametrize(

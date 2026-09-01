@@ -21,6 +21,7 @@ OPTIMIZERS = ("adamw", "muon", "normuon")
 CHALLENGERS = ("muon", "normuon")
 LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
 EXPECTED_SAMPLES = 224
+UNCERTAINTY_METRICS = ("contrastive_loss", "positive_margin")
 
 
 def _relative(path: Path, root: Path) -> str:
@@ -54,10 +55,59 @@ def _finite(value: Any, *, context: str) -> float:
     return number
 
 
+def _paired_uncertainty(summary: dict[str, Any]) -> dict[str, Any]:
+    uncertainty = summary.get("paired_uncertainty")
+    if (
+        not isinstance(uncertainty, dict)
+        or set(uncertainty)
+        != {
+            "recorded_at_utc",
+            "candidate_breadth_data_or_scores_visible",
+            "decision_rule_changed",
+            "metrics",
+            "method",
+            "strata",
+            "replicates",
+            "seed",
+            "confidence",
+            "role",
+        }
+        or uncertainty.get("recorded_at_utc") != "2026-09-01T16:21:44Z"
+        or uncertainty.get("candidate_breadth_data_or_scores_visible") is not False
+        or uncertainty.get("decision_rule_changed") is not False
+        or uncertainty.get("metrics") != list(UNCERTAINTY_METRICS)
+        or uncertainty.get("method") != "source-stratified paired percentile bootstrap"
+        or uncertainty.get("strata")
+        != "the seven training-data sources, resampled independently at their fixed 32-query sizes"
+        or uncertainty.get("replicates") != 50_000
+        or uncertainty.get("seed") != 20_260_902
+        or uncertainty.get("confidence") != 0.95
+        or uncertainty.get("role")
+        != "descriptive uncertainty only; intervals do not enter the frozen support rule"
+    ):
+        raise ValueError("Candidate-breadth publication uncertainty contract changed")
+    return uncertainty
+
+
+def _validate_interval(row: dict[str, Any], metric: str) -> tuple[float, float]:
+    lower = _finite(row[f"{metric}_delta_ci95_lower"], context=f"{metric} CI lower")
+    upper = _finite(row[f"{metric}_delta_ci95_upper"], context=f"{metric} CI upper")
+    if lower > upper:
+        raise ValueError(f"Candidate-breadth {metric} confidence interval is reversed")
+    return lower, upper
+
+
+def _delta_interval(row: dict[str, Any], metric: str, *, digits: int) -> str:
+    delta = _finite(row[f"{metric}_delta"], context=f"{metric} contrast")
+    lower, upper = _validate_interval(row, metric)
+    return f"{delta:+.{digits}f} [{lower:+.{digits}f}, {upper:+.{digits}f}]"
+
+
 def load_candidate_breadth_publication_rows(
     summary_dir: Path,
     summary: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    _paired_uncertainty(summary)
     outputs = summary.get("outputs", {})
     expected_outputs = {"calibration", "contrasts", "figure_svg", "figure_pdf"}
     if set(outputs) != expected_outputs:
@@ -99,6 +149,18 @@ def load_candidate_breadth_publication_rows(
             "positive_margin_delta": _finite(
                 row["positive_margin_delta"], context="margin contrast"
             ),
+            "contrastive_loss_delta_ci95_lower": _finite(
+                row["contrastive_loss_delta_ci95_lower"], context="loss CI lower"
+            ),
+            "contrastive_loss_delta_ci95_upper": _finite(
+                row["contrastive_loss_delta_ci95_upper"], context="loss CI upper"
+            ),
+            "positive_margin_delta_ci95_lower": _finite(
+                row["positive_margin_delta_ci95_lower"], context="margin CI lower"
+            ),
+            "positive_margin_delta_ci95_upper": _finite(
+                row["positive_margin_delta_ci95_upper"], context="margin CI upper"
+            ),
             "contrastive_loss_high_dose_better_fraction": _finite(
                 row["contrastive_loss_high_dose_better_fraction"],
                 context="loss high-dose-better fraction",
@@ -116,6 +178,8 @@ def load_candidate_breadth_publication_rows(
             )
         ):
             raise ValueError("Candidate-breadth paired prevalence row is invalid")
+        for metric in UNCERTAINTY_METRICS:
+            _validate_interval(parsed, metric)
         contrasts.append(parsed)
     expected_calibration = {(optimizer, width) for optimizer in OPTIMIZERS for width in WIDTHS}
     expected_contrasts = {(optimizer, width) for optimizer in CHALLENGERS for width in WIDTHS}
@@ -260,6 +324,7 @@ def candidate_breadth_markdown(
     contrast_rows: list[dict[str, Any]],
     summary: dict[str, Any],
 ) -> str:
+    _paired_uncertainty(summary)
     title, sentence = _decision_text(summary)
     calibration = {(row["optimizer"], row["negative_width"]): row for row in calibration_rows}
     contrasts = {(row["optimizer"], row["negative_width"]): row for row in contrast_rows}
@@ -271,16 +336,20 @@ def candidate_breadth_markdown(
         "![Candidate-breadth calibration](../reports/candidate-breadth/"
         "candidate_breadth_calibration.svg)",
         "",
-        "| Optimizer | Negatives | loss↔BEIR ρ | margin↔BEIR ρ | high-dose loss Δ | "
-        "high-dose margin Δ |",
+        "| Optimizer | Negatives | loss↔BEIR ρ | margin↔BEIR ρ | "
+        "high-dose loss Δ [95% CI] | high-dose margin Δ [95% CI] |",
         "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     for optimizer in OPTIMIZERS:
         for width in (7, 2048):
             row = calibration[(optimizer, width)]
             contrast = contrasts.get((optimizer, width))
-            loss_delta = "—" if contrast is None else f"{contrast['contrastive_loss_delta']:+.6f}"
-            margin_delta = "—" if contrast is None else f"{contrast['positive_margin_delta']:+.6f}"
+            loss_delta = (
+                "—" if contrast is None else _delta_interval(contrast, "contrastive_loss", digits=6)
+            )
+            margin_delta = (
+                "—" if contrast is None else _delta_interval(contrast, "positive_margin", digits=6)
+            )
             lines.append(
                 f"| {LABELS[optimizer]} | {width:,} | {row['loss_beir_spearman']:+.3f} | "
                 f"{row['margin_beir_spearman']:+.3f} | {loss_delta} | {margin_delta} |"
@@ -296,6 +365,10 @@ def candidate_breadth_markdown(
             "shortlist--corpus gap was observed, so it remains post hoc regardless of its outcome "
             "and cannot replace the frozen three-seed full-corpus comparison.",
             "",
+            "Brackets and shaded bands are descriptive 95% source-stratified paired percentile "
+            "bootstrap intervals (50,000 resamples; each of the seven 32-query source strata is "
+            "resampled independently). They do not enter the frozen support rule.",
+            "",
             _paired_transition_markdown(contrast_rows),
         ]
     )
@@ -307,6 +380,7 @@ def candidate_breadth_latex(
     contrast_rows: list[dict[str, Any]],
     summary: dict[str, Any],
 ) -> str:
+    _paired_uncertainty(summary)
     title, sentence = _decision_text(summary)
     conclusion = (
         f"The post-hoc nested-candidate decision was {title.lower()}. {sentence} "
@@ -326,8 +400,10 @@ def candidate_breadth_latex(
         broad = contrasts[(optimizer, 2048)]
         endpoints.append(
             f"{LABELS[optimizer]} loss/margin deltas move from "
-            f"{narrow['contrastive_loss_delta']:+.5f}/{narrow['positive_margin_delta']:+.5f} "
-            f"to {broad['contrastive_loss_delta']:+.5f}/{broad['positive_margin_delta']:+.5f}"
+            f"{_delta_interval(narrow, 'contrastive_loss', digits=5)}/"
+            f"{_delta_interval(narrow, 'positive_margin', digits=5)} to "
+            f"{_delta_interval(broad, 'contrastive_loss', digits=5)}/"
+            f"{_delta_interval(broad, 'positive_margin', digits=5)}"
         )
     narrow_calibration = "; ".join(
         f"{LABELS[optimizer]} $({calibration[(optimizer, 7)]['loss_beir_spearman']:+.2f},"
@@ -353,7 +429,8 @@ def candidate_breadth_latex(
             r"queries. Top: within-optimizer validation-metric correlation with discovery BEIR over "
             r"four learning rates. Bottom: paired high-dose ($3\!\times\!10^{-3}$) minus "
             r"retrieval-optimal ($3\!\times\!10^{-4}$) contrasts. Width 7 exactly nests inside every "
-            rf"broader set. Frozen decision: {title}.}}",
+            r"broader set; shaded bands are descriptive 95\% source-stratified paired percentile "
+            rf"bootstrap intervals. Frozen decision: {title}.}}",
             r"\label{fig:candidate-breadth}",
             r"\end{figure*}",
             r"}",
@@ -364,7 +441,9 @@ def candidate_breadth_latex(
             + narrow_calibration
             + ". "
             + "; ".join(endpoints)
-            + ". The diagnostic is post hoc and does not alter the frozen three-seed comparison.",
+            + ". Intervals use 50,000 resamples, independently preserving each of the seven "
+            "32-query source strata; they are descriptive and do not enter the frozen support "
+            "rule. The diagnostic is post hoc and does not alter the frozen three-seed comparison.",
             "",
             _paired_transition_latex(contrast_rows),
             "",

@@ -83,6 +83,21 @@
     "unit": "optimizer-learning-rate-width",
     "primary_readout": "within-optimizer Spearman correlation between candidate-set metric and final 14-task BEIR as a function of width",
     "secondary_readout": "high-dose minus retrieval-optimal paired query contrast as a function of width",
+    "paired_uncertainty": {
+      "recorded_at_utc": "2026-09-01T16:21:44Z",
+      "candidate_breadth_data_or_scores_visible": false,
+      "decision_rule_changed": false,
+      "metrics": [
+        "contrastive_loss",
+        "positive_margin"
+      ],
+      "method": "source-stratified paired percentile bootstrap",
+      "strata": "the seven training-data sources, resampled independently at their fixed 32-query sizes",
+      "replicates": 50000,
+      "seed": 20260902,
+      "confidence": 0.95,
+      "role": "descriptive uncertainty only; intervals do not enter the frozen support rule"
+    },
     "prediction": "Muon and NorMuon prefer 3e-3 at width 7, but that advantage shrinks or reverses toward the 3e-4 full-corpus ordering as width increases; AdamW ordering changes less",
     "primary_support_rule": {
       "baseline_reproduction": "all 12 width-7 evaluations pass the 1e-5 sample-level check",

@@ -83,6 +83,7 @@ def load_candidate_breadth_protocol(path: str | Path) -> tuple[Path, dict[str, A
     source = protocol["source"]
     selection = protocol["query_selection"]
     construction = protocol["candidate_construction"]
+    analysis = protocol["analysis"]
     widths = construction.get("negative_widths")
     if (
         source.get("repo") != SOURCE_REPO
@@ -101,6 +102,36 @@ def load_candidate_breadth_protocol(path: str | Path) -> tuple[Path, dict[str, A
         raise ValueError("Candidate-breadth widths changed")
     if construction.get("requirements", {}).get("available_unique_negatives_per_query") != 2048:
         raise ValueError("Candidate-breadth uniqueness requirement changed")
+    uncertainty = analysis.get("paired_uncertainty")
+    if (
+        not isinstance(uncertainty, dict)
+        or set(uncertainty)
+        != {
+            "recorded_at_utc",
+            "candidate_breadth_data_or_scores_visible",
+            "decision_rule_changed",
+            "metrics",
+            "method",
+            "strata",
+            "replicates",
+            "seed",
+            "confidence",
+            "role",
+        }
+        or uncertainty.get("recorded_at_utc") != "2026-09-01T16:21:44Z"
+        or uncertainty.get("candidate_breadth_data_or_scores_visible") is not False
+        or uncertainty.get("decision_rule_changed") is not False
+        or uncertainty.get("metrics") != ["contrastive_loss", "positive_margin"]
+        or uncertainty.get("method") != "source-stratified paired percentile bootstrap"
+        or uncertainty.get("strata")
+        != "the seven training-data sources, resampled independently at their fixed 32-query sizes"
+        or uncertainty.get("replicates") != 50_000
+        or uncertainty.get("seed") != 20_260_902
+        or uncertainty.get("confidence") != 0.95
+        or uncertainty.get("role")
+        != "descriptive uncertainty only; intervals do not enter the frozen support rule"
+    ):
+        raise ValueError("Candidate-breadth paired uncertainty contract changed")
     return path, protocol
 
 

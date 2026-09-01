@@ -10,8 +10,10 @@ from embed_optim.candidate_breadth_summary import (
     _candidate_breadth_outputs,
     _matrix_provenance,
     candidate_breadth_decision,
+    source_stratified_paired_bootstrap_ci,
     spearman,
 )
+from embed_optim.data import SPLITS
 from embed_optim.geometry import _sha256
 
 
@@ -20,6 +22,49 @@ def test_spearman_uses_average_ranks() -> None:
     assert spearman([1, 1, 2, 3], [1, 2, 3, 4]) == pytest.approx(0.9486832981)
     with pytest.raises(ValueError, match="constant"):
         spearman([1, 1, 1], [1, 2, 3])
+
+
+def test_source_stratified_paired_bootstrap_is_exact_deterministic_and_strict() -> None:
+    constant = {source: [1.0] * 32 for source in SPLITS}
+    assert source_stratified_paired_bootstrap_ci(
+        constant,
+        replicates=257,
+        seed=20260902,
+        confidence=0.95,
+        label="constant",
+    ) == pytest.approx((1.0, 1.0))
+
+    varied = {
+        source: [source_index + query_index / 32 for query_index in range(32)]
+        for source_index, source in enumerate(SPLITS)
+    }
+    first = source_stratified_paired_bootstrap_ci(
+        varied,
+        replicates=2_000,
+        seed=20260902,
+        confidence=0.95,
+        label="muon:7:contrastive_loss",
+    )
+    repeated = source_stratified_paired_bootstrap_ci(
+        varied,
+        replicates=2_000,
+        seed=20260902,
+        confidence=0.95,
+        label="muon:7:contrastive_loss",
+    )
+    assert repeated == first
+    assert first[0] < first[1]
+
+    invalid = dict(varied)
+    invalid[SPLITS[0]] = invalid[SPLITS[0]][:-1]
+    with pytest.raises(ValueError, match="bootstrap contract"):
+        source_stratified_paired_bootstrap_ci(
+            invalid,
+            replicates=2_000,
+            seed=20260902,
+            confidence=0.95,
+            label="invalid",
+        )
 
 
 def _contrasts(*, broad_reversal: bool, broad_scale: float = 1.0) -> list[dict]:
@@ -84,7 +129,11 @@ def test_candidate_breadth_publication_figure_requires_and_writes_complete_rows(
             "optimizer": optimizer,
             "negative_width": width,
             "contrastive_loss_delta": -0.1 + index * 0.03,
+            "contrastive_loss_delta_ci95_lower": -0.11 + index * 0.03,
+            "contrastive_loss_delta_ci95_upper": -0.09 + index * 0.03,
             "positive_margin_delta": 0.1 - index * 0.03,
+            "positive_margin_delta_ci95_lower": 0.09 - index * 0.03,
+            "positive_margin_delta_ci95_upper": 0.11 - index * 0.03,
         }
         for optimizer in ("muon", "normuon")
         for index, width in enumerate(widths)
@@ -127,7 +176,11 @@ def test_candidate_breadth_output_audit_recomputes_bytes_instead_of_trusting_has
             "optimizer": optimizer,
             "negative_width": width,
             "contrastive_loss_delta": -0.1 + index * 0.03,
+            "contrastive_loss_delta_ci95_lower": -0.11 + index * 0.03,
+            "contrastive_loss_delta_ci95_upper": -0.09 + index * 0.03,
             "positive_margin_delta": 0.1 - index * 0.03,
+            "positive_margin_delta_ci95_lower": 0.09 - index * 0.03,
+            "positive_margin_delta_ci95_upper": 0.11 - index * 0.03,
         }
         for optimizer in ("muon", "normuon")
         for index, width in enumerate(widths)

@@ -46,6 +46,13 @@ def test_protocol_is_post_hoc_and_fixes_nested_widths() -> None:
         2048,
     ]
     assert protocol["timing"]["candidate_breadth_data_or_scores_visible"] is False
+    uncertainty = protocol["analysis"]["paired_uncertainty"]
+    assert uncertainty["candidate_breadth_data_or_scores_visible"] is False
+    assert uncertainty["decision_rule_changed"] is False
+    assert uncertainty["method"] == "source-stratified paired percentile bootstrap"
+    assert uncertainty["replicates"] == 50_000
+    assert uncertainty["seed"] == 20_260_902
+    assert uncertainty["role"].startswith("descriptive uncertainty only")
 
 
 def test_candidate_breadth_prepare_modes_are_mutually_exclusive() -> None:

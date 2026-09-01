@@ -12,8 +12,11 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from .candidate_breadth_data import load_candidate_breadth_protocol
 from .candidate_breadth_evaluation import METRICS
+from .data import SPLITS
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 
 
@@ -58,6 +61,45 @@ def spearman(values: list[float], outcomes: list[float]) -> float:
     if left_norm == 0 or right_norm == 0:
         raise ValueError("Spearman correlation is undefined for a constant input")
     return numerator / (left_norm * right_norm)
+
+
+def source_stratified_paired_bootstrap_ci(
+    deltas_by_source: dict[str, list[float]],
+    *,
+    replicates: int,
+    seed: int,
+    confidence: float,
+    label: str,
+) -> tuple[float, float]:
+    """Deterministic percentile CI that preserves the frozen 32-query source strata."""
+
+    if (
+        set(deltas_by_source) != set(SPLITS)
+        or any(len(values) != 32 for values in deltas_by_source.values())
+        or replicates <= 0
+        or not 0 < confidence < 1
+        or not isinstance(seed, int)
+        or not label
+    ):
+        raise ValueError("Candidate-breadth bootstrap contract is invalid")
+    arrays = [np.asarray(deltas_by_source[source], dtype=np.float64) for source in SPLITS]
+    if any(array.shape != (32,) or not np.isfinite(array).all() for array in arrays):
+        raise ValueError("Candidate-breadth bootstrap deltas are invalid")
+    derived_seed = int.from_bytes(hashlib.sha256(f"{seed}:{label}".encode()).digest()[:8], "big")
+    generator = np.random.Generator(np.random.PCG64(derived_seed))
+    bootstrap_means = np.empty(replicates, dtype=np.float64)
+    batch_size = min(4096, replicates)
+    total_samples = sum(len(array) for array in arrays)
+    for start in range(0, replicates, batch_size):
+        stop = min(start + batch_size, replicates)
+        batch = np.zeros(stop - start, dtype=np.float64)
+        for array in arrays:
+            indices = generator.integers(0, len(array), size=(stop - start, len(array)))
+            batch += array[indices].sum(axis=1)
+        bootstrap_means[start:stop] = batch / total_samples
+    alpha = (1 - confidence) / 2
+    lower, upper = np.quantile(bootstrap_means, [alpha, 1 - alpha], method="linear")
+    return float(lower), float(upper)
 
 
 def candidate_breadth_decision(
@@ -217,15 +259,26 @@ def _candidate_breadth_figure(
     )
     for axis, metric, title, subtitle in bottom_panels:
         for optimizer in challengers:
+            values = [float(contrasts[(optimizer, width)][metric]) for width in widths]
             axis.plot(
                 widths,
-                [float(contrasts[(optimizer, width)][metric]) for width in widths],
+                values,
                 color=colors[optimizer],
                 marker="o",
                 linewidth=1.8,
                 markersize=4.5,
                 label=labels[optimizer],
             )
+            ci_prefix = metric.removesuffix("_delta")
+            lower = [
+                float(contrasts[(optimizer, width)][f"{ci_prefix}_delta_ci95_lower"])
+                for width in widths
+            ]
+            upper = [
+                float(contrasts[(optimizer, width)][f"{ci_prefix}_delta_ci95_upper"])
+                for width in widths
+            ]
+            axis.fill_between(widths, lower, upper, color=colors[optimizer], alpha=0.13)
         axis.axhline(0.0, color="#555555", linestyle="--", linewidth=0.9, alpha=0.75)
         axis.set_title(f"{title}\n{subtitle}", fontsize=10.2)
         axis.set_ylabel(r"$3\!\times\!10^{-3} - 3\!\times\!10^{-4}$")
@@ -467,6 +520,7 @@ def build_candidate_breadth_summary(
     protocol_path, protocol = load_candidate_breadth_protocol(protocol_path)
     root = protocol_path.parent.parent.resolve()
     evaluation = protocol["evaluation"]
+    uncertainty = protocol["analysis"]["paired_uncertainty"]
     results_root = (root / evaluation["results_root"]).resolve()
     beir_path = root / "reports" / "dense-discovery" / "checkpoint_summary.csv"
     beir = _load_beir_scores(beir_path)
@@ -572,6 +626,11 @@ def build_candidate_breadth_summary(
                 "negative_width": width,
                 "samples": len(keys),
             }
+            if any(
+                str(indexed[high_id][key]["source"]) != str(indexed[optimal_id][key]["source"])
+                for key in keys
+            ):
+                raise ValueError(f"Candidate-breadth source pairing changed for {optimizer}")
             for metric in METRICS:
                 deltas = [
                     float(indexed[high_id][key][metric]) - float(indexed[optimal_id][key][metric])
@@ -585,6 +644,24 @@ def build_candidate_breadth_summary(
                 row[f"{metric}_high_dose_better_fraction"] = sum(
                     delta < 0 if lower_is_better else delta > 0 for delta in deltas
                 ) / len(deltas)
+                if metric in uncertainty["metrics"]:
+                    deltas_by_source = {
+                        source: [
+                            delta
+                            for key, delta in zip(keys, deltas, strict=True)
+                            if str(indexed[optimal_id][key]["source"]) == source
+                        ]
+                        for source in SPLITS
+                    }
+                    lower, upper = source_stratified_paired_bootstrap_ci(
+                        deltas_by_source,
+                        replicates=int(uncertainty["replicates"]),
+                        seed=int(uncertainty["seed"]),
+                        confidence=float(uncertainty["confidence"]),
+                        label=f"{optimizer}:{width}:{metric}",
+                    )
+                    row[f"{metric}_delta_ci95_lower"] = lower
+                    row[f"{metric}_delta_ci95_upper"] = upper
             contrast_rows.append(row)
 
     baseline_pass = len(baseline_errors) == 12 and max(baseline_errors) <= 1e-5
@@ -609,6 +686,7 @@ def build_candidate_breadth_summary(
         },
         "baseline_maximum_absolute_error": max(baseline_errors),
         "decision": decision,
+        "paired_uncertainty": uncertainty,
         "calibration_rows": len(calibration_rows),
         "contrast_rows": len(contrast_rows),
         "claim_boundary": protocol["claim_boundary"],
