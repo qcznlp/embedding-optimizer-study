@@ -134,3 +134,4 @@ def test_figure_uses_acl_compatible_truetype_fonts(
 
     assert matplotlib.rcParams["pdf.fonttype"] == 42
     assert matplotlib.rcParams["ps.fonttype"] == 42
+    assert b"/Subtype /Type3" not in (tmp_path / "corpus_size_association.pdf").read_bytes()

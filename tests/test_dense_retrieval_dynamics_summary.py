@@ -100,7 +100,9 @@ def test_summary_outputs_pdf_svg_csv_and_hashes_every_file(
         assert record["bytes"] == path.stat().st_size
         assert record["sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
     assert (tmp_path / records["figure_svg"]["path"]).read_text().startswith("<?xml")
-    assert (tmp_path / records["figure_pdf"]["path"]).read_bytes().startswith(b"%PDF")
+    pdf = (tmp_path / records["figure_pdf"]["path"]).read_bytes()
+    assert pdf.startswith(b"%PDF")
+    assert b"/Subtype /Type3" not in pdf
 
 
 def test_output_hash_gate_rejects_tampering(tmp_path):

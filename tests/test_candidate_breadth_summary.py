@@ -156,6 +156,8 @@ def test_candidate_breadth_publication_figure_requires_and_writes_complete_rows(
         assert path.suffix == f".{suffix}"
         assert path.stat().st_size == record["bytes"] > 0
         assert len(record["sha256"]) == 64
+        if suffix == "pdf":
+            assert b"/Subtype /Type3" not in path.read_bytes()
 
     repeated = _candidate_breadth_figure(calibration, contrasts, tmp_path)
     assert {suffix: item["sha256"] for suffix, item in repeated.items()} == {
