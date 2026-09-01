@@ -374,6 +374,11 @@ def _figure(
     import matplotlib
 
     matplotlib.use("Agg")
+    # ACL-compatible PDFs must not contain Matplotlib's default Type-3 fonts.
+    # Keep text searchable and embedded as TrueType/Type-42 in both PDF and PS
+    # backends; the SVG hashsalt below continues to make the web figure stable.
+    matplotlib.rcParams["pdf.fonttype"] = 42
+    matplotlib.rcParams["ps.fonttype"] = 42
     matplotlib.rcParams["svg.hashsalt"] = "corpus-size-diagnostic-v1"
     import matplotlib.pyplot as plt
 

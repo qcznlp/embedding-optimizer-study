@@ -114,3 +114,23 @@ def test_tracked_text_outputs_use_canonical_line_endings() -> None:
         assert b"\r" not in payload
     svg_lines = (output / "corpus_size_association.svg").read_text(encoding="utf-8").splitlines()
     assert all(line == line.rstrip() for line in svg_lines)
+
+
+def test_figure_uses_acl_compatible_truetype_fonts(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    import matplotlib
+
+    monkeypatch.setattr(
+        corpus_size_diagnostic,
+        "_permutation_pvalue",
+        lambda left, right, **_kwargs: (_spearman(left, right), 0.5),
+    )
+    monkeypatch.setitem(matplotlib.rcParams, "pdf.fonttype", 3)
+    monkeypatch.setitem(matplotlib.rcParams, "ps.fonttype", 3)
+    task_rows, association_rows, _summary = build_diagnostic("configs/corpus_size_diagnostic.json")
+
+    corpus_size_diagnostic._figure(task_rows, association_rows, tmp_path)
+
+    assert matplotlib.rcParams["pdf.fonttype"] == 42
+    assert matplotlib.rcParams["ps.fonttype"] == 42
