@@ -279,6 +279,12 @@ margin shows the corresponding sign reversal: $+1.0$ for AdamW and $-0.8$ for ea
 optimizer. Thus the same query-disjoint proxy is calibrated for one update rule and anti-calibrated
 for the other two over this grid.
 
+Post-hoc high-dose-minus-oracle training-loss/validation-loss/BEIR deltas are
+$+0.1210/-0.3696/-0.0315$ for Muon and $+0.1068/-0.4268/-0.0300$ for NorMuon. Thus sampled-tuple
+fit worsens while shortlist validation improves and corpus retrieval worsens, ruling out simple
+memorization as a sufficient account but, because all inputs were already visible, not identifying
+the cause.
+
 We also isolate five source-aligned tasks for which the validation queries and full retrieval corpus
 come from the same underlying source. Comparing the validation-selected $3\!\times\!10^{-3}$ rate
 with the retrieval-optimal $3\!\times\!10^{-4}$ rate yields ten optimizer--source transitions. In

@@ -304,6 +304,22 @@ full rerun upgrades legacy completion ledgers to the current provenance schema.
 
 ## Run the post-hoc candidate-breadth diagnostic
 
+The source-bound three-regime diagnostic reconstructs the final discovery training loss,
+query-disjoint validation metrics, and full-corpus BEIR score for all 12 DenseOn discovery runs:
+
+~~~bash
+embed-optim-three-regime-diagnostic \
+  --protocol configs/three_regime_diagnostic.json \
+  --output-dir reports/three-regime-diagnostic
+embed-optim-three-regime-diagnostic \
+  --protocol configs/three_regime_diagnostic.json \
+  --output-dir reports/three-regime-diagnostic \
+  --audit
+~~~
+
+Its checked-in [report](reports/three-regime-diagnostic/README.md) is explicitly post hoc and cannot
+alter the three-seed optimizer comparison or substitute for the nested candidate-breadth test.
+
 This diagnostic is deliberately separate from the frozen three-seed comparison. It asks whether the
 Muon-family validation ordering changes when the same 224 query-positive pairs are scored against
 nested sets of 7, 10, 32, 128, 512, and 2,048 mined negatives. The width-7 slice must first reproduce

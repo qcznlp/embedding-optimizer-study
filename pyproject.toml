@@ -55,6 +55,7 @@ embed-optim-summarize-candidate-breadth = "embed_optim.candidate_breadth_summary
 embed-optim-render-candidate-breadth = "embed_optim.candidate_breadth_publication:main"
 embed-optim-candidate-breadth-release = "embed_optim.candidate_breadth_release:main"
 embed-optim-corpus-size-diagnostic = "embed_optim.corpus_size_diagnostic:main"
+embed-optim-three-regime-diagnostic = "embed_optim.three_regime_diagnostic:main"
 embed-optim-prepare-confirmatory-data = "embed_optim.confirmatory_data:main"
 embed-optim-generate-confirmatory-matrices = "embed_optim.confirmatory_matrix:main"
 embed-optim-evaluate-confirmatory = "embed_optim.confirmatory_evaluation:main"
@@ -138,6 +139,7 @@ where = ["src"]
 "share/embedding-optimizer-study/configs" = [
   "configs/candidate_breadth_probe.json",
   "configs/corpus_size_diagnostic.json",
+  "configs/three_regime_diagnostic.json",
   "configs/beir_representation_probe.json",
   "configs/basis_sensitivity.json",
   "configs/causal_chain_analysis.json",
@@ -221,6 +223,11 @@ where = ["src"]
   "reports/candidate-breadth/*.json",
   "reports/candidate-breadth/*.pdf",
   "reports/candidate-breadth/*.svg",
+]
+"share/embedding-optimizer-study/reports/three-regime-diagnostic" = [
+  "reports/three-regime-diagnostic/*.csv",
+  "reports/three-regime-diagnostic/*.json",
+  "reports/three-regime-diagnostic/*.md",
 ]
 "share/embedding-optimizer-study/reports/weight-space" = [
   "reports/weight-space/README.md",

@@ -314,6 +314,20 @@ and all ten reduce full-corpus nDCG@10. The mean changes are -0.0369 for the sel
 -0.0115 for the positive score, +0.0254 for margin, and -0.0255 for nDCG. Positive scores rise in
 three of the ten transitions, so uniform positive forgetting is not enough to explain the result.
 
+A separate post-hoc join also rules out simple training-set memorization as a sufficient account.
+For the validation-selected 3e-3 dose minus the within-optimizer retrieval oracle at 3e-4:
+
+| Optimizer | Δ trailing train loss | Δ validation loss | Δ validation margin | Δ BEIR nDCG@10 |
+| --- | ---: | ---: | ---: | ---: |
+| Muon | +0.1210 | -0.3696 | +0.0192 | -0.0315 |
+| NorMuon | +0.1068 | -0.4268 | +0.0204 | -0.0300 |
+
+The larger dose fits the sampled training tuples less well, generalizes better to the unseen
+eight-way shortlist, and then retrieves worse against the complete corpus. This three-regime
+decomposition was designed after every constituent outcome was visible, so it is descriptive and
+cannot identify candidate coverage causally. The source-bound reconstruction and audit receipt are
+in [`reports/three-regime-diagnostic/`](../reports/three-regime-diagnostic/README.md).
+
 The novel finding is therefore not that Muon orthogonalizes updates. It is that optimizer choice can
 change whether a query-disjoint, narrow contrastive validation set is a faithful proxy for ranking
 over the complete corpus.
