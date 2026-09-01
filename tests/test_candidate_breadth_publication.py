@@ -8,6 +8,7 @@ import pytest
 
 from embed_optim.candidate_breadth_publication import (
     CANDIDATE_BREADTH_MARKERS,
+    _paired_transition_records,
     candidate_breadth_latex,
     candidate_breadth_markdown,
     render_candidate_breadth_publication,
@@ -31,8 +32,11 @@ def _rows() -> tuple[list[dict], list[dict]]:
         {
             "optimizer": optimizer,
             "negative_width": width,
+            "samples": 224,
             "contrastive_loss_delta": -0.1 + index * 0.03,
             "positive_margin_delta": 0.1 - index * 0.03,
+            "contrastive_loss_high_dose_better_fraction": 0.8 - index * 0.1,
+            "positive_margin_high_dose_better_fraction": 0.75 - index * 0.09,
         }
         for optimizer in ("muon", "normuon")
         for index, width in enumerate(widths)
@@ -56,11 +60,17 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert "**Frozen decision: Supported.**" in markdown
     assert "| NorMuon | 2,048 |" in markdown
     assert "candidate_breadth_calibration.svg" in markdown
+    assert "earliest retained width" in markdown
+    assert "Muon: 512 negatives" in markdown
+    assert "80.0%/75.0% at width 7 → 30.0%/30.0% at width 2,048" in markdown
+    assert "not an estimated threshold" in markdown
     assert "post hoc" in markdown
     assert "contributing to the shortlist--corpus gap" in markdown
     assert "does not establish that contribution causally" in markdown
     assert r"\label{fig:candidate-breadth}" in latex
     assert "candidate_breadth_calibration.pdf" in latex
+    assert r"\paragraph{Descriptive paired prevalence.}" in latex
+    assert r"80.0\%/75.0\% at width 7 to 30.0\%/30.0\% at width 2,048" in latex
     assert latex.count(r"\newcommand{\CandidateBreadthFigure}") == 1
     assert "Frozen decision: Supported" in latex
     assert "post hoc" in latex
@@ -68,6 +78,22 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert r"\newcommand{\CandidateBreadthConclusion}" in latex
     assert r"\newcommand{\CandidateBreadthDiscussion}" in latex
     assert "supplements but does not alter" in latex
+
+
+def test_paired_transition_reports_nonmonotone_grid_crossing_and_validates_prevalence() -> None:
+    _, contrasts = _rows()
+    records = _paired_transition_records(contrasts)
+
+    assert [row["earliest_joint_mean_reversal_width"] for row in records] == [512, 512]
+
+    contrasts[4]["contrastive_loss_delta"] = -0.01
+    contrasts[5]["positive_margin_delta"] = 0.01
+    records = _paired_transition_records(contrasts)
+    assert records[0]["earliest_joint_mean_reversal_width"] is None
+
+    contrasts[0]["samples"] = 223
+    with pytest.raises(ValueError, match="sample count"):
+        _paired_transition_records(contrasts)
 
 
 @pytest.mark.parametrize(

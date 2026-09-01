@@ -20,6 +20,7 @@ WIDTHS = (7, 10, 32, 128, 512, 2048)
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CHALLENGERS = ("muon", "normuon")
 LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
+EXPECTED_SAMPLES = 224
 
 
 def _relative(path: Path, root: Path) -> str:
@@ -88,18 +89,34 @@ def load_candidate_breadth_publication_rows(
         )
     contrasts = []
     for row in _read_rows(summary_dir / outputs["contrasts"]["path"]):
-        contrasts.append(
-            {
-                "optimizer": str(row["optimizer"]),
-                "negative_width": int(row["negative_width"]),
-                "contrastive_loss_delta": _finite(
-                    row["contrastive_loss_delta"], context="loss contrast"
-                ),
-                "positive_margin_delta": _finite(
-                    row["positive_margin_delta"], context="margin contrast"
-                ),
-            }
-        )
+        parsed = {
+            "optimizer": str(row["optimizer"]),
+            "negative_width": int(row["negative_width"]),
+            "samples": int(row["samples"]),
+            "contrastive_loss_delta": _finite(
+                row["contrastive_loss_delta"], context="loss contrast"
+            ),
+            "positive_margin_delta": _finite(
+                row["positive_margin_delta"], context="margin contrast"
+            ),
+            "contrastive_loss_high_dose_better_fraction": _finite(
+                row["contrastive_loss_high_dose_better_fraction"],
+                context="loss high-dose-better fraction",
+            ),
+            "positive_margin_high_dose_better_fraction": _finite(
+                row["positive_margin_high_dose_better_fraction"],
+                context="margin high-dose-better fraction",
+            ),
+        }
+        if parsed["samples"] != EXPECTED_SAMPLES or any(
+            not 0 <= parsed[field] <= 1
+            for field in (
+                "contrastive_loss_high_dose_better_fraction",
+                "positive_margin_high_dose_better_fraction",
+            )
+        ):
+            raise ValueError("Candidate-breadth paired prevalence row is invalid")
+        contrasts.append(parsed)
     expected_calibration = {(optimizer, width) for optimizer in OPTIMIZERS for width in WIDTHS}
     expected_contrasts = {(optimizer, width) for optimizer in CHALLENGERS for width in WIDTHS}
     if (
@@ -114,6 +131,103 @@ def load_candidate_breadth_publication_rows(
     ):
         raise ValueError("Candidate-breadth contrast publication rows are incomplete")
     return calibration, contrasts
+
+
+def _paired_transition_records(contrast_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Summarize grid-resolved mean sign crossings and paired query prevalence."""
+
+    indexed = {(str(row["optimizer"]), int(row["negative_width"])): row for row in contrast_rows}
+    expected = {(optimizer, width) for optimizer in CHALLENGERS for width in WIDTHS}
+    if len(contrast_rows) != len(expected) or set(indexed) != expected:
+        raise ValueError("Candidate-breadth paired transition rows are incomplete")
+    records = []
+    for optimizer in CHALLENGERS:
+        rows = [indexed[(optimizer, width)] for width in WIDTHS]
+        for row in rows:
+            if int(row.get("samples", -1)) != EXPECTED_SAMPLES:
+                raise ValueError("Candidate-breadth paired transition sample count differs")
+            for field in (
+                "contrastive_loss_high_dose_better_fraction",
+                "positive_margin_high_dose_better_fraction",
+            ):
+                fraction = _finite(row.get(field), context=field.replace("_", " "))
+                if not 0 <= fraction <= 1:
+                    raise ValueError("Candidate-breadth paired transition fraction is invalid")
+        crossing = next(
+            (
+                int(row["negative_width"])
+                for row in rows
+                if _finite(row["contrastive_loss_delta"], context="loss contrast") > 0
+                and _finite(row["positive_margin_delta"], context="margin contrast") < 0
+            ),
+            None,
+        )
+        narrow = indexed[(optimizer, WIDTHS[0])]
+        broad = indexed[(optimizer, WIDTHS[-1])]
+        records.append(
+            {
+                "optimizer": optimizer,
+                "earliest_joint_mean_reversal_width": crossing,
+                "narrow_loss_high_dose_better_fraction": float(
+                    narrow["contrastive_loss_high_dose_better_fraction"]
+                ),
+                "narrow_margin_high_dose_better_fraction": float(
+                    narrow["positive_margin_high_dose_better_fraction"]
+                ),
+                "broad_loss_high_dose_better_fraction": float(
+                    broad["contrastive_loss_high_dose_better_fraction"]
+                ),
+                "broad_margin_high_dose_better_fraction": float(
+                    broad["positive_margin_high_dose_better_fraction"]
+                ),
+            }
+        )
+    return records
+
+
+def _paired_transition_markdown(contrast_rows: list[dict[str, Any]]) -> str:
+    parts = []
+    for record in _paired_transition_records(contrast_rows):
+        crossing = record["earliest_joint_mean_reversal_width"]
+        crossing_text = "not observed" if crossing is None else f"{crossing:,} negatives"
+        parts.append(
+            f"{LABELS[record['optimizer']]}: {crossing_text}; paired high-dose win fractions "
+            f"(loss/margin) {record['narrow_loss_high_dose_better_fraction']:.1%}/"
+            f"{record['narrow_margin_high_dose_better_fraction']:.1%} at width 7 → "
+            f"{record['broad_loss_high_dose_better_fraction']:.1%}/"
+            f"{record['broad_margin_high_dose_better_fraction']:.1%} at width 2,048"
+        )
+    return (
+        "**Descriptive paired prevalence:** the earliest retained width at which both mean "
+        "contrasts favor the retrieval-optimal 3e-4 dose is "
+        + "; ".join(parts)
+        + ". This is a crossing on the six-point frozen grid, not an estimated threshold; the "
+        "curves need not be monotone."
+    )
+
+
+def _paired_transition_latex(contrast_rows: list[dict[str, Any]]) -> str:
+    parts = []
+    for record in _paired_transition_records(contrast_rows):
+        crossing = record["earliest_joint_mean_reversal_width"]
+        crossing_text = "not observed" if crossing is None else f"{crossing:,} negatives"
+        fractions = (
+            f"{record['narrow_loss_high_dose_better_fraction']:.1%}/"
+            f"{record['narrow_margin_high_dose_better_fraction']:.1%} at width 7 to "
+            f"{record['broad_loss_high_dose_better_fraction']:.1%}/"
+            f"{record['broad_margin_high_dose_better_fraction']:.1%} at width 2,048"
+        ).replace("%", r"\%")
+        parts.append(
+            f"{LABELS[record['optimizer']]}: {crossing_text}; paired high-dose win fractions "
+            f"(loss/margin) {fractions}"
+        )
+    return (
+        r"\paragraph{Descriptive paired prevalence.} The earliest retained width at which both "
+        r"mean contrasts favor the retrieval-optimal $3\!\times\!10^{-4}$ dose is "
+        + "; ".join(parts)
+        + ". This is a crossing on the six-point frozen grid, not an estimated threshold; the "
+        "curves need not be monotone."
+    )
 
 
 def _decision_text(summary: dict[str, Any]) -> tuple[str, str]:
@@ -181,6 +295,8 @@ def candidate_breadth_markdown(
             "3e-3 minus 3e-4 on the same 224 paired queries. This diagnostic was designed after the "
             "shortlist--corpus gap was observed, so it remains post hoc regardless of its outcome "
             "and cannot replace the frozen three-seed full-corpus comparison.",
+            "",
+            _paired_transition_markdown(contrast_rows),
         ]
     )
     return "\n".join(lines)
@@ -249,6 +365,8 @@ def candidate_breadth_latex(
             + ". "
             + "; ".join(endpoints)
             + ". The diagnostic is post hoc and does not alter the frozen three-seed comparison.",
+            "",
+            _paired_transition_latex(contrast_rows),
             "",
         )
     )
