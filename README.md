@@ -1,3 +1,8 @@
+<!--
+This README substantially modifies the lightonai/mdenseon-mlateon README at commit
+b0db47a48f969d825446668b5b17bfc27a359fc1. See THIRD_PARTY_NOTICES.md.
+-->
+
 # Muon for dense-retriever adaptation
 
 A reproducible study of AdamW, Muon, and NorMuon for supervised adaptation of

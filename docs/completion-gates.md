@@ -39,6 +39,7 @@ identity.
 | Blog | [docs/blog.md](blog.md) | each generated marker has exactly one pair and matches its hashed report byte-for-byte |
 | Paper | reports/paper-results.manifest.json and paper/ | Dense constants are 12/60/840/20; no pending macro; strict paper audit, strict ACL release build, and the post-build strict re-audit pass |
 | W&B | reports/wandb/dense_source_provenance_audit.json plus remote content-addressed histories | exact config, Git, finished-state, tags/group, and normalized history for all 34 frozen Dense source runs (12 discovery + 4 hybrid + 9 confirmatory + 9 shared-start), followed by exactly 12 Dense canonical discovery identities; historical Late runs are retained and clearly tagged |
+| Third-party attribution | THIRD_PARTY_NOTICES.md plus file-level modification notices | DenseOn, PyTorch Muon, NorMuon, and pinned ACL build inputs are identified; every materially modified upstream file names the pinned DenseOn source commit; the notice is bundled byte-for-byte in wheel and sdist |
 | Distribution | wheel, sdist, tests, CI | tests/lint/format, PDF, package build, and distribution audit all pass |
 | Publication hygiene | tracked tree, Git history, distributions, GitHub settings | no credentials; repository remains private until the user requests publication |
 
@@ -233,6 +234,8 @@ Finally verify:
 - `logs/candidate-breadth-release/pipeline-ledger.json` is complete, contains exactly 21 successful
   steps, and still hashes the complete upstream finalization ledger and frozen candidate protocol;
 - the blog, paper, manifests, built archives, and W&B histories all identify the same Dense scope;
+- third-party notices name every adapted implementation and build input, and the modified upstream
+  files retain their file-level source notice in both the tracked tree and built archives;
 - a secret-pattern scan of the tracked tree, reachable Git history, and distributions returns no
   credentials;
 - remaining mentions of LateOn are limited to transparent historical-scope disclosure or source

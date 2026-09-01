@@ -14,6 +14,35 @@ from embed_optim.distribution_audit import (
 ROOT = Path(__file__).parents[1]
 
 
+def test_third_party_notices_cover_modified_upstream_files() -> None:
+    upstream_commit = "b0db47a48f969d825446668b5b17bfc27a359fc1"
+    notice = (ROOT / "THIRD_PARTY_NOTICES.md").read_text()
+    assert upstream_commit in notice
+    assert "c6989a8354730695d9f5a9faa6c55eeb24865209" in notice
+    assert "d5adc823ff0f80f98c80405ca0ab66c68e684409" in notice
+    assert "LaTeX Project Public License" in notice
+
+    modified_upstream_files = (
+        "README.md",
+        "pyproject.toml",
+        "scripts/eval/dense_parallel.py",
+        "scripts/eval/dense_sequential.py",
+        "scripts/eval/late_interaction.py",
+    )
+    for source in modified_upstream_files:
+        assert f"`{source}`" in notice
+        header = "\n".join((ROOT / source).read_text().splitlines()[:6])
+        assert upstream_commit in header
+        assert "THIRD_PARTY_NOTICES.md" in header
+
+
+def test_distribution_bundles_third_party_notices() -> None:
+    installed = _installed_data_paths()
+    assert installed["THIRD_PARTY_NOTICES.md"] == PurePosixPath(
+        "share/embedding-optimizer-study/THIRD_PARTY_NOTICES.md"
+    )
+
+
 def test_distribution_scanner_rejects_producer_checkout_paths() -> None:
     assert _checkout_path_findings(
         "wheel",
