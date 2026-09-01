@@ -263,12 +263,11 @@ first-passage rule and later loss--BEIR join retain their recorded post-hoc stat
 recipe selection or confirmatory wording. Full throughput, memory, optimizer-state, and checkpoint
 measurements appear in Appendix~\ref{tab:training-systems-results}.
 
-The discovery point estimates motivate, but do not settle, the paper's central tension: when the
-same BEIR suite selects one learning rate per optimizer, Muon-family trajectories can finish above
-the likewise BEIR-selected AdamW point estimate even though their matched one-step directions are
-not superior on mean immediate margin. Query-disjoint validation instead selects the larger 3e-3
-Muon-family rate, whose discovery-BEIR score is lower than AdamW; the new-seed matrix using those
-frozen validation recipes remains the only basis for a final optimizer claim.
+At 40\%, same-suite-selected Muon/NorMuon reach mean nDCG@10 0.5921/0.5922 versus AdamW's final
+0.5899, but their task counts against that endpoint are only 6/0/8 and 5/0/9 wins/ties/losses
+(median delta $-0.00055$ for both); this exploratory macro-average is not a universal 60\% compute
+saving. Query-disjoint validation instead selects $3\!\times\!10^{-3}$, whose discovery-BEIR score
+is below AdamW; only the new-seed matrix using those frozen recipes grounds the final claim.
 
 \subsection{When the validation proxy wins and retrieval loses}
 
