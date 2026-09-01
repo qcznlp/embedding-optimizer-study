@@ -5,6 +5,8 @@ import posixpath
 import re
 from pathlib import Path, PurePosixPath
 
+import yaml
+
 from embed_optim.distribution_audit import (
     _checkout_path_findings,
     _data_files,
@@ -41,6 +43,15 @@ def test_distribution_bundles_third_party_notices() -> None:
     assert installed["THIRD_PARTY_NOTICES.md"] == PurePosixPath(
         "share/embedding-optimizer-study/THIRD_PARTY_NOTICES.md"
     )
+
+
+def test_private_release_citation_metadata_has_no_premature_release_date() -> None:
+    citation = yaml.safe_load((ROOT / "CITATION.cff").read_text(encoding="utf-8"))
+    assert citation["cff-version"] == "1.2.0"
+    assert citation["type"] == "software"
+    assert citation["repository-code"] == "https://github.com/qcznlp/embedding-optimizer-study"
+    assert citation["license"] == "Apache-2.0"
+    assert "date-released" not in citation
 
 
 def test_distribution_scanner_rejects_producer_checkout_paths() -> None:

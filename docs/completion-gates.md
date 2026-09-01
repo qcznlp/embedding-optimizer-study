@@ -41,6 +41,7 @@ identity.
 | Paper | reports/paper-results.manifest.json and paper/ | Dense constants are 12/60/840/20; no pending macro; strict paper audit, strict ACL release build, and the post-build strict re-audit pass |
 | W&B | reports/wandb/dense_source_provenance_audit.json plus remote content-addressed histories | exact config, Git, finished-state, tags/group, and normalized history for all 34 frozen Dense source runs (12 discovery + 4 hybrid + 9 confirmatory + 9 shared-start), followed by exactly 12 Dense canonical discovery identities; historical Late runs are retained and clearly tagged |
 | Third-party attribution | THIRD_PARTY_NOTICES.md plus file-level modification notices | DenseOn, PyTorch Muon, NorMuon, and pinned ACL build inputs are identified; every materially modified upstream file names the pinned DenseOn source commit; the notice is bundled byte-for-byte in wheel and sdist |
+| Citation metadata | CITATION.cff and CI `cffconvert --validate` gate | CFF 1.2 schema validates; software, study scope, author, license, repository, and upstream references are recorded; `date-released` remains absent while the repository is private and is set only at actual publication |
 | Distribution | wheel, sdist, tests, CI | tests/lint/format, PDF, package build, and distribution audit all pass |
 | Publication hygiene | tracked tree, Git history, distributions, GitHub settings | no credentials; repository remains private until the user requests publication |
 

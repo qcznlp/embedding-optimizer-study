@@ -17,6 +17,8 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --extra dev --extra eval --extra analysis
+      - name: Validate citation metadata
+        run: uv run cffconvert --validate --infile CITATION.cff
       - name: Audit formal CUDA 12.9 reconstruction locks
         run: |
           uv pip sync --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --dry-run requirements-formal.lock
