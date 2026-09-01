@@ -67,6 +67,13 @@ def _resolve(root: Path, raw: str) -> Path:
     return path.resolve() if path.is_absolute() else (root / path).resolve()
 
 
+def _portable_path(path: Path, root: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return str(path.resolve())
+
+
 def load_protocol(path: str | Path) -> tuple[Path, dict[str, Any]]:
     resolved = Path(path).resolve()
     protocol = json.loads(resolved.read_text(encoding="utf-8"))
@@ -111,9 +118,9 @@ def _declared_output(root: Path, source: dict[str, Any]) -> tuple[Path, dict[str
     declared = manifest.get("outputs", {}).get(source["output_key"])
     if not isinstance(declared, dict) or not isinstance(declared.get("path"), str):
         raise ValueError(f"Manifest does not declare {source['output_key']}: {manifest_path}")
-    output = Path(declared["path"])
-    if not output.is_file():
-        output = manifest_path.parent / output.name
+    producer_output = Path(declared["path"])
+    colocated_output = manifest_path.parent / producer_output.name
+    output = colocated_output if colocated_output.is_file() else producer_output
     output = output.resolve()
     if (
         not output.is_file()
@@ -123,12 +130,12 @@ def _declared_output(root: Path, source: dict[str, Any]) -> tuple[Path, dict[str
         raise ValueError(f"Declared source output differs: {output}")
     return output, {
         "manifest": {
-            "path": str(manifest_path),
+            "path": _portable_path(manifest_path, root),
             "bytes": manifest_path.stat().st_size,
             "sha256": _sha256(manifest_path),
         },
         "output": {
-            "path": str(output),
+            "path": _portable_path(output, root),
             "bytes": output.stat().st_size,
             "sha256": _sha256(output),
         },
@@ -301,7 +308,9 @@ def _markdown(contrasts: list[dict[str, Any]], claim_boundary: str) -> str:
     return "\n".join(lines)
 
 
-def _write_or_audit(path: Path, payload: bytes, *, audit_only: bool) -> dict[str, Any]:
+def _write_or_audit(
+    path: Path, payload: bytes, *, audit_only: bool, repository_root: Path
+) -> dict[str, Any]:
     if audit_only:
         if not path.is_file() or path.read_bytes() != payload:
             raise ValueError(f"Three-regime output differs: {path}")
@@ -318,7 +327,7 @@ def _write_or_audit(path: Path, payload: bytes, *, audit_only: bool) -> dict[str
             if temporary.exists():
                 temporary.unlink()
     return {
-        "path": str(path.resolve()),
+        "path": _portable_path(path, repository_root),
         "bytes": path.stat().st_size,
         "sha256": _sha256(path),
     }
@@ -359,33 +368,46 @@ def build_diagnostic(
     output = Path(output_dir).resolve()
     artifacts = {
         "run_metrics": _write_or_audit(
-            output / "run_metrics.csv", _csv_bytes(RUN_FIELDS, rows), audit_only=audit_only
+            output / "run_metrics.csv",
+            _csv_bytes(RUN_FIELDS, rows),
+            audit_only=audit_only,
+            repository_root=root,
         ),
         "high_dose_contrasts": _write_or_audit(
             output / "high_dose_contrasts.csv",
             _csv_bytes(CONTRAST_FIELDS, contrasts),
             audit_only=audit_only,
+            repository_root=root,
         ),
         "summary": _write_or_audit(
-            output / "summary.json", _json_bytes(summary), audit_only=audit_only
+            output / "summary.json",
+            _json_bytes(summary),
+            audit_only=audit_only,
+            repository_root=root,
         ),
         "readme": _write_or_audit(
             output / "README.md",
             _markdown(contrasts, protocol["claim_boundary"]).encode("utf-8"),
             audit_only=audit_only,
+            repository_root=root,
         ),
     }
     manifest = {
         **summary,
         "protocol": {
-            "path": str(resolved),
+            "path": _portable_path(resolved, root),
             "bytes": resolved.stat().st_size,
             "sha256": _sha256(resolved),
         },
         "outputs": artifacts,
     }
     manifest_path = output / "summary_manifest.json"
-    _write_or_audit(manifest_path, _json_bytes(manifest), audit_only=audit_only)
+    _write_or_audit(
+        manifest_path,
+        _json_bytes(manifest),
+        audit_only=audit_only,
+        repository_root=root,
+    )
     return manifest
 
 

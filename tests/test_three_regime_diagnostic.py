@@ -77,3 +77,12 @@ def test_distribution_declares_cli_protocol_and_audited_reports() -> None:
         "reports/three-regime-diagnostic/*.json",
         "reports/three-regime-diagnostic/*.md",
     ]
+
+
+def test_checked_in_json_provenance_is_checkout_portable() -> None:
+    report = Path("reports/three-regime-diagnostic")
+
+    for path in report.glob("*.json"):
+        text = path.read_text(encoding="utf-8")
+        assert "/root/" not in text
+        assert "embedding-optimizer-study-story" not in text
