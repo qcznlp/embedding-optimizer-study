@@ -207,6 +207,7 @@ def test_pending_results_reserve_final_shaped_headline_and_conclusion_footprint(
     assert "Pass: out-of-run bridge; fail: tested bridge rejected" in causal
     candidate = (ROOT / "paper/generated/candidate-breadth.tex").read_text(encoding="utf-8")
     assert r"\newcommand{\CandidateBreadthConclusion}" in candidate
+    assert r"\newcommand{\CandidateBreadthDiscussion}" in candidate
     assert r"\newcommand{\CandidateBreadthFigure}" in candidate
     assert r"\label{fig:candidate-breadth}" in candidate
     assert "supported, partial-attenuation, or not-supported" in candidate

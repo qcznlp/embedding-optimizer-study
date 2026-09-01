@@ -386,6 +386,7 @@ def test_publication_keeps_candidate_breadth_claim_boundaries_visible() -> None:
     assert "Muon-family high-dose ordering reverses with candidate breadth" in paper
     assert "width-2,048 endpoint reversals" in paper
     assert "directly supports missing-candidate coverage as the mechanism" not in paper
+    assert r"\CandidateBreadthDiscussion" in paper
     assert r"\CandidateBreadthConclusion" in paper
     assert r"\CandidateBreadthFigure" in paper
     assert "does not establish that contribution causally" in " ".join(blog.split())

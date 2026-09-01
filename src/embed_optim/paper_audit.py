@@ -105,6 +105,7 @@ PAPER_MAIN_REQUIRED_ONCE = (
     r"\CausalChainDiagnostics",
     r"\section{Conclusion}",
     r"\ResultConclusion",
+    r"\CandidateBreadthDiscussion",
     r"\CandidateBreadthConclusion",
     r"\CandidateBreadthFigure",
     rf"\label{{{MAIN_END_LABEL}}}",

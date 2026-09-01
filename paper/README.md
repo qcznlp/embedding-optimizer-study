@@ -72,7 +72,8 @@ After the separately frozen candidate-breadth matrix completes, run
 `embed-optim-summarize-candidate-breadth` and `embed-optim-render-candidate-breadth`, followed by each
 command's `--audit-only` mode. The publication renderer owns only the marked blog block and
 `generated/candidate-breadth.tex`; the latter supplies the appendix result-figure macro, main-text
-evidence paragraph, and bounded `\CandidateBreadthConclusion` used by the final Conclusion. Its
+evidence paragraph, result-bound `\CandidateBreadthDiscussion`, and bounded
+`\CandidateBreadthConclusion` used by the final Conclusion. Its
 manifest binds both publication outputs to all 12 evaluation manifests, the discovery BEIR table,
 the nested-width protocol, and the deterministic SVG/PDF figure.
 For the final publication handoff, `embed-optim-candidate-breadth-release --resume` performs those

@@ -66,6 +66,7 @@ def test_publication_blocks_report_decision_endpoints_and_claim_boundary() -> No
     assert "post hoc" in latex
     assert "does not establish that contribution causally" in latex
     assert r"\newcommand{\CandidateBreadthConclusion}" in latex
+    assert r"\newcommand{\CandidateBreadthDiscussion}" in latex
     assert "supplements but does not alter" in latex
 
 
@@ -88,8 +89,10 @@ def test_candidate_conclusion_macro_reports_every_frozen_decision(
     latex = candidate_breadth_latex(calibration, contrasts, _summary(decision))
 
     assert latex.count(r"\newcommand{\CandidateBreadthConclusion}") == 1
+    assert latex.count(r"\newcommand{\CandidateBreadthDiscussion}") == 1
     assert latex.count(r"\newcommand{\CandidateBreadthFigure}") == 1
     assert f"nested-candidate decision was {label}" in latex
+    assert f"candidate-breadth decision was {label}" in latex
     assert outcome in latex
     assert "supplements but does not alter" in latex
 
@@ -169,6 +172,7 @@ def test_renderer_round_trips_blog_paper_and_manifest(monkeypatch, tmp_path: Pat
     paper_text = paper.read_text(encoding="utf-8")
     assert r"\label{fig:candidate-breadth}" in paper_text
     assert r"\newcommand{\CandidateBreadthConclusion}" in paper_text
+    assert r"\newcommand{\CandidateBreadthDiscussion}" in paper_text
     assert r"\newcommand{\CandidateBreadthFigure}" in paper_text
     assert "The post-hoc nested-candidate decision was supported" in paper_text
     assert json.loads(manifest.read_text(encoding="utf-8")) == rendered

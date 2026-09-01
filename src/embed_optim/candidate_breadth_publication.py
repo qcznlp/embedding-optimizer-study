@@ -197,6 +197,11 @@ def candidate_breadth_latex(
         "This diagnostic supplements but does not alter the validation-frozen three-seed "
         "comparison."
     )
+    discussion = (
+        f"The frozen post-hoc candidate-breadth decision was {title.lower()}. {sentence} "
+        "This constrains the missing-candidate account without altering the validation-frozen "
+        "three-seed comparison."
+    )
     calibration = {(row["optimizer"], row["negative_width"]): row for row in calibration_rows}
     contrasts = {(row["optimizer"], row["negative_width"]): row for row in contrast_rows}
     endpoints = []
@@ -217,6 +222,10 @@ def candidate_breadth_latex(
         (
             r"\newcommand{\CandidateBreadthConclusion}{%",
             conclusion,
+            r"}",
+            "",
+            r"\newcommand{\CandidateBreadthDiscussion}{%",
+            discussion,
             r"}",
             "",
             r"\newcommand{\CandidateBreadthFigure}{%",
