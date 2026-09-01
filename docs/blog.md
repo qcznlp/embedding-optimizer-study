@@ -245,6 +245,17 @@ The best-LR comparisons are selected on this same benchmark suite and should the
 
 <!-- RESULTS:END -->
 
+### A task-dependent early-quality advantage, not a universal compute saving
+
+As a descriptive post-hoc cross-stage check, the same-suite BEIR-selected Muon and NorMuon runs
+reach mean nDCG@10 0.5921 and 0.5922 at 40% of training, above the selected AdamW run's 0.5899 at
+100%. The task-paired comparison is much less uniform: Muon at 40% versus AdamW at 100% is 6/0/8
+wins/ties/losses, and NorMuon is 5/0/9; their median task deltas are -0.00055 and -0.00055. The
+positive macro means are concentrated in a minority of tasks, especially NQ and Touche2020. Thus
+the discovery sweep supports faster *task-averaged* early quality on this suite, not a claim that
+Muon-family optimization universally replaces 60% of AdamW compute. This check uses the same
+single-seed suite that selected the learning rates and is not part of the confirmatory test family.
+
 <!-- TASK-DELTA-STABILITY:BEGIN -->
 
 ### Exploratory task-effect stability across checkpoints
