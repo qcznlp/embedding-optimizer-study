@@ -114,8 +114,12 @@ def test_candidate_breadth_reports_attenuation_without_promoting_it_to_support()
     assert unchanged["decision"] == "not_supported"
 
 
-def test_candidate_breadth_publication_figure_requires_and_writes_complete_rows(tmp_path) -> None:
-    pytest.importorskip("matplotlib")
+def test_candidate_breadth_publication_figure_requires_and_writes_complete_rows(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    matplotlib = pytest.importorskip("matplotlib")
+    monkeypatch.setitem(matplotlib.rcParams, "pdf.fonttype", 3)
+    monkeypatch.setitem(matplotlib.rcParams, "ps.fonttype", 3)
     widths = [7, 10, 32, 128, 512, 2048]
     calibration = [
         {
@@ -144,6 +148,8 @@ def test_candidate_breadth_publication_figure_requires_and_writes_complete_rows(
 
     outputs = _candidate_breadth_figure(calibration, contrasts, tmp_path)
 
+    assert matplotlib.rcParams["pdf.fonttype"] == 42
+    assert matplotlib.rcParams["ps.fonttype"] == 42
     assert set(outputs) == {"svg", "pdf"}
     for suffix, record in outputs.items():
         path = tmp_path / record["path"]

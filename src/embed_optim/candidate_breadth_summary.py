@@ -194,6 +194,8 @@ def _candidate_breadth_figure(
     import matplotlib
 
     matplotlib.use("Agg")
+    matplotlib.rcParams["pdf.fonttype"] = 42
+    matplotlib.rcParams["ps.fonttype"] = 42
     matplotlib.rcParams["svg.hashsalt"] = "candidate-breadth-v1"
     import matplotlib.pyplot as plt
 
