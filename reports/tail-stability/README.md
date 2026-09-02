@@ -26,6 +26,9 @@ Within DenseOn, low tail overlap and sign reversal on the challenger-selected se
 
 ## Prospective shared-start confirmation
 
-Pending: short-branch summary manifest is not available.
+| Family | Challenger | validation loss p95 Δ | unseen margin p05 Δ | loss-tail seed wins | margin-tail seed wins | Decision |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| dense | muon | -1.752e-01 | -6.267e-03 | 3/3 | 0/3 | mixed |
+| dense | normuon | -1.335e-01 | -4.002e-03 | 3/3 | 1/3 | mixed |
 
 > Claim boundary: The discovery tail analysis is explicitly post hoc and can only describe a mean-tail tradeoff at fixed weights. The frozen short-branch rule is prospective relative to all three-seed shared-start outcomes and can test whether the signature persists under accumulated training, but even a positive result would not prove that tail stability alone mediates full-corpus BEIR gains.

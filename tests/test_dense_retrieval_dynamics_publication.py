@@ -72,6 +72,7 @@ def test_publication_accepts_same_run_id_across_three_distinct_confirmatory_seed
     assert "not an inference input" in latex
     assert latex.count(r"\label{fig:extended-retrieval-dynamics}") == 1
     assert latex.count(r"\label{tab:extended-retrieval-dynamics}") == 1
+    assert all(line == line.rstrip() for line in latex.splitlines())
     body = latex.split(r"\midrule", 1)[1].split(r"\bottomrule", 1)[0]
     assert sum(line.rstrip().endswith(r"\\") for line in body.splitlines()) == 4
 

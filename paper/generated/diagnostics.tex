@@ -1,4 +1,4 @@
-% Topology-faithful worst-case placeholder replaced atomically by embed-optim-render-paper-results.
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -6,15 +6,16 @@
 \toprule
 Model & Optimizer & Hours & Examples/s & Throughput / AdamW & Peak GiB & State GiB & Checkpoint GiB \\
 \midrule
-DenseOn & AdamW & -- & -- & -- & -- & -- & \ResultPending{x} \\
-DenseOn & Muon & -- & -- & -- & -- & -- & \ResultPending{x} \\
-DenseOn & NorMuon & -- & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & AdamW & 3.52 & 39.43 & 1.00x & 7.41 & 1.11 & 1.67 \\
+DenseOn & Muon & 3.71 & 37.41 & 0.95x & 6.98 & 0.70 & 1.26 \\
+DenseOn & NorMuon & 3.77 & 36.86 & 0.93x & 6.97 & 0.70 & 1.26 \\
 \bottomrule
 \end{tabular}
-\caption{Median systems measurements over the four discovery learning rates on the pinned four-GPU stack. The final renderer reports the DenseOn Muon/NorMuon throughput ratios and whether either was faster than AdamW. Optimizer-state and peak allocated memory are reported separately from speed.}
+\caption{Median systems measurements over the four discovery learning rates on the pinned four-GPU stack. DenseOn Muon/NorMuon throughput ratios were 0.95x/0.93x AdamW; neither was faster for DenseOn. Optimizer-state and peak allocated memory are reported separately from speed.}
 \label{tab:training-systems-results}
 \end{table*}
 
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -22,15 +23,16 @@ DenseOn & NorMuon & -- & -- & -- & -- & -- & \ResultPending{x} \\
 \toprule
 Model & Rule & Mapped cosine & Direction error & Norm-ratio error & Descent error & Q/K spectrum error \\
 \midrule
-DenseOn & AdamW & -- & -- & -- & -- & \ResultPending{x} \\
-DenseOn & Muon & -- & -- & -- & -- & \ResultPending{x} \\
-DenseOn & NorMuon & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & AdamW & 0.96940 & 0.24738 & 0.00022 & 0.00488 & 0.02540 \\
+DenseOn & Muon & 0.99946 & 0.03277 & 0.00007 & 0.00034 & 0.00148 \\
+DenseOn & NorMuon & 0.99832 & 0.05793 & 0.00007 & 0.00360 & 0.00946 \\
 \bottomrule
 \end{tabular}
 \caption{Function-preserving basis sensitivity under the frozen RoPE-commuting Q/K rotation grid. Values are medians over 90 comparisons per model and rule; this coordinate diagnostic is not a retrieval intervention.}
 \label{tab:basis-sensitivity-results}
 \end{table*}
 
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -38,14 +40,15 @@ DenseOn & NorMuon & -- & -- & -- & -- & \ResultPending{x} \\
 \toprule
 Model & Rule & $\Delta$ AdamW tail & $\Delta$ rule tail & Jaccard & Regime \\
 \midrule
-DenseOn & Muon & -- & -- & -- & \ResultPending{x} \\
-DenseOn & NorMuon & -- & -- & -- & \ResultPending{x} \\
+DenseOn & Muon & -0.1366 & 0.0203 & 0.2787 & tail redistribution \\
+DenseOn & NorMuon & -0.1402 & 0.0110 & 0.2698 & tail redistribution \\
 \bottomrule
 \end{tabular}
 \caption{Post-hoc fixed-state worst-query-tail decomposition. This exploratory diagnostic classifies shared-tail severity suppression versus tail redistribution; it is not confirmatory retrieval evidence.}
 \label{tab:tail-identity-results}
 \end{table*}
 
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -53,14 +56,15 @@ DenseOn & NorMuon & -- & -- & -- & \ResultPending{x} \\
 \toprule
 Model & Rule & Validation p95 loss $\Delta$ & Loss wins & Unseen p05 margin $\Delta$ & Margin wins & Decision \\
 \midrule
-DenseOn & Muon & -- & -- & -- & -- & \ResultPending{x} \\
-DenseOn & NorMuon & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & Muon & -0.1752 & 3/3 & -0.0063 & 0/3 & mixed \\
+DenseOn & NorMuon & -0.1335 & 3/3 & -0.0040 & 1/3 & mixed \\
 \bottomrule
 \end{tabular}
 \caption{Three-seed shared-start endpoint test of the tail signature. The endpoint rule was frozen before branch outcomes, while the motivating tail account is post hoc; persistence does not establish mediation of BEIR.}
 \label{tab:tail-persistence-results}
 \end{table*}
 
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -68,14 +72,15 @@ DenseOn & NorMuon & -- & -- & -- & -- & \ResultPending{x} \\
 \toprule
 Model & Immediate metric & Spectrum effect & Basis effect & Interaction \\
 \midrule
-DenseOn & contrastive loss & -- & -- & \ResultPending{x} \\
-DenseOn & positive margin & -- & -- & \ResultPending{x} \\
+DenseOn & contrastive loss & -0.0000 & 0.0044 & -0.0104 \\
+DenseOn & positive margin & -0.0000 & -0.0003 & 0.0006 \\
 \bottomrule
 \end{tabular}
 \caption{Post-hoc spectrum-versus-basis causal decomposition at fixed checkpoint states. The transplant identifies immediate functional effects, not the cause of a full-training BEIR difference.}
 \label{tab:spectral-factorial-results}
 \end{table*}
 
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -83,9 +88,9 @@ DenseOn & positive margin & -- & -- & \ResultPending{x} \\
 \toprule
 Model & Condition & p95 loss & p05 margin & AdamW tail & Condition tail & Jaccard \\
 \midrule
-DenseOn & Muon native & -- & -- & -- & -- & \ResultPending{x} \\
-DenseOn & Adam basis + Muon spectrum & -- & -- & -- & -- & \ResultPending{x} \\
-DenseOn & Muon basis + Adam spectrum & -- & -- & -- & -- & \ResultPending{x} \\
+DenseOn & Muon native & 0.1114 & -0.0074 & -0.1143 & 0.0268 & 0.3333 \\
+DenseOn & Adam basis + Muon spectrum & 0.1394 & -0.0078 & -0.1237 & 0.0245 & 0.2632 \\
+DenseOn & Muon basis + Adam spectrum & 0.1450 & -0.0078 & -0.1431 & 0.0460 & 0.2316 \\
 \bottomrule
 \end{tabular}
 \caption{Post-hoc query-tail readout for the fixed-state spectral transplant. Contrasts are relative to native AdamW and cannot establish BEIR mediation.}

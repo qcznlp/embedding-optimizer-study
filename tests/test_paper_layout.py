@@ -172,32 +172,37 @@ def test_checked_in_sources_reserve_final_float_topology_and_row_counts():
     assert observed_rows == EXPECTED_FLOAT_ROWS
 
 
-def test_pending_results_reserve_final_shaped_headline_and_conclusion_footprint():
+def test_final_results_fill_every_headline_and_conclusion_without_pending_placeholders():
     results = (ROOT / "paper/results.tex").read_text(encoding="utf-8")
     expected_fragments = {
-        "DiscoveryHeadline": ("median throughput ratios", "-0.0000/-0.0000/-0.0000"),
-        "CommonStateHeadline": ("normalized exact stable ranks", "0.0000/0.0000"),
-        "RepresentationHeadline": ("trailing-training-loss-to-BEIR", "-0.0000"),
-        "InterventionHeadline": ("-0.0000 (0/0/3)/-0.0000 (0/0/3)", "84-row spectrum"),
-        "ConfirmationHeadline": ("[-0.0000, +0.0000]", "inconclusive"),
+        "DiscoveryHeadline": ("median throughput ratios", "training was not faster"),
+        "CommonStateHeadline": ("normalized exact stable ranks", "0.5772/0.4153"),
+        "RepresentationHeadline": ("trailing-training-loss-to-BEIR", "-0.684"),
+        "InterventionHeadline": (
+            "0.0024 (3/0/0)/-0.0007 (1/0/2)",
+            "joint result claimable negative",
+        ),
+        "ConfirmationHeadline": ("[-0.0464, -0.0138]", "inconclusive"),
         "ResultConclusion": ("routing-matched hybrid AdamW", "universal optimizer ranking"),
     }
     for macro, fragments in expected_fragments.items():
         match = re.search(rf"^\\newcommand\{{\\{macro}\}}\{{(.+)\}}$", results, re.MULTILINE)
         assert match is not None
         value = match.group(1)
-        assert value.startswith(r"\ResultPending{")
+        assert not value.startswith(r"\ResultPending{")
         assert all(fragment in value for fragment in fragments)
+    assert r"\ResultPending{" not in results
 
     confirmation = (ROOT / "paper/generated/confirmation.tex").read_text(encoding="utf-8")
-    assert confirmation.count(r"\phantom{[-0.0000, +0.0000]}") == 6
+    assert r"\phantom{" not in confirmation
+    assert r"\ResultPending{" not in confirmation
     causal = (ROOT / "paper/generated/causal-chain.tex").read_text(encoding="utf-8")
-    assert "gain L/M -0.0000/-0.0000" in causal
-    assert "support L/M/T/B 0/0/0/0 of 10" in causal
-    assert "gaps -1.000000e-308/-1.000000e-308" in causal
-    assert "Pass: accumulated bridge; fail: tested bridge rejected" in causal
-    assert "Pass: component attribution; fail: tested component rejected" in causal
-    assert "Pass: out-of-run bridge; fail: tested bridge rejected" in causal
+    assert "gain L/M -0.237277/-0.688154" in causal
+    assert "support L/M/T/B 0/0/0/2 of 10" in causal
+    assert "gaps -1.508471e-04/-7.124088e-05" in causal
+    assert "Temporal spectral bridge rejected" in causal
+    assert "Frozen component account rejected" in causal
+    assert "No forward bridge; fixed-state conclusion only" in causal
 
 
 def test_release_runs_layout_gate_only_after_pdf_build():
@@ -207,4 +212,5 @@ def test_release_runs_layout_gate_only_after_pdf_build():
     assert "embed_optim.paper_layout" in all_target
     release = makefile.split("\nrelease:\n", 1)[1].split("\n\nvendor:", 1)[0]
 
+    assert "cd .. && $(PYTHON) -m embed_optim.paper_results --repo-root ." in release
     assert release.index("$(MAKE) $(BUILD)/main.pdf") < release.index("-m embed_optim.paper_layout")

@@ -1371,6 +1371,7 @@ def _tail_stability_complete(
     scope: dict[str, Any] | None,
 ) -> bool:
     report_dir = path.parent
+    repository_root = report_dir.parents[1]
     family_count = len(families)
     if (
         payload.get("schema_version") != SCHEMA_VERSION
@@ -1479,12 +1480,14 @@ def _tail_stability_complete(
             for item in unseen_sources
         )
         or not isinstance(protocol, dict)
-        or not _hashed_file_complete(report_dir, protocol)
-        or not _hashed_reference_tree_complete(discovery_sources, root=report_dir)
-        or not _hashed_reference_tree_complete(short_sources, root=report_dir)
+        or not _hashed_file_complete(repository_root, protocol)
+        or not _hashed_reference_tree_complete(discovery_sources, root=repository_root)
+        or not _hashed_reference_tree_complete(short_sources, root=repository_root)
     ):
         return False
-    source_paths = _declared_reference_paths([*discovery_sources, *short_sources], root=report_dir)
+    source_paths = _declared_reference_paths(
+        [*discovery_sources, *short_sources], root=repository_root
+    )
     if len(source_paths) != 20 * family_count + 1 + 135 * family_count or len(
         set(source_paths)
     ) != len(source_paths):
@@ -2382,7 +2385,7 @@ def _paper_systems_complete(root: Path, families: tuple[str, ...]) -> bool:
     try:
         with table.open(encoding="utf-8", newline="") as handle:
             rows = list(csv.DictReader(handle))
-        discovery_tex = (root / "paper/generated/discovery.tex").read_text(encoding="utf-8")
+        diagnostics_tex = (root / "paper/generated/diagnostics.tex").read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError, csv.Error):
         return False
     indexed = {(row.get("model_family"), row.get("optimizer")): row for row in rows}
@@ -2414,7 +2417,7 @@ def _paper_systems_complete(root: Path, families: tuple[str, ...]) -> bool:
                 )
             except (KeyError, TypeError, ValueError):
                 return False
-            if discovery_tex.count(token) != 1:
+            if diagnostics_tex.count(token) != 1:
                 return False
         try:
             muon = float(indexed[(family, "muon")]["throughput_to_adamw_ratio"])
@@ -2429,7 +2432,7 @@ def _paper_systems_complete(root: Path, families: tuple[str, ...]) -> bool:
             if muon <= 1 and normuon <= 1
             else f"at least one was faster for {family_label}"
         )
-        if discovery_tex.count(ratio_fragment) != 1 or discovery_tex.count(speed_fragment) != 1:
+        if diagnostics_tex.count(ratio_fragment) != 1 or diagnostics_tex.count(speed_fragment) != 1:
             return False
     return True
 

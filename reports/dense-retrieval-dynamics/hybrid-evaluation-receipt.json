@@ -1,0 +1,1189 @@
+{
+  "complete": true,
+  "confirmatory_matrix_manifest_sha256": null,
+  "contract": {
+    "path": "configs/dense_retrieval_dynamics_extension.json",
+    "sha256": "29bcfc8cd52222a250899d4e9c370ab1183d93c6db51a82f25fb6b4b2ec08894"
+  },
+  "dynamics_stages": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "expected_units": 224,
+  "families": [
+    "dense"
+  ],
+  "formal_inference_stage": 5,
+  "formal_inference_uses_dynamics_rows": false,
+  "schema_version": 1,
+  "scope_amendment": {
+    "amended_at_utc": "2026-08-30T20:14:42Z",
+    "claim_boundary": "The scope reduction is post hoc and must be disclosed in the paper and blog. Confirmatory optimizer claims are DenseOn-only. Existing LateOn discovery and mechanism artifacts remain available for audit but cannot supply missing controls or be selectively promoted as confirmatory evidence.",
+    "path": "configs/dense_scope_amendment.json",
+    "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
+    "status": "user_directed_post_hoc_scope_amendment"
+  },
+  "selected_suites": [
+    "hybrid"
+  ],
+  "status": "complete",
+  "suites": {
+    "hybrid": {
+      "complete": true,
+      "errors": [],
+      "expected_units": 224,
+      "input_manifest": {
+        "checkpoints": 16,
+        "path": "results/hybrid-adamw-beir-dynamics/evaluation_inputs.json",
+        "sha256": "e2684368d43ff1411475cb04afea0c2105cf197729b46660489855a51e11da5c"
+      },
+      "result_sources": [
+        {
+          "bytes": 7011,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/ArguAnaDecontaminated.json",
+          "sha256": "3030eeec9527d147de6ed5aa270541224b745c0377d569da9a35107a29864956"
+        },
+        {
+          "bytes": 6977,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/ClimateFEVERDecontaminated.json",
+          "sha256": "e823bf467d4aab3ad5021bdbc7cc39fd8169a4904b7dfe5b5b63222db838c1d4"
+        },
+        {
+          "bytes": 6970,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/DBPediaDecontaminated.json",
+          "sha256": "96dcbc1bdf9d115d0c2ef0c1dac9a230f2e265564b8461a9993cb41d6695b971"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/FEVERDecontaminated.json",
+          "sha256": "0a6c725a174b0c4b3b35c3838f0ce9e28b74a06ddf0461b50516fb2da6dfb8ce"
+        },
+        {
+          "bytes": 6999,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/FiQA2018Decontaminated.json",
+          "sha256": "6272c78c4f850d5c0092a670ae0cf295f821d053634a9da2e268be13b203916c"
+        },
+        {
+          "bytes": 6961,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/HotpotQADecontaminated.json",
+          "sha256": "559a2152a21bd0a126b5f9094714d98f42e6a80ec4c2c6f400bb10dcafc1c105"
+        },
+        {
+          "bytes": 6999,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/MSMARCODecontaminated.json",
+          "sha256": "87544feb164259b5cc6c6602a71b0ed59ea4ebd6b5a648f59b15dfc57164ec81"
+        },
+        {
+          "bytes": 6963,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/NFCorpusDecontaminated.json",
+          "sha256": "249a0560c2c91658acc6ab59b1c1384ceec6535ea282e43eac87f04c2293800c"
+        },
+        {
+          "bytes": 6920,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/NQDecontaminated.json",
+          "sha256": "64550215c03d82160f27c6c8dcc90246163b03ff5af716f7e41af3762281f65b"
+        },
+        {
+          "bytes": 7006,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "99f80db91490f82aede3aba1a0913b5fca08582c91458924dd32079ff6d52696"
+        },
+        {
+          "bytes": 7008,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/SCIDOCSDecontaminated.json",
+          "sha256": "a3a1cdd3a782a089705e9339353e7bd860d02735883ea1a070888b2a98d6eb7f"
+        },
+        {
+          "bytes": 6938,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/SciFactDecontaminated.json",
+          "sha256": "696a752b9c11f1efb55a9f0ecb3a0bca050cb885235168dab7f9bc137dff41ec"
+        },
+        {
+          "bytes": 6932,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/TRECCOVIDDecontaminated.json",
+          "sha256": "c5466417d57468e75a2d3e47abe0e309b7c3e7322bfa80d51369f742996c7d0e"
+        },
+        {
+          "bytes": 7007,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-1563/results/hybrid-adamw-lr1e-5__checkpoint-1563/local/Touche2020Decontaminated.json",
+          "sha256": "7eeff6b6fe4cc2240de3942fd1277fed74d574922e24425a0906a31d27268c99"
+        },
+        {
+          "bytes": 7031,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/ArguAnaDecontaminated.json",
+          "sha256": "2acece7853f0b796e56662d83e1017717b11291a37810d1731f02218ebb28e59"
+        },
+        {
+          "bytes": 6977,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/ClimateFEVERDecontaminated.json",
+          "sha256": "e0d68b5cad140b434da66b7026ab928d58490080d51916f17962bec18bc49e1e"
+        },
+        {
+          "bytes": 6962,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/DBPediaDecontaminated.json",
+          "sha256": "6358b5057e29b7be677e7eca04bb2a53647901cbbc435bfb6214b31e2678fdb0"
+        },
+        {
+          "bytes": 7009,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/FEVERDecontaminated.json",
+          "sha256": "4aab0d5da3e02fa059e6c62e0c3c9a5213c39758ce66cd65b36fbc20c9d8410e"
+        },
+        {
+          "bytes": 6992,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/FiQA2018Decontaminated.json",
+          "sha256": "1c573115c08f4a99dbd4111d58195746620590b5c61d50024744331d9cab381d"
+        },
+        {
+          "bytes": 6971,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/HotpotQADecontaminated.json",
+          "sha256": "f0a565012212ade83eb3b8d1e57184c53049775d7dcdc3fe55fe81b3230d9277"
+        },
+        {
+          "bytes": 7004,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/MSMARCODecontaminated.json",
+          "sha256": "42083dde8d79b3a19ff4f191431b088bd628d2728f31490bd658b78320a6e964"
+        },
+        {
+          "bytes": 6958,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/NFCorpusDecontaminated.json",
+          "sha256": "5b09631d75571735aea0ebe9e1723a34b40cff40912d7f293095e4fcf88c6142"
+        },
+        {
+          "bytes": 6921,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/NQDecontaminated.json",
+          "sha256": "2b178d709b7626da9cc9b5c67df003b3dfbeec09be0fd0d3e3ec395109a39af7"
+        },
+        {
+          "bytes": 7016,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "0110022e1c03361aa823d7fbf7d877d9b2e10a2f0e0db4009cf49d7f3298fc79"
+        },
+        {
+          "bytes": 7006,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/SCIDOCSDecontaminated.json",
+          "sha256": "3e4f3e0bfaa8d86d85da4b8150755669d53c5a3ee95e09e272b6f71f7765f646"
+        },
+        {
+          "bytes": 6933,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/SciFactDecontaminated.json",
+          "sha256": "1bcc3452803c4f8a2e300cec309bd9ff1ed0ea811edc79f00bfc29919180c869"
+        },
+        {
+          "bytes": 6945,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/TRECCOVIDDecontaminated.json",
+          "sha256": "8dc0f98933e8b05fa6d783b494c0ad2bcb07b6b9770ac23856fa51d077017573"
+        },
+        {
+          "bytes": 7028,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-2345/results/hybrid-adamw-lr1e-5__checkpoint-2345/local/Touche2020Decontaminated.json",
+          "sha256": "01c25cba675d4128c2cc19bc4f14f6f281654529dd7a5294d814c26fe28e5420"
+        },
+        {
+          "bytes": 7033,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/ArguAnaDecontaminated.json",
+          "sha256": "a308830e0ceaa33c64aa395d6b867a3a28123d6ddf86e8a47fb42f264cd0c917"
+        },
+        {
+          "bytes": 6977,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/ClimateFEVERDecontaminated.json",
+          "sha256": "ee683b99d527f287f564cff40669dc40bfffd1d9f2281355309b78a72bfcc171"
+        },
+        {
+          "bytes": 6977,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/DBPediaDecontaminated.json",
+          "sha256": "28e9b64041c4a90f56c5e14210684ccc31982185db1608912d617b5709bc423f"
+        },
+        {
+          "bytes": 7003,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/FEVERDecontaminated.json",
+          "sha256": "0f53769010f95af99967e839ae1eb4e884c30e7354773410f7834fb2d34b6443"
+        },
+        {
+          "bytes": 6996,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/FiQA2018Decontaminated.json",
+          "sha256": "694dcff4b81c3d178052406582197a45c649088c7ae1c430ce2007f119649d93"
+        },
+        {
+          "bytes": 6973,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/HotpotQADecontaminated.json",
+          "sha256": "89c661cfc221888f3557cbb62efaf162c22fb9aaf3e477e67c14a1a006e8db5b"
+        },
+        {
+          "bytes": 7004,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/MSMARCODecontaminated.json",
+          "sha256": "6205afec06ff3979235c0c338057b7a68e6d2a9415f8976e32acf0f082d3f660"
+        },
+        {
+          "bytes": 6960,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/NFCorpusDecontaminated.json",
+          "sha256": "8f85da937556552212c33cf024f94e2e1b8adaac48db349ba6e009062f90373a"
+        },
+        {
+          "bytes": 6922,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/NQDecontaminated.json",
+          "sha256": "890dc89e40a072a36955a16b040d61a22dd0b88d12137a702e54df91e67e41a3"
+        },
+        {
+          "bytes": 7009,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "dae3779ec4714d7b4e18bb6568f5468c8fe2741ff3b4399aab96365f8caf8004"
+        },
+        {
+          "bytes": 6996,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/SCIDOCSDecontaminated.json",
+          "sha256": "a2f2fae4ed1cc092aa228a64db68bd9a8738f79f41a65b9e015ba922e7481d1e"
+        },
+        {
+          "bytes": 6931,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/SciFactDecontaminated.json",
+          "sha256": "dce16abe0d6be34a08f6f5813120724d99df9a7d02ac4904e9575f05650f88e8"
+        },
+        {
+          "bytes": 6945,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/TRECCOVIDDecontaminated.json",
+          "sha256": "553df51ce4a5579b080801e6ee0ec3e5c4869eea0f07145d97f1fbfea3f478eb"
+        },
+        {
+          "bytes": 7032,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-3126/results/hybrid-adamw-lr1e-5__checkpoint-3126/local/Touche2020Decontaminated.json",
+          "sha256": "7664481805830e4efad8cac51524d4136006139fe9132dd4ae3f3df23bd77a9e"
+        },
+        {
+          "bytes": 7016,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/ArguAnaDecontaminated.json",
+          "sha256": "43d9eef008c79d7e9e76869261ca49522b9d46852aa227b0d803c8ef4bd60882"
+        },
+        {
+          "bytes": 6967,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/ClimateFEVERDecontaminated.json",
+          "sha256": "20f66fa0d7626c65ffd9c65c015b5592352b558bc1f484db90a820a3bba1dc23"
+        },
+        {
+          "bytes": 6969,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/DBPediaDecontaminated.json",
+          "sha256": "c73f07ff13f42c472e7735a333592114a19de0e59c95199110b9da25b1caf14e"
+        },
+        {
+          "bytes": 6999,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/FEVERDecontaminated.json",
+          "sha256": "141d116684e34c7a360abc33c0aaa3f2dc5832638c0b7a0786e6184c8a1bb5c1"
+        },
+        {
+          "bytes": 7005,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/FiQA2018Decontaminated.json",
+          "sha256": "5347d18820e307122516a6f1c98e9ef9ae9ef013b933e39c98a1cc66bf8155e3"
+        },
+        {
+          "bytes": 6969,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/HotpotQADecontaminated.json",
+          "sha256": "b051d4207a8d4af2354627b6d2995023298c04b00d53451baa9f790b45047d7c"
+        },
+        {
+          "bytes": 6998,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/MSMARCODecontaminated.json",
+          "sha256": "95ca57417d9b4de6afe9faf2604efe49bc0ac14d961545f8b601633b5ed60f7e"
+        },
+        {
+          "bytes": 6951,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/NFCorpusDecontaminated.json",
+          "sha256": "b21734967672ea9815d90894ac9b6078d616b208a66d54d2a5c655150559d541"
+        },
+        {
+          "bytes": 6911,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/NQDecontaminated.json",
+          "sha256": "9e9c86ea71275715bdc0ebbc613303c52a598f216816ac35f8239c9de49f638d"
+        },
+        {
+          "bytes": 6995,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "1a973f35b09bbd5210bdc0cf5fe17aafc2d1d7995c6d9c4d87867015aaa71776"
+        },
+        {
+          "bytes": 7003,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/SCIDOCSDecontaminated.json",
+          "sha256": "64748f9297635a2156177a0a1628510d60e15b347331579456f0d5cf97b3d8fa"
+        },
+        {
+          "bytes": 6932,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/SciFactDecontaminated.json",
+          "sha256": "1e336dd075d617936f1276c7f31fdf12605b3eb08d3fc2713612a8ba7db46e8c"
+        },
+        {
+          "bytes": 6965,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/TRECCOVIDDecontaminated.json",
+          "sha256": "731029660581a18e644a6f961d4e51ec3508ed45b3d4e734fd49831a74451a1a"
+        },
+        {
+          "bytes": 7005,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-5__checkpoint-782/results/hybrid-adamw-lr1e-5__checkpoint-782/local/Touche2020Decontaminated.json",
+          "sha256": "706ad1072a5d62adda1475eadeca06bb8e80b7acde9bcab44eaa363d1d15ca29"
+        },
+        {
+          "bytes": 7027,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/ArguAnaDecontaminated.json",
+          "sha256": "b9d31547657ae940e2133b93ef11a9839d8426aad03b7d4eae162b617c188bd3"
+        },
+        {
+          "bytes": 6970,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/ClimateFEVERDecontaminated.json",
+          "sha256": "1840743d0f189008f8b1484a1a470b9a282ef105be55e14b8acdd09c6f6ff313"
+        },
+        {
+          "bytes": 6960,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/DBPediaDecontaminated.json",
+          "sha256": "10b0715a348dbba6b0b200a42f29b2a422e0ad2438a64dacd2cda4e39ea2328f"
+        },
+        {
+          "bytes": 6997,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/FEVERDecontaminated.json",
+          "sha256": "e39ebefc2be56a753ca7a2bcbc220a3a344d9100be1fd9765ca69ced5c7fb2c6"
+        },
+        {
+          "bytes": 6994,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/FiQA2018Decontaminated.json",
+          "sha256": "6a79dad873292a45fdc4bb46cb463d86eec0aa830fdc8bf0ea8cbbffa5ec953b"
+        },
+        {
+          "bytes": 6970,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/HotpotQADecontaminated.json",
+          "sha256": "601bd67076c9efa893e3720a0a083c3c3b9a92db5c9e4b7378de11b4e75f32cb"
+        },
+        {
+          "bytes": 6994,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/MSMARCODecontaminated.json",
+          "sha256": "647dec9b4458e998fe38707b204d949a5e81f702b4cd670a456bca4d51fb2664"
+        },
+        {
+          "bytes": 6962,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/NFCorpusDecontaminated.json",
+          "sha256": "af4dc3c6724d2db9fee46b5d760ddc52637d0a918aeb753fcc8dac260803e602"
+        },
+        {
+          "bytes": 6919,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/NQDecontaminated.json",
+          "sha256": "916bb75d72585d3519faa13b03a5e6e40eff017ec4f7ab6e5d7b8731a31e932f"
+        },
+        {
+          "bytes": 7006,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "9431b2fe35ec2d0bef2e425e74d36dc65ff160cdce8d7ffcd71116705b51bd24"
+        },
+        {
+          "bytes": 6984,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/SCIDOCSDecontaminated.json",
+          "sha256": "1861a736299c6e15b4ce95fbcdd6419d7284e2654cf13c2f03b9b9b23dcfcc6a"
+        },
+        {
+          "bytes": 6928,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/SciFactDecontaminated.json",
+          "sha256": "b6446091d762a3eda544828a03213c9bafe232ee81ddb13eb27a5cda08fcadc3"
+        },
+        {
+          "bytes": 6965,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/TRECCOVIDDecontaminated.json",
+          "sha256": "3a3f72c36774c43eeec60e376aae825df9f4a50b0bd038e05eddfeb6553c0a39"
+        },
+        {
+          "bytes": 6992,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-1563/results/hybrid-adamw-lr1e-6__checkpoint-1563/local/Touche2020Decontaminated.json",
+          "sha256": "df6eae94b6cabf4c4a842364aaddb439218c744f3148d80cce0f12806cfb97b1"
+        },
+        {
+          "bytes": 7029,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/ArguAnaDecontaminated.json",
+          "sha256": "b1a8d63252555607faedf9408754c442e94eb6876e2b2bc105fafb3fe86e5e3d"
+        },
+        {
+          "bytes": 6980,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/ClimateFEVERDecontaminated.json",
+          "sha256": "aab1d688b5ef9b03e0004b671cb51972e3b09f140fc478e02eacfee86e2e40d5"
+        },
+        {
+          "bytes": 6968,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/DBPediaDecontaminated.json",
+          "sha256": "a29d74ca114cb387ad777092d7e2c13133a848f44121114dce817f94ee1feb27"
+        },
+        {
+          "bytes": 6991,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/FEVERDecontaminated.json",
+          "sha256": "cd678bc5f24f9ac1dc4b14c623d9d6697e77e832ec1bf15aaf643058821e5dd7"
+        },
+        {
+          "bytes": 6990,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/FiQA2018Decontaminated.json",
+          "sha256": "8a8bbcaafedcef25ac50568a3d30e22e4157fed0fcbdb5c45211c8eb0aed08b2"
+        },
+        {
+          "bytes": 6963,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/HotpotQADecontaminated.json",
+          "sha256": "7e3838ab59b61aa408638c8d8b2cf2fc4d09b8897931b6aa0967803574afc162"
+        },
+        {
+          "bytes": 6997,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/MSMARCODecontaminated.json",
+          "sha256": "4d29c84bf55e12c48310ef57c29673a41dc6f7626d7faed064530a67e663be6a"
+        },
+        {
+          "bytes": 6957,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/NFCorpusDecontaminated.json",
+          "sha256": "7696577c8bb11b12d15355dcfa9976ae53b196497d220206b253aa046279f15d"
+        },
+        {
+          "bytes": 6923,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/NQDecontaminated.json",
+          "sha256": "add782decdf933e0672e19eed27f9cdbb00d719ba3e4870ff5337497262e9ba7"
+        },
+        {
+          "bytes": 7008,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "5e3c411fca4eff028d1b4db42b15fcbe0220bee50744a1933e6cfd8ef388b3df"
+        },
+        {
+          "bytes": 6981,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/SCIDOCSDecontaminated.json",
+          "sha256": "7270f3ad7ab77cde722a05546c3c15c071d344b45fa44df35738fabd698b10df"
+        },
+        {
+          "bytes": 6927,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/SciFactDecontaminated.json",
+          "sha256": "eb6a89ef32e3917fef20d6f510ddf96d8f9892954d96f2e00f8dbab36c55227a"
+        },
+        {
+          "bytes": 6963,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/TRECCOVIDDecontaminated.json",
+          "sha256": "2bca4f2a6c92d53078ef2c9004e292c31c3cc12148cbd52e6f90f5e3897264be"
+        },
+        {
+          "bytes": 6988,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-2345/results/hybrid-adamw-lr1e-6__checkpoint-2345/local/Touche2020Decontaminated.json",
+          "sha256": "3b716f99b3f03f32e9858d6ca454e51fc94eb2e3f6d42d03357ded05b454f677"
+        },
+        {
+          "bytes": 7027,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/ArguAnaDecontaminated.json",
+          "sha256": "7830dd119b8e9b1b0de8e8cbfee27a12f8267eb0304f487d8c0151411cb6ebe4"
+        },
+        {
+          "bytes": 6977,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/ClimateFEVERDecontaminated.json",
+          "sha256": "58063baded4b501a238f6fdc9eaa03f6e8ba07c66dfa4f17a99e1ec9ff604f07"
+        },
+        {
+          "bytes": 6962,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/DBPediaDecontaminated.json",
+          "sha256": "3b7045b341bde3f04cf140e1fa7d1a2609cfa99b618c640aea9eac551755f515"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/FEVERDecontaminated.json",
+          "sha256": "5011149dcf00865d108ac87d22c9842fc68bb092112ea6ec8e275936629ad296"
+        },
+        {
+          "bytes": 6989,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/FiQA2018Decontaminated.json",
+          "sha256": "52c652d3172b470e421877c9e4cd5cec1f800d9a04ad3c466814956b42d89dd0"
+        },
+        {
+          "bytes": 6963,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/HotpotQADecontaminated.json",
+          "sha256": "e54a73963fceae1a0dfd6eedd5c9dd7c0bdbcb2099e9edae32a3471b98e1368c"
+        },
+        {
+          "bytes": 6999,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/MSMARCODecontaminated.json",
+          "sha256": "cd1b42d2452675208b23d49e51f2f40843906194f64dbad759309cfb34af6371"
+        },
+        {
+          "bytes": 6968,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/NFCorpusDecontaminated.json",
+          "sha256": "689ca3847cc6eb3215adf0d2a7ae71487c3603dee0ae5172c91694fc18056f71"
+        },
+        {
+          "bytes": 6922,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/NQDecontaminated.json",
+          "sha256": "562b4b857edd391495c711fb0dd970a4d1c994d5533e129ad1af15a32548f242"
+        },
+        {
+          "bytes": 7010,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "e968353899b915e201f1514d39473b23984c6af8064809ad376932c5a9c93d0d"
+        },
+        {
+          "bytes": 6990,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/SCIDOCSDecontaminated.json",
+          "sha256": "38860f61baaa636ec1bbc32fb212caf7177be0bc617a1ddfd780d78a2484b166"
+        },
+        {
+          "bytes": 6928,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/SciFactDecontaminated.json",
+          "sha256": "3fb2090defacf0cf527f70c26b95ae515610c73741a9980a60ebf7e4696bfade"
+        },
+        {
+          "bytes": 6952,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/TRECCOVIDDecontaminated.json",
+          "sha256": "afb5b2fb73188ab309a119bf446769b72f2e5fe3e413277d91eb2ead093ac87a"
+        },
+        {
+          "bytes": 6996,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-3126/results/hybrid-adamw-lr1e-6__checkpoint-3126/local/Touche2020Decontaminated.json",
+          "sha256": "89f84246d7365ed36efed2f2c9b40e20ab3c4d5ec836b9f997eebb2450064ad0"
+        },
+        {
+          "bytes": 7034,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/ArguAnaDecontaminated.json",
+          "sha256": "4d677a111e5a4bbb1177ef0a5bf3d933716f19b9233266a1e06ca7fc1058d092"
+        },
+        {
+          "bytes": 6974,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/ClimateFEVERDecontaminated.json",
+          "sha256": "c74ebdf4883bd9553a390811acbd004a9f4444716a37b77ee58102fd84a59ecd"
+        },
+        {
+          "bytes": 6970,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/DBPediaDecontaminated.json",
+          "sha256": "2761f9629dcec07568fe56426f3db53354e4f9625eba22b2f28064e6a0aed3ab"
+        },
+        {
+          "bytes": 6993,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/FEVERDecontaminated.json",
+          "sha256": "7e6478bc4694bc4e070b7640bc61c72b7879a1ab810516c9912a65ac6372eedc"
+        },
+        {
+          "bytes": 6987,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/FiQA2018Decontaminated.json",
+          "sha256": "65e86f1f8131de8897d416d48ef58745ea2c19dfaaeee6e0859f841ed0439bdd"
+        },
+        {
+          "bytes": 6973,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/HotpotQADecontaminated.json",
+          "sha256": "e66e58c9da622110ed38e7f17946d38ba757137a8c191f8cc7f83f01952ba742"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/MSMARCODecontaminated.json",
+          "sha256": "81fba76238f1ca33fa8fecf769706e0dfc85091f600a8ec1ee1e04843f97eeda"
+        },
+        {
+          "bytes": 6957,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/NFCorpusDecontaminated.json",
+          "sha256": "3cab55e24fe7aaa5c6f779bcd8783a825ee4ff7bd1b3572f565aa088a3250f9c"
+        },
+        {
+          "bytes": 6969,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/NQDecontaminated.json",
+          "sha256": "fa48b801a589bec9cea8d6b1053271dfb9c76cf2f6aa6c7df57728fcff2229eb"
+        },
+        {
+          "bytes": 7011,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "3938ef27a87ac81588ffd0d39a3e6d2c4192ddc161390eb503d42b8ced9d2b6a"
+        },
+        {
+          "bytes": 6993,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/SCIDOCSDecontaminated.json",
+          "sha256": "8591c896a8feb24ba90354a546eab3dddde4b8ba0e89d7ca5dbacd0de1acbd64"
+        },
+        {
+          "bytes": 6927,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/SciFactDecontaminated.json",
+          "sha256": "98c1a9b037f64132cc6d516c9a52dc769d952bf8fe19f8d7911c3d2acdf2e4ce"
+        },
+        {
+          "bytes": 6967,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/TRECCOVIDDecontaminated.json",
+          "sha256": "7b6d8a2f3991be6374432a451f4bb5e4cd98bb2b35e1b7dc9f0548534d4feb63"
+        },
+        {
+          "bytes": 6995,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr1e-6__checkpoint-782/results/hybrid-adamw-lr1e-6__checkpoint-782/local/Touche2020Decontaminated.json",
+          "sha256": "461baf6d5cf1a7b63710396b2d9520c127ea44e1287eddd0ce5949099ecd3917"
+        },
+        {
+          "bytes": 7018,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/ArguAnaDecontaminated.json",
+          "sha256": "e4ae9f186d5a29d20b943d4b6f38ad6fdefc0c294b03fe6bb805d489dce50fbe"
+        },
+        {
+          "bytes": 6973,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/ClimateFEVERDecontaminated.json",
+          "sha256": "1cc6a42370784f2e7b1a5f653d5f7efdc35fafa2103ff25cf2edaf773190c2d8"
+        },
+        {
+          "bytes": 6968,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/DBPediaDecontaminated.json",
+          "sha256": "ef182a81861d5c302c9d79ef071a78fb088f9f411ced486b5ceb600a9abd09ef"
+        },
+        {
+          "bytes": 6992,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/FEVERDecontaminated.json",
+          "sha256": "e1e9bd729df8d57dc98229908edae7093b6c9c22b5874082530a498be0bd6f69"
+        },
+        {
+          "bytes": 6983,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/FiQA2018Decontaminated.json",
+          "sha256": "5030e6a1ef1e3bc500edac2fe5727e7ce7e3fb45adb6008816457fc3dea9fe5a"
+        },
+        {
+          "bytes": 6968,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/HotpotQADecontaminated.json",
+          "sha256": "6130381070100dc739c71a97cac1e83b614cfa42e6f602913243d3e14b5793a6"
+        },
+        {
+          "bytes": 6991,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/MSMARCODecontaminated.json",
+          "sha256": "bd2bae72f5169b3896d82c4f6b158288a8c834d79befbcb126f67b07de5f0424"
+        },
+        {
+          "bytes": 6956,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/NFCorpusDecontaminated.json",
+          "sha256": "f21179908a40d9dfd7da9b35419a25a491df109062ee49bf3095421f1fb15e36"
+        },
+        {
+          "bytes": 6912,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/NQDecontaminated.json",
+          "sha256": "a45f2cf4ab70a37d4cca290353f3a2fcda6c8333bf9a661d013c3e52ca4dd303"
+        },
+        {
+          "bytes": 7007,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "7457bd43cdba559aa25ed162b42399f4fbea18185f691d63bd70a16e7873f88c"
+        },
+        {
+          "bytes": 7000,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/SCIDOCSDecontaminated.json",
+          "sha256": "6bc7c69db5ef7e03a4849409afff9476fd84d170adc7c8162f8d42ebe0f3a37f"
+        },
+        {
+          "bytes": 6935,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/SciFactDecontaminated.json",
+          "sha256": "fbfc447a929fe35794bdcc234527c17fb95c8bd7179530885b8d7aa17dc59b71"
+        },
+        {
+          "bytes": 6940,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/TRECCOVIDDecontaminated.json",
+          "sha256": "9c57544e166c3913fa98bcca0e824ac7ffbb2844d7be7288b9f954f184d7145f"
+        },
+        {
+          "bytes": 7017,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-1563/results/hybrid-adamw-lr3e-5__checkpoint-1563/local/Touche2020Decontaminated.json",
+          "sha256": "b39a29a127595f75e67d45423d94739a39b85c7de96f64db812bcb9acc7936c6"
+        },
+        {
+          "bytes": 7031,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/ArguAnaDecontaminated.json",
+          "sha256": "7e2256fed25a05d3236621f62f2e528ff73a9b3c76b230373c35d9dff5bd334e"
+        },
+        {
+          "bytes": 6974,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/ClimateFEVERDecontaminated.json",
+          "sha256": "bd88cc267bd41a47bb8c17df6fa64b764ecdf7d0f77812f60307289194e7f1b6"
+        },
+        {
+          "bytes": 6969,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/DBPediaDecontaminated.json",
+          "sha256": "6f28d48236d1412b7b94986b9494d41e5e6308d54c731cab1f8fa8166cf61b59"
+        },
+        {
+          "bytes": 7009,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/FEVERDecontaminated.json",
+          "sha256": "4f8d6e75f1d6f3f287345e7e1363f6a4561748ad77290627b04a135aa54e2774"
+        },
+        {
+          "bytes": 6993,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/FiQA2018Decontaminated.json",
+          "sha256": "a991aeb70c7eadbded53e24860ddece9f6a7c053a0d266b5e5ea6c8c82a6d7fc"
+        },
+        {
+          "bytes": 6962,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/HotpotQADecontaminated.json",
+          "sha256": "c16de01eef866d0a3846c61ebcf6a239cc4b9c6ab9489e813bf8236520745ae2"
+        },
+        {
+          "bytes": 6999,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/MSMARCODecontaminated.json",
+          "sha256": "014e15615d0b23412a76b5ecb6312f677be8f5d2be95256088ec86c811da1058"
+        },
+        {
+          "bytes": 6968,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/NFCorpusDecontaminated.json",
+          "sha256": "2c3f33abc1c32f1b84cf91a6b3755cf615c05b1ffd91b64314521e08220685e0"
+        },
+        {
+          "bytes": 6918,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/NQDecontaminated.json",
+          "sha256": "4775cd62679073599205a0b409efe1a1177762265b47cf3b1d15936874722f7d"
+        },
+        {
+          "bytes": 7003,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "69e42165df4c823729279c37c2eace5cb5eb2489d21065c306e1ce79def92b59"
+        },
+        {
+          "bytes": 7014,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/SCIDOCSDecontaminated.json",
+          "sha256": "35f189e6ef777f9fab55d021777242c68f9ee7174a6cbcf28abca22bf6a861be"
+        },
+        {
+          "bytes": 6912,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/SciFactDecontaminated.json",
+          "sha256": "6ee189306acc5262c547ab779b8268ff79c3d074ed83913a27659ff25d44b920"
+        },
+        {
+          "bytes": 6926,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/TRECCOVIDDecontaminated.json",
+          "sha256": "ea2cd1f621a67cd8820431f82017d41b09228cc4210a11e828435b5d417492e1"
+        },
+        {
+          "bytes": 6998,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-2345/results/hybrid-adamw-lr3e-5__checkpoint-2345/local/Touche2020Decontaminated.json",
+          "sha256": "8e4339174cfec5ef3faa0f0f399b3ed9288ba3b01469b26d641efe5722dc8d09"
+        },
+        {
+          "bytes": 7025,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/ArguAnaDecontaminated.json",
+          "sha256": "8462a6a9c951e6a4b5ba1e949bc6a47973f033fd69dd3a2d470bf3bc1cce3cbb"
+        },
+        {
+          "bytes": 6979,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/ClimateFEVERDecontaminated.json",
+          "sha256": "04734f6fb10625a3615e7a1de9cad1f28a1ea922b13914f5910f2a7b77d04fed"
+        },
+        {
+          "bytes": 6964,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/DBPediaDecontaminated.json",
+          "sha256": "0e9379a698fa9bd960675fe7917b8445e7f56b4a5720e1b462a359020bcc466e"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/FEVERDecontaminated.json",
+          "sha256": "78acbd5d2f48e87d70c68c3f76c585e54545ec5a26dfc2a481bca8572210b101"
+        },
+        {
+          "bytes": 6988,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/FiQA2018Decontaminated.json",
+          "sha256": "937e9b0d5eb7c2e8ce70bb429f970658bae550724d405d55accae1dc515e675a"
+        },
+        {
+          "bytes": 6967,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/HotpotQADecontaminated.json",
+          "sha256": "ec1d7db241e61e9978987e29b2e397a21c7f75da1a021f234eefe905581a12aa"
+        },
+        {
+          "bytes": 7002,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/MSMARCODecontaminated.json",
+          "sha256": "5fc9233eafaec6b38dd7dda68cd22a8ed7e1e7cea07783541464dbd8bc3a6d79"
+        },
+        {
+          "bytes": 6963,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/NFCorpusDecontaminated.json",
+          "sha256": "a14035743a921c2080e19b36e78c0d646047f4ffc48357642e40677753ff7c5c"
+        },
+        {
+          "bytes": 6912,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/NQDecontaminated.json",
+          "sha256": "8582af75c1efa376ac00293b3c9b1167ca27b93154a859d7cc47a4772d633b8c"
+        },
+        {
+          "bytes": 6999,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "c9249048f373bca364d09d43b0ce8a9b82475ed024f137170dcfc0a30967c2a6"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/SCIDOCSDecontaminated.json",
+          "sha256": "437a5badb89e06385eda461169f02821c39f61997da4f94b1b4017780671bdf3"
+        },
+        {
+          "bytes": 6916,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/SciFactDecontaminated.json",
+          "sha256": "26c7994dba60316ab3454a3700546134dca5dd6537cb125f602693607b2b9217"
+        },
+        {
+          "bytes": 6943,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/TRECCOVIDDecontaminated.json",
+          "sha256": "68245ecae1281a3bda2d0b240c7320188edf71795fd31e9455298e640b5dd975"
+        },
+        {
+          "bytes": 7002,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-3126/results/hybrid-adamw-lr3e-5__checkpoint-3126/local/Touche2020Decontaminated.json",
+          "sha256": "e34f263eb7efd776afb1787871964c3e7d9c20f71b2541423ac41fdf9350c33c"
+        },
+        {
+          "bytes": 7027,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/ArguAnaDecontaminated.json",
+          "sha256": "64bf101684074d3e6f4b94232b54a54830b8d5de4489931222d136fc3fb50026"
+        },
+        {
+          "bytes": 6975,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/ClimateFEVERDecontaminated.json",
+          "sha256": "19305ac0ab2bc2a5fe3087610bb19c9f7576f464f459b30cb47256628ece4f36"
+        },
+        {
+          "bytes": 6969,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/DBPediaDecontaminated.json",
+          "sha256": "2ec1001e9c9098714a5d2d522aec00108a9c167f6e52eb473fdc9f033263c8e0"
+        },
+        {
+          "bytes": 6994,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/FEVERDecontaminated.json",
+          "sha256": "8dc191147d0194bce1b5251c71a022efa7929dfb9ce9fffc8980473a89204ab1"
+        },
+        {
+          "bytes": 6991,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/FiQA2018Decontaminated.json",
+          "sha256": "6a36d8a194ab305a21c519861b7e4a5645d6f44a410085fc8087a3efd26f4c5a"
+        },
+        {
+          "bytes": 6958,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/HotpotQADecontaminated.json",
+          "sha256": "87373827b8e322d45feba8d683c505df15a936cb3eed7a094aa4e2e934992fff"
+        },
+        {
+          "bytes": 7000,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/MSMARCODecontaminated.json",
+          "sha256": "481e7433acc7add63900ec4686b39760f120534fe237b7e7608531d368a96d30"
+        },
+        {
+          "bytes": 6958,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/NFCorpusDecontaminated.json",
+          "sha256": "ce45ef9c164c861f0dfb1396b6967cb6d6969a21b36057e59fcce13dd13863be"
+        },
+        {
+          "bytes": 6915,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/NQDecontaminated.json",
+          "sha256": "94eecdaaa7371fc6208d10c6a3da10a3b2f7e3966489013a10212dd0dc3f5af3"
+        },
+        {
+          "bytes": 7006,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "1f261818c2f555528f64a412b77452db0cb57c54c5a136717dc48dc4590f670b"
+        },
+        {
+          "bytes": 6997,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/SCIDOCSDecontaminated.json",
+          "sha256": "78f4554cd5949223df3adf5548c179410b7cf301bad9875a070d199b2a158c3a"
+        },
+        {
+          "bytes": 6933,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/SciFactDecontaminated.json",
+          "sha256": "84c31d656f52f6c10cbb4791b57fb6a2bddde9c6ffc77a4b3f4c469d4fa06fd3"
+        },
+        {
+          "bytes": 6939,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/TRECCOVIDDecontaminated.json",
+          "sha256": "3662ffeb03cf54a3ceb4a4f090c7084fdf94dabb24c1ab0c7e9c66094a1bb8c7"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-5__checkpoint-782/results/hybrid-adamw-lr3e-5__checkpoint-782/local/Touche2020Decontaminated.json",
+          "sha256": "4f62852ada439a544845ce50aa830823d5b78890d12c88d15284c7eaba206b98"
+        },
+        {
+          "bytes": 7031,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/ArguAnaDecontaminated.json",
+          "sha256": "466a091e7e3086ae0a1edd336b57145ce9988aba09eadd2d43c836fa131191b4"
+        },
+        {
+          "bytes": 6971,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/ClimateFEVERDecontaminated.json",
+          "sha256": "02b27e44bcc23bcc5252182482b992158193a8d0825c95a6e43e6663f52f1ca9"
+        },
+        {
+          "bytes": 6967,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/DBPediaDecontaminated.json",
+          "sha256": "431e5bc7fa922bd6ec036f991a9bf82a559801b08258dfdd9858c119aab6d084"
+        },
+        {
+          "bytes": 6991,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/FEVERDecontaminated.json",
+          "sha256": "56ffa82c1700aba0ed81408622f7af1db5039bae4abbcd4ffd842afbf94642a3"
+        },
+        {
+          "bytes": 6981,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/FiQA2018Decontaminated.json",
+          "sha256": "77b01d0da81e74fff22160766b7436d8a88a081d7958b6fe5eb718b8608869eb"
+        },
+        {
+          "bytes": 6962,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/HotpotQADecontaminated.json",
+          "sha256": "051e88ac0fb4ab4decd2e82c86ad33834fd756526dd0fa3250ed80a32041151f"
+        },
+        {
+          "bytes": 6997,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/MSMARCODecontaminated.json",
+          "sha256": "5f8f1eb1b8059e76a6414d1bdae0ce12fae62450d89e6c574626a94b63b07d7f"
+        },
+        {
+          "bytes": 6961,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/NFCorpusDecontaminated.json",
+          "sha256": "c2d59622b6cf4cf9b47dba1a674d208c4c0b4e74565066b64ceb799464b793ee"
+        },
+        {
+          "bytes": 6911,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/NQDecontaminated.json",
+          "sha256": "217f3b0a3494ea369bac45ed480ef15f9578d2f55db020c0021a21cb416c1f94"
+        },
+        {
+          "bytes": 7009,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "c493f92aa653a00efdbe2bd6aa0784c4fafdaefa47cfad247ffa1c211ca496ea"
+        },
+        {
+          "bytes": 6998,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/SCIDOCSDecontaminated.json",
+          "sha256": "a82076608ffa734090a5c5795c13bd25b934bb571be580bae9d09e56fbef2355"
+        },
+        {
+          "bytes": 6938,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/SciFactDecontaminated.json",
+          "sha256": "a2ff42b5519d816004ca1b6cfe6204a27af2b014f90e002fd8f2a57774811621"
+        },
+        {
+          "bytes": 6952,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/TRECCOVIDDecontaminated.json",
+          "sha256": "baa57bb6fa137d08ba1c464e5862cbadb9cf35a87f0c17dc1723638fcb56aa09"
+        },
+        {
+          "bytes": 7007,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-1563/results/hybrid-adamw-lr3e-6__checkpoint-1563/local/Touche2020Decontaminated.json",
+          "sha256": "dba13490fd7c9e05f5eec5cde0ff03183da29d8f974a2d73b9f034621cc85112"
+        },
+        {
+          "bytes": 7020,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/ArguAnaDecontaminated.json",
+          "sha256": "680f0a0349ab738268d652501c2af9e7b25a6796fafb597530cc4ee211a78fae"
+        },
+        {
+          "bytes": 6973,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/ClimateFEVERDecontaminated.json",
+          "sha256": "92b4a86c15b107d719f09b99826f3e312200702b6e315082c2206c9c0eb8b304"
+        },
+        {
+          "bytes": 6969,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/DBPediaDecontaminated.json",
+          "sha256": "ca6a6e869a3e382be9f3ab07d89049d3674848288b780e2ba168fb8ca8292633"
+        },
+        {
+          "bytes": 6992,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/FEVERDecontaminated.json",
+          "sha256": "e15deaa80cd0b920459004f5826b9daecbd1e765293f0d3a9e388a718f507d7b"
+        },
+        {
+          "bytes": 6994,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/FiQA2018Decontaminated.json",
+          "sha256": "debf1952e1006b8c030ff283b6f5798137994a94dfe1ff429b6ae8998d09bef9"
+        },
+        {
+          "bytes": 6963,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/HotpotQADecontaminated.json",
+          "sha256": "7ece0c50e18093aaa02719d24e98d3ef6b9a76dfdb9c884fb4dff43a8ae38756"
+        },
+        {
+          "bytes": 7005,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/MSMARCODecontaminated.json",
+          "sha256": "ecfdb47756386fd8f12b3afaf747b073a30307a1bdcf5859d743103bdcfae0a1"
+        },
+        {
+          "bytes": 6960,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/NFCorpusDecontaminated.json",
+          "sha256": "b23f898e695abc19b83c00be9416b88b43f1d1a6bf05ba44a93827fb67d45d2d"
+        },
+        {
+          "bytes": 6909,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/NQDecontaminated.json",
+          "sha256": "a1909e12185c976114290b99265a0f60423396c5fdf3ff02ebd6533867043f3d"
+        },
+        {
+          "bytes": 7010,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "222bfc46adbdf4556a82ef2db6384230e99fc190f674d7c6ee43cea9476b9bae"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/SCIDOCSDecontaminated.json",
+          "sha256": "7480e28d58ccbdcb13c0b09f4ef1bf00fe5289d8b995c82b28ec1981acef7107"
+        },
+        {
+          "bytes": 6940,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/SciFactDecontaminated.json",
+          "sha256": "380b2cd93a198bdc81a4a56effbe7fcd5ad8dbe3d4490fdf242c235c76efc280"
+        },
+        {
+          "bytes": 6952,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/TRECCOVIDDecontaminated.json",
+          "sha256": "9ac2672e28b177661f37e3aa1b2b1790acc948cb619a920aaf25fb7700b759ed"
+        },
+        {
+          "bytes": 7016,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-2345/results/hybrid-adamw-lr3e-6__checkpoint-2345/local/Touche2020Decontaminated.json",
+          "sha256": "892c41671547085e9fdf5ae43287b2922fd63cce30764624e79aa0a64ba03f02"
+        },
+        {
+          "bytes": 7032,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/ArguAnaDecontaminated.json",
+          "sha256": "25ad72b42f253c958a37041ccd4a6dbe8b374739260ddf91d65e1beaf28d859f"
+        },
+        {
+          "bytes": 6981,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/ClimateFEVERDecontaminated.json",
+          "sha256": "e25d8c029a6f4f3b3fa9e0deb3145f636b5361fc3ba62348e55f20c8699fda31"
+        },
+        {
+          "bytes": 6974,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/DBPediaDecontaminated.json",
+          "sha256": "c5d6d53e53de2b5e271c8888d00f1a3209e1a67ca1948601fd895ca9aa7482a8"
+        },
+        {
+          "bytes": 6991,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/FEVERDecontaminated.json",
+          "sha256": "9a608cb450da0fb25cea78ccd3320f82d94aaeb883392c6519ae0ac519cd9e64"
+        },
+        {
+          "bytes": 6990,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/FiQA2018Decontaminated.json",
+          "sha256": "dd6303add98346e96e3350071456398d722e4352c373f48734a1704beca93454"
+        },
+        {
+          "bytes": 6970,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/HotpotQADecontaminated.json",
+          "sha256": "33e440179a2ea67d534fbf7fe8a89ea3dc8dca9893874aefe2fdbdb7910e62fd"
+        },
+        {
+          "bytes": 7009,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/MSMARCODecontaminated.json",
+          "sha256": "326569132f8474699b2956102134ee1ad973f351aa0d3ef915fb6ab490ce3cc4"
+        },
+        {
+          "bytes": 6962,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/NFCorpusDecontaminated.json",
+          "sha256": "a9c70d8a0de6c8c33cee7a233f02457902df2f119c86c48f9d483ccd22a12092"
+        },
+        {
+          "bytes": 6907,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/NQDecontaminated.json",
+          "sha256": "5fd5c6543956b22eecb662e0301c137a3a3828d745d0ad6352b7923f82abdde1"
+        },
+        {
+          "bytes": 7009,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "431ac348312bf2c89469ead59cb6c233b1a49220219a80ced8512babe26d8db0"
+        },
+        {
+          "bytes": 6998,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/SCIDOCSDecontaminated.json",
+          "sha256": "b33a40ef848142d00b5694b4c34baa0545ef00df109b696eb7903e6c47a65668"
+        },
+        {
+          "bytes": 6938,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/SciFactDecontaminated.json",
+          "sha256": "b1f156ec34440c6c72455e7da43836b10a370a993895767e2d69f7b7162bfce5"
+        },
+        {
+          "bytes": 6955,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/TRECCOVIDDecontaminated.json",
+          "sha256": "c2d0b9686ae1067a6b178a9268ba1685926320d0acd30f558206848e85157a2a"
+        },
+        {
+          "bytes": 7014,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-3126/results/hybrid-adamw-lr3e-6__checkpoint-3126/local/Touche2020Decontaminated.json",
+          "sha256": "7e291519c07e1dfc931fa616a1803f5b42798b0bd2cd313ffc02696173ce9271"
+        },
+        {
+          "bytes": 7014,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/ArguAnaDecontaminated.json",
+          "sha256": "ac1a704d1763a11c6bd0c0c3d5dc89a17bf9ec09189f72e79d8660bf1e1d3abe"
+        },
+        {
+          "bytes": 6967,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/ClimateFEVERDecontaminated.json",
+          "sha256": "fe620bfc53b07dea3197c05c99f3a3fd5b4ee55c6b4ef2a55f7c5a2a9dd498b6"
+        },
+        {
+          "bytes": 6969,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/DBPediaDecontaminated.json",
+          "sha256": "a4fe0d5703ff616677c531b2ffe4bf9630a380128037825cdf1f50c021d07ba5"
+        },
+        {
+          "bytes": 6996,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/FEVERDecontaminated.json",
+          "sha256": "40c952f22577b1cdf731a633b069387e3371fa0076c62a2e735bb76ca50d8615"
+        },
+        {
+          "bytes": 6999,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/FiQA2018Decontaminated.json",
+          "sha256": "dfc2f84fdd12d5f8aee4f14ddd50749ba8fa49ce8cacd2cdd7290ad11c9d4f33"
+        },
+        {
+          "bytes": 6970,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/HotpotQADecontaminated.json",
+          "sha256": "1146569f58acfb59decbad0f6cf69218f1b9e2aa3e2879cf0cd40d05e3e589cc"
+        },
+        {
+          "bytes": 6997,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/MSMARCODecontaminated.json",
+          "sha256": "dc63ed218a7758afc682645612b4e78417476d0136bad7c8954604d5ed8816be"
+        },
+        {
+          "bytes": 6959,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/NFCorpusDecontaminated.json",
+          "sha256": "013690ab5185873b375f3cdaab89df3da27db74002dccd436a4055426fbf335e"
+        },
+        {
+          "bytes": 6920,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/NQDecontaminated.json",
+          "sha256": "4009c2a332198780d50f91e0b1a2fbf55f172ed971fcc9ce679676973e5d0b46"
+        },
+        {
+          "bytes": 7003,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/QuoraRetrievalDecontaminated.json",
+          "sha256": "f5d8e981ea26509731b133bd220363a3fb5fb806797aa3d171ef2ea509d9f7b3"
+        },
+        {
+          "bytes": 6985,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/SCIDOCSDecontaminated.json",
+          "sha256": "5594b911c9c1289418c38411c0c85dbd874688a13ee9100d487ee03518151ab4"
+        },
+        {
+          "bytes": 6935,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/SciFactDecontaminated.json",
+          "sha256": "c7bda8030a9e65c346f386352924d210d9322648fd93616194292d92f5f0ed63"
+        },
+        {
+          "bytes": 6954,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/TRECCOVIDDecontaminated.json",
+          "sha256": "e0ec81d45f95ef7c971a1f9357872c0f503984238638ffeaf3d277194a7a72a4"
+        },
+        {
+          "bytes": 7001,
+          "path": "results/hybrid-adamw-beir-dynamics/dense/hybrid-adamw-lr3e-6__checkpoint-782/results/hybrid-adamw-lr3e-6__checkpoint-782/local/Touche2020Decontaminated.json",
+          "sha256": "cd4fc72cb81940d1414ae844fa1c3d3da6e7d1bc56e94b4e4b64e00992ba28de"
+        }
+      ],
+      "runtime_manifest": {
+        "bytes": 1731,
+        "path": "results/hybrid-adamw-beir-dynamics/evaluation_runtime.json",
+        "sha256": "597435ce73d319f3375e6221246a41ab05eb934e2ef35a6e71cd34a976a06db5"
+      },
+      "valid_units": 224
+    }
+  },
+  "tasks": [
+    "ArguAna",
+    "ClimateFEVER",
+    "DBPedia",
+    "FEVER",
+    "FiQA2018",
+    "HotpotQA",
+    "MSMARCO",
+    "NFCorpus",
+    "NQ",
+    "QuoraRetrieval",
+    "SCIDOCS",
+    "SciFact",
+    "TRECCOVID",
+    "Touche2020"
+  ],
+  "valid_units": 224
+}

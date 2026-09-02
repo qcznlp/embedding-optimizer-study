@@ -75,8 +75,7 @@ boundaries.
 
 <!-- FINAL-CONCLUSION:BEGIN -->
 
-**Pending (FINAL_CONCLUSION_PENDING):** the result-driven conclusion will be rendered only after
-the validation-frozen retrieval, shared-start endpoint, and causal-chain manifests are complete.
+On the validation-frozen three-seed DenseOn retrieval comparison, Muon versus AdamW was negative (mean delta nDCG@10 -0.0306; familywise 95% CI [-0.0464, -0.0138]), while NorMuon versus AdamW was negative (mean delta nDCG@10 -0.0304; familywise 95% CI [-0.0446, -0.0138]). Across DenseOn's four frozen learning rates, routing-matched hybrid AdamW minus native AdamW averaged +0.0001 nDCG@10, with 3 positive, 1 negative, and 0 zero learning-rate points. This is descriptive evidence about parameter routing as an alternative explanation; it does not by itself identify the matrix rule or prove that routing accounts for the confirmatory Muon-family contrast. The frozen shared-start tail endpoint for DenseOn concluded Muon: mixed; NorMuon: mixed. The frozen temporal spectral bridge was a claimable negative, the fixed-state dose/band chain was a claimable negative, and their joint spectral-component account was a claimable negative. This explains only the tested chain: it does not identify formal mediation or establish a universal optimizer ranking.
 
 <!-- FINAL-CONCLUSION:END -->
 

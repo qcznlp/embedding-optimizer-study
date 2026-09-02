@@ -20,7 +20,7 @@ all: headlines $(BUILD)/main.pdf
 
 release:
 	$(MAKE) clean
-	$(PYTHON) -m embed_optim.paper_results --repo-root .. \
+	cd .. && $(PYTHON) -m embed_optim.paper_results --repo-root . \
 		--families dense \
 		--scope-amendment configs/dense_scope_amendment.json
 	$(MAKE) $(BUILD)/main.pdf
@@ -29,7 +29,7 @@ release:
 vendor: $(STYLE_FILES)
 
 headlines:
-	$(PYTHON) -m embed_optim.paper_results --repo-root .. --if-ready \
+	cd .. && $(PYTHON) -m embed_optim.paper_results --repo-root . --if-ready \
 		--families dense \
 		--scope-amendment configs/dense_scope_amendment.json
 

@@ -1,0 +1,75 @@
+{
+  "claim_boundary": "The shared-start randomization identifies optimizer-level accumulated effects. The post-treatment spectral predictor analysis is a small-sample, falsifiable causal-chain triangulation, not a formally identified causal mediation estimate.",
+  "claim_rule": "all conditions are required; otherwise the spectral temporal bridge is not supported",
+  "claimable": true,
+  "complete": true,
+  "coverage": {
+    "checkpoints": 45,
+    "loso_predictions": 96,
+    "operators": 3,
+    "paired_contrasts": 6,
+    "seeds": 3
+  },
+  "decision": {
+    "criteria": {
+      "coefficient_behavior": false,
+      "held_out_prediction": false,
+      "negative_control": true,
+      "outcome_shift": false,
+      "treatment_shift": true
+    },
+    "spectral_temporal_bridge_supported": false
+  },
+  "family": "dense",
+  "outputs": {
+    "README.md": {
+      "bytes": 2255,
+      "path": "reports/temporal-short-branch/README.md",
+      "sha256": "f2b7d643afe80febe0142203905057c6488b2d7001c6d9b3c36518acbc3a55d0"
+    },
+    "estimates.csv": {
+      "bytes": 4081,
+      "path": "reports/temporal-short-branch/estimates.csv",
+      "sha256": "298766768b78d73452edf132643326c99c04b21277b037a84bdf9365940d4fd3"
+    },
+    "loso_predictions.csv": {
+      "bytes": 16059,
+      "path": "reports/temporal-short-branch/loso_predictions.csv",
+      "sha256": "678d72549011f1f346c5f82a315d5a38e51eb694e0942bdc9e34349c4b4edc60"
+    },
+    "paired_contrasts.csv": {
+      "bytes": 1644,
+      "path": "reports/temporal-short-branch/paired_contrasts.csv",
+      "sha256": "c6012076baa20be0f5caf530b1ebe749ad2f02b6f28526fe5c0fe47ee10af1b9"
+    }
+  },
+  "protocol": {
+    "bytes": 12463,
+    "path": "configs/causal_chain_analysis.json",
+    "sha256": "813538910dbd32d6fcfb65ee8736816cd573ae122ec907d25d7208229720cd7f"
+  },
+  "schema_version": 1,
+  "sources": [
+    {
+      "bytes": 72087,
+      "path": "reports/short-branch/temporal_mechanism_predictors.manifest.json",
+      "sha256": "b129e4d314a64ad1e6fd23e6df4451f845760e20a96172de3ef90a8371ede46a"
+    },
+    {
+      "bytes": 8169,
+      "path": "reports/short-branch/temporal_mechanism_predictors.csv",
+      "sha256": "609d36712dd94ad7b30d462f2f69f5f4b053bb9199757c63d0253e728d84485a"
+    },
+    {
+      "bytes": 53378,
+      "path": "reports/tail-stability/summary_manifest.json",
+      "sha256": "8450e0238e2841bb23581948f8575ac0097c5cbfd82bd92f7572a87a3307f475"
+    },
+    {
+      "bytes": 10399,
+      "path": "reports/tail-stability/short_branch_checkpoint_tail.csv",
+      "sha256": "5e94fc022a6c855527897461a63bc383935c1f6da05f561f9405b14afd937662"
+    }
+  ],
+  "status": "complete"
+}

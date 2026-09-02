@@ -26,6 +26,7 @@ from embed_optim.paper_audit import (
     PAPER_SOURCE_TABLE_PATHS,
     _causal_chain_evidence,
     _causal_chain_source_complete,
+    _causal_evidence_snapshot,
     _complete_manifest,
     _final_document_language_problems,
     _macros,
@@ -34,6 +35,7 @@ from embed_optim.paper_audit import (
     _paper_result_tables_complete,
     _paper_results_complete,
     _paper_source_tables_complete,
+    _paper_systems_complete,
     _renderer_marker_blocks_complete,
     _spectral_transplant_complete,
     _tail_stability_complete,
@@ -100,23 +102,24 @@ def test_audit_resolves_scope_amendment_against_repo_root_before_read(
     assert captured["path"] == expected.resolve()
 
 
-def test_audit_uses_one_causal_evidence_snapshot(monkeypatch: pytest.MonkeyPatch) -> None:
-    original = paper_audit_module.load_causal_chain_evidence
+def test_causal_evidence_snapshot_cache_loads_once(monkeypatch: pytest.MonkeyPatch) -> None:
     calls = 0
+    expected = {"complete": True, "sentinel": "one immutable snapshot"}
 
     def counted(*args, **kwargs):
         nonlocal calls
         calls += 1
-        return original(*args, **kwargs)
+        return expected
 
     monkeypatch.setattr(paper_audit_module, "load_causal_chain_evidence", counted)
+    cache = {}
 
-    audit_paper(
-        families=("dense",),
-        scope_amendment="configs/dense_scope_amendment.json",
-    )
+    first = _causal_evidence_snapshot(REPOSITORY, cache, require_complete=True)
+    second = _causal_evidence_snapshot(REPOSITORY, cache, require_complete=True)
 
     assert calls == 1
+    assert first is expected
+    assert second is expected
 
 
 @pytest.fixture
@@ -130,7 +133,7 @@ def checked_in_dense_audit():
 def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_audit):
     result = checked_in_dense_audit
 
-    assert isinstance(result["complete"], bool)
+    assert result["complete"] is True
     assert result["constant_macros"]["NumDiscoveryRuns"] == "12"
     assert result["constant_macros"]["NumDiscoveryUnits"] == "840"
     assert result["constant_macros"]["NumWeightPairs"] == "20"
@@ -144,16 +147,44 @@ def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_aud
     )
     discovery_evidence = result["evidence"]["DiscoveryHeadline"]
     assert len(discovery_evidence) == 5
-    assert discovery_evidence[1]["complete"] is True
-    assert discovery_evidence[2]["complete"] is True
-    assert isinstance(discovery_evidence[3]["complete"], bool)
-    assert discovery_evidence[4]["complete"] is False
+    assert all(item["complete"] is True for item in discovery_evidence)
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
-    assert isinstance(result["paper_results"]["complete"], bool)
+    assert result["paper_results"]["complete"] is True
     assert set(result["blog_marker_blocks"]) == set(BLOG_MARKERS)
     assert result["document_language_problems"] == []
+
+
+def _stub_completed_nonheadline_audit_gates(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._complete_manifest", lambda *_args, **_kwargs: True
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._blog_marker_audit",
+        lambda *_args, **_kwargs: {name: {"complete": True} for name in BLOG_MARKERS},
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._final_document_language_problems",
+        lambda _root: [],
+    )
+
+    def causal_receipt(root, causal_cache=None):
+        if causal_cache is not None:
+            causal_cache[Path(root).resolve()] = (
+                {"repository_root": str(Path(root).resolve())},
+                None,
+            )
+        return {
+            "temporal_short_branch": {"complete": True},
+            "dose_band": {"complete": True},
+        }
+
+    monkeypatch.setattr("embed_optim.paper_audit._causal_chain_evidence", causal_receipt)
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._causal_snapshot_still_current",
+        lambda *_args, **_kwargs: True,
+    )
 
 
 @pytest.fixture
@@ -168,6 +199,7 @@ def synthetic_pending_audit(monkeypatch):
     ):
         parsed[name] = "\\ResultPending{synthetic pending fixture}"
     monkeypatch.setattr("embed_optim.paper_audit._macros", lambda _path: parsed)
+    _stub_completed_nonheadline_audit_gates(monkeypatch)
     return audit_paper(
         families=("dense",),
         scope_amendment="configs/dense_scope_amendment.json",
@@ -197,34 +229,7 @@ def synthetic_future_final_audit(monkeypatch):
     ):
         parsed[name] = "audited final result"
     monkeypatch.setattr("embed_optim.paper_audit._macros", lambda _path: parsed)
-    monkeypatch.setattr(
-        "embed_optim.paper_audit._complete_manifest", lambda *_args, **_kwargs: True
-    )
-    monkeypatch.setattr(
-        "embed_optim.paper_audit._blog_marker_audit",
-        lambda *_args, **_kwargs: {name: {"complete": True} for name in BLOG_MARKERS},
-    )
-    monkeypatch.setattr(
-        "embed_optim.paper_audit._final_document_language_problems",
-        lambda _root: [],
-    )
-
-    def causal_receipt(root, causal_cache=None):
-        if causal_cache is not None:
-            causal_cache[Path(root).resolve()] = (
-                {"repository_root": str(Path(root).resolve())},
-                None,
-            )
-        return {
-            "temporal_short_branch": {"complete": True},
-            "dose_band": {"complete": True},
-        }
-
-    monkeypatch.setattr("embed_optim.paper_audit._causal_chain_evidence", causal_receipt)
-    monkeypatch.setattr(
-        "embed_optim.paper_audit._causal_snapshot_still_current",
-        lambda *_args, **_kwargs: True,
-    )
+    _stub_completed_nonheadline_audit_gates(monkeypatch)
     return audit_paper(
         families=("dense",),
         scope_amendment="configs/dense_scope_amendment.json",
@@ -381,6 +386,25 @@ def test_strict_paper_audit_cli_reports_pending_evidence(capsys, synthetic_pendi
         "InterventionHeadline",
         "RepresentationHeadline",
     ]
+
+
+def test_paper_systems_audit_reads_the_generated_diagnostics_table(tmp_path: Path):
+    relative_paths = (
+        "reports/training-dynamics/optimizer_system_summary.csv",
+        "paper/generated/discovery.tex",
+        "paper/generated/diagnostics.tex",
+    )
+    for relative in relative_paths:
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(REPOSITORY / relative, destination)
+
+    assert _paper_systems_complete(tmp_path, ("dense",))
+    (tmp_path / "paper/generated/diagnostics.tex").write_text(
+        (tmp_path / "paper/generated/discovery.tex").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    assert not _paper_systems_complete(tmp_path, ("dense",))
 
 
 def test_paper_constants_use_distributable_receipt_without_local_500k_data(tmp_path: Path):
@@ -1473,8 +1497,20 @@ def test_tail_stability_future_manifest_requires_every_hashed_source_and_row(
     }
     path = report / "summary_manifest.json"
 
+    portable_records = [manifest["protocol"]]
+    portable_records.extend(
+        record
+        for source in [*discovery_sources, *short_sources]
+        for record in source.values()
+        if isinstance(record, dict) and "path" in record
+    )
+    for record in portable_records:
+        record["path"] = Path(record["path"]).relative_to(tmp_path).as_posix()
+
     assert _tail_stability_complete(path, manifest, ("dense",), scope)
-    Path(discovery_sources[0]["sample_metrics"]["path"]).write_text("tampered\n", encoding="utf-8")
+    (tmp_path / discovery_sources[0]["sample_metrics"]["path"]).write_text(
+        "tampered\n", encoding="utf-8"
+    )
     assert not _tail_stability_complete(path, manifest, ("dense",), scope)
 
 

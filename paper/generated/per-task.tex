@@ -1,4 +1,4 @@
-% Topology-faithful worst-case placeholder replaced atomically by embed-optim-render-paper-results.
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -6,26 +6,27 @@
 \toprule
 Task & AdamW & Muon & NorMuon & Muon $-$ AdamW & NorMuon $-$ AdamW \\
 \midrule
-ArguAna & -- & -- & -- & -- & \ResultPending{task} \\
-ClimateFEVER & -- & -- & -- & -- & \ResultPending{task} \\
-DBPedia & -- & -- & -- & -- & \ResultPending{task} \\
-FEVER & -- & -- & -- & -- & \ResultPending{task} \\
-FiQA2018 & -- & -- & -- & -- & \ResultPending{task} \\
-HotpotQA & -- & -- & -- & -- & \ResultPending{task} \\
-MSMARCO & -- & -- & -- & -- & \ResultPending{task} \\
-NFCorpus & -- & -- & -- & -- & \ResultPending{task} \\
-NQ & -- & -- & -- & -- & \ResultPending{task} \\
-QuoraRetrieval & -- & -- & -- & -- & \ResultPending{task} \\
-SCIDOCS & -- & -- & -- & -- & \ResultPending{task} \\
-SciFact & -- & -- & -- & -- & \ResultPending{task} \\
-TRECCOVID & -- & -- & -- & -- & \ResultPending{task} \\
-Touche2020 & -- & -- & -- & -- & \ResultPending{task} \\
+ArguAna & 0.5600 & 0.5620 & 0.5617 & +0.0020 & +0.0017 \\
+ClimateFEVER & 0.4059 & 0.4104 & 0.4140 & +0.0045 & +0.0082 \\
+DBPedia & 0.2776 & 0.2790 & 0.2811 & +0.0015 & +0.0035 \\
+FEVER & 0.9205 & 0.9225 & 0.9235 & +0.0020 & +0.0030 \\
+FiQA2018 & 0.5421 & 0.5447 & 0.5490 & +0.0026 & +0.0069 \\
+HotpotQA & 0.6750 & 0.6787 & 0.6777 & +0.0037 & +0.0027 \\
+MSMARCO & 0.5680 & 0.5712 & 0.5707 & +0.0032 & +0.0028 \\
+NFCorpus & 0.2874 & 0.2840 & 0.2862 & -0.0034 & -0.0012 \\
+NQ & 0.9254 & 0.9396 & 0.9396 & +0.0142 & +0.0142 \\
+QuoraRetrieval & 0.9118 & 0.9131 & 0.9132 & +0.0013 & +0.0014 \\
+SCIDOCS & 0.1477 & 0.1470 & 0.1484 & -0.0008 & +0.0006 \\
+SciFact & 0.8804 & 0.8792 & 0.8792 & -0.0012 & -0.0012 \\
+TRECCOVID & 0.8304 & 0.8301 & 0.8297 & -0.0004 & -0.0008 \\
+Touche2020 & 0.3259 & 0.3309 & 0.3342 & +0.0050 & +0.0083 \\
 \bottomrule
 \end{tabular}
 \caption{DenseOn discovery per-task final nDCG@10 for each optimizer's best learning-rate point on this same BEIR suite. These are exploratory, test-selected comparisons rather than an unbiased recipe estimate.}
 \label{tab:denseon-per-task-results}
 \end{table*}
 
+% Generated atomically by embed-optim-render-paper-results.
 \begin{table*}[t]
 \centering
 \small
@@ -33,14 +34,14 @@ Touche2020 & -- & -- & -- & -- & \ResultPending{task} \\
 \toprule
 Model & Comparison & Stages & Same direction & Pearson $r$ & Spearman $\rho$ \\
 \midrule
-DenseOn & Muon $-$ AdamW & 20--40\% & -- & -- & \ResultPending{stability} \\
-DenseOn & Muon $-$ AdamW & 40--60\% & -- & -- & \ResultPending{stability} \\
-DenseOn & Muon $-$ AdamW & 60--80\% & -- & -- & \ResultPending{stability} \\
-DenseOn & Muon $-$ AdamW & 80--100\% & -- & -- & \ResultPending{stability} \\
-DenseOn & NorMuon $-$ AdamW & 20--40\% & -- & -- & \ResultPending{stability} \\
-DenseOn & NorMuon $-$ AdamW & 40--60\% & -- & -- & \ResultPending{stability} \\
-DenseOn & NorMuon $-$ AdamW & 60--80\% & -- & -- & \ResultPending{stability} \\
-DenseOn & NorMuon $-$ AdamW & 80--100\% & -- & -- & \ResultPending{stability} \\
+DenseOn & Muon - AdamW & 20--40\% & 10/14 & 0.645 & 0.543 \\
+DenseOn & Muon - AdamW & 40--60\% & 10/14 & 0.709 & 0.640 \\
+DenseOn & Muon - AdamW & 60--80\% & 11/14 & 0.651 & 0.648 \\
+DenseOn & Muon - AdamW & 80--100\% & 12/14 & 0.811 & 0.855 \\
+DenseOn & NorMuon - AdamW & 20--40\% & 6/14 & 0.324 & 0.345 \\
+DenseOn & NorMuon - AdamW & 40--60\% & 8/14 & 0.463 & 0.451 \\
+DenseOn & NorMuon - AdamW & 60--80\% & 11/14 & 0.753 & 0.662 \\
+DenseOn & NorMuon - AdamW & 80--100\% & 9/14 & 0.743 & 0.714 \\
 \bottomrule
 \end{tabular}
 \caption{Post-hoc adjacent-checkpoint stability of the 14 task effects for each optimizer/LR run selected by final nDCG@10 on this same BEIR suite against the likewise selected AdamW run. This exploratory diagnostic was added after heterogeneous task directions became visible and is outside the confirmatory family.}

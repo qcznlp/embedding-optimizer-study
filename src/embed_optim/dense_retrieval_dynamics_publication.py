@@ -226,7 +226,7 @@ def render_publication_latex(summary_rows: Sequence[Sequence[str]]) -> str:
             r"\small",
             r"\begin{tabular}{lrrrrrr}",
             r"\toprule",
-            r"Series & Runs & 20\% & 40\% & 60\% & 80\% & 100\% \\ ",
+            r"Series & Runs & 20\% & 40\% & 60\% & 80\% & 100\% \\",
             r"\midrule",
             *body,
             r"\bottomrule",
