@@ -331,6 +331,9 @@ def test_dense_intervention_summary_has_half_frozen_anchor_matrix(tmp_path: Path
     assert manifest["anchor_effect_records"] == 120
     assert manifest["optimizer_contrast_records"] == 80
     assert manifest["family_summary_records"] == 12
+    assert manifest["outputs"]["anchor_condition_effects"]["rows"] == 120
+    assert manifest["outputs"]["optimizer_direction_contrasts"]["rows"] == 80
+    assert manifest["outputs"]["family_summary"]["rows"] == 12
     assert manifest["scope_amendment"]["status"] == ("user_directed_post_hoc_scope_amendment")
 
 

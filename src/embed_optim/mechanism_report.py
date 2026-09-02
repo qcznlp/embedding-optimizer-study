@@ -87,6 +87,7 @@ def _read_declared_csv(
     name: str,
     *,
     required_fields: set[str],
+    expected_rows: int | None = None,
 ) -> tuple[list[dict[str, str]], Path]:
     declared = manifest.get("outputs", {}).get(name)
     if not isinstance(declared, dict) or not isinstance(declared.get("path"), str):
@@ -104,7 +105,12 @@ def _read_declared_csv(
         if not required_fields.issubset(fields):
             raise ValueError(f"Required fields are absent from {path}")
         rows = list(reader)
-    if len(rows) != declared.get("rows"):
+    declared_rows = declared.get("rows", expected_rows)
+    if (
+        type(declared_rows) is not int
+        or (expected_rows is not None and declared_rows != expected_rows)
+        or len(rows) != declared_rows
+    ):
         raise ValueError(f"Declared row count differs for {path}")
     return rows, path
 

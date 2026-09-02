@@ -72,12 +72,15 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
             temporary.unlink()
 
 
-def _source_identity(path: Path, root: Path) -> dict[str, Any]:
-    return {
+def _source_identity(path: Path, root: Path, *, rows: int | None = None) -> dict[str, Any]:
+    identity = {
         "path": str(path.relative_to(root)),
         "bytes": path.stat().st_size,
         "sha256": _sha256(path),
     }
+    if rows is not None:
+        identity["rows"] = rows
+    return identity
 
 
 def _finite_number(value: Any, label: str) -> float:
@@ -302,9 +305,13 @@ def summarize_functional_interventions(
     _write_csv(contrast_path, optimizer_contrasts)
     _write_csv(summary_path, family_summary)
     outputs = {
-        "anchor_condition_effects": _source_identity(anchor_path, output_dir),
-        "optimizer_direction_contrasts": _source_identity(contrast_path, output_dir),
-        "family_summary": _source_identity(summary_path, output_dir),
+        "anchor_condition_effects": _source_identity(
+            anchor_path, output_dir, rows=len(anchor_effects)
+        ),
+        "optimizer_direction_contrasts": _source_identity(
+            contrast_path, output_dir, rows=len(optimizer_contrasts)
+        ),
+        "family_summary": _source_identity(summary_path, output_dir, rows=len(family_summary)),
     }
     manifest = {
         "schema_version": SCHEMA_VERSION,

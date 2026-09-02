@@ -97,6 +97,7 @@ def _functional(root: Path) -> Path:
                         }
                     )
     declared = _csv(root / "family_summary.csv", rows)
+    declared.pop("rows")  # Legacy producer receipts used the top-level cardinality only.
     _manifest(
         root / "manifest.json",
         {

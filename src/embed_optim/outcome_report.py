@@ -456,7 +456,13 @@ def _functional_rows(
         "mean_anchor_delta_top1_accuracy",
         "anchors_with_lower_loss_fraction",
     }
-    rows, table = _read_declared_csv(root, manifest, "family_summary", required_fields=required)
+    rows, table = _read_declared_csv(
+        root,
+        manifest,
+        "family_summary",
+        required_fields=required,
+        expected_rows=24,
+    )
     expected = {
         (family, optimizer, direction, scale)
         for family in FAMILIES
