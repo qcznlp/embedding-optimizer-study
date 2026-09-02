@@ -375,6 +375,19 @@ def test_complete_evidence_exposes_stable_full_reporting_rows(complete_root: Pat
     ]
 
 
+def test_manifest_output_object_order_is_not_semantic(complete_root: Path) -> None:
+    for relative in (reporting.TEMPORAL_DIR, reporting.DOSE_DIR):
+        manifest_path = complete_root / relative / "summary_manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        outputs = manifest["outputs"]
+        manifest["outputs"] = {name: outputs[name] for name in reversed(tuple(outputs))}
+        _json(manifest_path, manifest)
+
+    evidence = load_causal_chain_evidence(complete_root, allow_pending=False)
+
+    assert evidence["complete"] is evidence["claimable"] is True
+
+
 def test_canonical_consumers_display_the_full_numeric_contract(complete_root: Path) -> None:
     evidence = load_causal_chain_evidence(complete_root, allow_pending=False)
 

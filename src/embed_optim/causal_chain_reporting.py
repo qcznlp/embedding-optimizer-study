@@ -453,8 +453,8 @@ def _validate_output_records(
     label: str,
 ) -> dict[str, dict[str, Any]]:
     outputs = manifest.get("outputs")
-    if not isinstance(outputs, dict) or tuple(outputs) != names:
-        raise _fail(f"{label} outputs must be exactly {list(names)} in contract order")
+    if not isinstance(outputs, dict) or len(outputs) != len(names) or set(outputs) != set(names):
+        raise _fail(f"{label} outputs must contain exactly {list(names)}")
     return {
         name: _validate_record(
             outputs[name],
