@@ -167,4 +167,10 @@ def test_short_branch_evaluation_defaults_dense_with_explicit_two_family_opt_in(
     defaults = parse_args([])
     assert defaults.families == ["dense"]
     assert defaults.scope_amendment is None
+    assert defaults.cpu_threads_per_worker == 0
     assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
+
+
+def test_short_branch_evaluation_rejects_negative_probe_worker_threads():
+    with pytest.raises(SystemExit):
+        parse_args(["--cpu-threads-per-worker", "-1"])

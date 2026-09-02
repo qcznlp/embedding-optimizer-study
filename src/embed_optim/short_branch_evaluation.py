@@ -358,6 +358,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--model-dtype", choices=("bfloat16", "float32"), default="bfloat16")
     parser.add_argument("--storage-dtype", choices=("float16", "float32"), default="float16")
+    parser.add_argument(
+        "--cpu-threads-per-worker",
+        type=int,
+        default=0,
+        help=(
+            "CPU threads used by each unseen-probe worker; 0 divides available CPUs "
+            "across the requested GPU workers"
+        ),
+    )
     parser.add_argument("--max-retries", type=int, default=1)
     parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -374,10 +383,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=Path("reports/short-branch/training-audit.json"),
     )
     args = parser.parse_args(argv)
-    if args.batch_size <= 0 or args.max_retries < 0 or args.gpu_lock_timeout_seconds <= 0:
+    if (
+        args.batch_size <= 0
+        or args.max_retries < 0
+        or args.cpu_threads_per_worker < 0
+        or args.gpu_lock_timeout_seconds <= 0
+    ):
         parser.error(
             "--batch-size/--gpu-lock-timeout-seconds must be positive and "
-            "--max-retries must be non-negative"
+            "--max-retries/--cpu-threads-per-worker must be non-negative"
         )
     if sum((args.dry_run, args.audit_only, args.training_audit_only)) > 1:
         parser.error("--dry-run, --audit-only, and --training-audit-only are mutually exclusive")
