@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 
@@ -8,6 +9,7 @@ import pytest
 from embed_optim.config import OptimizerConfig, RunConfig
 from embed_optim.short_branch_evaluation import build_short_branch_probe_jobs
 from embed_optim.short_branch_summary import (
+    _bridge_rows,
     expected_short_branch_probe_metrics,
     summarize_short_branch_contrasts,
 )
@@ -104,3 +106,62 @@ def test_short_branch_contrasts_reject_partial_matrix():
 
     with pytest.raises(ValueError, match="90 unique"):
         summarize_short_branch_contrasts(rows)
+
+
+def test_bridge_rows_join_validation_operator_to_representation_optimizer(tmp_path: Path):
+    output = tmp_path / "unseen-representation"
+    output.mkdir()
+    validation = [
+        {
+            "seed": 314159,
+            "family": "dense",
+            "operator": "muon",
+            "stage": 5,
+            "fraction": 1.0,
+            "contrastive_loss": 1.0,
+            "positive_margin": 0.1,
+            "reciprocal_rank": 0.8,
+            "top1_accuracy": 0.7,
+        }
+    ]
+    checkpoint = {
+        "kind": "checkpoint",
+        "seed": 314159,
+        "family": "dense",
+        "optimizer": "muon",
+        "stage": 5,
+        "margin_mean": 0.2,
+        "top1_accuracy": 0.75,
+        "mean_reciprocal_rank": 0.82,
+        "reference_mean_top_k_overlap": 0.9,
+        "reference_top1_agreement": 0.88,
+        "reference_score_drift_rms": 0.03,
+        "token_evidence_entropy_mean": "",
+        "document_token_coverage_mean": "",
+        "repeated_token_dominance_mean": "",
+    }
+    geometry = {
+        "kind": "checkpoint",
+        "seed": 314159,
+        "family": "dense",
+        "optimizer": "muon",
+        "stage": 5,
+        "representation_role": "queries",
+        "entropy_effective_rank": 12.0,
+        "normalized_effective_rank": 0.5,
+        "mean_pairwise_cosine": 0.1,
+    }
+    for name, row in (
+        ("checkpoint_metrics.csv", checkpoint),
+        ("representation_metrics.csv", geometry),
+    ):
+        with (output / name).open("w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=list(row))
+            writer.writeheader()
+            writer.writerow(row)
+
+    rows = _bridge_rows(validation, output)
+
+    assert len(rows) == 1
+    assert rows[0]["operator"] == "muon"
+    assert rows[0]["unseen_margin_mean"] == "0.2"

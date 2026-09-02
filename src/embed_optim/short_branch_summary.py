@@ -280,12 +280,15 @@ def _bridge_rows(
         )
     ]
 
-    def key(row: dict[str, Any]) -> tuple[int, str, str, int]:
+    def validation_key(row: dict[str, Any]) -> tuple[int, str, str, int]:
+        return int(row["seed"]), str(row["family"]), str(row["operator"]), int(row["stage"])
+
+    def representation_key(row: dict[str, Any]) -> tuple[int, str, str, int]:
         return int(row["seed"]), str(row["family"]), str(row["optimizer"]), int(row["stage"])
 
-    validation_index = {key(row): row for row in validation}
-    checkpoint_index = {key(row): row for row in checkpoint}
-    geometry_index = {key(row): row for row in geometries}
+    validation_index = {validation_key(row): row for row in validation}
+    checkpoint_index = {representation_key(row): row for row in checkpoint}
+    geometry_index = {representation_key(row): row for row in geometries}
     if not (
         len(validation_index) == len(checkpoint_index) == len(geometry_index) == len(validation)
         and set(validation_index) == set(checkpoint_index) == set(geometry_index)
