@@ -40,7 +40,13 @@ def _identity(path: Path, *, repository_root: Path | None = None) -> dict[str, A
     return {"path": declared, "bytes": path.stat().st_size, "sha256": _sha256(path)}
 
 
-def _record_matches_path(record: Any, path: Path, repository_root: Path) -> bool:
+def _record_matches_path(
+    record: Any,
+    path: Path,
+    repository_root: Path,
+    *,
+    record_root: Path | None = None,
+) -> bool:
     """Validate a canonical record, accepting only a safe relocated legacy absolute path."""
 
     if not isinstance(record, dict) or not isinstance(record.get("path"), str):
@@ -64,6 +70,8 @@ def _record_matches_path(record: Any, path: Path, repository_root: Path) -> bool
             )
         else:
             path_matches = declared.as_posix() == relative.as_posix()
+            if not path_matches and record_root is not None:
+                path_matches = (record_root.resolve() / declared).resolve() == expected
     return bool(
         path_matches
         and expected.is_file()
@@ -253,7 +261,12 @@ def _load_inputs(
     if (
         outcome_manifest_payload.get("schema_version") != SCHEMA_VERSION
         or outcome_manifest_payload.get("complete") is not True
-        or not _record_matches_path(declared, outcome_csv, repository_root)
+        or not _record_matches_path(
+            declared,
+            outcome_csv,
+            repository_root,
+            record_root=outcome_manifest.parent,
+        )
         or declared.get("rows") != 45
     ):
         raise ValueError("Tail-stability manifest does not bind 45 Dense checkpoint outcomes")
@@ -267,7 +280,11 @@ def _load_inputs(
         for stage in range(1, 6)
     }
     predictor_fields = [*IDENTITY, *spec["predictors"], *spec["negative_controls"]]
-    if not predictors or list(predictors[0]) != predictor_fields:
+    if (
+        not predictors
+        or len(predictors[0]) != len(predictor_fields)
+        or set(predictors[0]) != set(predictor_fields)
+    ):
         raise ValueError("Temporal predictor table schema differs from the frozen protocol")
     for label, rows in (("predictor", predictors), ("outcome", outcomes)):
         observed = {(row["family"], row["seed"], row["operator"], row["stage"]) for row in rows}

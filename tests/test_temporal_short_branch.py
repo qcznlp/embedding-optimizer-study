@@ -51,8 +51,10 @@ def _rows():
                         "seed": str(seed),
                         "operator": operator,
                         "stage": str(stage),
-                        "spectral": str(effect),
+                        # CSV column order is serialization detail; the frozen
+                        # predictor names and their values define the schema.
                         "norm": str(seed_index + stage * 0.01),
+                        "spectral": str(effect),
                     }
                 )
                 row = {field: "0" for field in SHORT_BRANCH_FIELDS}
@@ -251,7 +253,9 @@ def test_complete_report_is_hash_bound_and_auditable(tmp_path: Path, monkeypatch
                 "complete": True,
                 "outputs": {
                     "short_branch_checkpoint_tail": {
-                        "path": str(outcome_csv.resolve()),
+                        # Tail-stability receipts bind their tables relative to
+                        # the report directory rather than the repository root.
+                        "path": outcome_csv.name,
                         "bytes": outcome_csv.stat().st_size,
                         "sha256": _sha256(outcome_csv),
                         "rows": 45,
