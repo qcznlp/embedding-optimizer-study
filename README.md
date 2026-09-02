@@ -17,6 +17,8 @@ later public release under Apache-2.0.
 - Dense-only NAACL plan: [docs/naacl-dense-paper-plan.md](docs/naacl-dense-paper-plan.md)
 - Result-safe ACL manuscript: [paper/](paper/README.md)
 - Live dashboard: [Weights & Biases](https://wandb.ai/stevezenguom/embedding-optimizer-study)
+- Public checkpoint backup: [qcz/embedding-optimizer-study-checkpoints](https://huggingface.co/qcz/embedding-optimizer-study-checkpoints)
+- Public analysis-artifact backup: [qcz/embedding-optimizer-study-analysis-artifacts](https://huggingface.co/datasets/qcz/embedding-optimizer-study-analysis-artifacts)
 
 ## Scope disclosure
 
@@ -119,6 +121,31 @@ identification of orthogonalization alone.
 | paper/ | ACL manuscript and generated result tables |
 | reports/ | Content-addressed summaries and publication figures |
 | tests/ | Unit, integration, provenance, distribution, and numerical regression tests |
+
+## Restore large artifacts on another machine
+
+The Git repository deliberately excludes hundreds of gigabytes of model and analysis state. The
+two public Hugging Face repositories preserve the original directory layout. After cloning this
+repository, restore the full trees with:
+
+~~~bash
+hf download qcz/embedding-optimizer-study-checkpoints \
+  --local-dir outputs \
+  --exclude README.md \
+  --exclude .gitattributes
+
+hf download qcz/embedding-optimizer-study-analysis-artifacts \
+  --repo-type dataset \
+  --local-dir results \
+  --exclude README.md \
+  --exclude .gitattributes \
+  --exclude 'project/**'
+~~~
+
+The checkpoint backup contains 5,546 files (416,844,858,513 bytes) in 251 checkpoint directories.
+The analysis backup contains 4,937 result files (128,939,133,525 bytes). Both were checked against
+the local trees by relative path and byte size after upload. The analysis repository additionally
+stores a `project/` snapshot of configs, reports, and pipeline ledgers.
 
 ## Installation
 
