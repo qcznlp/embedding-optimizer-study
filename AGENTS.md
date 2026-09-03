@@ -35,6 +35,12 @@ chain. Do not launch a competing corrected finalizer while its controller lease 
 only with `python -m embed_optim.corrected_completion_pipeline --resume`; the exact operational
 source/protocol/command contract must still match.
 
+If `logs/dense-no-packing-sealed-backup/state.json` exists, it is the independent per-checkpoint
+durability state. Its supervisor only reads training artifacts and uses CPU/network resources. Do
+not launch a duplicate while `logs/dense-no-packing-sealed-backup/supervisor.lease` is held. A
+covered checkpoint means a hash-audited remote backup exists; it never means the run or study is
+scientifically complete.
+
 On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
 artifact-only command below; it does not inspect system processes:
 
@@ -80,6 +86,9 @@ If a machine-shutdown risk requires earlier durability, use
 checkpoint. Its receipt must report `scientific_completion=false`, verify the local payload is
 stable, and compare Hugging Face LFS SHA-256 or Git-blob SHA-1 digests after upload. This operation
 preserves a resumable state; it must never promote a partial run into a completed result.
+For unattended coverage use `python -m embed_optim.sealed_checkpoint_supervisor`; it reuses the
+same sealed-checkpoint uploader, fails closed on invalid receipts or a changed source contract,
+and yields the final checkpoint to an active whole-run backup before applying its own fallback.
 
 Never inspect, read, edit, signal, stop, replace, or otherwise touch `gpu.py` or its processes. It
 is outside this repository and automatically yields to study jobs.

@@ -134,6 +134,28 @@ either the Hugging Face LFS SHA-256 or Git-blob SHA-1 digest. Receipts live unde
 `scientific_completion=false`; the ordinary completed-run backup remains authoritative for final
 closure.
 
+For unattended protection of every later checkpoint, launch the independent sealed-checkpoint
+supervisor once from the repository root:
+
+```bash
+mkdir -p logs/dense-no-packing-sealed-backup
+nohup python -u -m embed_optim.sealed_checkpoint_supervisor \
+  --workdir "$PWD" \
+  > logs/dense-no-packing-sealed-backup/supervisor.log 2>&1 &
+```
+
+Its atomic state is `logs/dense-no-packing-sealed-backup/state.json`. The state counts all five
+stages of a run as covered when a valid whole-run receipt exists, counts an intermediate stage only
+after its digest-verified receipt exists, and exits after all 60 stages are remotely covered. It
+holds an exclusive lease and binds the watcher source, the underlying uploader source, the matrix,
+destination, and timing arguments. A source or matrix change while it is active fails closed.
+
+The watcher does not import CUDA, reserve a GPU, launch training, or modify the training and
+completion controllers. For a final-stage checkpoint it waits three minutes and checks the
+completion ledger so that the existing whole-run upload gets priority; if no whole-run backup takes
+ownership, the per-checkpoint path becomes the durability fallback. Every watcher-generated
+receipt still has `scientific_completion=false`.
+
 Audit the live source runs on W&B without changing their histories or metadata:
 
 ```bash
