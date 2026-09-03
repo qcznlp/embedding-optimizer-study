@@ -99,7 +99,9 @@ def main(argv: list[str] | None = None) -> None:
     selected.save_to_disk(str(dataset_path))
     materialized = Dataset.load_from_disk(str(dataset_path))
     expected["materialized_dataset_fingerprint"] = materialized._fingerprint
-    manifest_path.write_text(json.dumps(expected, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(expected, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     print(json.dumps({"status": "complete", **expected}, sort_keys=True))
 
 

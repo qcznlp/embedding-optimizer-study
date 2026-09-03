@@ -22,9 +22,7 @@ def test_training_arguments_explicitly_pin_ddp_drop_last(monkeypatch):
 
 
 def test_dense_input_execution_is_applied_and_receipted():
-    config = load_matrix(
-        Path(__file__).parents[1] / "configs" / "dense_no_packing_retrain.yaml"
-    )[0]
+    config = load_matrix(Path(__file__).parents[1] / "configs" / "dense_no_packing_retrain.yaml")[0]
     first_module = SimpleNamespace(can_flatten_inputs=True)
     model = SimpleNamespace(_first_module=lambda: first_module)
 
