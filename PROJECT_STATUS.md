@@ -77,10 +77,10 @@ Primary receipts:
 - `logs/candidate-breadth-release/pipeline-ledger.json`
 
 The candidate addendum release controller completed all 21 steps against the current source
-contract at `2026-09-03T08:14:21Z`. Its checked-in ledger records return code 0 for every step,
+contract at `2026-09-03T09:23:23Z`. Its checked-in ledger records return code 0 for every step,
 including two strict paper audits, the full test suite, PDF release, and distribution audit. The
 step-contract SHA-256 is
-`63a7d0b932743adcbb172cbe7a03a863dba2e5d4d987792fbc1b0931e5cb63e8`. The compiled paper is 16
+`a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36`. The compiled paper is 16
 pages; the audited main-text endpoint is page 8, and all embedded fonts are non-Type-3.
 
 ## Repository and agent handoff health

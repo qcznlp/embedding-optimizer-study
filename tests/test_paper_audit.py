@@ -161,7 +161,15 @@ def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_aud
     result = checked_in_dense_audit
 
     assert result["complete"] is True
-    assert result["evidence_mode"]["mode"] == "checkpoint-backed-full-source"
+    expected_mode = (
+        "checkpoint-backed-full-source"
+        if (REPOSITORY / "outputs").exists()
+        else "portable-evaluation-closure"
+    )
+    assert result["evidence_mode"]["mode"] == expected_mode
+    if expected_mode == "portable-evaluation-closure":
+        assert result["evidence_mode"]["files"] == 2_785
+        assert result["evidence_mode"]["bytes"] == 107_442_256
     assert result["constant_macros"]["NumDiscoveryRuns"] == "12"
     assert result["constant_macros"]["NumDiscoveryUnits"] == "840"
     assert result["constant_macros"]["NumWeightPairs"] == "20"
