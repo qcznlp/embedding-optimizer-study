@@ -161,6 +161,8 @@ missing, extra, or size-mismatched files for every refreshed prefix:
 9. For the active corrective phase, read `configs/dense_no_packing_execution_protocol.json` and its
    preflight parent. Micro-batch 8 is selected for all 12 runs; do not tune execution scheduling by
    optimizer or change the locked analysis after formal outputs are visible.
+10. Use `python -m embed_optim.corrected_progress` for an artifact-only status report and
+    `docs/dense-no-packing-retrain.md` for exact resume/evaluation commands.
 
 ## Operational constraints
 
