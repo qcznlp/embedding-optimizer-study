@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "status": "prospective_engineering_preflight_lock",
+  "frozen_at_utc": "2026-09-03T11:44:18Z",
+  "purpose": "Choose one memory-safe micro-batch size for every corrected Dense no-packing run without using optimizer-quality outcomes.",
+  "implementation_commit": "199a6a54b849aca55cb87d85c9ae9a1f3bf1ad77",
+  "freeze_context": {
+    "historical_packed_training_and_evaluation_results_visible": true,
+    "packing_invariance_failure_visible": true,
+    "corrected_no_packing_full_run_outputs_visible": false,
+    "corrected_no_packing_evaluation_outputs_visible": false,
+    "preflight_dataset_visible": true,
+    "note": "This is a post-diagnosis corrective replication. It is not prospective evidence for the original optimizer hypothesis."
+  },
+  "source": {
+    "training_data": "data/denseon-sft-500k-seed42",
+    "training_manifest_sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8",
+    "queries": 500000,
+    "seed": 42,
+    "sampled_negatives": 7,
+    "in_batch_negatives": false,
+    "model": "lightonai/DenseOn-unsupervised",
+    "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43"
+  },
+  "stress_dataset": {
+    "path": "data/dense-no-packing-preflight-longest256",
+    "manifest_sha256": "86656cb110b988af9ae2cb8249e7f7554c90f26d30839078702e12975253f911",
+    "rows": 256,
+    "selection": "sort all formal training rows by descending declared length, then ascending sample_id; take the first 256",
+    "minimum_declared_length": 26130,
+    "maximum_declared_length": 286195,
+    "selected_sample_ids_sha256": "302d22eb79d335783de41d75b8cef9845c06dfaf9ed4abe56ff18e1e7d200c8a",
+    "role": "engineering-only worst-case memory stress; excluded from scientific analysis"
+  },
+  "memory_selection": {
+    "candidate_micro_batch_sizes_in_order": [8, 4, 2, 1],
+    "world_size": 4,
+    "global_batch_size": 128,
+    "gradient_accumulation_by_candidate": {
+      "8": 4,
+      "4": 8,
+      "2": 16,
+      "1": 32
+    },
+    "preflight_optimizer": "adamw",
+    "preflight_learning_rate": 3e-6,
+    "maximum_optimizer_steps": 2,
+    "wandb_disabled": true,
+    "input_execution": {
+      "dense_can_flatten_inputs": false,
+      "mode": "independently_padded"
+    },
+    "pass_rule": "Select the first candidate, in declared order, that exits successfully after two optimizer steps and writes an independently_padded completion receipt with no CUDA out-of-memory error.",
+    "formal_application": "Write the selected micro-batch size into the final locked matrix and use it unchanged for all 12 runs. Keep global batch 128 for every optimizer.",
+    "quality_blinding": "Training loss, margins, and retrieval metrics from preflight are ineligible for recipe selection or claims."
+  },
+  "planned_formal_training": {
+    "matrix": "configs/dense_no_packing_retrain.yaml",
+    "runs": 12,
+    "optimizers": ["adamw", "muon", "normuon"],
+    "learning_rates": {
+      "adamw": [1e-6, 3e-6, 1e-5, 3e-5],
+      "muon": [1e-4, 3e-4, 1e-3, 3e-3],
+      "normuon": [1e-4, 3e-4, 1e-3, 3e-3]
+    },
+    "checkpoint_fractions": [0.2, 0.4, 0.6, 0.8, 1.0],
+    "output_root": "outputs/dense-no-packing-v1",
+    "run_id_prefix": "padded-"
+  },
+  "source_hashes": {
+    "preflight_matrix": "131dfdb58eacf923ca796a9c523d0bc44645d2c887c95e62182a1ee61a365cab",
+    "initial_formal_matrix": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7",
+    "formal_runtime": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a",
+    "config_implementation": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a",
+    "training_implementation": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d",
+    "matrix_supervisor": "0ae05b8e25efd3a99612ddd33da91b0a5eff73a89527e4a27c795363f6f5ee98",
+    "stress_data_builder": "44e2d5e5686c41b2a2ec09c3117a43cf79a2a57e99974b12be44d4a330125ae2"
+  },
+  "claim_boundary": "The preflight can establish only a common execution schedule. It cannot support any optimizer comparison. The corrected study remains required because the historical packed path is materially batch dependent."
+}

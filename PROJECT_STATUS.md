@@ -19,15 +19,16 @@ provenance under the user-directed scope amendment.
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
+| Corrected Dense no-packing replication | Preflight locked; formal runs not started | 0/12 runs |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | GitHub main CI | Green | merge `1cb9f66`, workflow run `33747507631` |
 
-The 34 Dense training runs are finished. No historical checkpoint should be overwritten. The next
-scientific phase, if broader optimizer claims are desired, is a corrected no-packing rerun in a new
-output namespace.
+The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
+The corrected no-packing phase now has an explicit implementation and a prospectively locked
+engineering preflight. It uses a new output namespace and has not yet produced any formal run.
 
 ## Result that currently governs the paper
 
@@ -146,6 +147,9 @@ missing, extra, or size-mismatched files for every refreshed prefix:
    relative-path/byte-size audit.
 8. For corrected training, disable dense input flattening explicitly and use new run IDs/output
    roots. Do not relabel or overwrite any of the 34 historical runs.
+9. For the active corrective phase, read `configs/dense_no_packing_preflight_protocol.json`. Select
+   one common micro-batch size with its fixed 8, 4, 2, 1 worst-case stress rule, then write and commit
+   the final execution lock before launching any of the 12 formal runs.
 
 ## Operational constraints
 

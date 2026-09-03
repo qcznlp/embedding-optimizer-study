@@ -50,6 +50,22 @@ def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
     assert all(run.dataset_path == "data/denseon-sft-500k-seed42" for run in runs)
     assert all(run.seed == 42 and len(run.checkpoint_fractions) == 5 for run in runs)
 
+    protocol_path = path.with_name("dense_no_packing_preflight_protocol.json")
+    protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
+    assert protocol["status"] == "prospective_engineering_preflight_lock"
+    assert protocol["freeze_context"]["corrected_no_packing_full_run_outputs_visible"] is False
+    assert protocol["memory_selection"]["candidate_micro_batch_sizes_in_order"] == [8, 4, 2, 1]
+    assert protocol["memory_selection"]["global_batch_size"] == 128
+    assert protocol["memory_selection"]["input_execution"]["dense_can_flatten_inputs"] is False
+    assert protocol["planned_formal_training"]["runs"] == 12
+    assert protocol["source_hashes"]["initial_formal_matrix"] == hashlib.sha256(
+        path.read_bytes()
+    ).hexdigest()
+    preflight_matrix = path.with_name("dense_no_packing_preflight.yaml")
+    assert protocol["source_hashes"]["preflight_matrix"] == hashlib.sha256(
+        preflight_matrix.read_bytes()
+    ).hexdigest()
+
 
 def test_public_docs_record_compute_and_acceleration_contract() -> None:
     root = Path(__file__).parents[1]
