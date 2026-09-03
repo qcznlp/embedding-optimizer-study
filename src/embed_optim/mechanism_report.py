@@ -25,11 +25,20 @@ FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
 OPTIMIZER_LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
+LEGACY_CHECKOUT_NAME = "embedding-optimizer-study"
 
 
 def _resolve_declared(root: Path, value: str) -> Path:
     path = Path(value)
-    return path.resolve() if path.is_absolute() else (root / path).resolve()
+    if not path.is_absolute():
+        return (root / path).resolve()
+    indexes = [index for index, part in enumerate(path.parts) if part == LEGACY_CHECKOUT_NAME]
+    if not indexes:
+        return path.resolve()
+    relative = Path(*path.parts[indexes[-1] + 1 :])
+    if not relative.parts:
+        return path.resolve()
+    return (_repository_root(root) / relative).resolve()
 
 
 def _repository_root(path: Path) -> Path:

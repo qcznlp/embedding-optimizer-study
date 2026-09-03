@@ -25,6 +25,7 @@ from .mechanism_report import (
     _portable_path,
     _read_declared_csv,
     _repository_root,
+    _resolve_declared,
     _table,
 )
 from .scope import ALL_FAMILIES, resolve_scope
@@ -279,12 +280,7 @@ def _validate_mechanism_section(
     manifest_path = report_path.with_suffix(".manifest.json")
     manifest = _load_manifest(manifest_path)
     output = manifest.get("output", {})
-    output_path = Path(str(output.get("path", "")))
-    resolved_output = (
-        output_path.resolve()
-        if output_path.is_absolute()
-        else (repository_root / output_path).resolve()
-    )
+    resolved_output = _resolve_declared(repository_root, str(output.get("path", "")))
     if (
         manifest.get("complete") is not True
         or (
@@ -330,8 +326,7 @@ def _strict_output_paths(
         record = outputs.get(name)
         if not isinstance(record, dict) or not isinstance(record.get("path"), str):
             raise ValueError(f"Strict report output is malformed: {name}")
-        declared = Path(record["path"])
-        path = declared.resolve() if declared.is_absolute() else (root / declared).resolve()
+        path = _resolve_declared(root, record["path"])
         if (
             path != (root / filename).resolve()
             or not path.is_file()

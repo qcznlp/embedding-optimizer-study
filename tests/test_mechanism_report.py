@@ -10,6 +10,7 @@ from embed_optim.geometry import _sha256
 from embed_optim.mechanism_report import (
     MECHANISM_MARKERS,
     _marked_block_complete,
+    _read_declared_csv,
     ensure_retrieval_dynamics,
     render_mechanism_report,
 )
@@ -38,6 +39,27 @@ def _declared(path: Path, rows: int) -> dict[str, object]:
         "bytes": path.stat().st_size,
         "sha256": _sha256(path),
     }
+
+
+def test_declared_csv_rebases_historical_checkout_path(tmp_path: Path) -> None:
+    repository = tmp_path / "renamed-checkout"
+    (repository / "pyproject.toml").parent.mkdir(parents=True)
+    (repository / "pyproject.toml").write_text("[project]\nname='fixture'\n", encoding="utf-8")
+    table = repository / "reports" / "summary" / "table.csv"
+    _write_csv(table, [{"value": "1"}])
+    record = _declared(table, 1)
+    record["path"] = "/root/embedding-optimizer-study/reports/summary/table.csv"
+    manifest = {"outputs": {"table": record}}
+
+    rows, observed = _read_declared_csv(
+        table.parent,
+        manifest,
+        "table",
+        required_fields={"value"},
+    )
+
+    assert rows == [{"value": "1"}]
+    assert observed == table.resolve()
 
 
 def _common_state(root: Path) -> Path:
