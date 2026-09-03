@@ -708,7 +708,7 @@ def generate_factorial_matrices(
 ) -> dict[str, Any]:
     """Generate six source-state/seed matrices containing two reset operators each."""
 
-    require_factorial_implementation()
+    implementation_path, _ = require_factorial_implementation()
     resolved, protocol = load_factorial_protocol(protocol_path)
     subset = audit_branch_data(resolved, deep=deep_data_audit)
     root = Path(matrix_root).resolve()
@@ -774,6 +774,7 @@ def generate_factorial_matrices(
             ],
             "provenance": {
                 "scientific_protocol_sha256": _sha256(resolved),
+                "implementation_protocol_sha256": _sha256(implementation_path),
                 "source_state": label,
                 "source_checkpoint": state["checkpoint"],
                 "branch_subset_manifest_sha256": protocol["branch_data"]["manifest_sha256"],
@@ -789,6 +790,7 @@ def generate_factorial_matrices(
         "schema_version": SCHEMA_VERSION,
         "status": "complete",
         "scientific_protocol": _identity(resolved),
+        "implementation_protocol": _identity(implementation_path),
         "source_matrix": _identity(source_matrix),
         "subset": subset,
         "calibration": calibration,
@@ -817,6 +819,7 @@ def audit_factorial_matrices(
     calibration_root: str | Path = CALIBRATION_ROOT,
     deep_data_audit: bool = False,
 ) -> dict[str, Any]:
+    implementation_path, _ = require_factorial_implementation()
     resolved, protocol = load_factorial_protocol(protocol_path)
     subset = audit_branch_data(resolved, deep=deep_data_audit)
     root = Path(matrix_root).resolve()
@@ -830,6 +833,7 @@ def audit_factorial_matrices(
     if (
         manifest.get("status") != "complete"
         or manifest.get("scientific_protocol", {}).get("sha256") != _sha256(resolved)
+        or manifest.get("implementation_protocol", {}).get("sha256") != _sha256(implementation_path)
         or manifest.get("source_matrix", {}).get("sha256") != _sha256(SOURCE_MATRIX)
         or manifest.get("subset", {}).get("portable_receipt", {}).get("sha256")
         != subset["portable_receipt"]["sha256"]
@@ -868,6 +872,8 @@ def audit_factorial_matrices(
             or any(run.model_revision is not None for run in runs)
             or any(run.dense_can_flatten_inputs is not False for run in runs)
             or raw.get("provenance", {}).get("scientific_protocol_sha256") != _sha256(resolved)
+            or raw.get("provenance", {}).get("implementation_protocol_sha256")
+            != _sha256(implementation_path)
             or raw.get("provenance", {}).get("optimizer_state_at_branch_start") != "reset"
         ):
             raise ValueError(f"Factorial matrix coverage differs for {state}/seed{seed}")

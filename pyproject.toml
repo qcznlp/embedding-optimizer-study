@@ -79,6 +79,7 @@ embed-optim-summarize-dense-retrieval-dynamics = "embed_optim.dense_retrieval_dy
 embed-optim-summarize-confirmatory = "embed_optim.confirmatory_summary:main"
 embed-optim-short-branch = "embed_optim.short_branch:main"
 embed-optim-state-operator-factorial = "embed_optim.state_operator_factorial:main"
+embed-optim-train-state-operator-factorial = "embed_optim.state_operator_factorial_training:main"
 embed-optim-evaluate-state-operator-factorial = "embed_optim.state_operator_factorial_evaluation:main"
 embed-optim-probe-state-operator-factorial = "embed_optim.state_operator_factorial_probe:main"
 embed-optim-summarize-state-operator-factorial = "embed_optim.state_operator_factorial_summary:main"
@@ -173,6 +174,8 @@ where = ["src"]
   "configs/dense_no_packing_execution_protocol.json",
   "configs/dense_no_packing_evaluation_protocol.json",
   "configs/dense_no_packing_analysis_protocol.json",
+  "configs/dense_no_packing_state_operator_factorial_protocol.json",
+  "configs/dense_no_packing_state_operator_factorial_implementation_protocol.json",
   "configs/dense_no_packing_outcome_protocol.json",
   "configs/dense_no_packing_bridge_implementation_protocol.json",
   "configs/dense_no_packing_bridge_implementation_protocol_v2.json",

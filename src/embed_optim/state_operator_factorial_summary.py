@@ -311,6 +311,7 @@ def _probe_rows(
     protocol_path: Path,
     protocol: dict[str, Any],
     matrix_root: Path,
+    completion_path: Path,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     expected_labels = set()
     for state in protocol["factorial_design"]["factors"]["weight_state"]:
@@ -340,6 +341,29 @@ def _probe_rows(
     overall_rows = []
     task_rows = []
     sources = []
+    completion_path = completion_path.resolve()
+    try:
+        completion = json.loads(completion_path.read_text(encoding="utf-8"))
+        reference_receipt_path = root / "exports/dense/pretrained.npz.padded-execution.json"
+        reference_receipt = json.loads(reference_receipt_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError("Missing factorial probe completion/reference receipt") from error
+    expected_execution = {
+        "mode": "independently_padded",
+        "sentence_transformers_can_flatten_inputs": False,
+    }
+    if (
+        completion.get("status") != "complete"
+        or completion.get("scientific_protocol_sha256") != _sha256(protocol_path)
+        or completion.get("complete") != 61
+        or completion.get("expected") != 61
+        or completion.get("pending") != 0
+        or reference_receipt.get("status") != "complete"
+        or reference_receipt.get("observed_input_execution") != expected_execution
+        or reference_receipt.get("request", {}).get("scientific_protocol", {}).get("sha256")
+        != _sha256(protocol_path)
+    ):
+        raise ValueError("Factorial probe completion/reference contract differs")
     for label, (state, operator, seed, stage, step) in sorted(by_label.items()):
         relative = Path(label).relative_to("dense")
         path = root / "metrics/dense" / relative
@@ -360,12 +384,15 @@ def _probe_rows(
             or set(payload.get("by_task", {})) != set(DECONTAMINATED_TASK_NAMES)
             or not _all_finite(payload)
             or receipt.get("status") != "complete"
-            or receipt.get("observed_input_execution")
-            != {
-                "mode": "independently_padded",
-                "sentence_transformers_can_flatten_inputs": False,
-            }
+            or receipt.get("observed_input_execution") != expected_execution
+            or receipt.get("request", {}).get("label") != label
+            or receipt.get("request", {}).get("scientific_protocol", {}).get("sha256")
+            != _sha256(protocol_path)
             or receipt.get("factorial_metrics") != _file_identity(metric_path)
+            or payload.get("input", {}).get("export") != receipt.get("export")
+            or payload.get("input", {}).get("export_manifest") != receipt.get("export_manifest")
+            or payload.get("input", {}).get("representation_metrics")
+            != receipt.get("representation_metrics")
         ):
             raise ValueError(f"Factorial probe identity differs: {label}")
         identity = {
@@ -389,6 +416,13 @@ def _probe_rows(
         )
     if len(overall_rows) != 60 or len(task_rows) != 840 or len(sources) != 60:
         raise ValueError("Factorial probe summary requires 60 checkpoints and 840 task rows")
+    sources.append(
+        {
+            "label": "__probe_completion__",
+            "metric": _file_identity(completion_path),
+            "padded_execution_receipt": _file_identity(reference_receipt_path),
+        }
+    )
     return overall_rows, task_rows, sources
 
 
@@ -423,7 +457,11 @@ def summarize(args: argparse.Namespace) -> dict[str, Any]:
     estimand_summaries = _estimand_summaries(effect_rows)
     cell_summaries = _cell_summaries(score_rows)
     probe_rows, probe_task_rows, probe_sources = _probe_rows(
-        args.probe_root.resolve(), protocol_path, protocol, matrix_root
+        args.probe_root.resolve(),
+        protocol_path,
+        protocol,
+        matrix_root,
+        args.probe_completion_receipt,
     )
     output = args.output_root.resolve()
     outputs = {
@@ -475,6 +513,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--matrix-root", type=Path, default=MATRIX_ROOT)
     parser.add_argument("--full-beir-root", type=Path, default=FULL_BEIR_ROOT)
     parser.add_argument("--probe-root", type=Path, default=PROBE_ROOT)
+    parser.add_argument(
+        "--probe-completion-receipt",
+        type=Path,
+        default=Path("reports/state-operator-factorial/probe-evaluation.json"),
+    )
     parser.add_argument("--output-root", type=Path, default=OUTPUT_ROOT)
     return parser.parse_args(argv)
 

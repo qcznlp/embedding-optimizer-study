@@ -329,11 +329,19 @@ def padded_probe_job_complete(
         if job.kind == "checkpoint":
             metric_path = _factorial_metric_path(job)
             payload = json.loads(metric_path.read_text(encoding="utf-8"))
+            expected_metric_inputs = {
+                "export": _file_identity(job.export),
+                "export_manifest": _file_identity(
+                    job.export.with_suffix(job.export.suffix + ".manifest.json")
+                ),
+                "reference_export": _file_identity(job.reference_export),
+                "representation_metrics": _file_identity(job.metrics),
+            }
             if (
                 receipt.get("factorial_metrics") != _file_identity(metric_path)
                 or payload.get("status") != "complete"
                 or payload.get("label") != job.label
-                or payload.get("input", {}).get("export") != _file_identity(job.export)
+                or payload.get("input") != expected_metric_inputs
                 or set(payload.get("by_task", {})) != set(DECONTAMINATED_TASK_NAMES)
                 or not _all_finite(payload)
             ):
@@ -357,7 +365,10 @@ def run_padded_probe_job(
     request = _job_request(job, protocol_path, probe, probe_spec, args)
     export_manifest = job.export.with_suffix(job.export.suffix + ".manifest.json")
     if (
-        job.export.exists() or export_manifest.exists() or job.metrics.exists()
+        job.export.exists()
+        or export_manifest.exists()
+        or job.metrics.exists()
+        or _factorial_metric_path(job).exists()
     ) and not receipt_path.is_file():
         raise FileExistsError("Refusing untagged probe artifacts without padded execution receipt")
     if receipt_path.is_file():
