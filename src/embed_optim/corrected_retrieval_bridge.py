@@ -84,6 +84,7 @@ def _validate_matrix(configs: list[RunConfig]) -> None:
 
 def _read_manifest_table(
     directory: Path,
+    manifest_key: str,
     filename: str,
     *,
     expected_rows: int,
@@ -95,9 +96,11 @@ def _read_manifest_table(
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("schema_version") != SCHEMA_VERSION or manifest.get("status") != "complete":
         raise ValueError(f"Incomplete source summary manifest: {manifest_path}")
-    identity = manifest.get("outputs", {}).get(filename)
+    identity = manifest.get("outputs", {}).get(manifest_key)
     if not isinstance(identity, dict):
-        raise ValueError(f"Source manifest does not bind {filename}: {manifest_path}")
+        raise ValueError(
+            f"Source manifest does not bind {manifest_key} for {filename}: {manifest_path}"
+        )
     table_path = directory / filename
     if (
         not table_path.is_file()
@@ -489,15 +492,18 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     checkpoint_rows, geometry_manifest, checkpoint_source = _read_manifest_table(
         args.geometry_dir,
         "checkpoint_geometry.csv",
+        "checkpoint_geometry.csv",
         expected_rows=60,
     )
     pair_rows, pair_manifest, pair_source = _read_manifest_table(
         args.geometry_dir,
         "run_pair_subspace_overlap.csv",
+        "run_pair_subspace_overlap.csv",
         expected_rows=660,
     )
     score_rows, outcome_manifest, score_source = _read_manifest_table(
         args.outcomes_dir,
+        "run_stage_scores",
         "run_stage_scores.csv",
         expected_rows=60,
     )
@@ -581,7 +587,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--protocol",
         type=Path,
-        default=Path("configs/dense_no_packing_bridge_implementation_protocol.json"),
+        default=Path("configs/dense_no_packing_bridge_implementation_protocol_v2.json"),
     )
     parser.add_argument(
         "--matrix", type=Path, default=Path("configs/dense_no_packing_retrain.yaml")

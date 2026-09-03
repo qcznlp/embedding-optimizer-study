@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "status": "corrected_execution_sensitivity_implementation_lock",
+  "frozen_at_utc": "2026-09-03T13:48:21Z",
+  "purpose": "Bind the executable historical-packed-training versus corrected-padded-training sensitivity summary without turning the execution change into a randomized causal factor.",
+  "prospective_plan_status": "The parent analysis protocol froze matched-normalized-stage descriptive rankings and optimizer-minus-AdamW deltas before the first corrected checkpoint existed.",
+  "visibility_at_implementation_freeze": {
+    "historical_training_and_analysis_visible": true,
+    "corrected_training_logs_visible": true,
+    "corrected_checkpoint_weights_visible": true,
+    "corrected_checkpoint_state": "Two active AdamW runs had written checkpoint-782 and were at step 982; no checkpoint tensor was read to design, tune, or test this implementation.",
+    "corrected_complete_runs": 0,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "corrected_geometry_outputs_visible": false,
+    "corrected_outcome_outputs_visible": false,
+    "corrected_sensitivity_outputs_visible": false
+  },
+  "implementation_parent_commit": "87ed3dbf102565b138e3e9bbe242a28378f921f4",
+  "parent_bindings": {
+    "analysis_protocol": {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+    },
+    "outcome_protocol": {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "sha256": "773f0eb6a1eb4562856dcebf0f8f59e30ac41b517d713a4a698c1340f4bc75d3"
+    },
+    "matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  },
+  "historical_bindings": {
+    "coverage": {
+      "path": "reports/dense-discovery/coverage.json",
+      "bytes": 6065,
+      "sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36"
+    },
+    "checkpoint_summary": {
+      "path": "reports/dense-discovery/checkpoint_summary.csv",
+      "bytes": 3953,
+      "sha256": "6a5f4aba649fd6ae9bf7550bf6275e522e52c14d6b578c1093f143930020a92a"
+    }
+  },
+  "source_bindings": {
+    "corrected_execution_sensitivity": {
+      "path": "src/embed_optim/corrected_execution_sensitivity.py",
+      "bytes": 19840,
+      "sha256": "3277e998d083252eb0db9b4b843930352c3641418325106ecfc5bc60e181c9c6"
+    },
+    "config": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "geometry": {
+      "path": "src/embed_optim/geometry.py",
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    }
+  },
+  "implementation_choices": {
+    "matching": "Match each optimizer, exact declared learning rate, and normalized retained stage from 20% through 100%; historical and corrected rows remain separate inputs and are never pooled.",
+    "headline_aggregation": "At each stage, take the arithmetic mean over all four declared learning rates within optimizer separately for each execution.",
+    "optimizer_contrasts": "For Muon and NorMuon separately, subtract the same-execution AdamW four-rate mean at each stage, then report corrected contrast minus historical contrast.",
+    "ranking": "Rank the three optimizer four-rate means descending at each stage. Exact ties receive average ranks; the displayed order breaks a tie alphabetically only for deterministic rendering.",
+    "matched_run_rows": "Also report all 60 exact optimizer-rate-stage pairs and corrected minus historical mean nDCG@10 for auditability; these differences are descriptive.",
+    "inference": "No confidence interval, p-value, or pooled causal estimate is computed from the two executions."
+  },
+  "expected_outputs": {
+    "matched_run_stage_sensitivity_rows": 60,
+    "optimizer_stage_sensitivity_rows": 15,
+    "optimizer_minus_adamw_sensitivity_rows": 10,
+    "stage_optimizer_rankings_rows": 5
+  },
+  "claim_boundary": "A ranking or optimizer-minus-AdamW change is execution-path sensitivity evidence. The historical and corrected checkpoints are not a newly randomized packing experiment, so this summary is not a causal estimate of packing and must not be pooled into corrected inference."
+}

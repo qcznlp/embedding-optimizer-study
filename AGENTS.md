@@ -17,8 +17,10 @@ Read these sources in order before acting:
    `configs/dense_no_packing_execution_protocol.json`, its preflight parent, and
    `configs/dense_no_packing_evaluation_protocol.json`. Weight-space and retrieval-bridge work
    must additionally follow `configs/dense_no_packing_analysis_protocol.json` and the source-bound
-   bridge implementation in `configs/dense_no_packing_bridge_implementation_protocol.json`;
-   corrected outcome aggregation must follow `configs/dense_no_packing_outcome_protocol.json`.
+   bridge implementation in `configs/dense_no_packing_bridge_implementation_protocol_v2.json`;
+   corrected outcome aggregation must follow `configs/dense_no_packing_outcome_protocol.json`, and
+   historical/corrected comparisons must follow
+   `configs/dense_no_packing_sensitivity_implementation_protocol.json`.
 6. `docs/dense-no-packing-retrain.md` — exact operational commands.
 
 On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
@@ -42,10 +44,12 @@ its engineering parent is `configs/dense_no_packing_preflight_protocol.json`, an
 checkpoint reloads are governed by `configs/dense_no_packing_evaluation_protocol.json`. The
 weight-space operationalization and retrieval bridge are governed by
 `configs/dense_no_packing_analysis_protocol.json`; the later executable bridge source binding is
-governed by `configs/dense_no_packing_bridge_implementation_protocol.json`. Validation selection,
-max-T inference, and retrieval dynamics are governed by
-`configs/dense_no_packing_outcome_protocol.json`. Do not launch or interpret corrected runs from
-an uncommitted matrix.
+governed by `configs/dense_no_packing_bridge_implementation_protocol_v2.json`. The v1 bridge
+implementation lock is a superseded, never-executed receipt and must not be used. Validation
+selection, max-T inference, and retrieval dynamics are governed by
+`configs/dense_no_packing_outcome_protocol.json`; execution-path sensitivity is governed by
+`configs/dense_no_packing_sensitivity_implementation_protocol.json`. Do not launch or interpret
+corrected runs from an uncommitted matrix.
 
 The active paper scope is DenseOn only. LateOn files are historical provenance and must not be
 promoted into primary inference or used to justify new computation.

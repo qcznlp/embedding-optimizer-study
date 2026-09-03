@@ -11,9 +11,10 @@ immutable; all corrected artifacts use new `dense-no-packing` namespaces.
 3. `configs/dense_no_packing_evaluation_protocol.json`
 4. `configs/dense_no_packing_analysis_protocol.json`
 5. `configs/dense_no_packing_outcome_protocol.json`
-6. `configs/dense_no_packing_bridge_implementation_protocol.json`
-7. `configs/dense_no_packing_retrain.yaml`
-8. GitHub issue #41
+6. `configs/dense_no_packing_bridge_implementation_protocol_v2.json`
+7. `configs/dense_no_packing_sensitivity_implementation_protocol.json`
+8. `configs/dense_no_packing_retrain.yaml`
+9. GitHub issue #41
 
 The formal matrix contains 12 DenseOn runs: four fixed learning rates for each of AdamW, Muon, and
 NorMuon. Every run uses the same 500k rows, seed 42, seven explicit random hard negatives, no
@@ -148,7 +149,26 @@ only when pooled held-out RMSE decreases and at least three of four fold RMSEs d
 implementation source was bound after the two first step-782 checkpoints existed but before any
 corrected validation, BEIR, geometry, outcome, or bridge output existed; that timing and all
 implementation choices are disclosed in
-`configs/dense_no_packing_bridge_implementation_protocol.json`.
+`configs/dense_no_packing_bridge_implementation_protocol_v2.json`. The v1 receipt was never run on
+corrected outputs: an integration test caught that it looked up the future outcome manifest by
+filename rather than its declared logical key. The v2 receipt fixes only that fail-closed interface
+lookup and records the repair before any corrected outcome existed.
+
+## Historical/corrected execution sensitivity
+
+After the corrected outcome summary exists, generate the predeclared descriptive execution-path
+sensitivity tables with:
+
+```bash
+python -m embed_optim.corrected_execution_sensitivity
+```
+
+This matches all 60 optimizer-rate-stage rows between historical packed training and corrected
+independently padded training. It reports optimizer rankings and Muon/NorMuon-minus-AdamW deltas at
+each normalized stage, keeping the two executions separate. It intentionally computes no pooled
+confidence interval or causal packing estimate. The historical table, implementation, matching
+rules, and output counts are source-bound in
+`configs/dense_no_packing_sensitivity_implementation_protocol.json`.
 
 If only one four-GPU training job remains, the other disjoint pool may evaluate already completed
 runs by passing their IDs and the idle GPU list to `corrected_beir_evaluation`. Do not overlap an
