@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 13:25 UTC
+Last updated: 2026-09-03 13:35 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -31,7 +31,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
-| GitHub main CI | Green | merge `5beaee0`, workflow run `33760865424` |
+| GitHub main CI | Green | merge `59556f2`, workflow run `33761595383` |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
 The corrected no-packing phase now has an explicit implementation. Its worst-case 256-row
@@ -50,14 +50,18 @@ verify padding after every reload. Their implementation was locked before any co
 or evaluation output existed in `configs/dense_no_packing_evaluation_protocol.json`; the historical
 source-bound evaluators remain unchanged.
 
-The corrected weight-space implementation and retrieval bridge are separately locked in
+The corrected weight-space definitions and retrieval-bridge scientific plan are locked in
 `configs/dense_no_packing_analysis_protocol.json`. That lock was written while the two active runs
 were still below checkpoint 782 and no corrected checkpoint weights, validation outputs, BEIR
 outputs, or corrected geometry outputs existed. It reports saved-checkpoint segment displacement
 and cumulative displacement, stable/effective ranks, and all-rate rank-16 left/right subspace
 overlaps. It explicitly does not relabel the displacement between retained checkpoints as a
 per-step optimizer update. The retrieval bridge uses four leave-dose-index-out folds and publishes
-all predeclared features rather than selecting one after seeing BEIR.
+all predeclared features rather than selecting one after seeing BEIR. Its executable source and
+otherwise prediction-invariant implementation choices are bound separately in
+`configs/dense_no_packing_bridge_implementation_protocol.json`; that implementation lock was made
+after the first two step-782 checkpoint payloads existed but before any corrected validation,
+BEIR, geometry, outcome, or bridge output existed.
 
 The corrected outcome implementation is locked separately in
 `configs/dense_no_packing_outcome_protocol.json`, also before corrected validation or BEIR output
@@ -196,6 +200,9 @@ missing, extra, or size-mismatched files for every refreshed prefix:
     the analysis protocol and source bindings before reading complete corrected checkpoints.
 12. Build corrected inference only through `python -m embed_optim.corrected_outcome_summary`; it
     requires the complete validation and 840-unit retrieval grid and verifies the outcome protocol.
+13. Build the geometry-to-retrieval bridge only through
+    `python -m embed_optim.corrected_retrieval_bridge`; it verifies both upstream summary manifests
+    and the separately source-bound implementation protocol before fitting any model.
 
 ## Operational constraints
 
