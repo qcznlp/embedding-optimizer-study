@@ -22,7 +22,11 @@ Read these sources in order before acting:
    historical/corrected comparisons must follow
    `configs/dense_no_packing_sensitivity_implementation_protocol.json`. Final blog and paper
    rendering must follow `configs/dense_no_packing_publication_protocol.json`.
-6. `docs/dense-no-packing-retrain.md` — exact operational commands.
+6. For the prospective state-by-operator mechanism follow-up, read both
+   `configs/dense_no_packing_state_operator_factorial_protocol.json` and
+   `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`, then follow
+   `docs/state-operator-factorial.md`. Do not execute it from changed source bytes.
+7. `docs/dense-no-packing-retrain.md` — exact corrected-matrix operational commands.
 
 If `logs/dense-no-packing-v1/recovery-supervisor-state.json` exists, read it after
 `CURRENT_PROGRESS.json`. It is the atomic control-plane state for the recovery defined in

@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "status": "prospective_state_operator_factorial_implementation_lock",
+  "frozen_at_utc": "2026-09-03T23:06:13Z",
+  "implementation_commit": "dd7396b00ca2cc6f9248471eeaa5c7d4eea889b5",
+  "purpose": "Bind the exact calibration, reset-continuation training, padded probe evaluation, final full-corpus BEIR evaluation, and 2x2 estimator implementation before any corrected factorial output exists.",
+  "visibility_at_freeze": {
+    "corrected_factorial_gradient_outputs": false,
+    "corrected_factorial_direction_outputs": false,
+    "corrected_factorial_matrices": false,
+    "corrected_factorial_training_outputs": false,
+    "corrected_factorial_probe_outputs": false,
+    "corrected_factorial_beir_outputs": false,
+    "corrected_factorial_summary_outputs": false,
+    "note": "The implementation was source-bound before either corrected Muon source checkpoint existed. The historical packed crossover remains disclosed as post-hoc motivation only."
+  },
+  "parent_bindings": {
+    "scientific_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_protocol.json",
+      "bytes": 9914,
+      "sha256": "67c7a24b64e6651ffc48eedcb73bbabd8dda42c2264057b71640364f058605b5"
+    },
+    "corrected_execution_protocol": {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "bytes": 6054,
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+    }
+  },
+  "source_bindings": {
+    "implementation_guard": {
+      "path": "src/embed_optim/state_operator_factorial_contract.py",
+      "bytes": 2714,
+      "sha256": "c0d4ebd67f9836b968e1ec003cd60454534ddea774436721735ffe05594c1e24"
+    },
+    "calibrator_and_matrix_generator": {
+      "path": "src/embed_optim/state_operator_factorial.py",
+      "bytes": 43991,
+      "sha256": "585cac945a32ebd101d64b402b6746ee2f01da03018ced12ed092d34a423d292"
+    },
+    "full_beir_evaluator": {
+      "path": "src/embed_optim/state_operator_factorial_evaluation.py",
+      "bytes": 12488,
+      "sha256": "649b83744f39f95fc59dd255320f08894219e82484cdf5c348e78e9c4531fb3b"
+    },
+    "padded_probe_evaluator": {
+      "path": "src/embed_optim/state_operator_factorial_probe.py",
+      "bytes": 28182,
+      "sha256": "7a40bafe3b8d43122cf0559bb83e1d3e6dd169da3fbf4ece8f70f5ccc720784c"
+    },
+    "factorial_summarizer": {
+      "path": "src/embed_optim/state_operator_factorial_summary.py",
+      "bytes": 22605,
+      "sha256": "d6d4d8481404e38b0e7ab9291680c39a99909fc3fb87959bc42be49f4361cc27"
+    },
+    "factorial_training_wrapper": {
+      "path": "src/embed_optim/state_operator_factorial_training.py",
+      "bytes": 6674,
+      "sha256": "0bc728cadee6829d2e03e1d56d94a06ca726502ef074996e4611e9c7073a65e0"
+    },
+    "matrix_runner": {
+      "path": "src/embed_optim/matrix.py",
+      "bytes": 15720,
+      "sha256": "ffea83211823aa9d5f49f615020034cf2c1db4538fe67e6061bf1d6750da6bb7"
+    },
+    "trainer": {
+      "path": "src/embed_optim/train.py",
+      "bytes": 16750,
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    },
+    "configuration_loader": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "optimizer_implementation": {
+      "path": "src/embed_optim/optimizers.py",
+      "bytes": 11839,
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "collators": {
+      "path": "src/embed_optim/collators.py",
+      "bytes": 2117,
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    "losses": {
+      "path": "src/embed_optim/losses.py",
+      "bytes": 3805,
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    "training_callbacks": {
+      "path": "src/embed_optim/callbacks.py",
+      "bytes": 10641,
+      "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+    },
+    "gradient_exporter": {
+      "path": "src/embed_optim/gradient_probe.py",
+      "bytes": 25320,
+      "sha256": "3e06f35eb3a6a294be0da6b78ca6ae6846357c6ff2aac70a54bd99e4d384ddac"
+    },
+    "update_replay": {
+      "path": "src/embed_optim/update_geometry.py",
+      "bytes": 23435,
+      "sha256": "93c295cad852fbeb3e065077442f7f94740d7b6981dd16e4c141fc4377c3fbb4"
+    },
+    "geometry_io": {
+      "path": "src/embed_optim/geometry.py",
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "short_branch_data_audit": {
+      "path": "src/embed_optim/short_branch.py",
+      "bytes": 26823,
+      "sha256": "828345379b4cd4312b6b8a1881a84a7b3116b16fa09ad402e2c1b0e0321c2a4f"
+    },
+    "probe_exporter": {
+      "path": "src/embed_optim/probe_export.py",
+      "bytes": 20602,
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    "probe_scheduler": {
+      "path": "src/embed_optim/probe_matrix.py",
+      "bytes": 20127,
+      "sha256": "e286688e2886db91e5f1d147c7a3e2044898bdd8b347d5ed106318593c2e1d28"
+    },
+    "representation_metrics": {
+      "path": "src/embed_optim/representation_geometry.py",
+      "bytes": 43786,
+      "sha256": "2910a084079e2c53a6b4152fcb1a32f4ab30387975a1dbbca336db9e546469a2"
+    },
+    "specialized_training_audit": {
+      "path": "src/embed_optim/supplemental_training_audit.py",
+      "bytes": 11499,
+      "sha256": "d05c14da2cc6076f0b13bd26dd1100c4d0b4d8e7ca7014639908b7ca53dc5796"
+    },
+    "corrected_beir_helper": {
+      "path": "src/embed_optim/corrected_beir_evaluation.py",
+      "bytes": 9893,
+      "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+    },
+    "padded_execution_helper": {
+      "path": "src/embed_optim/corrected_input_execution.py",
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "evaluation_controller": {
+      "path": "src/embed_optim/evaluate_matrix.py",
+      "bytes": 27491,
+      "sha256": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2"
+    },
+    "evaluation_utils": {
+      "path": "src/embed_optim/evaluation_utils.py",
+      "bytes": 6170,
+      "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+    },
+    "decontamination_registry": {
+      "path": "src/embed_optim/decontamination.py",
+      "bytes": 5282,
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "evaluation_parser": {
+      "path": "src/embed_optim/aggregate.py",
+      "bytes": 116247,
+      "sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0"
+    },
+    "gpu_lease": {
+      "path": "src/embed_optim/gpu_lease.py",
+      "bytes": 7263,
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "padded_dense_worker": {
+      "path": "scripts/eval/dense_no_packing_parallel.py",
+      "bytes": 1104,
+      "sha256": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a"
+    },
+    "dense_task_scheduler": {
+      "path": "scripts/eval/dense_parallel.py",
+      "bytes": 11179,
+      "sha256": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72"
+    },
+    "dense_task_worker": {
+      "path": "scripts/eval/dense_sequential.py",
+      "bytes": 26739,
+      "sha256": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906"
+    }
+  },
+  "configuration_bindings": {
+    "corrected_source_matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "bytes": 1601,
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    },
+    "formal_runtime": {
+      "path": "configs/formal_runtime.json",
+      "bytes": 1019,
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    "common_state_selection": {
+      "path": "configs/common_state_probe.json",
+      "bytes": 2433,
+      "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+    },
+    "calibration_probe": {
+      "path": "configs/representation_probe.json",
+      "bytes": 867,
+      "sha256": "45e76c8daa5bda0213c346b39200a34ddc1e9295f37198a2bd238276ee6057e2"
+    },
+    "unseen_probe": {
+      "path": "configs/beir_representation_probe.json",
+      "bytes": 5737,
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    "branch_data_protocol": {
+      "path": "configs/short_branch_protocol.json",
+      "bytes": 3103,
+      "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+    },
+    "portable_branch_receipt": {
+      "path": "reports/short-branch/subset-receipt.json",
+      "bytes": 532,
+      "sha256": "855bf0c76403ad45ee8901051f354f3a31da57b3c1f1fd2d21c7891d22bf942e"
+    },
+    "dense_scope": {
+      "path": "configs/dense_scope_amendment.json",
+      "bytes": 3139,
+      "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+    }
+  },
+  "source_states": [
+    {
+      "label": "adamw_state",
+      "run_id": "padded-adamw-3e-5",
+      "optimizer": "adamw",
+      "learning_rate": 0.00003,
+      "checkpoint_step": 2345,
+      "checkpoint_path": "outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-2345"
+    },
+    {
+      "label": "muon_state",
+      "run_id": "padded-muon-3e-4",
+      "optimizer": "muon",
+      "learning_rate": 0.0003,
+      "checkpoint_step": 2345,
+      "checkpoint_path": "outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-2345"
+    }
+  ],
+  "cardinalities": {
+    "source_states": 2,
+    "continuation_operators": 2,
+    "order_seeds": 3,
+    "training_runs": 12,
+    "matrices": 6,
+    "checkpoints_per_run": 5,
+    "probe_checkpoint_jobs": 60,
+    "probe_reference_jobs": 1,
+    "final_beir_task_units": 168,
+    "estimand_seed_task_cells": 126,
+    "co_primary_estimands": 3
+  },
+  "execution": {
+    "requires_clean_source_content_receipt": true,
+    "source_content_addressing": "At first calibration use, the gradient manifest records the byte count and SHA-256 of every JSON and safetensors checkpoint input; the padded execution receipt binds that manifest, and the direction manifest binds both. No untagged gradient artifact may be reused.",
+    "source_readiness_gate": "Do not launch a calibration until its checkpoint-2345 is deeply resumable and its sealed-checkpoint Hugging Face receipt has zero missing, extra, size, or digest mismatches.",
+    "optimizer_state_reset": "Each generated matrix loads model weights through model_name and starts a new trainer without --resume-from-checkpoint; AdamW and Muon optimizer states therefore begin at zero.",
+    "matrix_layout": "Six matrices, one per source-state by order-seed pair, each containing the reset AdamW and reset Muon continuations. One matrix command runs the two operators concurrently on the two four-GPU pools.",
+    "output_namespaces": {
+      "calibration": "results/dense-no-packing-state-operator/calibration",
+      "matrices": "configs/generated/dense-no-packing-state-operator",
+      "training": "outputs/dense-no-packing-state-operator-v1",
+      "probe": "results/state-operator-factorial/probe",
+      "full_beir": "results/state-operator-factorial/full-beir",
+      "summary": "reports/state-operator-factorial"
+    },
+    "gpu_coordination": "Every calibration, probe, and full-BEIR entry point acquires the shared GPU lease. Training matrices may be launched only by the higher-level controller after it owns both four-GPU pools. Never inspect, read, edit, signal, stop, replace, or otherwise touch gpu.py or its processes."
+  },
+  "commands": {
+    "protocol_audit": "uv run embed-optim-state-operator-factorial audit-protocol --portable-data-audit",
+    "calibration": [
+      "uv run embed-optim-state-operator-factorial calibrate-gradients --state adamw_state --gpus 0 --device cuda:0",
+      "uv run embed-optim-state-operator-factorial calibrate-directions --state adamw_state --gpus 0 --operator-device cuda:0",
+      "uv run embed-optim-state-operator-factorial calibrate-gradients --state muon_state --gpus 0 --device cuda:0",
+      "uv run embed-optim-state-operator-factorial calibrate-directions --state muon_state --gpus 0 --operator-device cuda:0"
+    ],
+    "matrix_generation": "uv run embed-optim-state-operator-factorial generate",
+    "training_template": "uv run embed-optim-train-state-operator-factorial --state {state} --seed {seed} --gpus-a 0,1,2,3 --gpus-b 4,5,6,7 --port-a 29710 --port-b 29720",
+    "training_order": [
+      "adamw_state-seed314159",
+      "muon_state-seed314159",
+      "adamw_state-seed271828",
+      "muon_state-seed271828",
+      "adamw_state-seed161803",
+      "muon_state-seed161803"
+    ],
+    "probe": "uv run embed-optim-probe-state-operator-factorial",
+    "full_beir_template": "uv run embed-optim-evaluate-state-operator-factorial --state {state} --seed {seed} --gpus {four_gpu_pool}",
+    "full_beir_parallel_pairs": [
+      ["adamw_state-seed314159", "muon_state-seed314159"],
+      ["adamw_state-seed271828", "muon_state-seed271828"],
+      ["adamw_state-seed161803", "muon_state-seed161803"]
+    ],
+    "summary": "uv run embed-optim-summarize-state-operator-factorial"
+  },
+  "inference_binding": {
+    "bootstrap": "Independently resample the fixed three seed clusters and 14 task clusters with replacement, form their Cartesian product, and average each predeclared seed-by-task contrast.",
+    "replicates": 100000,
+    "seed": 20260904,
+    "interval": "linear percentile 95%",
+    "decision": "supported_positive iff lower endpoint > 0; supported_negative iff upper endpoint < 0; otherwise inconclusive",
+    "estimands": ["weight_state_effect", "operator_effect", "state_operator_interaction"]
+  },
+  "claim_boundary": "This lock operationalizes the already-frozen scientific design. It does not permit changing source states, branch data, continuation operators, target scale, seeds, endpoint, estimands, uncertainty, or decision rules after any factorial output appears."
+}
