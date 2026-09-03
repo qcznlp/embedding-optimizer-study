@@ -3,6 +3,12 @@
   "active_protocol": "configs/dense_no_packing_execution_protocol.json",
   "canonical_handoff": "PROJECT_STATUS.md",
   "complete_runs": 0,
+  "control_plane_warning_affected_runs": {
+    "tcpstore_heartbeat_disconnect": 2
+  },
+  "control_plane_warning_markers": {
+    "tcpstore_heartbeat_disconnect": 76860
+  },
   "error_markers": {
     "cuda_oom": 0,
     "nccl_error": 0,
@@ -14,14 +20,17 @@
   "matrix": "configs/dense_no_packing_retrain.yaml",
   "objective": "Compare AdamW, Muon, and NorMuon for corrected independently padded DenseOn retriever adaptation.",
   "observation": "artifact_only_no_process_inspection",
-  "observed_at_utc": "2026-09-03T14:15:06+00:00",
+  "observed_at_utc": "2026-09-03T18:17:48+00:00",
   "pending_runs": 10,
   "planned_beir_task_units": 840,
   "planned_checkpoints": 60,
   "planned_runs": 12,
-  "resumable_checkpoints": 2,
+  "resumable_checkpoints": 8,
   "runs": [
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 38413
+      },
       "declared_total_steps": 3907,
       "error_markers": {
         "cuda_oom": 0,
@@ -29,16 +38,22 @@
         "non_finite": 0,
         "traceback": 0
       },
-      "latest_log_step": 1207,
+      "latest_log_step": 3230,
       "learning_rate": 1e-06,
       "optimizer": "adamw",
       "resumable_checkpoint_steps": [
-        782
+        782,
+        1563,
+        2345,
+        3126
       ],
       "run_id": "padded-adamw-1e-6",
       "state": "started_artifacts_present"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 38447
+      },
       "declared_total_steps": 3907,
       "error_markers": {
         "cuda_oom": 0,
@@ -46,16 +61,22 @@
         "non_finite": 0,
         "traceback": 0
       },
-      "latest_log_step": 1207,
+      "latest_log_step": 3236,
       "learning_rate": 3e-06,
       "optimizer": "adamw",
       "resumable_checkpoint_steps": [
-        782
+        782,
+        1563,
+        2345,
+        3126
       ],
       "run_id": "padded-adamw-3e-6",
       "state": "started_artifacts_present"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -71,6 +92,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -86,6 +110,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -101,6 +128,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -116,6 +146,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -131,6 +164,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -146,6 +182,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -161,6 +200,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -176,6 +218,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,
@@ -191,6 +236,9 @@
       "state": "pending"
     },
     {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
       "declared_total_steps": null,
       "error_markers": {
         "cuda_oom": 0,

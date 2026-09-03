@@ -24,6 +24,11 @@ Read these sources in order before acting:
    rendering must follow `configs/dense_no_packing_publication_protocol.json`.
 6. `docs/dense-no-packing-retrain.md` — exact operational commands.
 
+If `logs/dense-no-packing-v1/recovery-supervisor-state.json` exists, read it after
+`CURRENT_PROGRESS.json`. It is the atomic control-plane state for the recovery defined in
+`configs/dense_no_packing_control_plane_recovery.json`; do not launch a competing matrix while its
+phase is `waiting_for_adopted_training` or `matrix_running`.
+
 On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
 artifact-only command below; it does not inspect system processes:
 

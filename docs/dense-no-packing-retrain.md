@@ -44,6 +44,30 @@ update the narrative in `PROJECT_STATUS.md` and tracking issue #41 when a run co
 evaluation advances, a checkpoint backup is remotely verified, or the scientific interpretation
 changes.
 
+Fatal training markers and control-plane warnings are intentionally separate. In particular, the
+repeated `ProcessGroupNCCL` TCPStore heartbeat warning caused by a vanished launcher is counted as
+`control_plane_warning_markers.tcpstore_heartbeat_disconnect`, not as an NCCL data-plane error.
+The total is a repeated log-line count; `control_plane_warning_affected_runs` is the run-level
+count.
+
+## Active control-plane recovery
+
+The first two formal AdamW runs outlived their original interactive matrix controller. They remain
+adopted in place until all eight recorded top-level training PIDs exit. A detached supervisor then
+runs the unchanged matrix, whose deep gate either skips a complete run or resumes an incomplete
+run from its latest valid scheduled checkpoint. The incident, exact PIDs, hashes, unchanged
+configuration, and no-signal rule are recorded in
+`configs/dense_no_packing_control_plane_recovery.json`.
+
+Read the live recovery phase without inspecting processes:
+
+```bash
+python -m json.tool logs/dense-no-packing-v1/recovery-supervisor-state.json
+```
+
+Do not start another corrected matrix while that receipt says `waiting_for_adopted_training` or
+`matrix_running`.
+
 ## Training and resume
 
 ```bash

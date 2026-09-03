@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import subprocess
 import sys
 import time
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Callable
 
 from .config import RunConfig, load_matrix, resolve_matrix_path
@@ -59,6 +62,23 @@ def _matrix_command(args: argparse.Namespace, families: list[str] | None = None)
     return command
 
 
+def _write_state(args: argparse.Namespace, **fields: object) -> None:
+    state_file = getattr(args, "state_file", None)
+    if state_file is None:
+        return
+    path = Path(state_file)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "schema_version": 1,
+        "scope": "training_matrix_supervisor",
+        "observed_at_utc": datetime.now(UTC).replace(microsecond=0).isoformat(),
+        **fields,
+    }
+    temporary = path.with_name(f".{path.name}.tmp")
+    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
 def supervise(
     args: argparse.Namespace,
     *,
@@ -69,9 +89,37 @@ def supervise(
     """Restart the matrix orchestrator until every selected run is structurally complete."""
 
     configs = _selected_configs(args)
+    selected_runs = [f"{config.model_family}/{config.run_id}" for config in configs]
+    wait_pids = list(getattr(args, "wait_for_pids", []))
     if args.wait_for_pid is not None:
-        print(f"Waiting for adopted matrix PID {args.wait_for_pid}", flush=True)
-        while pid_exists(args.wait_for_pid):
+        wait_pids.append(args.wait_for_pid)
+    wait_pids = list(dict.fromkeys(wait_pids))
+    if wait_pids:
+        print(
+            "Waiting for adopted training PIDs " + ",".join(str(pid) for pid in wait_pids),
+            flush=True,
+        )
+        remaining_pids = set(wait_pids)
+        _write_state(
+            args,
+            phase="waiting_for_adopted_training",
+            selected_runs=selected_runs,
+            adopted_training_pids=wait_pids,
+            remaining_adopted_training_pids=sorted(remaining_pids),
+            launches=0,
+        )
+        while remaining_pids:
+            remaining_pids = {pid for pid in remaining_pids if pid_exists(pid)}
+            _write_state(
+                args,
+                phase="waiting_for_adopted_training",
+                selected_runs=selected_runs,
+                adopted_training_pids=wait_pids,
+                remaining_adopted_training_pids=sorted(remaining_pids),
+                launches=0,
+            )
+            if not remaining_pids:
+                break
             sleeper(args.poll_seconds)
 
     launches = 0
@@ -79,12 +127,26 @@ def supervise(
         incomplete = [config for config in configs if not _run_is_complete(config)]
         if not incomplete:
             print(f"All {len(configs)} selected runs are complete", flush=True)
+            _write_state(
+                args,
+                phase="complete",
+                selected_runs=selected_runs,
+                remaining_runs=[],
+                launches=launches,
+            )
             return 0
         if args.max_launches and launches >= args.max_launches:
             print(
                 f"Stopping after {launches} launches with {len(incomplete)} runs incomplete",
                 file=sys.stderr,
                 flush=True,
+            )
+            _write_state(
+                args,
+                phase="launch_limit_reached",
+                selected_runs=selected_runs,
+                remaining_runs=[f"{config.model_family}/{config.run_id}" for config in incomplete],
+                launches=launches,
             )
             return 1
 
@@ -104,11 +166,31 @@ def supervise(
                 )
             ]
         command = _matrix_command(args, launch_families)
+        _write_state(
+            args,
+            phase="matrix_running",
+            selected_runs=selected_runs,
+            remaining_runs=labels.split(", "),
+            launches=launches,
+            command=command,
+        )
         result = run_command(command, check=False)
         remaining = sum(not _run_is_complete(config) for config in configs)
         print(
             f"Matrix launch {launches} exited {result.returncode}; {remaining} runs remain",
             flush=True,
+        )
+        _write_state(
+            args,
+            phase="matrix_exited",
+            selected_runs=selected_runs,
+            remaining_runs=[
+                f"{config.model_family}/{config.run_id}"
+                for config in configs
+                if not _run_is_complete(config)
+            ],
+            launches=launches,
+            last_matrix_return_code=result.returncode,
         )
         if remaining and (not args.max_launches or launches < args.max_launches):
             sleeper(args.restart_delay)
@@ -127,7 +209,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--port-b", type=int, default=29520)
     parser.add_argument("--log-dir", default="logs/training")
     parser.add_argument("--python", default=sys.executable)
+    parser.add_argument(
+        "--state-file",
+        type=Path,
+        help="Atomically publish supervisor phase and remaining work as JSON",
+    )
     parser.add_argument("--wait-for-pid", type=int)
+    parser.add_argument(
+        "--wait-for-pids",
+        nargs="+",
+        type=int,
+        default=[],
+        help="Wait for every explicitly adopted training PID before launching the matrix",
+    )
     parser.add_argument("--poll-seconds", type=float, default=30.0)
     parser.add_argument("--restart-delay", type=float, default=30.0)
     parser.add_argument("--max-launches", type=int, default=0)
@@ -135,6 +229,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     args = parser.parse_args(argv)
     if args.wait_for_pid is not None and args.wait_for_pid <= 0:
         parser.error("--wait-for-pid must be positive")
+    if any(pid <= 0 for pid in args.wait_for_pids):
+        parser.error("--wait-for-pids values must be positive")
     if args.poll_seconds <= 0 or args.restart_delay < 0 or args.max_launches < 0:
         parser.error("poll/restart intervals and max launches must be non-negative")
     return args

@@ -1,3 +1,6 @@
+import hashlib
+import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -16,7 +19,9 @@ def _args(**overrides):
         "port_b": 29510,
         "log_dir": "logs/training",
         "python": "/venv/python",
+        "state_file": None,
         "wait_for_pid": None,
+        "wait_for_pids": [],
         "poll_seconds": 2.0,
         "restart_delay": 3.0,
         "max_launches": 0,
@@ -63,6 +68,62 @@ def test_supervisor_adopts_process_then_runs_until_complete(monkeypatch):
         "dense",
         "late",
     ]
+
+
+def test_supervisor_waits_for_every_adopted_training_pid(monkeypatch):
+    config = _config("dense", "adamw")
+    completed = set()
+    monkeypatch.setattr("embed_optim.supervisor.load_matrix", lambda path: [config])
+    monkeypatch.setattr(
+        "embed_optim.supervisor._run_is_complete", lambda config: config.run_id in completed
+    )
+    alive = {101: iter((True, False)), 202: iter((True, True, False))}
+    sleeps = []
+
+    def pid_exists(pid):
+        return next(alive[pid])
+
+    def run(command, check):
+        completed.add("adamw")
+        return SimpleNamespace(returncode=0)
+
+    result = supervise(
+        _args(wait_for_pids=[101, 202]),
+        run_command=run,
+        pid_exists=pid_exists,
+        sleeper=sleeps.append,
+    )
+
+    assert result == 0
+    assert sleeps == [2.0, 2.0]
+
+
+def test_supervisor_publishes_atomic_recovery_state(monkeypatch, tmp_path):
+    config = _config("dense", "adamw")
+    completed = set()
+    monkeypatch.setattr("embed_optim.supervisor.load_matrix", lambda path: [config])
+    monkeypatch.setattr(
+        "embed_optim.supervisor._run_is_complete", lambda config: config.run_id in completed
+    )
+
+    def run(command, check):
+        completed.add("adamw")
+        return SimpleNamespace(returncode=0)
+
+    state_file = tmp_path / "nested" / "state.json"
+    result = supervise(
+        _args(state_file=state_file),
+        run_command=run,
+        sleeper=lambda seconds: None,
+    )
+
+    state = json.loads(state_file.read_text())
+    assert result == 0
+    assert state["phase"] == "complete"
+    assert state["remaining_runs"] == []
+    assert state["launches"] == 1
+    assert state["selected_runs"] == ["dense/adamw"]
+    assert not state_file.with_name(".state.json.tmp").exists()
 
 
 def test_supervisor_respects_launch_limit(monkeypatch):
@@ -130,8 +191,32 @@ def test_supervisor_cli_rejects_invalid_intervals():
         parse_args(["--poll-seconds", "0"])
     with pytest.raises(SystemExit):
         parse_args(["--wait-for-pid", "-1"])
+    with pytest.raises(SystemExit):
+        parse_args(["--wait-for-pids", "123", "-1"])
 
 
 def test_supervisor_cli_defaults_dense_and_requires_explicit_late_opt_in():
     assert parse_args([]).families == ["dense"]
     assert parse_args(["--families", "late"]).families == ["late"]
+
+
+def test_corrected_control_plane_recovery_lock_binds_current_sources():
+    repository = Path(__file__).resolve().parents[1]
+    protocol = json.loads(
+        (repository / "configs/dense_no_packing_control_plane_recovery.json").read_text()
+    )
+    assert protocol["status"] == "corrected_training_control_plane_recovery_lock"
+    assert protocol["scientific_plan_change"] is False
+    assert len(protocol["adopted_training_pids"]) == 8
+    assert protocol["incident"]["fatal_training_markers"] == {
+        "cuda_oom": 0,
+        "traceback": 0,
+        "non_finite": 0,
+        "nccl_data_plane_error": 0,
+    }
+    for group in ("parent_bindings", "source_bindings"):
+        for identity in protocol[group].values():
+            path = repository / identity["path"]
+            assert hashlib.sha256(path.read_bytes()).hexdigest() == identity["sha256"]
+            if "bytes" in identity:
+                assert path.stat().st_size == identity["bytes"]
