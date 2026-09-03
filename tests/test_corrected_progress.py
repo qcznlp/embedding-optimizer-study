@@ -1,7 +1,7 @@
 import json
 from types import SimpleNamespace
 
-from embed_optim.corrected_progress import build_progress, main
+from embed_optim.corrected_progress import _log_progress, build_progress, main
 
 
 def test_corrected_progress_is_artifact_only_and_counts_runs(monkeypatch, tmp_path):
@@ -50,6 +50,8 @@ def test_corrected_progress_is_artifact_only_and_counts_runs(monkeypatch, tmp_pa
     assert report["pending_runs"] == 1
     assert report["resumable_checkpoints"] == 1
     assert report["error_markers"]["traceback"] == 1
+    assert report["error_markers"]["nccl_error"] == 0
+    assert report["control_plane_warning_markers"]["tcpstore_heartbeat_disconnect"] == 0
     assert report["runs"][0]["latest_log_step"] == 20
     assert report["runs"][0]["declared_total_steps"] == 3907
     assert report["planned_runs"] == 3
@@ -58,6 +60,33 @@ def test_corrected_progress_is_artifact_only_and_counts_runs(monkeypatch, tmp_pa
     assert report["canonical_handoff"] == "PROJECT_STATUS.md"
     assert report["study_status"] == "active"
     assert report["active_phase"] == "corrected_dense_no_packing_training"
+
+
+def test_progress_separates_tcpstore_heartbeat_warning_from_fatal_nccl_error(tmp_path):
+    log = tmp_path / "train.log"
+    log.write_bytes(
+        b"100/3907\n"
+        b'[rank0]:[W] ProcessGroupNCCL.cpp Failed to check the "should dump" flag '
+        b"on TCPStore, with error: Broken pipe\n"
+    )
+
+    step, total, errors, warnings = _log_progress(log)
+
+    assert (step, total) == (100, 3907)
+    assert errors["nccl_error"] == 0
+    assert warnings["tcpstore_heartbeat_disconnect"] == 1
+
+
+def test_progress_counts_fatal_nccl_data_plane_marker(tmp_path):
+    log = tmp_path / "train.log"
+    log.write_bytes(
+        b"200/3907\ntorch.distributed.DistBackendError: NCCL error in: ProcessGroupNCCL.cpp\n"
+    )
+
+    _, _, errors, warnings = _log_progress(log)
+
+    assert errors["nccl_error"] == 1
+    assert warnings["tcpstore_heartbeat_disconnect"] == 0
 
 
 def test_corrected_progress_cli_writes_same_atomic_snapshot(monkeypatch, tmp_path, capsys):

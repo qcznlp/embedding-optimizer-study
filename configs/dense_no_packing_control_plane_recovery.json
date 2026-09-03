@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "status": "corrected_training_control_plane_recovery_lock",
+  "frozen_at_utc": "2026-09-03T18:14:27Z",
+  "purpose": "Recover the lost interactive matrix control plane without interrupting, duplicating, relabeling, or changing the scientific configuration of the two adopted in-flight AdamW runs.",
+  "scientific_plan_change": false,
+  "incident": {
+    "first_repeated_warning_at_utc": "2026-09-03T15:28:38Z",
+    "first_repeated_warning_at_host_local": "2026-09-03T23:28:38+08:00",
+    "symptom": "The torchrun TCPStore and interactive matrix controller disappeared. All eight training ranks became children of PID 1 and repeatedly emitted ProcessGroupNCCL heartbeat Broken-pipe warnings while continuing to advance and write checkpoints.",
+    "controller_handle_status": "missing",
+    "affected_runs": [
+      "padded-adamw-1e-6",
+      "padded-adamw-3e-6"
+    ],
+    "observed_training_state_at_freeze": "0/12 runs complete; both adopted AdamW runs were beyond step 3190 with checkpoints 782, 1563, 2345, and 3126 deeply resumable.",
+    "fatal_training_markers": {
+      "cuda_oom": 0,
+      "traceback": 0,
+      "non_finite": 0,
+      "nccl_data_plane_error": 0
+    },
+    "interpretation": "The repeated TCPStore heartbeat lines are one control-plane incident affecting two runs, not tens of thousands of independent NCCL data-plane failures. The run outputs remain incomplete until the normal deep completion gate passes."
+  },
+  "parent_bindings": {
+    "execution_protocol": {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+    },
+    "formal_matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  },
+  "source_bindings": {
+    "supervisor": {
+      "path": "src/embed_optim/supervisor.py",
+      "bytes": 8638,
+      "sha256": "87faa59824bb20bdc4e383d3b736fea6e10fa2e0f81c8ff6ca7a1215049f85b8"
+    },
+    "matrix": {
+      "path": "src/embed_optim/matrix.py",
+      "bytes": 15720,
+      "sha256": "ffea83211823aa9d5f49f615020034cf2c1db4538fe67e6061bf1d6750da6bb7"
+    },
+    "progress": {
+      "path": "src/embed_optim/corrected_progress.py",
+      "bytes": 7492,
+      "sha256": "bb20afdd9687b37a0bd5cba9726365d86a80ec9054f88aab3844099d27e5c9b9"
+    }
+  },
+  "adopted_training_pids": [
+    1685049,
+    1685050,
+    1685051,
+    1685052,
+    1685055,
+    1685056,
+    1685057,
+    1685058
+  ],
+  "recovery_contract": {
+    "existing_workers": "Do not signal or restart the adopted ranks. Wait until every explicitly recorded top-level training PID exits.",
+    "handoff_gate": "Only after all adopted PIDs exit, invoke the unchanged matrix runner. Its deep completion gate skips a fully complete run; otherwise it resumes only from the latest deeply valid scheduled checkpoint.",
+    "configuration": "Use the frozen matrix, Dense-only scope, GPU pools 0,1,2,3 and 4,5,6,7, ports 29610 and 29620, the existing dense-no-packing log root, and the formal system Python.",
+    "durability": "Run the supervisor in a detached session, publish an atomic JSON state file, and restart a failed matrix controller until all 12 selected runs pass deep completion.",
+    "observability": "The progress report separates fatal CUDA/NCCL/non-finite/traceback markers from repeated TCPStore control-plane heartbeat warnings. Warning totals count log lines and affected runs, not independent incidents.",
+    "external_process_boundary": "Do not inspect, read, edit, signal, stop, replace, or otherwise touch gpu.py or its processes."
+  },
+  "launch": {
+    "working_directory": "/root/embedding-optimizer-study",
+    "state_file": "logs/dense-no-packing-v1/recovery-supervisor-state.json",
+    "log_file": "logs/dense-no-packing-v1/recovery-supervisor.log",
+    "poll_seconds": 30,
+    "restart_delay_seconds": 30,
+    "max_launches": 0
+  },
+  "completion_rule": "Recovery is complete only when the source-bound supervisor reports all 12 matrix runs deeply complete. Training results retain the original one-seed corrected-replication claim boundary; this operational incident neither strengthens nor weakens a scientific result by itself."
+}

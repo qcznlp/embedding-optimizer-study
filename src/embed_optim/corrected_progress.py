@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import mmap
 import re
 from datetime import UTC, datetime
 from pathlib import Path
@@ -11,28 +12,57 @@ from pathlib import Path
 from .config import load_matrix
 from .matrix import _checkpoint_is_resumable, _run_is_complete
 
-PROGRESS_PATTERN = re.compile(r"(\d+)/(\d+)")
+PROGRESS_PATTERN = re.compile(rb"(\d+)/(\d+)")
 ERROR_PATTERNS = {
-    "cuda_oom": re.compile(r"CUDA out of memory", re.IGNORECASE),
-    "traceback": re.compile(r"Traceback \(most recent call last\)"),
-    "nccl_error": re.compile(r"NCCL[^\n]*(?:error|Error)"),
-    "non_finite": re.compile(r"(?:loss|grad_norm)['\"]?:\s*['\"]?(?:nan|inf)", re.IGNORECASE),
+    "cuda_oom": re.compile(rb"CUDA out of memory", re.IGNORECASE),
+    "traceback": re.compile(rb"Traceback \(most recent call last\)"),
+    "nccl_error": re.compile(
+        rb"^[^\n]*(?:torch\.distributed\.DistBackendError|"
+        rb"nccl(?:UnhandledCudaError|SystemError|InternalError|RemoteError)|"
+        rb"NCCL error in:|Watchdog caught collective operation (?:timeout|exception)|"
+        rb"collective operation has timed out)[^\n]*$",
+        re.IGNORECASE | re.MULTILINE,
+    ),
+    "non_finite": re.compile(rb"(?:loss|grad_norm)['\"]?:\s*['\"]?(?:nan|inf)\b", re.IGNORECASE),
+}
+CONTROL_PLANE_WARNING_PATTERNS = {
+    "tcpstore_heartbeat_disconnect": re.compile(
+        rb"Failed to check the [\"']should dump[\"'] flag on TCPStore", re.IGNORECASE
+    )
 }
 
 
-def _log_progress(path: Path) -> tuple[int, int | None, dict[str, int]]:
+def _log_progress(
+    path: Path,
+) -> tuple[int, int | None, dict[str, int], dict[str, int]]:
     if not path.is_file():
-        return 0, None, {name: 0 for name in ERROR_PATTERNS}
-    text = path.read_text(encoding="utf-8", errors="replace")
-    matches = [(int(step), int(total)) for step, total in PROGRESS_PATTERN.findall(text)]
-    # Logs also contain model-loading bars such as 134/134. The training
-    # horizon is the largest declared total; select progress within that bar.
-    step, total = max(matches, default=(0, None), key=lambda item: (item[1], item[0]))
-    return (
-        step,
-        total,
-        {name: len(pattern.findall(text)) for name, pattern in ERROR_PATTERNS.items()},
-    )
+        return (
+            0,
+            None,
+            {name: 0 for name in ERROR_PATTERNS},
+            {name: 0 for name in CONTROL_PLANE_WARNING_PATTERNS},
+        )
+    if path.stat().st_size == 0:
+        return (
+            0,
+            None,
+            {name: 0 for name in ERROR_PATTERNS},
+            {name: 0 for name in CONTROL_PLANE_WARNING_PATTERNS},
+        )
+    # The failed launcher incident produced tens of megabytes of repeated
+    # TCPStore heartbeat warnings. mmap avoids allocating and decoding another
+    # full copy of these append-only logs for every handoff snapshot.
+    with path.open("rb") as handle, mmap.mmap(handle.fileno(), 0, access=mmap.ACCESS_READ) as data:
+        matches = [(int(step), int(total)) for step, total in PROGRESS_PATTERN.findall(data)]
+        # Logs also contain model-loading bars such as 134/134. The training
+        # horizon is the largest declared total; select progress within that bar.
+        step, total = max(matches, default=(0, None), key=lambda item: (item[1], item[0]))
+        errors = {name: len(pattern.findall(data)) for name, pattern in ERROR_PATTERNS.items()}
+        warnings = {
+            name: len(pattern.findall(data))
+            for name, pattern in CONTROL_PLANE_WARNING_PATTERNS.items()
+        }
+    return step, total, errors, warnings
 
 
 def build_progress(
@@ -44,7 +74,7 @@ def build_progress(
     runs = []
     for config in configs:
         log_path = log_dir / f"dense-{config.run_id}.log"
-        log_step, log_total, errors = _log_progress(log_path)
+        log_step, log_total, errors, control_plane_warnings = _log_progress(log_path)
         schedule_path = config.output_dir / "checkpoint_schedule.json"
         if schedule_path.is_file():
             try:
@@ -78,6 +108,7 @@ def build_progress(
                 "declared_total_steps": log_total,
                 "resumable_checkpoint_steps": resumable,
                 "error_markers": errors,
+                "control_plane_warning_markers": control_plane_warnings,
             }
         )
     complete = sum(run["state"] == "complete" for run in runs)
@@ -109,6 +140,14 @@ def build_progress(
         "resumable_checkpoints": sum(len(run["resumable_checkpoint_steps"]) for run in runs),
         "error_markers": {
             name: sum(run["error_markers"][name] for run in runs) for name in ERROR_PATTERNS
+        },
+        "control_plane_warning_markers": {
+            name: sum(run["control_plane_warning_markers"][name] for run in runs)
+            for name in CONTROL_PLANE_WARNING_PATTERNS
+        },
+        "control_plane_warning_affected_runs": {
+            name: sum(run["control_plane_warning_markers"][name] > 0 for run in runs)
+            for name in CONTROL_PLANE_WARNING_PATTERNS
         },
         "runs": runs,
     }

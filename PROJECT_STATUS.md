@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 14:15 UTC
+Last updated: 2026-09-03 18:16 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -26,7 +26,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; 2 active at step 1207; 2/60 resumable checkpoints |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; active steps 3216/3221; 8/60 resumable checkpoints |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
@@ -41,9 +41,22 @@ engineering preflight passed at micro-batch 8 with 39,977,408,000 allocated byte
 analysis protocol is locked at `configs/dense_no_packing_execution_protocol.json`; it uses a new
 output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the host's UTC+8 local
 time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
-have written their first resumable checkpoint at step 782, including the model, optimizer,
-scheduler, trainer state, and all four RNG-state payloads. They continued training without a CUDA,
-distributed, non-finite, or traceback marker; neither run is yet complete.
+have written deeply resumable checkpoints at steps 782, 1563, 2345, and 3126, including the model,
+optimizer, scheduler, trainer state, and all four RNG-state payloads. At the 18:16 UTC artifact
+snapshot they were at steps 3216 and 3221, respectively, with no CUDA OOM, NCCL data-plane,
+non-finite, or traceback marker; neither run is yet complete.
+
+At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
+leaving the eight established training ranks adopted by PID 1. The NCCL data plane continued to
+advance both runs and write checkpoints, but the heartbeat monitor repeatedly logged TCPStore
+Broken-pipe warnings and no controller remained to launch later runs. This is one control-plane
+incident affecting two runs, not one failure per repeated warning line. A source-bound detached
+supervisor now waits for all eight adopted ranks to exit before invoking the unchanged matrix; it
+will skip a deeply complete run or resume an incomplete one from its latest deeply valid
+checkpoint. The recovery contract is
+`configs/dense_no_packing_control_plane_recovery.json`, and its atomic live state is
+`logs/dense-no-packing-v1/recovery-supervisor-state.json`. Fatal error markers remain separate from
+these control-plane warnings.
 
 SentenceTransformers does not serialize the runtime `can_flatten_inputs` value into a saved Dense
 checkpoint. Corrected validation and BEIR therefore use new isolated entrypoints that force and
