@@ -6,6 +6,13 @@ This is the canonical handoff page for humans and coding agents. Read it before 
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
 provenance under the user-directed scope amendment.
 
+For a fresh, artifact-only view on the experiment host, run
+`python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json`. The tracked
+`CURRENT_PROGRESS.json` is the latest durable machine-readable handoff snapshot; it is updated at
+meaningful state transitions rather than every optimizer step. The active implementation is in
+[PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and the execution checklist
+is [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).
+
 ## Snapshot
 
 | Workstream | Status | Audited coverage |

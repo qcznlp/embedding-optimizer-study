@@ -1,9 +1,38 @@
 # Agent handoff instructions
 
-Start with `PROJECT_STATUS.md`, then read `README.md`,
-`configs/dense_scope_amendment.json`, and the protocol relevant to your task. Keep
-`PROJECT_STATUS.md` current whenever a meaningful run, failure, release gate, backup, or scientific
-interpretation changes.
+## Goal and authoritative read order
+
+The active goal is to determine whether AdamW, Muon, or NorMuon gives better optimization and
+retrieval outcomes when adapting DenseOn on the same deterministic 500k-query, seven-negative
+training set. The current phase is the 12-run independently padded corrective replication. LateOn
+is no longer active work.
+
+Read these sources in order before acting:
+
+1. `PROJECT_STATUS.md` — canonical human-readable state, conclusions, blockers, and next steps.
+2. `CURRENT_PROGRESS.json` — latest committed machine-readable training snapshot.
+3. `README.md` — public study overview and reproducibility entry point.
+4. `configs/dense_scope_amendment.json` — active Dense-only scope.
+5. The frozen protocol relevant to the task. For the current phase, read
+   `configs/dense_no_packing_execution_protocol.json`, its preflight parent, and
+   `configs/dense_no_packing_evaluation_protocol.json`.
+6. `docs/dense-no-packing-retrain.md` — exact operational commands.
+
+On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
+artifact-only command below; it does not inspect system processes:
+
+```bash
+python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json
+```
+
+## Handoff discipline
+
+Keep `PROJECT_STATUS.md` current whenever a meaningful run, failure, release gate, backup, or
+scientific interpretation changes. At the same boundary, refresh `CURRENT_PROGRESS.json`, update
+GitHub issue #41, and commit and push the documentation/evidence change once its checks pass. Do
+not commit a new snapshot for every training step; the JSON is a durable handoff receipt, while the
+command above is the live view. Never put claims based only on a running or partially written
+checkpoint into the blog or paper.
 
 The active corrective phase is governed by `configs/dense_no_packing_execution_protocol.json`;
 its engineering parent is `configs/dense_no_packing_preflight_protocol.json`, and corrected

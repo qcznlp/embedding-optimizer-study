@@ -1,7 +1,7 @@
 import json
 from types import SimpleNamespace
 
-from embed_optim.corrected_progress import build_progress
+from embed_optim.corrected_progress import build_progress, main
 
 
 def test_corrected_progress_is_artifact_only_and_counts_runs(monkeypatch, tmp_path):
@@ -52,3 +52,30 @@ def test_corrected_progress_is_artifact_only_and_counts_runs(monkeypatch, tmp_pa
     assert report["error_markers"]["traceback"] == 1
     assert report["runs"][0]["latest_log_step"] == 20
     assert report["runs"][0]["declared_total_steps"] == 3907
+    assert report["planned_runs"] == 3
+    assert report["planned_checkpoints"] == 15
+    assert report["planned_beir_task_units"] == 210
+    assert report["canonical_handoff"] == "PROJECT_STATUS.md"
+    assert report["study_status"] == "active"
+    assert report["active_phase"] == "corrected_dense_no_packing_training"
+
+
+def test_corrected_progress_cli_writes_same_atomic_snapshot(monkeypatch, tmp_path, capsys):
+    report = {
+        "schema_version": 1,
+        "scope": "corrected_dense_no_packing",
+        "complete_runs": 2,
+    }
+    monkeypatch.setattr(
+        "embed_optim.corrected_progress.build_progress", lambda matrix, log_dir: report.copy()
+    )
+    output = tmp_path / "nested" / "progress.json"
+
+    main(["--matrix", "matrix.yaml", "--log-dir", "logs", "--output", str(output)])
+
+    written = json.loads(output.read_text(encoding="utf-8"))
+    printed = json.loads(capsys.readouterr().out)
+    assert written == printed
+    assert written["complete_runs"] == 2
+    assert written["observed_at_utc"].endswith("+00:00")
+    assert not output.with_name(".progress.json.tmp").exists()

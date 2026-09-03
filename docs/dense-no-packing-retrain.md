@@ -28,6 +28,17 @@ This command reads only matrix outputs and study logs. It does not inspect syste
 is complete only after its five checkpoints, final model, terminal state, accepted timing, and
 `independently_padded` completion receipt agree.
 
+At a meaningful handoff boundary, update the tracked machine-readable snapshot with:
+
+```bash
+python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json
+```
+
+The checked-in snapshot is deliberately updated on state transitions rather than every step. Also
+update the narrative in `PROJECT_STATUS.md` and tracking issue #41 when a run completes or fails,
+evaluation advances, a checkpoint backup is remotely verified, or the scientific interpretation
+changes.
+
 ## Training and resume
 
 ```bash

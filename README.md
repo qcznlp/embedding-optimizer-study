@@ -20,6 +20,30 @@ The repository is public under Apache-2.0. For the current verified state, known
 exact continuation order, start with [PROJECT_STATUS.md](PROJECT_STATUS.md). Coding agents should
 also read [AGENTS.md](AGENTS.md) before taking action.
 
+## 60-second handoff
+
+The active work is a 12-run, DenseOn-only corrective replication with input packing disabled. It
+is intentionally separated from the 34 completed historical Dense runs. The live implementation
+is reviewed in [PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and execution
+is tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).
+
+- Human-readable source of truth: [PROJECT_STATUS.md](PROJECT_STATUS.md)
+- Latest committed machine-readable snapshot: [CURRENT_PROGRESS.json](CURRENT_PROGRESS.json)
+- Exact run/evaluation/backup commands: [docs/dense-no-packing-retrain.md](docs/dense-no-packing-retrain.md)
+- Frozen scientific contract: [configs/dense_no_packing_execution_protocol.json](configs/dense_no_packing_execution_protocol.json)
+- Frozen reload/evaluation contract: [configs/dense_no_packing_evaluation_protocol.json](configs/dense_no_packing_evaluation_protocol.json)
+
+On the experiment host, refresh the artifact-only snapshot without inspecting system processes:
+
+```bash
+python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json
+```
+
+The committed JSON is a handoff snapshot, not a heartbeat. Run the command above for the freshest
+local state. Meaningful transitions—completed/failed runs, evaluation milestones, verified
+backups, or changed scientific conclusions—must also be recorded in `PROJECT_STATUS.md` and issue
+#41. The external `gpu.py` utility and its processes are strictly out of scope.
+
 - Full study write-up: [docs/blog.md](docs/blog.md)
 - Dense-only NAACL plan: [docs/naacl-dense-paper-plan.md](docs/naacl-dense-paper-plan.md)
 - Result-safe ACL manuscript: [paper/](paper/README.md)
