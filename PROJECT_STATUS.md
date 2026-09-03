@@ -27,8 +27,8 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
 | Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair active; 10/60 resumable checkpoints |
-| Corrected completion handoff | Detached operational controller active | First completed run uploading; then incremental verified backup and locked evaluation/analysis/publication chain |
-| Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
+| Corrected completion handoff | Detached operational controller active | 2/2 completed runs remotely verified; then incremental backup and locked evaluation/analysis/publication chain |
+| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected: 202 files, 19,120,907,393 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
@@ -113,7 +113,10 @@ arguments are content-bound in an atomic runtime ledger; it makes no new scienti
 does not alter the training supervisor.
 Its current runtime contract SHA-256 is
 `55fdd9d6eb159d7784bbb4f9c53e1f0baba99440ab44203e2bcdb3888d3a1e05`; the atomic ledger reported
-2/12 runs complete and began uploading `padded-adamw-1e-6` at 19:39 UTC.
+2/12 runs complete and began uploading `padded-adamw-1e-6` at 19:39 UTC. Both completed runs were
+uploaded and remotely size-audited by 19:43 UTC: 202 files and 19,120,907,393 bytes in total, with
+zero missing, extra, or size-mismatched paths. The immutable per-run receipts are under
+`reports/dense-no-packing/checkpoint-backup/`.
 
 ## Historical findings that motivate clean adjudication
 
