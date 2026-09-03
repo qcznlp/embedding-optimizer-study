@@ -1,16 +1,19 @@
-# Beyond the First Step: paper story and evidence map
+# Better Retrievers from Worse First Steps: paper story and evidence map
 
 ## The paper in one sentence
 
 Muon reaches better DenseOn retrievers across a coherent historical learning-rate region even though
-its norm-matched immediate step is weaker than AdamW's; the resulting gain is a trajectory-level
-effect, not an intrinsic spectral fact, and the clean independently padded replication determines
-whether that advantage survives an execution-invariant comparison.
+its norm-matched immediate step is weaker than AdamW's: the paper explains this local-to-global
+reversal as an advantage that emerges along the optimization trajectory, rejects the familiar
+spectral account, and uses the clean independently padded replication to determine whether the
+advantage survives an execution-invariant comparison.
 
-This is the authorial spine. The paper is not organized as a list of experiments or research
-questions. Every result in the main text must either establish the retrieval advantage, explain the
-local-to-global paradox, eliminate a plausible mechanism, or protect the comparison from a
-selection-path artifact.
+This is the authorial spine. The title, abstract, first page, result order, and conclusion must all
+state the same progression: **Muon works; its first step is worse; the advantage emerges through
+accumulation; the obvious spectral explanation fails; and a clean selector is required to find the
+useful path.** The paper is not organized as a list of experiments or research questions. Every
+main-text result must advance one link in that progression or protect it from a selection-path
+artifact.
 
 ## The five-beat story
 

@@ -8,6 +8,14 @@ b0db47a48f969d825446668b5b17bfc27a359fc1. See THIRD_PARTY_NOTICES.md.
 A reproducible study of AdamW, Muon, and NorMuon for supervised adaptation of
 [DenseOn-unsupervised](https://huggingface.co/lightonai/DenseOn-unsupervised).
 
+**Headline result.** In the historical four-rate sweep, the best AdamW, Muon, and NorMuon runs
+reach 0.5899, 0.5923, and 0.5934 mean nDCG@10 over 14 decontaminated BEIR tasks. Muon and NorMuon
+beat the best AdamW point on 10 and 11 tasks and reach the AdamW quality reference in about 0.75
+useful hours instead of 1.41, despite slightly lower per-step throughput. The scientific puzzle is
+that their norm-matched first step is worse: the gain appears only after optimizer trajectories
+diverge. The active independently padded replication determines how much of this positive result
+survives an execution-invariant comparison.
+
 The project compares complete training dynamics, zero-shot retrieval quality, systems cost, and
 weight/update geometry. Its central question is not whether Muon produces flatter update
 spectra—that is largely built into the operator—but whether its apparent optimization gains survive
