@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 19:40 UTC
+Last updated: 2026-09-03 20:05 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -28,6 +28,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
 | Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair active; 10/60 resumable checkpoints |
 | Corrected completion handoff | Detached operational controller active | 2/2 completed runs remotely verified; then incremental backup and locked evaluation/analysis/publication chain |
+| Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
 | Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected: 202 files, 19,120,907,393 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
@@ -117,6 +118,14 @@ Its current runtime contract SHA-256 is
 uploaded and remotely size-audited by 19:43 UTC: 202 files and 19,120,907,393 bytes in total, with
 zero missing, extra, or size-mismatched paths. The immutable per-run receipts are under
 `reports/dense-no-packing/checkpoint-backup/`.
+
+The frozen corrected geometry implementation has also completed all five stages for both finished
+AdamW runs. Each stage contains exactly 88 hidden-matrix records; every recorded scalar is finite,
+and all ten record files match their manifest byte counts and SHA-256 digests. The 12-file partial
+tree (2,031,870 bytes) is remotely verified under
+`qcz/embedding-optimizer-study-analysis-artifacts/corrected-dense-no-packing-v1/weight-space`.
+This is an incremental computation and durability receipt only: no cross-optimizer geometry
+summary or mechanism interpretation is permitted before the complete 12-run matrix.
 
 ## Historical findings that motivate clean adjudication
 
