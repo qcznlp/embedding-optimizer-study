@@ -818,6 +818,7 @@ def _complete_manifest(
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: str | Path | None = None,
     causal_cache: CausalEvidenceCache | None = None,
+    diagnostics: list[str] | None = None,
 ) -> bool:
     try:
         families, scope = resolve_scope(families, scope_amendment)
@@ -893,6 +894,7 @@ def _complete_manifest(
             scope,
             scope_amendment,
             causal_cache=causal_cache,
+            diagnostics=diagnostics,
         )
     if path.name == "paper-results.manifest.json":
         return _paper_results_complete(path, payload, families, scope, causal_cache=causal_cache)
@@ -2025,7 +2027,13 @@ def _outcome_report_complete(
     scope_amendment: str | Path | None,
     *,
     causal_cache: CausalEvidenceCache | None = None,
+    diagnostics: list[str] | None = None,
 ) -> bool:
+    def fail(reason: str) -> bool:
+        if diagnostics is not None:
+            diagnostics.append(reason)
+        return False
+
     root = path.parents[1]
     try:
         causal_evidence = _causal_evidence_snapshot(root, causal_cache, require_complete=True)
@@ -2033,8 +2041,8 @@ def _outcome_report_complete(
         causal_markdown = render_causal_chain_markdown(
             causal_evidence, detailed=False, heading_level=3
         )
-    except (OSError, TypeError, ValueError):
-        return False
+    except (OSError, TypeError, ValueError) as error:
+        return fail(f"causal_evidence:{type(error).__name__}:{error}")
     sources = payload.get("sources", {})
     expected_sources = {
         "mechanism_report": root / "reports/mechanism-summary.manifest.json",
@@ -2065,7 +2073,7 @@ def _outcome_report_complete(
             for name, source_path in expected_sources.items()
         )
     ):
-        return False
+        return fail("metadata_sources_or_recursive_source_contract")
     if any(
         not _causal_chain_source_complete(
             root,
@@ -2076,7 +2084,7 @@ def _outcome_report_complete(
         )
         for label in ("temporal_short_branch", "dose_band")
     ):
-        return False
+        return fail("causal_chain_source_contract")
 
     family_count = len(families)
     source_coverage = {
@@ -2097,7 +2105,7 @@ def _outcome_report_complete(
         any(sources[name].get(field) != value for field, value in fields.items())
         for name, fields in source_coverage.items()
     ):
-        return False
+        return fail("source_coverage_contract")
 
     expected_tables = (
         root / "reports/functional-intervention/family_summary.csv",
@@ -2119,7 +2127,7 @@ def _outcome_report_complete(
             for record, expected in zip(tables, expected_tables, strict=True)
         )
     ):
-        return False
+        return fail("source_table_contract")
 
     report_path = root / "reports/outcome-summary.md"
     blog_path = root / "docs/blog.md"
@@ -2132,7 +2140,7 @@ def _outcome_report_complete(
         OUTCOME_MARKERS,
         repository_root=root,
     ):
-        return False
+        return fail("rendered_output_or_blog_contract")
     try:
         blog = blog_path.read_text(encoding="utf-8")
         outcome = report_path.read_text(encoding="utf-8").strip()
@@ -2156,38 +2164,53 @@ def _outcome_report_complete(
             causal_evidence,
             families=families,
         )
-    except (OSError, AttributeError, json.JSONDecodeError, TypeError, ValueError):
-        return False
+    except (OSError, AttributeError, json.JSONDecodeError, TypeError, ValueError) as error:
+        return fail(f"conclusion_reconstruction:{type(error).__name__}:{error}")
     outcome_begin, outcome_end = OUTCOME_MARKERS
     mechanism_begin, mechanism_end = MECHANISM_MARKERS
     conclusion_begin, conclusion_end = FINAL_CONCLUSION_MARKERS
-    return (
-        blog.count(outcome_begin) == blog.count(outcome_end) == 1
-        and blog.count(mechanism_begin) == blog.count(mechanism_end) == 1
-        and blog.split(outcome_begin, 1)[1].split(outcome_end, 1)[0].strip() == outcome
-        and blog.split(mechanism_begin, 1)[1].split(mechanism_end, 1)[0].strip() == mechanism
-        and outcome.count(causal_markdown) == 1
-        and expected_conclusion.get("status") == "complete"
-        and FINAL_CONCLUSION_PENDING not in expected_conclusion.get("plain", "")
-        and payload.get("conclusion") == expected_conclusion
-        and _marked_block_complete(
+    final_checks = {
+        "outcome_marker_count": blog.count(outcome_begin) == blog.count(outcome_end) == 1,
+        "mechanism_marker_count": blog.count(mechanism_begin) == blog.count(mechanism_end) == 1,
+        "outcome_block_matches": blog.split(outcome_begin, 1)[1].split(outcome_end, 1)[0].strip()
+        == outcome,
+        "mechanism_block_matches": blog.split(mechanism_begin, 1)[1]
+        .split(mechanism_end, 1)[0]
+        .strip()
+        == mechanism,
+        "causal_markdown_once": outcome.count(causal_markdown) == 1,
+        "conclusion_complete": expected_conclusion.get("status") == "complete",
+        "conclusion_not_pending": FINAL_CONCLUSION_PENDING
+        not in expected_conclusion.get("plain", ""),
+        "conclusion_payload_matches": payload.get("conclusion") == expected_conclusion,
+        "blog_conclusion_record": _marked_block_complete(
             blog_path,
             payload.get("blog_conclusion"),
             FINAL_CONCLUSION_MARKERS,
             repository_root=root,
-        )
-        and _marked_block_complete(
+        ),
+        "readme_conclusion_record": _marked_block_complete(
             readme_path,
             payload.get("readme_conclusion"),
             FINAL_CONCLUSION_MARKERS,
             repository_root=root,
-        )
-        and blog.count(conclusion_begin) == blog.count(conclusion_end) == 1
-        and blog.split(conclusion_begin, 1)[1].split(conclusion_end, 1)[0].strip()
-        == expected_conclusion["markdown"]
-        and readme.split(conclusion_begin, 1)[1].split(conclusion_end, 1)[0].strip()
-        == expected_conclusion["markdown"]
-    )
+        ),
+        "blog_conclusion_marker_count": blog.count(conclusion_begin)
+        == blog.count(conclusion_end)
+        == 1,
+        "blog_conclusion_matches": blog.split(conclusion_begin, 1)[1]
+        .split(conclusion_end, 1)[0]
+        .strip()
+        == expected_conclusion["markdown"],
+        "readme_conclusion_matches": readme.split(conclusion_begin, 1)[1]
+        .split(conclusion_end, 1)[0]
+        .strip()
+        == expected_conclusion["markdown"],
+    }
+    failed = [name for name, complete in final_checks.items() if not complete]
+    if failed:
+        return fail("final_render_contract:" + ",".join(failed))
+    return True
 
 
 def _blog_marker_audit(
@@ -2798,18 +2821,21 @@ def audit_paper(
         items = []
         for relative in relative_paths:
             path = root / relative
-            items.append(
-                {
-                    "path": str(path),
-                    "complete": _complete_manifest(
-                        path,
-                        families=families,
-                        scope_amendment=scope_amendment,
-                        causal_cache=causal_cache,
-                    ),
-                    "sha256": _sha256(path) if path.is_file() else None,
-                }
-            )
+            diagnostics: list[str] = []
+            item = {
+                "path": str(path),
+                "complete": _complete_manifest(
+                    path,
+                    families=families,
+                    scope_amendment=scope_amendment,
+                    causal_cache=causal_cache,
+                    diagnostics=diagnostics,
+                ),
+                "sha256": _sha256(path) if path.is_file() else None,
+            }
+            if diagnostics:
+                item["problems"] = diagnostics
+            items.append(item)
         evidence[headline] = items
     incomplete_evidence = sorted(
         headline

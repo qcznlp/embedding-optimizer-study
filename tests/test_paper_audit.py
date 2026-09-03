@@ -691,8 +691,10 @@ def test_outcome_manifest_requires_final_blog_and_source_hash_contract(tmp_path:
     path = tmp_path / "reports" / "outcome-summary.manifest.json"
     path.parent.mkdir(parents=True)
     path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
+    diagnostics: list[str] = []
 
-    assert _complete_manifest(path) is False
+    assert _complete_manifest(path, diagnostics=diagnostics) is False
+    assert diagnostics
 
 
 def test_paper_results_manifest_requires_generated_tex_and_all_evidence(tmp_path: Path):
