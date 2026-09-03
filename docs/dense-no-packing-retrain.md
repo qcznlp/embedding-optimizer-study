@@ -117,6 +117,21 @@ The default public destination is
 `qcz/embedding-optimizer-study-checkpoints/corrected-dense-no-packing-v1/dense/<run-id>`.
 The command refuses incomplete runs and writes one local audit receipt per uploaded run.
 
+The detached completion controller performs that upload incrementally while later training runs
+continue, then executes the entire locked validation, BEIR, geometry, inference, publication, and
+release-audit chain after training reaches 12/12:
+
+```bash
+python -m embed_optim.corrected_completion_pipeline
+```
+
+Its atomic state is
+`logs/dense-no-packing-finalization/pipeline-ledger.json`. It acquires an exclusive lease, binds
+its exact source/protocol/command contract, retries resumable operations, and refuses to proceed
+from merely partial checkpoints. Resume an interrupted controller only with `--resume`; an exact
+contract mismatch fails closed. This is an operational handoff controller, not a new scientific
+protocol, and it does not alter the frozen training, evaluation, or analysis definitions.
+
 ## Corrected weight-space analysis
 
 The weight-space definitions and retrieval-bridge scientific plan were frozen before the first

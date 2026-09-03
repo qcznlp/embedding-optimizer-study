@@ -29,6 +29,12 @@ If `logs/dense-no-packing-v1/recovery-supervisor-state.json` exists, read it aft
 `configs/dense_no_packing_control_plane_recovery.json`; do not launch a competing matrix while its
 phase is `waiting_for_adopted_training` or `matrix_running`.
 
+If `logs/dense-no-packing-finalization/pipeline-ledger.json` exists, it is the atomic handoff state
+for incremental corrected checkpoint backup and the post-training evaluation/analysis/publication
+chain. Do not launch a competing corrected finalizer while its controller lease is held. Resume it
+only with `python -m embed_optim.corrected_completion_pipeline --resume`; the exact operational
+source/protocol/command contract must still match.
+
 On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
 artifact-only command below; it does not inspect system processes:
 
