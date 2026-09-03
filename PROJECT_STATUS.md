@@ -19,7 +19,7 @@ provenance under the user-directed scope amendment.
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Preflight passed; execution locked; formal runs not started | 0/12 runs |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 runs; 2 active |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
@@ -31,7 +31,9 @@ The corrected no-packing phase now has an explicit implementation. Its worst-cas
 engineering preflight passed at micro-batch 8 with 39,977,408,000 allocated bytes and
 44,021,317,632 reserved bytes on the slowest/largest rank. The final corrective execution and
 analysis protocol is locked at `configs/dense_no_packing_execution_protocol.json`; it uses a new
-output namespace and has not yet produced any formal run.
+output namespace. Formal training started at 2026-09-03 19:50 UTC with `padded-adamw-1e-6` and
+`padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs completed initial optimizer steps
+without a CUDA or distributed failure; neither is yet complete.
 
 ## Result that currently governs the paper
 
