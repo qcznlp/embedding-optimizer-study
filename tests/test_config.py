@@ -58,13 +58,15 @@ def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
     assert protocol["memory_selection"]["global_batch_size"] == 128
     assert protocol["memory_selection"]["input_execution"]["dense_can_flatten_inputs"] is False
     assert protocol["planned_formal_training"]["runs"] == 12
-    assert protocol["source_hashes"]["initial_formal_matrix"] == hashlib.sha256(
-        path.read_bytes()
-    ).hexdigest()
+    assert (
+        protocol["source_hashes"]["initial_formal_matrix"]
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )
     preflight_matrix = path.with_name("dense_no_packing_preflight.yaml")
-    assert protocol["source_hashes"]["preflight_matrix"] == hashlib.sha256(
-        preflight_matrix.read_bytes()
-    ).hexdigest()
+    assert (
+        protocol["source_hashes"]["preflight_matrix"]
+        == hashlib.sha256(preflight_matrix.read_bytes()).hexdigest()
+    )
 
     execution_path = path.with_name("dense_no_packing_execution_protocol.json")
     execution = json.loads(execution_path.read_text(encoding="utf-8"))
@@ -74,17 +76,20 @@ def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
     assert execution["training"]["global_batch_size"] == 128
     assert execution["training"]["expected_checkpoint_steps"] == [782, 1563, 2345, 3126, 3907]
     assert execution["evaluation"]["expected_task_units"] == 840
-    assert execution["source_bindings"]["formal_matrix"]["sha256"] == hashlib.sha256(
-        path.read_bytes()
-    ).hexdigest()
+    assert (
+        execution["source_bindings"]["formal_matrix"]["sha256"]
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )
     preflight_protocol = path.with_name("dense_no_packing_preflight_protocol.json")
-    assert execution["source_bindings"]["preflight_protocol"]["sha256"] == hashlib.sha256(
-        preflight_protocol.read_bytes()
-    ).hexdigest()
+    assert (
+        execution["source_bindings"]["preflight_protocol"]["sha256"]
+        == hashlib.sha256(preflight_protocol.read_bytes()).hexdigest()
+    )
     report = Path(__file__).parents[1] / "reports" / "dense-no-packing" / "preflight-selection.json"
-    assert execution["source_bindings"]["preflight_selection"]["sha256"] == hashlib.sha256(
-        report.read_bytes()
-    ).hexdigest()
+    assert (
+        execution["source_bindings"]["preflight_selection"]["sha256"]
+        == hashlib.sha256(report.read_bytes()).hexdigest()
+    )
 
     evaluation_path = path.with_name("dense_no_packing_evaluation_protocol.json")
     evaluation = json.loads(evaluation_path.read_text(encoding="utf-8"))
@@ -112,9 +117,10 @@ def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
         label: hashlib.sha256(source.read_bytes()).hexdigest()
         for label, source in evaluation_sources.items()
     }
-    assert evaluation["parent_protocol"]["sha256"] == hashlib.sha256(
-        execution_path.read_bytes()
-    ).hexdigest()
+    assert (
+        evaluation["parent_protocol"]["sha256"]
+        == hashlib.sha256(execution_path.read_bytes()).hexdigest()
+    )
 
 
 def test_public_docs_record_compute_and_acceleration_contract() -> None:
