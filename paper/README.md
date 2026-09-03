@@ -6,11 +6,13 @@ study. It uses the official ACL style files pinned to commit
 [`acl-org/acl-style-files`](https://github.com/acl-org/acl-style-files). The style files are fetched
 into an ignored local directory so the repository does not silently fork the conference template.
 
-The current paper is an audited failure-analysis manuscript, not a clean optimizer leaderboard. A
-post-failure control found material batch non-invariance in the historical flattened/packed
-SentenceTransformers path. The existing three-seed comparison is retained for the exact pinned
-implementation; generalizing it to isolated eight-way training requires a corrected no-packing
-rerun. See `../PROJECT_STATUS.md` before editing result language.
+The paper's main story is a positive but bounded Muon result: a coherent historical learning-rate
+region improves best-run, median, five-stage, and per-task DenseOn retrieval over AdamW even though
+Muon's norm-matched immediate step is weaker. The mechanistic question is why repeated Muon updates
+produce a better trajectory when the usual spectral explanation fails. A packed-validation bug is a
+secondary model-selection result: it chooses outside Muon's useful region and motivates the clean
+independently padded replication that governs the final optimizer recommendation. See
+`../PROJECT_STATUS.md` before editing result language.
 
 Build the review-format PDF with:
 
@@ -44,18 +46,21 @@ reject any headline, confidence interval, or generated table that includes LateO
 `\ResultPending{...}` marker denotes an unresolved evidence gate and renders visibly in red. The
 paper is not submission-ready while any marker remains.
 
-The central result sequence is deliberately gated:
+The central narrative and evidence sequence is deliberately gated:
 
-1. same-state, Frobenius-matched Muon-family steps can be worse than AdamW on mean immediate margin;
-2. the DenseOn discovery trajectories can nevertheless have better final BEIR point estimates;
-3. symmetric cross-tails show redistribution of fragile queries rather than uniform dominance;
-4. a post-hoc cosine synthesis motivates optimizer-induced state feedback but is not causal;
-5. three-seed shared-start branches test whether the advantage accumulates;
-6. hybrid AdamW tests whether parameter routing is sufficient; and
-7. three new negative-sampling seeds determine the final retrieval claim; while
-8. the post-hoc nested candidate-breadth diagnostic tests whether missing candidate coverage
-   explains the proxy reversal; its width-7 prerequisite fails and exposes packed-path batch
-   non-invariance, so its frozen conclusion is `not_supported`.
+1. the historical sweep establishes a coherent useful Muon region across best-run, median,
+   time-to-quality, checkpoint trajectory, and task-level views;
+2. same-state, Frobenius-matched Muon-family steps are nevertheless weaker than AdamW on mean
+   immediate margin, making accumulated optimizer-induced state feedback the central puzzle;
+3. symmetric cross-tails and shared-start branches test how that local disadvantage becomes a
+   trajectory-level gain;
+4. temporal prediction and spectral component interventions reject flattening as the tested
+   explanation, rather than presenting an intrinsic Muon property as novelty;
+5. hybrid AdamW rules out parameter routing as a sufficient recipe explanation;
+6. the packed validator selects a damaging rate outside the useful Muon region, and its failed
+   width-7 reproduction exposes batch-dependent execution; and
+7. the independently padded 12-run matrix decides whether the positive retrieval result survives
+   clean execution and which geometry, if any, predicts it out of dose.
 
 Exact state-feedback cosines, shared-start outcomes, hybrid results, confirmatory intervals, and the
 temporal and dose/band causal-chain estimates must enter through audited macros or generated tables.

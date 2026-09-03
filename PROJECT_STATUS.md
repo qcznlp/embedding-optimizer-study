@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 18:16 UTC
+Last updated: 2026-09-03 18:41 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -26,12 +26,13 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; active steps 3216/3221; 8/60 resumable checkpoints |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; active steps 3423/3430; 8/60 resumable checkpoints |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected publication renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, blog + paper + standalone report |
+| Manuscript narrative | Rewritten around the positive Muon trajectory result | 7-page main text; clean outcome block remains source-gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
@@ -99,19 +100,30 @@ requirements, source hashes, and claim boundary are frozen in
 `configs/dense_no_packing_publication_protocol.json`; no corrected evaluation or analysis output
 existed when that lock was written.
 
-## Result that currently governs the paper
+## Historical findings that motivate clean adjudication
 
-The validation-frozen three-seed full-corpus comparison is negative for the selected high-dose
-Muon-family recipes:
+The paper's main observation is a coherent positive Muon region in the historical grid, not the
+failure of one selected recipe. Best final nDCG@10 is 0.589867 for AdamW, 0.592309 for Muon, and
+0.593429 for NorMuon; the Muon/NorMuon best runs beat AdamW on 10/11 of 14 tasks. Four-rate final
+medians are 0.585762/0.590109/0.590970, and 2/3/3 rates reach the frozen AdamW reference. The
+fastest observed first passage to that reference is 1.407 hours for AdamW versus 0.749/0.756 hours
+for Muon/NorMuon, although Muon-family throughput per step is lower on this stack.
+
+The historical packed validator separately selects a damaging high-dose Muon-family recipe. Its
+three-seed full-corpus contrasts are:
 
 - Muon minus AdamW mean nDCG@10: -0.030618, familywise 95% CI [-0.046395, -0.013768].
 - NorMuon minus AdamW mean nDCG@10: -0.030416, familywise 95% CI [-0.044644, -0.013759].
 - NorMuon minus Muon: +0.000202 with an interval crossing zero.
 
-The discovery sweep remains exploratory: its best individual Muon and NorMuon settings slightly
-exceed the best AdamW setting, while the four-rate median advantage does not survive the
-validation-frozen recipe choice. Muon-family optimizer state, checkpoint size, and peak allocated
-memory are smaller in this stack, but throughput is not higher.
+These negative contrasts describe recipes chosen by the batch-dependent packed validator; they are
+not evidence that Muon lacks a useful retrieval regime. The manuscript's scientific spine is the
+locally-weaker/globally-better puzzle: same-state norm-matched AdamW gives the larger immediate mean
+margin gain, while repeated Muon updates reach better historical retrieval and a positive final
+shared-start unseen-margin contrast in all three seeds. Frozen temporal, spectral-transplant, and
+held-run tests reject spectral flattening as the tested explanation. The corrected padded matrix
+decides whether the positive retrieval result survives clean execution and whether any of the nine
+frozen geometry features predicts it out of dose.
 
 ## Critical execution finding
 
