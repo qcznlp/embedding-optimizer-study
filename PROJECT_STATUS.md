@@ -36,6 +36,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected publication renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, blog + paper + standalone report |
+| Corrected state-by-operator factorial | Scientific design frozen; executable binding pending | 2 source states x 2 reset continuation operators x 3 order seeds |
 | Manuscript narrative | Rewritten around the positive Muon trajectory result | 8-page main text; clean outcome block remains source-gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
@@ -156,6 +157,17 @@ UTC found the two locally complete runs remotely `finished` at step 3907, the tw
 remotely `running`, and all eight future runs absent as expected. All four visible runs match the
 deterministic ID, run name, group, tags, and resolved padded matrix configuration, with zero
 problems. This post-output operational receipt does not modify W&B or add a scientific endpoint.
+
+A separate corrected state-by-operator factorial is now scientifically frozen in
+`configs/dense_no_packing_state_operator_factorial_protocol.json`. It was specified before any
+corrected Muon checkpoint or corrected retrieval outcome existed. At the 60% checkpoints of the
+historically retrieval-optimal AdamW and Muon rates, it will cross the two weight states with reset
+AdamW and Muon continuation operators on the same fixed 50K branch view and three order seeds. Its
+predeclared final-BEIR estimands separately measure the carried weight-state effect, the averaged
+continuation-operator effect, and their interaction. This is the direct test of the paper's
+state-feedback account; the motivating historical crossover remains explicitly post hoc. The
+scientific lock is not authorization to run an unbound implementation: an exact executable and
+cardinality contract must be added and audited before launch.
 
 ## Historical findings that motivate clean adjudication
 
@@ -303,7 +315,11 @@ missing, extra, or size-mismatched files for every refreshed prefix:
 15. Render final corrected prose and tables only through
     `python -m embed_optim.corrected_publication`; do not hand edit its marked blog block or
     generated paper include.
-16. Keep `python -m embed_optim.corrected_completion_pipeline` running as the operational handoff.
+16. Implement the frozen state-by-operator factorial only against
+    `configs/dense_no_packing_state_operator_factorial_protocol.json`, then bind the exact matrix,
+    calibration, training, evaluation, and summary sources before launch. Do not reinterpret the
+    historical crossover as confirmatory evidence.
+17. Keep `python -m embed_optim.corrected_completion_pipeline` running as the operational handoff.
     It backs up deeply complete runs during the matrix and starts final evaluation only after all
     12 runs pass the deep completion gate. Read its atomic ledger under
     `logs/dense-no-packing-finalization/` before starting any competing finalizer.
