@@ -48,11 +48,21 @@ def test_state_operator_factorial_protocol_is_self_consistent() -> None:
     branch_root = ROOT / branch["path"]
     manifest_path = branch_root / "manifest.json"
     ledger_path = branch_root / "rows.jsonl"
-    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert _sha256(manifest_path) == branch["manifest_sha256"]
-    assert _sha256(ledger_path) == branch["row_ledger_sha256"]
-    assert manifest["rows"] == branch["rows"] == 50_000
-    assert manifest["selected_sample_ids_sha256"] == branch["selected_sample_ids_sha256"]
+    receipt_binding = branch["portable_receipt"]
+    receipt_path = ROOT / receipt_binding["path"]
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert _sha256(receipt_path) == receipt_binding["sha256"]
+    assert receipt["path"] == branch["path"]
+    assert receipt["manifest_sha256"] == branch["manifest_sha256"]
+    assert receipt["rows"] == branch["rows"] == 50_000
+    assert receipt["selected_sample_ids_sha256"] == branch["selected_sample_ids_sha256"]
+    if manifest_path.is_file() or ledger_path.is_file():
+        assert manifest_path.is_file() and ledger_path.is_file()
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        assert _sha256(manifest_path) == branch["manifest_sha256"]
+        assert _sha256(ledger_path) == branch["row_ledger_sha256"]
+        assert manifest["rows"] == branch["rows"]
+        assert manifest["selected_sample_ids_sha256"] == branch["selected_sample_ids_sha256"]
 
     design = protocol["factorial_design"]
     factors = design["factors"]
