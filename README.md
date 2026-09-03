@@ -34,6 +34,7 @@ is tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/is
 - Frozen reload/evaluation contract: [configs/dense_no_packing_evaluation_protocol.json](configs/dense_no_packing_evaluation_protocol.json)
 - Frozen weight-space/bridge contract: [configs/dense_no_packing_analysis_protocol.json](configs/dense_no_packing_analysis_protocol.json)
 - Frozen outcome/statistical contract: [configs/dense_no_packing_outcome_protocol.json](configs/dense_no_packing_outcome_protocol.json)
+- Source-bound bridge implementation: [configs/dense_no_packing_bridge_implementation_protocol.json](configs/dense_no_packing_bridge_implementation_protocol.json)
 
 On the experiment host, refresh the artifact-only snapshot without inspecting system processes:
 
