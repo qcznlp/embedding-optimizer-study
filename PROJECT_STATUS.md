@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 18:41 UTC
+Last updated: 2026-09-03 19:40 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -26,8 +26,8 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; first pair approaching the final checkpoint; 8/60 resumable checkpoints |
-| Corrected completion handoff | Operational controller implemented; launch pending merge | Incremental verified checkpoint backup, then locked evaluation/analysis/publication chain |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair active; 10/60 resumable checkpoints |
+| Corrected completion handoff | Detached operational controller active | First completed run uploading; then incremental verified backup and locked evaluation/analysis/publication chain |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
@@ -43,10 +43,11 @@ engineering preflight passed at micro-batch 8 with 39,977,408,000 allocated byte
 analysis protocol is locked at `configs/dense_no_packing_execution_protocol.json`; it uses a new
 output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the host's UTC+8 local
 time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
-have written deeply resumable checkpoints at steps 782, 1563, 2345, and 3126, including the model,
-optimizer, scheduler, trainer state, and all four RNG-state payloads. At the 18:16 UTC artifact
-snapshot they were at steps 3216 and 3221, respectively, with no CUDA OOM, NCCL data-plane,
-non-finite, or traceback marker; neither run is yet complete.
+deeply completed at step 3907 with all five scheduled checkpoints, including the model, optimizer,
+scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
+`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 19:40 UTC artifact snapshot both were at step 6.
+Across the corrected phase there is still no CUDA OOM, NCCL data-plane, non-finite, or traceback
+marker.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
 leaving the eight established training ranks adopted by PID 1. The NCCL data plane continued to
@@ -101,13 +102,18 @@ requirements, source hashes, and claim boundary are frozen in
 `configs/dense_no_packing_publication_protocol.json`; no corrected evaluation or analysis output
 existed when that lock was written.
 
-An operational completion controller now closes the handoff gap after formal training. It watches
-only deep artifact completeness, uploads and remotely size-audits each corrected run as soon as it
+An operational completion controller merged through
+[PR #52](https://github.com/qcznlp/embedding-optimizer-study/pull/52) and is now active. It closes
+the handoff gap after formal training and watches only deep artifact completeness, uploads and
+remotely size-audits each corrected run as soon as it
 finishes, and after 12/12 runs invokes the already locked padded validation, 840-unit BEIR grid,
 weight-space analysis, outcome inference, retrieval bridge, execution sensitivity, publication
 renderer, and release audits in dependency order. Its own source, parent protocols, commands, and
 arguments are content-bound in an atomic runtime ledger; it makes no new scientific selection and
 does not alter the training supervisor.
+Its current runtime contract SHA-256 is
+`55fdd9d6eb159d7784bbb4f9c53e1f0baba99440ab44203e2bcdb3888d3a1e05`; the atomic ledger reported
+2/12 runs complete and began uploading `padded-adamw-1e-6` at 19:39 UTC.
 
 ## Historical findings that motivate clean adjudication
 
