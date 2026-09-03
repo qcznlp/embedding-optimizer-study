@@ -25,6 +25,7 @@ import yaml
 from . import gradient_probe
 from .config import OptimizerConfig, load_matrix, resolve_matrix_path
 from .geometry import SCHEMA_VERSION, TensorStore, _atomic_json, _atomic_jsonl, _sha256
+from .gpu_lease import acquire_gpu_lease, parse_gpu_tokens
 from .optimizers import parameter_partition_name
 from .probe_export import _checkpoint_inputs
 from .short_branch import audit_short_branch_subset
@@ -873,12 +874,24 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--state", choices=("adamw_state", "muon_state"))
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--operator-device", default="cuda")
+    parser.add_argument("--gpus", default="0")
+    parser.add_argument(
+        "--gpu-lock-dir",
+        type=Path,
+        default=Path("logs/dense-only-runtime/gpu-leases"),
+    )
+    parser.add_argument("--gpu-lock-timeout-seconds", type=float, default=86_400.0)
     parser.add_argument("--calibration-root", type=Path, default=CALIBRATION_ROOT)
     parser.add_argument("--matrix-root", type=Path, default=MATRIX_ROOT)
     parser.add_argument("--portable-data-audit", action="store_true")
     args = parser.parse_args(argv)
     if args.action.startswith("calibrate-") and args.state is None:
         parser.error(f"{args.action} requires --state")
+    gpu_tokens = parse_gpu_tokens(args.gpus)
+    if args.action.startswith("calibrate-") and len(gpu_tokens) != 1:
+        parser.error("Calibration requires exactly one leased GPU token")
+    if args.gpu_lock_timeout_seconds <= 0:
+        parser.error("--gpu-lock-timeout-seconds must be positive")
     return args
 
 
@@ -894,19 +907,37 @@ def main(argv: list[str] | None = None) -> None:
             "branch_data": audit_branch_data(path, deep=not args.portable_data_audit),
         }
     elif args.action == "calibrate-gradients":
-        result = export_padded_gradient_calibration(
-            args.state,
-            args.protocol,
-            calibration_root=args.calibration_root,
-            device=args.device,
-        )
+        tokens = parse_gpu_tokens(args.gpus)
+        with acquire_gpu_lease(
+            tokens,
+            lock_dir=args.gpu_lock_dir.resolve(),
+            timeout_seconds=args.gpu_lock_timeout_seconds,
+            purpose=f"state-operator-gradient-calibration:{args.state}",
+            ledger_path=Path("logs/state-operator-factorial")
+            / f"gradient-calibration-{args.state}-{os.getpid()}.json",
+        ):
+            result = export_padded_gradient_calibration(
+                args.state,
+                args.protocol,
+                calibration_root=args.calibration_root,
+                device=args.device,
+            )
     elif args.action == "calibrate-directions":
-        result = analyze_calibration_directions(
-            args.state,
-            args.protocol,
-            calibration_root=args.calibration_root,
-            operator_device=args.operator_device,
-        )
+        tokens = parse_gpu_tokens(args.gpus)
+        with acquire_gpu_lease(
+            tokens,
+            lock_dir=args.gpu_lock_dir.resolve(),
+            timeout_seconds=args.gpu_lock_timeout_seconds,
+            purpose=f"state-operator-direction-calibration:{args.state}",
+            ledger_path=Path("logs/state-operator-factorial")
+            / f"direction-calibration-{args.state}-{os.getpid()}.json",
+        ):
+            result = analyze_calibration_directions(
+                args.state,
+                args.protocol,
+                calibration_root=args.calibration_root,
+                operator_device=args.operator_device,
+            )
     elif args.action == "generate":
         result = generate_factorial_matrices(
             args.protocol,
