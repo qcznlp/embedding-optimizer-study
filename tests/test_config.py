@@ -66,6 +66,26 @@ def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
         preflight_matrix.read_bytes()
     ).hexdigest()
 
+    execution_path = path.with_name("dense_no_packing_execution_protocol.json")
+    execution = json.loads(execution_path.read_text(encoding="utf-8"))
+    assert execution["status"] == "prospective_corrective_execution_lock"
+    assert execution["design_context"]["formal_corrected_training_outputs_visible"] is False
+    assert execution["training"]["micro_batch_size"] == 8
+    assert execution["training"]["global_batch_size"] == 128
+    assert execution["training"]["expected_checkpoint_steps"] == [782, 1563, 2345, 3126, 3907]
+    assert execution["evaluation"]["expected_task_units"] == 840
+    assert execution["source_bindings"]["formal_matrix"]["sha256"] == hashlib.sha256(
+        path.read_bytes()
+    ).hexdigest()
+    preflight_protocol = path.with_name("dense_no_packing_preflight_protocol.json")
+    assert execution["source_bindings"]["preflight_protocol"]["sha256"] == hashlib.sha256(
+        preflight_protocol.read_bytes()
+    ).hexdigest()
+    report = Path(__file__).parents[1] / "reports" / "dense-no-packing" / "preflight-selection.json"
+    assert execution["source_bindings"]["preflight_selection"]["sha256"] == hashlib.sha256(
+        report.read_bytes()
+    ).hexdigest()
+
 
 def test_public_docs_record_compute_and_acceleration_contract() -> None:
     root = Path(__file__).parents[1]

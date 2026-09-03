@@ -5,9 +5,9 @@ Start with `PROJECT_STATUS.md`, then read `README.md`,
 `PROJECT_STATUS.md` current whenever a meaningful run, failure, release gate, backup, or scientific
 interpretation changes.
 
-The active corrective phase is governed first by
-`configs/dense_no_packing_preflight_protocol.json`, then by its post-preflight formal execution
-lock. Do not launch or interpret corrected runs from an uncommitted matrix.
+The active corrective phase is governed by `configs/dense_no_packing_execution_protocol.json`;
+its engineering parent is `configs/dense_no_packing_preflight_protocol.json`. Do not launch or
+interpret corrected runs from an uncommitted matrix.
 
 The active paper scope is DenseOn only. LateOn files are historical provenance and must not be
 promoted into primary inference or used to justify new computation.

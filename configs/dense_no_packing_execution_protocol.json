@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "status": "prospective_corrective_execution_lock",
+  "frozen_at_utc": "2026-09-03T11:48:08Z",
+  "purpose": "Run and evaluate a batch-stable DenseOn corrective replication of the AdamW, Muon, and NorMuon comparison.",
+  "design_context": {
+    "historical_optimizer_results_visible": true,
+    "historical_packing_defect_visible": true,
+    "engineering_preflight_visible": true,
+    "formal_corrected_training_outputs_visible": false,
+    "formal_corrected_evaluation_outputs_visible": false,
+    "classification": "post-diagnosis corrective replication with prospectively locked corrected outcomes"
+  },
+  "source_bindings": {
+    "implementation_commit": "199a6a54b849aca55cb87d85c9ae9a1f3bf1ad77",
+    "preflight_protocol": {
+      "path": "configs/dense_no_packing_preflight_protocol.json",
+      "sha256": "b1ca8c25e1292b6436a9faca80bfc454b5c1b54be094e2d1f4a2699e8230ffc4"
+    },
+    "preflight_selection": {
+      "path": "reports/dense-no-packing/preflight-selection.json",
+      "sha256": "ba25fa31f00a3842dcaf11b7038d0b00c53978241ff131d3e41435ad734027dd",
+      "selected_micro_batch_size": 8
+    },
+    "formal_matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    },
+    "formal_runtime": {
+      "path": "configs/formal_runtime.json",
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    "training_data": {
+      "path": "data/denseon-sft-500k-seed42",
+      "manifest_sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8",
+      "rows": 500000,
+      "seed": 42
+    },
+    "model": {
+      "repo": "lightonai/DenseOn-unsupervised",
+      "revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43"
+    }
+  },
+  "training": {
+    "runs": 12,
+    "optimizers": ["adamw", "muon", "normuon"],
+    "learning_rates": {
+      "adamw": [1e-6, 3e-6, 1e-5, 3e-5],
+      "muon": [1e-4, 3e-4, 1e-3, 3e-3],
+      "normuon": [1e-4, 3e-4, 1e-3, 3e-3]
+    },
+    "input_execution": "SentenceTransformers can_flatten_inputs=false, independently padded within each of the eight explicit text columns",
+    "sampled_random_hard_negatives": 7,
+    "in_batch_negatives": false,
+    "context_length": 8192,
+    "epochs": 1,
+    "world_size": 4,
+    "two_parallel_disjoint_pools": true,
+    "micro_batch_size": 8,
+    "global_batch_size": 128,
+    "gradient_accumulation_steps": 4,
+    "checkpoint_fractions": [0.2, 0.4, 0.6, 0.8, 1.0],
+    "expected_optimizer_steps": 3907,
+    "expected_checkpoint_steps": [782, 1563, 2345, 3126, 3907],
+    "output_root": "outputs/dense-no-packing-v1",
+    "log_root": "logs/dense-no-packing-v1",
+    "completion_rule": "A run is complete only if all five deeply audited checkpoints, the final model, accepted timing ledger, and independently_padded execution receipt agree.",
+    "failure_rule": "Never drop or replace a failed high-rate run. Retry only from a deeply valid checkpoint. Persistent numerical failure is an optimizer-stability result and prevents a complete-grid superiority claim."
+  },
+  "evaluation": {
+    "benchmark": "the same 14 pinned decontaminated BEIR tasks used by the historical Dense study",
+    "tasks": [
+      "ArguAna",
+      "ClimateFEVER",
+      "DBPedia",
+      "FEVER",
+      "FiQA2018",
+      "HotpotQA",
+      "MSMARCO",
+      "NFCorpus",
+      "NQ",
+      "QuoraRetrieval",
+      "SCIDOCS",
+      "SciFact",
+      "TRECCOVID",
+      "Touche2020"
+    ],
+    "metric": "nDCG@10",
+    "checkpoints_per_run": 5,
+    "expected_task_units": 840,
+    "retrieval": "exact full-corpus scoring with the existing pinned task revisions and evaluator contract",
+    "validation_selection": {
+      "dataset": "data/validation-4096-seed20260826",
+      "execution": "independently padded",
+      "rule": "Within each optimizer, choose the final-checkpoint learning rate with minimum mean contrastive loss across all 4096 rows; ties choose the lower learning rate. BEIR is not an input."
+    }
+  },
+  "analysis": {
+    "primary_estimand": "At the final checkpoint, average nDCG@10 over the four predeclared learning rates within optimizer for each task, then contrast Muon-AdamW, NorMuon-AdamW, and NorMuon-Muon across the 14 paired tasks.",
+    "primary_uncertainty": "50,000 paired task bootstraps with seed 20260903; simultaneous max-T 95% intervals over the three optimizer contrasts.",
+    "primary_support_rule": "An optimizer-family advantage is supported only when its simultaneous 95% interval versus AdamW lies wholly above zero and all four rates completed. An interval wholly below zero supports a disadvantage; otherwise report inconclusive.",
+    "secondary_estimand": "Compare the validation-selected recipe per optimizer on final-checkpoint mean nDCG@10 using the same paired max-T procedure; label this secondary.",
+    "training_dynamics": "Report every optimizer-rate-task checkpoint, optimizer-level stage means, and trapezoidal area over normalized progress. Dynamics are descriptive unless an interval procedure is explicitly added without changing the primary rule.",
+    "stability": "Report completion, non-finite values, gradient norms, peak memory, accepted wall time, checkpoint bytes, and optimizer-state bytes for every run.",
+    "weight_space": "At all five checkpoints, report update norm, update-to-weight ratio, singular-value effective/stable rank, top-subspace overlap with AdamW, and representation/retrieval bridges. These mechanism analyses are secondary and cannot substitute for the primary retrieval contrast.",
+    "historical_bridge": "Compare corrected and historical rankings/deltas descriptively as an execution-path sensitivity analysis; do not pool their checkpoints into one causal estimate."
+  },
+  "claim_boundary": "The corrected experiment can support claims about this pinned DenseOn model, 500k-query seven-negative data view, and optimizer grids. One training seed and the known post-hoc origin preclude a universal optimizer claim; LateOn is outside scope."
+}
