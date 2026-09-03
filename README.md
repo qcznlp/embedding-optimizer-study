@@ -23,8 +23,8 @@ also read [AGENTS.md](AGENTS.md) before taking action.
 ## 60-second handoff
 
 The active work is a 12-run, DenseOn-only corrective replication with input packing disabled. It
-is intentionally separated from the 34 completed historical Dense runs. The live implementation
-is reviewed in [PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and execution
+is intentionally separated from the 34 completed historical Dense runs. The implementation was
+merged through [PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and execution
 is tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).
 
 - Human-readable source of truth: [PROJECT_STATUS.md](PROJECT_STATUS.md)

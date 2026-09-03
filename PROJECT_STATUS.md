@@ -9,9 +9,9 @@ provenance under the user-directed scope amendment.
 For a fresh, artifact-only view on the experiment host, run
 `python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json`. The tracked
 `CURRENT_PROGRESS.json` is the latest durable machine-readable handoff snapshot; it is updated at
-meaningful state transitions rather than every optimizer step. The active implementation is in
-[PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and the execution checklist
-is [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).
+meaningful state transitions rather than every optimizer step. The active implementation was
+merged through [PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and the
+execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).
 
 ## Snapshot
 
@@ -31,7 +31,7 @@ is [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
-| GitHub main CI | Green | merge `1cb9f66`, workflow run `33747507631` |
+| GitHub main CI | Green | merge `2f56b33`, workflow run `33756993807` |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
 The corrected no-packing phase now has an explicit implementation. Its worst-case 256-row
