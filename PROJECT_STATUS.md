@@ -20,7 +20,7 @@ provenance under the user-directed scope amendment.
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 source-bound steps passed |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
-| Public result backup | Complete before candidate addendum | 4,937 files, 128,939,133,525 bytes |
+| Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 
 The 34 Dense training runs are finished. No historical checkpoint should be overwritten. The next
@@ -89,8 +89,14 @@ the audited main-text endpoint is page 8, and all embedded fonts are non-Type-3.
 
 The two Hugging Face repositories are public. The checkpoint repository was verified by relative
 path and byte size with zero missing, extra, or mismatched local experiment files. The candidate
-addendum has passed its release gates; its data, results, reports, logs, and refreshed project
-snapshot are the next backup operation.
+addendum and refreshed project snapshot are also uploaded. A post-upload Hub API audit reports zero
+missing, extra, or size-mismatched files for every refreshed prefix:
+
+- `candidate-breadth`: 49 files, 24,378,651 bytes.
+- `project/data/candidate-breadth-224-seed20260901`: 26 files, 302,374,905 bytes.
+- `project/configs`: 39 files, 137,560 bytes.
+- `project/logs`: 2,533 files, 82,515,170 bytes.
+- `project/reports`: 232 files, 16,246,897 bytes.
 
 ## Safe continuation order
 
@@ -103,8 +109,9 @@ snapshot are the next backup operation.
    model inference using `python -m embed_optim.packing_invariance --audit-only`.
 5. Treat the completed 21/21 candidate release ledger as the source of truth. If source-bound files
    change, start a new audited release attempt rather than editing the completed receipt.
-6. Upload the candidate addendum and refreshed project snapshot to the public analysis-artifact
-   repository, then verify remote paths and byte sizes.
+6. Treat the uploaded candidate addendum and project snapshot as immutable receipts. If any source
+   changes, upload into a new namespace or refresh the exact affected prefix and repeat the remote
+   relative-path/byte-size audit.
 7. For corrected training, disable dense input flattening explicitly and use new run IDs/output
    roots. Do not relabel or overwrite any of the 34 historical runs.
 
