@@ -154,6 +154,7 @@ def checked_in_dense_audit():
     return audit_paper(
         families=("dense",),
         scope_amendment="configs/dense_scope_amendment.json",
+        strict=True,
     )
 
 
