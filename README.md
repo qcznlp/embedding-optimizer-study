@@ -250,6 +250,12 @@ before its run finishes with `python -m embed_optim.incremental_checkpoint_backu
 commands and receipt semantics are documented in
 [the corrected retraining handoff](docs/dense-no-packing-retrain.md).
 
+For an unattended campaign, `embed-optim-supervise-sealed-checkpoint-backup` watches the frozen
+five-stage schedules and performs the same digest-verified upload as soon as each checkpoint is
+sealed. It is CPU/network-only, holds an exclusive lease, is source-bound, gives the existing
+whole-run completion controller priority at the final stage, and records
+`scientific_completion=false` throughout. It neither launches nor controls training.
+
 ## Installation
 
 Python 3.10–3.13 and CUDA GPUs with bfloat16 support are expected. The portable developer/CI
