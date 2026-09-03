@@ -1,0 +1,132 @@
+{
+  "baseline_maximum_absolute_error": 8.286418572068214,
+  "beir_checkpoint_summary": {
+    "bytes": 3953,
+    "path": "reports/dense-discovery/checkpoint_summary.csv",
+    "sha256": "6a5f4aba649fd6ae9bf7550bf6275e522e52c14d6b578c1093f143930020a92a"
+  },
+  "calibration_rows": 18,
+  "claim_boundary": "This diagnostic was designed after the shortlist-corpus gap was observed. It is post hoc mechanism evidence and cannot replace the frozen three-seed full-corpus optimizer comparison. Mined candidates have one designated positive; unjudged relevance among other candidates is a limitation.",
+  "contrast_rows": 12,
+  "decision": {
+    "baseline_reproduction_pass": false,
+    "decision": "not_supported",
+    "halfway_attenuation_pass": false,
+    "width_2048_reversal_pass": false,
+    "width_7_ordering_pass": false
+  },
+  "inputs": [
+    {
+      "manifest_path": "results/candidate-breadth/adamw-lr1e-6/manifest.json",
+      "manifest_sha256": "1258979830bf91b952412c214d42038fe83baddd6d3049e89b7d91daad90b682",
+      "run_id": "adamw-lr1e-6"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/adamw-lr3e-6/manifest.json",
+      "manifest_sha256": "209672b460e41cc191281ecd44472ced6633fabef697f9b7d65843f2b24e8eca",
+      "run_id": "adamw-lr3e-6"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/adamw-lr1e-5/manifest.json",
+      "manifest_sha256": "374061f6b4fc1b18b01929cf2ea4268abfd2477751ba9cf3e90c64f23a0657a0",
+      "run_id": "adamw-lr1e-5"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/adamw-lr3e-5/manifest.json",
+      "manifest_sha256": "f328fd5d590b9581fb8dc5b9ef1a70eb6de3c77abf75c0ca3892dbdadba4eb93",
+      "run_id": "adamw-lr3e-5"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/muon-lr1e-4/manifest.json",
+      "manifest_sha256": "4b7fa0a64b9e19fdd2ddc6ba9190130020c5f83a6b61dcaa2c098c840cd220a1",
+      "run_id": "muon-lr1e-4"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/muon-lr3e-4/manifest.json",
+      "manifest_sha256": "3c25d4967414f086393b11d8ee60cdb8c48725ed3aa6cbce92746aab93bacaff",
+      "run_id": "muon-lr3e-4"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/muon-lr1e-3/manifest.json",
+      "manifest_sha256": "e6ca638cb957c223a13538d7658746196d7b6fba7d3207368bb8385019cc8916",
+      "run_id": "muon-lr1e-3"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/muon-lr3e-3/manifest.json",
+      "manifest_sha256": "5ab2423baad9b6e5ecefaf2eef25c6282a7304937def36ddf07654e8610bf293",
+      "run_id": "muon-lr3e-3"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/normuon-lr1e-4/manifest.json",
+      "manifest_sha256": "c6c7c983f800272eaf7be4bc68c2769ed184dd6531a156b82f677ff46157cd97",
+      "run_id": "normuon-lr1e-4"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/normuon-lr3e-4/manifest.json",
+      "manifest_sha256": "261fedda446d5e2113a1493374470e96099b10582c452f894b60009bdce7b62a",
+      "run_id": "normuon-lr3e-4"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/normuon-lr1e-3/manifest.json",
+      "manifest_sha256": "c8d04e01d0bf343d90ce02a77451a3825126563f015a6a8f0c89657776c4fa18",
+      "run_id": "normuon-lr1e-3"
+    },
+    {
+      "manifest_path": "results/candidate-breadth/normuon-lr3e-3/manifest.json",
+      "manifest_sha256": "3b1fce0a4cc2ebb80acce61152b16fa0038d8b787567f3b06617aa9694cb4303",
+      "run_id": "normuon-lr3e-3"
+    }
+  ],
+  "matrix_provenance": {
+    "bytes": 8818,
+    "path": "results/candidate-breadth/matrix-receipt.json",
+    "sha256": "833fdcca5a2498936f8fcab76f5ea6f450e304d47f55d65ef8de30bee7fdbcea",
+    "source_audit": {
+      "path": "reports/candidate-breadth/data-audit.json",
+      "sha256": "18bd65028af684b9b07e9dc5edd400df88728967472e6bbade3239d8cfff5952"
+    }
+  },
+  "outputs": {
+    "calibration": {
+      "bytes": 884,
+      "path": "calibration_by_width.csv",
+      "sha256": "d1881c5bc3a532a2f48b8f0cdba9b5a8a3419401803805709c47cf3f4405bf3a"
+    },
+    "contrasts": {
+      "bytes": 4496,
+      "path": "high_dose_contrasts.csv",
+      "sha256": "d15abba24d9402d6e2eb0c0357d7bbf3e87c256afbd52600f99af2da842a29fd"
+    },
+    "figure_pdf": {
+      "bytes": 29931,
+      "path": "candidate_breadth_calibration.pdf",
+      "sha256": "0e33251cacc5e676d1a9b190e5a1860614e1c5b078e8e62540e0426e4d307efb"
+    },
+    "figure_svg": {
+      "bytes": 117992,
+      "path": "candidate_breadth_calibration.svg",
+      "sha256": "612e4ff5637ba1c34838fe71c0ad7997437005421ae41898e881b67d2550aafc"
+    }
+  },
+  "paired_uncertainty": {
+    "candidate_breadth_data_or_scores_visible": false,
+    "confidence": 0.95,
+    "decision_rule_changed": false,
+    "method": "source-stratified paired percentile bootstrap",
+    "metrics": [
+      "contrastive_loss",
+      "positive_margin"
+    ],
+    "recorded_at_utc": "2026-09-01T16:21:44Z",
+    "replicates": 50000,
+    "role": "descriptive uncertainty only; intervals do not enter the frozen support rule",
+    "seed": 20260902,
+    "strata": "the seven training-data sources, resampled independently at their fixed 32-query sizes"
+  },
+  "protocol": {
+    "path": "configs/candidate_breadth_probe.json",
+    "sha256": "e77802c16b07331618ac86e3cce677a6d848f0ef1ad9a0e8c58628d0e19c4ec5"
+  },
+  "schema_version": 1,
+  "status": "complete"
+}

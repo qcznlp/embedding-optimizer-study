@@ -1,3 +1,4 @@
+import hashlib
 import importlib
 import json
 import sys
@@ -9,6 +10,10 @@ from types import SimpleNamespace
 import pytest
 
 from embed_optim import evaluate_matrix
+from embed_optim.evaluation_source_provenance import (
+    CURRENT_SOURCE_LABELS,
+    EvaluationSourceProvenanceError,
+)
 from embed_optim.evaluation_utils import (
     FAST_PLAID_INDEX_KWARGS,
     configure_atomic_mteb_results,
@@ -42,8 +47,15 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
     monkeypatch.setattr(evaluate_matrix, "_validate_training_inputs", lambda args: None)
     monkeypatch.setattr(evaluate_matrix.time, "sleep", lambda seconds: None)
     monkeypatch.setattr(evaluate_matrix, "_worker_python", lambda executable=None: "/system/python")
+    monkeypatch.setattr(evaluate_matrix, "_validate_formal_runtime", lambda python, matrix: None)
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
     monkeypatch.setattr(evaluate_matrix, "_validate_worker_sources", lambda python, sources: None)
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "verify_evaluation_source_manifest",
+        lambda sources, repo_root: {"complete": True},
+    )
+    monkeypatch.setattr(evaluate_matrix, "_record_evaluation_inputs", lambda results, models: None)
 
     launches = []
 
@@ -83,6 +95,81 @@ def test_late_evaluation_uses_second_pool_after_dense_finishes(tmp_path, monkeyp
         str(late_two),
     ]
     assert all(command[command.index("--num_processes") + 1] == "4" for command, _ in late_launches)
+
+
+def test_unreachable_evaluator_source_fails_before_result_write_or_worker(tmp_path, monkeypatch):
+    checkpoint = tmp_path / "checkpoint-1"
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_selected_models",
+        lambda args: {"dense": [checkpoint], "late": []},
+    )
+    monkeypatch.setattr(evaluate_matrix, "_validate_training_inputs", lambda args: None)
+    monkeypatch.setattr(evaluate_matrix, "_worker_python", lambda executable=None: "/python")
+    monkeypatch.setattr(evaluate_matrix, "_validate_formal_runtime", lambda python, matrix: None)
+    monkeypatch.setattr(evaluate_matrix, "_validate_worker_runtime", lambda python, models: {})
+    monkeypatch.setattr(evaluate_matrix, "_validate_worker_sources", lambda python, sources: None)
+    impossible_digest = hashlib.sha256(b"not a reachable evaluator Git blob").hexdigest()
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_evaluation_source_manifest",
+        lambda repo: {
+            label: {"bytes": 1, "sha256": impossible_digest} for label in CURRENT_SOURCE_LABELS
+        },
+    )
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_record_runtime",
+        lambda *args, **kwargs: pytest.fail("runtime must not be written"),
+    )
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_record_evaluation_inputs",
+        lambda *args, **kwargs: pytest.fail("evaluation inputs must not be written"),
+    )
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_coordinate_evaluation_workers",
+        lambda *args, **kwargs: pytest.fail("GPU worker must not launch"),
+    )
+    results = tmp_path / "results"
+    logs = tmp_path / "logs"
+    args = Namespace(
+        matrix="unused.yaml",
+        families=["dense", "late"],
+        run_ids=[],
+        stages=None,
+        tasks=["SciFact"],
+        gpus_a="0,1,2,3",
+        gpus_b="4,5,6,7",
+        late_port_a=29610,
+        late_port=29620,
+        results_root=str(results),
+        log_dir=str(logs),
+        worker_python="/python",
+    )
+
+    with pytest.raises(EvaluationSourceProvenanceError, match="untracked, unavailable"):
+        evaluate_matrix.run_evaluation(args)
+    assert not results.exists()
+    assert not logs.exists()
+
+
+def test_evaluation_cli_defaults_dense_and_validates_scope_before_gpu_work(monkeypatch):
+    args = evaluate_matrix.parse_args([])
+    assert args.families == ["dense"]
+    assert evaluate_matrix.parse_args(["--families", "dense", "late"]).families == [
+        "dense",
+        "late",
+    ]
+
+    monkeypatch.setattr(
+        evaluate_matrix,
+        "_selected_models",
+        lambda args: pytest.fail("scope must be validated before selecting checkpoints"),
+    )
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        evaluate_matrix.run_evaluation(args)
 
 
 def test_evaluation_preflight_requires_deep_validated_training_inputs(monkeypatch):
@@ -132,6 +219,38 @@ def test_evaluation_preflight_requires_deep_validated_training_inputs(monkeypatc
     )
     with pytest.raises(RuntimeError, match="checkpoint payload is corrupt"):
         evaluate_matrix._validate_training_inputs(SimpleNamespace())
+
+
+def test_evaluation_formal_runtime_uses_worker_interpreter(tmp_path, monkeypatch):
+    matrix = tmp_path / "experiment.yaml"
+    spec = tmp_path / "formal_runtime.json"
+    matrix.write_text("formal_runtime: formal_runtime.json\n")
+    spec.write_text("{}")
+    observed = {}
+
+    def run(command, **kwargs):
+        observed.update(command=command, kwargs=kwargs)
+        return SimpleNamespace(returncode=0, stdout='{"valid": true}', stderr="")
+
+    monkeypatch.setattr(evaluate_matrix.subprocess, "run", run)
+    evaluate_matrix._validate_formal_runtime("/formal/python", matrix)
+
+    assert observed["command"] == [
+        "/formal/python",
+        "-m",
+        "embed_optim.runtime",
+        "--spec",
+        str(spec),
+    ]
+    assert observed["kwargs"]["timeout"] == 60
+
+    monkeypatch.setattr(
+        evaluate_matrix.subprocess,
+        "run",
+        lambda *args, **kwargs: SimpleNamespace(returncode=1, stdout="mismatch", stderr=""),
+    )
+    with pytest.raises(RuntimeError, match="mismatch"):
+        evaluate_matrix._validate_formal_runtime("/wrong/python", matrix)
 
 
 def test_evaluation_selection_rejects_unknown_and_empty_run_sets(monkeypatch):
@@ -373,6 +492,54 @@ def test_late_corpus_embedding_release_clears_caller_reference(monkeypatch):
 
     assert caller_reference == []
     assert calls == ["gc", "empty_cache"]
+
+
+def test_late_adaptive_encode_releases_each_microbatch_and_preserves_order(monkeypatch):
+    late = _late_evaluation_module(monkeypatch)
+    calls = []
+    cache_calls = []
+
+    class FakeModel:
+        def encode(self, texts, **kwargs):
+            calls.append((list(texts), kwargs))
+            if len(texts) > 2:
+                raise late.torch.OutOfMemoryError("injected batch OOM")
+            return [late.torch.full((int(text) + 1, 3), int(text)) for text in texts]
+
+    monkeypatch.setattr(late.torch.cuda, "empty_cache", lambda: cache_calls.append(True))
+    embeddings, splits = late.encode_batch_to_fp16_numpy(
+        FakeModel(), ["0", "1", "2", "3", "4"], prompt="p", is_query=False
+    )
+
+    assert [texts for texts, _ in calls] == [
+        ["0", "1", "2", "3", "4"],
+        ["0", "1"],
+        ["2", "3", "4"],
+        ["2"],
+        ["3", "4"],
+    ]
+    assert splits == 2
+    assert len(cache_calls) == 2
+    assert all(isinstance(embedding, late.np.ndarray) for embedding in embeddings)
+    assert all(embedding.dtype == late.np.float16 for embedding in embeddings)
+    assert [embedding.shape for embedding in embeddings] == [(i + 1, 3) for i in range(5)]
+    assert [float(embedding[0, 0]) for embedding in embeddings] == list(range(5))
+    assert all(call["batch_size"] == len(texts) for texts, call in calls)
+    assert all(call["prompt"] == "p" and not call["is_query"] for _, call in calls)
+
+
+def test_late_adaptive_encode_reraises_single_text_oom(monkeypatch):
+    late = _late_evaluation_module(monkeypatch)
+    cache_calls = []
+
+    class AlwaysOomModel:
+        def encode(self, texts, **kwargs):
+            raise late.torch.OutOfMemoryError("single text cannot fit")
+
+    monkeypatch.setattr(late.torch.cuda, "empty_cache", lambda: cache_calls.append(True))
+    with pytest.raises(late.torch.OutOfMemoryError, match="single text cannot fit"):
+        late.encode_batch_to_fp16_numpy(AlwaysOomModel(), ["only"], prompt=None, is_query=True)
+    assert cache_calls == [True]
 
 
 def test_late_auto_index_cleanup_runs_when_retrieval_fails(tmp_path, monkeypatch):

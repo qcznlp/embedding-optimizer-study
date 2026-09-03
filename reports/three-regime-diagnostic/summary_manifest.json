@@ -1,0 +1,70 @@
+{
+  "analysis_status": "post_hoc_three_regime_diagnostic",
+  "claim_boundary": "This diagnostic was designed after every discovery loss, validation metric, discovery BEIR score, and confirmatory final-BEIR result was visible. It is a descriptive post-hoc decomposition of the already observed shortlist-corpus gap. It cannot alter recipe selection, confirmatory optimizer inference, or establish that candidate coverage causes the reversal; the separately frozen candidate-breadth intervention is required for that mechanism test.",
+  "comparisons": 2,
+  "decision": "observed_for_both_muon_family_optimizers",
+  "outputs": {
+    "high_dose_contrasts": {
+      "bytes": 621,
+      "path": "reports/three-regime-diagnostic/high_dose_contrasts.csv",
+      "sha256": "6c844f51a7db893ec3cd714679de8859a51a4c750534108bdaf35c488911bc3a"
+    },
+    "readme": {
+      "bytes": 1326,
+      "path": "reports/three-regime-diagnostic/README.md",
+      "sha256": "bae01292cc3490bf99823bd04708bac0cf5fde81a4de175fd4943630b385319b"
+    },
+    "run_metrics": {
+      "bytes": 1454,
+      "path": "reports/three-regime-diagnostic/run_metrics.csv",
+      "sha256": "9f5404ca9830002f247365fe15f7d90bef1f3032d01a79543ac4661d5cf57b7c"
+    },
+    "summary": {
+      "bytes": 1883,
+      "path": "reports/three-regime-diagnostic/summary.json",
+      "sha256": "235636a351880e002a1054d0a9db58cc59cf1a833c0c7548de87b57c7ee4868f"
+    }
+  },
+  "protocol": {
+    "bytes": 2583,
+    "path": "configs/three_regime_diagnostic.json",
+    "sha256": "f7ebcf1b105984cb19b3236df316331a5d25cf6f95bddb46b6bb419fec00942b"
+  },
+  "runs": 12,
+  "schema_version": 1,
+  "sources": {
+    "mechanism_bridge": {
+      "manifest": {
+        "bytes": 6721,
+        "path": "reports/mechanism-bridge/summary_manifest.json",
+        "sha256": "6fb5970fb8d487eef4619ebcd5ca42ffa6a4dd6297743cc40879cf5f6adf1834"
+      },
+      "output": {
+        "bytes": 78592,
+        "path": "reports/mechanism-bridge/checkpoint_bridge.csv",
+        "sha256": "52af9cf0c97fbaa93086e9b5319ea5f875adf5fd03cd3bd3d2276ee71491d586"
+      }
+    },
+    "query_disjoint_validation": {
+      "manifest": {
+        "bytes": 20900,
+        "path": "reports/recipe-validation/manifest.json",
+        "sha256": "8ff05565413b02df5dde2e1cb19b21937552585bff841fb7d716b898bd337386"
+      },
+      "output": {
+        "bytes": 5509,
+        "path": "reports/recipe-validation/run_metrics.csv",
+        "sha256": "bbaa46b94e4472afa17090c88f4070c35a2e1a8d96cdd43f294f381ef3832a86"
+      }
+    }
+  },
+  "status": "complete",
+  "timing": {
+    "candidate_breadth_data_or_scores_visible": false,
+    "confirmatory_dynamics_results_visible": false,
+    "confirmatory_final_beir_visible": true,
+    "discovery_full_corpus_beir_visible": true,
+    "discovery_training_losses_visible": true,
+    "query_disjoint_validation_metrics_visible": true
+  }
+}

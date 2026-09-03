@@ -1,0 +1,52 @@
+{
+  "python": "/usr/bin/python3.12",
+  "schema_version": 2,
+  "source_files": {
+    "scripts/eval/dense_parallel.py": {
+      "bytes": 11054,
+      "sha256": "06d3564dec3994a3303d57493e582b9d71e1638aa434a98dbe8a5fd91ac86d26"
+    },
+    "scripts/eval/dense_sequential.py": {
+      "bytes": 26614,
+      "sha256": "264d03118278e3c99aabfd43aaf7c47053f6adb34946f70c89aad3eb70cf15c2"
+    },
+    "scripts/eval/late_interaction.py": {
+      "bytes": 29498,
+      "sha256": "131a867b69f41c10bbb6a6c449c59479d5b649d8457941212e629c71610575ed"
+    },
+    "src/embed_optim/aggregate.py": {
+      "bytes": 116247,
+      "sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0"
+    },
+    "src/embed_optim/decontamination.py": {
+      "bytes": 5282,
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "src/embed_optim/evaluate_matrix.py": {
+      "bytes": 27491,
+      "sha256": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2"
+    },
+    "src/embed_optim/evaluation_utils.py": {
+      "bytes": 6170,
+      "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+    },
+    "src/embed_optim/gpu_lease.py": {
+      "bytes": 7263,
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "src/embed_optim/pylate_compat.py": {
+      "bytes": 2283,
+      "sha256": "f8efe1a00cd5014da5fa84fca7c4fdf313633900af0daf114a1044b827edded4"
+    }
+  },
+  "versions": {
+    "fast-plaid": "1.6.0.290",
+    "flash-attn": "2.7.4.post1",
+    "late-interaction-kernels": "0.4.5",
+    "mteb": "2.18.16",
+    "pylate": "1.6.0",
+    "sentence-transformers": "5.7.0",
+    "torch": "2.9.1+cu129",
+    "transformers": "5.3.0"
+  }
+}

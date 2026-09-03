@@ -1,59 +1,67 @@
-# Can Muon train embedding models better than AdamW?
+# A packed validation trap in dense retriever adaptation
 
-> A controlled comparison on DenseOn and LateOn, with identical data, five-point training dynamics,
-> and decontaminated BEIR evaluation.
+> A controlled DenseOn study of AdamW, Muon, and NorMuon—and how a batch-dependent packed encoder
+> made a seven-negative validation result look better than independent retrieval scoring.
 
-**Experiment status:** training matrix in progress. This document already records the frozen protocol;
-the results sections are populated only from the checked-in aggregation artifacts after coverage reaches
-1,680/1,680.
+**Study status:** the original DenseOn discovery sweep is complete. The generated
+[completion outcome](#audited-completion-status) records the audited state and claimability of the
+Dense-only hybrid-routing controls, three-seed confirmation, shared-start branches, and frozen
+spectrum-versus-basis intervention under the post-hoc scope amendment.
 
-## Why this comparison
+**Reproducibility warning:** the candidate-breadth release subsequently found that the historical
+flattened/packed training and validation path is not batch invariant. The formal comparison remains
+auditable for that exact pinned implementation, but a general optimizer claim requires corrected
+no-packing retraining. The failure is retained as a result, not hidden or threshold-adjusted.
 
-Most modern embedding models are still fine-tuned with AdamW. [Muon](https://kellerjordan.github.io/posts/muon/)
-instead orthogonalizes updates for hidden weight matrices and often tolerates much larger learning
-rates. NorMuon adds a row-wise second
-moment normalizer to Muon's orthogonalized update while preserving its overall update norm. Language
-model results are promising, but they do not answer whether the optimizers behave well under retrieval
-losses, where temperatures are low and representation geometry matters directly.
+## What changed, and why
 
-This study asks three questions:
+This project originally included both DenseOn and LateOn. After the complete discovery sweep and
+exploratory mechanism outputs were visible, the project owner asked us to stop new late-interaction
+work because it was much slower and less relevant to the intended audience. That is a
+**user-directed, post-hoc scope change**, not a scientific exclusion chosen before results.
 
-1. Do Muon or NorMuon reach useful retrieval quality earlier in training?
-2. Are they competitive with a well-tuned AdamW after one epoch?
-3. Is the conclusion stable across dense and late-interaction architectures and across learning rates?
+All existing LateOn artifacts remain available for audit. They are not deleted, treated as a
+replication, pooled into uncertainty estimates, or used in the primary conclusion. Every new
+training run, evaluation, causal intervention, and paper claim is DenseOn-only. The machine-readable
+decision is [dense_scope_amendment.json](../configs/dense_scope_amendment.json).
 
-## Frozen protocol
+The new NAACL story is in [the Dense-only paper plan](naacl-dense-paper-plan.md). The
+[original two-family plan](naacl-paper-plan.md) remains byte-for-byte frozen so that the earlier
+claim protocol can still be audited.
 
-We start from
-[DenseOn-unsupervised](https://huggingface.co/lightonai/DenseOn-unsupervised) and
-[LateOn-unsupervised](https://huggingface.co/lightonai/LateOn-unsupervised), the pretrained but not
-supervised-fine-tuned checkpoints from the
-[DenseOn/LateOn work](https://arxiv.org/abs/2607.27178). Every run sees the same ordered 500,000 query
-groups for one epoch at global batch 128.
+## The question
 
-The DenseOn revision is `0edbd55684eb782bce55ee74c95b25c97cbe7f43`; the LateOn revision is
-`1047071849a708b9b3ee4dccdc60186c185224a7`.
+Muon approximately orthogonalizes momentum updates for hidden weight matrices. NorMuon adds a
+row-wise historical normalizer and restores the matrix-level update norm. Those operator properties
+are interesting, but they are not a retrieval result. The study asks two questions that should not
+be collapsed into one:
 
-Each group contains one positive and seven hard negatives. We scan the source model's ranked candidates,
-retain candidates whose score is below `0.95 × positive_score`, take the first ten qualifying candidates,
-and sample seven without replacement. All query sampling and negative choices derive their RNG seeds
-from seed 42 and stable BLAKE2 hashes. We intentionally disable in-batch and cross-device negatives;
-the logit tensor is exactly `[batch, 8]` for both architectures.
+> After appropriate retrieval-aware tuning, can a matrix-aware optimizer improve zero-shot
+> rankings? And can the usual held-out contrastive loss select that useful configuration without
+> seeing the full retrieval corpus?
 
-DenseOn uses cosine InfoNCE at temperature 0.02. LateOn uses L2-normalized token vectors,
-MeanMaxSim, and temperature 0.001 with query expansion disabled. Both query and document truncation
-limits are 8,192 tokens, matching the paper's supervised fine-tuning context setting. Dynamic padding
-means short batches do not pay the full 8,192-token cost.
+The evidence is organized to separate five things that are often conflated:
 
-This is deliberately an optimizer-isolation objective rather than a full reproduction of the paper's
-supervised stage. In addition to removing in-batch negatives as specified for this study, we do not use
-the paper's cross-encoder knowledge distillation or DenseOn Matryoshka auxiliary loss. Both families
-therefore optimize only their explicit eight-document group contrastive loss.
+1. the update prescribed by each optimizer at the same weights;
+2. the per-query distribution of the immediate functional change;
+3. the trajectory created by repeatedly changing both weights and future gradients;
+4. ranking inside the observed positive-plus-seven-negative shortlist;
+5. the final ranking against every document in an unseen corpus.
 
-### Dataset allocation
+## Experimental contract
 
-The public source contains 1.22M query rows, but not every row has a mined score record. We allocate
-proportionally over the 1,046,024 query IDs present in both tables:
+### Base model
+
+The active model is
+[lightonai/DenseOn-unsupervised](https://huggingface.co/lightonai/DenseOn-unsupervised), pinned to
+revision 0edbd55684eb782bce55ee74c95b25c97cbe7f43. It has completed pretraining but no supervised
+retrieval fine-tuning.
+
+### Training data
+
+The public source contains roughly 1.22 million query rows. Only 1,046,024 query IDs have all
+required mined-score records. We deterministically select 500,000 groups with proportional
+largest-remainder allocation over the seven sources:
 
 | Source | Scorable queries | Selected |
 | --- | ---: | ---: |
@@ -66,70 +74,80 @@ proportionally over the 1,046,024 query IDs present in both tables:
 | TriviaQA | 60,413 | 28,878 |
 | **Total** | **1,046,024** | **500,000** |
 
-The materialized dataset records source revisions, quotas, every selected document ID, the Hugging Face
-Dataset fingerprint, and a canonical row-manifest SHA-256. The dataset used for this study has on-disk
-fingerprint `8a489098f9729d86` and row-manifest SHA-256
-`735ef35b7195f3dae3172496b5bc534d39f2b7594d216c685eaebb37134fc347`. Loading that artifact and
-selecting the fixed nine text fields plus the length field produces training-view fingerprint
-`cc0598ffd4f5454f`; every run records this second fingerprint so the final audit can prove that both
-model families saw the identical view.
+Each query has one positive and seven seeded random hard negatives. Candidate documents must score
+below 0.95 times the positive score; seven are sampled without replacement from the first ten
+eligible candidates. Selection and negative sampling use seed 42 plus stable BLAKE2-derived
+per-example seeds.
 
-### Optimizer sweep
+The accepted materialization has:
 
-| Optimizer | Hidden-matrix learning rates | Auxiliary learning rate | Other settings |
+- dataset fingerprint 8a489098f9729d86;
+- canonical row-ledger SHA-256
+  735ef35b7195f3dae3172496b5bc534d39f2b7594d216c685eaebb37134fc347;
+- fixed training-view fingerprint cc0598ffd4f5454f.
+
+Every run verifies these identities before training. No in-batch or cross-device negatives are used;
+the loss always sees an explicit batch-by-eight logit matrix.
+
+### Objective and sequence length
+
+DenseOn uses cosine InfoNCE with temperature 0.02. Query and document truncation limits are both
+8,192 tokens, following the DenseOn supervised setting; dynamic padding avoids paying that cost for
+short batches. To isolate the optimizer, we omit cross-encoder distillation and the Matryoshka
+auxiliary objective.
+
+### Optimizers
+
+| Optimizer | Swept hidden-matrix LR | Auxiliary LR | Main settings |
 | --- | --- | ---: | --- |
-| AdamW | 1e-6, 3e-6, 1e-5, 3e-5 | same as hidden | β=(0.9, 0.999), wd=0.01 |
-| Muon | 1e-4, 3e-4, 1e-3, 3e-3 | 3e-6 AdamW | momentum=0.95, 5 NS steps, wd=0.01 |
-| NorMuon | 1e-4, 3e-4, 1e-3, 3e-3 | 3e-6 AdamW | momentum=0.95, β₂=0.95, 5 NS steps, wd=0.01 |
+| AdamW | 1e-6, 3e-6, 1e-5, 3e-5 | same as hidden | beta=(0.9, 0.999), wd=0.01 |
+| Muon | 1e-4, 3e-4, 1e-3, 3e-3 | AdamW 3e-6 | momentum=0.95, 5 NS steps, wd=0.01 |
+| NorMuon | 1e-4, 3e-4, 1e-3, 3e-3 | AdamW 3e-6 | momentum=0.95, beta2=0.95, 5 NS steps |
 
-For Muon-family runs, only 2-D transformer hidden matrices use the matrix optimizer. Embeddings,
-LateOn projection layers, norms, and biases use AdamW. This avoids applying orthogonalized updates to
-parameters for which Muon is not designed. The auxiliary AdamW uses β=(0.9, 0.999), ε=1e-8, and the
-same decay/no-decay routing as the all-AdamW baseline. NorMuon is pinned to official implementation
-commit `c6989a8354730695d9f5a9faa6c55eeb24865209`; a numerical regression test checks the update,
-momentum buffer, and row-wise second moment against that reference.
+Muon and NorMuon act only on the 88 two-dimensional Transformer hidden matrices, covering
+110,297,088 parameters. Embeddings, the pooling projection, normalization parameters, and biases
+remain on auxiliary AdamW. The all-AdamW baseline uses the swept rate for the same hidden and
+projection weights, with the same decay/no-decay routing.
 
-The routing was enumerated from the instantiated checkpoints before training:
+NorMuon is pinned to upstream commit c6989a8354730695d9f5a9faa6c55eeb24865209. Numerical tests
+compare its update, momentum buffer, row-wise second moment, and norm restoration with the reference.
 
-| Family | Muon/NorMuon hidden matrices | AdamW, decayed auxiliary | AdamW, no decay |
-| --- | ---: | ---: | ---: |
-| DenseOn | 110,297,088 params / 88 tensors | 38,682,624 / 1 | 34,560 / 45 |
-| LateOn | 110,297,088 params / 88 tensors | 43,501,056 / 6 | 34,560 / 45 |
+### Training schedule
 
-For the AdamW baselines, the hidden and decayed-auxiliary columns instead form one swept-LR AdamW
-group; the no-decay column uses that same learning rate with zero weight decay. Muon calls PyTorch's
-native functional update with Nesterov momentum, five Newton–Schulz steps, coefficients
-`(3.4445, -4.7750, 2.0315)`, ε=1e-7, and `adjust_lr_fn="original"`. NorMuon uses the same
-orthogonalization, then applies the official β₂=0.95 row-wise second-moment normalization, restores
-the pre-normalization Frobenius norm, and applies the matrix-aspect-ratio correction.
+All runs use one epoch, nominal global batch 128, four GPUs, bfloat16 autocast, TF32,
+FlashAttention-2, non-reentrant gradient checkpointing, gradient clipping at 1.0, 10% warmup, and
+linear decay. Four gradient-accumulation steps turn per-GPU microbatches of eight into the global
+batch. The last optimizer step contains the remaining 32 examples; no example is duplicated or
+dropped.
 
-We use linear decay with a 10% warmup, bfloat16 autocast, TF32, FlashAttention-2, non-reentrant
-gradient checkpointing, and gradient clipping at 1.0. Each run uses four GPUs, a per-GPU micro-batch
-of 8, and four gradient-accumulation steps, yielding the shared global batch of 128. Each run saves
-complete checkpoints at 20%, 40%, 60%, 80%, and 100% of its realized optimizer steps.
-The 500,000 examples form 15,625 four-GPU microbatches, so steps 1–3,906 contain 128 examples and the
-final partial accumulation contains 32; no training examples are duplicated or dropped.
+### Compute and acceleration
+
+The execution environment exposes eight H100-equivalent GPUs. Training uses two disjoint four-GPU
+pools, so two distributed runs can proceed independently; task-parallel retrieval evaluation can
+fan out over all eight devices. Every recorded training run still uses exactly four ranks, which is
+why the global-batch and checkpoint RNG contracts above remain constant across the matrix.
+
+The accelerated path uses FlashAttention-2, bfloat16 autocast, TF32 matrix multiplication, fused
+CUDA AdamW when all tensors are on device, and length-aware evaluation batches with automatic OOM
+budget backoff. BEIR evaluation assigns independent tasks to available GPUs and performs exact
+retrieval rather than approximate ranking. Muon-family runs use the pinned decomposed-bfloat16
+Newton--Schulz path described in the engineering section; the change avoids the unstable fused
+`addmm` decomposition without changing the polynomial or training objective. None of these systems
+optimizations introduces in-batch negatives or changes the fixed query/positive/negative groups.
+
+Complete resumable checkpoints are retained at 20%, 40%, 60%, 80%, and 100% of the 3,907 optimizer
+steps. A checkpoint counts only if the model, optimizer, scheduler, trainer state, four rank-local RNG
+archives, schedule, and dataset identities all pass the deep audit.
 
 ## Evaluation
 
-Every checkpoint is evaluated on the 14 decontaminated [BEIR](https://arxiv.org/abs/2104.08663)
-datasets released with the
-[DenseOn/LateOn blog](https://huggingface.co/blog/lightonai/denseon-lateon): ArguAna,
-ClimateFEVER, DBPedia, FEVER, FiQA, HotpotQA, MS MARCO, NFCorpus, NQ, Quora, SCIDOCS, SciFact,
-TREC-COVID, and Touche2020. Dataset commits are pinned in source. The primary aggregate is the
-unweighted mean of each task's main nDCG@10 score. Final reporting also includes the normalized
-trapezoidal area under the five-checkpoint quality curve over the observed 20%–100% window,
-four-learning-rate dispersion, best-configuration paired task wins, and measured training throughput
-relative to AdamW. For each best-config Muon/AdamW and NorMuon/AdamW comparison, we report the mean
-task delta with a deterministic seed-42, 20,000-resample paired task bootstrap 95% interval and an
-exact two-sided sign-test p-value after excluding ties. These are descriptive summaries: the optimizer LR
-is selected on the same suite, and the 14 heterogeneous BEIR tasks are not independent draws. We
-report both the raw sign-test p-value and its Holm correction across the four family-by-optimizer
-comparisons.
+Every discovery checkpoint is evaluated on 14 pinned decontaminated BEIR tasks:
 
-The exact evaluation inputs are frozen below. MTEB's standard `default` subset is used for every
-task. MS MARCO is scored on `dev`; the other thirteen tasks are scored on `test`. Corpus counts were
-read from the pinned Hub snapshots and are also used for longest-processing-time-first scheduling.
+ArguAna, ClimateFEVER, DBPedia, FEVER, FiQA, HotpotQA, MS MARCO, NFCorpus, NQ, Quora, SCIDOCS,
+SciFact, TREC-COVID, and Touche2020.
+
+The exact inputs are frozen below. Every task uses MTEB's standard `default` subset. Corpus counts
+come from the pinned Hub snapshots and also determine longest-processing-time-first scheduling.
 
 | Task | Hugging Face dataset | Revision | Split | Corpus rows |
 | --- | --- | --- | --- | ---: |
@@ -149,113 +167,1159 @@ read from the pinned Hub snapshots and are also used for longest-processing-time
 | Touche2020 | `lightonai/webis-touche2020-decontaminated` | `84c6c1ff39a87ee1e1d4356fc6f43df6d49431b3` | test | 378,223 |
 | **Total** |  |  |  | **19,525,336** |
 
-Dense retrieval is evaluated with [MTEB](https://arxiv.org/abs/2210.07316) exact retrieval. Late
-interaction is encoded with [PyLate](https://arxiv.org/abs/2508.03555) and searched with
-[FastPLAID](https://github.com/lightonai/fast-plaid) using 4-bit residuals, 8 IVF probes, 8,192 full
-scores, and index seed 42.
-The training scorer uses the fused Late Interaction Kernels implementation. The pinned corpus counts
-sum to 19,525,336 documents; evaluation schedules larger corpora first across the available workers
-and resumes only the missing split/subset pairs from validated MTEB result files. A launch preflight
-first reconstructs the exact shared training-data view and deep-validates every selected model,
-optimizer, scheduler, and per-rank RNG payload before any formal evaluation GPU work. It then uses one
-Python runtime for both model families and requires its core model-library versions to match the
-versions recorded during training. An immutable runtime manifest also records PyLate, FastPLAID,
-Late Interaction Kernels, MTEB, and FlashAttention. It additionally records SHA-256 identities for all
-eight evaluation/aggregation source files and verifies that the worker interpreter imports those same
-package sources. Final aggregation recomputes the hashes and rejects results with a different
-checkpoint identity, dataset revision, split/subset, scoring field, MTEB version, or runtime
-provenance.
-Each task result and its model metadata are atomically replaced, concurrent DenseOn workers merge the
-shared MTEB run-settings sidecar under a cross-process lock, and only the main LateOn rank writes cache
-metadata. The final audit also checks the run-settings field layout against the recorded MTEB version,
-covering the singular 2.18 and plural 2.19+ schemas without accepting a hybrid artifact.
-After FastPLAID consumes a task's corpus multivectors, the shared caller-visible embedding list is
-cleared before search and the temporary on-disk index is removed after the task (also on failure).
-This prevents host-memory and disk usage from accumulating across the 840 LateOn evaluations.
-For the training side, the strict gate parses every safetensors tensor extent, loads each optimizer and
-scheduler state with PyTorch's restricted weights-only loader, and verifies the CRC of every rank RNG
-archive; a merely non-empty or partially written checkpoint is not counted as complete.
+MS MARCO uses dev; all others use test. The primary score is the unweighted mean task nDCG@10. The
+five checkpoints expose the complete observed training curve. We also report four-learning-rate
+dispersion, trajectory AUC over 20%–100%, paired task deltas, training throughput, useful wall time,
+optimizer-state size, and peak allocated memory.
 
-## Results
+Best-LR discovery comparisons are exploratory because the same 14 tasks select and evaluate the
+configuration. The final comparison therefore uses three new data-order/negative-sampling seeds with
+recipes fixed by a query-disjoint validation probe. Its hierarchical bootstrap resamples seeds and
+tasks. The headline interval retains the Bonferroni correction over all six comparisons frozen
+before the post-hoc Dense-only scope amendment; narrowing the displayed model family does not make
+the statistical gate easier.
+
+The original five-way checkpoint requirement is also applied to the 4 routing-matched hybrid runs
+and 9 full-length confirmatory runs. Their missing 20%–80% evaluations are frozen as a 728-unit
+extension in `configs/dense_retrieval_dynamics_extension.json`, with separate result roots from the
+formal final-stage evaluation. The descriptive artifact joins those 728 rows to the existing 182
+stage-5 units and is defined as 13 runs × 5 stages = 65 trajectory rows and 910 task units; the
+complete Dense design has 1,750 BEIR units including discovery. This extension is descriptive and
+does not change model
+selection or inference: hybrid routing and three-seed contrasts still read only stage 5. The
+shared-start 50K controls have five query-disjoint and unseen-probe stages instead of full BEIR.
+
+## Extended full-length retrieval dynamics
+
+<!-- DENSE-RETRIEVAL-DYNAMICS:BEGIN -->
+
+The completed full-length extension contains **13 runs × 5 stages = 65 trajectory rows and 910 decontaminated BEIR task units**. Stages 1–4 come from isolated dynamics roots; stage 5 is joined from the pre-existing formal roots.
+
+[Download the source-bound 65-row CSV](../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.csv)
+
+![Five-stage hybrid and confirmatory retrieval dynamics](../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.svg)
+
+| Series | Runs | 20% | 40% | 60% | 80% | 100% |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Hybrid AdamW | 4 | 0.5684 | 0.5765 | 0.5794 | 0.5810 | 0.5817 |
+| Confirmatory AdamW | 3 | 0.5840 | 0.5884 | 0.5897 | 0.5907 | 0.5905 |
+| Confirmatory Muon | 3 | 0.5328 | 0.5296 | 0.5337 | 0.5540 | 0.5599 |
+| Confirmatory NorMuon | 3 | 0.5407 | 0.5360 | 0.5437 | 0.5548 | 0.5601 |
+
+**Descriptive time-to-quality:** using mean stage-5 confirmatory AdamW nDCG@10 (0.5905) as the displayed four-decimal fixed reference, the earliest retained checkpoint matching or exceeding it is: AdamW 80%; Muon not reached; NorMuon not reached. Normalized 20–100% trajectory AUC is: AdamW 0.5890, Muon 0.5409, NorMuon 0.5462. Checkpoint attainment and AUC summarize the joined curves only; they do not alter the stage-5 confirmatory test.
+
+**Inference boundary:** these joined curves are descriptive training dynamics only. The hybrid-routing and confirmatory comparisons continue to read only their disjoint, pre-existing stage-5 result roots; neither the CSV nor either figure is an inference input.
+
+<!-- DENSE-RETRIEVAL-DYNAMICS:END -->
+
+## Discovery results
 
 <!-- RESULTS:BEGIN -->
 
-Results will be inserted here after `reports/coverage.json` confirms all 1,680 task/checkpoint pairs.
+All 840 planned task/checkpoint evaluations completed. Scores below are the unweighted mean nDCG@10 across the 14 tasks.
+
+### Final quality and learning-rate robustness
+
+| Family | Optimizer | Same-suite BEIR-best LR | Exploratory BEIR-best final | 4-LR mean | 4-LR median | SD | Range | 4-LR trajectory AUC |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| dense | adamw | 3e-5 | 0.5899 | 0.5816 | 0.5858 | 0.0099 | 0.5650–0.5899 | 0.5779 |
+| dense | muon | 3e-4 | 0.5923 | 0.5833 | 0.5901 | 0.0131 | 0.5608–0.5923 | 0.5776 |
+| dense | normuon | 3e-4 | 0.5934 | 0.5847 | 0.5910 | 0.0123 | 0.5634–0.5934 | 0.5800 |
+
+- **Dense:** best same-suite BEIR-selected final score is normuon at 3e-4 (0.5934); the highest four-LR mean is normuon (0.5847); the highest mean observed-window AUC is normuon (0.5800). Same-suite BEIR-selected paired muon beats AdamW on 10/14 tasks, mean Δ=+0.0024 (95% CI [+0.0006, +0.0047]); normuon beats AdamW on 11/14 tasks, mean Δ=+0.0036 (95% CI [+0.0015, +0.0059]).
+
+![Dense training dynamics](../reports/dense-discovery/figures/dense-training-dynamics.png)
+
+### Five-checkpoint dynamics for every learning-rate run
+
+Each panel below shows all four LR configurations rather than an optimizer-level average; every curve contains the formal 20%, 40%, 60%, 80%, and 100% checkpoints.
+
+![Dense per-run training dynamics](../reports/dense-discovery/figures/dense-training-dynamics-by-run.png)
+
+### Dynamics after selecting each optimizer by final nDCG@10 on this same BEIR suite
+
+| Family | Optimizer | 20% | 40% | 60% | 80% | 100% | AUC |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| dense | adamw | 0.5850 | 0.5892 | 0.5881 | 0.5880 | 0.5899 | 0.5882 |
+| dense | muon | 0.5882 | 0.5921 | 0.5912 | 0.5913 | 0.5923 | 0.5912 |
+| dense | normuon | 0.5881 | 0.5922 | 0.5925 | 0.5929 | 0.5934 | 0.5921 |
+
+### Paired effects after same-suite BEIR selection
+
+| Family | Comparison | W/T/L | Mean Δ | Paired bootstrap 95% CI | Sign p | Holm p |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| dense | muon − AdamW | 10/0/4 | +0.0024 | [+0.0006, +0.0047] | 0.1796 | 0.438 |
+| dense | normuon − AdamW | 11/0/3 | +0.0036 | [+0.0015, +0.0059] | 0.05737 | 0.2295 |
+
+![Dense learning-rate sensitivity](../reports/dense-discovery/figures/dense-lr-sensitivity.png)
+
+### Per-task final scores after same-suite BEIR selection
+
+#### Dense same-suite BEIR-selected discovery task scores
+
+
+| Task | AdamW | Muon | NorMuon | Muon − AdamW | NorMuon − AdamW |
+| --- | --- | ---: | ---: | ---: | ---: |
+| ArguAna | 0.5600 | 0.5620 | 0.5617 | +0.0020 | +0.0017 |
+| ClimateFEVER | 0.4059 | 0.4104 | 0.4140 | +0.0045 | +0.0082 |
+| DBPedia | 0.2776 | 0.2790 | 0.2811 | +0.0015 | +0.0035 |
+| FEVER | 0.9205 | 0.9225 | 0.9235 | +0.0020 | +0.0030 |
+| FiQA2018 | 0.5421 | 0.5447 | 0.5490 | +0.0026 | +0.0069 |
+| HotpotQA | 0.6750 | 0.6787 | 0.6777 | +0.0037 | +0.0027 |
+| MSMARCO | 0.5680 | 0.5712 | 0.5707 | +0.0032 | +0.0028 |
+| NFCorpus | 0.2874 | 0.2840 | 0.2862 | -0.0034 | -0.0012 |
+| NQ | 0.9254 | 0.9396 | 0.9396 | +0.0142 | +0.0142 |
+| QuoraRetrieval | 0.9118 | 0.9131 | 0.9132 | +0.0013 | +0.0014 |
+| SCIDOCS | 0.1477 | 0.1470 | 0.1484 | -0.0008 | +0.0006 |
+| SciFact | 0.8804 | 0.8792 | 0.8792 | -0.0012 | -0.0012 |
+| TRECCOVID | 0.8304 | 0.8301 | 0.8297 | -0.0004 | -0.0008 |
+| Touche2020 | 0.3259 | 0.3309 | 0.3342 | +0.0050 | +0.0083 |
+
+The best-LR comparisons are selected on this same benchmark suite and should therefore be read as controlled exploratory results, not as an unbiased model-selection estimate. Paired intervals use 20,000 deterministic task-level bootstrap resamples; the sign-test p-value is exact after excluding ties, and Holm p controls the original four-comparison discovery family. BEIR tasks are heterogeneous and not independent draws, so these are descriptive uncertainty summaries rather than population inference. The four-LR mean, spread, and complete per-task rows are included to expose sensitivity rather than reporting only the winning point. Trajectory AUC is the normalized trapezoidal mean nDCG@10 over the observed 20%–100% checkpoint window; it measures early-to-late quality, not time before the first checkpoint.
 
 <!-- RESULTS:END -->
 
-## Systems observations
+### A task-dependent early-quality advantage, not a universal compute saving
+
+As a descriptive post-hoc cross-stage check, the same-suite BEIR-selected Muon and NorMuon runs
+reach mean nDCG@10 0.5921 and 0.5922 at 40% of training, above the selected AdamW run's 0.5899 at
+100%. The task-paired comparison is much less uniform: Muon at 40% versus AdamW at 100% is 6/0/8
+wins/ties/losses, and NorMuon is 5/0/9; their median task deltas are -0.00055 and -0.00055. The
+positive macro means are concentrated in a minority of tasks, especially NQ and Touche2020. Thus
+the discovery sweep supports faster *task-averaged* early quality on this suite, not a claim that
+Muon-family optimization universally replaces 60% of AdamW compute. This check uses the same
+single-seed suite that selected the learning rates and is not part of the confirmatory test family.
+
+<!-- TASK-DELTA-STABILITY:BEGIN -->
+
+### Exploratory task-effect stability across checkpoints
+
+| Family | Comparison | Stages | Same direction | Pearson r | Spearman rho |
+| --- | --- | --- | ---: | ---: | ---: |
+| DenseOn | Muon − AdamW | 20%→40% | 10/14 | 0.645 | 0.543 |
+| DenseOn | Muon − AdamW | 40%→60% | 10/14 | 0.709 | 0.640 |
+| DenseOn | Muon − AdamW | 60%→80% | 11/14 | 0.651 | 0.648 |
+| DenseOn | Muon − AdamW | 80%→100% | 12/14 | 0.811 | 0.855 |
+| DenseOn | NorMuon − AdamW | 20%→40% | 6/14 | 0.324 | 0.345 |
+| DenseOn | NorMuon − AdamW | 40%→60% | 8/14 | 0.463 | 0.451 |
+| DenseOn | NorMuon − AdamW | 60%→80% | 11/14 | 0.753 | 0.662 |
+| DenseOn | NorMuon − AdamW | 80%→100% | 9/14 | 0.743 | 0.714 |
+
+This DenseOn-only post-hoc diagnostic applies each optimizer's learning-rate run selected by final nDCG@10 on this same BEIR suite at every checkpoint and correlates its 14 paired task deltas against AdamW across adjacent stages. It is a filtered exploratory view of the already audited discovery matrix. It does not alter run selection, the primary aggregate, or the frozen Dense confirmatory family, and it carries no causal interpretation.
+
+<!-- TASK-DELTA-STABILITY:END -->
+
+## Systems results
 
 <!-- SYSTEMS:BEGIN -->
 
-Final wall-clock throughput, peak memory, optimizer-state size, and checkpoint size will be reported
-from the completed W&B runs and local Trainer states.
+Every run used 4 × NVIDIA L20Z. Values are medians over the four learning-rate configurations for that optimizer and family; CUDA memory is the maximum per rank, not the sum across ranks.
+
+| Family | Optimizer | Median hours | Samples/s | Throughput vs AdamW | Peak allocated GiB | Optimizer state GiB | Checkpoint GiB |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| dense | adamw | 3.52 | 39.43 | 1.00× | 7.41 | 1.11 | 1.67 |
+| dense | muon | 3.71 | 37.41 | 0.95× | 6.98 | 0.70 | 1.26 |
+| dense | normuon | 3.77 | 36.86 | 0.93× | 6.97 | 0.70 | 1.26 |
+
+The recorded wall time includes training and five full checkpoint writes. Peak CUDA memory comes from PyTorch allocator counters inside each training process, so the independent utilization guard process is excluded. For checkpoint-resumed runs, throughput is recomputed from the sum of non-overlapping useful training segments rather than Trainer's resume-local runtime; the segment adjustment and original Trainer fields remain in the audit table. Exact per-run measurements are in `reports/dense-discovery/system_metrics.csv`.
 
 <!-- SYSTEMS:END -->
 
-Infrastructure note: the first DenseOn Muon run encountered two pre-checkpoint
-`CUBLAS_STATUS_EXECUTION_FAILED` errors in PyTorch's native bfloat16 Newton–Schulz `addmm`, both on
-physical GPU 3 (at optimizer steps 52 and 388). ECC counters remained zero, but moving that device
-from the DenseOn pool to the concurrent AdamW LateOn pool eliminated the failure past both observed
-positions without changing the Muon implementation, precision, hyperparameters, model state, or data
-order. The failed DenseOn attempts occurred before checkpoint 782 and were discarded; the accepted
-run starts from the original base model and seed. LateOn resumed from its last complete checkpoint at
-step 2,345. Its reported throughput combines only the non-overlapping useful segments through that
-checkpoint and after resume, while duplicated work after step 2,345 is treated as infrastructure
-overhead rather than optimizer throughput.
+## What the optimization analysis actually says
+
+Spectral flattening is part of Muon's construction; observing it is not a new contribution. The
+retrieval-specific evidence begins where the obvious operator property stops.
+
+### 1. The historical validation path orders optimizer doses differently
+
+The query-disjoint validation probe is deliberately ordinary: 4,096 unseen queries, one positive,
+and seven seeded negatives per query. It selects AdamW at 3e-5, but selects Muon and NorMuon at
+3e-3. Direct full-corpus discovery instead places both Muon-family optima at 3e-4.
+
+Across the four learning rates, validation loss versus final BEIR has Spearman correlation -1.0 for
+AdamW and +0.8 for both Muon and NorMuon; validation margin versus BEIR is +1.0 for AdamW and -0.8
+for both challengers. Within the historical evaluator, minimizing the held-out loss therefore
+orders AdamW correctly and the Muon-family rates almost in reverse. The later implementation audit
+shows that this is not evidence about an isolated eight-way loss: the flattened/packed path changes
+scores with batch composition.
+
+This is not just domain shift. On FiQA, HotpotQA, MS MARCO, NQ, and FEVER—the five validation sources
+with a matching full-corpus task—the 3e-3-minus-3e-4 comparison gives ten optimizer-by-source
+transitions. All ten suppress the selected hardest negative, all ten improve the observed margin,
+and all ten reduce full-corpus nDCG@10. The mean changes are -0.0369 for the selected-negative score,
+-0.0115 for the positive score, +0.0254 for margin, and -0.0255 for nDCG. Positive scores rise in
+three of the ten transitions, so uniform positive forgetting is not enough to explain the result.
+
+A separate post-hoc join also rules out simple training-set memorization as a sufficient account.
+For the validation-selected 3e-3 dose minus the within-optimizer retrieval oracle at 3e-4:
+
+| Optimizer | Δ trailing train loss | Δ validation loss | Δ validation margin | Δ BEIR nDCG@10 |
+| --- | ---: | ---: | ---: | ---: |
+| Muon | +0.1210 | -0.3696 | +0.0192 | -0.0315 |
+| NorMuon | +0.1068 | -0.4268 | +0.0204 | -0.0300 |
+
+The larger dose fits the sampled training tuples less well, scores better on the historical packed
+eight-way validator, and then retrieves worse against the complete corpus. This three-regime
+decomposition was designed after every constituent outcome was visible, so it is descriptive and
+cannot identify candidate coverage causally. The source-bound reconstruction and audit receipt are
+in [`reports/three-regime-diagnostic/`](../reports/three-regime-diagnostic/README.md).
+
+The novel finding is therefore not that Muon orthogonalizes updates, nor that wider candidate sets
+repair its validation. It is an implementation-sensitive interaction: optimizer selection can look
+decisive on a query-disjoint packed validator even when independent padded scoring of the same eight
+texts reverses that conclusion. This motivates a simple requirement for optimizer studies: test
+batch-composition invariance before interpreting held-out contrastive metrics.
+
+<!-- CORPUS-SIZE-DIAGNOSTIC:BEGIN -->
+
+### Exploratory signal: gains concentrate on larger corpora
+
+![Post-hoc optimizer gains versus corpus size](../reports/corpus-size-diagnostic/corpus_size_association.svg)
+
+Across the 14 discovery tasks, the final Muon-minus-AdamW delta has Spearman ρ=0.587 with log corpus size (200,000-permutation p=0.030); NorMuon has ρ=0.574 (p=0.035). The association is weak at 20% of training and appears mainly late in the trajectory.
+
+The largest seven corpora show positive deltas for both optimizers in 7/7 tasks, whereas the smallest seven show 3/7 for Muon and 4/7 for NorMuon. The result is not driven by NQ: excluding it raises the correlations to 0.670 and 0.654. Every leave-one-task-out correlation remains positive (Muon 0.484–0.670; NorMuon 0.473–0.654).
+
+This diagnostic was added after the association was noticed, uses learning rates selected on the same BEIR suite, and has only 14 heterogeneous task units. Corpus size can proxy for many task properties, so the result is a descriptive clue—not evidence that a larger corpus causes Muon to help. Its value is that it makes the shortlist–corpus account more specific: the independently frozen candidate-breadth experiment must test candidate coverage directly.
+
+<!-- CORPUS-SIZE-DIAGNOSTIC:END -->
+
+### 2. Local matched steps lose while the one-seed grid median reverses
+
+At ten common DenseOn states, we apply AdamW, Muon, and NorMuon to the same eight-gradient history.
+After matching every hidden tensor to AdamW's Frobenius norm and taking a relative 1e-3 virtual step,
+the mean positive-margin gains are:
+
+| Operator | Mean immediate margin gain | Difference from AdamW |
+| --- | ---: | ---: |
+| AdamW | +0.000865 | — |
+| Muon | +0.000562 | -0.000303 |
+| NorMuon | +0.000498 | -0.000367 |
+
+Across the four frozen learning-rate sweep points in the single discovery seed, however, median
+final BEIR is +0.00435 for Muon and +0.00521 for NorMuon relative to AdamW. The sign reverses from
+the matched local intervention to this one-seed grid aggregate. A “better immediate descent
+direction” cannot explain that discovery ordering.
+
+### 3. The optimizers enter different directions, not better-aligned gradients
+
+At the same state, the parameter-weighted cosine between AdamW and Muon directions has median 0.470;
+Muon and NorMuon remain much closer at 0.972. Median cosine with the common final gradient is 0.401
+for AdamW, 0.258 for Muon, and 0.244 for NorMuon.
+
+The AdamW–Muon cosine falls from 0.537 at the pretrained state to about 0.490 along the AdamW
+trajectory and 0.463 along the Muon trajectory. This is post-hoc evidence for optimizer-induced state
+feedback: committing a Muon-family step changes the state on which future gradients and updates are
+computed. It is not yet causal proof that this feedback improves retrieval.
+
+### 4. DenseOn shows tail redistribution, not uniform dominance
+
+The same-state Muon step has a worse mean margin effect, yet improves the fixed p05 margin and p95/p99
+loss quantiles at all ten anchors. A symmetric cross-tail check changes the interpretation. On
+AdamW's selected worst 5% queries, Muon has a -0.1366 loss-change advantage, but on Muon's own worst
+tail it has a +0.0203 disadvantage. Tail-set Jaccard overlap is only 0.279. NorMuon shows the same
+pattern with Jaccard 0.270.
+
+Muon therefore moves which queries are fragile; it does not uniformly suppress one shared adverse
+tail. This query-level redistribution is specific to the retrieval function and cannot be read from
+the optimizer definition alone.
+
+### 5. Flatter spectra alone do not explain the one-seed discovery contrast
+
+For exact selected matrices, the median normalized stable-rank statistic is about 0.0195 for AdamW,
+0.5772 for Muon, and 0.4153 for NorMuon. Yet across DenseOn anchors, the magnitude of spectral
+flattening has little or no association with tail protection. Representation effective-rank levels
+track BEIR over checkpoints, but within-run first differences are weak and inconsistent.
+
+Those negative results matter: “Muon flattens the spectrum” is an operator fingerprint, not a
+mechanistic explanation of the observed four-learning-rate-median discovery contrast.
+
+### 6. Weight distance and fixed-probe function distance come apart
+
+Query-disjoint validation selects the largest tested Muon-family rate, 3e-3, because it optimizes the
+training-style objective. The discovery-BEIR oracle lies at 3e-4. The validation-selected rates lose
+0.0315 mean BEIR for Muon and 0.0300 for NorMuon relative to their own discovery oracle, while
+roughly doubling score drift from the pretrained ranker.
+
+At the retrieval-optimal points, however, mean absolute score drift on the fixed 224-query unseen
+probe is 0.0604 for AdamW, 0.0619 for Muon, and 0.0606 for NorMuon—a relative range of only 2.5%.
+The corresponding hidden-weight displacement ratios are 0.00960, 0.01881, and 0.01885. Across the
+five checkpoints, Muon and NorMuon move about 1.90× and 1.94× as far in weight space per unit of
+fixed-probe score drift as AdamW.
+
+That ratio is descriptive, not the answer by itself. At 3e-3, weight distance continues to rise
+while fixed-probe score drift falls and BEIR partly recovers. We therefore froze a test of the
+stronger hypothesis that a narrow probe misses score changes over documents outside its candidate
+set. The pinned source records provide 2,048 mined candidates per query, with the original seven
+negatives nested inside widths 10, 32, 128, 512, and 2,048. The first prerequisite was exact
+reproduction of the historical width-7 validation result through the independent scorer.
+
+<!-- CANDIDATE-BREADTH:BEGIN -->
+
+### Candidate-breadth outcome
+
+**Frozen decision: Not supported.** The prerequisite width-7 bridge failed: independently padded scoring did not reproduce the legacy packed validation outputs (maximum error 8.286419). On the padded path, the Muon-family high-dose advantage is already absent at width 7, and widening to 2,048 candidates does not produce the required joint reversal. Missing-candidate coverage therefore does not explain the observed shortlist--corpus gap.
+
+![Candidate-breadth calibration](../reports/candidate-breadth/candidate_breadth_calibration.svg)
+
+| Optimizer | Negatives | loss↔BEIR ρ | margin↔BEIR ρ | high-dose loss Δ [95% CI] | high-dose margin Δ [95% CI] |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| AdamW | 7 | -1.000 | +1.000 | — | — |
+| AdamW | 2,048 | +1.000 | +1.000 | — | — |
+| Muon | 7 | -1.000 | +0.000 | +0.177064 [+0.089243, +0.279614] | -0.006670 [-0.012219, -0.001019] |
+| Muon | 2,048 | -0.800 | -0.600 | +0.108651 [-0.066516, +0.284571] | +0.000968 [-0.004427, +0.006376] |
+| NorMuon | 7 | -0.800 | +0.000 | +0.190773 [+0.060921, +0.332021] | -0.004567 [-0.010618, +0.001391] |
+| NorMuon | 2,048 | -0.800 | +0.000 | +0.115757 [-0.075790, +0.309903] | -0.000958 [-0.006916, +0.004942] |
+
+The maximum width-7 reproduction error is `8.286e+00`. High-dose deltas are 3e-3 minus 3e-4 on the same 224 paired queries. This diagnostic was designed after the shortlist--corpus gap was observed, so it remains post hoc regardless of its outcome and cannot replace the frozen three-seed full-corpus comparison.
+
+Brackets and shaded bands are descriptive 95% source-stratified paired percentile bootstrap intervals (50,000 resamples; each of the seven 32-query source strata is resampled independently). They do not enter the frozen support rule.
+
+**Descriptive paired prevalence:** the earliest retained width at which both mean contrasts favor the retrieval-optimal 3e-4 dose is Muon: 7 negatives; paired high-dose win fractions (loss/margin) 43.8%/42.9% at width 7 → 48.7%/49.1% at width 2,048; NorMuon: 7 negatives; paired high-dose win fractions (loss/margin) 47.8%/47.3% at width 7 → 51.8%/51.8% at width 2,048. This is a crossing on the six-point frozen grid, not an estimated threshold; the curves need not be monotone.
+
+<!-- CANDIDATE-BREADTH:END -->
+
+The prerequisite itself failed, revealing a more fundamental implementation result. Historical
+Dense training and training-style validation used SentenceTransformers' flattened input path with
+ModernBERT FlashAttention; the candidate and full-corpus scorers use padded independent examples.
+The texts and checkpoints are byte-identical, but the maximum width-7 sample/metric disagreement is
+8.286419 rather than the frozen 1e-5 allowance. A pinned two-example control changes one packed-path
+cosine score by 0.211914 when the companion example changes, versus 0.001953 under padded BF16
+execution. On that padded path, the high-dose Muon-family advantage has already disappeared at
+width 7, and width 2,048 does not create the prospectively required joint reversal. Candidate
+coverage therefore does not explain the gap. This unplanned post-failure audit diagnoses the pinned
+implementation; it neither repairs historical training nor establishes a clean optimizer effect.
+Its full score-level receipt is
+[`packing_invariance.json`](../reports/candidate-breadth/packing_invariance.json).
+
+<!-- MECHANISM:BEGIN -->
+
+Under the disclosed post-hoc DenseOn scope, the formal mechanism tier evaluates every optimizer transform at the same frozen weights and on the same ordered eight-gradient history. The complete historical source artifacts still pass their content-hash and cardinality audits before the renderer selects the active DenseOn slice: 10 common-state anchors, 270 basis comparisons, 180 exact spectra, 60 bridge checkpoints, and 840 retrieval evaluation units.
+
+### Retrieval time to an AdamW reference
+
+| Family | Optimizer | AdamW reference | LR points reaching | fastest hours | median hours | right-censored |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.5858 | 2/4 | 1.407 | 1.416 | 2 |
+| DenseOn | Muon | 0.5858 | 3/4 | 0.749 | 1.476 | 1 |
+| DenseOn | NorMuon | 0.5858 | 3/4 | 0.756 | 1.507 | 1 |
+
+The reference is the DenseOn median final nDCG@10 of the four AdamW learning-rate points. Passage is observed only at the five saved checkpoints; no interpolation is used, and non-reaching points remain right-censored. Checkpoint time is a step-proportional estimate from audited useful terminal wall time. This one-seed discovery analysis remains exploratory rather than a substitute for the validation-frozen three-seed confirmation.
+
+### Same-state optimizer fingerprints
+
+| Family | Operator | row CV / AdamW | top-1% row energy / AdamW | stable rank / AdamW | spectral norm / AdamW | cosine with AdamW |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon | 2.855 | 1.586 | 28.916 | 0.015 | 0.470 |
+| DenseOn | NorMuon | 0.711 | 0.979 | 22.021 | 0.018 | 0.480 |
+
+Each cell is the median over ten frozen DenseOn anchors. Ratios use raw optimizer directions but are scale-invariant except for the explicitly reported spectral-norm ratio; the exact-spectrum intervention uses per-tensor Frobenius-matched directions. Weight decay is excluded from this comparison.
+
+### Function-preserving basis sensitivity
+
+| Family | Operator | mapped cosine | relative direction error | absolute norm-ratio error | predicted-descent error | Q/K spectrum error |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.96940 | 0.24738 | 0.00022 | 0.00488 | 0.02540 |
+| DenseOn | Muon | 0.99946 | 0.03277 | 0.00007 | 0.00034 | 0.00148 |
+| DenseOn | NorMuon | 0.99832 | 0.05793 | 0.00007 | 0.00360 | 0.00946 |
+
+Each row is the median over 90 fixed comparisons: ten common-state anchors, three QKV layers, and three seeded RoPE-commuting rotations. Query and key share each split-half plane rotation, value rows are unchanged, and every direction is inverse-mapped before comparison. The transform preserves attention logits, so this table measures implementation-level coordinate dependence rather than retrieval quality; bfloat16 Newton--Schulz rounding is retained as part of the Muon runtime.
+
+### Exact update spectra
+
+| Family | Operator | stable rank / rank | entropy rank / rank | condition number |
+| --- | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.0195 | 0.6984 | 61.26 |
+| DenseOn | Muon | 0.5772 | 0.9698 | 16.72 |
+| DenseOn | NorMuon | 0.4153 | 0.9603 | 23.82 |
+
+The six matrices were fixed by early/middle/final depth and attention/MLP role before formal spectra existed. Values are medians over 60 exact spectra per optimizer on the active DenseOn anchors.
+
+### Representation and score geometry
+
+| Family | Optimizer | training margin | unseen margin | unseen query rank | pretrained top-1 agreement | mean BEIR nDCG@10 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | 0.0997 | 0.2499 | 0.6748 | 0.9286 | 0.5858 |
+| DenseOn | Muon | 0.1240 | 0.2609 | 0.6770 | 0.9040 | 0.5901 |
+| DenseOn | NorMuon | 0.1250 | 0.2611 | 0.6787 | 0.8996 | 0.5910 |
+
+Rows are final-stage medians across all four frozen learning rates, not test-selected winners. Training and unseen probes remain separate; the latter contains 224 fixed examples balanced over all 14 decontaminated tasks.
+
+### Descriptive temporal bridge
+
+| Family | Predictor change | Outcome change | Transitions | Spearman ρ |
+| --- | ---: | ---: | ---: | ---: |
+| DenseOn | weight-delta row CV | unseen margin | 48 | -0.067 |
+| DenseOn | unseen margin | mean BEIR nDCG@10 | 48 | 0.531 |
+| DenseOn | unseen query effective rank | mean BEIR nDCG@10 | 48 | -0.027 |
+| DenseOn | trailing training loss (post-hoc) | mean BEIR nDCG@10 | 48 | -0.684 |
+
+The first three geometry associations were fixed in the renderer and use within-run first differences across all optimizers. The final training-loss row is an explicitly post-hoc diagnostic. All four are one-seed observational summaries, not a causal mediation analysis. Same-state fingerprints identify what each update rule does; causal claims about accumulated retrieval behavior still require the matched shared-start branches and fixed-state spectral interventions.
+
+### Frozen causal-chain numerical tests
+
+Overall frozen chain: **claimable negative**. Temporal: **claimable negative**; dose/band/forward bridge: **claimable negative**.
+
+#### Shared-start temporal decision
+
+| Criterion | Decision | Audited numerical evidence |
+| --- | --- | --- |
+| treatment_shift | pass | muon=3/3/normuon=3/3 |
+| outcome_shift | fail | muon=0/3/normuon=1/3 |
+| held_out_prediction | fail | validation loss p95=-0.237277 (decision gap -2.372766e-01); unseen margin p05=-0.688154 (decision gap -6.881539e-01) |
+| negative_control | pass | validation loss p95 primary=-0.237277, update/weight=-2.46124/-0.900387, decision gaps=+2.223960e+00/+6.631100e-01; unseen margin p05 primary=-0.688154, update/weight=-3.55619/-0.832549, decision gaps=+2.868040e+00/+1.443956e-01 |
+| coefficient_behavior | fail | validation loss p95 muon abs(beta)=0.182353 to 5.20136 (gap -5.019009e+00); normuon abs(beta)=0.131624 to 5.58902 (gap -5.457397e+00); unseen margin p05 muon abs(beta)=0.00439217 to 0.620675 (gap -6.162827e-01); normuon abs(beta)=0.00213449 to 0.656986 (gap -6.548516e-01) |
+
+The decision is all-required: failure of any row is a complete negative result.
+
+#### Six randomized paired contrasts
+
+| Seed | Challenger | Δ early tail energy | Δ final loss p95 | Δ final margin p05 |
+| --- | --- | --- | --- | --- |
+| 314159 | muon | +0.0654264 | -0.219279 | -0.000634968 |
+| 314159 | normuon | +0.0693881 | -0.190004 | +0.00197853 |
+| 271828 | muon | +0.0648547 | -0.175235 | -0.00626683 |
+| 271828 | normuon | +0.0689617 | -0.0713824 | -0.00400244 |
+| 161803 | muon | +0.0652134 | -0.152545 | -0.0062747 |
+| 161803 | normuon | +0.0693794 | -0.133485 | -0.00437956 |
+
+#### All 16 temporal predictor estimates
+
+| Outcome | Predictor | Kind | Label RMSE | Predictor RMSE | Relative improvement | Muon β label→with (shrink) | NorMuon β label→with (shrink) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| validation loss p95 | update_tail_energy_fraction | mechanism | 0.0591928 | 0.0732379 | -0.237277 | -0.182353→+5.20136 (-27.5236) | -0.131624→+5.58902 (-41.4621) |
+| validation loss p95 | update_stable_rank_fraction | mechanism | 0.0591928 | 0.0949013 | -0.603257 | -0.182353→+11.0792 (-59.7569) | -0.131624→+10.0387 (-75.2683) |
+| validation loss p95 | update_entropy_rank_fraction | mechanism | 0.0591928 | 0.119163 | -1.01314 | -0.182353→-2.53666 (-12.9107) | -0.131624→-2.50893 (-18.0614) |
+| validation loss p95 | update_head_energy_fraction | mechanism | 0.0591928 | 0.228798 | -2.8653 | -0.182353→+10.0127 (-53.9085) | -0.131624→+10.0604 (-75.433) |
+| validation loss p95 | update_middle_energy_fraction | mechanism | 0.0591928 | 0.156252 | -1.63972 | -0.182353→+10.9809 (-59.2177) | -0.131624→+10.8482 (-81.4184) |
+| validation loss p95 | update_row_norm_cv | mechanism | 0.0591928 | 0.189106 | -2.19475 | -0.182353→-1.50232 (-7.23855) | -0.131624→+0.342982 (-1.60577) |
+| validation loss p95 | update_frobenius_norm | negative_control | 0.0591928 | 0.20488 | -2.46124 | -0.182353→+2.13117 (-10.6871) | -0.131624→+2.1721 (-15.5023) |
+| validation loss p95 | weight_frobenius_norm | negative_control | 0.0591928 | 0.112489 | -0.900387 | -0.182353→-26.6727 (-145.27) | -0.131624→-26.5591 (-200.781) |
+| unseen margin p05 | update_tail_energy_fraction | mechanism | 0.00418127 | 0.00705863 | -0.688154 | -0.00439217→-0.620675 (-140.314) | -0.00213449→-0.656986 (-306.795) |
+| unseen margin p05 | update_stable_rank_fraction | mechanism | 0.00418127 | 0.00439751 | -0.0517169 | -0.00439217→-0.857507 (-194.235) | -0.00213449→-0.772584 (-360.953) |
+| unseen margin p05 | update_entropy_rank_fraction | mechanism | 0.00418127 | 0.0100382 | -1.40075 | -0.00439217→-0.749561 (-169.659) | -0.00213449→-0.754586 (-352.52) |
+| unseen margin p05 | update_head_energy_fraction | mechanism | 0.00418127 | 0.0216978 | -4.18929 | -0.00439217→-0.925568 (-209.731) | -0.00213449→-0.923034 (-431.438) |
+| unseen margin p05 | update_middle_energy_fraction | mechanism | 0.00418127 | 0.0135655 | -2.24436 | -0.00439217→-0.826049 (-187.073) | -0.00213449→-0.810293 (-378.619) |
+| unseen margin p05 | update_row_norm_cv | mechanism | 0.00418127 | 0.0135373 | -2.23761 | -0.00439217→+0.0529153 (-11.0476) | -0.00213449→-0.0227398 (-9.6535) |
+| unseen margin p05 | update_frobenius_norm | negative_control | 0.00418127 | 0.0190507 | -3.55619 | -0.00439217→-0.0708411 (-15.129) | -0.00213449→-0.068302 (-30.9992) |
+| unseen margin p05 | weight_frobenius_norm | negative_control | 0.00418127 | 0.00766238 | -0.832549 | -0.00439217→+0.159818 (-35.387) | -0.00213449→+0.161686 (-74.7492) |
+
+#### Fixed-state dose, band, and basis tests
+
+| Criterion | Supporting anchors | Threshold | Decision |
+| --- | --- | --- | --- |
+| loss_dose_monotone | 0/10 | 8 | fail |
+| margin_dose_monotone | 0/10 | 8 | fail |
+| tail_band_best_both_metrics | 0/10 | 8 | fail |
+| basis_swap_negative_control | 2/10 | 8 | fail |
+
+#### All 10 fixed-state anchors
+
+| Anchor | Loss dose λ=0/.25/.5/.75/1 | Margin dose λ=0/.25/.5/.75/1 | Loss band H/M/T | Margin band H/M/T | Dose L/M | Tail | Basis | All | Decision gaps L/M/T/B |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| dense/pretrained | 0/+0.112292/+0.14693/+0.172892/+0.212387 | 0/-0.00390625/-0.00751953/-0.0078125/-0.00976562 | +0.191247/+0.11791/+0.0939777 | -0.0078125/-0.00390625/-0.00390625 | fail/fail | fail | pass | fail | -1.122915e-01/-3.906250e-03/+0.000000e+00/+1.953125e-03 |
+| dense/adamw-lr1e-5/checkpoint-782 | 0/+0.0858068/+0.0804761/+0.0924003/+0.140346 | 0/-0.00390625/-0.00390625/-0.00390625/-0.00585938 | +0.119569/+0.096515/+0.0948403 | -0.00556641/-0.00390625/-0.00390625 | fail/fail | fail | pass | fail | -8.580683e-02/-3.906250e-03/+0.000000e+00/+1.953125e-03 |
+| dense/adamw-lr1e-5/checkpoint-2345 | 0/+0.0761643/+0.134485/+0.151421/+0.1428 | 0/-0.00390625/-0.00556641/-0.0078125/-0.0078125 | +0.158669/+0.0746775/+0.0928111 | -0.0078125/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -7.616431e-02/-3.906250e-03/-1.813361e-02/+0.000000e+00 |
+| dense/adamw-lr1e-5/checkpoint-3907 | 0/+0.104283/+0.105001/+0.136804/+0.164926 | 0/-0.00390625/-0.00390625/-0.0078125/-0.0078125 | +0.159435/+0.0841789/+0.0616835 | -0.0078125/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -1.042826e-01/-3.906250e-03/+0.000000e+00/+0.000000e+00 |
+| dense/muon-lr1e-3/checkpoint-782 | 0/+0.109402/+0.120257/+0.114413/+0.119132 | 0/-0.00390625/-0.00390625/-0.00390625/-0.00751953 | +0.0958187/+0.0795917/+0.0513318 | -0.00390625/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -1.094018e-01/-3.906250e-03/+0.000000e+00/-2.929688e-04 |
+| dense/muon-lr1e-3/checkpoint-2345 | 0/+0.0713319/+0.110023/+0.112523/+0.138461 | 0/-0.00390625/-0.00390625/-0.00390625/-0.00585938 | +0.100107/+0.0651468/+0.0390793 | -0.00390625/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -7.133193e-02/-3.906250e-03/+0.000000e+00/-1.717831e-03 |
+| dense/muon-lr1e-3/checkpoint-3907 | 0/+0.0843915/+0.0584801/+0.0836865/+0.10606 | 0/-0.00390625/-0.00390625/-0.00390625/-0.00390625 | +0.072524/+0.0593137/+0.0773411 | -0.00390625/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -8.439147e-02/-3.906250e-03/-1.802733e-02/-3.709111e-03 |
+| dense/normuon-lr1e-3/checkpoint-782 | 0/+0.103577/+0.114531/+0.123545/+0.162345 | 0/-0.00390625/-0.00722656/-0.0078125/-0.0078125 | +0.159967/+0.0918381/+0.0725006 | -0.0078125/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -1.035775e-01/-3.906250e-03/+0.000000e+00/+0.000000e+00 |
+| dense/normuon-lr1e-3/checkpoint-2345 | 0/+0.0457112/+0.0982143/+0.129308/+0.12299 | 0/-0.00390625/-0.00390625/-0.00390625/-0.0078125 | +0.116788/+0.0890134/+0.0695362 | -0.00390625/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -5.250309e-02/-3.906250e-03/+0.000000e+00/+0.000000e+00 |
+| dense/normuon-lr1e-3/checkpoint-3907 | 0/+0.0832271/+0.0965899/+0.0978884/+0.106444 | 0/-0.00390625/-0.00390625/-0.0078125/-0.0078125 | +0.126736/+0.0805851/+0.0723554 | -0.0078125/-0.00390625/-0.00390625 | fail/fail | fail | fail | fail | -8.322711e-02/-3.906250e-03/+0.000000e+00/+0.000000e+00 |
+
+#### Held-run retrieval bridge (84 rows)
+
+| Predictor | Kind | RMSE | Improvement | Matched control |
+| --- | --- | --- | --- | --- |
+| baseline | baseline | 0.0110162 | 0 | — |
+| spectrum_loss | spectrum | 0.0111671 | -0.000150847 | basis_loss |
+| spectrum_margin | spectrum | 0.0110875 | -7.12409e-05 | basis_margin |
+| basis_loss | basis_negative_control | 0.0110172 | -9.78894e-07 | — |
+| basis_margin | basis_negative_control | 0.0110502 | -3.39735e-05 | — |
+
+| Spectrum predictor | ΔRMSE | Matched basis | Basis ΔRMSE | Baseline gap | Control gap | Decision |
+| --- | --- | --- | --- | --- | --- | --- |
+| spectrum_loss | -0.000150847 | basis_loss | -9.78894e-07 | -1.508471e-04 | -1.498682e-04 | fail |
+| spectrum_margin | -7.12409e-05 | basis_margin | -3.39735e-05 | -7.124088e-05 | -3.726742e-05 | fail |
+
+#### All 84 held-run predictions
+
+| Held-out run | Task | Transition | Observed | Baseline | Spectrum loss | Spectrum margin | Basis loss | Basis margin |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| adamw-lr1e-5 | ArguAna | stage1-to-2 | -0.011 | -0.0112363 | -0.0113595 | -0.0111639 | -0.0111671 | -0.0110593 |
+| adamw-lr1e-5 | ArguAna | stage3-to-4 | -0.00692 | -0.0165838 | -0.015692 | -0.0179416 | -0.0168258 | -0.0192137 |
+| adamw-lr1e-5 | ClimateFEVER | stage1-to-2 | +0.02956 | +0.0356363 | +0.0376499 | +0.0350165 | +0.0351608 | +0.0350584 |
+| adamw-lr1e-5 | ClimateFEVER | stage3-to-4 | +0.00641 | +0.0302888 | +0.0317688 | +0.029722 | +0.029489 | +0.028791 |
+| adamw-lr1e-5 | DBPedia | stage1-to-2 | +0.00745 | +0.00961875 | +0.0113418 | +0.0082327 | +0.00888256 | +0.00649346 |
+| adamw-lr1e-5 | DBPedia | stage3-to-4 | +0.0031 | +0.00427125 | +0.00622021 | +0.00293817 | +0.00374946 | +0.00116954 |
+| adamw-lr1e-5 | FEVER | stage1-to-2 | +0.00857 | +0.00548125 | +0.00463995 | +0.00587499 | +0.00569012 | +0.0059412 |
+| adamw-lr1e-5 | FEVER | stage3-to-4 | +0.00393 | +0.00013375 | -0.000501231 | +0.000975975 | +0.000263973 | +0.00118338 |
+| adamw-lr1e-5 | FiQA2018 | stage1-to-2 | -0.0041 | +0.0163962 | +0.0162757 | +0.0170372 | +0.016316 | +0.0173279 |
+| adamw-lr1e-5 | FiQA2018 | stage3-to-4 | +0.00514 | +0.0110488 | +0.0110032 | +0.0118415 | +0.0110038 | +0.0123814 |
+| adamw-lr1e-5 | HotpotQA | stage1-to-2 | +0.00529 | +0.00639875 | +0.00626554 | +0.00550709 | +0.00639559 | +0.00332063 |
+| adamw-lr1e-5 | HotpotQA | stage3-to-4 | +0.00011 | +0.00105125 | +0.00130269 | +0.000706944 | +0.000976807 | +0.000827172 |
+| adamw-lr1e-5 | MSMARCO | stage1-to-2 | +0.01656 | +0.00518125 | +0.00853173 | +0.00409183 | +0.00443829 | +0.00328249 |
+| adamw-lr1e-5 | MSMARCO | stage3-to-4 | +0.00208 | -0.00016625 | +0.0067044 | -0.00238923 | -0.00183723 | -0.003551 |
+| adamw-lr1e-5 | NFCorpus | stage1-to-2 | +0.0018 | +0.00711375 | +0.00955025 | +0.0071367 | +0.00621309 | +0.00639434 |
+| adamw-lr1e-5 | NFCorpus | stage3-to-4 | -0.00162 | +0.00176625 | +0.00593401 | +0.000309572 | +0.000557851 | -0.00128828 |
+| adamw-lr1e-5 | NQ | stage1-to-2 | -0.01656 | +0.00674625 | -0.0012359 | +0.00775798 | +0.00915676 | +0.00805533 |
+| adamw-lr1e-5 | NQ | stage3-to-4 | +0.0142 | +0.00139875 | -0.00481485 | +0.00196906 | +0.00341734 | +0.00141054 |
+| adamw-lr1e-5 | QuoraRetrieval | stage1-to-2 | -0.00177 | +0.00156375 | +0.00129426 | +0.00222941 | +0.00163409 | +0.00268414 |
+| adamw-lr1e-5 | QuoraRetrieval | stage3-to-4 | -0.00066 | -0.00378375 | -0.003614 | -0.00365839 | -0.00383925 | -0.00452674 |
+| adamw-lr1e-5 | SCIDOCS | stage1-to-2 | +0.00228 | +8.125e-05 | -0.000164537 | +0.000499714 | +1.45267e-05 | +0.000494024 |
+| adamw-lr1e-5 | SCIDOCS | stage3-to-4 | +0.00244 | -0.00526625 | -0.00659294 | -0.00449818 | -0.00505845 | -0.0042638 |
+| adamw-lr1e-5 | SciFact | stage1-to-2 | -0.0104 | -0.00342125 | -0.00226106 | -0.00394212 | -0.00387484 | -0.00489544 |
+| adamw-lr1e-5 | SciFact | stage3-to-4 | +0.00536 | -0.00876875 | -0.00810855 | -0.00913778 | -0.00903637 | -0.0100307 |
+| adamw-lr1e-5 | TRECCOVID | stage1-to-2 | +0.01977 | +0.0137237 | +0.0167514 | +0.0126343 | +0.0127033 | +0.0119193 |
+| adamw-lr1e-5 | TRECCOVID | stage3-to-4 | -0.00084 | +0.00837625 | +0.0100687 | +0.00763643 | +0.0082183 | +0.0082937 |
+| adamw-lr1e-5 | Touche2020 | stage1-to-2 | +0.01465 | +0.0328862 | +0.0355676 | +0.0323407 | +0.0319421 | +0.0304922 |
+| adamw-lr1e-5 | Touche2020 | stage3-to-4 | -0.00325 | +0.0275388 | +0.0288226 | +0.0267495 | +0.0272757 | +0.025923 |
+| muon-lr1e-3 | ArguAna | stage1-to-2 | -0.01739 | -0.00953875 | -0.00953385 | -0.00938562 | -0.00954026 | -0.0095409 |
+| muon-lr1e-3 | ArguAna | stage3-to-4 | -0.01019 | -0.0134513 | -0.0135595 | -0.0136347 | -0.013455 | -0.0134792 |
+| muon-lr1e-3 | ClimateFEVER | stage1-to-2 | +0.04431 | +0.0270788 | +0.0268511 | +0.0267319 | +0.0270487 | +0.0270208 |
+| muon-lr1e-3 | ClimateFEVER | stage3-to-4 | +0.02302 | +0.0231663 | +0.0223688 | +0.0229677 | +0.0231374 | +0.0231512 |
+| muon-lr1e-3 | DBPedia | stage1-to-2 | +0.01544 | +0.00750375 | +0.00717946 | +0.00736902 | +0.00747728 | +0.00742427 |
+| muon-lr1e-3 | DBPedia | stage3-to-4 | +0.0007 | +0.00359125 | +0.0031447 | +0.00330177 | +0.00356863 | +0.00352895 |
+| muon-lr1e-3 | FEVER | stage1-to-2 | +0.00428 | +0.00632875 | +0.00680979 | +0.00689094 | +0.00633896 | +0.00637601 |
+| muon-lr1e-3 | FEVER | stage3-to-4 | +0.00196 | +0.00241625 | +0.00214689 | +0.00246008 | +0.00239347 | +0.00237758 |
+| muon-lr1e-3 | FiQA2018 | stage1-to-2 | +0.01882 | +0.0116337 | +0.0115046 | +0.0112869 | +0.0116249 | +0.0115435 |
+| muon-lr1e-3 | FiQA2018 | stage3-to-4 | -0.0016 | +0.00772125 | +0.00791558 | +0.0083711 | +0.0077298 | +0.00781147 |
+| muon-lr1e-3 | HotpotQA | stage1-to-2 | +0.00654 | +0.00516625 | +0.00519523 | +0.00530423 | +0.00516627 | +0.00517914 |
+| muon-lr1e-3 | HotpotQA | stage3-to-4 | +0.00092 | +0.00125375 | +0.00129791 | +0.00105517 | +0.00125434 | +0.00122368 |
+| muon-lr1e-3 | MSMARCO | stage1-to-2 | +0.00224 | +0.00745875 | +0.00748076 | +0.00752855 | +0.00748466 | +0.00750708 |
+| muon-lr1e-3 | MSMARCO | stage3-to-4 | +0.00442 | +0.00354625 | +0.00029768 | +0.00227957 | +0.00341559 | +0.00338407 |
+| muon-lr1e-3 | NFCorpus | stage1-to-2 | +0.01054 | +0.00274875 | +0.00188288 | +0.00237919 | +0.00271068 | +0.00271545 |
+| muon-lr1e-3 | NFCorpus | stage3-to-4 | +0.00423 | -0.00116375 | -0.00215986 | -0.00150626 | -0.00118667 | -0.00119705 |
+| muon-lr1e-3 | NQ | stage1-to-2 | +0.00908 | +0.00383625 | +0.00546594 | +0.00382272 | +0.00394302 | +0.00391358 |
+| muon-lr1e-3 | NQ | stage3-to-4 | -0.00267 | -7.625e-05 | +0.00319691 | +0.00114931 | +8.40367e-05 | +9.55984e-05 |
+| muon-lr1e-3 | QuoraRetrieval | stage1-to-2 | -0.0002 | +0.00049875 | +0.000501363 | +0.000894284 | +0.0004984 | +0.000546008 |
+| muon-lr1e-3 | QuoraRetrieval | stage3-to-4 | -0.00084 | -0.00341375 | -0.00340546 | -0.00402139 | -0.00341426 | -0.00352975 |
+| muon-lr1e-3 | SCIDOCS | stage1-to-2 | -0.00965 | +0.00258375 | +0.00237553 | +0.00258537 | +0.00259178 | +0.00261168 |
+| muon-lr1e-3 | SCIDOCS | stage3-to-4 | +0.00149 | -0.00132875 | -0.00125103 | -0.00105767 | -0.0013363 | -0.00131801 |
+| muon-lr1e-3 | SciFact | stage1-to-2 | -0.01381 | -0.00461375 | -0.00495469 | -0.00489998 | -0.00464258 | -0.00468034 |
+| muon-lr1e-3 | SciFact | stage3-to-4 | +0.01067 | -0.00852625 | -0.00865664 | -0.00860363 | -0.0085347 | -0.00854129 |
+| muon-lr1e-3 | TRECCOVID | stage1-to-2 | +0.03216 | +0.0117687 | +0.011497 | +0.0117401 | +0.0117428 | +0.0117516 |
+| muon-lr1e-3 | TRECCOVID | stage3-to-4 | -0.00828 | +0.00785625 | +0.00732296 | +0.00755162 | +0.00782096 | +0.0078047 |
+| muon-lr1e-3 | Touche2020 | stage1-to-2 | +0.03127 | +0.0179513 | +0.018067 | +0.0176726 | +0.0179591 | +0.017904 |
+| muon-lr1e-3 | Touche2020 | stage3-to-4 | +0.037 | +0.0140388 | +0.0144383 | +0.0141811 | +0.0140439 | +0.0140302 |
+| normuon-lr1e-3 | ArguAna | stage1-to-2 | -0.02659 | -0.0094925 | -0.00949336 | -0.00917963 | -0.00944865 | -0.00892902 |
+| normuon-lr1e-3 | ArguAna | stage3-to-4 | -0.00147 | -0.0132575 | -0.0132586 | -0.0119049 | -0.0132169 | -0.0122718 |
+| normuon-lr1e-3 | ClimateFEVER | stage1-to-2 | +0.05218 | +0.0277075 | +0.0277101 | +0.0275207 | +0.0278237 | +0.0278633 |
+| normuon-lr1e-3 | ClimateFEVER | stage3-to-4 | +0.01234 | +0.0239425 | +0.0239345 | +0.024529 | +0.0242672 | +0.0241944 |
+| normuon-lr1e-3 | DBPedia | stage1-to-2 | +0.01333 | +0.008555 | +0.00854883 | +0.0104667 | +0.00894278 | +0.0105862 |
+| normuon-lr1e-3 | DBPedia | stage3-to-4 | -0.00169 | +0.00479 | +0.00478861 | +0.00560965 | +0.00491995 | +0.00544958 |
+| normuon-lr1e-3 | FEVER | stage1-to-2 | +0.00479 | +0.0065675 | +0.00657213 | +0.00548137 | +0.00614462 | +0.00423639 |
+| normuon-lr1e-3 | FEVER | stage3-to-4 | +0.0002 | +0.0028025 | +0.00280152 | +0.00355553 | +0.00285046 | +0.00399208 |
+| normuon-lr1e-3 | FiQA2018 | stage1-to-2 | +0.04251 | +0.0064475 | +0.00644768 | +0.00562785 | +0.00652648 | +0.00558407 |
+| normuon-lr1e-3 | FiQA2018 | stage3-to-4 | -0.00484 | +0.0026825 | +0.00268248 | +0.00223639 | +0.00269667 | +0.00158902 |
+| normuon-lr1e-3 | HotpotQA | stage1-to-2 | +0.00799 | +0.0050975 | +0.00509678 | +0.00581009 | +0.00516096 | +0.00639483 |
+| normuon-lr1e-3 | HotpotQA | stage3-to-4 | -0.00055 | +0.0013325 | +0.00133237 | +0.00215215 | +0.00133418 | +0.00256285 |
+| normuon-lr1e-3 | MSMARCO | stage1-to-2 | +0.00166 | +0.0082075 | +0.00820806 | +0.00803738 | +0.00809693 | +0.00826137 |
+| normuon-lr1e-3 | MSMARCO | stage3-to-4 | +0.00171 | +0.0044425 | +0.00442759 | +0.00644464 | +0.00545032 | +0.00679399 |
+| normuon-lr1e-3 | NFCorpus | stage1-to-2 | +0.00216 | +0.00562 | +0.00561213 | +0.006216 | +0.00634369 | +0.00706002 |
+| normuon-lr1e-3 | NFCorpus | stage3-to-4 | +0.00083 | +0.001855 | +0.00185222 | +0.0016254 | +0.00219372 | +0.00241266 |
+| normuon-lr1e-3 | NQ | stage1-to-2 | +0.00988 | +0.002895 | +0.0028967 | +0.0043737 | +0.00284477 | +0.00594539 |
+| normuon-lr1e-3 | NQ | stage3-to-4 | 0 | -0.00087 | -0.000854382 | -0.00181575 | -0.00178318 | -0.000332724 |
+| normuon-lr1e-3 | QuoraRetrieval | stage1-to-2 | -0.00211 | +0.001015 | +0.00101484 | -0.000737318 | +0.00104615 | -0.000337655 |
+| normuon-lr1e-3 | QuoraRetrieval | stage3-to-4 | -0.00129 | -0.00275 | -0.00274958 | -0.00252992 | -0.00280039 | -0.0030281 |
+| normuon-lr1e-3 | SCIDOCS | stage1-to-2 | -0.00192 | +0.0010225 | +0.00102496 | +0.000535943 | +0.00120282 | +0.000892913 |
+| normuon-lr1e-3 | SCIDOCS | stage3-to-4 | -0.00029 | -0.0027425 | -0.00273887 | -0.00325523 | -0.00302672 | -0.00310214 |
+| normuon-lr1e-3 | SciFact | stage1-to-2 | -0.02685 | -0.0001625 | -0.000166004 | +0.000383538 | -3.22127e-05 | +0.000523292 |
+| normuon-lr1e-3 | SciFact | stage3-to-4 | +0.00561 | -0.0039275 | -0.00392719 | -0.00407382 | -0.00384424 | -0.00379791 |
+| normuon-lr1e-3 | TRECCOVID | stage1-to-2 | +0.01492 | +0.012585 | +0.0125801 | +0.0133309 | +0.0127958 | +0.0129446 |
+| normuon-lr1e-3 | TRECCOVID | stage3-to-4 | +0.0054 | +0.00882 | +0.008814 | +0.0098062 | +0.00895504 | +0.00878651 |
+| normuon-lr1e-3 | Touche2020 | stage1-to-2 | +0.02676 | +0.0218 | +0.0217901 | +0.0228623 | +0.0224503 | +0.0235254 |
+| normuon-lr1e-3 | Touche2020 | stage3-to-4 | +0.02582 | +0.018035 | +0.0180284 | +0.0184716 | +0.0184295 | +0.018715 |
+
+> Temporal boundary: The shared-start randomization identifies optimizer-level accumulated effects. The post-treatment spectral predictor analysis is a small-sample, falsifiable causal-chain triangulation, not a formally identified causal mediation estimate.
+
+> Dose/bridge boundary: The transplant randomizes spectral components at fixed weights and can identify immediate functional effects. Its task-aligned forward prediction is out-of-run evidence for a causal-chain bridge, but it is not a trained spectral-operator intervention and cannot by itself identify formal mediation of final BEIR gains.
+
+<!-- MECHANISM:END -->
+
+## Causal and confirmatory completion design
+
+### Routing-matched AdamW
+
+The Muon-family recipes route hidden matrices to one optimizer and all other parameters to auxiliary
+AdamW at 3e-6. Four hybrid AdamW controls use the same routing and two learning rates—one for hidden
+matrices and 3e-6 for auxiliary parameters—so that a gain cannot be attributed merely to freezing the
+auxiliary learning rate. Because hybrid AdamW and Muon use independently swept hidden-matrix
+learning-rate ranges, this is a matched-routing comparison of separately tuned recipes, not an
+identification of orthogonalization or update scale alone.
+
+The complete 14-task control is numerically negligible. Hybrid-minus-native AdamW mean nDCG@10 is
++0.000201, -0.000331, +0.000383, and +0.000055 at hidden learning rates 1e-6, 3e-6, 1e-5, and 3e-5,
+respectively. Averaged over all 56 task-by-learning-rate units, the change is +0.000077, with 28
+wins, 6 ties, and 22 losses. The best native AdamW point moves from 0.589867 to 0.589922 under hybrid
+routing. This rules out a routing effect of the scale needed to explain the optimizer-level results;
+it still does not identify orthogonalization separately from the matrix rule or update scale.
+
+### Shared-start accumulation
+
+All nine DenseOn short branches start from the same 60% AdamW checkpoint. They use a fixed
+50,000-example subset, three independent order seeds, the three optimizer operators, and a common
+global hidden-update-to-weight target of 5e-4. Five checkpoints expose whether a locally weaker
+Muon-family direction catches and passes AdamW as feedback accumulates.
+
+The prospective endpoint requires improvement in both query-disjoint loss p95 and unseen margin p05;
+a mean-only win is insufficient.
+
+### Three-seed confirmation
+
+Recipes are selected without BEIR using the frozen validation probe, then retrained with seeds
+314159, 271828, and 161803. All five checkpoints are evaluated on all 14 decontaminated tasks for
+the descriptive trajectory, while only the independently rooted final checkpoint enters formal
+confirmation. The
+hierarchical seed-by-task bootstrap reports nominal and Bonferroni familywise intervals for AdamW,
+Muon, and NorMuon contrasts. The correction still covers the original six prespecified comparisons,
+although only the three DenseOn rows are reported. If a familywise interval crosses zero, the
+headline is inconclusive.
+
+The three seeds do not select different queries or positives. Each view contains the same 500,000
+ordered query/positive groups, bound by the shared identity SHA-256
+`e2f95eefc78c8362bc5c57d90c704756fcea2f2375301f074213205df20ae790`; only the seven negatives per
+group are resampled, without replacement, from the same ten-candidate pools. The pairwise fractions
+of groups whose seven-negative tuple changes are 0.991580 (314159 versus 271828), 0.991684 (314159
+versus 161803), and 0.991772 (271828 versus 161803). The three materialized dataset fingerprints are
+`9d966b7fc5642163`, `3e876a77982f6e63`, and `c82e3781917f30a0`, respectively. A full read-only audit
+recomputes every dataset-file hash, row-ledger hash, query/positive identity, distinct non-positive
+negative constraint, and pairwise-change floor before a run is accepted. Thus seed uncertainty here
+measures data order and hard-negative sampling, not a change in the underlying query population.
+
+### Spectrum-versus-basis transplant
+
+At ten frozen common states, each Muon-family update is decomposed as U diag(s) V-transpose. We
+construct Adam basis/Muon spectrum, Muon basis/Adam spectrum, and head/middle/tail band transfers,
+then Frobenius-match the interventions before measuring margins and tail losses. This is a post-hoc
+causal decomposition whose design was frozen before its outputs existed.
+
+### Falsifiable mechanism bridge
+
+The optimizer's familiar spectral signature is not itself a retrieval contribution. We therefore
+freeze two downstream tests before any short-branch or transplant output exists. First, exact
+spectra of all 45 adjacent short-branch displacements ask whether early tail singular-value energy
+predicts final loss p95 and unseen-margin p05 across a held-out seed better than optimizer labels;
+stable/entropy rank, band energy, and row imbalance are reported in full, while total update and
+weight norms are negative controls. Second, the transplant must exhibit a 0/.25/.5/.75/1 dose
+response, prespecified tail-band localization, and spectrum-over-basis specificity at at least eight
+of ten anchors. Its task-level immediate effects must then improve leave-one-run-out prediction of
+84 same-task, next-checkpoint BEIR changes, and each passing spectrum predictor must improve over
+both the task-transition baseline and its matched basis predictor.
+
+These tests can finish successfully while rejecting the hypothesis. In that case the report will
+say that Muon changes local update geometry but the tested spectral behavior does **not** explain
+the retrieval outcome. We call this falsifiable causal-chain triangulation, not formal causal
+mediation; the dated rules and negative controls are bound in
+`configs/causal_chain_analysis.json`.
+
+## Audited completion status
+
+The marker-owned block below is regenerated from the scoped, content-audited outcome manifest.
+
+<!-- OUTCOMES:BEGIN -->
+
+## Causal controls and confirmation
+
+The tables in this section are generated only after all frozen routing, local-step, shared-start, and confirmatory manifests pass their cardinality and content-hash contracts. They separate four questions that a single optimizer leaderboard cannot.
+
+### Does AdamW parameter routing explain the result?
+
+| Family | LR | AdamW | hybrid AdamW | difference | task W/T/L |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | 1e-06 | 0.5650 | 0.5652 | 0.0002 | 9/1/4 |
+| DenseOn | 3e-06 | 0.5834 | 0.5831 | -0.0003 | 5/2/7 |
+| DenseOn | 1e-05 | 0.5881 | 0.5885 | 0.0004 | 7/2/5 |
+| DenseOn | 3e-05 | 0.5899 | 0.5899 | 0.0001 | 7/1/6 |
+
+All four native AdamW learning rates are retained. The paired difference isolates Muon-style hidden/auxiliary parameter routing; it does not isolate orthogonalization.
+
+### Do matched optimizer directions have immediate functional effects?
+
+| Family | Direction source | Applied sign | delta loss | delta margin | delta MRR | delta top-1 | anchors lowering loss |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | AdamW | descent | -0.0135 | 0.0009 | 0.0032 | 0.0049 | 0.90 |
+| DenseOn | AdamW | sign reversal | 0.0232 | -0.0014 | -0.0040 | -0.0049 | 0.00 |
+| DenseOn | Muon | descent | -0.0099 | 0.0006 | 0.0025 | 0.0031 | 0.90 |
+| DenseOn | Muon | sign reversal | 0.0109 | -0.0008 | -0.0024 | -0.0045 | 0.10 |
+| DenseOn | NorMuon | descent | -0.0091 | 0.0005 | 0.0037 | 0.0054 | 0.90 |
+| DenseOn | NorMuon | sign reversal | 0.0088 | -0.0006 | -0.0021 | -0.0031 | 0.10 |
+
+Every row uses the common relative scale 0.001 at fixed weights with per-tensor Frobenius matching; the sign-reversal row is the directionality control. These are immediate virtual-step effects, not claims that one step reproduces a native trajectory.
+
+### Do direction effects accumulate from a shared checkpoint?
+
+| Family | Final-stage contrast | delta loss (W/T/L) | delta margin (W/T/L) | delta MRR (W/T/L) | delta top-1 (W/T/L) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon - AdamW | -0.0681 (3/0/0) | 0.0024 (3/0/0) | 0.0161 (3/0/0) | 0.0229 (3/0/0) |
+| DenseOn | NorMuon - AdamW | -0.0484 (3/0/0) | 0.0017 (3/0/0) | 0.0098 (3/0/0) | 0.0133 (3/0/0) |
+| DenseOn | NorMuon - Muon | 0.0196 (1/0/2) | -0.0007 (1/0/2) | -0.0063 (0/0/3) | -0.0095 (0/0/3) |
+
+These are final-stage means over three independently ordered 50K-query branches starting from the same 60% AdamW checkpoint and calibrated to the same hidden update-to-weight target. They use frozen probes rather than a second full BEIR run.
+
+### Does the tail signature survive accumulation?
+
+| Family | Challenger | delta on AdamW tail | delta on challenger tail | tail Jaccard | post-hoc regime |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon | -0.1366 | 0.0203 | 0.2787 | tail redistribution |
+| DenseOn | NorMuon | -0.1402 | 0.0110 | 0.2698 | tail redistribution |
+
+The fixed-state cross-tail identity diagnostic is post hoc: it distinguishes severity suppression on a shared fragile-query set from redistribution to a new worst set. The separately frozen three-seed endpoint rule tests whether the loss-tail and unseen-margin signs persist after shared-start accumulation:
+
+| Family | Challenger | validation loss p95 delta | loss seed wins | unseen margin p05 delta | margin seed wins | decision |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon | -0.1752 | 3/3 | -0.0063 | 0/3 | mixed |
+| DenseOn | NorMuon | -0.1335 | 3/3 | -0.0040 | 1/3 | mixed |
+
+This accumulated persistence test is prospective relative to the branch outcomes, but it does not establish that tail stability mediates a full-training BEIR gain.
+
+### Post-hoc spectrum-versus-basis causal decomposition
+
+| Family | Immediate metric | spectrum main effect | basis main effect | interaction |
+| --- | ---: | ---: | ---: | ---: |
+| DenseOn | contrastive loss | -0.0000 | 0.0044 | -0.0104 |
+| DenseOn | positive margin | -0.0000 | -0.0003 | 0.0006 |
+
+The 2x2 transplant holds the checkpoint and evaluation examples fixed while swapping singular values and singular vectors. It therefore causally decomposes the immediate functional difference at these fixed states, but it is a post-hoc explanatory intervention rather than a confirmatory retrieval analysis. Its query-tail readout is:
+
+| Family | Condition | loss p95 delta | margin p05 delta | delta on AdamW tail | delta on condition tail | tail Jaccard |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon native | 0.1114 | -0.0074 | -0.1143 | 0.0268 | 0.3333 |
+| DenseOn | Adam basis + Muon spectrum | 0.1394 | -0.0078 | -0.1237 | 0.0245 | 0.2632 |
+| DenseOn | Muon basis + Adam spectrum | 0.1450 | -0.0078 | -0.1431 | 0.0460 | 0.2316 |
+
+These fixed-state contrasts can attribute an immediate effect to spectrum versus basis; they cannot show that either component causes the full-training BEIR outcome.
+
+### Does the validation-frozen recipe replicate?
+
+| Family | Contrast | mean delta nDCG@10 | hierarchical 95% CI | familywise 95% CI | seed W/T/L | task W/T/L |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| DenseOn | Muon - AdamW | -0.0306 | [-0.0426, -0.0181] | [-0.0464, -0.0138] | 0/0/3 | 2/0/12 |
+| DenseOn | NorMuon - AdamW | -0.0304 | [-0.0413, -0.0182] | [-0.0446, -0.0138] | 0/0/3 | 2/0/12 |
+| DenseOn | NorMuon - Muon | 0.0002 | [-0.0087, 0.0061] | [-0.0126, 0.0084] | 2/0/1 | 8/0/6 |
+
+Recipes were selected on the query-disjoint validation set before these runs. Intervals independently resample seeds and tasks; aggregate MTEB files do not support a query-level significance claim. The nominal interval is shown beside a Bonferroni familywise 95% interval over all six comparisons prespecified before the post-hoc Dense-only scope amendment. Only the familywise interval determines positive, negative, or inconclusive headline language; every contrast and all win counts remain visible.
+
+### Frozen causal-chain numerical tests
+
+Overall frozen chain: **claimable negative**. Temporal: **claimable negative**; dose/band/forward bridge: **claimable negative**.
+
+#### Shared-start temporal decision
+
+| Criterion | Decision | Audited numerical evidence |
+| --- | --- | --- |
+| treatment_shift | pass | muon=3/3/normuon=3/3 |
+| outcome_shift | fail | muon=0/3/normuon=1/3 |
+| held_out_prediction | fail | validation loss p95=-0.237277 (decision gap -2.372766e-01); unseen margin p05=-0.688154 (decision gap -6.881539e-01) |
+| negative_control | pass | validation loss p95 primary=-0.237277, update/weight=-2.46124/-0.900387, decision gaps=+2.223960e+00/+6.631100e-01; unseen margin p05 primary=-0.688154, update/weight=-3.55619/-0.832549, decision gaps=+2.868040e+00/+1.443956e-01 |
+| coefficient_behavior | fail | validation loss p95 muon abs(beta)=0.182353 to 5.20136 (gap -5.019009e+00); normuon abs(beta)=0.131624 to 5.58902 (gap -5.457397e+00); unseen margin p05 muon abs(beta)=0.00439217 to 0.620675 (gap -6.162827e-01); normuon abs(beta)=0.00213449 to 0.656986 (gap -6.548516e-01) |
+
+The decision is all-required: failure of any row is a complete negative result.
+
+#### Fixed-state dose, band, and basis tests
+
+| Criterion | Supporting anchors | Threshold | Decision |
+| --- | --- | --- | --- |
+| loss_dose_monotone | 0/10 | 8 | fail |
+| margin_dose_monotone | 0/10 | 8 | fail |
+| tail_band_best_both_metrics | 0/10 | 8 | fail |
+| basis_swap_negative_control | 2/10 | 8 | fail |
+
+#### Held-run retrieval bridge (84 rows)
+
+| Predictor | Kind | RMSE | Improvement | Matched control |
+| --- | --- | --- | --- | --- |
+| baseline | baseline | 0.0110162 | 0 | — |
+| spectrum_loss | spectrum | 0.0111671 | -0.000150847 | basis_loss |
+| spectrum_margin | spectrum | 0.0110875 | -7.12409e-05 | basis_margin |
+| basis_loss | basis_negative_control | 0.0110172 | -9.78894e-07 | — |
+| basis_margin | basis_negative_control | 0.0110502 | -3.39735e-05 | — |
+
+| Spectrum predictor | ΔRMSE | Matched basis | Basis ΔRMSE | Baseline gap | Control gap | Decision |
+| --- | --- | --- | --- | --- | --- | --- |
+| spectrum_loss | -0.000150847 | basis_loss | -9.78894e-07 | -1.508471e-04 | -1.498682e-04 | fail |
+| spectrum_margin | -7.12409e-05 | basis_margin | -3.39735e-05 | -7.124088e-05 | -3.726742e-05 | fail |
+
+> Temporal boundary: The shared-start randomization identifies optimizer-level accumulated effects. The post-treatment spectral predictor analysis is a small-sample, falsifiable causal-chain triangulation, not a formally identified causal mediation estimate.
+
+> Dose/bridge boundary: The transplant randomizes spectral components at fixed weights and can identify immediate functional effects. Its task-aligned forward prediction is out-of-run evidence for a causal-chain bridge, but it is not a trained spectral-operator intervention and cannot by itself identify formal mediation of final BEIR gains.
+
+## Conclusion
+
+Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.
+
+<!-- OUTCOMES:END -->
+
+## Weight-space audit trail
+
+The complete trajectory tables and figures are retained for reproducibility:
+
+- [matched Muon/NorMuon trajectory figure](../reports/weight-space/optimizer_pair_contrast_trajectory.svg);
+- [all-optimizer geometry phase figure](../reports/weight-space/optimizer_geometry_phase.svg);
+- [weight-space report and exact definitions](../reports/weight-space/README.md).
+
+NorMuon and Muon end at nearly identical pretrained-reference displacement scales, while NorMuon has
+substantially lower row-norm CV and top-1%-row energy concentration. This is useful separation of
+their operators, but it is not causal retrieval evidence.
+
+## Engineering and fault recovery
+
+The first formal Muon implementation used PyTorch's native bfloat16 Newton–Schulz addmm path. During
+long distributed runs it produced repeated asynchronous CUDA/cuBLAS failures and NVIDIA Xid 13/43
+events across multiple physical GPUs. ECC counters stayed clean, and controlled replays moved the
+failure across devices, which argued against one bad card.
+
+Two alternatives completed synchronized stress tests on all eight devices: FP32/TF32 addmm and an
+algebraically equivalent bfloat16 decomposition using matrix multiplication plus elementwise
+combinations. We selected the latter to preserve Muon's bfloat16 representation, polynomial,
+coefficients, momentum, learning-rate adjustment, and update norm. Only the operation decomposition
+changed. It is recorded as unfused-bfloat16-v1.
+
+All native-addmm Muon histories were quarantined. Every accepted Muon and NorMuon run restarted from
+the pinned base state and records the new implementation ID. No pre- and post-mitigation history is
+mixed. Resumption uses only deep-validated checkpoints, and useful-time ledgers exclude repeated work,
+initialization, pauses, and failed segments.
+
+This engineering result is practical rather than algorithmic: changing algebraically equivalent
+bfloat16 operations can change rounding, so the accepted implementation is fully pinned and covered
+by numerical and distributed stress tests.
+
+## Reproduce the DenseOn study
+
+The repository is currently private during completion. Credentials are never stored in source.
+
+### Install
+
+~~~bash
+git clone https://github.com/qcznlp/embedding-optimizer-study.git
+cd embedding-optimizer-study
+uv venv --python 3.12 .venv-formal
+uv pip sync --python .venv-formal/bin/python --no-config \
+  --require-hashes --torch-backend cu129 requirements-formal.lock
+uv pip install --python .venv-formal/bin/python --no-config --no-deps \
+  --require-hashes --no-build-isolation-package flash-attn \
+  -r requirements-formal-flash.txt
+uv pip install --python .venv-formal/bin/python --no-config --no-deps -e .
+.venv-formal/bin/embed-optim-verify-runtime --spec configs/formal_runtime.json
+~~~
+
+The portable `uv.lock` remains the faster developer/CI environment; it is intentionally distinct
+from this hash-locked CUDA 12.9 reconstruction and is not used for formal training or evaluation.
+
+### Prepare and audit the shared 500K data
+
+~~~bash
+embed-optim-prepare
+embed-optim-prepare --audit-only
+~~~
+
+### Run the 12-run DenseOn discovery sweep
+
+~~~bash
+embed-optim-matrix \
+  --matrix configs/experiment.yaml \
+  --families dense \
+  --gpus-a 0,1,2,3 \
+  --gpus-b 4,5,6,7
+~~~
+
+The historical matrix still contains archival LateOn definitions. The explicit family flag is
+mandatory for the active Dense-only study.
+
+### Evaluate all five discovery checkpoints
+
+~~~bash
+embed-optim-evaluate \
+  --matrix configs/experiment.yaml \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --stages 1 2 3 4 5 \
+  --gpus-a 0,1,2,3,4,5,6,7 \
+  --gpus-b 4,5,6,7
+~~~
+
+### Run the frozen Dense completion queue
+
+After generating the confirmatory and short-branch matrices, the two resumable queues can run on
+independent four-GPU pools:
+
+~~~bash
+embed-optim-family-training-queue --pool a --gpus 0,1,2,3 --port 30110
+embed-optim-family-training-queue --pool b --gpus 4,5,6,7 --port 30120
+~~~
+
+After both ledgers are complete, the Dense completion pipeline audits training, evaluates hybrid and
+confirmatory checkpoints, runs the short-branch probes, extracts and audits the 45 exact temporal
+spectra, performs the spectral transplant, and runs both frozen mechanism-bridge analyses:
+
+~~~bash
+embed-optim-dense-completion \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --training-plan configs/dense_training_queue.json \
+  --training-ledgers \
+    logs/dense-only-runtime/training-queue-a.json \
+    logs/dense-only-runtime/training-queue-b.json \
+  --workdir "$PWD" \
+  --gpus 0,1,2,3,4,5,6,7 \
+  --gpus-b 4,5,6,7 \
+  --include-validation \
+  --resume
+~~~
+
+All commands are resumable and content-addressed. Do not edit the frozen queue or scope files during
+an active run. Each pool is protected by an exclusive lease and writes `complete=false` before it
+waits or resumes. Existing terminal runs are skipped only after the same uncached deep checkpoint
+payload audit used by the downstream watcher. Failed completed artifacts are preserved under
+`.invalid-completed-runs/` before a clean rerun, while a 24-hour process-group watchdog prevents a
+stalled matrix command from holding a pool indefinitely.
+
+If completion is launched before the queues exit, add their exact process IDs as
+`--wait-pids POOL_A_PID POOL_B_PID`. That wait does not replace the ledger gate: completion requires
+exactly two unique, complete Dense-only ledgers for pools `a` and `b`, verifies their nine jobs and
+shared frozen-plan hash, and hashes both ledger contents. To recover after interruption, finish or
+repair both queues first and rerun this same command with `--resume`. Resume reconstructs the current
+plan, scope, ledger-content, source, and step-command contract and reruns orchestration from step 1;
+it never accepts a previously completed prefix. Individual evaluation units are reused only when
+their own content-addressed checkpoint/runtime/result audits pass. This full rerun also upgrades
+legacy completion ledgers instead of grandfathering them into the stricter contract.
+
+The same completion ledger evaluates and audits the additional 224 hybrid and 504 confirmatory
+stage-1–4 units, then builds and re-audits the 65-row trajectory CSV plus PDF/SVG figures under
+`reports/dense-retrieval-dynamics/`. Its read-only audit reconstructs all 910 joined task units and
+rejects changed checkpoints, result provenance, figures, tables, or manifests.
+
+### Rebuild the post-hoc corpus-size diagnostic
+
+This CPU-only diagnostic reads the immutable 840-cell Dense discovery table, recomputes the
+task-stage associations and robustness checks, and verifies the generated Blog, paper, CSV, figure,
+and manifest bytes:
+
+~~~bash
+embed-optim-corpus-size-diagnostic
+embed-optim-corpus-size-diagnostic --audit-only
+~~~
+
+### Run the post-hoc candidate-breadth diagnostic
+
+This mechanism diagnostic is not part of the frozen confirmatory comparison. It keeps 224 balanced,
+query-disjoint query-positive pairs fixed and expands each negative set through the nested widths 7,
+10, 32, 128, 512, and 2,048 from the pinned mined order. First materialize and audit the exact source
+rows:
+
+~~~bash
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901 \
+  --resume
+
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901 \
+  --audit-only
+~~~
+
+Then evaluate the 12 discovery final checkpoints and generate the frozen breadth decision:
+
+~~~bash
+embed-optim-candidate-breadth-matrix \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
+~~~
+
+After the canonical Dense finalizer completes, the publication-safe one-command handoff is:
+
+~~~bash
+embed-optim-candidate-breadth-release \
+  --upstream-finalization-ledger logs/dense-finalization-pipeline/pipeline-ledger.json \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7 \
+  --workdir "$PWD" \
+  --resume
+~~~
+
+This controller first validates the exact 18-step upstream finalization ledger, the hashed
+completion source, and every attempt log. It records that historical ledger as an immutable input
+rather than recomputing its old implementation hash after the post-hoc source addition. Every new
+candidate, rendering, paper, test, and distribution step is instead bound to the complete current
+source contract and is rechecked before and after execution. Resume reruns the orchestration; only
+evaluator units whose own content-addressed audits pass may be reused.
+
+All 12 width-7 evaluations must reproduce the existing validation evaluator within the predeclared
+sample-level tolerance before the candidate-breadth bridge can be interpreted. Structural source
+or checkpoint disagreement fails hard. A numerical bridge failure is preserved, forces the frozen
+decision to `not_supported`, and labels later padded widths as post-failure diagnostics. The
+decision is labelled supported only if the bridge passes and both Muon-family optimizers reverse
+their high-dose-versus-retrieval-optimal loss and margin ordering at width 2,048. A halfway movement
+toward zero is labeled attenuation, while an unchanged anti-calibrated ordering falsifies the
+proposed account. A passing rule would be consistent with missing-candidate coverage contributing
+to the gap; it would not establish that contribution causally. These rules were fixed before any
+candidate-breadth data or scores were visible, but the
+diagnostic itself was designed after the shortlist--corpus gap was observed and therefore remains
+post hoc. For the paired loss and margin contrasts, the pre-result analysis plan also records
+descriptive 95% source-stratified paired percentile bootstrap intervals: 50,000 resamples preserve
+the seven fixed 32-query source strata independently. These intervals do not enter the frozen
+supported/attenuation/not-supported rule. The summary emits the exact calibration and paired-contrast
+tables together with deterministic SVG/PDF publication panels under `reports/candidate-breadth/`;
+the audit command verifies every output hash against the source-bound run manifests. The publication
+renderer owns only the candidate-breadth blog marker and generated LaTeX file; its audit recomputes
+both and verifies the publication manifest before paper build.
+
+### Render the Dense paper and blog
+
+After the Dense completion ledger passes, use the canonical resume-safe finalizer. It regenerates all
+scoped blog blocks and reports before running the paper, test, build, and distribution gates:
+
+~~~bash
+embed-optim-dense-finalize \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --completion-ledger logs/dense-completion-pipeline/pipeline-ledger.json \
+  --workdir "$PWD" \
+  --include-wandb \
+  --resume
+~~~
+
+Use `--wait-pid COMPLETION_PID` only when the exact completion process is still running. After a
+failure, rerun the finalizer with `--resume` only once the completion ledger is clean and complete;
+even an already-complete finalization ledger is accepted only after its current completion-ledger,
+training-plan, pool-ledger, scope, and step-contract provenance is revalidated, after which the full
+canonical finalization orchestration is rerun from the beginning.
+If the completion ledger predates those bindings, upgrade it with completion `--resume` before
+retrying the finalizer.
+Publication completion also requires live W&B access and all 34 frozen Dense source runs to be
+finished and provenance-consistent; an offline or partial pass cannot produce a complete release.
+
+Its reporting sequence begins with fresh temporal-predictor and temporal short-branch audits. The
+scoped discovery aggregate then regenerates `RESULTS` and `SYSTEMS` before the dose/band fresh audit
+binds itself to that coverage; retrieval dynamics next regenerates `TASK-DELTA-STABILITY`. The later
+renderers consume and audit those blocks:
+
+~~~bash
+embed-optim-temporal-short-branch-predictors \
+  --protocol configs/short_branch_protocol.json \
+  --analysis-protocol configs/causal_chain_analysis.json \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --output-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --cache-dir reports/short-branch/temporal-predictor-cache \
+  --audit
+
+embed-optim-temporal-short-branch \
+  --protocol configs/causal_chain_analysis.json \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --predictor-csv reports/short-branch/temporal_mechanism_predictors.csv \
+  --predictor-manifest reports/short-branch/temporal_mechanism_predictors.manifest.json \
+  --outcome-csv reports/tail-stability/short_branch_checkpoint_tail.csv \
+  --outcome-manifest reports/tail-stability/summary_manifest.json \
+  --output-dir reports/temporal-short-branch \
+  --audit
+
+embed-optim-aggregate \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --strict
+
+embed-optim-dose-band-analysis \
+  --protocol configs/causal_chain_analysis.json \
+  --audit
+
+embed-optim-summarize-retrieval-dynamics \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+
+embed-optim-render-mechanism-report \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+
+embed-optim-render-outcome-report \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+
+embed-optim-render-paper-results \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+
+embed-optim-audit-paper \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --strict
+
+pytest -q
+ruff check src tests scripts/eval
+ruff format --check src tests scripts/eval
+make -C paper release
+embed-optim-audit-paper \
+  --strict \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+embed-optim-audit-wandb-dense-sources \
+  --repository "$PWD" \
+  --scope-amendment configs/dense_scope_amendment.json \
+  --experiment-matrix configs/experiment.yaml \
+  --hybrid-matrix configs/hybrid_adamw.yaml \
+  --training-plan configs/dense_training_queue.json \
+  --receipt reports/wandb/dense_source_provenance_audit.json
+embed-optim-sync-wandb \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+uv build
+embed-optim-audit-distribution
+~~~
+
+This ordering is deliberate: the first W&B step is a read-only audit of the 12 discovery, 4 hybrid,
+9 confirmatory, and 9 shared-start source runs. It checks their exact full configs, Git provenance,
+finished state, required tags/group, and normalized histories before any remote update. The next
+step synchronizes and reads back the 12 canonical discovery histories, and only then does the release
+build package the secret-free, self-hashed 34-run audit receipt.
 
 ## Limitations
 
-- This is one epoch on one pretrained backbone family; it does not establish a universal optimizer
-  ranking.
-- Muon and NorMuon necessarily use AdamW for non-matrix parameters, so the comparison is between
-  practical optimizer recipes rather than mathematically pure single-optimizer systems.
-- Four learning rates improve robustness but do not guarantee that every optimizer's global optimum is
-  inside the sweep.
-- Every configuration uses the same single training/data seed (42). This controls the comparison but
-  does not quantify variance across independent seeds.
-- Seed 42 fixes data selection, negative choices, Trainer sampling, and model RNG state, but the
-  high-throughput FlashAttention/TF32 CUDA path is not configured for bitwise deterministic replay.
-- No in-batch negatives makes the groups controlled and memory predictable, but the absolute scores are
-  not directly comparable to recipes that use large cross-device negative pools.
-- Omitting the paper's knowledge-distillation and DenseOn Matryoshka auxiliary objectives isolates the
-  optimizer comparison, but it also means these scores are not a reproduction of the released models'
-  full supervised training recipe.
-- Approximate PLAID retrieval can introduce a small difference from exhaustive late-interaction scoring;
-  index settings are held constant for every checkpoint.
+- The scope reduction occurred after discovery and exploratory mechanism results were visible.
+- Discovery best-LR estimates use the evaluation suite for selection and are not confirmatory.
+- The formal confirmation covers one DenseOn base checkpoint, one epoch, one dataset construction,
+  and three new sampling seeds; it is not evidence for all dense retrievers.
+- The 14 BEIR tasks are heterogeneous benchmarks rather than independent population draws.
+- Common-state virtual steps identify immediate direction effects, not full optimization paths.
+- Weight-space and representation correlations are descriptive unless an intervention changes the
+  retrieval function as predicted.
+- The five retained checkpoints give a coarse trajectory, not a per-step path length.
+- The nested candidate-breadth experiment was designed after the shortlist--corpus gap was visible.
+  Its mined lists contain one designated positive but no exhaustive relevance judgments for the
+  remaining documents and may therefore include unjudged relevant passages. Even a passing frozen
+  rule supports a coverage explanation only as post-hoc mechanism evidence; it is neither
+  confirmation nor formal mediation.
+- The prerequisite width-7 bridge failed because the historical flattened/packed encoder is not
+  batch invariant in the pinned stack. Consequently, the historical training and validation
+  comparison is about that exact implementation. A clean claim about eight-way dense-retriever
+  training requires a new no-packing retrain in a separate namespace.
+- Runtime conclusions are specific to the pinned hardware/software stack.
 
-## Reproduction and audit trail
+## Current defensible conclusion
 
-All code, configs, pinned revisions, tests, and commands are in the
-[project repository](https://github.com/qcznlp/embedding-optimizer-study). The repository is currently
-private at the user's request and is structured for a later public release. The
-[W&B project](https://wandb.ai/stevezenguom/embedding-optimizer-study) contains training curves and
-resolved run configurations. Local evaluation artifacts are reduced by `embed-optim-aggregate`, which
-also checks expected matrix coverage before the results section is generated.
+<!-- FINAL-CONCLUSION:BEGIN -->
 
-Checkpoint resumes can make an SDK run contain repeated optimizer steps even when the local Trainer
-state is correct. For the final dashboard, `embed-optim-sync-wandb` therefore publishes one immutable,
-content-addressed canonical history from every completed Trainer state. Raw resume segments are kept
-for system telemetry; no source run is deleted.
+Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.
 
-## References
+<!-- FINAL-CONCLUSION:END -->
 
-- Loshchilov and Hutter, [Decoupled Weight Decay Regularization](https://arxiv.org/abs/1711.05101),
-  2017.
-- Jordan et al., [Muon: An optimizer for hidden layers in neural networks](https://kellerjordan.github.io/posts/muon/),
-  2024.
-- Sourty et al., [DenseOn with the LateOn](https://arxiv.org/abs/2607.27178), 2026.
-- Li et al., [NorMuon: Making Muon more efficient and scalable](https://arxiv.org/abs/2510.05491),
-  2025.
-- Thakur et al., [BEIR: A Heterogenous Benchmark for Zero-shot Evaluation of Information Retrieval
-  Models](https://arxiv.org/abs/2104.08663), 2021.
-- Muennighoff et al., [MTEB: Massive Text Embedding Benchmark](https://arxiv.org/abs/2210.07316),
-  2022.
-- Chaffin and Sourty,
-  [PyLate: Flexible Training and Retrieval for Late Interaction Models](https://arxiv.org/abs/2508.03555),
-  2025.
-- LightOn,
-  [FastPLAID: High-Performance Engine for Multi-Vector Search](https://github.com/lightonai/fast-plaid),
-  2025.
-- LightOn, [DenseOn and LateOn release blog](https://huggingface.co/blog/lightonai/denseon-lateon),
-  2026.
+The candidate addendum limits that generated historical result: the selected Muon-family recipes
+came from a materially batch-dependent packed validator. Padded width-7 scoring already prefers the
+retrieval-optimal lower dose, and widening to 2,048 candidates does not support a candidate-coverage
+explanation. The next publication-grade experiment is therefore a fresh no-packing retrain, not a
+reinterpretation of the existing 34 runs.

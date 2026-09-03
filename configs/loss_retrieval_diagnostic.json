@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "posthoc_exploratory_diagnostic",
+  "declared_at": "2026-08-29T09:54:11Z",
+  "freeze_context": {
+    "strict_beir_valid_units": 1456,
+    "strict_beir_expected_units": 1680,
+    "strict_progress_snapshot_sha256": "4e8dce1b7f8e82fa81029840e987329d1e5fcc33533498ad756fb032e00f32bc",
+    "complete_retrieval_matrix_visible": false,
+    "training_dynamics_visible": true,
+    "dense_retrieval_matrix_visible": true,
+    "late_adamw_retrieval_matrix_visible": true,
+    "late_muon_retrieval_matrix_visible": true,
+    "partial_late_normuon_results_visible": true
+  },
+  "analysis": {
+    "predictor": "ten-observation trailing mean contrastive training loss at each saved checkpoint",
+    "outcome": "mean nDCG@10 over the 14-task decontaminated BEIR suite at the same checkpoint",
+    "scopes": [
+      "all optimizers within each model family",
+      "each optimizer within each model family"
+    ],
+    "views": [
+      "checkpoint-level Spearman association",
+      "within-run adjacent-checkpoint first-difference Spearman association"
+    ],
+    "reporting": "report DenseOn and LateOn separately; retain all learning-rate points and all five stages"
+  },
+  "claim_boundary": "This diagnostic was added after most discovery retrieval outcomes were visible. It is explicitly post-hoc, descriptive, and excluded from run selection and confirmatory sign claims. A lower contrastive training loss is never treated as evidence of better zero-shot retrieval without the paired BEIR result."
+}

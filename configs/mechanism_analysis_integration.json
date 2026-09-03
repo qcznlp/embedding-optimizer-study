@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "families": [
+    "dense"
+  ],
+  "scope_amendment": "configs/dense_scope_amendment.json",
+  "protocol": "configs/causal_chain_analysis.json",
+  "analyses": [
+    {
+      "name": "temporal-short-branch",
+      "module": "embed_optim.temporal_short_branch",
+      "manifest": "reports/temporal-short-branch/summary_manifest.json",
+      "build_after": "tail-stability-summary",
+      "audit_flag": "--audit",
+      "prerequisite": {
+        "name": "temporal-short-branch-predictors",
+        "module": "embed_optim.temporal_short_branch_predictors",
+        "build_after": "short-branch-summary",
+        "outputs": [
+          "reports/short-branch/temporal_mechanism_predictors.csv",
+          "reports/short-branch/temporal_mechanism_predictors.manifest.json"
+        ],
+        "audit_flag": "--audit"
+      }
+    },
+    {
+      "name": "dose-band",
+      "module": "embed_optim.dose_band_analysis",
+      "manifest": "reports/dose-band/summary_manifest.json",
+      "build_after": "spectral-transplant-summary",
+      "audit_flag": "--audit"
+    }
+  ],
+  "completion_policy": "A build and its immediately following strict audit must both return zero. Pending receipts are diagnostic only and cannot satisfy the completion ledger or finalization gate."
+}

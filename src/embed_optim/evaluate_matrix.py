@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -10,12 +11,16 @@ import shutil
 import subprocess
 import sys
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
 from .aggregate import audit_dataset_artifacts, audit_training_artifacts
-from .config import RunConfig, load_matrix
+from .config import RunConfig, load_matrix, matrix_runtime_spec
 from .decontamination import DECONTAMINATED_TASK_NAMES, decontaminated_corpus_size
+from .evaluation_source_provenance import verify_evaluation_source_manifest
+from .gpu_lease import acquire_gpu_lease, evaluation_gpu_tokens
+from .scope import resolve_scope
 
 EVALUATION_PACKAGES = (
     "mteb",
@@ -37,6 +42,7 @@ TRAINING_RUNTIME_PACKAGES = (
 EVALUATION_SOURCE_MODULES = {
     "src/embed_optim/evaluate_matrix.py": "embed_optim.evaluate_matrix",
     "src/embed_optim/evaluation_utils.py": "embed_optim.evaluation_utils",
+    "src/embed_optim/gpu_lease.py": "embed_optim.gpu_lease",
     "src/embed_optim/decontamination.py": "embed_optim.decontamination",
     "src/embed_optim/pylate_compat.py": "embed_optim.pylate_compat",
     "src/embed_optim/aggregate.py": "embed_optim.aggregate",
@@ -152,6 +158,23 @@ def _validate_worker_runtime(python: str, models: dict[str, list[Path]]) -> dict
     return versions
 
 
+def _validate_formal_runtime(python: str, matrix: str | Path) -> None:
+    spec = matrix_runtime_spec(matrix)
+    if spec is None:
+        return
+    result = subprocess.run(
+        [python, "-m", "embed_optim.runtime", "--spec", str(spec.resolve())],
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+    if result.returncode:
+        details = result.stdout.strip() or result.stderr.strip()
+        raise RuntimeError(f"Formal evaluation runtime validation failed: {details}")
+    print(f"formal evaluation runtime verified: {python}", flush=True)
+
+
 def _record_runtime(
     results: Path,
     python: str,
@@ -161,29 +184,202 @@ def _record_runtime(
     """Persist one immutable runtime identity for all resumable evaluation jobs."""
 
     path = results / "evaluation_runtime.json"
+    lock_path = results / ".evaluation_runtime.lock"
     payload = {
         "schema_version": 2,
         "python": python,
         "versions": versions,
         "source_files": source_files,
     }
-    if path.is_file():
+    with lock_path.open("a+", encoding="utf-8") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
         try:
-            existing = json.loads(path.read_text())
-        except json.JSONDecodeError as error:
-            raise RuntimeError(f"Invalid evaluation runtime manifest: {path}") from error
-        if (
-            existing.get("schema_version") != 2
-            or existing.get("versions") != versions
-            or existing.get("source_files") != source_files
-        ):
-            raise RuntimeError(
-                f"Evaluation runtime changed across a resumed results directory: {path}"
-            )
-        return
-    temporary = path.with_suffix(".tmp")
-    temporary.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
-    temporary.replace(path)
+            if path.is_file():
+                try:
+                    existing = json.loads(path.read_text())
+                except json.JSONDecodeError as error:
+                    raise RuntimeError(f"Invalid evaluation runtime manifest: {path}") from error
+                if (
+                    existing.get("schema_version") != 2
+                    or existing.get("versions") != versions
+                    or existing.get("source_files") != source_files
+                ):
+                    raise RuntimeError(
+                        f"Evaluation runtime changed across a resumed results directory: {path}"
+                    )
+                return
+            temporary = path.with_name(f".{path.name}.tmp.{os.getpid()}")
+            with temporary.open("w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, path)
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
+def _checkpoint_input_identity(checkpoint: Path) -> dict[str, object]:
+    """Content-address one evaluated checkpoint before cache reuse is allowed."""
+
+    from .aggregate import _safetensors_digest
+
+    resolved = checkpoint.resolve()
+    try:
+        step = int(resolved.name.rsplit("-", 1)[1])
+        completed = json.loads((resolved.parent / "completed.json").read_text(encoding="utf-8"))
+    except (IndexError, KeyError, OSError, TypeError, ValueError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"Cannot content-address evaluation input {resolved}") from error
+    files = sorted(resolved.rglob("*.safetensors"))
+    if not files:
+        raise RuntimeError(f"Evaluation input has no safetensors payload: {resolved}")
+    return {
+        "checkpoint_path": str(resolved),
+        "checkpoint_step": step,
+        "model_family": completed.get("model_family"),
+        "run_id": completed.get("run_id"),
+        "model_sha256": _safetensors_digest(resolved),
+        "safetensors_bytes": sum(path.stat().st_size for path in files),
+    }
+
+
+def _record_evaluation_inputs(results: Path, models: dict[str, list[Path]]) -> None:
+    """Bind resumable result folders to immutable checkpoint content identities."""
+
+    path = results / "evaluation_inputs.json"
+    lock_path = results / ".evaluation_inputs.lock"
+    requested = {
+        str(checkpoint.resolve()): _checkpoint_input_identity(checkpoint)
+        for checkpoints in models.values()
+        for checkpoint in checkpoints
+    }
+    with lock_path.open("a+", encoding="utf-8") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        try:
+            if path.is_file():
+                try:
+                    payload = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError) as error:
+                    raise RuntimeError(f"Invalid evaluation input manifest: {path}") from error
+                if payload.get("schema_version") != 1 or not isinstance(
+                    payload.get("checkpoints"), dict
+                ):
+                    raise RuntimeError(f"Invalid evaluation input manifest schema: {path}")
+            else:
+                result_files = [
+                    candidate
+                    for family in ("dense", "late")
+                    if (family_root := results / family).is_dir()
+                    for candidate in family_root.rglob("*.json")
+                ]
+                if result_files:
+                    raise RuntimeError(
+                        "Refusing to reuse evaluation results without a pre-existing "
+                        f"content-addressed input manifest: {result_files[0]}"
+                    )
+                payload = {"schema_version": 1, "checkpoints": {}}
+            recorded = payload["checkpoints"]
+            for key, identity in requested.items():
+                if key in recorded and recorded[key] != identity:
+                    raise RuntimeError(
+                        "Evaluation checkpoint content changed after cached results were created: "
+                        f"{key}"
+                    )
+                recorded[key] = identity
+            temporary = path.with_name(f".{path.name}.tmp.{os.getpid()}")
+            with temporary.open("w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, path)
+        finally:
+            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
+
+
+def audit_evaluation_inputs(
+    results: str | Path,
+    checkpoints: Sequence[str | Path],
+) -> dict[str, object]:
+    """Re-hash the exact checkpoint set recorded before resumable evaluation.
+
+    Result JSON contains a checkpoint-shaped model name, but only this manifest
+    binds that name to the actual safetensors payload.  Formal summaries call
+    this independently of the evaluator so a missing, stale, or over-broad
+    cache ledger cannot be promoted into an inference artifact.
+    """
+
+    root = Path(results).resolve()
+    path = root / "evaluation_inputs.json"
+    try:
+        content = path.read_bytes()
+        payload = json.loads(content)
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"Missing/invalid evaluation input manifest: {path}") from error
+    if (
+        not isinstance(payload, dict)
+        or set(payload) != {"schema_version", "checkpoints"}
+        or payload.get("schema_version") != 1
+        or not isinstance(payload.get("checkpoints"), dict)
+    ):
+        raise ValueError(f"Invalid evaluation input manifest schema: {path}")
+
+    resolved = [Path(checkpoint).resolve() for checkpoint in checkpoints]
+    expected_keys = [str(checkpoint) for checkpoint in resolved]
+    if len(expected_keys) != len(set(expected_keys)):
+        raise ValueError("Evaluation input audit requested duplicate checkpoints")
+    recorded = payload["checkpoints"]
+    if set(recorded) != set(expected_keys):
+        raise ValueError(
+            f"Evaluation input manifest covers {len(recorded)}/{len(expected_keys)} "
+            f"exact checkpoints: {path}"
+        )
+    for checkpoint in resolved:
+        key = str(checkpoint)
+        if recorded[key] != _checkpoint_input_identity(checkpoint):
+            raise ValueError(f"Evaluation checkpoint content differs from manifest: {key}")
+    return {
+        "path": str(path),
+        "bytes": len(content),
+        "sha256": hashlib.sha256(content).hexdigest(),
+        "checkpoints": len(resolved),
+    }
+
+
+def audit_evaluation_result_files(
+    results: str | Path,
+    rows: Sequence[dict],
+) -> dict[str, object]:
+    """Require every result JSON in a formal root to be selected exactly once."""
+
+    root = Path(results).resolve()
+    candidates = {path.resolve() for path in root.rglob("*Decontaminated.json")}
+    try:
+        selected = {Path(str(row["result_path"])).resolve() for row in rows}
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError("Evaluation rows contain an invalid result path") from error
+    if candidates != selected:
+        unexpected = sorted(str(path) for path in candidates - selected)
+        missing = sorted(str(path) for path in selected - candidates)
+        raise ValueError(
+            "Evaluation result-file coverage differs from selected rows: "
+            f"observed={len(candidates)} selected={len(selected)} "
+            f"unexpected={unexpected[:3]} missing={missing[:3]}"
+        )
+    return {"root": str(root), "files": len(candidates)}
+
+
+def audit_evaluation_artifacts(
+    results: str | Path,
+    checkpoints: Sequence[str | Path],
+    rows: Sequence[dict],
+) -> dict[str, object]:
+    """Audit the two cache-to-checkpoint bindings needed by formal summaries."""
+
+    return {
+        "input_manifest": audit_evaluation_inputs(results, checkpoints),
+        "result_files": audit_evaluation_result_files(results, rows),
+    }
 
 
 def _evaluation_script(repo: Path, name: str, prefix: Path | None = None) -> Path:
@@ -207,6 +403,7 @@ def _evaluation_source_manifest(repo: Path, prefix: Path | None = None) -> dict[
     paths = {
         "src/embed_optim/evaluate_matrix.py": Path(__file__).resolve(),
         "src/embed_optim/evaluation_utils.py": package / "evaluation_utils.py",
+        "src/embed_optim/gpu_lease.py": package / "gpu_lease.py",
         "src/embed_optim/decontamination.py": package / "decontamination.py",
         "src/embed_optim/pylate_compat.py": package / "pylate_compat.py",
         "src/embed_optim/aggregate.py": package / "aggregate.py",
@@ -354,21 +551,18 @@ def _launch_late(
     return EvaluationProcess("late", process, handle, model)
 
 
-def run_evaluation(args: argparse.Namespace) -> int:
-    repo = Path(__file__).resolve().parents[2]
-    models = _selected_models(args)
-    _validate_training_inputs(args)
-    worker_python = _worker_python(getattr(args, "worker_python", None))
-    results = Path(args.results_root).resolve()
-    log_dir = Path(args.log_dir).resolve()
-    results.mkdir(parents=True, exist_ok=True)
-    log_dir.mkdir(parents=True, exist_ok=True)
-    versions = _validate_worker_runtime(worker_python, models)
-    source_files = _evaluation_source_manifest(repo)
-    _validate_worker_sources(worker_python, source_files)
-    _record_runtime(results, worker_python, versions, source_files)
-    dense_job: EvaluationProcess | None = None
+def _coordinate_evaluation_workers(
+    args: argparse.Namespace,
+    *,
+    repo: Path,
+    models: dict[str, list[Path]],
+    results: Path,
+    log_dir: Path,
+    worker_python: str,
+) -> int:
+    """Launch workers only after the caller holds every relevant GPU token."""
 
+    dense_job: EvaluationProcess | None = None
     if dense_models := models.get("dense"):
         ordered_tasks = sorted(args.tasks, key=decontaminated_corpus_size, reverse=True)
         command = [
@@ -439,12 +633,59 @@ def run_evaluation(args: argparse.Namespace) -> int:
     return failures
 
 
+def run_evaluation(args: argparse.Namespace) -> int:
+    families, _ = resolve_scope(
+        args.families,
+        getattr(args, "scope_amendment", None),
+    )
+    args.families = list(families)
+    repo = Path(__file__).resolve().parents[2]
+    models = _selected_models(args)
+    _validate_training_inputs(args)
+    worker_python = _worker_python(getattr(args, "worker_python", None))
+    _validate_formal_runtime(worker_python, args.matrix)
+    versions = _validate_worker_runtime(worker_python, models)
+    source_files = _evaluation_source_manifest(repo)
+    _validate_worker_sources(worker_python, source_files)
+    verify_evaluation_source_manifest(source_files, repo_root=repo)
+    results = Path(args.results_root).resolve()
+    log_dir = Path(args.log_dir).resolve()
+    results.mkdir(parents=True, exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
+    _record_runtime(results, worker_python, versions, source_files)
+    _record_evaluation_inputs(results, models)
+    gpu_tokens = evaluation_gpu_tokens(
+        has_dense=bool(models.get("dense")),
+        has_late=bool(models.get("late")),
+        gpus_a=args.gpus_a,
+        gpus_b=args.gpus_b,
+    )
+    lock_dir = Path(getattr(args, "gpu_lock_dir", "logs/dense-only-runtime/gpu-leases")).resolve()
+    lock_timeout = float(getattr(args, "gpu_lock_timeout_seconds", 86_400.0))
+    lease_ledger = log_dir / f"gpu-lease-{os.getpid()}.json"
+    purpose = f"evaluation:{','.join(args.families)}:{Path(args.results_root).resolve()}"
+    with acquire_gpu_lease(
+        gpu_tokens,
+        lock_dir=lock_dir,
+        timeout_seconds=lock_timeout,
+        purpose=purpose,
+        ledger_path=lease_ledger,
+    ):
+        return _coordinate_evaluation_workers(
+            args,
+            repo=repo,
+            models=models,
+            results=results,
+            log_dir=log_dir,
+            worker_python=worker_python,
+        )
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--matrix", default="configs/experiment.yaml")
-    parser.add_argument(
-        "--families", nargs="+", choices=["dense", "late"], default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=["dense", "late"], default=["dense"])
+    parser.add_argument("--scope-amendment", type=Path)
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--stages", nargs="*", type=int, choices=range(1, 6))
     parser.add_argument("--tasks", nargs="+", default=list(DECONTAMINATED_TASK_NAMES))
@@ -455,11 +696,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--results-root", default="results/decontaminated-beir")
     parser.add_argument("--log-dir", default="logs/evaluation")
     parser.add_argument(
+        "--gpu-lock-dir",
+        type=Path,
+        default=Path("logs/dense-only-runtime/gpu-leases"),
+    )
+    parser.add_argument("--gpu-lock-timeout-seconds", type=float, default=86_400.0)
+    parser.add_argument(
         "--worker-python",
         default=None,
         help="Python executable for every evaluator (default: this command's interpreter)",
     )
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.gpu_lock_timeout_seconds <= 0:
+        parser.error("--gpu-lock-timeout-seconds must be positive")
+    return args
 
 
 def main(argv: list[str] | None = None) -> None:

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "source": {
+    "training_data": "data/denseon-sft-500k-seed42",
+    "manifest_sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8",
+    "row_ledger_sha256": "113cc571cfe30d458474c85e3237e6b34d292fffebfeda8d0d7b9b790b86f52a",
+    "repo": "lightonai/embeddings-fine-tuning",
+    "revision": "1ca463331ed637d25c1058567e932e0d3bad2983"
+  },
+  "selection": {
+    "count": 4096,
+    "seed": 20260826,
+    "allocation": "balanced",
+    "exclude": "all 500000 training query IDs within their source split",
+    "candidate_margin": 0.5,
+    "negative_threshold": 0.95,
+    "negative_pool_size": 10,
+    "sampled_negatives": 7
+  },
+  "output": "data/validation-4096-seed20260826",
+  "evaluation": {
+    "output_root": "results/recipe-validation",
+    "expected_jobs": 24,
+    "model_dtype": "float32",
+    "forward_dtype": "bfloat16",
+    "model_mode": "eval",
+    "flash_attention": true,
+    "dense_batch_size": 16,
+    "late_batch_size": 4,
+    "scorer": "the exact positive-first eight-way training scorer",
+    "expected_sample_records_per_job": 4096
+  },
+  "recipe_selection": {
+    "checkpoint": "final checkpoint only",
+    "primary_metric": "mean eight-way contrastive loss",
+    "tie_breakers": [
+      "higher mean positive margin",
+      "lower hidden learning rate"
+    ],
+    "scope": "select one learning rate independently for each optimizer and model family before confirmatory-seed BEIR evaluation"
+  },
+  "freeze_context": {
+    "frozen_at_utc": "2026-08-26T13:46:08Z",
+    "strict_beir_valid_units": 144,
+    "strict_beir_expected_units": 1680,
+    "completed_weight_trajectories_visible": true,
+    "validation_examples_or_model_outputs_visible": false,
+    "note": "This is a prospective completion lock after partial BEIR results. Query selection and recipe scoring do not consume BEIR labels, rankings, or checkpoint quality."
+  },
+  "expected": {
+    "manifest_sha256": "a3e574c472131116a4381a3c919121923412677ffdd5b56a5dd596b694b157aa",
+    "count": 4096,
+    "query_overlap_with_training": 0,
+    "quotas": {
+      "fever": 586,
+      "fiqa": 585,
+      "hotpotqa": 585,
+      "msmarco": 585,
+      "nq": 585,
+      "squadv2": 585,
+      "trivia": 585
+    },
+    "row_manifest_sha256": "a42ceb54123091ca70ee58a83bcbf32f3cad43c2ec77e64031e9c9c24284c4e0",
+    "selection_sha256": "a42ceb54123091ca70ee58a83bcbf32f3cad43c2ec77e64031e9c9c24284c4e0",
+    "selected_source_query_ids_sha256": "fd188a2477d5a4556e68720828b745a2ae36af583dad3fbe78c24e3f869c8e96",
+    "selected_sample_ids_sha256": "2cf645aec1ff09ceac94895976db7d23ae80271c8af1e11cf353f416f09ad77e",
+    "materialized_dataset_fingerprint": "0638284e912f66eb",
+    "dataset_fingerprint": "4d5af8189b856a42",
+    "serialized_probe_dataset_fingerprint": "4d5af8189b856a42",
+    "dataset_files": [
+      {"path": "dataset/data-00000-of-00014.arrow", "bytes": 2253808, "sha256": "9f96b8c734e92641b8e209444cde1a6eafa42527bdcbe6678581564081bbf9a4"},
+      {"path": "dataset/data-00001-of-00014.arrow", "bytes": 2336624, "sha256": "4aae5454269d17e5832e49909996434bd7419ba358a5616f67397920cf649e3a"},
+      {"path": "dataset/data-00002-of-00014.arrow", "bytes": 870704, "sha256": "b2f5d8af488d85b53cdbf13a9d9f803b283279fb62bf5d0883fc75e8ae3ce946"},
+      {"path": "dataset/data-00003-of-00014.arrow", "bytes": 860800, "sha256": "d2f62f163041066d3d7504ca3166d5d254822d19b1f158d8a35a9ca3bfe73379"},
+      {"path": "dataset/data-00004-of-00014.arrow", "bytes": 859440, "sha256": "2dcc50c8735cf4ee78042a2ba4c50fd7f93e5142cf6a98c58de8ab81107823a1"},
+      {"path": "dataset/data-00005-of-00014.arrow", "bytes": 887576, "sha256": "7d60f48884479fade77aa0dfdf14b76bfd3cece1342780c2d7ab9afa59d75283"},
+      {"path": "dataset/data-00006-of-00014.arrow", "bytes": 1042224, "sha256": "c4f012a945a58542ae5efe7d8b3281f02f4778defc3521b2112b3f2fceac82f8"},
+      {"path": "dataset/data-00007-of-00014.arrow", "bytes": 1056448, "sha256": "b23b7c20193e0b03797b5788a01c4d2a7322d64588ef9ba8ea0dc522b26ff3c0"},
+      {"path": "dataset/data-00008-of-00014.arrow", "bytes": 2557912, "sha256": "cb107816da2a0bdfd68a4696478d1b5a08629a8f0685de6412a9f7c8084f82b4"},
+      {"path": "dataset/data-00009-of-00014.arrow", "bytes": 2572496, "sha256": "022cdaeae0d62f2336730365603bb62708436669a0afaa62151a873bbeabf2c0"},
+      {"path": "dataset/data-00010-of-00014.arrow", "bytes": 1936472, "sha256": "a8840b097f3ec35b644546636d3126a126e9e8bc7039c0aa11ef043963c180e8"},
+      {"path": "dataset/data-00011-of-00014.arrow", "bytes": 1914296, "sha256": "0c64af5dd00627359914952e39406406c228f94f14da0bf64a790a7de4394270"},
+      {"path": "dataset/data-00012-of-00014.arrow", "bytes": 1504216, "sha256": "057d18742c510a9872ef2928422e937dd6f246986ff04fd50870408aa1f0d49c"},
+      {"path": "dataset/data-00013-of-00014.arrow", "bytes": 1503080, "sha256": "88f8781c502e04bfbdf921df990d69b7690926e1951f4589794afe8380acc2c2"},
+      {"path": "dataset/dataset_info.json", "bytes": 1664, "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"},
+      {"path": "dataset/state.json", "bytes": 1396, "sha256": "9b84bd615bf82cd8d54dd235a4ddbd49d98a7eb86c073f2ebc252fc0f4c97401"}
+    ]
+  }
+}

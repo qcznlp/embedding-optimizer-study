@@ -1,0 +1,244 @@
+{
+  "analysis_status": "post_hoc_explanatory_intervention",
+  "anchor_effect_records": 100,
+  "anchor_tail_effect_records": 90,
+  "anchors": 10,
+  "claim_boundary": "This intervention can causally attribute immediate fixed-state functional differences to singular values versus singular vectors. It cannot alone show that the attributed component causes a full-training BEIR gain; that requires the independently frozen shared-start branches or a later explicitly disclosed spectral-operator branch.",
+  "common_state_spec": {
+    "bytes": 2433,
+    "path": "/root/embedding-optimizer-study/configs/common_state_probe.json",
+    "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+  },
+  "complete": true,
+  "families": [
+    "dense"
+  ],
+  "outputs": {
+    "anchor_band_effects": {
+      "bytes": 24632,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/anchor_band_effects.csv",
+      "rows": 180,
+      "sha256": "1561b562b20f98751187c7c1ef5d15454cfad783278ba3707215e494ef906b8c"
+    },
+    "anchor_condition_effects": {
+      "bytes": 34897,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/anchor_condition_effects.csv",
+      "rows": 100,
+      "sha256": "d7e2d2171699dc42df5bfe2c1d36982e03cff3f764030b003f7c9cae301d817d"
+    },
+    "anchor_factorial_effects": {
+      "bytes": 12368,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/anchor_factorial_effects.csv",
+      "rows": 60,
+      "sha256": "f4d19a68d0f2b0b7f1696b4525f9ea58cd14343b082d031d069eff18fef859ce"
+    },
+    "anchor_query_tail_effects": {
+      "bytes": 28876,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/anchor_query_tail_effects.csv",
+      "rows": 90,
+      "sha256": "e74a7f0134388bac3f8bc9f05d5c0fc0dab512724f2a55214a11bcc1857d735a"
+    },
+    "anchor_spectral_path": {
+      "bytes": 38385,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/anchor_spectral_path.csv",
+      "rows": 300,
+      "sha256": "8d0cff996910056a33601e09a55f4c7a04a08e625006e4cc517d48e9232fbfc5"
+    },
+    "family_band_summary": {
+      "bytes": 3106,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/family_band_summary.csv",
+      "rows": 18,
+      "sha256": "088e776a9ab0d0088c57c876441e6f7b7d693374a723f5e64b0d9e4e2bdfc47f"
+    },
+    "family_condition_summary": {
+      "bytes": 6119,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/family_condition_summary.csv",
+      "rows": 60,
+      "sha256": "927f602050146455a947dd7f361d21c95f9aa42c9a72a130cdb5f7d48a564a09"
+    },
+    "family_factorial_summary": {
+      "bytes": 1370,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/family_factorial_summary.csv",
+      "rows": 6,
+      "sha256": "4bfdd08bd3b273f992547f365758128c593ea7485aa4ad15548c5bdf11a05db0"
+    },
+    "family_query_tail_summary": {
+      "bytes": 6055,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/family_query_tail_summary.csv",
+      "rows": 9,
+      "sha256": "d651c8e986f0a59486d13ebff4badc37f6e650607201a67223fd888d1c678586"
+    },
+    "family_spectral_path": {
+      "bytes": 4657,
+      "path": "/root/embedding-optimizer-study/reports/spectral-transplant/family_spectral_path.csv",
+      "rows": 30,
+      "sha256": "193a569468615ad09c6752d856c81cec665cdae01b697ad66b3f7c14423b416e"
+    }
+  },
+  "schema_version": 1,
+  "scope_amendment": {
+    "amended_at_utc": "2026-08-30T20:14:42Z",
+    "claim_boundary": "The scope reduction is post hoc and must be disclosed in the paper and blog. Confirmatory optimizer claims are DenseOn-only. Existing LateOn discovery and mechanism artifacts remain available for audit but cannot supply missing controls or be selectively promoted as confirmatory evidence.",
+    "path": "configs/dense_scope_amendment.json",
+    "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
+    "status": "user_directed_post_hoc_scope_amendment"
+  },
+  "sources": [
+    {
+      "label": "dense/pretrained",
+      "manifest": {
+        "bytes": 6288,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/pretrained/manifest.json",
+        "sha256": "e075a364c1729754b5af555eeb62bead007b32127b0e9c9c65a399322e5affe2"
+      },
+      "sample_metrics": {
+        "bytes": 1004355,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/pretrained/sample_metrics.jsonl",
+        "sha256": "105497050588249d6b8b74e11ee6e7e10c0bbf1060d3100c8994a645b5293c68"
+      }
+    },
+    {
+      "label": "dense/adamw-lr1e-5/checkpoint-782",
+      "manifest": {
+        "bytes": 6449,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-782/manifest.json",
+        "sha256": "7734a7f44b25505bcb55b902a1709e302b56f679a35f6e9fc380d83e20e6efaf"
+      },
+      "sample_metrics": {
+        "bytes": 1001677,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-782/sample_metrics.jsonl",
+        "sha256": "f75ecaeba131ce4e8e27596f684f4476419071bcc554c923e33084582759ba56"
+      }
+    },
+    {
+      "label": "dense/adamw-lr1e-5/checkpoint-2345",
+      "manifest": {
+        "bytes": 6452,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-2345/manifest.json",
+        "sha256": "958cd344fb833cdadf1ca237d98665dd34841ba44a2f176f7e15686d7466ec2b"
+      },
+      "sample_metrics": {
+        "bytes": 1001769,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-2345/sample_metrics.jsonl",
+        "sha256": "b1e27935931df1e5e474cb093afda6d61cd81f8d07da6304b54b14125fd14859"
+      }
+    },
+    {
+      "label": "dense/adamw-lr1e-5/checkpoint-3907",
+      "manifest": {
+        "bytes": 6452,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-3907/manifest.json",
+        "sha256": "46cf53f71821dc2c303246694528a4451360244f5f20e167a9f48afb621997ca"
+      },
+      "sample_metrics": {
+        "bytes": 1000934,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-3907/sample_metrics.jsonl",
+        "sha256": "26247e59c25be1037929f08e05bd05dbd9b0daff46aed858f3693d336c57a4ca"
+      }
+    },
+    {
+      "label": "dense/muon-lr1e-3/checkpoint-782",
+      "manifest": {
+        "bytes": 6444,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/muon-lr1e-3/checkpoint-782/manifest.json",
+        "sha256": "10ea4971a87baee1cb25052a511823e5002a31a9d9f1f1663a3f237faa8d7bdb"
+      },
+      "sample_metrics": {
+        "bytes": 998863,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/muon-lr1e-3/checkpoint-782/sample_metrics.jsonl",
+        "sha256": "3ccc5c68994fcfc635bee8f493a40ab08cf1ae65b25a202605c0bc351494fee1"
+      }
+    },
+    {
+      "label": "dense/muon-lr1e-3/checkpoint-2345",
+      "manifest": {
+        "bytes": 6448,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/muon-lr1e-3/checkpoint-2345/manifest.json",
+        "sha256": "74282b4124e52cfd14021ebfbb5a2531ce8edfa36b85a2c48b5b4394fdf2407f"
+      },
+      "sample_metrics": {
+        "bytes": 1000041,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/muon-lr1e-3/checkpoint-2345/sample_metrics.jsonl",
+        "sha256": "bd98e17d14ff2c3ea699ca4fbf006cfe986d083dfb438335a8c089662bee6975"
+      }
+    },
+    {
+      "label": "dense/muon-lr1e-3/checkpoint-3907",
+      "manifest": {
+        "bytes": 6447,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/muon-lr1e-3/checkpoint-3907/manifest.json",
+        "sha256": "295a8d2ecc5c3732d892b01984d1e40f11b415b91b596f51c45ad36e9616da4c"
+      },
+      "sample_metrics": {
+        "bytes": 999473,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/muon-lr1e-3/checkpoint-3907/sample_metrics.jsonl",
+        "sha256": "e0094e8e93a43828f2251f39d34d7c87fc6c8b2c18c17b89a569dacdd1f03352"
+      }
+    },
+    {
+      "label": "dense/normuon-lr1e-3/checkpoint-782",
+      "manifest": {
+        "bytes": 6456,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-782/manifest.json",
+        "sha256": "49339664b6e5dc4c63668e0e121ef8978243d1d5fa55d73d77f8b73135dd7e81"
+      },
+      "sample_metrics": {
+        "bytes": 998997,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-782/sample_metrics.jsonl",
+        "sha256": "5ab3baa412428cec9148ac4bfc5c71f45e2bf1e67d137f16e0fde2bf8ef1c288"
+      }
+    },
+    {
+      "label": "dense/normuon-lr1e-3/checkpoint-2345",
+      "manifest": {
+        "bytes": 6460,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-2345/manifest.json",
+        "sha256": "781ad8d059ff6c9003db9bbb7c6246160d06656dee09bd815ed37809f855c4aa"
+      },
+      "sample_metrics": {
+        "bytes": 1000023,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-2345/sample_metrics.jsonl",
+        "sha256": "8105c2ea36b209647c495e97ffbb3f0c56e1aad639b34c9e1113e98555a52532"
+      }
+    },
+    {
+      "label": "dense/normuon-lr1e-3/checkpoint-3907",
+      "manifest": {
+        "bytes": 6459,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-3907/manifest.json",
+        "sha256": "681d7900a0030ec537c029e948aa8a0a916c4d7d67afc69c39a20ba935a12c90"
+      },
+      "sample_metrics": {
+        "bytes": 998897,
+        "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-3907/sample_metrics.jsonl",
+        "sha256": "7a8060a46b77c9960135e361011dc197e17ae8fe09ffd008f283ba61d370680a"
+      }
+    }
+  ],
+  "spectral_transplant_spec": {
+    "bytes": 7829,
+    "path": "/root/embedding-optimizer-study/configs/spectral_transplant_intervention.json",
+    "sha256": "c80709158e0d9b2d83b6fd24240cf05e32bec272087d71e91bda2ac76b19a36b"
+  },
+  "status": "complete",
+  "tail_protocol": {
+    "architecture_readout": "Compare DenseOn tail redistribution with LateOn shared-tail severity suppression without pooling architectures.",
+    "primary_factorial_readout": "Compare Adam-basis/Muon-spectrum and Muon-basis/Adam-spectrum against AdamW native. Tail protection follows the spectrum only if the former improves loss p95 and margin p05 more consistently across anchors than the latter.",
+    "quantiles": {
+      "loss_contrast": [
+        0.95,
+        0.99
+      ],
+      "method": "linear interpolation at (n-1)q",
+      "positive_margin_contrast": [
+        0.01,
+        0.05
+      ]
+    },
+    "status": "frozen-before-spectral-transplant-output",
+    "symmetric_tail_readout": "Report challenger-minus-AdamW loss contrast on AdamW's worst tail and on the challenger's independently selected worst tail, plus tail-set Jaccard overlap.",
+    "tail_count": 12,
+    "tail_fraction": 0.05,
+    "tail_selection": "largest per-query contrastive-loss change from the unmodified anchor, selected independently for AdamW native and every challenger condition"
+  }
+}

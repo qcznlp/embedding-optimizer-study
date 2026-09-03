@@ -1,3 +1,4 @@
+import csv
 import hashlib
 import json
 import shutil
@@ -8,8 +9,13 @@ from types import SimpleNamespace
 import pytest
 
 from embed_optim.aggregate import (
+    RESULTS_MARKERS,
+    SYSTEMS_MARKERS,
+    _accepted_timing_problems,
     _contains_run_id,
     _dataset_rows_audit,
+    _linear_schedule_multiplier,
+    _optimizer_contract_problem,
     _optimizer_summaries,
     _paired_comparisons,
     _plot,
@@ -18,17 +24,20 @@ from embed_optim.aggregate import (
     _replace_marked,
     _run_settings_scope_matches,
     _system_summaries,
+    _timing_adjustment_problems,
     _trajectory_auc,
+    aggregate,
     audit_dataset_artifacts,
     audit_experiment_contract,
     audit_training_artifacts,
     collect_evaluations,
     collect_system_metrics,
+    parse_args,
     render_blog,
 )
-from embed_optim.config import OptimizerConfig, RunConfig, load_matrix
+from embed_optim.config import MUON_NS_IMPLEMENTATION, OptimizerConfig, RunConfig, load_matrix
 from embed_optim.decontamination import DECONTAMINATED_BEIR
-from embed_optim.evaluate_matrix import _evaluation_source_manifest
+from embed_optim.evaluation_source_provenance import archived_evaluation_source_manifest
 
 
 def test_run_id_matching_does_not_confuse_muon_and_normuon():
@@ -37,6 +46,112 @@ def test_run_id_matching_does_not_confuse_muon_and_normuon():
     assert _contains_run_id(muon, "muon-lr1e-4")
     assert not _contains_run_id(normuon, "muon-lr1e-4")
     assert _contains_run_id(normuon, "normuon-lr1e-4")
+
+
+def test_optimizer_contract_validates_mixed_muon_topology():
+    import torch
+
+    config = RunConfig(
+        run_id="muon-test",
+        model_family="late",
+        optimizer=OptimizerConfig(name="muon", lr=1e-4, aux_lr=3e-6),
+        model_name="model",
+        dataset_path="dataset",
+    )
+    step, final_step = 40, 100
+    multiplier = _linear_schedule_multiplier(step, final_step, config.warmup_ratio)
+
+    def adam_state():
+        return {
+            "step": torch.tensor(float(step)),
+            "exp_avg": torch.zeros(3),
+            "exp_avg_sq": torch.zeros(3),
+        }
+
+    optimizer = {
+        "state": {
+            0: {"momentum_buffer": torch.zeros(3, 2)},
+            1: adam_state(),
+            2: adam_state(),
+        },
+        "param_groups": [
+            {
+                "params": [0],
+                "algorithm": "muon",
+                "lr": config.optimizer.lr * multiplier,
+                "momentum": config.optimizer.momentum,
+                "beta2": config.optimizer.normuon_beta2,
+                "ns_steps": config.optimizer.ns_steps,
+                "ns_implementation": MUON_NS_IMPLEMENTATION,
+                "adjust_lr_fn": config.optimizer.adjust_lr_fn,
+                "weight_decay": config.optimizer.weight_decay,
+            },
+            {
+                "params": [1],
+                "algorithm": "adamw",
+                "lr": config.optimizer.aux_lr * multiplier,
+                "betas": (config.optimizer.aux_beta1, config.optimizer.aux_beta2),
+                "eps": config.optimizer.aux_eps,
+                "weight_decay": config.optimizer.weight_decay,
+            },
+            {
+                "params": [2],
+                "algorithm": "adamw",
+                "lr": config.optimizer.aux_lr * multiplier,
+                "betas": (config.optimizer.aux_beta1, config.optimizer.aux_beta2),
+                "eps": config.optimizer.aux_eps,
+                "weight_decay": 0.0,
+            },
+        ],
+    }
+
+    assert _optimizer_contract_problem(optimizer, config, step, final_step) is None
+    implementation = optimizer["param_groups"][0].pop("ns_implementation")
+    assert "ns_implementation" in _optimizer_contract_problem(optimizer, config, step, final_step)
+    optimizer["param_groups"][0]["ns_implementation"] = implementation
+    optimizer["param_groups"][0]["lr"] *= 2
+    assert "parameter group 0 lr" in _optimizer_contract_problem(
+        optimizer, config, step, final_step
+    )
+
+
+def test_timing_adjustment_requires_nonoverlapping_timestamp_evidence(tmp_path):
+    path = tmp_path / "timing_adjustment.json"
+    payload = {
+        "prior_training_wall_time_seconds": 180.0,
+        "included_through_checkpoint_step": 4,
+        "segments": [
+            {
+                "started_at_utc": "2026-01-01T00:00:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:01:00Z",
+                "wall_time_seconds": 60.0,
+                "included_through_checkpoint_step": 2,
+            },
+            {
+                "started_at_utc": "2026-01-01T00:02:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:04:00Z",
+                "wall_time_seconds": 120.0,
+                "included_through_checkpoint_step": 4,
+            },
+        ],
+        "evidence": "W&B start times and checkpoint mtimes",
+        "reason": "Retain only useful work through durable checkpoints",
+    }
+    path.write_text(json.dumps(payload))
+    assert _timing_adjustment_problems(path, [2, 4, 6, 8, 10]) == []
+
+    payload["prior_training_wall_time_seconds"] = 181.0
+    path.write_text(json.dumps(payload))
+    assert "timing adjustment total does not match" in " ".join(
+        _timing_adjustment_problems(path, [2, 4, 6, 8, 10])
+    )
+
+    payload["prior_training_wall_time_seconds"] = 180.0
+    payload["segments"][1]["started_at_utc"] = "2026-01-01T00:00:30Z"
+    path.write_text(json.dumps(payload))
+    assert "overlaps its predecessor" in " ".join(
+        _timing_adjustment_problems(path, [2, 4, 6, 8, 10])
+    )
 
 
 def test_run_settings_scope_schema_is_selected_by_mteb_version():
@@ -201,6 +316,7 @@ def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
                     "best_learning_rate": 1e-4,
                     "best_final_ndcg_at_10": score,
                     "final_mean_across_lrs": score,
+                    "final_median_across_lrs": score,
                     "final_population_std_across_lrs": 0.01,
                     "final_min_across_lrs": score - 0.01,
                     "final_max_across_lrs": score + 0.01,
@@ -238,6 +354,8 @@ def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
     assert "Paired bootstrap 95% CI" in rendered
     assert "../reports/figures/dense-training-dynamics.png" in rendered
     assert "../reports/figures/late-training-dynamics.png" in rendered
+    assert "../reports/figures/dense-training-dynamics-by-run.png" in rendered
+    assert "../reports/figures/late-training-dynamics-by-run.png" in rendered
     assert "../reports/figures/dense-lr-sensitivity.png" in rendered
     assert "../reports/figures/late-lr-sensitivity.png" in rendered
     muon = next(
@@ -258,7 +376,7 @@ def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monk
     blog = tmp_path / "blog.md"
     blog.write_text(
         "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
-        "the results sections are populated only from the checked-in aggregation artifacts after coverage reaches\n"
+        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
         "1,680/1,680.\n\n"
         "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
         "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n"
@@ -278,6 +396,103 @@ def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monk
     assert "training matrix in progress" not in rendered
 
 
+def test_aggregate_cli_defaults_to_the_original_two_family_contract():
+    args = parse_args([])
+
+    assert args.families == ["dense", "late"]
+    assert args.scope_amendment is None
+    assert args.output_dir == "reports"
+
+
+def test_dense_aggregate_filters_frozen_full_report_without_overwriting_it(tmp_path):
+    blog = tmp_path / "blog.md"
+    blog.write_text(
+        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
+        "checkpoint/task evaluations.\n\n"
+        "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
+        "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n",
+        encoding="utf-8",
+    )
+    output_root = tmp_path / "reports"
+    args = parse_args(
+        [
+            "--families",
+            "dense",
+            "--scope-amendment",
+            "configs/dense_scope_amendment.json",
+            "--output-dir",
+            str(output_root),
+            "--blog",
+            str(blog),
+            "--strict",
+        ]
+    )
+
+    aggregate(args)
+
+    scoped = output_root / "dense-discovery"
+    coverage = json.loads((scoped / "coverage.json").read_text(encoding="utf-8"))
+    with (scoped / "evaluation_long.csv").open(encoding="utf-8") as handle:
+        rows = list(csv.DictReader(handle))
+    rendered = blog.read_text(encoding="utf-8")
+    assert coverage["complete"] is True
+    assert coverage["families"] == ["dense"]
+    assert coverage["verified_experiment_runs"] == coverage["expected_experiment_runs"] == 12
+    assert coverage["verified_training_runs"] == coverage["expected_training_runs"] == 12
+    assert coverage["verified_training_checkpoints"] == 60
+    assert coverage["expected_training_checkpoints"] == 60
+    assert coverage["observed_results"] == coverage["expected_results"] == 840
+    assert coverage["source_full_discovery"]["observed_results"] == 1_680
+    assert coverage["source_full_discovery"]["verified_experiment_runs"] == 24
+    assert coverage["scope_amendment"]["status"] == "user_directed_post_hoc_scope_amendment"
+    assert len(rows) == 840
+    assert {row["model_family"] for row in rows} == {"dense"}
+    assert not (output_root / "coverage.json").exists()
+    assert "Dense discovery view complete" in rendered
+    assert "All 840 planned" in rendered
+    assert "Late" not in rendered
+    assert "MaxSim" not in rendered
+    marker_receipt = coverage["blog_marker_blocks"]
+    assert marker_receipt["schema_version"] == 1
+    assert marker_receipt["path"] == str(blog.resolve())
+    for label, markers in (("results", RESULTS_MARKERS), ("systems", SYSTEMS_MARKERS)):
+        begin, end = markers
+        start = rendered.index(begin)
+        stop = rendered.index(end, start) + len(end)
+        payload = rendered[start:stop].encode("utf-8")
+        record = marker_receipt["blocks"][label]
+        assert record == {
+            "begin_marker": begin,
+            "end_marker": end,
+            "encoding": "utf-8",
+            "bytes": len(payload),
+            "sha256": hashlib.sha256(payload).hexdigest(),
+        }
+        assert record["sha256"] != hashlib.sha256(rendered.encode("utf-8")).hexdigest()
+    outputs = coverage["outputs"]
+    assert len(outputs) == 12
+    for record in outputs.values():
+        artifact = Path(record["path"])
+        assert artifact.is_file()
+        assert record["bytes"] == artifact.stat().st_size
+        assert record["sha256"] == hashlib.sha256(artifact.read_bytes()).hexdigest()
+
+
+def test_dense_aggregate_requires_the_bound_scope_amendment(tmp_path):
+    args = parse_args(
+        [
+            "--families",
+            "dense",
+            "--output-dir",
+            str(tmp_path),
+            "--no-render-blog",
+        ]
+    )
+
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        aggregate(args)
+
+
 def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
     summary = []
     for family in ("dense", "late"):
@@ -289,6 +504,7 @@ def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
                             "model_family": family,
                             "optimizer": optimizer,
                             "learning_rate": learning_rate,
+                            "run_id": f"{optimizer}-lr{learning_rate:.0e}",
                             "stage": stage,
                             "fraction": stage / 5,
                             "mean_ndcg_at_10": 0.3 + optimizer_index * 0.01 + stage * 0.005,
@@ -300,6 +516,8 @@ def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
     expected = (
         "dense-training-dynamics.png",
         "late-training-dynamics.png",
+        "dense-training-dynamics-by-run.png",
+        "late-training-dynamics-by-run.png",
         "dense-lr-sensitivity.png",
         "late-lr-sensitivity.png",
     )
@@ -344,6 +562,79 @@ def test_system_metrics_add_audited_prior_training_segment(tmp_path):
     assert row["samples_per_second"] == 1.0
     assert row["steps_per_second"] == 0.1
     assert row["trainer_reported_samples_per_second"] == 9.9
+
+
+def test_system_metrics_prefers_checkpoint_accepted_timing_ledger(tmp_path):
+    output = tmp_path / "late" / "muon-lr1e-4"
+    output.mkdir(parents=True)
+    (output / "completed.json").write_text(
+        json.dumps(
+            {
+                "global_step": 100,
+                "dataset_rows": 1000,
+                "system_metrics": {"wall_time_seconds_max_rank": 9999, "trainer": {}},
+            }
+        )
+    )
+    (output / "timing_adjustment.json").write_text(
+        json.dumps({"prior_training_wall_time_seconds": 10})
+    )
+    (output / "accepted_timing.json").write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "segments": [
+                    {"wall_time_seconds_max_rank": 20},
+                    {"wall_time_seconds_max_rank": 30},
+                ],
+                "total_wall_time_seconds_max_rank": 50,
+            }
+        )
+    )
+    config = SimpleNamespace(
+        output_dir=output,
+        model_family="late",
+        optimizer=SimpleNamespace(name="muon", lr=1e-4),
+        run_id="muon-lr1e-4",
+    )
+
+    row = collect_system_metrics([config])[0]
+    assert row["wall_time_hours"] == pytest.approx(60 / 3600)
+    assert row["samples_per_second"] == pytest.approx(1000 / 60)
+    assert row["accepted_timing_path"] == str(output / "accepted_timing.json")
+
+
+def test_accepted_timing_audit_requires_contiguous_steps_and_matching_total(tmp_path):
+    path = tmp_path / "accepted_timing.json"
+    payload = {
+        "schema_version": 1,
+        "segments": [
+            {
+                "start_step_exclusive": 4,
+                "end_step_inclusive": 6,
+                "started_at_utc": "2026-01-01T00:00:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:01:00Z",
+                "wall_time_seconds_max_rank": 60.0,
+            },
+            {
+                "start_step_exclusive": 6,
+                "end_step_inclusive": 8,
+                "started_at_utc": "2026-01-01T00:01:00Z",
+                "checkpoint_completed_at_utc": "2026-01-01T00:02:00Z",
+                "wall_time_seconds_max_rank": 60.0,
+            },
+        ],
+        "total_wall_time_seconds_max_rank": 120.0,
+    }
+    path.write_text(json.dumps(payload))
+    assert _accepted_timing_problems(path, expected_start_step=4, expected_final_step=8) == []
+
+    payload["segments"][1]["start_step_exclusive"] = 5
+    payload["total_wall_time_seconds_max_rank"] = 1.0
+    path.write_text(json.dumps(payload))
+    problems = _accepted_timing_problems(path, expected_start_step=4, expected_final_step=8)
+    assert "accepted timing segment 1 starts at 5, expected 6" in problems
+    assert "accepted timing total does not match its segments" in problems
 
 
 def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
@@ -421,7 +712,7 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
         "fast-plaid": "1",
         "late-interaction-kernels": "1",
     }
-    source_files = _evaluation_source_manifest(Path(__file__).resolve().parents[1])
+    source_files = archived_evaluation_source_manifest()
     (tmp_path / "results" / "evaluation_runtime.json").write_text(
         json.dumps(
             {
@@ -497,6 +788,29 @@ def test_evaluation_collection_requires_pinned_result_provenance(tmp_path):
     )
     with pytest.raises(ValueError, match="Training/evaluation pylate versions differ"):
         collect_evaluations(tmp_path / "results", [config])
+
+
+def test_evaluation_collection_ignores_unrelated_smoke_results_without_runtime(tmp_path):
+    config = RunConfig(
+        run_id="adamw-test",
+        model_family="dense",
+        optimizer=OptimizerConfig(name="adamw", lr=1e-6),
+        model_name="model",
+        dataset_path="data",
+        output_root=str(tmp_path / "outputs"),
+    )
+    smoke_result = (
+        tmp_path
+        / "results"
+        / "smoke-dense"
+        / "results"
+        / "no_model_name__available"
+        / "SciFactDecontaminated.json"
+    )
+    smoke_result.parent.mkdir(parents=True)
+    smoke_result.write_text("{}")
+
+    assert collect_evaluations(tmp_path / "results", [config]) == []
 
 
 def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path):
@@ -627,15 +941,83 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
 
     def write_deep_payload(step):
         checkpoint = output / f"checkpoint-{step}"
-        save_file({"weight": torch.ones(1)}, checkpoint / "model.safetensors")
+        save_file({"weight": torch.tensor([float(step)])}, checkpoint / "model.safetensors")
+        scheduled_lr = config.optimizer.lr * _linear_schedule_multiplier(
+            step, steps[-1], config.warmup_ratio
+        )
         torch.save(
             {
-                "state": {0: {"step": torch.tensor(step)}},
-                "param_groups": [{"params": [0]}],
+                "state": {
+                    parameter_id: {
+                        "step": torch.tensor(float(step)),
+                        "exp_avg": torch.zeros(1),
+                        "exp_avg_sq": torch.zeros(1),
+                    }
+                    for parameter_id in (0, 1)
+                },
+                "param_groups": [
+                    {
+                        "params": [0],
+                        "algorithm": "adamw",
+                        "lr": scheduled_lr,
+                        "betas": (config.optimizer.beta1, config.optimizer.beta2),
+                        "eps": config.optimizer.eps,
+                        "weight_decay": config.optimizer.weight_decay,
+                    },
+                    {
+                        "params": [1],
+                        "algorithm": "adamw",
+                        "lr": scheduled_lr,
+                        "betas": (config.optimizer.beta1, config.optimizer.beta2),
+                        "eps": config.optimizer.eps,
+                        "weight_decay": 0.0,
+                    },
+                ],
             },
             checkpoint / "optimizer.pt",
         )
-        torch.save({"last_epoch": step}, checkpoint / "scheduler.pt")
+        torch.save(
+            {
+                "base_lrs": [config.optimizer.lr, config.optimizer.lr],
+                "last_epoch": step,
+                "_step_count": step + 1,
+                "_last_lr": [scheduled_lr, scheduled_lr],
+                "lr_lambdas": [{}, {}],
+            },
+            checkpoint / "scheduler.pt",
+        )
+        torch.save(
+            SimpleNamespace(
+                per_device_train_batch_size=8,
+                gradient_accumulation_steps=4,
+                num_train_epochs=1.0,
+                max_steps=-1,
+                learning_rate=1e-6,
+                max_grad_norm=1.0,
+                bf16=True,
+                tf32=True,
+                fp16=False,
+                seed=42,
+                data_seed=42,
+                gradient_checkpointing=True,
+                dataloader_num_workers=8,
+                dataloader_pin_memory=True,
+                dataloader_persistent_workers=True,
+                dataloader_prefetch_factor=4,
+                dataloader_drop_last=True,
+                remove_unused_columns=False,
+                ddp_find_unused_parameters=False,
+                train_sampling_strategy="group_by_length",
+                logging_steps=10,
+                run_name="dense-adamw-test",
+                project="embedding-optimizer-study",
+                lr_scheduler_type="linear",
+                save_strategy="no",
+                report_to=["wandb"],
+                warmup_steps=0.1,
+            ),
+            checkpoint / "training_args.bin",
+        )
         for rank in range(4):
             torch.save({"rank": rank}, checkpoint / f"rng_state_{rank}.pth")
 
@@ -654,10 +1036,66 @@ def test_training_artifact_audit_requires_resumable_five_checkpoint_run(tmp_path
     assert any("invalid optimizer state" in error for error in corrupt["errors"])
     write_deep_payload(2)
 
+    wrong_optimizer = torch.load(
+        output / "checkpoint-2" / "optimizer.pt", map_location="cpu", weights_only=True
+    )
+    wrong_optimizer["param_groups"][0]["algorithm"] = "muon"
+    torch.save(wrong_optimizer, output / "checkpoint-2" / "optimizer.pt")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any("algorithm is 'muon', expected 'adamw'" in error for error in corrupt["errors"])
+    write_deep_payload(2)
+
+    wrong_scheduler = torch.load(
+        output / "checkpoint-2" / "scheduler.pt", map_location="cpu", weights_only=True
+    )
+    wrong_scheduler["base_lrs"][0] *= 2
+    torch.save(wrong_scheduler, output / "checkpoint-2" / "scheduler.pt")
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any("scheduler base_lrs[0]" in error for error in corrupt["errors"])
+    write_deep_payload(2)
+
+    nonfinite_optimizer = output / "checkpoint-2" / "optimizer.pt"
+    optimizer_state = torch.load(nonfinite_optimizer, map_location="cpu", weights_only=True)
+    optimizer_state["state"][0]["step"] = torch.tensor(float("nan"))
+    torch.save(optimizer_state, nonfinite_optimizer)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any(
+        "optimizer state contains a non-finite tensor" in error for error in corrupt["errors"]
+    )
+    write_deep_payload(2)
+
+    invalid_training_args = output / "checkpoint-2" / "training_args.bin"
+    training_args = torch.load(invalid_training_args, map_location="cpu", weights_only=False)
+    training_args.gradient_accumulation_steps = 3
+    torch.save(training_args, invalid_training_args)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert corrupt["complete"] is False
+    assert corrupt["verified_checkpoints"] == 4
+    assert any(
+        "gradient_accumulation_steps is 3, expected 4" in error for error in corrupt["errors"]
+    )
+    write_deep_payload(2)
+
     corrupt_model = output / "checkpoint-4" / "model.safetensors"
     corrupt_model.write_bytes(b"not-a-safetensors-payload")
     corrupt = audit_training_artifacts([config], deep=True)
     assert any("invalid safetensors payload" in error for error in corrupt["errors"])
+    write_deep_payload(4)
+
+    save_file({"weight": torch.tensor([float("nan")])}, corrupt_model)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert any("non-finite tensor" in error for error in corrupt["errors"])
+    write_deep_payload(4)
+
+    shutil.copy2(output / "checkpoint-2" / "model.safetensors", corrupt_model)
+    corrupt = audit_training_artifacts([config], deep=True)
+    assert any("model payload is unchanged" in error for error in corrupt["errors"])
     write_deep_payload(4)
 
     torch.save({"last_epoch": 5}, output / "checkpoint-6" / "scheduler.pt")

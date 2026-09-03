@@ -1,0 +1,170 @@
+{
+  "expected": {
+    "manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+    "probe_dataset_fingerprint": "4789781d64d43fd9",
+    "selected_sample_ids_sha256": "30894b71513c7b4b7140960a01f9c7f73d5cdc9d405cc3d59202d49f7ea3b624",
+    "selection_sha256": "2d6a8224b5e8ed233d62f0ac8f7719c77ae5a07f038d5702e6db99105487f136",
+    "serialized_probe_dataset_fingerprint": "25781e5413d94c3a",
+    "task_counts": {
+      "ArguAna": 16,
+      "ClimateFEVER": 16,
+      "DBPedia": 16,
+      "FEVER": 16,
+      "FiQA2018": 16,
+      "HotpotQA": 16,
+      "MSMARCO": 16,
+      "NFCorpus": 16,
+      "NQ": 16,
+      "QuoraRetrieval": 16,
+      "SCIDOCS": 16,
+      "SciFact": 16,
+      "TRECCOVID": 16,
+      "Touche2020": 16
+    }
+  },
+  "freeze_context": {
+    "amendments": [
+      {
+        "change": "NQ candidate_pool_count changed from 40 to 24",
+        "evidence": "The pinned decontaminated NQ test qrels contain only 26 eligible non-empty queries with a positive judgment.",
+        "model_outputs_consumed": false,
+        "probe_outputs_existed": false,
+        "recorded_at": "2026-08-26T09:31:00Z"
+      },
+      {
+        "change": "Every task candidate_pool_count standardized to 24",
+        "evidence": "The pinned decontaminated Touche2020 test qrels contain only 30 eligible non-empty queries with a positive judgment. A common 24-query pool preserves the balanced cross-task protocol and leaves at least eight non-self candidates beyond the 16 output queries.",
+        "model_outputs_consumed": false,
+        "probe_outputs_existed": false,
+        "recorded_at": "2026-08-26T09:38:00Z"
+      }
+    ],
+    "audited_strict_units_observed": 98,
+    "expected_strict_units": 1680,
+    "note": "The protocol is fixed after partial evaluation scores existed. Selection never consumes checkpoint scores, rankings, or embeddings; this is a prospective completion lock, not a preregistration before outcome inspection.",
+    "recorded_at": "2026-08-26T09:20:00Z"
+  },
+  "negative_selection": {
+    "candidate_pool": "one deterministic highest-relevance document from each selected pool query",
+    "exclude": "every document with positive qrel for the output query",
+    "ranking": "IDF-weighted lexical overlap, then a seeded BLAKE2b tie break",
+    "selected_per_query": 7
+  },
+  "output": "data/probes/decontaminated-beir-224-seed4242",
+  "schema_version": 1,
+  "seed": 4242,
+  "tasks": [
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/arguana-decontaminated",
+      "name": "ArguAna",
+      "query_count": 16,
+      "revision": "c19c66cb43fb9b090cc55e81c10d9b5dc70b47a7",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/climate-fever-decontaminated",
+      "name": "ClimateFEVER",
+      "query_count": 16,
+      "revision": "1e73a88ba467a00e22ae814873edc3a9bb63b441",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/dbpedia-entity-decontaminated",
+      "name": "DBPedia",
+      "query_count": 16,
+      "revision": "7689f39462841132f3345798c946481418a8b77c",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/fever-decontaminated",
+      "name": "FEVER",
+      "query_count": 16,
+      "revision": "c39d8922d4bd04bc690a4331800018c1c44d41bd",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/fiqa-decontaminated",
+      "name": "FiQA2018",
+      "query_count": 16,
+      "revision": "6d053f042b0a58763f0463d4591521725c8eb1b9",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/hotpotqa-decontaminated",
+      "name": "HotpotQA",
+      "query_count": 16,
+      "revision": "2a3899c49545c56f84d5e884a1723c34ed96ae61",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/msmarco-decontaminated",
+      "name": "MSMARCO",
+      "query_count": 16,
+      "revision": "7e98709a5db3f95bbd50a7b9b53f3a2c5d69f837",
+      "split": "dev"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/nfcorpus-decontaminated",
+      "name": "NFCorpus",
+      "query_count": 16,
+      "revision": "de914702862784c9d5c937cf4736bf37bc7bbac9",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/nq-decontaminated",
+      "name": "NQ",
+      "query_count": 16,
+      "revision": "8d4418d0bab92c5887e0f330fe9bea1e692e173f",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/quora-decontaminated",
+      "name": "QuoraRetrieval",
+      "query_count": 16,
+      "revision": "a303966cc5dc0dcfb77761202d10e02c2fc67be2",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/scidocs-decontaminated",
+      "name": "SCIDOCS",
+      "query_count": 16,
+      "revision": "a5f62cf5006386ed1f069b79c56fbbe18e4e778a",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/scifact-decontaminated",
+      "name": "SciFact",
+      "query_count": 16,
+      "revision": "0729fa34af49875724d18ace64ce07f3e1dc0587",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/trec-covid-decontaminated",
+      "name": "TRECCOVID",
+      "query_count": 16,
+      "revision": "9e28c1e95c3e04a8f12ea2053822d80312f15794",
+      "split": "test"
+    },
+    {
+      "candidate_pool_count": 24,
+      "dataset": "lightonai/webis-touche2020-decontaminated",
+      "name": "Touche2020",
+      "query_count": 16,
+      "revision": "84c6c1ff39a87ee1e1d4356fc6f43df6d49431b3",
+      "split": "test"
+    }
+  ]
+}

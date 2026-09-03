@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "status": "prospective_completion_lock",
+  "frozen_at": "2026-08-26T17:04:19Z",
+  "matrix": {
+    "path": "configs/experiment.yaml",
+    "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+  },
+  "training_summary": {
+    "path": "reports/training-dynamics/summary_manifest.json",
+    "sha256": "033dd06f7de59bfb11eacf345a7469068b8429f3878d4dd7cc81d122880749d5"
+  },
+  "freeze_context": {
+    "strict_beir_valid_units": 160,
+    "strict_beir_expected_units": 1680,
+    "strict_progress_snapshot_sha256": "9644d78d1a7cc7f8f64ddf9a8ca2e047db0a4ca20c3d6e33ff46079bd3bd159a",
+    "complete_retrieval_matrix_visible": false,
+    "retrieval_dynamics_output_visible": false,
+    "training_dynamics_visible": true,
+    "weight_trajectory_summary_visible": true
+  },
+  "reference_target": {
+    "scope": "within_model_family",
+    "definition": "median_final_ndcg_at_10_of_four_adamw_learning_rate_points",
+    "uses_muon_or_normuon_outcomes": false,
+    "uses_confirmation_outcomes": false
+  },
+  "first_passage": {
+    "observed_stages": [
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "interpolation": "none",
+    "non_reaching_runs": "right_censored_after_stage_5",
+    "report_all_learning_rate_points": true
+  },
+  "wall_time": {
+    "definition": "audited_terminal_useful_wall_time_hours_times_checkpoint_step_over_3907",
+    "checkpoint_timestamp_claim": false,
+    "gpu_hours_multiplier": 4
+  },
+  "claim_boundary": "This is a prospectively locked completion analysis after 160 of 1680 discovery evaluation units and training/weight summaries were visible, not a preregistration. The four learning rates are sweep points rather than seeds; time-to-reference remains exploratory and does not replace the frozen three-seed confirmatory comparison."
+}

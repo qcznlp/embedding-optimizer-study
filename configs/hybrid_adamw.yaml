@@ -1,0 +1,53 @@
+formal_runtime: formal_runtime.json
+
+common:
+  dataset_path: data/denseon-sft-500k-seed42
+  output_root: outputs/hybrid-adamw
+  seed: 42
+  epochs: 1.0
+  global_batch_size: 128
+  micro_batch_size: 8
+  max_length: 8192
+  warmup_ratio: 0.1
+  max_grad_norm: 1.0
+  dataloader_workers: 8
+  gradient_checkpointing: true
+  flash_attention: true
+  wandb_project: embedding-optimizer-study
+  wandb_entity: stevezenguom
+  checkpoint_fractions: [0.2, 0.4, 0.6, 0.8, 1.0]
+
+models:
+  dense:
+    model_name: lightonai/DenseOn-unsupervised
+    model_revision: 0edbd55684eb782bce55ee74c95b25c97cbe7f43
+    temperature: 0.02
+  late:
+    model_name: lightonai/LateOn-unsupervised
+    model_revision: 1047071849a708b9b3ee4dccdc60186c185224a7
+    temperature: 0.001
+
+# Fairness control: hidden matrices use the swept AdamW rate, while embeddings,
+# heads, norms, and biases use the same fixed 3e-6 auxiliary AdamW recipe as
+# Muon/NorMuon. This changes parameter routing without changing the update rule.
+optimizers:
+  - id: hybrid-adamw-lr1e-6
+    name: hybrid_adamw
+    lr: 1.0e-6
+    aux_lr: 3.0e-6
+    weight_decay: 0.01
+  - id: hybrid-adamw-lr3e-6
+    name: hybrid_adamw
+    lr: 3.0e-6
+    aux_lr: 3.0e-6
+    weight_decay: 0.01
+  - id: hybrid-adamw-lr1e-5
+    name: hybrid_adamw
+    lr: 1.0e-5
+    aux_lr: 3.0e-6
+    weight_decay: 0.01
+  - id: hybrid-adamw-lr3e-5
+    name: hybrid_adamw
+    lr: 3.0e-5
+    aux_lr: 3.0e-6
+    weight_decay: 0.01

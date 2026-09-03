@@ -1,0 +1,2123 @@
+{
+  "analysis_protocol": {
+    "bytes": 12463,
+    "path": "/root/embedding-optimizer-study/configs/causal_chain_analysis.json",
+    "sha256": "813538910dbd32d6fcfb65ee8736816cd573ae122ec907d25d7208229720cd7f"
+  },
+  "cache_dir": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache",
+  "claimable": true,
+  "complete": true,
+  "decomposition": "torch.linalg.svdvals float32 exact, one hidden matrix at a time",
+  "device": "cuda:0",
+  "experiment_matrix": {
+    "bytes": 2624,
+    "path": "/root/embedding-optimizer-study/configs/experiment.yaml",
+    "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+  },
+  "family": "dense",
+  "hidden_shapes": [
+    {
+      "name": "0.layers.0.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.0.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.0.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.0.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.1.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.1.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.1.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.1.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.10.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.10.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.10.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.10.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.11.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.11.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.11.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.11.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.12.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.12.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.12.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.12.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.13.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.13.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.13.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.13.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.14.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.14.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.14.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.14.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.15.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.15.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.15.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.15.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.16.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.16.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.16.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.16.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.17.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.17.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.17.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.17.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.18.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.18.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.18.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.18.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.19.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.19.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.19.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.19.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.2.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.2.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.2.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.2.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.20.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.20.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.20.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.20.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.21.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.21.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.21.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.21.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.3.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.3.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.3.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.3.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.4.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.4.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.4.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.4.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.5.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.5.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.5.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.5.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.6.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.6.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.6.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.6.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.7.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.7.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.7.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.7.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.8.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.8.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.8.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.8.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "name": "0.layers.9.attn.Wo.weight",
+      "parameters": 589824,
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.9.attn.Wqkv.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.9.mlp.Wi.weight",
+      "parameters": 1769472,
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "name": "0.layers.9.mlp.Wo.weight",
+      "parameters": 884736,
+      "shape": [
+        768,
+        1152
+      ]
+    }
+  ],
+  "matrix_manifest": {
+    "bytes": 8236,
+    "path": "/root/embedding-optimizer-study/configs/generated/short-branch/manifest.json",
+    "sha256": "251aa120c1356ef26683c604c7aba12bc71c090235d2c4be4ef3154d72956022"
+  },
+  "output": {
+    "bytes": 8169,
+    "fields": [
+      "family",
+      "seed",
+      "operator",
+      "stage",
+      "update_stable_rank_fraction",
+      "update_entropy_rank_fraction",
+      "update_head_energy_fraction",
+      "update_middle_energy_fraction",
+      "update_tail_energy_fraction",
+      "update_row_norm_cv",
+      "update_frobenius_norm",
+      "weight_frobenius_norm"
+    ],
+    "path": "/root/embedding-optimizer-study/reports/short-branch/temporal_mechanism_predictors.csv",
+    "rows": 45,
+    "sha256": "609d36712dd94ad7b30d462f2f69f5f4b053bb9199757c63d0253e728d84485a"
+  },
+  "protocol": {
+    "bytes": 3103,
+    "path": "/root/embedding-optimizer-study/configs/short_branch_protocol.json",
+    "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+  },
+  "reference_rule": "stage1-minus-common-start; stage2-5-minus-previous-checkpoint",
+  "runtime": {
+    "cuda": "12.9",
+    "torch": "2.9.1+cu129"
+  },
+  "schema_version": 1,
+  "scope_amendment": {
+    "bytes": 3139,
+    "path": "/root/embedding-optimizer-study/configs/dense_scope_amendment.json",
+    "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+  },
+  "selector": {
+    "call": "parameter_partition_name(name, ndim) == 'hidden'",
+    "expected_parameters": 110297088,
+    "expected_tensors": 88
+  },
+  "sources": [
+    {
+      "cache_receipt": {
+        "bytes": 14034,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__adamw__stage1.json",
+        "sha256": "5a01a8b6c7e6471e71443a475ede3906fac19ad9297d46f31d7e16af3321f58e"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "b94aa73f99f254885679d15fb4fab3055546943087f73dc9e50686e8a5cb623c"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-79"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 161803,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14094,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__adamw__stage2.json",
+        "sha256": "bf9c353e838b9c2e3c4562c0fc67ea0edb6e114bc9928ff73703c74189dd135c"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "1d4e967d83a58a42f05ad1b260cde40079f67a1e067304edf45992d428aff4d7"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-157"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "b94aa73f99f254885679d15fb4fab3055546943087f73dc9e50686e8a5cb623c"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-79"
+      },
+      "seed": 161803,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14096,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__adamw__stage3.json",
+        "sha256": "a9dc8eb9c6a917d7188b708de66317ad47c895fee9fc74d3180e713803457aac"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "6b00be33306a5ca1332ae219bd3cf9d495b88b38348929b65742b4df0a6527f6"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-235"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "1d4e967d83a58a42f05ad1b260cde40079f67a1e067304edf45992d428aff4d7"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-157"
+      },
+      "seed": 161803,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14095,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__adamw__stage4.json",
+        "sha256": "1af7090c3e46de82ebf45ed4c7b57dcaf5775b2efa9ac509a8c06d9ab54d25c1"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "8b4dd39bf6ed1b84e40890fcd93d8944a484d511c3ca4f49e80104a562ceb1ed"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-313"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "6b00be33306a5ca1332ae219bd3cf9d495b88b38348929b65742b4df0a6527f6"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-235"
+      },
+      "seed": 161803,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14095,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__adamw__stage5.json",
+        "sha256": "48ccb029b36d1300f8647f55f9707943da7648e1e08e0ad9f240ac1baae79f2c"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "c8350d7a62c6777f91dfedc974b023b04aaf699ead52131f72f0fd92013e4b83"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-391"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "8b4dd39bf6ed1b84e40890fcd93d8944a484d511c3ca4f49e80104a562ceb1ed"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/adamw-scale-matched/checkpoint-313"
+      },
+      "seed": 161803,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14031,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__muon__stage1.json",
+        "sha256": "bef5de111418d86eda5b11112584a68463a171e55b95818771114f880752b532"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "5f584707357ffff422609045db97f4e457eef08b43ade1be0014a9aa417822ab"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-79"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 161803,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14087,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__muon__stage2.json",
+        "sha256": "819145e2c6eb665f8bfb0fdf6d2f0599aaac7a569ca26b1f261ea2cceac9feaa"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "f43d6bfad606e399727248ca44998b8e9b02b4eb60b9f3a39d714e6e1ba17ee1"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-157"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "5f584707357ffff422609045db97f4e457eef08b43ade1be0014a9aa417822ab"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-79"
+      },
+      "seed": 161803,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14089,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__muon__stage3.json",
+        "sha256": "46f21d5965941608fe5a322064f79792e6afd8d4fdac6cbd1aff93883c28cf6b"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "b121870b74cdec2650ef6434281f1e72e9dcfdf04ac414d7f2d3fd1ba71379a9"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-235"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "f43d6bfad606e399727248ca44998b8e9b02b4eb60b9f3a39d714e6e1ba17ee1"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-157"
+      },
+      "seed": 161803,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14089,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__muon__stage4.json",
+        "sha256": "83d83e6e1c5d6ed041f6e50feba4240c4a38f668a215412a8559f779ab454586"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "69dc2b23485351c74c64503ede6d3186591690e8acaa1356183b007256132081"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-313"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "b121870b74cdec2650ef6434281f1e72e9dcfdf04ac414d7f2d3fd1ba71379a9"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-235"
+      },
+      "seed": 161803,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14092,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__muon__stage5.json",
+        "sha256": "0d9933c7aa3378ab78f14e55cbb268851331ba0dadc951323a7dafa0752e284e"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "5fca9e88a43ce31613e936cfb45e6b94aa88a2fb77519e7cbd897d87e7240b32"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-391"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "69dc2b23485351c74c64503ede6d3186591690e8acaa1356183b007256132081"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-313"
+      },
+      "seed": 161803,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14040,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__normuon__stage1.json",
+        "sha256": "f22327359c4ab5575bd611b03dc575edc258772845b7ac35cf1ac11dc6b84845"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "17af7e928eb7130d47aa6f51ec5a8987a2d32b2914157bd34b89ad9520bd5160"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-79"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 161803,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14103,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__normuon__stage2.json",
+        "sha256": "05b8de1e0fb87e0bc38bd1114921885d383408ef78301b1a0a5908c9209acb0c"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "f3afaeabd26ae1da90005e66ee93af016cad7d1304e16bf83d97706f43a9f7b5"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-157"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "17af7e928eb7130d47aa6f51ec5a8987a2d32b2914157bd34b89ad9520bd5160"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-79"
+      },
+      "seed": 161803,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14106,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__normuon__stage3.json",
+        "sha256": "56ae4610c816ea73234ac30335a1b5bbee7b19755fb53e033910e3cb3983c2a3"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "6583196d5643b7846e96d5a2da23b3fe3de739378a6aa7e64b8cbae6d6b739af"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-235"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "f3afaeabd26ae1da90005e66ee93af016cad7d1304e16bf83d97706f43a9f7b5"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-157"
+      },
+      "seed": 161803,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14103,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__normuon__stage4.json",
+        "sha256": "440d61429524e2472c2c84850f3dae58bfb26b154b96be9357629d1061cf24d8"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "e0eef2953173fcff86b396434627ade0fd456c0baa315aa0d1fc3197788fd47b"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-313"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "6583196d5643b7846e96d5a2da23b3fe3de739378a6aa7e64b8cbae6d6b739af"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-235"
+      },
+      "seed": 161803,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14106,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed161803__normuon__stage5.json",
+        "sha256": "d981012983ae93946e81ad9382e715e3469dab6f3dd99eae7ce85c6f745f739a"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "38c82e68cccd3201cb432e01c6cb9d768d8cf61de625e709b5d1dd546e0e5783"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-391"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "e0eef2953173fcff86b396434627ade0fd456c0baa315aa0d1fc3197788fd47b"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/normuon-scale-matched/checkpoint-313"
+      },
+      "seed": 161803,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14035,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__adamw__stage1.json",
+        "sha256": "f17783e1790655b43457d7b3723f503dabbed82b12cb96894e495ddae8968aa7"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "071360d068d1194782769eac0e710a87b0a4ed4eddf9e2de23d63b7f49341724"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-79"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 271828,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14094,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__adamw__stage2.json",
+        "sha256": "639925892228dec1d18b923f067a92b2f8254321deebee0d9fee3ee14163e08c"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "cd6edf48f891f8e9ba0de004f3d6203a024dc4302efbee1c4ad7fbd032d5186e"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-157"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "071360d068d1194782769eac0e710a87b0a4ed4eddf9e2de23d63b7f49341724"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-79"
+      },
+      "seed": 271828,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14096,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__adamw__stage3.json",
+        "sha256": "b33f660c166a45fb91c274dc78320ccde73998d450404217f5e42b67e7b78591"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "120763b3e9c965054b0cb1aca31b7047f0015eea3043654fafe7b858ffd40b53"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-235"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "cd6edf48f891f8e9ba0de004f3d6203a024dc4302efbee1c4ad7fbd032d5186e"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-157"
+      },
+      "seed": 271828,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14096,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__adamw__stage4.json",
+        "sha256": "87691ebc33f1a6b172c2a48503681c9c7407bb8dee92e5e6c6112e9e2c59a72e"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "70f4a1e6389d0d9ad81763314e4f581715e2901dc3c6038c75fabb9fe50d5ed5"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-313"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "120763b3e9c965054b0cb1aca31b7047f0015eea3043654fafe7b858ffd40b53"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-235"
+      },
+      "seed": 271828,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14098,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__adamw__stage5.json",
+        "sha256": "2e9fc17e8d9a2bde3ace7767a8b692755bad02d866e203fa080239a5c31b15fd"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "924eb17be91a6776f5552796e9aecfaaf535bb6ac1b92d6a20849c540fd207bc"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-391"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "70f4a1e6389d0d9ad81763314e4f581715e2901dc3c6038c75fabb9fe50d5ed5"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/adamw-scale-matched/checkpoint-313"
+      },
+      "seed": 271828,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14028,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__muon__stage1.json",
+        "sha256": "0451f5c65bdc585322df3963e35392e57ca7cc0f421590fb4ab2f31d886183b4"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "211d3c25b5efa892a2c31e5e663c933cd3c031b41be9cb911c6458cea757efa2"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-79"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 271828,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14088,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__muon__stage2.json",
+        "sha256": "5bff523fdce1fef0dbc8abcbeda474c451086f7ac0e61ffd9b3054f2579a3819"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "f3c59112d3fef5cfc124c975cab685a9f488d3b1a68290271be5ca1757980f87"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-157"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "211d3c25b5efa892a2c31e5e663c933cd3c031b41be9cb911c6458cea757efa2"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-79"
+      },
+      "seed": 271828,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14089,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__muon__stage3.json",
+        "sha256": "cbcd8491146e10741c752f31e27c067ea496d19f30ee8cf6ccf327ff497da6f6"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "81e61722b46f5bf0bdd343ac271a7d3260081514def41827a64f2d59e3afc1cb"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-235"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "f3c59112d3fef5cfc124c975cab685a9f488d3b1a68290271be5ca1757980f87"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-157"
+      },
+      "seed": 271828,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14088,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__muon__stage4.json",
+        "sha256": "82f388743390b801fbae8419e5018a6b7bcade2f79f825678d93c26f02aaf6ec"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "3e5011041744a5b004d526ab02a827bde14c2af8aa2ad2ec2a493ec07fdba823"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-313"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "81e61722b46f5bf0bdd343ac271a7d3260081514def41827a64f2d59e3afc1cb"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-235"
+      },
+      "seed": 271828,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14091,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__muon__stage5.json",
+        "sha256": "43abeb12b69a0b57cae10f67db179651a2b33f5a2e7bb6677bc9a86908cb7e8c"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "7f2806267751e7422d7e74134718caae268fafbb3205392105a745369898fcf8"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-391"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "3e5011041744a5b004d526ab02a827bde14c2af8aa2ad2ec2a493ec07fdba823"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/muon-scale-matched/checkpoint-313"
+      },
+      "seed": 271828,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14042,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__normuon__stage1.json",
+        "sha256": "8690b8aad0714d6f10393f289ca444f91634cf74404b92869fc30f8ce983236d"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "41f6bbea83e27a2ed3495728296a9e9f982c7c192f50aa85b2938d19294d7a70"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-79"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 271828,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14104,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__normuon__stage2.json",
+        "sha256": "a30482cfd6304f7e7c5469144ceebc5b255143cc1cba17dd7a9d6669b835251d"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "23d6232c73154198f53e368edb7ec01db7bd782f3349654dab2bb1a39f70046f"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-157"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "41f6bbea83e27a2ed3495728296a9e9f982c7c192f50aa85b2938d19294d7a70"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-79"
+      },
+      "seed": 271828,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14106,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__normuon__stage3.json",
+        "sha256": "77bb1cc8ac5e8668992cacaeae8496c5137b7aa096102acac62a98109ddcd0aa"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "a1afb516ce14c25b13080c90de55510e791953e1a13eafb05a329e6c75456360"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-235"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "23d6232c73154198f53e368edb7ec01db7bd782f3349654dab2bb1a39f70046f"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-157"
+      },
+      "seed": 271828,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14105,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__normuon__stage4.json",
+        "sha256": "e6885222aa45cd8b413ffdfd694357034875e03bdde2d77600babd06a7e3ace9"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "1730e4b271bd9e034a97b004b63c9cf9193e02057ca94275647d3b6c12470370"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-313"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "a1afb516ce14c25b13080c90de55510e791953e1a13eafb05a329e6c75456360"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-235"
+      },
+      "seed": 271828,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14103,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed271828__normuon__stage5.json",
+        "sha256": "af45fc16ea55d8574ae080d3a48ce6a76addc61df6672a6e9368dd9191a8da6f"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "f165e6c758af2eb69d15008bd3c12c5772b65485e6e2a03db2df711b6efb689c"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-391"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "1730e4b271bd9e034a97b004b63c9cf9193e02057ca94275647d3b6c12470370"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed271828/dense/normuon-scale-matched/checkpoint-313"
+      },
+      "seed": 271828,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14034,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__adamw__stage1.json",
+        "sha256": "cccafe0aff55205ca38c413748ae00edc29efabf3fe532195c3e1df40640d287"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "a200b0baf4c2f5c6132dc59a79a4ce514860633be4b29307c0ee93d6b93d57c7"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-79"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 314159,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14095,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__adamw__stage2.json",
+        "sha256": "c11867e6af9d7494fca882cdd2cfedbb07f3c9e07faee5129040ecf8d06d0f9a"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "a32f6b880ed0ace597cc1846873b8e691bd88721763a8abe17baa3d0055d4da6"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-157"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "a200b0baf4c2f5c6132dc59a79a4ce514860633be4b29307c0ee93d6b93d57c7"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-79"
+      },
+      "seed": 314159,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14097,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__adamw__stage3.json",
+        "sha256": "93d6e59dafe00aac3524e37a8cf248d82aca1bb6511ca104004cd6f4f84128f7"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "6e5078e16ef2db891fa71b533c2f55932e452f2a83785f41084d614296b5897a"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-235"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "a32f6b880ed0ace597cc1846873b8e691bd88721763a8abe17baa3d0055d4da6"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-157"
+      },
+      "seed": 314159,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14095,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__adamw__stage4.json",
+        "sha256": "9b742284ae1c481c22144e7040465c351e88598be61b08a169a97178cac18bf5"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "721b69708c7ad17ae33a51711e93a54fce0b9093d31f9bf2c65545e3dd2a4c9f"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-313"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "6e5078e16ef2db891fa71b533c2f55932e452f2a83785f41084d614296b5897a"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-235"
+      },
+      "seed": 314159,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14096,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__adamw__stage5.json",
+        "sha256": "a885edd01be3e92bf8d78ff76f6e78846c4c3d162ac59a086aea1e673ce46b0f"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "027bf294ab4407bea7225a3cdeaee01ef204ca8bfe6c897eaebeab0514e6e956"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-391"
+      },
+      "operator": "adamw",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "721b69708c7ad17ae33a51711e93a54fce0b9093d31f9bf2c65545e3dd2a4c9f"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/adamw-scale-matched/checkpoint-313"
+      },
+      "seed": 314159,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14029,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__muon__stage1.json",
+        "sha256": "29536169e14ab9c88bd165c4e2818ea9700ad54545e4b17794e189f6913743e8"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "66384c99151fee8556edc4d4b7627880581743e59f812acfdc3875e27fefe864"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-79"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 314159,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14084,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__muon__stage2.json",
+        "sha256": "ae3252e1374f9d024499c16069f1804c48a6392d6ddeb71339a16cfc1ea628b9"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "44beb4d48c482205b0ad5cafe2162d209f21b34579e37ce1e83aaf527f400134"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-157"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "66384c99151fee8556edc4d4b7627880581743e59f812acfdc3875e27fefe864"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-79"
+      },
+      "seed": 314159,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14090,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__muon__stage3.json",
+        "sha256": "051101d0a66d0275cc24265a02b6eb7e5898e716f30fd507f0395d0028483649"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "df865a59bc293dd8230e2d6e811103f22e2d6fa07f11269b6785ac14b2ce1f43"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-235"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "44beb4d48c482205b0ad5cafe2162d209f21b34579e37ce1e83aaf527f400134"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-157"
+      },
+      "seed": 314159,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14086,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__muon__stage4.json",
+        "sha256": "846a52f3953301126240059dd7738046e79365bcab05b46d4e8e3de731b772db"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "d7c63bf75138af19d8e1aeb220b0857129dad341a08abd3b601b22c4a2662b19"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-313"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "df865a59bc293dd8230e2d6e811103f22e2d6fa07f11269b6785ac14b2ce1f43"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-235"
+      },
+      "seed": 314159,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14087,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__muon__stage5.json",
+        "sha256": "9a9ccf1841888e2aab2289bde1e7a328d769683efcbc37afc3a3341ce9580e75"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "ec49a91f014f0d9c3a64083ceab2276286aa6a7f815a421f16b85396fed03741"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-391"
+      },
+      "operator": "muon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "d7c63bf75138af19d8e1aeb220b0857129dad341a08abd3b601b22c4a2662b19"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/muon-scale-matched/checkpoint-313"
+      },
+      "seed": 314159,
+      "stage": 5
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14038,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__normuon__stage1.json",
+        "sha256": "0a889ad00e6bf3238e29a3044ab53d9e2d03f804289d5dc214c1e923fabf6a7d"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "1a31213f2a86dbab9702053649fba85634798d4daf7ee4babdb93ba191c509fe"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-79"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345/model.safetensors",
+            "sha256": "735ee4a178e145e868728d2daf52a4095b082dd64f45e895cc7628c5a6913b20"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/dense/adamw-lr1e-5/checkpoint-2345"
+      },
+      "seed": 314159,
+      "stage": 1
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14102,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__normuon__stage2.json",
+        "sha256": "7b9ecd7f03ae11a96ce17cf68c9fc457ded809ddd9d19d55e70005c84083cfe1"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "71af12edaf0f55cd46eabf7a572e5b044d8ba572e1a0cd6c378087fae1ed60b8"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-157"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-79/model.safetensors",
+            "sha256": "1a31213f2a86dbab9702053649fba85634798d4daf7ee4babdb93ba191c509fe"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-79"
+      },
+      "seed": 314159,
+      "stage": 2
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14103,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__normuon__stage3.json",
+        "sha256": "0fdd63ec78a34aa9904355b505ecaa6332e704a36ecae0081a87a530fea163be"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "4e6cdb741e452f61b06e7f12fd75e039f29ed9a85caa92e3b6c9f76118d7267d"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-235"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-157/model.safetensors",
+            "sha256": "71af12edaf0f55cd46eabf7a572e5b044d8ba572e1a0cd6c378087fae1ed60b8"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-157"
+      },
+      "seed": 314159,
+      "stage": 3
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14104,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__normuon__stage4.json",
+        "sha256": "fb965a9f5fa93307f704b672759a923c76c8bb22f9e16f5a37906f72f6baf993"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "726a966825334b06690049661f707eac43c55970e846b22fcd8f8c774b49269c"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-313"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-235/model.safetensors",
+            "sha256": "4e6cdb741e452f61b06e7f12fd75e039f29ed9a85caa92e3b6c9f76118d7267d"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-235"
+      },
+      "seed": 314159,
+      "stage": 4
+    },
+    {
+      "cache_receipt": {
+        "bytes": 14106,
+        "path": "/root/embedding-optimizer-study/reports/short-branch/temporal-predictor-cache/seed314159__normuon__stage5.json",
+        "sha256": "47cef69fea20a77f362609b3e4eb4be186ab6dde1ee771176b7cf3c63f3a2e88"
+      },
+      "current": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-391/model.safetensors",
+            "sha256": "0c0e324cecd72f93644a2623accccca10c519ad6b85f1cf3e8ee9043078aa1ac"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-391"
+      },
+      "operator": "normuon",
+      "reference": {
+        "files": [
+          {
+            "bytes": 596070136,
+            "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-313/model.safetensors",
+            "sha256": "726a966825334b06690049661f707eac43c55970e846b22fcd8f8c774b49269c"
+          }
+        ],
+        "path": "/root/embedding-optimizer-study/outputs/short-branch/seed314159/dense/normuon-scale-matched/checkpoint-313"
+      },
+      "seed": 314159,
+      "stage": 5
+    }
+  ],
+  "status": "complete"
+}

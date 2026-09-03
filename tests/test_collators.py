@@ -1,7 +1,16 @@
+import json
+from types import SimpleNamespace
+
+import pytest
 import torch
 from transformers import TrainerControl, TrainerState
 
-from embed_optim.callbacks import FractionalCheckpointCallback, sanitize_pylate_checkpoint
+from embed_optim.callbacks import (
+    AcceptedTimingCallback,
+    FractionalCheckpointCallback,
+    accepted_timing_summary,
+    sanitize_pylate_checkpoint,
+)
 from embed_optim.collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
 
 
@@ -74,3 +83,85 @@ def test_fractional_checkpoint_callback_requests_each_target(tmp_path):
         control.should_save = False
         control = callback.on_step_end(None, state, control)
         assert control.should_save
+
+
+def test_accepted_timing_callback_records_non_overlapping_resume_segments(tmp_path, monkeypatch):
+    ticks = iter([10.0, 15.0, 22.0, 30.0, 34.0])
+    monkeypatch.setattr("embed_optim.callbacks.time.monotonic", lambda: next(ticks))
+    args = SimpleNamespace(process_index=0)
+    state = TrainerState(global_step=0)
+    control = TrainerControl()
+
+    callback = AcceptedTimingCallback(tmp_path)
+    callback.on_train_begin(args, state, control)
+    state.global_step = 2
+    callback.on_save(args, state, control)
+    state.global_step = 4
+    callback.on_save(args, state, control)
+
+    resumed = AcceptedTimingCallback(tmp_path)
+    resumed.on_train_begin(args, state, control)
+    state.global_step = 6
+    resumed.on_save(args, state, control)
+
+    payload = json.loads((tmp_path / "accepted_timing.json").read_text())
+    assert [
+        (segment["start_step_exclusive"], segment["end_step_inclusive"])
+        for segment in payload["segments"]
+    ] == [(0, 2), (2, 4), (4, 6)]
+    assert [segment["wall_time_seconds_max_rank"] for segment in payload["segments"]] == [
+        5.0,
+        7.0,
+        4.0,
+    ]
+    assert payload["total_wall_time_seconds_max_rank"] == 16.0
+
+
+def test_accepted_timing_callback_records_slowest_distributed_rank(tmp_path, monkeypatch):
+    ticks = iter([10.0, 15.0])
+    monkeypatch.setattr("embed_optim.callbacks.time.monotonic", lambda: next(ticks))
+    monkeypatch.setattr(torch.distributed, "is_available", lambda: True)
+    monkeypatch.setattr(torch.distributed, "is_initialized", lambda: True)
+
+    def replace_with_max(duration, op):
+        assert op == torch.distributed.ReduceOp.MAX
+        duration.fill_(9.0)
+
+    monkeypatch.setattr(torch.distributed, "all_reduce", replace_with_max)
+    args = SimpleNamespace(process_index=0, device=torch.device("cpu"))
+    state = TrainerState(global_step=0)
+    callback = AcceptedTimingCallback(tmp_path)
+    callback.on_train_begin(args, state, TrainerControl())
+    state.global_step = 2
+    callback.on_save(args, state, TrainerControl())
+
+    payload = json.loads((tmp_path / "accepted_timing.json").read_text())
+    assert payload["segments"][0]["wall_time_seconds_max_rank"] == 9.0
+
+
+def test_accepted_timing_summary_requires_terminal_step_and_matching_total(tmp_path):
+    path = tmp_path / "accepted_timing.json"
+    payload = {
+        "schema_version": 1,
+        "segments": [
+            {
+                "start_step_exclusive": 0,
+                "end_step_inclusive": 10,
+                "wall_time_seconds_max_rank": 2.5,
+            }
+        ],
+        "total_wall_time_seconds_max_rank": 2.5,
+    }
+    path.write_text(json.dumps(payload))
+    assert accepted_timing_summary(path, 10) == {
+        "schema_version": 1,
+        "segments": 1,
+        "total_wall_time_seconds_max_rank": 2.5,
+    }
+
+    with pytest.raises(RuntimeError, match="ends at 10, expected 11"):
+        accepted_timing_summary(path, 11)
+    payload["total_wall_time_seconds_max_rank"] = 1.0
+    path.write_text(json.dumps(payload))
+    with pytest.raises(RuntimeError, match="total does not match"):
+        accepted_timing_summary(path, 10)

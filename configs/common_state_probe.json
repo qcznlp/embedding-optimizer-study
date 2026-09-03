@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "probe_manifest_sha256": "40953eb60bb5dbfa02d9abde5e634bb3221ee934d7ca654c5e5a7e961b39eed2",
+  "selection": {
+    "seed": 2718,
+    "gradient_steps": 8,
+    "examples_per_gradient": 4,
+    "count": 32,
+    "expected_selection_sha256": "591c3b1758e803004fdfd164e5454bb4bfbafa0a64259530b823bd9dedfedcac",
+    "expected_sample_ids_sha256": "579cfbdae9c9007aeff61baa3a3e7f0546ab5115917d649aa6122a0249b72469",
+    "expected_source_counts": {
+      "fever": 5,
+      "fiqa": 5,
+      "hotpotqa": 5,
+      "msmarco": 5,
+      "nq": 4,
+      "squadv2": 4,
+      "trivia": 4
+    }
+  },
+  "gradient_protocol": {
+    "micro_batch_size": 1,
+    "max_grad_norm": 1.0,
+    "model_dtype": "float32",
+    "forward_dtype": "bfloat16",
+    "storage_dtype": "float32",
+    "model_mode": "train",
+    "gradient_checkpointing": true,
+    "weights_advanced": false
+  },
+  "operator_protocol": {
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_eps": 1e-08,
+    "muon_momentum": 0.95,
+    "normuon_beta2": 0.95,
+    "ns_steps": 5,
+    "adjust_lr_fn": "original"
+  },
+  "operator_runtime": {
+    "device": "cuda"
+  },
+  "matched_update_normalization": "per-tensor-frobenius-equals-weight-frobenius",
+  "analysis_protocol": {
+    "sketch_rank": 64,
+    "oversample": 8,
+    "power_iterations": 2,
+    "seed": 42,
+    "matched_update_storage_dtype": "float16",
+    "weight_decay_included": false
+  },
+  "anchor_protocol": {
+    "include_pretrained": true,
+    "run_ids": [
+      "adamw-lr1e-5",
+      "muon-lr1e-3",
+      "normuon-lr1e-3"
+    ],
+    "checkpoint_fractions": [0.2, 0.6, 1.0],
+    "expected_families": ["dense", "late"],
+    "expected_anchors_per_family": 10,
+    "expected_total_anchors": 20,
+    "expected_hidden_partition": {
+      "tensors": 88,
+      "parameters": 110297088
+    },
+    "selection_basis": "Nominal interior learning rates fixed before complete BEIR coverage; mechanism anchors rather than task-suite winner selection.",
+    "freeze_context": {
+      "frozen_at_utc": "2026-08-26T08:31:00Z",
+      "strict_beir_valid_units": 98,
+      "strict_beir_expected_units": 1680,
+      "partial_results_already_observed": true,
+      "protocol_amended_at_utc": "2026-08-26T08:40:00Z",
+      "protocol_amendment": "Changed model_mode from eval to train before any common-state GPU output so Transformers non-reentrant gradient checkpointing is operational; per-shard RNG remains fixed."
+    }
+  }
+}

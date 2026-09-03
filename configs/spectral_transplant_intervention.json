@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "analysis_status": "post_hoc_explanatory_intervention",
+  "frozen_at_utc": "2026-08-30T18:52:44Z",
+  "objective": "Factorize the immediate AdamW--Muon functional difference into singular-vector-basis and singular-value-spectrum effects, then localize any spectrum effect to head, middle, or tail bands.",
+  "source_inputs": {
+    "common_state_spec": "configs/common_state_probe.json",
+    "common_state_spec_sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60",
+    "functional_intervention_spec": "configs/functional_intervention.json",
+    "functional_intervention_spec_sha256": "8f8a478bede92f9b2e1999b5491a3983cc244fad90ec5321b6d8914a2f633bab",
+    "common_state_root": "results/common-state",
+    "input_direction_archives": [
+      "adamw-matched.safetensors",
+      "muon-matched.safetensors"
+    ],
+    "weight_decay_included": false
+  },
+  "anchor_scope": {
+    "selection": "all-frozen-common-state-anchors",
+    "families": [
+      "dense",
+      "late"
+    ],
+    "expected_anchors_per_family": 10,
+    "expected_total_anchors": 20,
+    "expected_hidden_tensors_per_anchor": 88,
+    "expected_hidden_parameters_per_anchor": 110297088,
+    "rationale": "Use the entire already-frozen anchor grid; do not select checkpoints from observed intervention outcomes."
+  },
+  "factorization": {
+    "decomposition": "torch.linalg.svd-full-economy",
+    "compute_dtype": "float32",
+    "stored_direction_dtype": "float16",
+    "singular_value_floor_relative_to_largest": 1e-07,
+    "spectrum_normalization_before_mixing": "unit-l2",
+    "spectrum_interpolation": "log-linear-geodesic",
+    "basis_definition": "left and right singular vectors of the named source direction",
+    "final_normalization": "per-tensor-frobenius-equals-source-weight-frobenius",
+    "interpolation_lambdas": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "band_boundaries": {
+      "head": [
+        0.0,
+        0.25
+      ],
+      "middle": [
+        0.25,
+        0.75
+      ],
+      "tail": [
+        0.75,
+        1.0
+      ],
+      "rounding": "nearest integer boundaries with complete disjoint coverage"
+    },
+    "transformed_conditions": [
+      {
+        "name": "adam-basis__spectrum-lambda-0.25",
+        "basis_source": "adamw",
+        "spectrum_operation": "log_interpolation",
+        "lambda": 0.25
+      },
+      {
+        "name": "adam-basis__spectrum-lambda-0.50",
+        "basis_source": "adamw",
+        "spectrum_operation": "log_interpolation",
+        "lambda": 0.5
+      },
+      {
+        "name": "adam-basis__spectrum-lambda-0.75",
+        "basis_source": "adamw",
+        "spectrum_operation": "log_interpolation",
+        "lambda": 0.75
+      },
+      {
+        "name": "adam-basis__muon-spectrum",
+        "basis_source": "adamw",
+        "spectrum_operation": "log_interpolation",
+        "lambda": 1.0
+      },
+      {
+        "name": "muon-basis__adam-spectrum",
+        "basis_source": "muon",
+        "spectrum_operation": "adam_spectrum"
+      },
+      {
+        "name": "adam-basis__muon-head-spectrum",
+        "basis_source": "adamw",
+        "spectrum_operation": "band_transplant",
+        "band": "head"
+      },
+      {
+        "name": "adam-basis__muon-middle-spectrum",
+        "basis_source": "adamw",
+        "spectrum_operation": "band_transplant",
+        "band": "middle"
+      },
+      {
+        "name": "adam-basis__muon-tail-spectrum",
+        "basis_source": "adamw",
+        "spectrum_operation": "band_transplant",
+        "band": "tail"
+      }
+    ]
+  },
+  "intervention": {
+    "relative_scale": 0.001,
+    "parameter_rule": "W_intervened = W_checkpoint - relative_scale * D_condition",
+    "native_conditions": [
+      "adamw-native",
+      "muon-native"
+    ],
+    "include_unmodified_baseline": true,
+    "expected_conditions_per_anchor": 11,
+    "expected_sample_records_per_anchor": 2464
+  },
+  "evaluation": {
+    "probe": "data/probes/decontaminated-beir-224-seed4242",
+    "probe_manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+    "examples": 224,
+    "groups": 14,
+    "model_dtype": "float32",
+    "forward_dtype": "bfloat16",
+    "model_mode": "eval",
+    "flash_attention": true,
+    "dense_batch_size": 16,
+    "late_batch_size": 4,
+    "normalized_embeddings": true,
+    "metrics": [
+      "contrastive_loss",
+      "positive_score",
+      "hardest_negative_score",
+      "positive_margin",
+      "reciprocal_rank",
+      "top1_accuracy"
+    ],
+    "tail_protocol": {
+      "status": "frozen-before-spectral-transplant-output",
+      "tail_fraction": 0.05,
+      "tail_count": 12,
+      "tail_selection": "largest per-query contrastive-loss change from the unmodified anchor, selected independently for AdamW native and every challenger condition",
+      "quantiles": {
+        "loss_contrast": [
+          0.95,
+          0.99
+        ],
+        "positive_margin_contrast": [
+          0.01,
+          0.05
+        ],
+        "method": "linear interpolation at (n-1)q"
+      },
+      "primary_factorial_readout": "Compare Adam-basis/Muon-spectrum and Muon-basis/Adam-spectrum against AdamW native. Tail protection follows the spectrum only if the former improves loss p95 and margin p05 more consistently across anchors than the latter.",
+      "symmetric_tail_readout": "Report challenger-minus-AdamW loss contrast on AdamW's worst tail and on the challenger's independently selected worst tail, plus tail-set Jaccard overlap.",
+      "architecture_readout": "Compare DenseOn tail redistribution with LateOn shared-tail severity suppression without pooling architectures."
+    }
+  },
+  "primary_estimands": [
+    "Within the AdamW singular-vector basis, the paired change in positive-margin effect as lambda moves from 0 to 1.",
+    "The 2x2 spectrum-by-basis interaction formed by AdamW native, Muon native, Adam-basis/Muon-spectrum, and Muon-basis/Adam-spectrum directions.",
+    "The separate paired effects of transplanting the head, middle, and tail Muon singular-value bands into the AdamW basis.",
+    "Whether the query-level adverse tail follows the Muon singular-value spectrum or the Muon singular-vector basis under the frozen symmetric-tail rule."
+  ],
+  "freeze_context": {
+    "discovery_beir_valid_units": 1680,
+    "discovery_beir_expected_units": 1680,
+    "common_state_outputs_visible": true,
+    "exact_spectrum_outputs_visible": true,
+    "functional_intervention_outputs_visible": true,
+    "representation_outputs_visible": true,
+    "local_global_reversal_analysis_visible": true,
+    "hybrid_completed_runs": 1,
+    "hybrid_expected_runs": 8,
+    "hybrid_checkpoints_audited": 7,
+    "hybrid_checkpoints_expected": 40,
+    "confirmatory_results_available": false,
+    "short_branch_results_available": false,
+    "note": "This explanatory intervention was designed after observing the local-to-global reversal and is not a preregistered discovery test. No spectral-transplant output existed at freeze time.",
+    "amendments": [
+      {
+        "amended_at_utc": "2026-08-30T19:57:16Z",
+        "previous_protocol_sha256": "de0ff8d2caeb5a6feadc0635274b7536637aad5686542f536be6cb4216465520",
+        "spectral_transplant_outputs_available": false,
+        "reason": "Freeze query-tail estimands motivated by the already-visible functional tail result before any spectrum/basis transplant outcome exists; leave the intervention conditions and claim boundary unchanged."
+      }
+    ]
+  },
+  "claim_boundary": "This intervention can causally attribute immediate fixed-state functional differences to singular values versus singular vectors. It cannot alone show that the attributed component causes a full-training BEIR gain; that requires the independently frozen shared-start branches or a later explicitly disclosed spectral-operator branch."
+}

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "common_state_spec_sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60",
+  "freeze_context": {
+    "frozen_at_utc": "2026-08-26T10:35:17Z",
+    "strict_beir_valid_units": 110,
+    "strict_beir_expected_units": 1680,
+    "partial_beir_results_already_observed": true,
+    "weight_trajectory_results_already_observed": true,
+    "formal_common_state_outputs_already_observed": false,
+    "formal_representation_outputs_already_observed": false,
+    "exploratory_representation_smoke_outputs_already_observed": true,
+    "selection_note": "The subset was fixed after partial retrieval and completed exact-statistics weight trajectories, but before any formal common-state or formal representation output. Layers are selected by architecture position and module role, not by an observed spectrum or retrieval outcome. This is a prospective completion lock, not a claim of preregistration."
+  },
+  "selection": {
+    "anchor_scope": "all-frozen-common-state-anchors",
+    "expected_anchors": 20,
+    "families": ["dense", "late"],
+    "update_operators": ["adamw", "muon", "normuon"],
+    "tensor_names": [
+      "0.layers.0.attn.Wqkv.weight",
+      "0.layers.0.mlp.Wi.weight",
+      "0.layers.10.attn.Wqkv.weight",
+      "0.layers.10.mlp.Wi.weight",
+      "0.layers.21.attn.Wqkv.weight",
+      "0.layers.21.mlp.Wi.weight"
+    ],
+    "expected_tensors_per_anchor": 6,
+    "expected_spectra": 360,
+    "rationale": "Early, middle, and final Transformer depth crossed with the attention input projection and MLP expansion projection; the same canonical tensors exist in both model families."
+  },
+  "analysis": {
+    "device": "cuda",
+    "input": "per-tensor-frobenius-matched-update-directions",
+    "input_storage_dtype": "float16",
+    "compute_dtype": "float32",
+    "algorithm": "torch.linalg.svdvals-exact",
+    "stored_values": "raw-singular-values-descending",
+    "derived_normalizations": ["frobenius", "spectral"],
+    "weight_decay_included": false
+  }
+}

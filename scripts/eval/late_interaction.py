@@ -1,3 +1,5 @@
+# Modified from lightonai/mdenseon-mlateon at commit
+# b0db47a48f969d825446668b5b17bfc27a359fc1; see THIRD_PARTY_NOTICES.md.
 """MTEB evaluation of late-interaction (ColBERT) models, with multi-GPU encoding
 through accelerate and PLAID retrieval through fast-plaid.
 
@@ -136,6 +138,56 @@ def to_fp16_numpy(embs) -> list[np.ndarray]:
     return out
 
 
+def encode_batch_to_fp16_numpy(
+    model,
+    batch: list[str],
+    *,
+    prompt: str | None,
+    is_query: bool,
+) -> tuple[list[np.ndarray], int]:
+    """Encode one packed batch with adaptive OOM splitting and prompt GPU release.
+
+    PyLate returns device tensors.  Retaining the first half's tensors while
+    encoding the second half can itself exhaust VRAM, even after a nominal
+    one-time batch split.  Each successful microbatch is therefore converted to
+    host fp16 before the next one starts.  A stack preserves the original text
+    order while repeatedly bisecting only the pieces that do not fit.
+    """
+
+    pending = [batch]
+    host_embeddings: list[np.ndarray] = []
+    oom_splits = 0
+    while pending:
+        microbatch = pending.pop()
+        device_embeddings = None
+        try:
+            device_embeddings = model.encode(
+                microbatch,
+                prompt=prompt,
+                is_query=is_query,
+                convert_to_tensor=True,
+                batch_size=len(microbatch),
+                show_progress_bar=False,
+            )
+            converted = to_fp16_numpy(device_embeddings)
+        except torch.OutOfMemoryError:
+            del device_embeddings
+            torch.cuda.empty_cache()
+            if len(microbatch) == 1:
+                raise
+            midpoint = len(microbatch) // 2
+            # LIFO: push right first so left is encoded first.
+            pending.append(microbatch[midpoint:])
+            pending.append(microbatch[:midpoint])
+            oom_splits += 1
+            continue
+
+        del device_embeddings
+        host_embeddings.extend(converted)
+
+    return host_embeddings, oom_splits
+
+
 def gather_chunk_bounds(
     texts: list[str], max_tokens: int, embed_dim: int, budget_bytes: float
 ) -> list[int]:
@@ -246,32 +298,19 @@ class AccelerateMultiVectorModel(MultiVectorModel):
             with torch.no_grad():
                 for batch_ids in token_budget_batches(chunk_texts, self.encode_char_budget):
                     batch = [chunk_texts[i] for i in batch_ids]
-                    try:
-                        embs = self.model.encode(
-                            batch,
-                            prompt=prompt,
-                            is_query=prompt_type == PromptType.query,
-                            convert_to_tensor=True,
-                            batch_size=len(batch),
-                            show_progress_bar=False,
+                    embs, oom_splits = encode_batch_to_fp16_numpy(
+                        self.model,
+                        batch,
+                        prompt=prompt,
+                        is_query=prompt_type == PromptType.query,
+                    )
+                    if oom_splits:
+                        logger.warning(
+                            "Adaptive encoding split a packed batch of %d texts %d time(s)",
+                            len(batch),
+                            oom_splits,
                         )
-                    except torch.OutOfMemoryError:
-                        # Halve the batch once; the budget is conservative so this is rare.
-                        torch.cuda.empty_cache()
-                        half = max(1, len(batch) // 2)
-                        embs = []
-                        for j in range(0, len(batch), half):
-                            embs.extend(
-                                self.model.encode(
-                                    batch[j : j + half],
-                                    prompt=prompt,
-                                    is_query=prompt_type == PromptType.query,
-                                    convert_to_tensor=True,
-                                    batch_size=half,
-                                    show_progress_bar=False,
-                                )
-                            )
-                    for local_i, emb in zip(batch_ids, to_fp16_numpy(embs)):
+                    for local_i, emb in zip(batch_ids, embs):
                         chunk_embeddings[local_i] = emb
                     pbar.update(len(batch))
 

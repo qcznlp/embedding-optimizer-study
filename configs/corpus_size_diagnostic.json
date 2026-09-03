@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "status": "post_hoc_discovery_corpus_size_diagnostic",
+  "frozen_at_utc": "2026-09-01T02:06:05Z",
+  "purpose": "Describe whether the heterogeneous Muon-family discovery gains are associated with the size of the corpus ranked at evaluation time.",
+  "timing": {
+    "discovery_beir_visible": true,
+    "corpus_size_association_visible": true,
+    "candidate_breadth_protocol_already_frozen": true,
+    "candidate_breadth_data_or_scores_visible": false,
+    "confirmatory_14_task_matrix_complete": false
+  },
+  "sources": {
+    "evaluation_long": {
+      "path": "reports/dense-discovery/evaluation_long.csv",
+      "rows": 840,
+      "sha256": "2c6db772b396726b77b2f8a5960170cce221b9fbc24bda81e518c22c02cd875e"
+    },
+    "optimizer_summary": {
+      "path": "reports/dense-discovery/optimizer_summary.csv",
+      "rows": 3,
+      "sha256": "718e87337ca29bc842aa5cd8b6daf9e49818e1f9662fe186b679624470e349dc"
+    }
+  },
+  "analysis": {
+    "family": "dense",
+    "baseline": "adamw",
+    "challengers": [
+      "muon",
+      "normuon"
+    ],
+    "stages": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "corpus_transform": "log10_rows",
+    "association": "spearman_rank_correlation",
+    "permutations": 200000,
+    "permutation_seed": 20260901,
+    "permutation_tail": "two_sided_add_one",
+    "large_small_split": "seven_largest_versus_seven_smallest_pinned_corpora",
+    "training_source_tasks": [
+      "FEVER",
+      "FiQA2018",
+      "HotpotQA",
+      "MSMARCO",
+      "NQ"
+    ],
+    "robustness": [
+      "leave_one_task_out_final_rho_range",
+      "exclude_NQ_final_rho",
+      "training_source_stratified_final_rho",
+      "partial_rank_correlation_controlling_training_source"
+    ]
+  },
+  "claim_boundary": "This diagnostic was designed after the discovery task scores and their corpus-size association were visible. It is descriptive, post hoc, and based on BEIR-selected learning rates. It cannot establish that corpus size causes optimizer gains, alter the frozen candidate-breadth prediction, or replace the validation-frozen three-seed comparison. Corpus size is also a proxy for unmeasured task properties."
+}

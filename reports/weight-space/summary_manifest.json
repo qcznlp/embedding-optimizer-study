@@ -1,0 +1,179 @@
+{
+  "checkpoint_rows": 120,
+  "complete": true,
+  "contrast_interpretation": "optimizer_pair_contrasts are matched-learning-rate, one-seed integrated trajectories; they are not individual optimizer updates or causal effects",
+  "dataset_fingerprint": "cc0598ffd4f5454f",
+  "expected_runs": 24,
+  "interpretation": "coarse_checkpoint_path_length joins only saved checkpoints and is not the optimizer's per-step path length",
+  "observed_runs": 24,
+  "outputs": {
+    "checkpoint_trajectory.csv": {
+      "bytes": 24990,
+      "rows": 120,
+      "sha256": "b043a3b21288c4b6b9b494730c1bfd5f26071f2618c28ce3d82c4385af959a0c"
+    },
+    "optimizer_pair_contrast_trajectory.csv": {
+      "bytes": 9312,
+      "rows": 40,
+      "sha256": "6d918c6bdc20b4059b41d8192b4c515f5d492dddc07548ecbdae197492ab36b5"
+    },
+    "optimizer_pair_contrasts.csv": {
+      "bytes": 2243,
+      "rows": 8,
+      "sha256": "d1485ddbcf0d0597d4826cfdf4c158a3ec63991224e78f032c5d76b5b6a799b9"
+    },
+    "run_trajectory_summary.csv": {
+      "bytes": 2429,
+      "rows": 24,
+      "sha256": "acb9483e9033bb3d99a1321bf1f53fc40755bb4097f65cb23b6297ab237222a2"
+    }
+  },
+  "schema_version": 1,
+  "sources": [
+    {
+      "family": "dense",
+      "path": "dense/adamw-lr1e-6-exact/manifest.json",
+      "run_id": "adamw-lr1e-6",
+      "sha256": "1d9762d5e1e33be0838751d6a69689caf23d3517d70dc33db7c293930afc4646"
+    },
+    {
+      "family": "dense",
+      "path": "dense/adamw-lr3e-6-exact/manifest.json",
+      "run_id": "adamw-lr3e-6",
+      "sha256": "d0b05f8fc8c7fe0613cf133ac53c6d8d409f2b978c00928ab7e5d3970341e64a"
+    },
+    {
+      "family": "dense",
+      "path": "dense/adamw-lr1e-5-exact/manifest.json",
+      "run_id": "adamw-lr1e-5",
+      "sha256": "5ff4cd3c5cb343b031fadcc79f22241f0da3f3af1cc00134b76d43768cf52995"
+    },
+    {
+      "family": "dense",
+      "path": "dense/adamw-lr3e-5-exact/manifest.json",
+      "run_id": "adamw-lr3e-5",
+      "sha256": "04d9e4a2296b027fd3a520242785213b9a568b513220762615cc60964269b65e"
+    },
+    {
+      "family": "dense",
+      "path": "dense/muon-lr1e-4-exact/manifest.json",
+      "run_id": "muon-lr1e-4",
+      "sha256": "2f465d78cef6f3c01422856a0127a9bf9a9a0777cb6cf9a6bcfa723b336b7103"
+    },
+    {
+      "family": "dense",
+      "path": "dense/muon-lr3e-4-exact/manifest.json",
+      "run_id": "muon-lr3e-4",
+      "sha256": "71162f2c2582b417bedf57a232592cb3b464208975c7b5ae7fa1910f42142e29"
+    },
+    {
+      "family": "dense",
+      "path": "dense/muon-lr1e-3-exact/manifest.json",
+      "run_id": "muon-lr1e-3",
+      "sha256": "8c2276fd28c140672bd1b9857d90ea890648da8bf2feb57e1cee260f12239f73"
+    },
+    {
+      "family": "dense",
+      "path": "dense/muon-lr3e-3-exact/manifest.json",
+      "run_id": "muon-lr3e-3",
+      "sha256": "8a91360c19b5805afa342221ad5bc72e64ad8fe4d076c84cfa61265b99a55202"
+    },
+    {
+      "family": "dense",
+      "path": "dense/normuon-lr1e-4-exact/manifest.json",
+      "run_id": "normuon-lr1e-4",
+      "sha256": "4c01dd44099180e0bfce95525aa224cd9914b0ba90a60dcb8fbf3b2991915ccc"
+    },
+    {
+      "family": "dense",
+      "path": "dense/normuon-lr3e-4-exact/manifest.json",
+      "run_id": "normuon-lr3e-4",
+      "sha256": "94cca2fb52a6b0bd16478ff944fe4d09968ddb4c5977b8a390e0dd318a4f3987"
+    },
+    {
+      "family": "dense",
+      "path": "dense/normuon-lr1e-3-exact/manifest.json",
+      "run_id": "normuon-lr1e-3",
+      "sha256": "5981d80e76df1f12691ce3abaf7a24b27aa7e313de0e8ba12621bad9c9688302"
+    },
+    {
+      "family": "dense",
+      "path": "dense/normuon-lr3e-3-exact/manifest.json",
+      "run_id": "normuon-lr3e-3",
+      "sha256": "e5455975b8e50cd0fca34bfd623ecd710c2f2db32dd6e12895add65c0bcb5877"
+    },
+    {
+      "family": "late",
+      "path": "late/adamw-lr1e-6-exact/manifest.json",
+      "run_id": "adamw-lr1e-6",
+      "sha256": "3b60298c08d7cc808485b8a6eec21f12a7472cc01b1216c61ede8b06c5572eca"
+    },
+    {
+      "family": "late",
+      "path": "late/adamw-lr3e-6-exact/manifest.json",
+      "run_id": "adamw-lr3e-6",
+      "sha256": "cb153c950bba337cd183373ea101642c75e4d684ff64f725c77302e5437d95bc"
+    },
+    {
+      "family": "late",
+      "path": "late/adamw-lr1e-5-exact/manifest.json",
+      "run_id": "adamw-lr1e-5",
+      "sha256": "ecbeee878228ba9591555502509ddc7e3ac95de566005ce5ef9cde14a3e67009"
+    },
+    {
+      "family": "late",
+      "path": "late/adamw-lr3e-5-exact/manifest.json",
+      "run_id": "adamw-lr3e-5",
+      "sha256": "7f09bade7283eadbeb14b91e73ee662016ea348a9f09ede1159c7e88e6dee8ce"
+    },
+    {
+      "family": "late",
+      "path": "late/muon-lr1e-4-exact/manifest.json",
+      "run_id": "muon-lr1e-4",
+      "sha256": "26bae272f34a004a9a6f4cee0badc1d7b21940ab36182a53df4394be31418892"
+    },
+    {
+      "family": "late",
+      "path": "late/muon-lr3e-4-exact/manifest.json",
+      "run_id": "muon-lr3e-4",
+      "sha256": "71c0bb0e9c4b522f0dc780c8c6a2cd60e6b359be3649c50c59e08f1146ad3609"
+    },
+    {
+      "family": "late",
+      "path": "late/muon-lr1e-3-exact/manifest.json",
+      "run_id": "muon-lr1e-3",
+      "sha256": "db857e73cd08a0d16915324d76532b228564fa907a39da891c30040e496c5bb5"
+    },
+    {
+      "family": "late",
+      "path": "late/muon-lr3e-3-exact/manifest.json",
+      "run_id": "muon-lr3e-3",
+      "sha256": "a268f32f25249f18d5c25191bc21787a7d395d66f2e2279931d9258171266457"
+    },
+    {
+      "family": "late",
+      "path": "late/normuon-lr1e-4-exact/manifest.json",
+      "run_id": "normuon-lr1e-4",
+      "sha256": "34bca101734f21895d45ebf2a9780fa73cf3c49f36d50b06b46bb3776a249388"
+    },
+    {
+      "family": "late",
+      "path": "late/normuon-lr3e-4-exact/manifest.json",
+      "run_id": "normuon-lr3e-4",
+      "sha256": "55efb0509cc11b15ac297b8696b65b42a1227a0f66393b955be3997f4494e7bf"
+    },
+    {
+      "family": "late",
+      "path": "late/normuon-lr1e-3-exact/manifest.json",
+      "run_id": "normuon-lr1e-3",
+      "sha256": "c64602c5c3408b59a7864148f211c5733297af11bf97afac4381838751040500"
+    },
+    {
+      "family": "late",
+      "path": "late/normuon-lr3e-3-exact/manifest.json",
+      "run_id": "normuon-lr3e-3",
+      "sha256": "68ba46146505b12ea27da925df879b1d43e729e56629a62459b0dc159c279b60"
+    }
+  ],
+  "verify_inputs": true
+}

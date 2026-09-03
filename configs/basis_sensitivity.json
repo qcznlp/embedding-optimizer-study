@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "status": "prospective_appendix_diagnostic",
+  "common_state": {
+    "root": "results/common-state",
+    "spec": "configs/common_state_probe.json",
+    "spec_sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60",
+    "expected_anchors": 20,
+    "expected_anchors_per_family": 10,
+    "gradient_steps": 8
+  },
+  "architecture": {
+    "model_type": "modernbert",
+    "hidden_size": 768,
+    "num_attention_heads": 12,
+    "head_dim": 64,
+    "attention_bias": false,
+    "max_position_embeddings": 8192,
+    "qkv_layout": "contiguous_q_k_v",
+    "qkv_tensor_template": "0.layers.{layer}.attn.Wqkv.weight",
+    "rotary_pairing": "split_half",
+    "rope_bases": [10000.0, 160000.0]
+  },
+  "selection": {
+    "families": ["dense", "late"],
+    "layers": [0, 10, 21],
+    "heads": [0, 5, 11],
+    "rotation_seeds": [2026082701, 2026082702, 2026082703],
+    "optimizers": ["adamw", "muon", "normuon"],
+    "expected_tensor_sequences": 60,
+    "expected_records": 540,
+    "expected_head_records": 3240,
+    "expected_summary_rows": 6
+  },
+  "transformation": {
+    "group": "per-head SO(2) rotations within each split-half RoPE frequency plane",
+    "angle_distribution": "independent uniform [0, 2*pi) by head and rotary plane",
+    "query_key_share_angles": true,
+    "value_rows_unchanged": true,
+    "map_rotated_updates_back_before_comparison": true,
+    "function_preserving_reason": "The transform commutes with every split-half RoPE rotation, so applying the same transform to Q and K preserves all post-RoPE attention logits."
+  },
+  "functional_calibration": {
+    "dtype": "float64",
+    "vector_seed": 2026082799,
+    "position_pairs": [[0, 1], [17, 53], [4096, 8191]],
+    "maximum_absolute_logit_error": 1e-10
+  },
+  "metrics": {
+    "full_tensor": [
+      "mapped_direction_cosine",
+      "mapped_relative_frobenius_error",
+      "mapped_norm_ratio",
+      "predicted_descent_relative_error"
+    ],
+    "selected_qk_heads": [
+      "mapped_direction_cosine",
+      "mapped_relative_frobenius_error",
+      "mapped_norm_ratio",
+      "singular_spectrum_relative_l2_error"
+    ],
+    "causal_boundary": "This is a function-preserving coordinate diagnostic of optimizer equivariance, not a retrieval-quality intervention."
+  },
+  "freeze_context": {
+    "frozen_at_utc": "2026-08-27T06:20:09Z",
+    "strict_beir_valid_units": 336,
+    "strict_beir_expected_units": 1680,
+    "complete_retrieval_matrix_visible": false,
+    "common_state_output_visible": false,
+    "formal_basis_output_visible": false,
+    "completed_weight_trajectories_visible": true,
+    "note": "The diagnostic was corrected and frozen before common-state or basis-sensitivity outputs existed. An unrestricted orthogonal head rotation is not a symmetry of RoPE; the frozen transform is restricted to its split-half SO(2) commutant. The QKV template uses the canonical SentenceTransformers tensor namespace verified directly against both model-family checkpoints."
+  }
+}

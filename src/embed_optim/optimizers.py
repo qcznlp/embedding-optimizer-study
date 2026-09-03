@@ -8,26 +8,38 @@ import torch
 from torch import Tensor, nn
 from torch.optim import Optimizer
 from torch.optim import _functional as optim_f
-from torch.optim._muon import muon as functional_muon
 
-from .config import OptimizerConfig
+from .config import MUON_NS_IMPLEMENTATION, OptimizerConfig
 
 _NO_DECAY = re.compile(r"(?:^|\.)(?:bias|.*norm(?:\d+)?\.weight)$", re.IGNORECASE)
 
 
-def _is_hidden_matrix(name: str, parameter: nn.Parameter) -> bool:
+def parameter_partition_name(name: str, ndim: int) -> str:
+    """Return the training-time optimizer partition for a named tensor.
+
+    Keeping this rule independent of ``nn.Parameter`` lets offline checkpoint analyses reproduce
+    the exact routing used during training without instantiating the model.
+    """
     lowered = name.lower()
-    return (
-        parameter.ndim == 2
+    if (
+        ndim == 2
         and (lowered.startswith("layers.") or ".layers." in lowered)
         and "embedding" not in lowered
         and "classifier" not in lowered
         and "head" not in lowered
-    )
+    ):
+        return "hidden"
+    if ndim >= 2 and _NO_DECAY.search(name) is None:
+        return "aux_decay"
+    return "aux_no_decay"
+
+
+def _is_hidden_matrix(name: str, parameter: nn.Parameter) -> bool:
+    return parameter_partition_name(name, parameter.ndim) == "hidden"
 
 
 def _uses_weight_decay(name: str, parameter: nn.Parameter) -> bool:
-    return parameter.ndim >= 2 and _NO_DECAY.search(name) is None
+    return parameter_partition_name(name, parameter.ndim) == "aux_decay"
 
 
 def parameter_partition(model: nn.Module) -> dict[str, list[tuple[str, nn.Parameter]]]:
@@ -37,12 +49,7 @@ def parameter_partition(model: nn.Module) -> dict[str, list[tuple[str, nn.Parame
         if not parameter.requires_grad or id(parameter) in seen:
             continue
         seen.add(id(parameter))
-        if _is_hidden_matrix(name, parameter):
-            result["hidden"].append((name, parameter))
-        elif _uses_weight_decay(name, parameter):
-            result["aux_decay"].append((name, parameter))
-        else:
-            result["aux_no_decay"].append((name, parameter))
+        result[parameter_partition_name(name, parameter.ndim)].append((name, parameter))
     return result
 
 
@@ -59,6 +66,7 @@ def partition_summary(
 
 
 def _zeropower_via_newton_schulz(gradient: Tensor, steps: int, eps: float = 1e-7) -> Tensor:
+    """Apply Muon's bfloat16 polynomial without the unstable fused ``torch.addmm`` path."""
     if gradient.ndim != 2:
         raise ValueError(f"Muon requires 2D tensors, got {tuple(gradient.shape)}")
     update = gradient.bfloat16()
@@ -71,6 +79,28 @@ def _zeropower_via_newton_schulz(gradient: Tensor, steps: int, eps: float = 1e-7
         gram = update @ update.T
         update = a * update + (b * gram + c * gram @ gram) @ update
     return update.T if transposed else update
+
+
+def _adjust_muon_lr(lr: float, adjust_lr_fn: str | None, shape: torch.Size) -> float:
+    rows, columns = shape[:2]
+    if adjust_lr_fn is None or adjust_lr_fn == "original":
+        ratio = math.sqrt(max(1, rows / columns))
+    elif adjust_lr_fn == "match_rms_adamw":
+        ratio = 0.2 * math.sqrt(max(rows, columns))
+    else:
+        ratio = 1.0
+    return lr * ratio
+
+
+def _muon_update(
+    gradient: Tensor,
+    momentum_buffer: Tensor,
+    momentum: float,
+    ns_steps: int,
+) -> Tensor:
+    momentum_buffer.lerp_(gradient, 1 - momentum)
+    update = gradient.lerp(momentum_buffer, momentum)
+    return _zeropower_via_newton_schulz(update, ns_steps)
 
 
 def _normuon_update(
@@ -160,32 +190,21 @@ class EmbeddingOptimizer(Optimizer):
         )
 
     def _muon_step(self, group: dict) -> None:
-        params: list[Tensor] = []
-        grads: list[Tensor] = []
-        momentum_buffers: list[Tensor] = []
         for parameter in group["params"]:
             if parameter.grad is None:
                 continue
             state = self.state[parameter]
             if "momentum_buffer" not in state:
                 state["momentum_buffer"] = torch.zeros_like(parameter)
-            params.append(parameter)
-            grads.append(parameter.grad)
-            momentum_buffers.append(state["momentum_buffer"])
-        functional_muon(
-            params,
-            grads,
-            momentum_buffers,
-            lr=group["lr"],
-            weight_decay=group["weight_decay"],
-            momentum=group["momentum"],
-            nesterov=True,
-            ns_coefficients=(3.4445, -4.7750, 2.0315),
-            ns_steps=group["ns_steps"],
-            eps=1e-7,
-            adjust_lr_fn=group["adjust_lr_fn"],
-            has_complex=False,
-        )
+            update = _muon_update(
+                parameter.grad,
+                state["momentum_buffer"],
+                momentum=group["momentum"],
+                ns_steps=group["ns_steps"],
+            )
+            adjusted_lr = _adjust_muon_lr(group["lr"], group["adjust_lr_fn"], parameter.shape)
+            parameter.mul_(1 - group["lr"] * group["weight_decay"])
+            parameter.add_(update, alpha=-adjusted_lr)
 
     def _normuon_step(self, group: dict) -> None:
         for parameter in group["params"]:
@@ -236,6 +255,35 @@ def build_optimizer(
                 "weight_decay": 0.0,
             },
         ]
+    elif config.name == "hybrid_adamw":
+        if not partition["hidden"]:
+            raise ValueError("No transformer hidden matrices matched the hybrid AdamW partition")
+        groups = [
+            {
+                "params": [parameter for _, parameter in partition["hidden"]],
+                "algorithm": "adamw",
+                "lr": config.lr,
+                "betas": (config.beta1, config.beta2),
+                "eps": config.eps,
+                "weight_decay": config.weight_decay,
+            },
+            {
+                "params": [parameter for _, parameter in partition["aux_decay"]],
+                "algorithm": "adamw",
+                "lr": config.aux_lr,
+                "betas": (config.aux_beta1, config.aux_beta2),
+                "eps": config.aux_eps,
+                "weight_decay": config.weight_decay,
+            },
+            {
+                "params": [parameter for _, parameter in partition["aux_no_decay"]],
+                "algorithm": "adamw",
+                "lr": config.aux_lr,
+                "betas": (config.aux_beta1, config.aux_beta2),
+                "eps": config.aux_eps,
+                "weight_decay": 0.0,
+            },
+        ]
     else:
         if not partition["hidden"]:
             raise ValueError("No transformer hidden matrices matched the Muon partition")
@@ -247,6 +295,7 @@ def build_optimizer(
                 "momentum": config.momentum,
                 "beta2": config.normuon_beta2,
                 "ns_steps": config.ns_steps,
+                "ns_implementation": MUON_NS_IMPLEMENTATION,
                 "adjust_lr_fn": config.adjust_lr_fn,
                 "weight_decay": config.weight_decay,
             },

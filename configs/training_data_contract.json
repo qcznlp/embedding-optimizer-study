@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "status": "materialized_training_view_receipt",
+  "manifest_path": "data/denseon-sft-500k-seed42/manifest.json",
+  "manifest_sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8",
+  "row_manifest_sha256": "735ef35b7195f3dae3172496b5bc534d39f2b7594d216c685eaebb37134fc347",
+  "total_queries": 500000,
+  "sampled_negatives": 7,
+  "seed": 42,
+  "source_repo": "lightonai/embeddings-fine-tuning",
+  "source_revision": "1ca463331ed637d25c1058567e932e0d3bad2983",
+  "dataset_fingerprint": "8a489098f9729d86",
+  "materialized_dataset_fingerprint": "4094d89f9683e323",
+  "independent_protocol_bindings": [
+    "configs/confirmatory_protocol.json",
+    "configs/hybrid_adamw_control.json",
+    "configs/representation_probe.json",
+    "configs/short_branch_protocol.json",
+    "configs/validation_probe.json"
+  ],
+  "claim_boundary": "This distributable receipt supports static paper constants in a clean source checkout. Formal training, probe, validation, hybrid, short-branch, and confirmatory jobs still require and byte-verify the materialized local dataset manifest and row ledger."
+}

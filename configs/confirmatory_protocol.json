@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "status": "prospective_completion_lock",
+  "source": {
+    "training_data": "data/denseon-sft-500k-seed42",
+    "manifest_sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8",
+    "row_ledger_sha256": "113cc571cfe30d458474c85e3237e6b34d292fffebfeda8d0d7b9b790b86f52a",
+    "repo": "lightonai/embeddings-fine-tuning",
+    "revision": "1ca463331ed637d25c1058567e932e0d3bad2983",
+    "exploratory_seed": 42,
+    "queries": 500000,
+    "sources": 7
+  },
+  "negative_pool": {
+    "definition": "the first 10 score-ranked documents below 0.95 times the positive score",
+    "threshold": 0.95,
+    "size": 10,
+    "require_distinct_non_positive_document_ids": true,
+    "cache": "data/confirmatory-negative-pools"
+  },
+  "confirmatory_data": {
+    "seeds": [314159, 271828, 161803],
+    "sampled_negatives": 7,
+    "fixed_query_ids": true,
+    "fixed_positive_ids_and_text": true,
+    "fixed_source_quotas": true,
+    "negative_sampling_without_replacement": true,
+    "trainer_seed_equals_view_seed": true,
+    "minimum_pairwise_changed_negative_group_fraction": 0.98,
+    "outputs": {
+      "314159": "data/confirmatory-500k-seed314159",
+      "271828": "data/confirmatory-500k-seed271828",
+      "161803": "data/confirmatory-500k-seed161803"
+    }
+  },
+  "recipe_selection": {
+    "source": "reports/recipe-validation/recipe_selection.json",
+    "required_status": "complete",
+    "expected_recipes": 6,
+    "rule": "one final-checkpoint recipe per model family and optimizer, selected only by the frozen query-disjoint validation protocol",
+    "beir_is_not_an_input": true
+  },
+  "training": {
+    "models": 2,
+    "optimizers": ["adamw", "muon", "normuon"],
+    "runs_per_seed": 6,
+    "expected_runs": 18,
+    "checkpoint_fractions": [0.2, 0.4, 0.6, 0.8, 1.0],
+    "formal_beir_stages": [5],
+    "expected_beir_units": 252,
+    "output_root": "outputs/confirmatory",
+    "matrix_output_dir": "configs/generated/confirmatory"
+  },
+  "freeze_context": {
+    "frozen_at_utc": "2026-08-26T14:33:40Z",
+    "strict_beir_valid_units": 150,
+    "strict_beir_expected_units": 1680,
+    "completed_weight_trajectories_visible": true,
+    "query_disjoint_validation_outputs_visible": false,
+    "confirmatory_data_views_exist": false,
+    "confirmatory_model_outputs_exist": false,
+    "note": "The seeds, fixed-query resampling rule, recipe source, run count, and final-only BEIR confirmation were locked before validation or confirmatory model outputs existed. Partial discovery BEIR scores cannot enter recipe selection."
+  }
+}

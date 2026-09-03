@@ -1,0 +1,233 @@
+{
+  "allow_partial": false,
+  "common_state_spec": {
+    "freeze_context": {
+      "frozen_at_utc": "2026-08-26T08:31:00Z",
+      "partial_results_already_observed": true,
+      "protocol_amended_at_utc": "2026-08-26T08:40:00Z",
+      "protocol_amendment": "Changed model_mode from eval to train before any common-state GPU output so Transformers non-reentrant gradient checkpointing is operational; per-shard RNG remains fixed.",
+      "strict_beir_expected_units": 1680,
+      "strict_beir_valid_units": 98
+    },
+    "path": "/root/embedding-optimizer-study/configs/common_state_probe.json",
+    "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+  },
+  "complete": true,
+  "expected_anchors": 20,
+  "inputs": [
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/pretrained/gradients/manifest.json",
+      "gradient_manifest_sha256": "68f92b962f237ed37db6c90d7a509ad7fa9151649caf4300cb573dc88a32bed2",
+      "label": "dense/pretrained",
+      "metrics_sha256": "bdf81c0a34b8a47da0a9d202f89ef2714285b70458a4669282bb2dc581ed0eb1",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/pretrained/updates/manifest.json",
+      "update_manifest_sha256": "fe7f04d899c44a2605e82025eabb5393c5db1d0bf57066d09c7429dfbbfe79e1"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-782/gradients/manifest.json",
+      "gradient_manifest_sha256": "1df25f1b9e16d421bfff576cc8f406295ae02ae8db50af4ee67975ec8c21ca46",
+      "label": "dense/adamw-lr1e-5/checkpoint-782",
+      "metrics_sha256": "200eea48c5c99b8b24b7c1c3fa39de6750b62ef9984cbd27e3d642795967584e",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-782/updates/manifest.json",
+      "update_manifest_sha256": "540f6d774ab3bc3e435e59efc29c46fffbfa1721309e0d2f1811b6ec0cb17f3a"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-2345/gradients/manifest.json",
+      "gradient_manifest_sha256": "a9ef1dc27750c4008a1ddd9a25b809d900e733be19ffe77b20859f52699824e9",
+      "label": "dense/adamw-lr1e-5/checkpoint-2345",
+      "metrics_sha256": "e5443c7a05d018b0cbcdcdb5350bc49a9868553d75e0f3ae69c1490a0c66e235",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-2345/updates/manifest.json",
+      "update_manifest_sha256": "ce2eb69b62b4c7a63ee6e68b81022fcd013aa3087fded02c06f6a8702ba45bdd"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-3907/gradients/manifest.json",
+      "gradient_manifest_sha256": "f9a813fa5d3011ced32e9b048a33088a1fff5a5d97d4b3a6a0283bec64d3c437",
+      "label": "dense/adamw-lr1e-5/checkpoint-3907",
+      "metrics_sha256": "698b64e8390184fcd4e146d42a15a01b6a226ee4552f5a7ad0fe4d611e9fb21b",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/adamw-lr1e-5/checkpoint-3907/updates/manifest.json",
+      "update_manifest_sha256": "898f33cfd521b98158d250adffb4787e285f94c4b6597da68bb486daa0a78607"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-782/gradients/manifest.json",
+      "gradient_manifest_sha256": "a44211416f71ffd7092f70c17a2aa50b0101987492acb4374e53381b0d692b2d",
+      "label": "dense/muon-lr1e-3/checkpoint-782",
+      "metrics_sha256": "49cc7f54f5d20af6c5e819432c2aa9e74ca0c6302ebf1745304c2eedb3ba11a3",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-782/updates/manifest.json",
+      "update_manifest_sha256": "1792923fc15d3e244e458ff963537d8e21b906e9dfa44f2e5e1a9134c054b31c"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+      "gradient_manifest_sha256": "291fe5829cfb7571db9f6a86f4c813df88d64436955720d32cb8ec6338958191",
+      "label": "dense/muon-lr1e-3/checkpoint-2345",
+      "metrics_sha256": "c6b0ac6c79235461ea02a2c499e2a58551a9eb8e9a61ca81da7a15804edf3d6f",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-2345/updates/manifest.json",
+      "update_manifest_sha256": "e8d3bd1008e53f1fc720ba0b36d8371a1b97449a6e2445da15c680893e1f5ed2"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+      "gradient_manifest_sha256": "976ed0d8549ace03ad95f8a636c5ad36b20d7f9df2c43f4d4ac6c8ca8a6bfc16",
+      "label": "dense/muon-lr1e-3/checkpoint-3907",
+      "metrics_sha256": "6240277d729e2fb4ae14c97c67d833daa2b3939c871aa52065a9fe5eeb9a1e73",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/muon-lr1e-3/checkpoint-3907/updates/manifest.json",
+      "update_manifest_sha256": "324ab68c1b4a069b06b5d48518762eae4dfcbd669ea620dc473fff42e70993bf"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-782/gradients/manifest.json",
+      "gradient_manifest_sha256": "5288945a97c4a0cbe9ff96324296a8168e671f1214be6e93f6ef3e9b783028e0",
+      "label": "dense/normuon-lr1e-3/checkpoint-782",
+      "metrics_sha256": "7635c9c337dd9337843d8712e7d4cbfb89c92219048e6910e1982b85eda730e5",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-782/updates/manifest.json",
+      "update_manifest_sha256": "47887c82adbd71f914b552c3dc0fff019767d854b5aa97dc4826ab3f82decc08"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+      "gradient_manifest_sha256": "06e90bd45efe57451c33040775a006e954cf5d79a1a6e1d5297e2fd951b0ef9f",
+      "label": "dense/normuon-lr1e-3/checkpoint-2345",
+      "metrics_sha256": "bb23ce7f6dd7dd69edc6f04a453a173a0227f38a3eaa7eec358efe11e2019475",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-2345/updates/manifest.json",
+      "update_manifest_sha256": "3f3f9274102490e73e9e5f3aece2d04319d8f2669d121f4ef35300ee1ef71c32"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+      "gradient_manifest_sha256": "dfa3bea354750185b0f0d38cf9f0e96d4e288fde4d1969beaf3be2c552dc2fc7",
+      "label": "dense/normuon-lr1e-3/checkpoint-3907",
+      "metrics_sha256": "98c7eca0991a1f66006dcf08b285c5a0d2a0651d3005ff8663765cf3fdc2853e",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-3907/updates/manifest.json",
+      "update_manifest_sha256": "803fa81a985b817158208058e292795686f21ac713cba2272968f4facdd00cd3"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/pretrained/gradients/manifest.json",
+      "gradient_manifest_sha256": "98fed3f64aeb9228deae02f09718b43ab11238213b6389243cdaff940e173166",
+      "label": "late/pretrained",
+      "metrics_sha256": "c7da4082db1dbc40d29e0d464ebba26751c137578e2c9397ebaad34d0263c221",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/pretrained/updates/manifest.json",
+      "update_manifest_sha256": "5bea5b4d0b068acbe2e9d2bba51f6d2d62f05ffc58f81bd1dd70f56a0d015fb2"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-782/gradients/manifest.json",
+      "gradient_manifest_sha256": "50421754b28afdd3a47396c6d679377dc67fa9a08a7138c54ab9b1da3da29f4b",
+      "label": "late/adamw-lr1e-5/checkpoint-782",
+      "metrics_sha256": "06eda66f336ccd11e3ef862a66b88c429387fea3999395323f245a89d755f5ec",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-782/updates/manifest.json",
+      "update_manifest_sha256": "3acdbc8460a3ac7f549d24fb4fecc6e85840f17e1fa5c7cd572526228a50edb9"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-2345/gradients/manifest.json",
+      "gradient_manifest_sha256": "b44c097d51e9bcd88e845275e00d1747b8ec09f12d351ef5d1b7885c8028eb77",
+      "label": "late/adamw-lr1e-5/checkpoint-2345",
+      "metrics_sha256": "ac56b4fac7f3b9ade8fbbedcb795e92e04398b751b4e15e2da6ee510f6932a80",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-2345/updates/manifest.json",
+      "update_manifest_sha256": "792840f21fda9d9957b5562322e1de575bab13867dbdc9570fd5851c8bb2f221"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-3907/gradients/manifest.json",
+      "gradient_manifest_sha256": "fda95d0607d6acbca615a3d2a8749bea8132172cca3a195a4b7248edb73cbbcc",
+      "label": "late/adamw-lr1e-5/checkpoint-3907",
+      "metrics_sha256": "dac7f0c039fa490430695a024509eaa11d7a8a69bbca1d025ba559610309818d",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/adamw-lr1e-5/checkpoint-3907/updates/manifest.json",
+      "update_manifest_sha256": "02fe6508aaa41f63d36c4a7e79906199db910cb1e01308be47893b1842cb6272"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-782/gradients/manifest.json",
+      "gradient_manifest_sha256": "71ff0c4dc5dc7bd9f726f66e9d91cdf85615543cc56694298c00544104d7422a",
+      "label": "late/muon-lr1e-3/checkpoint-782",
+      "metrics_sha256": "aabb40159dc2d534a61e69f28078cabfd4694c94e508e1bb5f55262db49badd3",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-782/updates/manifest.json",
+      "update_manifest_sha256": "9d62929a476d256df37382119227fa0919abbe492d16e54d7dc2d2d2cff7b317"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+      "gradient_manifest_sha256": "0d54a26efd49409efce470e29d010bf85eb6e5f2d8ffab78a434035e2751294f",
+      "label": "late/muon-lr1e-3/checkpoint-2345",
+      "metrics_sha256": "a91c12725547778a4332c5f50b470ae0de1c34e6b20c07819b520acbe09483d5",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-2345/updates/manifest.json",
+      "update_manifest_sha256": "e1a0f4a7bb83ef344fe233fed07bd0274a5a534ecba4059847ebe061fac3601e"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+      "gradient_manifest_sha256": "dfcb31e6631840d833faaadadc96882332100d431154731a4aceff3e153137f1",
+      "label": "late/muon-lr1e-3/checkpoint-3907",
+      "metrics_sha256": "fe85186f745317aa98c3925fd145e59c55f22ff254119251df3735dc16b445ef",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/muon-lr1e-3/checkpoint-3907/updates/manifest.json",
+      "update_manifest_sha256": "4e516d23d26398c889d27d77d15b9cf290909705e8d174ca58df43c3ebc5b5d3"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-782/gradients/manifest.json",
+      "gradient_manifest_sha256": "e47769cea6662c6cffaa71d83186b27a845ed871046129d360cc33407dd81544",
+      "label": "late/normuon-lr1e-3/checkpoint-782",
+      "metrics_sha256": "56071b7947360cb6b0b38acd54fd0c662667c385e90b645c5ad2ee4baece51f9",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-782/updates/manifest.json",
+      "update_manifest_sha256": "17b1d9eabc4f268e379884c09035203ab2018b11117979ed263c4d7c2b3c7ac4"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-2345/gradients/manifest.json",
+      "gradient_manifest_sha256": "14d45da50c388668a4282006bb04379284eea6811ef2f6d983367d3c5d71ba81",
+      "label": "late/normuon-lr1e-3/checkpoint-2345",
+      "metrics_sha256": "bb129091418efc653b88db7756f97e2b89b3c641a2d01b004e65009c6da6b09b",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-2345/updates/manifest.json",
+      "update_manifest_sha256": "01399e0513de1e13ae1f4d7e5b5393acf887def1dd3a18451c6a06a2b5a2c0a3"
+    },
+    {
+      "gradient_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-3907/gradients/manifest.json",
+      "gradient_manifest_sha256": "b2e16240ba37ac98835fce96e01e1cf7420354d2fb62c348cdf9aa34d76c8a13",
+      "label": "late/normuon-lr1e-3/checkpoint-3907",
+      "metrics_sha256": "001bbb8061fffee04d90911a444a5d26205ae08a3bb375268d0a9226d2a10b8b",
+      "update_manifest_path": "/root/embedding-optimizer-study/results/common-state/late/normuon-lr1e-3/checkpoint-3907/updates/manifest.json",
+      "update_manifest_sha256": "d6399ced444611fe801e9b8b238aacfe1fbcd7e72ec702f77c06e56589010815"
+    }
+  ],
+  "interpretation": "All update operators replay the same ordered gradients at the same frozen anchor; weights are never advanced, per-tensor matched files equalize update and weight Frobenius norms, and weight decay is excluded.",
+  "missing_labels": [],
+  "outputs": {
+    "anchor_contrasts": {
+      "bytes": 12906,
+      "path": "/root/embedding-optimizer-study/reports/common-state/anchor_contrasts.csv",
+      "rows": 40,
+      "sha256": "75258e6e16d0fcc6c97b93fe425ee208af928e2dc0269cd57f9bffbfd8227a45"
+    },
+    "anchor_metrics": {
+      "bytes": 29219,
+      "path": "/root/embedding-optimizer-study/reports/common-state/anchor_metrics.csv",
+      "rows": 60,
+      "sha256": "bc37f01ecc9a500bdbf67b2b1a1a6f5bb182db0bda4965baced003041cc28c8b"
+    },
+    "gradient_anchor_metrics": {
+      "bytes": 8770,
+      "path": "/root/embedding-optimizer-study/reports/common-state/gradient_anchor_metrics.csv",
+      "rows": 20,
+      "sha256": "031da722afe07a5dddda1ee25e8c67ff71fd7aaec0c3e1d1b098631b2fd3b42c"
+    },
+    "gradient_tensor_metrics": {
+      "bytes": 865501,
+      "path": "/root/embedding-optimizer-study/reports/common-state/gradient_tensor_metrics.csv",
+      "rows": 1760,
+      "sha256": "4a98a850a1a5a20934a8759ac04e9c21f773e9fe0750b5b51f776fc86662a371"
+    },
+    "pairwise_anchor_cosines": {
+      "bytes": 7930,
+      "path": "/root/embedding-optimizer-study/reports/common-state/pairwise_anchor_cosines.csv",
+      "rows": 60,
+      "sha256": "cc460debb191cfc0be4267e65956c42073d81a75af7c96ebdbe4b6dfe41584a7"
+    },
+    "pairwise_tensor_cosines": {
+      "bytes": 950774,
+      "path": "/root/embedding-optimizer-study/reports/common-state/pairwise_tensor_cosines.csv",
+      "rows": 5280,
+      "sha256": "6c11252ec8d67ca4cbabbb740dec7964e04b5dc1b340f860b752bd7db6a9b1c9"
+    },
+    "update_gradient_contrasts": {
+      "bytes": 14986,
+      "path": "/root/embedding-optimizer-study/reports/common-state/update_gradient_contrasts.csv",
+      "rows": 60,
+      "sha256": "f394c631ec48c800023bcc1552f52ecfcf116209171f0afea165dc9f7b6ecd3b"
+    },
+    "update_tensor_metrics": {
+      "bytes": 3025319,
+      "path": "/root/embedding-optimizer-study/reports/common-state/update_tensor_metrics.csv",
+      "rows": 5280,
+      "sha256": "95a2f5ac961cb17621dd25e79d8ebd392947561463001443b98c20915f2bf3f8"
+    }
+  },
+  "schema_version": 1,
+  "valid_anchors": 20
+}

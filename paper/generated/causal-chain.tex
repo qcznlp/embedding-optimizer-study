@@ -1,0 +1,156 @@
+% Generated from strict causal-chain evidence; do not edit.
+\newcommand{\CausalChainSummaryTable}{%
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.16\linewidth}p{0.25\linewidth}p{0.32\linewidth}p{0.20\linewidth}}
+\toprule
+Test & Frozen comparison & Audited numerical result & Permitted inference \\
+
+\midrule
+Shared-start temporal & LOSO: labels + two norms & 2/5; gain L/M -0.237277/-0.688154; claimable negative & Temporal spectral bridge rejected \\
+Fixed-state component & 5 doses; tail/basis controls & support L/M/T/B 0/0/0/2 of 10; claimable negative & Frozen component account rejected \\
+Forward retrieval & 84 leave-source-run-out rows & dRMSE S(L/M) -0.000150847/-7.12409e-05; B(L/M) -9.78894e-07/-3.39735e-05; gaps -1.508471e-04/-7.124088e-05; fail & No forward bridge; fixed-state conclusion only \\
+\bottomrule
+\end{tabular}
+\caption{Frozen causal-chain stress tests. L/M denote loss/margin and S/B denote spectrum/basis. Every decision and its numerical basis is reported whether supported or negative; joint passage is not formal mediation.}
+\label{tab:causal-chain-summary}
+\end{table*}%
+}
+
+\newcommand{\CausalChainDiagnostics}{%
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.18\linewidth}p{0.62\linewidth}p{0.12\linewidth}}
+\toprule
+Temporal criterion & Audited numerical evidence & Decision \\
+
+\midrule
+treatment shift & muon=3/3/normuon=3/3 & pass \\
+outcome shift & muon=0/3/normuon=1/3 & fail \\
+held-out prediction & validation loss p95=-0.237277 (decision gap -2.372766e-01); unseen margin p05=-0.688154 (decision gap -6.881539e-01) & fail \\
+norm controls & validation loss p95 primary=-0.237277, update/weight=-2.46124/-0.900387, decision gaps=+2.223960e+00/+6.631100e-01; unseen margin p05 primary=-0.688154, update/weight=-3.55619/-0.832549, decision gaps=+2.868040e+00/+1.443956e-01 & pass \\
+coefficient behavior & validation loss p95 muon abs(beta)=0.182353 to 5.20136 (gap -5.019009e+00); normuon abs(beta)=0.131624 to 5.58902 (gap -5.457397e+00); unseen margin p05 muon abs(beta)=0.00439217 to 0.620675 (gap -6.162827e-01); normuon abs(beta)=0.00213449 to 0.656986 (gap -6.548516e-01) & fail \\
+Joint decision & All five conditions are required & claimable negative \\
+\bottomrule
+\end{tabular}
+\caption{All five frozen temporal criteria and their all-required decision.}
+\label{tab:causal-temporal-diagnostics}
+\end{table*}
+\begin{table*}[t]
+\centering
+\tiny
+\setlength{\tabcolsep}{1.2pt}
+\begin{tabular}{p{0.10\linewidth}p{0.12\linewidth}p{0.07\linewidth}p{0.09\linewidth}p{0.09\linewidth}p{0.09\linewidth}p{0.16\linewidth}p{0.16\linewidth}}
+\toprule
+Outcome & Predictor & Kind & Label RMSE & Pred. RMSE & Rel. gain & Muon $\beta$ before$\rightarrow$after (shrink) & NorMuon $\beta$ before$\rightarrow$after (shrink) \\
+
+\midrule
+validation loss p95 & tail energy & mech. & 0.0591928 & 0.0732379 & -0.237277 & -0.182353 to +5.20136 (-27.5236) & -0.131624 to +5.58902 (-41.4621) \\
+validation loss p95 & stable rank & mech. & 0.0591928 & 0.0949013 & -0.603257 & -0.182353 to +11.0792 (-59.7569) & -0.131624 to +10.0387 (-75.2683) \\
+validation loss p95 & entropy rank & mech. & 0.0591928 & 0.119163 & -1.01314 & -0.182353 to -2.53666 (-12.9107) & -0.131624 to -2.50893 (-18.0614) \\
+validation loss p95 & head energy & mech. & 0.0591928 & 0.228798 & -2.8653 & -0.182353 to +10.0127 (-53.9085) & -0.131624 to +10.0604 (-75.433) \\
+validation loss p95 & middle energy & mech. & 0.0591928 & 0.156252 & -1.63972 & -0.182353 to +10.9809 (-59.2177) & -0.131624 to +10.8482 (-81.4184) \\
+validation loss p95 & row CV & mech. & 0.0591928 & 0.189106 & -2.19475 & -0.182353 to -1.50232 (-7.23855) & -0.131624 to +0.342982 (-1.60577) \\
+validation loss p95 & update norm & norm control & 0.0591928 & 0.20488 & -2.46124 & -0.182353 to +2.13117 (-10.6871) & -0.131624 to +2.1721 (-15.5023) \\
+validation loss p95 & weight norm & norm control & 0.0591928 & 0.112489 & -0.900387 & -0.182353 to -26.6727 (-145.27) & -0.131624 to -26.5591 (-200.781) \\
+unseen margin p05 & tail energy & mech. & 0.00418127 & 0.00705863 & -0.688154 & -0.00439217 to -0.620675 (-140.314) & -0.00213449 to -0.656986 (-306.795) \\
+unseen margin p05 & stable rank & mech. & 0.00418127 & 0.00439751 & -0.0517169 & -0.00439217 to -0.857507 (-194.235) & -0.00213449 to -0.772584 (-360.953) \\
+unseen margin p05 & entropy rank & mech. & 0.00418127 & 0.0100382 & -1.40075 & -0.00439217 to -0.749561 (-169.659) & -0.00213449 to -0.754586 (-352.52) \\
+unseen margin p05 & head energy & mech. & 0.00418127 & 0.0216978 & -4.18929 & -0.00439217 to -0.925568 (-209.731) & -0.00213449 to -0.923034 (-431.438) \\
+unseen margin p05 & middle energy & mech. & 0.00418127 & 0.0135655 & -2.24436 & -0.00439217 to -0.826049 (-187.073) & -0.00213449 to -0.810293 (-378.619) \\
+unseen margin p05 & row CV & mech. & 0.00418127 & 0.0135373 & -2.23761 & -0.00439217 to +0.0529153 (-11.0476) & -0.00213449 to -0.0227398 (-9.6535) \\
+unseen margin p05 & update norm & norm control & 0.00418127 & 0.0190507 & -3.55619 & -0.00439217 to -0.0708411 (-15.129) & -0.00213449 to -0.068302 (-30.9992) \\
+unseen margin p05 & weight norm & norm control & 0.00418127 & 0.00766238 & -0.832549 & -0.00439217 to +0.159818 (-35.387) & -0.00213449 to +0.161686 (-74.7492) \\
+\bottomrule
+\end{tabular}
+\caption{All 16 frozen temporal predictor estimates, including both norm controls.}
+\label{tab:causal-temporal-estimates}
+\end{table*}
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{llrrr}
+\toprule
+Seed & Challenger & $\Delta$ tail energy & $\Delta$ loss p95 & $\Delta$ margin p05 \\
+
+\midrule
+314159 & muon & +0.0654264 & -0.219279 & -0.000634968 \\
+314159 & normuon & +0.0693881 & -0.190004 & +0.00197853 \\
+271828 & muon & +0.0648547 & -0.175235 & -0.00626683 \\
+271828 & normuon & +0.0689617 & -0.0713824 & -0.00400244 \\
+161803 & muon & +0.0652134 & -0.152545 & -0.0062747 \\
+161803 & normuon & +0.0693794 & -0.133485 & -0.00437956 \\
+\bottomrule
+\end{tabular}
+\caption{All six randomized shared-start paired contrasts.}
+\label{tab:causal-temporal-pairs}
+\end{table*}
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.22\linewidth}p{0.16\linewidth}p{0.40\linewidth}p{0.12\linewidth}}
+\toprule
+Component criterion & Support & Threshold & Decision \\
+
+\midrule
+loss dose & 0/10 & 8 & fail \\
+margin dose & 0/10 & 8 & fail \\
+tail band & 0/10 & 8 & fail \\
+basis control & 2/10 & 8 & fail \\
+held-run bridge & 84 rows & spectrum gain > 0 and > matched basis gain & fail \\
+joint decision & local plus forward & all required & claimable negative \\
+\bottomrule
+\end{tabular}
+\caption{Dose, band, basis, and held-run bridge decisions.}
+\label{tab:causal-dose-diagnostics}
+\end{table*}
+\begin{table*}[t]
+\centering
+\tiny
+\setlength{\tabcolsep}{1.2pt}
+\begin{tabular}{p{0.13\linewidth}p{0.17\linewidth}p{0.17\linewidth}p{0.11\linewidth}p{0.11\linewidth}p{0.08\linewidth}p{0.16\linewidth}}
+\toprule
+Anchor & Loss doses (0, .25, .5, .75, 1) & Margin doses (0, .25, .5, .75, 1) & Loss H/M/T & Margin H/M/T & Tests & Min gaps L/M/T/B \\
+
+\midrule
+pretrained & 0 / +0.112292 / +0.14693 / +0.172892 / +0.212387 & 0 / -0.00390625 / -0.00751953 / -0.0078125 / -0.00976562 & +0.191247 / +0.11791 / +0.0939777 & -0.0078125 / -0.00390625 / -0.00390625 & F / F / F / P / F & -1.12e-01 / -3.91e-03 / 0.00e+00 / +1.95e-03 \\
+AdamW 1e-5 at 782 & 0 / +0.0858068 / +0.0804761 / +0.0924003 / +0.140346 & 0 / -0.00390625 / -0.00390625 / -0.00390625 / -0.00585938 & +0.119569 / +0.096515 / +0.0948403 & -0.00556641 / -0.00390625 / -0.00390625 & F / F / F / P / F & -8.58e-02 / -3.91e-03 / 0.00e+00 / +1.95e-03 \\
+AdamW 1e-5 at 2345 & 0 / +0.0761643 / +0.134485 / +0.151421 / +0.1428 & 0 / -0.00390625 / -0.00556641 / -0.0078125 / -0.0078125 & +0.158669 / +0.0746775 / +0.0928111 & -0.0078125 / -0.00390625 / -0.00390625 & F / F / F / F / F & -7.62e-02 / -3.91e-03 / -1.81e-02 / 0.00e+00 \\
+AdamW 1e-5 at 3907 & 0 / +0.104283 / +0.105001 / +0.136804 / +0.164926 & 0 / -0.00390625 / -0.00390625 / -0.0078125 / -0.0078125 & +0.159435 / +0.0841789 / +0.0616835 & -0.0078125 / -0.00390625 / -0.00390625 & F / F / F / F / F & -1.04e-01 / -3.91e-03 / 0.00e+00 / 0.00e+00 \\
+Muon 1e-3 at 782 & 0 / +0.109402 / +0.120257 / +0.114413 / +0.119132 & 0 / -0.00390625 / -0.00390625 / -0.00390625 / -0.00751953 & +0.0958187 / +0.0795917 / +0.0513318 & -0.00390625 / -0.00390625 / -0.00390625 & F / F / F / F / F & -1.09e-01 / -3.91e-03 / 0.00e+00 / -2.93e-04 \\
+Muon 1e-3 at 2345 & 0 / +0.0713319 / +0.110023 / +0.112523 / +0.138461 & 0 / -0.00390625 / -0.00390625 / -0.00390625 / -0.00585938 & +0.100107 / +0.0651468 / +0.0390793 & -0.00390625 / -0.00390625 / -0.00390625 & F / F / F / F / F & -7.13e-02 / -3.91e-03 / 0.00e+00 / -1.72e-03 \\
+Muon 1e-3 at 3907 & 0 / +0.0843915 / +0.0584801 / +0.0836865 / +0.10606 & 0 / -0.00390625 / -0.00390625 / -0.00390625 / -0.00390625 & +0.072524 / +0.0593137 / +0.0773411 & -0.00390625 / -0.00390625 / -0.00390625 & F / F / F / F / F & -8.44e-02 / -3.91e-03 / -1.80e-02 / -3.71e-03 \\
+NorMuon 1e-3 at 782 & 0 / +0.103577 / +0.114531 / +0.123545 / +0.162345 & 0 / -0.00390625 / -0.00722656 / -0.0078125 / -0.0078125 & +0.159967 / +0.0918381 / +0.0725006 & -0.0078125 / -0.00390625 / -0.00390625 & F / F / F / F / F & -1.04e-01 / -3.91e-03 / 0.00e+00 / 0.00e+00 \\
+NorMuon 1e-3 at 2345 & 0 / +0.0457112 / +0.0982143 / +0.129308 / +0.12299 & 0 / -0.00390625 / -0.00390625 / -0.00390625 / -0.0078125 & +0.116788 / +0.0890134 / +0.0695362 & -0.00390625 / -0.00390625 / -0.00390625 & F / F / F / F / F & -5.25e-02 / -3.91e-03 / 0.00e+00 / 0.00e+00 \\
+NorMuon 1e-3 at 3907 & 0 / +0.0832271 / +0.0965899 / +0.0978884 / +0.106444 & 0 / -0.00390625 / -0.00390625 / -0.0078125 / -0.0078125 & +0.126736 / +0.0805851 / +0.0723554 & -0.0078125 / -0.00390625 / -0.00390625 & F / F / F / F / F & -8.32e-02 / -3.91e-03 / 0.00e+00 / 0.00e+00 \\
+\bottomrule
+\end{tabular}
+\caption{All ten fixed-state dose, band, and basis-control anchors. Test order is loss-dose, margin-dose, tail, basis, and all; signed minimum gaps make strict ties auditable.}
+\label{tab:causal-dose-anchors}
+\end{table*}
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.18\linewidth}p{0.16\linewidth}p{0.10\linewidth}p{0.12\linewidth}p{0.22\linewidth}}
+\toprule
+Predictor & Kind & RMSE & $\Delta$RMSE & Matched control \\
+
+\midrule
+baseline & baseline & 0.0110162 & 0 & -- \\
+spectrum loss & spectrum & 0.0111671 & -0.000150847 & basis loss \\
+spectrum margin & spectrum & 0.0110875 & -7.12409e-05 & basis margin \\
+basis loss & basis control & 0.0110172 & -9.78894e-07 & -- \\
+basis margin & basis control & 0.0110502 & -3.39735e-05 & -- \\
+\bottomrule
+\end{tabular}
+\caption{Five models over all 84 held-run retrieval rows. Positive $\Delta$RMSE is improvement.}
+\label{tab:causal-forward-rmse}
+\end{table*}%
+}

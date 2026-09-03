@@ -1,0 +1,703 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from argparse import Namespace
+from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
+
+from embed_optim.dense_completion_pipeline import (
+    CORE_STEP_NAMES,
+    _exclusive_controller_lease,
+    _step_contract,
+)
+from embed_optim.dense_completion_pipeline import PipelineStep as CompletionStep
+from embed_optim.dense_finalization_pipeline import (
+    PipelineStep,
+    ProcessIdentity,
+    _matching_completed_prefix,
+    _read_completion_ledger,
+    _wait_for_completion,
+    parse_args,
+    pipeline_steps,
+    run_pipeline,
+)
+
+ROOT = Path(__file__).parents[1]
+
+SCOPE = {
+    "path": "/scope.json",
+    "sha256": "a" * 64,
+    "status": "user_directed_post_hoc_scope_amendment",
+    "amended_at_utc": "2026-08-31T00:00:00Z",
+    "claim_boundary": "Dense only",
+}
+TRAINING_INPUTS = {
+    "training_plan": {
+        "path": "/frozen-dense-plan.json",
+        "bytes": 123,
+        "sha256": "b" * 64,
+    },
+    "training_ledgers": [
+        {"pool": "a", "path": "/pool-a.json", "bytes": 456, "sha256": "c" * 64},
+        {"pool": "b", "path": "/pool-b.json", "bytes": 789, "sha256": "d" * 64},
+    ],
+}
+
+
+@pytest.fixture(autouse=True)
+def _current_training_inputs(monkeypatch):
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._validate_training_inputs",
+        lambda **_kwargs: TRAINING_INPUTS,
+    )
+    source = Path("src/embed_optim/dense_completion_pipeline.py").resolve()
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._repository_contract_sources",
+        lambda _repository: (source,),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.completion_pipeline_steps",
+        lambda _args: [CompletionStep(name, ("python", name)) for name in CORE_STEP_NAMES],
+    )
+
+
+def _step_args(tmp_path: Path, *, include_wandb: bool = False) -> Namespace:
+    return Namespace(
+        workdir=tmp_path,
+        scope_amendment=Path("configs/dense_scope_amendment.json"),
+        python="/usr/bin/python3",
+        include_wandb=include_wandb,
+    )
+
+
+def _valid_completion(repository: Path) -> dict[str, object]:
+    training_inputs = json.loads(json.dumps(TRAINING_INPUTS))
+    steps = [CompletionStep(name, ("python", name)) for name in CORE_STEP_NAMES]
+    contract = _step_contract(steps)
+    pipeline_arguments = {
+        "workdir": str(repository.resolve()),
+        "scope_amendment": SCOPE["path"],
+        "python": "python",
+        "gpus": "0,1,2,3,4,5,6,7",
+        "gpus_b": "4,5,6,7",
+        "worker_retries": 2,
+        "include_validation": False,
+    }
+    binding = {
+        "scope_amendment": SCOPE,
+        "training_plan": training_inputs["training_plan"],
+        "training_ledgers": training_inputs["training_ledgers"],
+        "step_contract_sha256": contract["sha256"],
+        "pipeline_arguments": pipeline_arguments,
+    }
+    return {
+        "schema_version": 1,
+        "complete": True,
+        "families": ["dense"],
+        "scope_amendment": SCOPE,
+        "training_plan": training_inputs["training_plan"],
+        "training_ledgers": training_inputs["training_ledgers"],
+        "step_contract": contract,
+        "pipeline_arguments": pipeline_arguments,
+        "input_binding": binding,
+        "steps": [
+            {
+                "index": index,
+                "name": step.name,
+                "command": list(step.command),
+                "input_binding": binding,
+                "complete": True,
+            }
+            for index, step in enumerate(steps, start=1)
+        ],
+    }
+
+
+def _run_args(tmp_path: Path, completion: Path, *, resume: bool = False) -> Namespace:
+    return Namespace(
+        workdir=tmp_path,
+        scope_amendment=Path("configs/dense_scope_amendment.json"),
+        completion_ledger=completion,
+        log_dir=Path("logs/finalization"),
+        python=sys.executable,
+        include_wandb=False,
+        wait_pid=None,
+        wait_command_fragment="embed_optim.dense_completion_pipeline",
+        poll_seconds=0.001,
+        step_retries=0,
+        retry_delay=0.0,
+        resume=resume,
+    )
+
+
+def _write_completion(path: Path, payload: dict[str, object] | None = None) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload or _valid_completion(path.parent)), encoding="utf-8")
+
+
+def test_finalization_controller_lease_rejects_a_second_instance(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    args = _run_args(tmp_path, completion)
+    step = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._wait_for_completion",
+        lambda _args: pytest.fail("the second controller must fail before waiting"),
+    )
+    lease_path = tmp_path / args.log_dir / "controller.lease"
+    with _exclusive_controller_lease(
+        lease_path,
+        controller="finalization",
+        workdir=tmp_path,
+        step_contract_sha256="0" * 64,
+    ):
+        with pytest.raises(RuntimeError, match="controller lease is already held"):
+            run_pipeline(args)
+
+
+def test_finalization_rejects_source_mutation_while_waiting(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    args = _run_args(tmp_path, completion)
+    source = tmp_path / "src" / "embed_optim" / "marker.py"
+    source.parent.mkdir(parents=True)
+    source.write_text("VALUE = 1\n", encoding="utf-8")
+    step = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._repository_contract_sources",
+        lambda _repository: (source.resolve(),),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._wait_for_completion",
+        lambda _args: source.write_text("VALUE = 2\n", encoding="utf-8"),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_completion_ledger",
+        lambda *_args, **_kwargs: pytest.fail(
+            "mutated source must fail before completion-ledger validation"
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="step contract changed"):
+        run_pipeline(args)
+
+    assert not (tmp_path / args.log_dir / "pipeline-ledger.json").exists()
+
+
+def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
+    steps = pipeline_steps(_step_args(tmp_path))
+
+    assert [step.name for step in steps] == [
+        "temporal-predictors-fresh-audit",
+        "temporal-short-branch-fresh-audit",
+        "discovery-report",
+        "dose-band-fresh-audit",
+        "retrieval-dynamics",
+        "mechanism-report",
+        "outcome-report",
+        "paper-results",
+        "paper-audit-strict",
+        "tests",
+        "ruff-check",
+        "ruff-format-check",
+        "paper-build",
+        "paper-audit-post-build-strict",
+        "wandb-audit-dense-sources",
+        "wandb-sync-dense",
+        "distribution-build",
+        "distribution-audit",
+    ]
+    for step in (steps[2], *steps[4:9]):
+        assert "--families" in step.command
+        family_index = step.command.index("--families")
+        assert step.command[family_index + 1] == "dense"
+        assert "--scope-amendment" in step.command
+    predictor_audit, temporal_audit, dose_audit = steps[0], steps[1], steps[3]
+    assert all(
+        step.command[-1] == "--audit" for step in (predictor_audit, temporal_audit, dose_audit)
+    )
+    assert predictor_audit.command[predictor_audit.command.index("--families") + 1] == "dense"
+    assert predictor_audit.command[predictor_audit.command.index("--scope-amendment") + 1].endswith(
+        "/configs/dense_scope_amendment.json"
+    )
+    assert temporal_audit.command[temporal_audit.command.index("--scope-amendment") + 1].endswith(
+        "/configs/dense_scope_amendment.json"
+    )
+    for step in (predictor_audit, temporal_audit, dose_audit):
+        protocol_flag = "--analysis-protocol" if step is predictor_audit else "--protocol"
+        assert step.command[step.command.index(protocol_flag) + 1] == (
+            "configs/causal_chain_analysis.json"
+        )
+    assert "--strict" in steps[2].command
+    assert "--strict" in steps[8].command
+    assert steps[9].command[-2:] == ("pytest", "-q")
+    assert steps[10].command[-4:] == ("check", "src", "tests", "scripts/eval")
+    assert steps[11].command[-5:] == (
+        "format",
+        "--check",
+        "src",
+        "tests",
+        "scripts/eval",
+    )
+    assert steps[12].command == (
+        "make",
+        "-C",
+        "paper",
+        "release",
+        "PYTHON=/usr/bin/python3",
+    )
+    assert steps[13].name == "paper-audit-post-build-strict"
+    assert steps[13].command == steps[8].command
+    assert steps[-2].command == ("uv", "build")
+    assert steps[-1].name == "distribution-audit"
+
+
+def test_release_build_rejects_a_causal_source_removed_after_strict_audit(tmp_path: Path):
+    paper = tmp_path / "paper"
+    paper.mkdir()
+    (paper / "Makefile").write_bytes((ROOT / "paper/Makefile").read_bytes())
+    causal_source = tmp_path / "reports/temporal-short-branch/loso_predictions.csv"
+    causal_source.parent.mkdir(parents=True)
+    causal_source.write_text("held_out_prediction\nvalid\n", encoding="utf-8")
+    fake_cli = tmp_path / "fake_paper_cli.py"
+    fake_cli.write_text(
+        """\
+import os
+import sys
+from pathlib import Path
+
+arguments = sys.argv[1:]
+module = arguments[arguments.index("-m") + 1]
+source = Path(os.environ["CAUSAL_SOURCE"])
+if module == "embed_optim.paper_audit":
+    if "--strict" not in arguments or not source.is_file():
+        raise SystemExit(40)
+elif module == "embed_optim.paper_results":
+    if "--if-ready" in arguments:
+        print("if-ready would retain stale tables")
+    elif not source.is_file():
+        print("strict renderer rejected missing causal source")
+        raise SystemExit(41)
+else:
+    raise SystemExit(42)
+""",
+        encoding="utf-8",
+    )
+    environment = {**os.environ, "CAUSAL_SOURCE": str(causal_source)}
+    subprocess.run(
+        [sys.executable, str(fake_cli), "-m", "embed_optim.paper_audit", "--strict"],
+        check=True,
+        env=environment,
+    )
+    causal_source.unlink()
+
+    result = subprocess.run(
+        [
+            "make",
+            "-C",
+            str(paper),
+            "release",
+            f"PYTHON={sys.executable} {fake_cli}",
+        ],
+        check=False,
+        capture_output=True,
+        env=environment,
+        text=True,
+    )
+
+    output = result.stdout + result.stderr
+    assert result.returncode != 0
+    assert "strict renderer rejected missing causal source" in output
+    assert "if-ready would retain stale tables" not in output
+
+
+def test_makefile_keeps_if_ready_only_for_the_developer_build():
+    makefile = (ROOT / "paper/Makefile").read_text(encoding="utf-8")
+    release_recipe = makefile.split("\nrelease:\n", 1)[1].split("\n\n", 1)[0]
+    developer_recipe = makefile.split("\nheadlines:\n", 1)[1].split("\n\n", 1)[0]
+
+    assert "--if-ready" not in release_recipe
+    assert "--if-ready" in developer_recipe
+
+
+def test_wandb_audits_are_mandatory_dense_only_and_precede_distribution(tmp_path: Path):
+    steps = pipeline_steps(_step_args(tmp_path, include_wandb=False))
+
+    sources, canonical = steps[-4:-2]
+    assert sources.name == "wandb-audit-dense-sources"
+    assert sources.command[2] == "embed_optim.wandb_dense_provenance_audit"
+    assert sources.command[sources.command.index("--repository") + 1] == str(tmp_path.resolve())
+    assert sources.command[sources.command.index("--scope-amendment") + 1].endswith(
+        "/configs/dense_scope_amendment.json"
+    )
+    assert sources.command[sources.command.index("--experiment-matrix") + 1] == (
+        "configs/experiment.yaml"
+    )
+    assert sources.command[sources.command.index("--hybrid-matrix") + 1] == (
+        "configs/hybrid_adamw.yaml"
+    )
+    assert sources.command[sources.command.index("--training-plan") + 1] == (
+        "configs/dense_training_queue.json"
+    )
+    assert sources.command[sources.command.index("--receipt") + 1] == (
+        "reports/wandb/dense_source_provenance_audit.json"
+    )
+
+    assert canonical.name == "wandb-sync-dense"
+    assert canonical.command[2] == "embed_optim.wandb_sync"
+    assert canonical.command[-4:-2] == ("--families", "dense")
+    assert canonical.command[-2] == "--scope-amendment"
+    assert canonical.command[-1].endswith("/configs/dense_scope_amendment.json")
+    assert "late" not in canonical.command
+    assert [step.name for step in steps[-4:]] == [
+        "wandb-audit-dense-sources",
+        "wandb-sync-dense",
+        "distribution-build",
+        "distribution-audit",
+    ]
+
+
+def test_cli_publication_finalizer_enables_wandb_verification_by_default():
+    assert parse_args([]).include_wandb is True
+
+
+def test_wait_tracks_process_start_identity_until_exit(monkeypatch, tmp_path: Path):
+    command = f"{sys.executable} -m embed_optim.dense_completion_pipeline"
+    identities = iter(
+        [
+            ProcessIdentity(123, 456, command),
+            ProcessIdentity(123, 456, command),
+            None,
+        ]
+    )
+    sleeps: list[float] = []
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_process_identity",
+        lambda _pid: next(identities),
+    )
+    monkeypatch.setattr("embed_optim.dense_finalization_pipeline.time.sleep", sleeps.append)
+    args = _run_args(tmp_path, tmp_path / "completion.json")
+    args.wait_pid = 123
+
+    _wait_for_completion(args)
+
+    assert sleeps == [args.poll_seconds]
+
+
+def test_wait_rejects_wrong_or_reused_pid(monkeypatch, tmp_path: Path):
+    args = _run_args(tmp_path, tmp_path / "completion.json")
+    args.wait_pid = 123
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_process_identity",
+        lambda _pid: ProcessIdentity(123, 456, "unrelated-command"),
+    )
+    with pytest.raises(RuntimeError, match="not the requested Dense completion"):
+        _wait_for_completion(args)
+
+    expected = f"{sys.executable} -m embed_optim.dense_completion_pipeline"
+    identities = iter([ProcessIdentity(123, 456, expected), ProcessIdentity(123, 789, expected)])
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_process_identity",
+        lambda _pid: next(identities),
+    )
+    with pytest.raises(RuntimeError, match="was reused"):
+        _wait_for_completion(args)
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        lambda payload: payload.update(complete=False),
+        lambda payload: payload.update(families=["dense", "late"]),
+        lambda payload: payload.update(scope_amendment={"sha256": "wrong"}),
+        lambda payload: payload.update(steps=[{"name": "pending", "complete": False}]),
+        lambda payload: payload.update(failed_step="spectral-transplant-summary"),
+        lambda payload: payload["training_plan"].update(sha256="0" * 64),
+        lambda payload: payload["step_contract"].update(sha256="0" * 64),
+        lambda payload: payload["steps"][0].update(input_binding={}),
+        lambda payload: payload.pop("input_binding"),
+    ],
+)
+def test_completion_ledger_is_a_strict_dense_scope_gate(tmp_path: Path, mutation):
+    path = tmp_path / "completion.json"
+    payload = _valid_completion(tmp_path)
+    mutation(payload)
+    _write_completion(path, payload)
+
+    with pytest.raises(RuntimeError, match="Dense completion ledger"):
+        _read_completion_ledger(path, expected_scope=SCOPE, repository=tmp_path)
+
+
+def test_completion_ledger_source_hashes_exact_bytes(tmp_path: Path):
+    path = tmp_path / "completion.json"
+    _write_completion(path)
+
+    payload, source = _read_completion_ledger(
+        path,
+        expected_scope=SCOPE,
+        repository=tmp_path,
+    )
+
+    raw = path.read_bytes()
+    assert payload["complete"] is True
+    assert source == {
+        "path": str(path),
+        "bytes": len(raw),
+        "sha256": hashlib.sha256(raw).hexdigest(),
+    }
+
+
+def test_completion_ledger_rejects_internally_consistent_stale_implementation_contract(
+    tmp_path: Path,
+):
+    path = tmp_path / "completion.json"
+    payload = _valid_completion(tmp_path)
+    contract = payload["step_contract"]
+    contract["implementation_sources"][0]["sha256"] = "0" * 64
+    body = {
+        "steps": contract["steps"],
+        "implementation_sources": contract["implementation_sources"],
+    }
+    contract["sha256"] = hashlib.sha256(
+        json.dumps(body, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    payload["input_binding"]["step_contract_sha256"] = contract["sha256"]
+    for step in payload["steps"]:
+        step["input_binding"]["step_contract_sha256"] = contract["sha256"]
+    _write_completion(path, payload)
+
+    with pytest.raises(RuntimeError, match="step contract differs from current inputs"):
+        _read_completion_ledger(path, expected_scope=SCOPE, repository=tmp_path)
+
+
+def test_completion_ledger_rejects_self_signed_noncanonical_commands(tmp_path: Path):
+    path = tmp_path / "completion.json"
+    payload = _valid_completion(tmp_path)
+    payload["steps"][0]["command"] = ["python", "-c", "pass"]
+    self_signed_steps = [
+        CompletionStep(step["name"], tuple(step["command"])) for step in payload["steps"]
+    ]
+    contract = _step_contract(self_signed_steps)
+    payload["step_contract"] = contract
+    payload["input_binding"]["step_contract_sha256"] = contract["sha256"]
+    for step in payload["steps"]:
+        step["input_binding"]["step_contract_sha256"] = contract["sha256"]
+    _write_completion(path, payload)
+
+    with pytest.raises(RuntimeError, match="step contract differs from current inputs"):
+        _read_completion_ledger(path, expected_scope=SCOPE, repository=tmp_path)
+
+
+def test_pipeline_writes_atomic_complete_ledger_and_hashed_logs(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    _write_completion(completion)
+    args = _run_args(tmp_path, completion)
+    steps = [
+        PipelineStep("one", (sys.executable, "-c", "print('one')")),
+        PipelineStep("two", (sys.executable, "-c", "print('two')")),
+    ]
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: steps
+    )
+
+    assert run_pipeline(args) == 0
+
+    ledger_path = tmp_path / args.log_dir / "pipeline-ledger.json"
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert ledger["complete"] is True
+    assert ledger["families"] == ["dense"]
+    assert ledger["scope_amendment"] == SCOPE
+    assert (
+        ledger["completion_ledger"]["sha256"] == hashlib.sha256(completion.read_bytes()).hexdigest()
+    )
+    assert ledger["step_contract"]["sha256"] == ledger["input_binding"]["step_contract_sha256"]
+    assert [record["name"] for record in ledger["steps"]] == ["one", "two"]
+    for record in ledger["steps"]:
+        assert record["input_binding"] == ledger["input_binding"]
+        attempt = record["attempts"][-1]
+        log_path = Path(attempt["log"]["path"])
+        assert attempt["return_code"] == 0
+        assert attempt["log"]["bytes"] == log_path.stat().st_size
+        assert attempt["log"]["sha256"] == hashlib.sha256(log_path.read_bytes()).hexdigest()
+
+
+def test_pipeline_retries_a_failed_step_and_records_both_attempts(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    _write_completion(completion)
+    args = _run_args(tmp_path, completion)
+    args.step_retries = 1
+    step = PipelineStep("retry", ("synthetic-command",))
+    return_codes = iter((9, 0))
+
+    def fake_run(*_args, stdout, **_kwargs):
+        return_code = next(return_codes)
+        stdout.write(f"return code {return_code}\n")
+        return SimpleNamespace(returncode=return_code)
+
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr("embed_optim.dense_finalization_pipeline.subprocess.run", fake_run)
+
+    assert run_pipeline(args) == 0
+
+    ledger = json.loads(
+        (tmp_path / args.log_dir / "pipeline-ledger.json").read_text(encoding="utf-8")
+    )
+    attempts = ledger["steps"][0]["attempts"]
+    assert [attempt["return_code"] for attempt in attempts] == [9, 0]
+    assert all(len(attempt["log"]["sha256"]) == 64 for attempt in attempts)
+
+
+def test_resume_reruns_prefix_when_step_contract_changes(monkeypatch, tmp_path: Path):
+    completion = tmp_path / "completion.json"
+    _write_completion(completion)
+    args = _run_args(tmp_path, completion)
+    first = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    failing = PipelineStep("two", (sys.executable, "-c", "raise SystemExit(7)"))
+    current_steps = [first, failing]
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: current_steps
+    )
+
+    assert run_pipeline(args) == 1
+    ledger_path = tmp_path / args.log_dir / "pipeline-ledger.json"
+    failed = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert failed["failed_step"] == "two"
+    first_record = failed["steps"][0]
+
+    current_steps[1] = PipelineStep("two", (sys.executable, "-c", "print('recovered')"))
+    args.resume = True
+    assert run_pipeline(args) == 0
+
+    resumed = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert resumed["complete"] is True
+    assert "failed_step" not in resumed
+    assert resumed["steps"][0] != first_record
+    assert resumed["steps"][0]["input_binding"] == resumed["input_binding"]
+    assert resumed["steps"][1]["command"] == list(current_steps[1].command)
+
+
+def test_complete_resume_revalidates_completion_and_reruns_when_it_changes(
+    monkeypatch, tmp_path: Path
+):
+    completion = tmp_path / "completion.json"
+    _write_completion(completion)
+    args = _run_args(tmp_path, completion)
+    step = PipelineStep("one", (sys.executable, "-c", "print('one')"))
+    reads = 0
+    original_read = _read_completion_ledger
+
+    def counted_read(*read_args, **read_kwargs):
+        nonlocal reads
+        reads += 1
+        return original_read(*read_args, **read_kwargs)
+
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.resolve_scope",
+        lambda *_args, **_kwargs: (("dense",), SCOPE),
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline.pipeline_steps", lambda _args: [step]
+    )
+    monkeypatch.setattr(
+        "embed_optim.dense_finalization_pipeline._read_completion_ledger", counted_read
+    )
+
+    assert run_pipeline(args) == 0
+    ledger_path = tmp_path / args.log_dir / "pipeline-ledger.json"
+    first = json.loads(ledger_path.read_text(encoding="utf-8"))
+    args.resume = True
+    before_complete_resume = reads
+    assert run_pipeline(args) == 0
+    assert reads > before_complete_resume
+    rerun = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert rerun["steps"][0]["finished_at"] != first["steps"][0]["finished_at"]
+
+    completion_payload = json.loads(completion.read_text(encoding="utf-8"))
+    completion_payload["finished_at"] = "new-provenance"
+    _write_completion(completion, completion_payload)
+    assert run_pipeline(args) == 0
+    changed = json.loads(ledger_path.read_text(encoding="utf-8"))
+    assert changed["completion_ledger"] != first["completion_ledger"]
+    assert changed["steps"][0]["finished_at"] != first["steps"][0]["finished_at"]
+
+
+def test_resume_prefix_requires_command_identity():
+    steps = [
+        PipelineStep("one", ("python", "one")),
+        PipelineStep("two", ("python", "two")),
+    ]
+    previous = {
+        "steps": [
+            {"name": "one", "command": ["python", "one"], "complete": True},
+            {"name": "two", "command": ["python", "changed"], "complete": True},
+        ]
+    }
+
+    assert _matching_completed_prefix(previous, steps) == 1
+
+
+def test_resume_prefix_requires_current_completion_and_step_contract_binding():
+    steps = [PipelineStep("one", ("python", "one"))]
+    binding = {
+        "scope_amendment": SCOPE,
+        "completion_ledger": {"path": "/completion", "bytes": 1, "sha256": "e" * 64},
+        "step_contract_sha256": "f" * 64,
+    }
+    previous = {
+        "steps": [
+            {
+                "name": "one",
+                "command": ["python", "one"],
+                "input_binding": binding,
+                "complete": True,
+            }
+        ]
+    }
+
+    assert _matching_completed_prefix(previous, steps, binding) == 1
+    changed = {
+        **binding,
+        "completion_ledger": {**binding["completion_ledger"], "sha256": "0" * 64},
+    }
+    assert _matching_completed_prefix(previous, steps, changed) == 0
+
+
+def test_cli_rejects_invalid_wait_and_retry_values():
+    with pytest.raises(SystemExit):
+        parse_args(["--wait-pid", "0"])
+    with pytest.raises(SystemExit):
+        parse_args(["--poll-seconds", "0"])
+    with pytest.raises(SystemExit):
+        parse_args(["--step-retries", "-1"])

@@ -1,0 +1,26 @@
+% Result macros are kept separate so incomplete results cannot be hidden in prose.
+% This file currently contains only constants and values already covered by strict manifests.
+\newcommand{\ResultPending}[1]{\textcolor{red}{[PENDING: #1]}}
+
+\newcommand{\NumDiscoveryRuns}{12}
+\newcommand{\NumDiscoveryCheckpoints}{60}
+\newcommand{\NumBEIRTasks}{14}
+\newcommand{\NumDiscoveryUnits}{840}
+\newcommand{\NumTrainingQueries}{500{,}000}
+\newcommand{\NumHardNegatives}{7}
+\newcommand{\ContextLength}{8{,}192}
+\newcommand{\MuonFamilyThroughputRatioRange}{0.9348--0.9489}
+\newcommand{\MuonFamilyStateRatioRange}{0.6299--0.6304}
+\newcommand{\NumWeightPairs}{20}
+\newcommand{\DisplacementRatioRange}{0.9956--1.0039}
+\newcommand{\RowCVRatioRange}{0.1721--0.4534}
+\newcommand{\TopRowEnergyRatioRange}{0.5851--0.7252}
+
+% The deterministic Dense-only renderer replaces every headline below only after its strict
+% evidence manifests complete. The ResultPending command remains available for future reruns.
+\newcommand{\DiscoveryHeadline}{For AdamW/Muon/NorMuon respectively, DenseOn median final nDCG@10 was 0.5858/0.5901/0.5910, with 2/3/3 of four learning rates reaching the frozen AdamW reference. DenseOn median throughput ratios to AdamW were 1.00x/0.95x/0.93x for AdamW/Muon/NorMuon; Muon-family training was not faster on this stack.}
+\newcommand{\CommonStateHeadline}{At shared-gradient common states, DenseOn Muon/NorMuon row-CV ratios to AdamW were 2.855/0.711 and their normalized exact stable ranks were 0.5772/0.4153.}
+\newcommand{\RepresentationHeadline}{For AdamW/Muon/NorMuon respectively, DenseOn unseen margins were 0.2499/0.2609/0.2611. The descriptive within-run margin-to-BEIR Spearman rho was 0.531 for DenseOn. In the explicitly post-hoc loss diagnostic, the corresponding trailing-training-loss-to-BEIR rho was -0.684.}
+\newcommand{\InterventionHeadline}{For AdamW/Muon/NorMuon respectively, DenseOn matched-step margin changes were 0.0009/0.0006/0.0005, final shared-start Muon--AdamW/NorMuon--Muon margin contrasts were 0.0024 (3/0/0)/-0.0007 (1/0/2), and mean hybrid-routing AdamW change was 0.0001. Frozen causal-chain tests: temporal 2/5, primary LOSO relative RMSE gains for loss/margin -0.237277/-0.688154; fixed-state loss/margin/tail/basis support 0/0/0/2 of 10; 84-row spectrum loss/margin RMSE gains -0.000150847/-7.12409e-05 versus matched basis -9.78894e-07/-3.39735e-05; matched decision gaps loss/margin -1.508471e-04/-7.124088e-05; joint result claimable negative. These tests constrain a spectral-component explanation but do not identify formal mediation of full-training BEIR gains.}
+\newcommand{\ConfirmationHeadline}{The validation-frozen three-seed paired nDCG@10 contrasts were DenseOn: Muon--AdamW -0.0306 [-0.0464, -0.0138] (negative), NorMuon--AdamW -0.0304 [-0.0446, -0.0138] (negative), NorMuon--Muon 0.0002 [-0.0126, 0.0084] (inconclusive).}
+\newcommand{\ResultConclusion}{Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95\% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95\% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.}

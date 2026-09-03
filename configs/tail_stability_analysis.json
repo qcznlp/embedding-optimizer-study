@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "analysis_status": "post_hoc_discovery_with_prospective_short_branch_confirmation",
+  "frozen_at_utc": "2026-08-30T19:17:13Z",
+  "objective": "Test whether Muon-family updates trade smaller mean one-step margin gains for fewer severe per-query regressions, and whether that tail-stability signature survives three-seed scale-matched shared-start training.",
+  "source_inputs": {
+    "functional_intervention_spec": "configs/functional_intervention.json",
+    "functional_intervention_spec_sha256": "8f8a478bede92f9b2e1999b5491a3983cc244fad90ec5321b6d8914a2f633bab",
+    "functional_intervention_summary": "reports/functional-intervention/manifest.json",
+    "functional_intervention_summary_sha256": "34665e5e25859c681bf067c02120c30c6abb678e634eb955ffd8e663ad844ee0",
+    "local_global_reversal_protocol": "configs/local_global_reversal.json",
+    "local_global_reversal_protocol_sha256": "7c4f96eb15b1d3973115747181e9202a47648ca07d5d1d1a9a03170496dde24f",
+    "local_global_reversal_summary": "reports/local-global-reversal/summary_manifest.json",
+    "local_global_reversal_summary_sha256": "fdfeae554c3777c966f590afbc567095c9495e1783880344fa4abfa45afa9ac3",
+    "short_branch_protocol": "configs/short_branch_protocol.json",
+    "short_branch_protocol_sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec",
+    "short_branch_matrix_manifest": "configs/generated/short-branch/manifest.json",
+    "short_branch_matrix_manifest_sha256": "251aa120c1356ef26683c604c7aba12bc71c090235d2c4be4ef3154d72956022",
+    "validation_spec": "configs/validation_probe.json",
+    "validation_spec_sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1",
+    "unseen_probe_spec": "configs/beir_representation_probe.json",
+    "unseen_probe_spec_sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+  },
+  "discovery_diagnostic": {
+    "anchors": 20,
+    "anchors_per_family": 10,
+    "examples_per_anchor": 224,
+    "condition_direction": "descent",
+    "relative_scale": 0.001,
+    "algorithms": [
+      "adamw",
+      "muon",
+      "normuon"
+    ],
+    "reference": "adamw",
+    "challengers": [
+      "muon",
+      "normuon"
+    ],
+    "quantile_definition": "linear interpolation at index (n-1)q after stable ascending sort",
+    "primary_tail_metrics": {
+      "loss": "p95 of per-query contrastive-loss change from the same unmodified baseline; lower is better",
+      "margin": "p05 of per-query positive-minus-hardest-negative margin change from the same baseline; higher is better"
+    },
+    "secondary_tail_metric": "p99 of per-query contrastive-loss change; lower is better",
+    "tradeoff_definition": "challenger minus AdamW mean margin is negative while challenger minus AdamW p95 loss is negative and p05 margin is non-negative"
+  },
+  "secondary_discovery_diagnostic": {
+    "status": "post_hoc_after_cross_tail_inspection",
+    "objective": "Distinguish uniform suppression of the same fragile-query tail from redistribution to a different set of worst queries.",
+    "tail_fraction": 0.05,
+    "tail_size_per_anchor": 12,
+    "selection_rule": "For each operator and anchor, select the ceil(0.05 * 224) largest per-query contrastive-loss changes, breaking exact ties by ascending sample_id.",
+    "symmetric_comparisons": [
+      "challenger minus AdamW loss change on the AdamW-selected worst tail",
+      "challenger minus AdamW loss change on the challenger-selected worst tail",
+      "Jaccard overlap between the two selected tails",
+      "median baseline-margin midrank percentile of the AdamW-selected tail"
+    ],
+    "interpretation_rule": "Negative challenger-minus-AdamW means on both symmetrically selected tails indicate severity suppression on a largely shared failure set; a negative contrast only on the AdamW-selected tail indicates redistribution to different worst queries. This classification is exploratory and was defined after the preliminary cross-tail values were visible."
+  },
+  "short_branch_confirmation": {
+    "results_root": "results/short-branch",
+    "expected_seeds": [
+      314159,
+      271828,
+      161803
+    ],
+    "expected_runs": 18,
+    "expected_checkpoints": 90,
+    "stages": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "query_disjoint_metrics": {
+      "loss_mean": "mean per-query contrastive loss",
+      "loss_p95": "p95 per-query contrastive loss",
+      "loss_p99": "p99 per-query contrastive loss",
+      "margin_mean": "mean positive-minus-hardest-negative margin",
+      "margin_p05": "p05 positive-minus-hardest-negative margin"
+    },
+    "unseen_metrics": {
+      "margin_mean": "mean positive-minus-hardest-negative margin",
+      "margin_p05": "p05 positive-minus-hardest-negative margin",
+      "pretrained_top1_agreement": "fraction retaining the pretrained top-1 candidate",
+      "pretrained_score_drift_rms": "RMS candidate-score drift from the pretrained reference"
+    },
+    "primary_final_stage_rule": "For each family and challenger, support requires the three-seed median challenger-minus-scale-matched-AdamW contrast to be negative for query-disjoint loss p95 and positive for unseen margin p05. Mixed signs are reported as mixed and cannot support the tail-stability account.",
+    "results_available_at_freeze": false
+  },
+  "freeze_context": {
+    "discovery_beir_complete": true,
+    "local_global_reversal_visible": true,
+    "preliminary_tail_diagnostic_inspected": true,
+    "visible_pooled_scale_1e_3_loss_p95": {
+      "dense": {
+        "adamw": 0.139,
+        "muon": 0.107,
+        "normuon": 0.0975
+      },
+      "late": {
+        "adamw": 0.228,
+        "muon": 0.131,
+        "normuon": 0.116
+      }
+    },
+    "visible_anchor_p99_loss_improvement_counts_out_of_10": {
+      "dense_muon": 10,
+      "dense_normuon": 10,
+      "late_muon": 10,
+      "late_normuon": 10
+    },
+    "hybrid_checkpoints_audited": 7,
+    "hybrid_checkpoints_expected": 40,
+    "confirmatory_results_available": false,
+    "short_branch_results_available": false,
+    "spectral_transplant_results_available": false
+  },
+  "amendments": [
+    {
+      "amended_at_utc": "2026-08-30T19:36:26Z",
+      "previous_protocol_sha256": "b932fecb7a6bb0f509fe4f1697d48edebc7dfd4f0ad7a1d7d1ddcc8468800c53",
+      "reason": "Add a symmetric worst-tail identity diagnostic after inspecting its preliminary discovery values; preserve the already-frozen three-seed confirmation rule unchanged.",
+      "cross_tail_discovery_results_visible": true,
+      "short_branch_results_available": false,
+      "spectral_transplant_results_available": false,
+      "prospective_confirmation_rule_changed": false,
+      "visible_preliminary_summary": {
+        "dense_muon": {
+          "challenger_minus_adam_on_adam_tail_loss_mean": -0.1366,
+          "challenger_minus_adam_on_challenger_tail_loss_mean": 0.0203,
+          "mean_tail_jaccard": 0.279
+        },
+        "dense_normuon": {
+          "challenger_minus_adam_on_adam_tail_loss_mean": -0.1402,
+          "challenger_minus_adam_on_challenger_tail_loss_mean": 0.011,
+          "mean_tail_jaccard": 0.27
+        },
+        "late_muon": {
+          "challenger_minus_adam_on_adam_tail_loss_mean": -0.233,
+          "challenger_minus_adam_on_challenger_tail_loss_mean": -0.1779,
+          "mean_tail_jaccard": 0.711
+        },
+        "late_normuon": {
+          "challenger_minus_adam_on_adam_tail_loss_mean": -0.2585,
+          "challenger_minus_adam_on_challenger_tail_loss_mean": -0.2022,
+          "mean_tail_jaccard": 0.67
+        }
+      }
+    }
+  ],
+  "claim_boundary": "The discovery tail analysis is explicitly post hoc and can only describe a mean-tail tradeoff at fixed weights. The frozen short-branch rule is prospective relative to all three-seed shared-start outcomes and can test whether the signature persists under accumulated training, but even a positive result would not prove that tail stability alone mediates full-corpus BEIR gains."
+}

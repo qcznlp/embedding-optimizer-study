@@ -1,0 +1,99 @@
+{
+  "checkpoint": {
+    "inputs": [
+      {
+        "bytes": 89,
+        "path": "1_Pooling/config.json",
+        "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+      },
+      {
+        "bytes": 1952,
+        "path": "config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      {
+        "bytes": 299,
+        "path": "config_sentence_transformers.json",
+        "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+      },
+      {
+        "bytes": 596070136,
+        "path": "model.safetensors",
+        "sha256": "f43d6bfad606e399727248ca44998b8e9b02b4eb60b9f3a39d714e6e1ba17ee1"
+      },
+      {
+        "bytes": 277,
+        "path": "modules.json",
+        "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+      },
+      {
+        "bytes": 241,
+        "path": "sentence_bert_config.json",
+        "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+      },
+      {
+        "bytes": 3583327,
+        "path": "tokenizer.json",
+        "sha256": "874b48dbc3ec9249ab7b5da746aeb46243b3083ddb9c304bfca91e5afe42c687"
+      },
+      {
+        "bytes": 541,
+        "path": "tokenizer_config.json",
+        "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+      },
+      {
+        "bytes": 3722,
+        "path": "trainer_state.json",
+        "sha256": "95bb03cdc09c6ff0b4edc1cecd54ccb8c8ab9e2ba38b8f7cb01b5bc4accc1f5e"
+      }
+    ],
+    "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/checkpoint-157",
+    "run_config": {
+      "path": "/root/embedding-optimizer-study/outputs/short-branch/seed161803/dense/muon-scale-matched/run_config.json",
+      "sha256": "b9280f0c5b974e94e23bbf65e122af767a04ea70c74fc5bb99a75cd04c929e69"
+    }
+  },
+  "family": "dense",
+  "group_records": 8,
+  "outputs": {
+    "group_metrics": {
+      "bytes": 2371,
+      "path": "group_metrics.jsonl",
+      "sha256": "3344db67b5ba43c05af381440aee88b50f1b8e3e15f01d8ea3ec0423fc3f8308"
+    },
+    "sample_metrics": {
+      "bytes": 1466914,
+      "path": "sample_metrics.jsonl",
+      "sha256": "615aa45afa199b2157d3491452a3207d3fa5769275444c9454fc7946f9a47fd6"
+    }
+  },
+  "probe": {
+    "dataset_fingerprint": "4d5af8189b856a42",
+    "frozen_spec": {
+      "expected_manifest_sha256": "a3e574c472131116a4381a3c919121923412677ffdd5b56a5dd596b694b157aa",
+      "path": "/root/embedding-optimizer-study/configs/validation_probe.json",
+      "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+    },
+    "manifest_sha256": "a3e574c472131116a4381a3c919121923412677ffdd5b56a5dd596b694b157aa",
+    "path": "/root/embedding-optimizer-study/data/validation-4096-seed20260826",
+    "selected_sample_ids_sha256": "2cf645aec1ff09ceac94895976db7d23ae80271c8af1e11cf353f416f09ad77e",
+    "selection_sha256": "a42ceb54123091ca70ee58a83bcbf32f3cad43c2ec77e64031e9c9c24284c4e0"
+  },
+  "runtime": {
+    "cuda": "12.9",
+    "device": "cuda",
+    "gpu_name": "NVIDIA L20Z",
+    "pylate": "1.6.0",
+    "sentence_transformers": "5.7.0",
+    "torch": "2.9.1+cu129"
+  },
+  "sample_records": 4096,
+  "schema_version": 1,
+  "status": "complete",
+  "temperature": 0.02,
+  "validation_spec": {
+    "bytes": 5180,
+    "path": "/root/embedding-optimizer-study/configs/validation_probe.json",
+    "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+  }
+}

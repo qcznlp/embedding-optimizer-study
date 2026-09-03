@@ -1,0 +1,197 @@
+{
+  "checkpoint": {
+    "inputs": [
+      {
+        "bytes": 89,
+        "path": "1_Pooling/config.json",
+        "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+      },
+      {
+        "bytes": 1952,
+        "path": "config.json",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f"
+      },
+      {
+        "bytes": 299,
+        "path": "config_sentence_transformers.json",
+        "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+      },
+      {
+        "bytes": 596070136,
+        "path": "model.safetensors",
+        "sha256": "c36979308c9634fe66ce3de9fca2f6aa64bc8c66c99e33bc91b53cf8a6b9b9ed"
+      },
+      {
+        "bytes": 277,
+        "path": "modules.json",
+        "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+      },
+      {
+        "bytes": 241,
+        "path": "sentence_bert_config.json",
+        "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+      },
+      {
+        "bytes": 3583327,
+        "path": "tokenizer.json",
+        "sha256": "874b48dbc3ec9249ab7b5da746aeb46243b3083ddb9c304bfca91e5afe42c687"
+      },
+      {
+        "bytes": 542,
+        "path": "tokenizer_config.json",
+        "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+      },
+      {
+        "bytes": 69129,
+        "path": "trainer_state.json",
+        "sha256": "42c01ec5fe8de0a7d8ffbfd2930dd252a16cd4457e54c7ebf7ba20c12449be36"
+      }
+    ],
+    "path": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/checkpoint-3907",
+    "run_config": {
+      "path": "/root/embedding-optimizer-study/outputs/dense/normuon-lr1e-3/run_config.json",
+      "sha256": "3b9cc36d6c92ac97cac2b1f297d298ba03ce21deb4f5ea98b54a29cca198b0fb"
+    }
+  },
+  "common_state_updates": {
+    "bytes": 3531,
+    "path": "/root/embedding-optimizer-study/results/common-state/dense/normuon-lr1e-3/checkpoint-3907/updates/manifest.json",
+    "sha256": "803fa81a985b817158208058e292795686f21ac713cba2272968f4facdd00cd3"
+  },
+  "condition_records": 13,
+  "conditions": [
+    {
+      "algorithm": null,
+      "condition": "baseline",
+      "direction": "baseline",
+      "relative_scale": 0.0,
+      "signed_scale": 0.0
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-descent-1e-04",
+      "direction": "descent",
+      "relative_scale": 0.0001,
+      "signed_scale": 0.0001
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-descent-3e-04",
+      "direction": "descent",
+      "relative_scale": 0.0003,
+      "signed_scale": 0.0003
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-descent-1e-03",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-sign-reversal-1e-03",
+      "direction": "sign_reversal",
+      "relative_scale": 0.001,
+      "signed_scale": -0.001
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-descent-1e-04",
+      "direction": "descent",
+      "relative_scale": 0.0001,
+      "signed_scale": 0.0001
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-descent-3e-04",
+      "direction": "descent",
+      "relative_scale": 0.0003,
+      "signed_scale": 0.0003
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-descent-1e-03",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-sign-reversal-1e-03",
+      "direction": "sign_reversal",
+      "relative_scale": 0.001,
+      "signed_scale": -0.001
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-descent-1e-04",
+      "direction": "descent",
+      "relative_scale": 0.0001,
+      "signed_scale": 0.0001
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-descent-3e-04",
+      "direction": "descent",
+      "relative_scale": 0.0003,
+      "signed_scale": 0.0003
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-descent-1e-03",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-sign-reversal-1e-03",
+      "direction": "sign_reversal",
+      "relative_scale": 0.001,
+      "signed_scale": -0.001
+    }
+  ],
+  "family": "dense",
+  "intervention_spec": {
+    "bytes": 2651,
+    "path": "/root/embedding-optimizer-study/configs/functional_intervention.json",
+    "sha256": "8f8a478bede92f9b2e1999b5491a3983cc244fad90ec5321b6d8914a2f633bab"
+  },
+  "outputs": {
+    "condition_metrics": {
+      "bytes": 5310,
+      "path": "condition_metrics.jsonl",
+      "sha256": "77a520fd9ee616181f46eb08a830094109733924b9f122bde2f92db473dc1068"
+    },
+    "sample_metrics": {
+      "bytes": 1146335,
+      "path": "sample_metrics.jsonl",
+      "sha256": "ddbdb6a35188a7b14727c3b86feceac54362c87e438f16f73f77b164cec2b7a6"
+    }
+  },
+  "probe": {
+    "dataset_fingerprint": "25781e5413d94c3a",
+    "frozen_spec": {
+      "expected_manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+      "path": "/root/embedding-optimizer-study/configs/beir_representation_probe.json",
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    "manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+    "path": "/root/embedding-optimizer-study/data/probes/decontaminated-beir-224-seed4242",
+    "selected_sample_ids_sha256": "30894b71513c7b4b7140960a01f9c7f73d5cdc9d405cc3d59202d49f7ea3b624",
+    "selection_sha256": "2d6a8224b5e8ed233d62f0ac8f7719c77ae5a07f038d5702e6db99105487f136"
+  },
+  "runtime": {
+    "cuda": "12.9",
+    "device": "cuda",
+    "gpu_name": "NVIDIA L20Z",
+    "pylate": "1.6.0",
+    "sentence_transformers": "5.7.0",
+    "torch": "2.9.1+cu129"
+  },
+  "sample_records": 2912,
+  "schema_version": 1,
+  "status": "complete",
+  "temperature": 0.02
+}

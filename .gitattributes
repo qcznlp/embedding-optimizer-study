@@ -1,0 +1,6 @@
+# Generated evidence is byte-bound by adjacent manifests. Preserve the exact
+# bytes (including CSV CRLF and Matplotlib SVG formatting) and do not reinterpret
+# generator-owned line endings as source-code whitespace errors.
+/reports/**/*.csv -text -whitespace
+/reports/**/*.svg -text -whitespace
+/logs/**/*.log -text -whitespace

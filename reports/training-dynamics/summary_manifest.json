@@ -1,0 +1,542 @@
+{
+  "complete": true,
+  "coverage": {
+    "checkpoints": 120,
+    "history_rows": 9384,
+    "optimizer_family_groups": 6,
+    "runs": 24,
+    "trailing_observations": 10
+  },
+  "interpretation": "The four learning rates are sweep points, not independent random seeds. Throughput and memory summaries are descriptive matched-hardware measurements; retrieval time-to-quality requires the complete checkpoint evaluation matrix.",
+  "matrix": {
+    "path": "configs/experiment.yaml",
+    "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+  },
+  "outputs": {
+    "optimizer_systems": {
+      "bytes": 1795,
+      "path": "reports/training-dynamics/optimizer_system_summary.csv",
+      "rows": 6,
+      "sha256": "5784f419a5a03b80fb03430bedecfd9ab5ddff07e2d8c933b661a6eb530d9a15"
+    },
+    "runs": {
+      "bytes": 7980,
+      "path": "reports/training-dynamics/run_summary.csv",
+      "rows": 24,
+      "sha256": "e4d48bcb392ec24d64e37bfb3594c0bc74660541a105327a66471ab50fbd295a"
+    },
+    "stages": {
+      "bytes": 17478,
+      "path": "reports/training-dynamics/stage_dynamics.csv",
+      "rows": 120,
+      "sha256": "1b50712a64e792144069eb3c51196d0cb7925b258d6fee64f33664a144c9f759"
+    }
+  },
+  "schema_version": 1,
+  "sources": [
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/muon-lr1e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1728,
+          "path": "outputs/dense/muon-lr1e-4/completed.json",
+          "sha256": "f9a6c883d397dc568d01c748648485164473f6aa47164f8498dee4ef490d9600"
+        },
+        {
+          "bytes": 69285,
+          "path": "outputs/dense/muon-lr1e-4/trainer_state_final.json",
+          "sha256": "ab17477bd179e95769c5955a78b7467b84846ee3ea7b332f7de1df4c681fa1f2"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "muon-lr1e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/muon-lr3e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1727,
+          "path": "outputs/dense/muon-lr3e-4/completed.json",
+          "sha256": "53beaed8aca3cedeb51c59f1f437e6c5fff2cc98f645990b1b8f2f7d3700a2d0"
+        },
+        {
+          "bytes": 69465,
+          "path": "outputs/dense/muon-lr3e-4/trainer_state_final.json",
+          "sha256": "3f4a633d5589f9666e4632f74e0f951ba31ec06a21aa0f717ae397c58090515d"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "muon-lr3e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/muon-lr1e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1723,
+          "path": "outputs/dense/muon-lr1e-3/completed.json",
+          "sha256": "40984124eaed86fd8f5ea1467fadce8be97dc04f01e78d5ef0b540f4e47cc286"
+        },
+        {
+          "bytes": 69368,
+          "path": "outputs/dense/muon-lr1e-3/trainer_state_final.json",
+          "sha256": "6c99e2b14458cc5232e75828f3639b7f5c53a9ae76587ff1fc10e44b9b0c7ddc"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "muon-lr1e-3"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/muon-lr3e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1727,
+          "path": "outputs/dense/muon-lr3e-3/completed.json",
+          "sha256": "e4558a3642cb0d4862bc747d30e634b90d7de39a20d22a51dc7d03368655aa08"
+        },
+        {
+          "bytes": 69089,
+          "path": "outputs/dense/muon-lr3e-3/trainer_state_final.json",
+          "sha256": "3b14acccac580686267f3864fe6e76fdb14a5401c87c08a1f106f8c51de010d9"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "muon-lr3e-3"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/adamw-lr1e-6/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1548,
+          "path": "outputs/dense/adamw-lr1e-6/completed.json",
+          "sha256": "5b5042e57d02cc822baac57a4497fa19ba43ab5486fd862de153e6e119158e7a"
+        },
+        {
+          "bytes": 69096,
+          "path": "outputs/dense/adamw-lr1e-6/trainer_state_final.json",
+          "sha256": "7c91c253bc2677f20899afe45d0f15c86c91eab8974987b95d84a3e327766c08"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "adamw-lr1e-6"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/adamw-lr3e-6/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1548,
+          "path": "outputs/dense/adamw-lr3e-6/completed.json",
+          "sha256": "120cbf22614ba1d6727a7ddd98046de3a1d508d82f9958399fe995a7149f16ec"
+        },
+        {
+          "bytes": 69372,
+          "path": "outputs/dense/adamw-lr3e-6/trainer_state_final.json",
+          "sha256": "2efd5b39fd821166b1253a6460883d08c00bb090f14301218c1238fb64b1f0e7"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "adamw-lr3e-6"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/adamw-lr1e-5/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1549,
+          "path": "outputs/dense/adamw-lr1e-5/completed.json",
+          "sha256": "921c886e0952a0ba8d14a9040dfd8742ba5687b8160c9903bab3dd147b9eb20d"
+        },
+        {
+          "bytes": 69296,
+          "path": "outputs/dense/adamw-lr1e-5/trainer_state_final.json",
+          "sha256": "53127daf82a1a8f71f6bb53b082788987bc675a8d113788588dd82f7220b3fae"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "adamw-lr1e-5"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/adamw-lr3e-5/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1550,
+          "path": "outputs/dense/adamw-lr3e-5/completed.json",
+          "sha256": "ecb7bad57f91d13bff2dc031090a44b62e7631e0712d0b380a74a66a8a2925e8"
+        },
+        {
+          "bytes": 69441,
+          "path": "outputs/dense/adamw-lr3e-5/trainer_state_final.json",
+          "sha256": "8174040750459d42a3888fa02948ef3d3e84780629764387a86ac8e0b61b9a8d"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "adamw-lr3e-5"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/normuon-lr1e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1730,
+          "path": "outputs/dense/normuon-lr1e-4/completed.json",
+          "sha256": "cdddca9a6484ab443c465c737ca6ae4ebec8b3d197acd5daea9ce579e1dad60b"
+        },
+        {
+          "bytes": 69309,
+          "path": "outputs/dense/normuon-lr1e-4/trainer_state_final.json",
+          "sha256": "4aa7d98a47d5aff0419e256e55140f9be17db10dbea85e238394c89224b61b74"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "normuon-lr1e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/normuon-lr3e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1730,
+          "path": "outputs/dense/normuon-lr3e-4/completed.json",
+          "sha256": "6e4662e989968e924418e1026de06feef9db3de74ea5f3330b1c61473d0a0c12"
+        },
+        {
+          "bytes": 69452,
+          "path": "outputs/dense/normuon-lr3e-4/trainer_state_final.json",
+          "sha256": "f90917536ce69960bb6551053f9b11376b70cdc1a00d6df6393cfda96da6e79e"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "normuon-lr3e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/normuon-lr1e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1729,
+          "path": "outputs/dense/normuon-lr1e-3/completed.json",
+          "sha256": "0910d4913d4ce8f2c6b9c08aecb871cd6264d4b04770155b771a6b662b91dade"
+        },
+        {
+          "bytes": 69361,
+          "path": "outputs/dense/normuon-lr1e-3/trainer_state_final.json",
+          "sha256": "5de9e28e7f4251617f029c1b5e82658335513bccc15c7e8958e230d81c2cec39"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "normuon-lr1e-3"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/dense/normuon-lr3e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1730,
+          "path": "outputs/dense/normuon-lr3e-3/completed.json",
+          "sha256": "f5ee453d6d28cc7f963a8cd05fe4c57e0a8fd7007ca049debdbb60be76446f07"
+        },
+        {
+          "bytes": 69154,
+          "path": "outputs/dense/normuon-lr3e-3/trainer_state_final.json",
+          "sha256": "cb492f3cf6229e75c11c0483881e61eac373d74162b1830172c8b811a3bbbfc6"
+        }
+      ],
+      "model_family": "dense",
+      "run_id": "normuon-lr3e-3"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/muon-lr1e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1726,
+          "path": "outputs/late/muon-lr1e-4/completed.json",
+          "sha256": "7ee23f1be3f5a76da43b318819ed0711777c0bb051d72672796feaaaa1552bee"
+        },
+        {
+          "bytes": 69319,
+          "path": "outputs/late/muon-lr1e-4/trainer_state_final.json",
+          "sha256": "a12f68d205a9f737d72f4a6dc9c82d48dffe26d2c9e9bfc3e3a4323be8b3f276"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "muon-lr1e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/muon-lr3e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1726,
+          "path": "outputs/late/muon-lr3e-4/completed.json",
+          "sha256": "e250ab7f86a0acb15a55d04c0ee571a291edacc8a049779397cdaf507a39edb2"
+        },
+        {
+          "bytes": 69545,
+          "path": "outputs/late/muon-lr3e-4/trainer_state_final.json",
+          "sha256": "0fc79932be00cf35a7be95d74ec6dc13738be778c7a225a87ce4610e6dcb0982"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "muon-lr3e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/muon-lr1e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1728,
+          "path": "outputs/late/muon-lr1e-3/completed.json",
+          "sha256": "f18e229a296bc2998795bc38af899b9d5f5a44f7d08dd7ce9deaec0d63bad646"
+        },
+        {
+          "bytes": 69472,
+          "path": "outputs/late/muon-lr1e-3/trainer_state_final.json",
+          "sha256": "e6dc1021acbbee9ca91f166b8ce252c64d0ed1944171b0d185c99903d8510e8e"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "muon-lr1e-3"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/muon-lr3e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1728,
+          "path": "outputs/late/muon-lr3e-3/completed.json",
+          "sha256": "1555fc9406a13607935321f6794f063418945c5f9792bbc44bcfe990c1afd2e9"
+        },
+        {
+          "bytes": 69362,
+          "path": "outputs/late/muon-lr3e-3/trainer_state_final.json",
+          "sha256": "3af37d694d8c363396478f4346dde2b892e1e71c65c14a14846c51c6009cee68"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "muon-lr3e-3"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/adamw-lr1e-6/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1549,
+          "path": "outputs/late/adamw-lr1e-6/completed.json",
+          "sha256": "d2bbc89e1aa7e6705566ca7076b55ced0825ecef2425248e343affff1f2f8740"
+        },
+        {
+          "bytes": 69196,
+          "path": "outputs/late/adamw-lr1e-6/trainer_state_final.json",
+          "sha256": "68afaf5041b31e7aae9bda63f08b9b9827628a3c4538072371a0810012378280"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "adamw-lr1e-6"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/adamw-lr3e-6/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1548,
+          "path": "outputs/late/adamw-lr3e-6/completed.json",
+          "sha256": "3991f69c78ee5e067c9587da286e88fc75c1fc5d8d475a2f98c1cdb7f375e697"
+        },
+        {
+          "bytes": 69447,
+          "path": "outputs/late/adamw-lr3e-6/trainer_state_final.json",
+          "sha256": "46e6770b44837ebf9b670f6a8f8dcf9c40507a98152bc113aa3bd85dbad92638"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "adamw-lr3e-6"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/adamw-lr1e-5/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1681,
+          "path": "outputs/late/adamw-lr1e-5/completed.json",
+          "sha256": "ff672d7f551dbb549b822c0e99e6f9158d22a60708747da3eee9febbeed97cd2"
+        },
+        {
+          "bytes": 69364,
+          "path": "outputs/late/adamw-lr1e-5/trainer_state_final.json",
+          "sha256": "93421edb15822212428207dcb430b3e5004f20eca0ebb5f4797696fcdcde1673"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "adamw-lr1e-5"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/adamw-lr3e-5/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1677,
+          "path": "outputs/late/adamw-lr3e-5/completed.json",
+          "sha256": "35be20260d7427a11588c9f87c5e5caf0cda7f34183d221358ac01dc6ecf1156"
+        },
+        {
+          "bytes": 69562,
+          "path": "outputs/late/adamw-lr3e-5/trainer_state_final.json",
+          "sha256": "c469b61a56da091a3b7dab9328d0085562630fe1222e2d352cafea90129c771a"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "adamw-lr3e-5"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/normuon-lr1e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1729,
+          "path": "outputs/late/normuon-lr1e-4/completed.json",
+          "sha256": "434c37c06f0d9e1599ca823ab18f3c328e1cf37821aa6d0536b1ee63fdae6aaa"
+        },
+        {
+          "bytes": 69354,
+          "path": "outputs/late/normuon-lr1e-4/trainer_state_final.json",
+          "sha256": "f30cd9aefb2c045950edbb49f3401791da14b12a978d7cd53fa189c1e28dda5d"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "normuon-lr1e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/normuon-lr3e-4/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1732,
+          "path": "outputs/late/normuon-lr3e-4/completed.json",
+          "sha256": "0ab7e08a73b8bb683861b77fb2b62100a2f486a478261cb9d1054e3e39266636"
+        },
+        {
+          "bytes": 69544,
+          "path": "outputs/late/normuon-lr3e-4/trainer_state_final.json",
+          "sha256": "5afc700bf5bf08e3be10464258a6293fd04dc6644957b91c6750033d08969f78"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "normuon-lr3e-4"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/normuon-lr1e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1727,
+          "path": "outputs/late/normuon-lr1e-3/completed.json",
+          "sha256": "566b1e4801fddbd0bfeca00ea8a602ff0bd1f38cc2cc4200fd14317eb4ce1bab"
+        },
+        {
+          "bytes": 69464,
+          "path": "outputs/late/normuon-lr1e-3/trainer_state_final.json",
+          "sha256": "5116205f2017a9221ee8ddc08f6fe7f0acd13059e100e37f7a516bb260ddb719"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "normuon-lr1e-3"
+    },
+    {
+      "inputs": [
+        {
+          "bytes": 156,
+          "path": "outputs/late/normuon-lr3e-3/checkpoint_schedule.json",
+          "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+        },
+        {
+          "bytes": 1731,
+          "path": "outputs/late/normuon-lr3e-3/completed.json",
+          "sha256": "400e54ea52114dd029038c154700f117f403188a7ec833b51a17fddbb212208e"
+        },
+        {
+          "bytes": 69327,
+          "path": "outputs/late/normuon-lr3e-3/trainer_state_final.json",
+          "sha256": "962c86d8b502f5a28de6447c464ce0c1ee544feab7d460dffe0c5e0609ca1aec"
+        }
+      ],
+      "model_family": "late",
+      "run_id": "normuon-lr3e-3"
+    }
+  ]
+}

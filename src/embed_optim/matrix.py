@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import sys
@@ -9,7 +10,7 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 
-from .config import RunConfig, load_matrix
+from .config import RunConfig, load_matrix, matrix_runtime_spec, resolve_matrix_path
 
 
 @dataclass
@@ -72,12 +73,82 @@ def _checkpoint_is_resumable(path: Path, world_size: int = 4) -> bool:
 
 
 def _latest_resumable_checkpoint(config: RunConfig) -> Path | None:
-    checkpoints = [
-        path for path in config.output_dir.glob("checkpoint-*") if _checkpoint_is_resumable(path)
-    ]
+    checkpoints = sorted(
+        (path for path in config.output_dir.glob("checkpoint-*") if _checkpoint_is_resumable(path)),
+        key=lambda path: int(path.name.rsplit("-", 1)[1]),
+        reverse=True,
+    )
     if not checkpoints:
         return None
-    return max(checkpoints, key=lambda path: int(path.name.rsplit("-", 1)[1]))
+
+    # Older/synthetic output directories may not have the schedule. Formal runs
+    # write it before their first checkpoint; when present, use the same deep
+    # payload and runtime-contract audit that gates evaluation.
+    schedule_path = config.output_dir / "checkpoint_schedule.json"
+    if not schedule_path.is_file():
+        return checkpoints[0]
+    try:
+        schedule = json.loads(schedule_path.read_text())
+        steps = sorted(int(step) for step in schedule["steps"])
+        if len(steps) != 5 or len(set(steps)) != 5:
+            raise ValueError(f"expected five unique steps, got {steps}")
+        final_step = steps[-1]
+    except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError, IndexError) as error:
+        raise RuntimeError(f"Invalid checkpoint schedule {schedule_path}: {error}") from error
+
+    from .aggregate import _deep_checkpoint_problems, _safetensors_digest
+
+    resumable_by_step = {
+        int(checkpoint.name.rsplit("-", 1)[1]): checkpoint for checkpoint in checkpoints
+    }
+    rejected: list[str] = []
+    for checkpoint in checkpoints:
+        step = int(checkpoint.name.rsplit("-", 1)[1])
+        if step not in steps:
+            rejected.append(f"{checkpoint.name}: step is outside the declared schedule")
+            continue
+        if getattr(getattr(config, "optimizer", None), "name", None) == "hybrid_adamw":
+            # Hybrid AdamW deliberately routes every parameter group through
+            # AdamW while assigning different learning rates to the hidden and
+            # auxiliary groups.  The generic optimizer audit expects the
+            # configured algorithm name in each group, so use the same
+            # specialized contract that gates hybrid evaluation and the live
+            # checkpoint watcher.  This path matters most after a transient
+            # distributed failure, when the scheduler must select a valid
+            # checkpoint before retrying the run.
+            from .supplemental_training_audit import hybrid_checkpoint_problems
+
+            problems = hybrid_checkpoint_problems(
+                checkpoint,
+                config,
+                step,
+                final_step,
+                world_size=4,
+            )
+        else:
+            problems = _deep_checkpoint_problems(
+                checkpoint,
+                step,
+                world_size=4,
+                config=config,
+                final_step=final_step,
+            )
+        if not problems:
+            previous_steps = [candidate for candidate in steps if candidate < step]
+            previous_step = previous_steps[-1] if previous_steps else None
+            previous = resumable_by_step.get(previous_step)
+            if previous is not None and _safetensors_digest(checkpoint) == _safetensors_digest(
+                previous
+            ):
+                rejected.append(
+                    f"{checkpoint.name}: model payload is unchanged from {previous.name}"
+                )
+                continue
+            return checkpoint
+        rejected.append(f"{checkpoint.name}: {'; '.join(problems)}")
+    raise RuntimeError(
+        f"No deeply resumable checkpoint remains in {config.output_dir}: " + " | ".join(rejected)
+    )
 
 
 def _run_is_complete(config: RunConfig) -> bool:
@@ -107,6 +178,41 @@ def _run_is_complete(config: RunConfig) -> bool:
         or final_step != steps[-1]
     ):
         return False
+    accepted_summary = completed.get("accepted_timing")
+    if accepted_summary is not None:
+        timing_path = output / "accepted_timing.json"
+        try:
+            timing = json.loads(timing_path.read_text())
+            segments = timing["segments"]
+            recorded_total = float(timing["total_wall_time_seconds_max_rank"])
+            summary_total = float(accepted_summary["total_wall_time_seconds_max_rank"])
+            total = sum(float(segment["wall_time_seconds_max_rank"]) for segment in segments)
+            timing_steps = [
+                (
+                    int(segment["start_step_exclusive"]),
+                    int(segment["end_step_inclusive"]),
+                )
+                for segment in segments
+            ]
+        except (KeyError, TypeError, ValueError, json.JSONDecodeError, OSError):
+            return False
+        if (
+            timing.get("schema_version") != 1
+            or not timing_steps
+            or any(end <= start for start, end in timing_steps)
+            or any(
+                previous[1] != current[0]
+                for previous, current in zip(timing_steps, timing_steps[1:])
+            )
+            or timing_steps[-1][1] != steps[-1]
+            or not math.isfinite(total)
+            or total <= 0
+            or not math.isclose(recorded_total, total, rel_tol=1e-9, abs_tol=1e-6)
+            or accepted_summary.get("schema_version") != 1
+            or accepted_summary.get("segments") != len(segments)
+            or not math.isclose(summary_total, total, rel_tol=1e-9, abs_tol=1e-6)
+        ):
+            return False
     if not all(_checkpoint_is_resumable(output / f"checkpoint-{step}") for step in steps):
         return False
     final_dir = output / "final"
@@ -166,7 +272,16 @@ def _complete(config: RunConfig) -> bool:
 
 
 def run_matrix(args: argparse.Namespace) -> int:
-    matrix_path = Path(args.matrix).resolve()
+    matrix_path = resolve_matrix_path(args.matrix).resolve()
+    if runtime_spec := matrix_runtime_spec(matrix_path):
+        from .runtime import verify_runtime_spec
+
+        runtime = verify_runtime_spec(runtime_spec)
+        print(
+            f"formal runtime verified: {runtime['python_executable']} | "
+            f"torch={runtime['packages']['torch']} cuda={runtime['torch_cuda']}",
+            flush=True,
+        )
     configs = [
         config
         for config in load_matrix(matrix_path)
@@ -188,7 +303,9 @@ def run_matrix(args: argparse.Namespace) -> int:
     log_dir = Path(args.log_dir)
     log_dir.mkdir(parents=True, exist_ok=True)
     running: dict[str, Running] = {}
-    failures = 0
+    max_retries = int(getattr(args, "max_retries", 2))
+    failed_attempts: dict[tuple[str, str], int] = {}
+    exhausted_failures = 0
     while any(queues.values()) or running:
         for pool_name, job in list(running.items()):
             return_code = job.process.poll()
@@ -196,18 +313,42 @@ def run_matrix(args: argparse.Namespace) -> int:
                 continue
             job.log_handle.close()
             elapsed = time.monotonic() - job.started
+            complete = return_code == 0 and _complete(job.config)
             print(
                 f"pool-{pool_name} {job.config.model_family}/{job.config.run_id} "
-                f"exited {return_code} after {elapsed / 60:.1f} min",
+                f"exited {return_code} after {elapsed / 60:.1f} min; complete={complete}",
                 flush=True,
             )
             del running[pool_name]
-            if return_code != 0:
-                failures += 1
+            if not complete:
+                key = (job.config.model_family, job.config.run_id)
+                failed_attempts[key] = failed_attempts.get(key, 0) + 1
                 if args.fail_fast:
                     for other in running.values():
                         other.process.terminate()
-                    return failures
+                    return 1
+                # A failed distributed job is normally recoverable from its
+                # latest complete checkpoint.  Put it back at the front of its
+                # family queue so a transient CUDA/NCCL failure does not leave
+                # the run incomplete until every later configuration finishes.
+                # Bound retries so a deterministic failure cannot hold the
+                # multi-day post-evaluation pipeline forever.  A zero exit code
+                # without the strictly validated completion artifacts is also a
+                # failed attempt.
+                if failed_attempts[key] <= max_retries:
+                    print(
+                        f"retrying {job.config.model_family}/{job.config.run_id} "
+                        f"({failed_attempts[key]}/{max_retries})",
+                        flush=True,
+                    )
+                    queues[job.config.model_family].insert(0, job.config)
+                else:
+                    exhausted_failures += 1
+                    print(
+                        f"retry budget exhausted for {job.config.model_family}/{job.config.run_id}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
 
         for pool_name, pool in pools.items():
             if pool_name in running:
@@ -228,26 +369,33 @@ def run_matrix(args: argparse.Namespace) -> int:
         if args.dry_run:
             continue
         time.sleep(5)
-    return failures
+    return exhausted_failures
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Run dense and late matrices on two four-GPU pools"
+        description="Run selected training matrices on two four-GPU pools"
     )
     parser.add_argument("--matrix", default="configs/experiment.yaml")
-    parser.add_argument(
-        "--families", nargs="+", choices=["dense", "late"], default=["dense", "late"]
-    )
+    parser.add_argument("--families", nargs="+", choices=["dense", "late"], default=["dense"])
     parser.add_argument("--run-ids", nargs="*", default=[])
     parser.add_argument("--gpus-a", default="0,1,2,3")
     parser.add_argument("--gpus-b", default="4,5,6,7")
     parser.add_argument("--port-a", type=int, default=29510)
     parser.add_argument("--port-b", type=int, default=29520)
     parser.add_argument("--log-dir", default="logs/training")
+    parser.add_argument(
+        "--max-retries",
+        type=int,
+        default=2,
+        help="Retries per incomplete run after its first launch (default: 2)",
+    )
     parser.add_argument("--fail-fast", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if args.max_retries < 0:
+        parser.error("--max-retries must be non-negative")
+    return args
 
 
 def main(argv: list[str] | None = None) -> None:

@@ -9,7 +9,8 @@ from typing import Any, Literal
 import yaml
 
 ModelFamily = Literal["dense", "late"]
-OptimizerName = Literal["adamw", "muon", "normuon"]
+OptimizerName = Literal["adamw", "hybrid_adamw", "muon", "normuon"]
+MUON_NS_IMPLEMENTATION = "unfused-bfloat16-v1"
 
 
 @dataclasses.dataclass(frozen=True)
@@ -31,7 +32,14 @@ class OptimizerConfig:
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> "OptimizerConfig":
-        return cls(**values)
+        values = dict(values)
+        implementation = values.pop("ns_implementation", None)
+        config = cls(**values)
+        if implementation is not None and (
+            config.name not in {"muon", "normuon"} or implementation != MUON_NS_IMPLEMENTATION
+        ):
+            raise ValueError(f"Unsupported optimizer implementation {implementation!r}")
+        return config
 
 
 @dataclasses.dataclass(frozen=True)
@@ -69,7 +77,10 @@ class RunConfig:
         return Path(self.output_root) / self.model_family / self.run_id
 
     def as_dict(self) -> dict[str, Any]:
-        return dataclasses.asdict(self)
+        values = dataclasses.asdict(self)
+        if self.optimizer.name in {"muon", "normuon"}:
+            values["optimizer"]["ns_implementation"] = MUON_NS_IMPLEMENTATION
+        return values
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> "RunConfig":
@@ -84,19 +95,55 @@ def _resolve_matrix_path(path: str | Path, prefix: Path | None = None) -> Path:
     """Resolve a source-tree config, falling back to wheel data for bundled defaults."""
 
     path = Path(path)
-    if path.is_file() or path.is_absolute() or path.parent != Path("configs"):
+    if path.is_file() or path.is_absolute():
+        return path
+    try:
+        relative = path.relative_to("configs")
+    except ValueError:
+        return path
+    if not relative.parts or ".." in relative.parts:
         return path
     prefix = Path(sys.prefix) if prefix is None else prefix
-    installed = prefix / "share" / "embedding-optimizer-study" / "configs" / path.name
+    installed = prefix / "share" / "embedding-optimizer-study" / "configs" / relative
     return installed if installed.is_file() else path
 
 
+def resolve_matrix_path(path: str | Path, prefix: Path | None = None) -> Path:
+    return _resolve_matrix_path(path, prefix)
+
+
 def load_matrix(path: str | Path) -> list[RunConfig]:
-    path = _resolve_matrix_path(path)
+    path = resolve_matrix_path(path)
     raw = yaml.safe_load(path.read_text())
     common = raw.get("common", {})
     models = raw["models"]
     runs: list[RunConfig] = []
+    explicit_runs = raw.get("runs")
+    if explicit_runs is not None:
+        if "optimizers" in raw:
+            raise ValueError(f"{path} cannot declare both explicit runs and an optimizer grid")
+        if not isinstance(explicit_runs, list) or not explicit_runs:
+            raise ValueError(f"{path} must declare at least one explicit run")
+        for run_values in explicit_runs:
+            if not isinstance(run_values, dict):
+                raise ValueError(f"{path} contains a non-object explicit run")
+            entry = dict(run_values)
+            run_id = entry.pop("id")
+            model_family = entry.pop("model_family")
+            optimizer = entry.pop("optimizer")
+            if entry:
+                raise ValueError(f"Unsupported explicit-run fields in {path}: {sorted(entry)}")
+            if model_family not in models:
+                raise ValueError(f"Unknown model family {model_family!r} in {path}")
+            values = {
+                **common,
+                **models[model_family],
+                "run_id": run_id,
+                "model_family": model_family,
+                "optimizer": optimizer,
+            }
+            runs.append(RunConfig.from_dict(values))
+        return runs
     for model_family, model_values in models.items():
         for optimizer_values in raw["optimizers"]:
             opt = dict(optimizer_values)
@@ -112,7 +159,32 @@ def load_matrix(path: str | Path) -> list[RunConfig]:
     return runs
 
 
+def matrix_runtime_spec(path: str | Path) -> Path | None:
+    """Return a matrix's optional formal-runtime spec, resolved beside the matrix."""
+
+    matrix_path = resolve_matrix_path(path)
+    raw = yaml.safe_load(matrix_path.read_text())
+    value = raw.get("formal_runtime")
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"Invalid formal_runtime in {matrix_path}")
+    runtime_path = Path(value)
+    return runtime_path if runtime_path.is_absolute() else matrix_path.parent / runtime_path
+
+
 def save_resolved_config(config: RunConfig, path: str | Path) -> None:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(config.as_dict(), indent=2, sort_keys=True) + "\n")
+
+
+def source_wandb_run_id(config: RunConfig) -> str:
+    if config.optimizer.name in {"muon", "normuon"}:
+        version = "v3"
+    elif config.optimizer.name == "hybrid_adamw":
+        version = "v4"
+    else:
+        version = "v2"
+    suffix = f"-{MUON_NS_IMPLEMENTATION}" if version == "v3" else ""
+    return f"study-{version}-{config.model_family}-{config.run_id}-seed{config.seed}{suffix}"

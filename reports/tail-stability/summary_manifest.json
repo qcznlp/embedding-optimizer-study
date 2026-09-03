@@ -1,0 +1,1168 @@
+{
+  "analysis_status": "post_hoc_discovery_with_prospective_short_branch_confirmation",
+  "claim_boundary": "The discovery tail analysis is explicitly post hoc and can only describe a mean-tail tradeoff at fixed weights. The frozen short-branch rule is prospective relative to all three-seed shared-start outcomes and can test whether the signature persists under accumulated training, but even a positive result would not prove that tail stability alone mediates full-corpus BEIR gains.",
+  "complete": true,
+  "discovery_anchor_operator_rows": 30,
+  "discovery_anchors": 10,
+  "discovery_complete": true,
+  "discovery_contrasts": 2,
+  "discovery_cross_tail_rows": 20,
+  "discovery_cross_tail_summaries": 2,
+  "discovery_sources": [
+    {
+      "label": "dense/pretrained",
+      "manifest": {
+        "bytes": 5886,
+        "path": "results/functional-intervention/dense/pretrained/manifest.json",
+        "sha256": "b582a9d91b60995fedb8163b47a749b15e569254fb0c93a2b99a4928bc626928"
+      },
+      "sample_metrics": {
+        "bytes": 1152217,
+        "path": "results/functional-intervention/dense/pretrained/sample_metrics.jsonl",
+        "sha256": "484259156ef9f2aa22fc9deba3e6d920863cb7debc9944aae6c4cc1f33457aa4"
+      }
+    },
+    {
+      "label": "dense/adamw-lr1e-5/checkpoint-782",
+      "manifest": {
+        "bytes": 6030,
+        "path": "results/functional-intervention/dense/adamw-lr1e-5/checkpoint-782/manifest.json",
+        "sha256": "e8763679c49684ec3f634a53b6db96737ef9abd2c7ccd173ee6e3740b8ef145c"
+      },
+      "sample_metrics": {
+        "bytes": 1149905,
+        "path": "results/functional-intervention/dense/adamw-lr1e-5/checkpoint-782/sample_metrics.jsonl",
+        "sha256": "85d25e34c8ea34dc5ab9585e0496f9a08862f117af85c221b9be1408a2dbc646"
+      }
+    },
+    {
+      "label": "dense/adamw-lr1e-5/checkpoint-2345",
+      "manifest": {
+        "bytes": 6032,
+        "path": "results/functional-intervention/dense/adamw-lr1e-5/checkpoint-2345/manifest.json",
+        "sha256": "f688a554b45ecec6359ac02934a0a86b3f81b0c51e7fd3c3422c145848ce78eb"
+      },
+      "sample_metrics": {
+        "bytes": 1149648,
+        "path": "results/functional-intervention/dense/adamw-lr1e-5/checkpoint-2345/sample_metrics.jsonl",
+        "sha256": "05ae626e0be8c4ae5f77fe1ee08938d16d0bb25ee3c4be43893012d070bd2d4b"
+      }
+    },
+    {
+      "label": "dense/adamw-lr1e-5/checkpoint-3907",
+      "manifest": {
+        "bytes": 6032,
+        "path": "results/functional-intervention/dense/adamw-lr1e-5/checkpoint-3907/manifest.json",
+        "sha256": "3b737eb3c0f646ef415f5bebcf8ee1126a726215fbd0a27498a30ccd6894f79b"
+      },
+      "sample_metrics": {
+        "bytes": 1149042,
+        "path": "results/functional-intervention/dense/adamw-lr1e-5/checkpoint-3907/sample_metrics.jsonl",
+        "sha256": "a847e3d51b1bb6d3ff067d6a94cb06a9fb39ee2f6b70b70a265a1b70fe078d64"
+      }
+    },
+    {
+      "label": "dense/muon-lr1e-3/checkpoint-782",
+      "manifest": {
+        "bytes": 6027,
+        "path": "results/functional-intervention/dense/muon-lr1e-3/checkpoint-782/manifest.json",
+        "sha256": "d9f317b039a910ed2b7c78300c73ad9d69a55ae16b310181918b5976b347b8d3"
+      },
+      "sample_metrics": {
+        "bytes": 1146558,
+        "path": "results/functional-intervention/dense/muon-lr1e-3/checkpoint-782/sample_metrics.jsonl",
+        "sha256": "75ebb6832e25dfc0057b377ebae271089a923777a8e05209fcb03197883fd1e5"
+      }
+    },
+    {
+      "label": "dense/muon-lr1e-3/checkpoint-2345",
+      "manifest": {
+        "bytes": 6029,
+        "path": "results/functional-intervention/dense/muon-lr1e-3/checkpoint-2345/manifest.json",
+        "sha256": "36787997e4505e5485ded18948ff751f56a1ad169a35de0b9905413025d5effc"
+      },
+      "sample_metrics": {
+        "bytes": 1147440,
+        "path": "results/functional-intervention/dense/muon-lr1e-3/checkpoint-2345/sample_metrics.jsonl",
+        "sha256": "ea8445936e2955ae5993b0d612d83446a99574e09fb68aa037869d5631450720"
+      }
+    },
+    {
+      "label": "dense/muon-lr1e-3/checkpoint-3907",
+      "manifest": {
+        "bytes": 6029,
+        "path": "results/functional-intervention/dense/muon-lr1e-3/checkpoint-3907/manifest.json",
+        "sha256": "2d4c18b14ea5a16611ccbdd02806ead78cd6b92a13840aab45893d3a7e11e3e4"
+      },
+      "sample_metrics": {
+        "bytes": 1147210,
+        "path": "results/functional-intervention/dense/muon-lr1e-3/checkpoint-3907/sample_metrics.jsonl",
+        "sha256": "df9790a3c669a63cbca1be1f1cf73c0b4f3b1e0a9ea9d052d2455c1ce7fd3471"
+      }
+    },
+    {
+      "label": "dense/normuon-lr1e-3/checkpoint-782",
+      "manifest": {
+        "bytes": 6036,
+        "path": "results/functional-intervention/dense/normuon-lr1e-3/checkpoint-782/manifest.json",
+        "sha256": "98d611150f858c5c7d5f182acd7d13c9d3c19b65de635e50aa1a1f45fa342baf"
+      },
+      "sample_metrics": {
+        "bytes": 1146294,
+        "path": "results/functional-intervention/dense/normuon-lr1e-3/checkpoint-782/sample_metrics.jsonl",
+        "sha256": "239d53d690cc6076ec5ce81aa79dba4ef80d3ed64ef275ea41f7a7bf82b2491d"
+      }
+    },
+    {
+      "label": "dense/normuon-lr1e-3/checkpoint-2345",
+      "manifest": {
+        "bytes": 6038,
+        "path": "results/functional-intervention/dense/normuon-lr1e-3/checkpoint-2345/manifest.json",
+        "sha256": "b30f589b18afdcf38321585b275e6a20c3c052440f1689142311bd8fb976a5e1"
+      },
+      "sample_metrics": {
+        "bytes": 1147484,
+        "path": "results/functional-intervention/dense/normuon-lr1e-3/checkpoint-2345/sample_metrics.jsonl",
+        "sha256": "74e78f4cb7a046888282a559bba9d50e2bb6a972a0d039bf5416af6f84e9d6ec"
+      }
+    },
+    {
+      "label": "dense/normuon-lr1e-3/checkpoint-3907",
+      "manifest": {
+        "bytes": 6038,
+        "path": "results/functional-intervention/dense/normuon-lr1e-3/checkpoint-3907/manifest.json",
+        "sha256": "5d17f85d67aae1bbad86a4f2a7ff5b21ddfe8b1a45dfe0d89438a6fd535cfc8c"
+      },
+      "sample_metrics": {
+        "bytes": 1146335,
+        "path": "results/functional-intervention/dense/normuon-lr1e-3/checkpoint-3907/sample_metrics.jsonl",
+        "sha256": "ddbdb6a35188a7b14727c3b86feceac54362c87e438f16f73f77b164cec2b7a6"
+      }
+    }
+  ],
+  "families": [
+    "dense"
+  ],
+  "outputs": {
+    "discovery_anchor_tail": {
+      "bytes": 5767,
+      "path": "discovery_anchor_tail.csv",
+      "rows": 30,
+      "sha256": "fbc16d67e4d4279bb1f85769bb83da84b3c86508fe387a1f5ff7e0bdf3c2142d"
+    },
+    "discovery_cross_tail": {
+      "bytes": 5506,
+      "path": "discovery_cross_tail.csv",
+      "rows": 20,
+      "sha256": "fdebc817e4d202c627d8091c9511ab7af3ac39559ddb764c8455a85d663fa5a0"
+    },
+    "discovery_cross_tail_summary": {
+      "bytes": 998,
+      "path": "discovery_cross_tail_summary.csv",
+      "rows": 2,
+      "sha256": "db15c1ec644acc046d77291507b26c5b59fe64065d8674eede43ffe0d4376eaf"
+    },
+    "discovery_family_contrasts": {
+      "bytes": 1199,
+      "path": "discovery_family_contrasts.csv",
+      "rows": 2,
+      "sha256": "5e40d1f5951efe0673521794ce59e8fc16316c10735c41a4e96dd8fe863c26d5"
+    },
+    "readme": {
+      "bytes": 2787,
+      "path": "README.md",
+      "sha256": "38a73db474a8c1339af51c8baadd6c6dce9878d1ce63e5cc099f9916b532a207"
+    },
+    "short_branch_checkpoint_contrasts": {
+      "bytes": 6602,
+      "path": "short_branch_checkpoint_contrasts.csv",
+      "rows": 30,
+      "sha256": "e7793249dcd42a844b7f78b7ff86813f410e717ebc78faa18247f2a9249c3cbf"
+    },
+    "short_branch_checkpoint_tail": {
+      "bytes": 10399,
+      "path": "short_branch_checkpoint_tail.csv",
+      "rows": 45,
+      "sha256": "5e94fc022a6c855527897461a63bc383935c1f6da05f561f9405b14afd937662"
+    },
+    "short_branch_final_summary": {
+      "bytes": 876,
+      "path": "short_branch_final_summary.csv",
+      "rows": 2,
+      "sha256": "c6b396d451d9bec569ee6c81edad4cdb108740e1a8ae6d52f00e98f36977af2b"
+    }
+  },
+  "pending_reason": null,
+  "protocol": {
+    "bytes": 7969,
+    "path": "configs/tail_stability_analysis.json",
+    "sha256": "3ee7b3df6c79b8150789145b0c0abf7bb1041d82db724b533e1c42e669b8bbb7"
+  },
+  "schema_version": 1,
+  "scope_amendment": {
+    "amended_at_utc": "2026-08-30T20:14:42Z",
+    "claim_boundary": "The scope reduction is post hoc and must be disclosed in the paper and blog. Confirmatory optimizer claims are DenseOn-only. Existing LateOn discovery and mechanism artifacts remain available for audit but cannot supply missing controls or be selectively promoted as confirmatory evidence.",
+    "path": "configs/dense_scope_amendment.json",
+    "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
+    "status": "user_directed_post_hoc_scope_amendment"
+  },
+  "short_branch_checkpoint_rows": 45,
+  "short_branch_confirmation_complete": true,
+  "short_branch_contrast_rows": 30,
+  "short_branch_final_rows": 2,
+  "short_branch_sources": [
+    {
+      "short_branch_summary": {
+        "bytes": 33968,
+        "path": "reports/short-branch/summary_manifest.json",
+        "sha256": "8faece8a5538e2cd8f5e7fd83c6729255a8005daf5ee85de2dc844942d853a43"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3491,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "d01e13cf46f5ebcb76ce58cc57abe6ee2e3afd52b01b8b66b3c71a4fdcb84679"
+      },
+      "validation_samples": {
+        "bytes": 1465436,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "a64fe21f17ed939ee46f12a9d64131eac2d0b9ec4d0ba91de0018234a565e5ac"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "e312f41239b55074a6a9395a5be6dc36def7ee011764db7c87b87ee2cbe98c41"
+      },
+      "validation_samples": {
+        "bytes": 1465757,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "132dae9d35d63eec85561944ef146af852d4ba0487e56bfd4d888539e82aab68"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "28d8ccc8a7ee45300c4f1d450bba5edce20930b95b3893bf1ef6e3a18ef925ef"
+      },
+      "validation_samples": {
+        "bytes": 1465339,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "71c273eb5b822a8ec351f8e99812e685cc389959c9a2610f733d5dcffb9c4aca"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "37a50f73582444e78f32da375028a26b468ff5f126f3eeaca65b5118248bda8d"
+      },
+      "validation_samples": {
+        "bytes": 1463764,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "144543c14e3b742fb0758e37823d05ec85242259bb6843e71a0516e938a76a13"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "698edc65d0073a9a4cda109708441cc40617a9a9c7d16b42ccc74ccd5bda3d75"
+      },
+      "validation_samples": {
+        "bytes": 1463479,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "ec95d9867898c7617159518f07f47f071f0ccff0c5cc7443637716a40ade539f"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3489,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "d813d31cd316e5c4d7aa6d308e1244b2d334b85db3c5952188bd87163db1c503"
+      },
+      "validation_samples": {
+        "bytes": 1465845,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "e4be184ba1f489230c6add2b436c811fb8b8c6ac79844e9902b77579eeec72fb"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "1e2412461e7e768cbb008aa971ee4513be9010dbf3bad11e0888e7a31216d778"
+      },
+      "validation_samples": {
+        "bytes": 1466914,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "615aa45afa199b2157d3491452a3207d3fa5769275444c9454fc7946f9a47fd6"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "bcc30a642d2484a1322c3cddac3cd0ed62e979fccc53a64f7182b2573803a66f"
+      },
+      "validation_samples": {
+        "bytes": 1465865,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "4478cdf0e12c6ca34b7502a90b17f943007cb5d99f52dfe1febaec5f1ede4f4a"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "d254062f55fd90bc437d68bead17c1f3d4f8bf6a3b2dfddd3148306c40ea65a7"
+      },
+      "validation_samples": {
+        "bytes": 1463780,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "fcc938a5b99cc98a0b321cd6658a0c7c08008aa8fd46f95f6985e6946b3c7a60"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "08278e5afa4984a796f154772b762d8e90fefdafec4fd4de2ab771c723cd08bb"
+      },
+      "validation_samples": {
+        "bytes": 1462852,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "0677a3c95774df12712e82a4d7817494f063b218a2706ce5fdfab3a7919c70b8"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3495,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "d8d87ba4d0a32f1337acf79b310b29d28cc8c9652784b33f8a577f56a5dc8919"
+      },
+      "validation_samples": {
+        "bytes": 1465745,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "5965362235077ae72f02bdd0fb4c861d8a4b44f523e5012b5ebb0adfadb45332"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "2ec7bd1bb8e1112075bf1a377c952ab70a92b314546e0de9c9646d37b7b60c89"
+      },
+      "validation_samples": {
+        "bytes": 1465493,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "86b9b6d9ff222927130f09140810cb74269e5e0b05be79327c116bc3ab20a895"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "b8a448212952ca22410790e19aaf190cd14dcd54b342978615388fd71fb7fa91"
+      },
+      "validation_samples": {
+        "bytes": 1464828,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "b7271ac482eb22703a2a5cab2e6fef61877f0bce5706248d2be737e21462ce78"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "822fc183ff84aa3482fdaaa17f202714ae144dfbc4304124048edb424c9037ab"
+      },
+      "validation_samples": {
+        "bytes": 1463307,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "bc1af23b1c7fd194c06e3d03bf8e678a20c7edbba3a9a827f260733a0feafc12"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "81927dedf467325d2166a71d00cf6758f15b7f64cac1db9bb0cce48381c94702"
+      },
+      "validation_samples": {
+        "bytes": 1462639,
+        "path": "results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "c14c4f05321ecfe2211a9169848135536d44b242934f6b046c6cff33f770ac60"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3491,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "04918eb269b0ed902fb8839abcae0c17e295830773c368f11399da44f813daef"
+      },
+      "validation_samples": {
+        "bytes": 1467281,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "8ca6365b5b76db12b29a183d9fd2b151aec2f40558ee583b75be843a70979875"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "3b34e86eb4f6c3e2d92126a0c81016aa991273a89fe1228c65eea5515a6dd102"
+      },
+      "validation_samples": {
+        "bytes": 1464393,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "a1505157a639bfa7446691b85da79087c686b2c3531aaa6f53a6130e49ed1060"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "5edc558053f4090a8308bb62c0fb630e8195780b3b194da0386308ecb6e594c0"
+      },
+      "validation_samples": {
+        "bytes": 1464282,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "99744190481bebf5cd8f6dba6e59cb2648c9e1a0420a58ca2ee147b8539b69b1"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "acbcca03525ec21c5da31dbd5ed8ca7f91813ec549581904a4db05313d8e32ea"
+      },
+      "validation_samples": {
+        "bytes": 1463118,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "95b81581e6d09eb97437ddc8c8592209cb80259acf9ed36c4f1a615482f60966"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "18ba28af953bb0e0d159240b751dfdfd3e9859474dd7297b4ca4e2ef03ccb498"
+      },
+      "validation_samples": {
+        "bytes": 1463801,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "6b84c4e6a2398bc3701fcf49ec4f30df5f2f97313c20a41446d159716046c338"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3489,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "f45f40989042d44d82e12f117e7b85bacf2bc7b32652ab0f2f8d064aaab9a179"
+      },
+      "validation_samples": {
+        "bytes": 1466679,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "5757d9af313851981272cbf7c522e9d4617611d909ce97f98003479bf22b33f9"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "421ccde33c93a9be045c4b5bc67e79a729a6b49c8d149ba311612e7ef04cb7a1"
+      },
+      "validation_samples": {
+        "bytes": 1464410,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "4f21a7908c82204e4cfc3ec90276f889f7e36749732401f9c82a4edd98f1a352"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "df16e2e770e8a5c5ea988410dbc9d6ce9ee20480f9480842bbf53c40ab241abd"
+      },
+      "validation_samples": {
+        "bytes": 1464023,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "9b43bde5381ec9392c53b4b99910db5f3c5ab7a10cc8ff86588c39f6054b36c1"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "d7bbcc6b5746dd52d4fc628a450cf6cb5d578121e0c644517a07d3570cc9cdde"
+      },
+      "validation_samples": {
+        "bytes": 1463462,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "61673a1c3fee828634637a82b6c1d93dffc467a49f2c9e2b480ba95c84b77105"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "96f6d6e0edb44d0331a36c37989d1b76c7e951c3baa9f8b2155b45d3c0b96ee1"
+      },
+      "validation_samples": {
+        "bytes": 1463119,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "bcf37a2061d2a529fb59c968da4e3d3f29ca8d91e1c907bbf0e3fc674c6dcb99"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3495,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "5202381bc66e61bfd63f225e018d6d57c84e7d5d69d76094f7b80b43ade30a97"
+      },
+      "validation_samples": {
+        "bytes": 1465656,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "865a920735eaf97a9fa5a1dcbd6b46ce1102a8b0ca512c1763f1802d146e656f"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "8d887df354529c78b81403db1057ec9a053e61b798949f0b60d12272cec50e22"
+      },
+      "validation_samples": {
+        "bytes": 1464481,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "30e8d17ac17de8fc63ed0cbb06520a5bfc332a2296cabc0537cba102363430a1"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "922f28084862bc5489ae650a59f2a18c6b654c0a4ef31b881a9a6206bbd3ec7f"
+      },
+      "validation_samples": {
+        "bytes": 1464159,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "9f80442f0906ad3bcf8f2907991b79c37b52c5e8074261be1c09ebf2106ccfe5"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "7843a6dd264df9344f7bc57973b1ce5559ba53b06fd204c3e5702ab99195d3e6"
+      },
+      "validation_samples": {
+        "bytes": 1463678,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "230072464e379d6d3da8f0046aeda6d01febdc775bbe7ff518cd994572e79623"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "bc935a7f7bed7f9edfb72beb261dc7de972005cf1a28f251f9261c1c23cb7cd4"
+      },
+      "validation_samples": {
+        "bytes": 1463451,
+        "path": "results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "6bd5ff6ac72d675fd5e52a3cd68c59d3dfd00acac891324188fc1dc9d9c4e35a"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3491,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "5ddbc5d51a1125e42fdbf3b0348fd3e37ad8870814bbd6e3ab210de46f47a0a5"
+      },
+      "validation_samples": {
+        "bytes": 1467248,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "90092b74034280f1b2096a4e152d8d3c52be0acad63690a8df517f483963c4bb"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "bc613768e8591baf73963866df0d71b9626a17772db89d7c11103365735b7c86"
+      },
+      "validation_samples": {
+        "bytes": 1465239,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "adbcbf37629fd5d8f8e7c74fc9a5288a0e9b13f8731cdaa6cc2c37d4d7e74963"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "e9596485588cc52683506c4b773bf87c259eacfb0773efbd43023737d15b6c7a"
+      },
+      "validation_samples": {
+        "bytes": 1463573,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "fd719881bed02151b333667c551701f2ca6ffda05bbffaf7fc2b3fc0a325f5aa"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "064cb2663517b3ecbba873713e543bd2a14f649025441f1ba9bcdbd887bba27c"
+      },
+      "validation_samples": {
+        "bytes": 1463861,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "a0f53c67e2c1f16996143d703625a3d4047ca104f23a47a21a6283026f813551"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3492,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "a114ce29870b4fee185db94fd3630ffab688d33e26e759bb2c42596c65a9ab48"
+      },
+      "validation_samples": {
+        "bytes": 1463410,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "124ed86099fa42aa72d4a0fd9e838844fb291b5c19accf57b3f312d3ac365d16"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3489,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "90d6ca79908234c2ea44cf1d0d424354bc4ded8b9b73c3a8c36aa2c54a1613a1"
+      },
+      "validation_samples": {
+        "bytes": 1466423,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "57559d4e1ecb6354b6218087374fecfd6d3f406f82842859b1357018e6fd92e1"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "76a15f285351a5e40bca29266efd794b1f51cc83a173efa60d2bdf96643eb386"
+      },
+      "validation_samples": {
+        "bytes": 1466340,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "4ff0af556b6880a6d549124e533146c65d5dce0290742705d772ffdaa3d2a019"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "a74109eb21e5b0622382ae8ea5da0df717c891a02776a33dacc8e846d509a866"
+      },
+      "validation_samples": {
+        "bytes": 1462891,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "0a61f68bdf7582d37ab6ae30f31fca6ef36b1e65ad7291dcd546d0391bf5de06"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "4dc570d204ee6d99f544d2222d6307b0c469eb8687b48ffd5f72a16c5dac63c1"
+      },
+      "validation_samples": {
+        "bytes": 1463596,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "cfc7039643cf558608a4fd23d1843dca72f62bf6ad274afbc6fea98617920d59"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3490,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "7bd3d7bff3b21b7738be321a029df77d1bed8a9dd17c152067e73402606461a5"
+      },
+      "validation_samples": {
+        "bytes": 1462409,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "24db86694b59210b0b1e29742906cddd2a525c8b050d7d55c216631760c16673"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-79",
+      "validation_manifest": {
+        "bytes": 3495,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-79/manifest.json",
+        "sha256": "37571b6fc21f8b79c28ff01e6597d6942eafa873f642e14f443fbbb3ced20e40"
+      },
+      "validation_samples": {
+        "bytes": 1466399,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-79/sample_metrics.jsonl",
+        "sha256": "fab38f9e6c6dffc5388109a57393ed59380b2429c56511649056dd73af65a3da"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-157",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-157/manifest.json",
+        "sha256": "1d9422d5df1a5e0f5f4a47ebadac708766656c6975febd1b75e2ad29385161cd"
+      },
+      "validation_samples": {
+        "bytes": 1465812,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-157/sample_metrics.jsonl",
+        "sha256": "14db64ebdaa98f2d8f5c8b15444253d1643006efdc6a74e640a5957e787d2ad4"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-235",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-235/manifest.json",
+        "sha256": "25ba15203c2a0016fa4f011ea54d13095a57cc903ed85131db7b00c48f046aa6"
+      },
+      "validation_samples": {
+        "bytes": 1462532,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-235/sample_metrics.jsonl",
+        "sha256": "436fe7c3de10b4d6062d481d35ec85d2bd6632942bcc3994a8e962821330f6c0"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-313",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-313/manifest.json",
+        "sha256": "e4a3965147dec1634486c278e78239fdf929f0552f8e48df5e5b6c58087bdd64"
+      },
+      "validation_samples": {
+        "bytes": 1463934,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-313/sample_metrics.jsonl",
+        "sha256": "92fbd52b8e0352a7804c0337313d61cafc40fae02f0efe670a14fff779c6eb4d"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-391",
+      "validation_manifest": {
+        "bytes": 3496,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-391/manifest.json",
+        "sha256": "baaca81950ebbe8cff7ea52204cd792443d8705dbb65e6fcdbc09a11ee0dd10c"
+      },
+      "validation_samples": {
+        "bytes": 1462830,
+        "path": "results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-391/sample_metrics.jsonl",
+        "sha256": "9453f8d303de42ee7c5937b3c060d6f5fdc3f20604b7f626260f79dd408bc402"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28893,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/adamw-scale-matched/checkpoint-79.json",
+        "sha256": "e602cd224fc2982fc56704f2c5b71cef687356d085876372e665f6646f6d47b6"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28931,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/adamw-scale-matched/checkpoint-157.json",
+        "sha256": "bd063d46983a6ca24d33eb42b799f32680519a67c1e0704de218e41044c701f0"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28909,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/adamw-scale-matched/checkpoint-235.json",
+        "sha256": "e6416f552a044e4e1aee59f35bc64bab4b200f7853ad033b75fdd1539f7dda58"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28940,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/adamw-scale-matched/checkpoint-313.json",
+        "sha256": "19fe89bafad902b59271df582817e997f800a9ee8a0448e79c2b49120531e140"
+      }
+    },
+    {
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28867,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/adamw-scale-matched/checkpoint-391.json",
+        "sha256": "f6ec9518a69faa9e40df9c1930a3067846c0c0a07443eec44bc71d237225ef2c"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28886,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/muon-scale-matched/checkpoint-79.json",
+        "sha256": "afca7505fb93a766e1a6b09d0f8631caed4817e9ae1d76da3755c69b128ba4ad"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28904,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/muon-scale-matched/checkpoint-157.json",
+        "sha256": "5d47953d64f93eda30dc517a0897653cae0938b194c10b9b15adeed7eedf9782"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28927,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/muon-scale-matched/checkpoint-235.json",
+        "sha256": "54a036a345aa137c0f16abd29f993cb532a5605588b473e8aba320c304827093"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28938,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/muon-scale-matched/checkpoint-313.json",
+        "sha256": "7e57d40bc3eee647a9c9cd4adb668708047249ebe713884bb6598c9b4c077c52"
+      }
+    },
+    {
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28902,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/muon-scale-matched/checkpoint-391.json",
+        "sha256": "eac39ae2e339543175570573d72d3111a59e8d2ff7ce24cf1c707543fddf75fa"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28940,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/normuon-scale-matched/checkpoint-79.json",
+        "sha256": "6f5e79341ac64810d2122e3b76a77a9f10f403cad75d9d8972dee1659a1e5e58"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28978,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/normuon-scale-matched/checkpoint-157.json",
+        "sha256": "2e2bda80a674dd887de9ae1acf8e6411788654ca9b4c4a492a62e7d4b2ffe53f"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28935,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/normuon-scale-matched/checkpoint-235.json",
+        "sha256": "bb08508de1972f9f36329fdbafaae35cfb7553cad1f8909a96098909ebc838cf"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28939,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/normuon-scale-matched/checkpoint-313.json",
+        "sha256": "f59a9c4cd0a7005ae102f6113cb6fae34ed596324c7606353827d24f90148515"
+      }
+    },
+    {
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28905,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed161803/normuon-scale-matched/checkpoint-391.json",
+        "sha256": "76b00854a30fb1d1253155d91332d8d74a87420652ab2d050be8cc07e633d1ee"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28936,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/adamw-scale-matched/checkpoint-79.json",
+        "sha256": "47c84ccc1ddedeab6edb8081ae0ad0e7c1f411a3522993da158938c063e92b56"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28928,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/adamw-scale-matched/checkpoint-157.json",
+        "sha256": "f95090adb9c19a6b73db3477ce827acf5070ed991220286e554503f995503d90"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28919,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/adamw-scale-matched/checkpoint-235.json",
+        "sha256": "ee1dd117f773053f41bd8d9670b8b915a664e6177ed077c7af333b44c4a63baf"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28894,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/adamw-scale-matched/checkpoint-313.json",
+        "sha256": "488c8d626a8deaf1cd1b43b393971f64a08be69e9c44e33cebaaf5d1535ea406"
+      }
+    },
+    {
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28930,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/adamw-scale-matched/checkpoint-391.json",
+        "sha256": "5189791badeafa1937cb6959c82b5d8e854b1f86c0cc970bff3e880cd355e59b"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28906,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/muon-scale-matched/checkpoint-79.json",
+        "sha256": "8cc77d606f5a72d8d2c289c343605c1d2373ebbb89a359f0dedbbb7f8d4cb905"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28887,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/muon-scale-matched/checkpoint-157.json",
+        "sha256": "9c982870b5a46a50486f7f6e07c0409d7797fee99ae5444ac5420a79c5b2724b"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28909,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/muon-scale-matched/checkpoint-235.json",
+        "sha256": "ce73f4968f075cf80472f814b839d1fbc4b00a046bf44a1c60a7231aeb1ea5fc"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28924,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/muon-scale-matched/checkpoint-313.json",
+        "sha256": "eb987a2a0db891cc7dd3e1b15b78914b4084e8f908442870b6da837be69063f5"
+      }
+    },
+    {
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28930,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/muon-scale-matched/checkpoint-391.json",
+        "sha256": "0d6398b5a9474e5916f4b1da3eba4d319eb006b90d6f5afd2db4d90fc290941d"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28944,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/normuon-scale-matched/checkpoint-79.json",
+        "sha256": "7b14b196eaa53d3ee022cb128dc2d5bcef0f96cc654fefbc1c22207f43753423"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28871,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/normuon-scale-matched/checkpoint-157.json",
+        "sha256": "27eab664145366648bc77189a0ab424fa538c4676ca615cea37add1882e1e63f"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28891,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/normuon-scale-matched/checkpoint-235.json",
+        "sha256": "8acde7c66a7b7b2cd6d3042ddb8398c65dc61e79c660755257b7315570255d3b"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28917,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/normuon-scale-matched/checkpoint-313.json",
+        "sha256": "b632b4c7013ab6bc888ada43ffb7c029141e57c7f0cf5b468228b4a685b44a59"
+      }
+    },
+    {
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28904,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed271828/normuon-scale-matched/checkpoint-391.json",
+        "sha256": "82bd70960a67cdfd5d23da7761e56c8e1a521f05f8bb7866b070b8a722abc136"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28967,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/adamw-scale-matched/checkpoint-79.json",
+        "sha256": "d15024247a27f9531b4028a94d05afce19af127eae5172d1880e901123b4b87d"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28904,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/adamw-scale-matched/checkpoint-157.json",
+        "sha256": "fa8f26df43d0f18fc6d5c4a72d9a40269eabfefe4901f400d067dcbb272c463b"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28959,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/adamw-scale-matched/checkpoint-235.json",
+        "sha256": "849a4ca2e0c805c6427d5771f9685aa5b19ddeb7de8676f8b3f22d04a1992e3d"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28965,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/adamw-scale-matched/checkpoint-313.json",
+        "sha256": "996d408b04a8732dce3d253396adf87cea8d195918804237dc1ae5f5488cfb02"
+      }
+    },
+    {
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28949,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/adamw-scale-matched/checkpoint-391.json",
+        "sha256": "3ddbd1f2bab37cc5777d18d09da533a83928d4b70b9f851a8d37b58bd70d8e9c"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28924,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/muon-scale-matched/checkpoint-79.json",
+        "sha256": "c706bea72a64238af53b05cc67d249b32604ec17a366fe5148f04214c7c46c64"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28919,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/muon-scale-matched/checkpoint-157.json",
+        "sha256": "d5bb1e9b993d36dfc92fe36db618d4c92317f8ce750ca386a0b2fd46bbb02809"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28951,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/muon-scale-matched/checkpoint-235.json",
+        "sha256": "3ecbe107fb6105a7f811e39bbba94f4befd4561ae906486bb2ccde8af6c64606"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28919,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/muon-scale-matched/checkpoint-313.json",
+        "sha256": "aae029e7e4d51c8d167b4df9c4f1fa6f44abfa5e01157f656521bbf5d2f42767"
+      }
+    },
+    {
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28902,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/muon-scale-matched/checkpoint-391.json",
+        "sha256": "e16a92feb5f49dcc0791b6ca999194e08da3c06ea8baf8bf0fccaba925487171"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-79",
+      "unseen_metrics": {
+        "bytes": 28944,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/normuon-scale-matched/checkpoint-79.json",
+        "sha256": "0ddf779d2ee7a03667b289fa5366963d0e8068d15d71942e324563e97d3fd501"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-157",
+      "unseen_metrics": {
+        "bytes": 28927,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/normuon-scale-matched/checkpoint-157.json",
+        "sha256": "445ea82becd86a7f5fac2dfcc57423b547a192c0b95ecf90167b61e31af25ed4"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-235",
+      "unseen_metrics": {
+        "bytes": 28975,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/normuon-scale-matched/checkpoint-235.json",
+        "sha256": "0e410d17a9ab048abbe076bc394f4f74150ce900fb259872426616b91e74bcdd"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-313",
+      "unseen_metrics": {
+        "bytes": 28936,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/normuon-scale-matched/checkpoint-313.json",
+        "sha256": "2660c73b1a1b223fba6613278ea87bea355ebd77a86d7f1e0990fe492c0ad6ad"
+      }
+    },
+    {
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-391",
+      "unseen_metrics": {
+        "bytes": 28916,
+        "path": "results/short-branch/unseen-representation/metrics/dense/seed314159/normuon-scale-matched/checkpoint-391.json",
+        "sha256": "fb52f90d74831b866746fb4bf57f2a756fc9d469b157d5fcc7c3e5cafad3279a"
+      }
+    }
+  ],
+  "status": "complete"
+}

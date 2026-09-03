@@ -1,0 +1,232 @@
+from __future__ import annotations
+
+import json
+from argparse import Namespace
+from types import SimpleNamespace
+
+import pytest
+
+from embed_optim import evaluate_matrix
+from embed_optim.geometry import _sha256
+from embed_optim.supplemental_training_audit import (
+    audit_derived_training_artifacts,
+    run_evaluation_after_specialized_audit,
+)
+
+
+def _fixture(tmp_path, monkeypatch):
+    dataset = tmp_path / "derived"
+    output = tmp_path / "outputs" / "run"
+    dataset.mkdir()
+    output.mkdir(parents=True)
+    manifest = {"rows": 10, "dataset_fingerprint": "serialized"}
+    manifest_path = dataset / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    (output / "dataset_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    (output / "completed.json").write_text(
+        json.dumps({"dataset_rows": 10, "dataset_fingerprint": "training-view"}),
+        encoding="utf-8",
+    )
+    config = SimpleNamespace(
+        model_family="dense",
+        run_id="muon-derived",
+        dataset_path=str(dataset),
+        output_dir=output,
+        optimizer=SimpleNamespace(name="muon"),
+    )
+    generic = {
+        "complete": False,
+        "verified_runs": 0,
+        "expected_runs": 1,
+        "verified_checkpoints": 5,
+        "expected_checkpoints": 5,
+        "deep_validation": True,
+        "errors": ["dense/muon-derived: completion dataset row count does not match manifest"],
+    }
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit.audit_training_artifacts",
+        lambda *args, **kwargs: generic,
+    )
+    receipt = {
+        "rows": 10,
+        "training_view_fingerprint": "training-view",
+        "manifest_sha256": _sha256(manifest_path),
+    }
+    return config, output, receipt
+
+
+def test_derived_audit_reconciles_only_the_proven_schema_difference(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+
+    result = audit_derived_training_artifacts([config], receipt)
+
+    assert result["complete"] is True
+    assert result["verified_runs"] == 1
+    assert result["verified_checkpoints"] == 5
+    assert result["errors"] == []
+
+
+def test_derived_audit_rejects_completion_row_drift(tmp_path, monkeypatch):
+    config, output, receipt = _fixture(tmp_path, monkeypatch)
+    (output / "completed.json").write_text(
+        json.dumps({"dataset_rows": 9, "dataset_fingerprint": "training-view"}),
+        encoding="utf-8",
+    )
+
+    result = audit_derived_training_artifacts([config], receipt)
+
+    assert result["complete"] is False
+    assert any("completion row count differs" in error for error in result["errors"])
+    assert any("does not match manifest" in error for error in result["errors"])
+
+
+def test_derived_audit_preserves_unrelated_deep_errors(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+    schema_error = "dense/muon-derived: completion dataset row count does not match manifest"
+    checkpoint_error = "dense/muon-derived/checkpoint-2: invalid optimizer state"
+
+    def generic(*args, **kwargs):
+        return {
+            "complete": False,
+            "verified_runs": 0,
+            "expected_runs": 1,
+            "verified_checkpoints": 4,
+            "expected_checkpoints": 5,
+            "deep_validation": True,
+            "errors": [schema_error, checkpoint_error],
+        }
+
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit.audit_training_artifacts",
+        generic,
+    )
+
+    result = audit_derived_training_artifacts([config], receipt)
+
+    assert result["complete"] is False
+    assert result["errors"] == [checkpoint_error]
+    assert result["verified_checkpoints"] == 4
+
+
+def test_hybrid_derived_run_uses_the_three_group_deep_auditor(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+    config.optimizer.name = "hybrid_adamw"
+    calls = []
+
+    def generic(*args, **kwargs):
+        calls.append(kwargs["deep"])
+        return {
+            "complete": False,
+            "verified_runs": 0,
+            "expected_runs": 1,
+            "verified_checkpoints": 5,
+            "expected_checkpoints": 5,
+            "deep_validation": False,
+            "errors": ["dense/muon-derived: completion dataset row count does not match manifest"],
+        }
+
+    hybrid_calls = []
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit.audit_training_artifacts",
+        generic,
+    )
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit._audit_hybrid_checkpoints",
+        lambda selected: (hybrid_calls.append(selected.run_id) or 5, []),
+    )
+
+    result = audit_derived_training_artifacts([config], receipt, deep=True)
+
+    assert calls == [False]
+    assert hybrid_calls == [config.run_id]
+    assert result["complete"] is True
+    assert result["verified_checkpoints"] == 5
+
+
+def test_hybrid_derived_run_preserves_optimizer_contract_errors(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+    config.optimizer.name = "hybrid_adamw"
+    optimizer_error = "dense/muon-derived/checkpoint-2: optimizer group 0 algorithm is not AdamW"
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit._audit_hybrid_checkpoints",
+        lambda _config: (4, [optimizer_error]),
+    )
+
+    result = audit_derived_training_artifacts([config], receipt, deep=True)
+
+    assert result["complete"] is False
+    assert result["errors"] == [optimizer_error]
+    assert result["verified_checkpoints"] == 4
+
+
+def test_derived_audit_never_accepts_an_unexplained_checkpoint_shortfall(tmp_path, monkeypatch):
+    config, _, receipt = _fixture(tmp_path, monkeypatch)
+    config.optimizer.name = "hybrid_adamw"
+    monkeypatch.setattr(
+        "embed_optim.supplemental_training_audit._audit_hybrid_checkpoints",
+        lambda _config: (4, []),
+    )
+
+    result = audit_derived_training_artifacts([config], receipt, deep=True)
+
+    assert result["complete"] is False
+    assert result["verified_checkpoints"] == 4
+    assert result["expected_checkpoints"] == 5
+    assert result["errors"] == ["derived training deep audit verified 4 checkpoints, expected 5"]
+
+
+def test_specialized_evaluation_consumes_preflight_and_restores_validator(monkeypatch):
+    args = Namespace(matrix="derived.yaml")
+    original = evaluate_matrix._validate_training_inputs
+
+    def run(selected):
+        evaluate_matrix._validate_training_inputs(selected)
+        return 2
+
+    monkeypatch.setattr(evaluate_matrix, "run_evaluation", run)
+    audit = {
+        "complete": True,
+        "errors": [],
+        "verified_runs": 6,
+        "verified_checkpoints": 30,
+    }
+
+    assert run_evaluation_after_specialized_audit(args, audit, label="derived") == 2
+    assert evaluate_matrix._validate_training_inputs is original
+
+
+def test_specialized_evaluation_restores_validator_when_evaluator_raises(monkeypatch):
+    args = Namespace(matrix="derived.yaml")
+    original = evaluate_matrix._validate_training_inputs
+
+    def run(selected):
+        evaluate_matrix._validate_training_inputs(selected)
+        raise LookupError("worker launch failed")
+
+    monkeypatch.setattr(evaluate_matrix, "run_evaluation", run)
+
+    with pytest.raises(LookupError, match="worker launch failed"):
+        run_evaluation_after_specialized_audit(
+            args,
+            {"complete": True, "errors": []},
+            label="derived",
+        )
+    assert evaluate_matrix._validate_training_inputs is original
+
+
+def test_specialized_evaluation_refuses_incomplete_audit(monkeypatch):
+    called = False
+
+    def run(_args):
+        nonlocal called
+        called = True
+
+    monkeypatch.setattr(evaluate_matrix, "run_evaluation", run)
+
+    with pytest.raises(RuntimeError, match="bad checkpoint"):
+        run_evaluation_after_specialized_audit(
+            Namespace(matrix="derived.yaml"),
+            {"complete": False, "errors": ["bad checkpoint"]},
+            label="derived",
+        )
+    assert called is False

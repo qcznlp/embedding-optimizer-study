@@ -1,0 +1,217 @@
+import json
+from dataclasses import replace
+from pathlib import Path
+from types import SimpleNamespace
+
+import numpy as np
+import pytest
+
+from embed_optim.config import OptimizerConfig, RunConfig
+from embed_optim.geometry import _sha256
+from embed_optim.probe_matrix import (
+    ProbeJob,
+    build_probe_jobs,
+    main,
+    parse_args,
+    probe_job_complete,
+    run_probe_job,
+    run_probe_matrix,
+)
+
+
+def test_probe_controller_defaults_dense_and_validates_scope_before_artifacts(monkeypatch):
+    defaults = parse_args([])
+    assert defaults.families == ["dense"]
+    assert defaults.scope_amendment is None
+    assert parse_args(["--families", "dense", "late"]).families == ["dense", "late"]
+    monkeypatch.setattr(
+        "embed_optim.probe_matrix.resolve_matrix_path",
+        lambda path: pytest.fail("scope must be validated before matrix artifacts"),
+    )
+    with pytest.raises(ValueError, match="requires --scope-amendment"):
+        main([])
+
+
+def _config(tmp_path: Path, family: str, run_id: str) -> RunConfig:
+    config = RunConfig(
+        run_id=run_id,
+        model_family=family,
+        optimizer=OptimizerConfig(name="adamw", lr=1e-5),
+        model_name=f"fixture/{family}",
+        dataset_path="fixture",
+        output_root=str(tmp_path / "outputs"),
+    )
+    config.output_dir.mkdir(parents=True)
+    steps = [2, 4, 6, 8, 10]
+    (config.output_dir / "checkpoint_schedule.json").write_text(json.dumps({"steps": steps}))
+    for step in steps:
+        (config.output_dir / f"checkpoint-{step}").mkdir()
+    return config
+
+
+def test_build_probe_jobs_deduplicates_reference_and_covers_five_checkpoints(tmp_path: Path):
+    first = _config(tmp_path, "dense", "adamw-a")
+    second = _config(tmp_path, "dense", "muon-b")
+    reference = tmp_path / "dense-pretrained"
+    reference.mkdir()
+
+    jobs = build_probe_jobs(
+        [first, second],
+        {"dense": reference},
+        tmp_path / "representation",
+    )
+
+    assert len(jobs) == 11
+    assert [job.kind for job in jobs].count("reference") == 1
+    assert [job.kind for job in jobs].count("checkpoint") == 10
+    assert jobs[0].label == "dense/pretrained"
+    assert jobs[-1].label == "dense/muon-b/checkpoint-10"
+    assert jobs[-1].reference_export == jobs[0].export
+
+    identified = build_probe_jobs(
+        [first],
+        {"dense": reference},
+        tmp_path / "identified",
+        ("probe-manifest", "probe-spec"),
+    )
+    assert {job.probe_manifest_sha256 for job in identified} == {"probe-manifest"}
+    assert {job.probe_spec_sha256 for job in identified} == {"probe-spec"}
+
+
+def test_probe_matrix_dry_run_only_lists_incomplete_jobs(tmp_path: Path, monkeypatch, capsys):
+    jobs = [
+        ProbeJob(
+            kind="reference",
+            family="dense",
+            label="dense/pretrained",
+            checkpoint=tmp_path / "checkpoint",
+            export=tmp_path / "pretrained.npz",
+            metrics=tmp_path / "pretrained.json",
+            reference_export=None,
+        ),
+        ProbeJob(
+            kind="checkpoint",
+            family="dense",
+            label="dense/adamw/checkpoint-2",
+            checkpoint=tmp_path / "checkpoint-2",
+            export=tmp_path / "checkpoint-2.npz",
+            metrics=tmp_path / "checkpoint-2.json",
+            reference_export=tmp_path / "pretrained.npz",
+        ),
+    ]
+    monkeypatch.setattr(
+        "embed_optim.probe_matrix.probe_job_complete",
+        lambda job: job.kind == "reference",
+    )
+    args = SimpleNamespace(dry_run=True)
+
+    assert run_probe_matrix(jobs, args) == 0
+    assert capsys.readouterr().out.strip() == "dense/adamw/checkpoint-2"
+
+
+def test_run_probe_job_resumes_valid_export_and_rewrites_metrics(tmp_path: Path, monkeypatch):
+    job = ProbeJob(
+        kind="checkpoint",
+        family="late",
+        label="late/muon/checkpoint-2",
+        checkpoint=tmp_path / "checkpoint-2",
+        export=tmp_path / "checkpoint-2.npz",
+        metrics=tmp_path / "checkpoint-2.json",
+        reference_export=tmp_path / "pretrained.npz",
+    )
+    calls = []
+    monkeypatch.setattr("embed_optim.probe_matrix._valid_export", lambda *args, **kwargs: True)
+    monkeypatch.setattr(
+        "embed_optim.probe_matrix.export_probe",
+        lambda *args, **kwargs: calls.append("export"),
+    )
+    monkeypatch.setattr(
+        "embed_optim.probe_matrix.analyze_probe",
+        lambda *args, **kwargs: calls.append(("analyze", kwargs["reference_source"])),
+    )
+    monkeypatch.setattr("embed_optim.probe_matrix.probe_job_complete", lambda *args: True)
+
+    run_probe_job(
+        job,
+        probe=tmp_path / "probe",
+        probe_spec=tmp_path / "spec.json",
+        batch_size=32,
+        model_dtype="bfloat16",
+        storage_dtype="float16",
+        device="cuda:0",
+        flash_attention=True,
+    )
+
+    assert calls == [("analyze", job.reference_export)]
+
+
+def test_probe_job_completion_revalidates_export_and_metric_hashes(tmp_path: Path):
+    export = tmp_path / "dense.npz"
+    metrics = tmp_path / "dense.json"
+    arrays = {
+        "sample_ids": np.array([1]),
+        "query_embeddings": np.ones((1, 2), dtype=np.float32),
+        "document_embeddings": np.ones((1, 2, 2), dtype=np.float32),
+    }
+    np.savez(export, **arrays)
+    array_metadata = {
+        name: {"shape": list(value.shape), "dtype": str(value.dtype)}
+        for name, value in sorted(arrays.items())
+    }
+    manifest_path = export.with_suffix(".npz.manifest.json")
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "family": "dense",
+                "probe": {"manifest_sha256": "a", "selection_sha256": "b"},
+                "encoding": {"positive_candidate_index": 0},
+                "output": {"sha256": _sha256(export), "arrays": array_metadata},
+            }
+        )
+    )
+    job = ProbeJob(
+        kind="reference",
+        family="dense",
+        label="dense/pretrained",
+        checkpoint=tmp_path / "checkpoint",
+        export=export,
+        metrics=metrics,
+        reference_export=None,
+    )
+    metrics.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "family": "dense",
+                "label": job.label,
+                "input": {
+                    "path": str(export.resolve()),
+                    "sha256": _sha256(export),
+                    "export_manifest": {"sha256": _sha256(manifest_path)},
+                    "reference": None,
+                },
+                "parameters": {"require_export_manifest": True},
+            }
+        )
+    )
+
+    assert probe_job_complete(job)
+    bound_job = replace(
+        job,
+        probe_manifest_sha256="a",
+        probe_spec_sha256="expected-spec",
+    )
+    assert not probe_job_complete(bound_job)
+    manifest = json.loads(manifest_path.read_text())
+    manifest["probe"]["frozen_spec"] = {"sha256": "expected-spec"}
+    manifest_path.write_text(json.dumps(manifest))
+    metrics_payload = json.loads(metrics.read_text())
+    metrics_payload["input"]["export_manifest"]["sha256"] = _sha256(manifest_path)
+    metrics.write_text(json.dumps(metrics_payload))
+    assert probe_job_complete(bound_job)
+
+    manifest = json.loads(manifest_path.read_text())
+    manifest["output"]["sha256"] = "0" * 64
+    manifest_path.write_text(json.dumps(manifest))
+    assert not probe_job_complete(job)

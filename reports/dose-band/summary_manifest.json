@@ -1,0 +1,193 @@
+{
+  "claim_boundary": "The transplant randomizes spectral components at fixed weights and can identify immediate functional effects. Its task-aligned forward prediction is out-of-run evidence for a causal-chain bridge, but it is not a trained spectral-operator intervention and cannot by itself identify formal mediation of final BEIR gains.",
+  "claimability": "claimable",
+  "complete": true,
+  "criterion": "at_least_8_of_10_anchors",
+  "decisions": [
+    {
+      "anchors": 10,
+      "basis_control_anchors": 2,
+      "family": "dense",
+      "local_supported": false,
+      "loss_dose_monotone_anchors": 0,
+      "margin_dose_monotone_anchors": 0,
+      "prespecified_band": "tail",
+      "supporting_anchors": 0,
+      "tail_band_anchors": 0,
+      "threshold": 8
+    }
+  ],
+  "evaluation_input": {
+    "bytes": 172187,
+    "path": "reports/dense-discovery/evaluation_long.csv",
+    "sha256": "2c6db772b396726b77b2f8a5960170cce221b9fbc24bda81e518c22c02cd875e"
+  },
+  "evaluation_manifest": {
+    "bytes": 6065,
+    "path": "reports/dense-discovery/coverage.json",
+    "sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36"
+  },
+  "expected_prediction_rows": 84,
+  "falsification": "overall_chain_not_supported",
+  "forward_bridge": {
+    "rmse": {
+      "baseline": 0.011016240844824991,
+      "basis_loss": 0.011017219739121573,
+      "basis_margin": 0.011050214304454383,
+      "spectrum_loss": 0.011167087969779641,
+      "spectrum_margin": 0.011087481725001274
+    },
+    "rmse_improvement": {
+      "basis_loss": -9.7889429658167e-07,
+      "basis_margin": -3.397345962939148e-05,
+      "spectrum_loss": -0.00015084712495464989,
+      "spectrum_margin": -7.124088017628274e-05
+    },
+    "supported": false
+  },
+  "forward_bridge_supported": false,
+  "local_supported": false,
+  "outputs": {
+    "anchor_tests.csv": {
+      "bytes": 3453,
+      "path": "reports/dose-band/anchor_tests.csv",
+      "sha256": "3cb3657f14afc5779000f3d22c22698a7d3fa7685b6a7f299b18ba181b08fa76"
+    },
+    "heldout_predictions.csv": {
+      "bytes": 20899,
+      "path": "reports/dose-band/heldout_predictions.csv",
+      "sha256": "27602693778f746ca548a1a05740424a554b6753b250eb208889b57dd653392c"
+    },
+    "report.md": {
+      "bytes": 859,
+      "path": "reports/dose-band/report.md",
+      "sha256": "43f82d825e090ba0239b85edbe82a00df3d82e2937081a08a1026ce9413c3d5a"
+    }
+  },
+  "prediction_protocol": "separate OLS predictors over task+transition baseline with leave-one-run/LR-out folds",
+  "prediction_rows": 84,
+  "protocol": {
+    "protocol": {
+      "bytes": 12463,
+      "path": "configs/causal_chain_analysis.json",
+      "sha256": "813538910dbd32d6fcfb65ee8736816cd573ae122ec907d25d7208229720cd7f"
+    },
+    "source_bindings": [
+      {
+        "bytes": 3103,
+        "path": "configs/short_branch_protocol.json",
+        "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+      },
+      {
+        "bytes": 7829,
+        "path": "configs/spectral_transplant_intervention.json",
+        "sha256": "c80709158e0d9b2d83b6fd24240cf05e32bec272087d71e91bda2ac76b19a36b"
+      },
+      {
+        "bytes": 3139,
+        "path": "configs/dense_scope_amendment.json",
+        "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+      },
+      {
+        "bytes": 5180,
+        "path": "configs/validation_probe.json",
+        "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+      },
+      {
+        "bytes": 5737,
+        "path": "configs/beir_representation_probe.json",
+        "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+      },
+      {
+        "bytes": 1820,
+        "path": "configs/retrieval_dynamics_protocol.json",
+        "sha256": "48b1c8615e8e1fa9d5e9df335141edabeb27656b3761e25121d6281b02f03086"
+      },
+      {
+        "bytes": 2624,
+        "path": "configs/experiment.yaml",
+        "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+      },
+      {
+        "bytes": 2433,
+        "path": "configs/common_state_probe.json",
+        "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+      }
+    ]
+  },
+  "schema_version": 1,
+  "sources": [
+    {
+      "bytes": 11469,
+      "path": "reports/spectral-transplant/summary_manifest.json",
+      "sha256": "4fb46792a45598147ae58c64ebb9145c5b1db8fb02b5cbbda6b38b89668b3374"
+    },
+    {
+      "bytes": 28876,
+      "path": "reports/spectral-transplant/anchor_query_tail_effects.csv",
+      "sha256": "e74a7f0134388bac3f8bc9f05d5c0fc0dab512724f2a55214a11bcc1857d735a"
+    },
+    {
+      "bytes": 172187,
+      "path": "reports/dense-discovery/evaluation_long.csv",
+      "sha256": "2c6db772b396726b77b2f8a5960170cce221b9fbc24bda81e518c22c02cd875e"
+    },
+    {
+      "bytes": 6065,
+      "path": "reports/dense-discovery/coverage.json",
+      "sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36"
+    },
+    {
+      "bytes": 1004355,
+      "path": "results/spectral-transplant/dense/pretrained/sample_metrics.jsonl",
+      "sha256": "105497050588249d6b8b74e11ee6e7e10c0bbf1060d3100c8994a645b5293c68"
+    },
+    {
+      "bytes": 1001677,
+      "path": "results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-782/sample_metrics.jsonl",
+      "sha256": "f75ecaeba131ce4e8e27596f684f4476419071bcc554c923e33084582759ba56"
+    },
+    {
+      "bytes": 1001769,
+      "path": "results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-2345/sample_metrics.jsonl",
+      "sha256": "b1e27935931df1e5e474cb093afda6d61cd81f8d07da6304b54b14125fd14859"
+    },
+    {
+      "bytes": 1000934,
+      "path": "results/spectral-transplant/dense/adamw-lr1e-5/checkpoint-3907/sample_metrics.jsonl",
+      "sha256": "26247e59c25be1037929f08e05bd05dbd9b0daff46aed858f3693d336c57a4ca"
+    },
+    {
+      "bytes": 998863,
+      "path": "results/spectral-transplant/dense/muon-lr1e-3/checkpoint-782/sample_metrics.jsonl",
+      "sha256": "3ccc5c68994fcfc635bee8f493a40ab08cf1ae65b25a202605c0bc351494fee1"
+    },
+    {
+      "bytes": 1000041,
+      "path": "results/spectral-transplant/dense/muon-lr1e-3/checkpoint-2345/sample_metrics.jsonl",
+      "sha256": "bd98e17d14ff2c3ea699ca4fbf006cfe986d083dfb438335a8c089662bee6975"
+    },
+    {
+      "bytes": 999473,
+      "path": "results/spectral-transplant/dense/muon-lr1e-3/checkpoint-3907/sample_metrics.jsonl",
+      "sha256": "e0094e8e93a43828f2251f39d34d7c87fc6c8b2c18c17b89a569dacdd1f03352"
+    },
+    {
+      "bytes": 998997,
+      "path": "results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-782/sample_metrics.jsonl",
+      "sha256": "5ab3baa412428cec9148ac4bfc5c71f45e2bf1e67d137f16e0fde2bf8ef1c288"
+    },
+    {
+      "bytes": 1000023,
+      "path": "results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-2345/sample_metrics.jsonl",
+      "sha256": "8105c2ea36b209647c495e97ffbb3f0c56e1aad639b34c9e1113e98555a52532"
+    },
+    {
+      "bytes": 998897,
+      "path": "results/spectral-transplant/dense/normuon-lr1e-3/checkpoint-3907/sample_metrics.jsonl",
+      "sha256": "7a8060a46b77c9960135e361011dc197e17ae8fe09ffd008f283ba61d370680a"
+    }
+  ],
+  "status": "complete",
+  "supported": false
+}

@@ -1,3 +1,5 @@
+formal_runtime: formal_runtime.json
+
 common:
   dataset_path: data/denseon-sft-500k-seed42
   output_root: outputs
@@ -27,24 +29,9 @@ models:
 
 # Four learning-rate points per optimizer. Muon/NorMuon use AdamW at 3e-6 for
 # embeddings, heads, norms, and biases; the listed LR applies only to hidden 2D matrices.
+# The list order is also the execution order. Muon runs first so its long-running
+# PyLate/CUDA path is exercised early; this does not change the experiment matrix.
 optimizers:
-  - id: adamw-lr1e-6
-    name: adamw
-    lr: 1.0e-6
-    weight_decay: 0.01
-  - id: adamw-lr3e-6
-    name: adamw
-    lr: 3.0e-6
-    weight_decay: 0.01
-  - id: adamw-lr1e-5
-    name: adamw
-    lr: 1.0e-5
-    weight_decay: 0.01
-  - id: adamw-lr3e-5
-    name: adamw
-    lr: 3.0e-5
-    weight_decay: 0.01
-
   - id: muon-lr1e-4
     name: muon
     lr: 1.0e-4
@@ -77,6 +64,23 @@ optimizers:
     momentum: 0.95
     ns_steps: 5
     adjust_lr_fn: original
+
+  - id: adamw-lr1e-6
+    name: adamw
+    lr: 1.0e-6
+    weight_decay: 0.01
+  - id: adamw-lr3e-6
+    name: adamw
+    lr: 3.0e-6
+    weight_decay: 0.01
+  - id: adamw-lr1e-5
+    name: adamw
+    lr: 1.0e-5
+    weight_decay: 0.01
+  - id: adamw-lr3e-5
+    name: adamw
+    lr: 3.0e-5
+    weight_decay: 0.01
 
   - id: normuon-lr1e-4
     name: normuon

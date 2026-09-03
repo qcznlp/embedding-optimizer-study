@@ -1,0 +1,107 @@
+{
+  "confirmatory_data": {
+    "negative_pool": {
+      "ledger_sha256": "235bbf9e14da26d58aece0797fbd6cd5c461d76de8219e79b16b113d9fcf1d3c",
+      "manifest_sha256": "e434d82b6837e8041d0635ec585b6d875bfff473878d03a7622f8c47c73e170f",
+      "path": "data/confirmatory-negative-pools",
+      "rows": 500000,
+      "source_rescanned": false,
+      "sources": {
+        "fever": 52489,
+        "fiqa": 2629,
+        "hotpotqa": 40630,
+        "msmarco": 240405,
+        "nq": 72725,
+        "squadv2": 62244,
+        "trivia": 28878
+      }
+    },
+    "protocol": {
+      "bytes": 2570,
+      "path": "configs/confirmatory_protocol.json",
+      "sha256": "f512e98ec07635c82ce9af6b6c8ed745146c4dc34379efb78b583b33bf53e550"
+    },
+    "query_positive_identity_sha256": "e2f95eefc78c8362bc5c57d90c704756fcea2f2375301f074213205df20ae790",
+    "schema_version": 1,
+    "status": "complete",
+    "views": [
+      {
+        "dataset_fingerprint": "9d966b7fc5642163",
+        "manifest_sha256": "39e2fd9b43b5274697bf850332663807f816c4abb4db585c2929a184427f5a9d",
+        "path": "data/confirmatory-500k-seed314159",
+        "query_positive_identity_sha256": "e2f95eefc78c8362bc5c57d90c704756fcea2f2375301f074213205df20ae790",
+        "row_ledger_sha256": "8c2c98bda9a86132a66b1ff8e22ccc8d31ef6d882608d2589bf097c001b586ad",
+        "rows": 500000,
+        "seed": 314159,
+        "training_view_fingerprint": "f936574309563b16"
+      },
+      {
+        "dataset_fingerprint": "3e876a77982f6e63",
+        "manifest_sha256": "8646456a4fb6576d5bdf25949a7d43a2e0c3589c0c706b434d7cca7b4c8fa1e4",
+        "path": "data/confirmatory-500k-seed271828",
+        "query_positive_identity_sha256": "e2f95eefc78c8362bc5c57d90c704756fcea2f2375301f074213205df20ae790",
+        "row_ledger_sha256": "bc2171308102bdb786e1ea3568877c2000b6d88879be4d150a6a35f2ab1410cf",
+        "rows": 500000,
+        "seed": 271828,
+        "training_view_fingerprint": "77a947239be1683a"
+      },
+      {
+        "dataset_fingerprint": "c82e3781917f30a0",
+        "manifest_sha256": "94c9a2dde2a259a40c9fb2fe514128cf22253d580e95c8fb59fff773dd50e0ce",
+        "path": "data/confirmatory-500k-seed161803",
+        "query_positive_identity_sha256": "e2f95eefc78c8362bc5c57d90c704756fcea2f2375301f074213205df20ae790",
+        "row_ledger_sha256": "bd775d005f6308aaef08c93ad0a967e8c470dd346135c7afd636f68a10e6d45b",
+        "rows": 500000,
+        "seed": 161803,
+        "training_view_fingerprint": "eedf46f9e4ec3628"
+      }
+    ]
+  },
+  "expected_runs": 18,
+  "matrices": [
+    {
+      "bytes": 3206,
+      "path": "/root/embedding-optimizer-study/configs/generated/confirmatory/seed314159.yaml",
+      "sha256": "b5b6ffb5c264a2ad7b29d9d2c285db674bee0a1b8733de725eff5df8f0dceb9b"
+    },
+    {
+      "bytes": 3206,
+      "path": "/root/embedding-optimizer-study/configs/generated/confirmatory/seed271828.yaml",
+      "sha256": "3c22986b39479c637a6dec713f90b5b0d0d62e77b6ca8d25205a60f3c3542686"
+    },
+    {
+      "bytes": 3206,
+      "path": "/root/embedding-optimizer-study/configs/generated/confirmatory/seed161803.yaml",
+      "sha256": "3d1e5e4ab21750e276373e93878ee66bbf3cc179ee6239e53c34ac9d1b7f853f"
+    }
+  ],
+  "protocol": {
+    "bytes": 2570,
+    "path": "/root/embedding-optimizer-study/configs/confirmatory_protocol.json",
+    "sha256": "f512e98ec07635c82ce9af6b6c8ed745146c4dc34379efb78b583b33bf53e550"
+  },
+  "recipe_selection": {
+    "bytes": 5412,
+    "path": "/root/embedding-optimizer-study/reports/recipe-validation/recipe_selection.json",
+    "sha256": "1eeb4e9f9781bb8374783c395f426605876b7ca7370ad8fcb15a3cb0b92a958d"
+  },
+  "recipe_selection_status": "complete",
+  "runs_per_seed": 6,
+  "schema_version": 1,
+  "seeds": [
+    314159,
+    271828,
+    161803
+  ],
+  "source_matrix": {
+    "bytes": 2624,
+    "path": "/root/embedding-optimizer-study/configs/experiment.yaml",
+    "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+  },
+  "status": "complete",
+  "validation_spec": {
+    "bytes": 5180,
+    "path": "/root/embedding-optimizer-study/configs/validation_probe.json",
+    "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+  }
+}

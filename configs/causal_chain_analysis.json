@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "status": "frozen_explanatory_causal_chain_before_randomized_branch_or_spectral_transplant_outputs",
+  "frozen_at_utc": "2026-08-31T00:28:33Z",
+  "family": "dense",
+  "source_bindings": [
+    {
+      "path": "configs/short_branch_protocol.json",
+      "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+    },
+    {
+      "path": "configs/spectral_transplant_intervention.json",
+      "sha256": "c80709158e0d9b2d83b6fd24240cf05e32bec272087d71e91bda2ac76b19a36b"
+    },
+    {
+      "path": "configs/dense_scope_amendment.json",
+      "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+    },
+    {
+      "path": "configs/validation_probe.json",
+      "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+    },
+    {
+      "path": "configs/beir_representation_probe.json",
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    {
+      "path": "configs/retrieval_dynamics_protocol.json",
+      "sha256": "48b1c8615e8e1fa9d5e9df335141edabeb27656b3761e25121d6281b02f03086"
+    },
+    {
+      "path": "configs/experiment.yaml",
+      "sha256": "c09c7b458e0ff4beb5625e6ebd09af27d732c77d3810e822c1b8970fb251fb8e"
+    },
+    {
+      "path": "configs/common_state_probe.json",
+      "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+    }
+  ],
+  "freeze_context": {
+    "exploratory_common_state_geometry_visible": true,
+    "exploratory_local_global_reversal_visible": true,
+    "exploratory_tail_redistribution_visible": true,
+    "short_branch_training_or_probe_results_available": false,
+    "spectral_transplant_results_available": false,
+    "confirmatory_beir_results_available": false,
+    "hybrid_adamw_completed_runs": 3,
+    "hybrid_adamw_expected_runs": 4,
+    "note": "The mechanism was proposed after exploratory geometry and tail results were inspected. The predictor, negative-control, held-out-prediction, monotonicity, and falsification rules below were frozen before any randomized shared-start branch, spectral-transplant, or new-seed confirmatory outcome existed."
+  },
+  "amendments": [
+    {
+      "amended_at_utc": "2026-08-31T00:35:17Z",
+      "previous_protocol_sha256": "74d92cf270bf1a1006cad7f2ed17705631adf44899fd31c4d23ee1f6632da9fa",
+      "short_branch_results_available": false,
+      "spectral_transplant_results_available": false,
+      "confirmatory_beir_results_available": false,
+      "reason": "Correct the forward bridge to use only anchors with two already-audited adjacent discovery BEIR checkpoints. The pretrained anchor has no local full-BEIR baseline and final checkpoints have no successor; neither may be assigned a synthetic outcome. No predictor, outcome, threshold, or observed result changed."
+    },
+    {
+      "amended_at_utc": "2026-08-31T00:36:27Z",
+      "previous_protocol_sha256": "20758007b4a0754e416f11ac74d55c01432d95ad97dbfdd7fdbb89038eef1037",
+      "short_branch_results_available": false,
+      "spectral_transplant_results_available": false,
+      "confirmatory_beir_results_available": false,
+      "reason": "Make the already-declared entropy effective-rank metric algebraically exact and consistent with the frozen common-state spectrum analysis: Shannon probabilities are normalized singular values, while head/middle/tail energy continues to use squared singular values."
+    },
+    {
+      "amended_at_utc": "2026-08-31T00:46:49Z",
+      "previous_protocol_sha256": "cd881dd66804b49a6897ec56a3a31216f4c15ad4449607d47486b25214d337b6",
+      "short_branch_results_available": false,
+      "spectral_transplant_results_available": false,
+      "confirmatory_beir_results_available": false,
+      "reason": "Correct the forward-retrieval cross-validation prose from three transitions per held-out run to the two frozen eligible transitions (stage1-to-stage2 and stage3-to-stage4). Expected rows, predictors, outcomes, thresholds, and analysis code are unchanged."
+    }
+  ],
+  "temporal_short_branch": {
+    "randomized_units": {
+      "seeds": [314159, 271828, 161803],
+      "operators": ["adamw", "muon", "normuon"],
+      "reference": "adamw",
+      "challengers": ["muon", "normuon"],
+      "shared_start_fraction": 0.6,
+      "expected_runs": 9,
+      "expected_checkpoints": 45
+    },
+    "predictor_extraction": {
+      "checkpoint_stages": [1, 2, 3, 4, 5],
+      "displacement": "stage1 minus shared start; every later stage minus the immediately preceding branch checkpoint",
+      "tensor_selector": "parameter_partition_name(name, ndim) == hidden",
+      "expected_hidden_tensors": 88,
+      "expected_hidden_parameters": 110297088,
+      "decomposition": "torch.linalg.svdvals exact economy spectrum",
+      "compute_dtype": "float32",
+      "row_norm_axis": 1,
+      "band_boundaries": {
+        "head": [0.0, 0.25],
+        "middle": [0.25, 0.75],
+        "tail": [0.75, 1.0],
+        "rounding": "nearest integer boundaries with complete disjoint coverage"
+      },
+      "per_tensor_metrics": {
+        "update_stable_rank_fraction": "stable rank divided by min(rows, columns)",
+        "update_entropy_rank_fraction": "exp(-sum_i p_i log p_i) divided by min(rows, columns), with p_i = singular_value_i / sum_j singular_value_j",
+        "update_head_energy_fraction": "fraction of squared singular values in the head band",
+        "update_middle_energy_fraction": "fraction of squared singular values in the middle band",
+        "update_tail_energy_fraction": "fraction of squared singular values in the tail band",
+        "update_row_norm_cv": "population standard deviation divided by mean row norm"
+      },
+      "tensor_aggregation": "trainable-parameter-count-weighted arithmetic mean over all selected hidden matrices",
+      "global_negative_controls": {
+        "update_frobenius_norm": "root sum square of the selected hidden-matrix displacement norms",
+        "weight_frobenius_norm": "root sum square of the current selected hidden-matrix weight norms"
+      },
+      "output_rows": 45
+    },
+    "analysis": {
+      "early_predictor_stages": [1, 2],
+      "early_aggregation": "arithmetic mean within seed and operator",
+      "final_outcome_stage": 5,
+      "primary_predictor": "update_tail_energy_fraction",
+      "secondary_predictors": [
+        "update_stable_rank_fraction",
+        "update_entropy_rank_fraction",
+        "update_head_energy_fraction",
+        "update_middle_energy_fraction",
+        "update_row_norm_cv"
+      ],
+      "negative_controls": ["update_frobenius_norm", "weight_frobenius_norm"],
+      "outcomes": {
+        "validation_loss_p95": "lower_is_better",
+        "unseen_margin_p05": "higher_is_better"
+      },
+      "contrasts": ["muon-minus-adamw", "normuon-minus-adamw"],
+      "prediction": "leave-one-seed-out ordinary least squares on paired contrasts, with every held-out seed contributing both challenger contrasts",
+      "label_only_baseline": "challenger-specific mean outcome contrast in the two training seeds",
+      "mediator_model": "intercept plus challenger indicator plus training-fold-standardized single predictor",
+      "coefficient_shrinkage": "descriptive absolute optimizer-indicator coefficient reduction after adding one standardized predictor to the nine randomized units",
+      "primary_support_rule": {
+        "treatment_shift": "the primary predictor contrast is positive for both challengers in at least two of three seeds",
+        "outcome_shift": "both final outcomes favor each challenger in at least two of three seeds",
+        "held_out_prediction": "the primary predictor improves pooled LOSO RMSE over the label-only baseline for both outcomes",
+        "negative_control": "neither frozen norm control equals or exceeds the primary predictor's LOSO RMSE improvement on either outcome",
+        "coefficient_behavior": "the primary predictor does not increase the absolute Muon or NorMuon treatment coefficient for either outcome",
+        "decision": "all conditions are required; otherwise the spectral temporal bridge is not supported"
+      },
+      "reporting_rule": "Report every predictor and negative control regardless of sign; secondary predictors cannot replace a failed primary predictor in the headline claim."
+    },
+    "claim_boundary": "The shared-start randomization identifies optimizer-level accumulated effects. The post-treatment spectral predictor analysis is a small-sample, falsifiable causal-chain triangulation, not a formally identified causal mediation estimate."
+  },
+  "dose_band": {
+    "anchor_scope": {
+      "selection": "all ten frozen DenseOn common-state anchors",
+      "expected_anchors": 10,
+      "source_runs": ["adamw-lr1e-5", "muon-lr1e-3", "normuon-lr1e-3"],
+      "anchor_fractions": [0.0, 0.2, 0.6, 1.0]
+    },
+    "dose_response": {
+      "basis": "adamw",
+      "lambdas": [0.0, 0.25, 0.5, 0.75, 1.0],
+      "conditions": [
+        "adamw-native",
+        "adam-basis__spectrum-lambda-0.25",
+        "adam-basis__spectrum-lambda-0.50",
+        "adam-basis__spectrum-lambda-0.75",
+        "adam-basis__muon-spectrum"
+      ],
+      "primary_metrics": {
+        "p95_pairwise_loss_contrast": "nonincreasing",
+        "p05_pairwise_margin_contrast": "nondecreasing"
+      },
+      "anchor_monotonicity": "all four adjacent lambda differences satisfy the declared weak monotone direction with no outcome-dependent tolerance",
+      "support_threshold": "at least 8 of 10 anchors are monotone for each primary metric"
+    },
+    "band_localization": {
+      "prespecified_band": "tail",
+      "conditions": {
+        "head": "adam-basis__muon-head-spectrum",
+        "middle": "adam-basis__muon-middle-spectrum",
+        "tail": "adam-basis__muon-tail-spectrum"
+      },
+      "support_rule": "the tail transplant has the most favorable primary loss and margin contrast among the three bands in at least 8 of 10 anchors"
+    },
+    "basis_negative_control": {
+      "spectrum_condition": "adam-basis__muon-spectrum",
+      "basis_condition": "muon-basis__adam-spectrum",
+      "support_rule": "the spectrum condition is more favorable than the basis condition for both primary metrics in at least 8 of 10 anchors"
+    },
+    "forward_retrieval_bridge": {
+      "task_groups": 14,
+      "eligible_anchor_transitions": {
+        "stage1": "stage1 to stage2 within source run",
+        "stage3": "stage3 to stage4 within source run",
+        "excluded": "the pretrained anchor has no local full-BEIR baseline and stage5 anchors have no forward checkpoint; both remain in the ten-anchor local intervention tests but are excluded from forward prediction"
+      },
+      "expected_anchor_run_transitions": 6,
+      "expected_rows": 84,
+      "retrieval_outcome": "same-task next-checkpoint minus anchor-checkpoint decontaminated BEIR nDCG@10",
+      "immediate_predictors": [
+        "task_group_mean_loss_contrast_for_adam-basis__muon-spectrum",
+        "task_group_mean_margin_contrast_for_adam-basis__muon-spectrum"
+      ],
+      "negative_control_predictors": [
+        "task_group_mean_loss_contrast_for_muon-basis__adam-spectrum",
+        "task_group_mean_margin_contrast_for_muon-basis__adam-spectrum"
+      ],
+      "cross_validation": "leave one complete source run out, holding out all fourteen tasks and both eligible transitions for that run",
+      "baseline_model": "ordinary least squares with task and transition categorical effects fitted on the two training runs",
+      "predictor_model": "the same baseline plus one training-fold-standardized immediate intervention predictor",
+      "support_rule": "at least one prespecified spectrum predictor improves pooled held-out RMSE over baseline, and its matched basis negative control does not equal or exceed that improvement"
+    },
+    "overall_decision": "The spectral-component explanation is supported only if dose response, tail-band localization, basis negative control, and forward retrieval bridge all pass. Failure of the forward bridge limits the conclusion to an immediate fixed-state optimization effect even if all local intervention tests pass.",
+    "claim_boundary": "The transplant randomizes spectral components at fixed weights and can identify immediate functional effects. Its task-aligned forward prediction is out-of-run evidence for a causal-chain bridge, but it is not a trained spectral-operator intervention and cannot by itself identify formal mediation of final BEIR gains."
+  }
+}

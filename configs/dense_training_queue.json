@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "status": "frozen_before_dense_confirmatory_or_short_branch_training",
+  "frozen_at_utc": "2026-08-30T20:14:42Z",
+  "family": "dense",
+  "scope_amendment": {
+    "path": "configs/dense_scope_amendment.json"
+  },
+  "source_bindings": [
+    {
+      "path": "configs/generated/confirmatory/seed161803.yaml",
+      "sha256": "3d1e5e4ab21750e276373e93878ee66bbf3cc179ee6239e53c34ac9d1b7f853f"
+    },
+    {
+      "path": "configs/generated/confirmatory/seed271828.yaml",
+      "sha256": "3c22986b39479c637a6dec713f90b5b0d0d62e77b6ca8d25205a60f3c3542686"
+    },
+    {
+      "path": "configs/generated/confirmatory/seed314159.yaml",
+      "sha256": "b5b6ffb5c264a2ad7b29d9d2c285db674bee0a1b8733de725eff5df8f0dceb9b"
+    },
+    {
+      "path": "configs/generated/short-branch/seed161803.yaml",
+      "sha256": "766cb25e05d163c687c4e48ddc2ce32dde133ad3c1c40aed818f5d95f7bb2c28"
+    },
+    {
+      "path": "configs/generated/short-branch/seed271828.yaml",
+      "sha256": "87c516dc17768f97a78c706fdab1830ddaf267155142d4d0277614ea7fa230ea"
+    },
+    {
+      "path": "configs/generated/short-branch/seed314159.yaml",
+      "sha256": "d81e73ede16402d148ca57f4db446e4ce8af30eebcc1f16398cd2f3bad20723b"
+    }
+  ],
+  "expected": {
+    "confirmatory_runs": 9,
+    "short_branch_runs": 9,
+    "total_runs": 18
+  },
+  "pools": {
+    "a": [
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed314159.yaml",
+        "run_id": "adamw-selected"
+      },
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed271828.yaml",
+        "run_id": "muon-selected"
+      },
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed271828.yaml",
+        "run_id": "normuon-selected"
+      },
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed161803.yaml",
+        "run_id": "adamw-selected"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed314159.yaml",
+        "run_id": "adamw-scale-matched"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed314159.yaml",
+        "run_id": "muon-scale-matched"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed314159.yaml",
+        "run_id": "normuon-scale-matched"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed271828.yaml",
+        "run_id": "adamw-scale-matched"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed161803.yaml",
+        "run_id": "adamw-scale-matched"
+      }
+    ],
+    "b": [
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed314159.yaml",
+        "run_id": "muon-selected"
+      },
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed314159.yaml",
+        "run_id": "normuon-selected"
+      },
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed271828.yaml",
+        "run_id": "adamw-selected"
+      },
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed161803.yaml",
+        "run_id": "muon-selected"
+      },
+      {
+        "phase": "confirmatory",
+        "matrix": "configs/generated/confirmatory/seed161803.yaml",
+        "run_id": "normuon-selected"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed271828.yaml",
+        "run_id": "muon-scale-matched"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed271828.yaml",
+        "run_id": "normuon-scale-matched"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed161803.yaml",
+        "run_id": "muon-scale-matched"
+      },
+      {
+        "phase": "short-branch",
+        "matrix": "configs/generated/short-branch/seed161803.yaml",
+        "run_id": "normuon-scale-matched"
+      }
+    ]
+  }
+}

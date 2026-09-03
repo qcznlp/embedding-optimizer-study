@@ -1,0 +1,500 @@
+{
+  "complete": true,
+  "coverage": {
+    "bridge_rows": 45,
+    "checkpoints": 45,
+    "paired_checkpoint_contrasts": 45,
+    "paired_dynamics_summaries": 60,
+    "runs": 9,
+    "system_rows": 9,
+    "training_history_rows": 360,
+    "validation_group_rows": 315
+  },
+  "evaluation_counts": {
+    "unseen_probe_complete": 46,
+    "unseen_probe_expected": 46,
+    "validation_complete": 45,
+    "validation_expected": 45
+  },
+  "families": [
+    "dense"
+  ],
+  "interpretation": "These shared-start, scale-calibrated branches test accumulated optimizer-direction effects on frozen functional probes; they are not a second full-corpus BEIR study.",
+  "matrix_manifest": {
+    "path": "/root/embedding-optimizer-study/configs/generated/short-branch/manifest.json",
+    "sha256": "251aa120c1356ef26683c604c7aba12bc71c090235d2c4be4ef3154d72956022"
+  },
+  "outputs": {
+    "mechanism_bridge": {
+      "bytes": 12968,
+      "path": "/root/embedding-optimizer-study/reports/short-branch/mechanism_bridge.csv",
+      "rows": 45,
+      "sha256": "8ca791f349be246d0ead2dcc0157c9fb6f0f8871c5b8d9a6b0ab37375bf11748"
+    },
+    "paired_contrasts": {
+      "bytes": 5113,
+      "path": "/root/embedding-optimizer-study/reports/short-branch/paired_checkpoint_contrasts.csv",
+      "rows": 45,
+      "sha256": "943895cb1c0190175d4b3c71a888f0b83a337175c3cd9c9b0d1ccc01e600ff75"
+    },
+    "paired_summary": {
+      "bytes": 6103,
+      "path": "/root/embedding-optimizer-study/reports/short-branch/paired_dynamics_summary.csv",
+      "rows": 60,
+      "sha256": "9b273b6886d63cea12c5fb74bdf7d379011203e5219c16b05db6a03013a56d07"
+    },
+    "system_metrics": {
+      "bytes": 3211,
+      "path": "/root/embedding-optimizer-study/reports/short-branch/system_metrics.csv",
+      "rows": 9,
+      "sha256": "0c5186d559d0e85b48f8b1a58e27ac8f15f55aac894c83511f9fb655562ea32d"
+    },
+    "training_history": {
+      "bytes": 52269,
+      "path": "/root/embedding-optimizer-study/reports/short-branch/training_history.csv",
+      "rows": 360,
+      "sha256": "5c9df024760ba7fb05cef2ccd5ab17736082dc6705aa3fd44fb6ff8fb23ffc2f"
+    },
+    "validation_checkpoints": {
+      "bytes": 9716,
+      "path": "/root/embedding-optimizer-study/reports/short-branch/validation_checkpoint_metrics.csv",
+      "rows": 45,
+      "sha256": "9c979361c2b2bf60c2820f7c24c1d4eba16fbfc5bd9d8cc1fc064b752b5d2118"
+    },
+    "validation_groups": {
+      "bytes": 70661,
+      "path": "/root/embedding-optimizer-study/reports/short-branch/validation_group_metrics.csv",
+      "rows": 315,
+      "sha256": "76e6ba3ac5f5f942db564b8625de692fb196535792687129601c499af0239f56"
+    }
+  },
+  "protocol": {
+    "path": "/root/embedding-optimizer-study/configs/short_branch_protocol.json",
+    "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+  },
+  "representation_summary": {
+    "path": "/root/embedding-optimizer-study/reports/short-branch/unseen-representation/summary_manifest.json",
+    "sha256": "3a6599522fa4eeb844ee30507279f802290b4ea0527960232721126021ab94fd",
+    "valid_jobs": 46
+  },
+  "schema_version": 1,
+  "scope_amendment": {
+    "amended_at_utc": "2026-08-30T20:14:42Z",
+    "claim_boundary": "The scope reduction is post hoc and must be disclosed in the paper and blog. Confirmatory optimizer claims are DenseOn-only. Existing LateOn discovery and mechanism artifacts remain available for audit but cannot supply missing controls or be selectively promoted as confirmatory evidence.",
+    "path": "configs/dense_scope_amendment.json",
+    "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
+    "status": "user_directed_post_hoc_scope_amendment"
+  },
+  "training_audits": {
+    "161803": {
+      "dataset": {
+        "dataset_fingerprint": "64decab17168850e",
+        "manifest_sha256": "eee88aa0ef11cd43343dc4f40d1385b6829d7e1d4887ab406724849dbaa21bb0",
+        "path": "data/short-branch-50k-seed20260826",
+        "quotas": {
+          "fever": 5249,
+          "fiqa": 263,
+          "hotpotqa": 4063,
+          "msmarco": 24041,
+          "nq": 7272,
+          "squadv2": 6224,
+          "trivia": 2888
+        },
+        "rows": 50000,
+        "selected_sample_ids_sha256": "a05f02c97a299abe43f43ee5452339cb381c62a43acabb89bba1696de27892a4",
+        "status": "complete",
+        "training_view_fingerprint": "e81fd6c781b2e990"
+      },
+      "training": {
+        "complete": true,
+        "deep_validation": true,
+        "derived_dataset_rows": 50000,
+        "derived_training_view_fingerprint": "e81fd6c781b2e990",
+        "errors": [],
+        "expected_checkpoints": 15,
+        "expected_runs": 3,
+        "verified_checkpoints": 15,
+        "verified_runs": 3
+      }
+    },
+    "271828": {
+      "dataset": {
+        "dataset_fingerprint": "64decab17168850e",
+        "manifest_sha256": "eee88aa0ef11cd43343dc4f40d1385b6829d7e1d4887ab406724849dbaa21bb0",
+        "path": "data/short-branch-50k-seed20260826",
+        "quotas": {
+          "fever": 5249,
+          "fiqa": 263,
+          "hotpotqa": 4063,
+          "msmarco": 24041,
+          "nq": 7272,
+          "squadv2": 6224,
+          "trivia": 2888
+        },
+        "rows": 50000,
+        "selected_sample_ids_sha256": "a05f02c97a299abe43f43ee5452339cb381c62a43acabb89bba1696de27892a4",
+        "status": "complete",
+        "training_view_fingerprint": "e81fd6c781b2e990"
+      },
+      "training": {
+        "complete": true,
+        "deep_validation": true,
+        "derived_dataset_rows": 50000,
+        "derived_training_view_fingerprint": "e81fd6c781b2e990",
+        "errors": [],
+        "expected_checkpoints": 15,
+        "expected_runs": 3,
+        "verified_checkpoints": 15,
+        "verified_runs": 3
+      }
+    },
+    "314159": {
+      "dataset": {
+        "dataset_fingerprint": "64decab17168850e",
+        "manifest_sha256": "eee88aa0ef11cd43343dc4f40d1385b6829d7e1d4887ab406724849dbaa21bb0",
+        "path": "data/short-branch-50k-seed20260826",
+        "quotas": {
+          "fever": 5249,
+          "fiqa": 263,
+          "hotpotqa": 4063,
+          "msmarco": 24041,
+          "nq": 7272,
+          "squadv2": 6224,
+          "trivia": 2888
+        },
+        "rows": 50000,
+        "selected_sample_ids_sha256": "a05f02c97a299abe43f43ee5452339cb381c62a43acabb89bba1696de27892a4",
+        "status": "complete",
+        "training_view_fingerprint": "e81fd6c781b2e990"
+      },
+      "training": {
+        "complete": true,
+        "deep_validation": true,
+        "derived_dataset_rows": 50000,
+        "derived_training_view_fingerprint": "e81fd6c781b2e990",
+        "errors": [],
+        "expected_checkpoints": 15,
+        "expected_runs": 3,
+        "verified_checkpoints": 15,
+        "verified_runs": 3
+      }
+    }
+  },
+  "validation_sources": [
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "2e6a31dbbf7d25fc037a45e250081c8170ffc95ba4a0495221cc4f0008724b5f",
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "d01e13cf46f5ebcb76ce58cc57abe6ee2e3afd52b01b8b66b3c71a4fdcb84679"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "89b2992bc7ee6b982607dd90bc30b4fae0df5c36f3b1f7e9873efb0a1af2e535",
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "e312f41239b55074a6a9395a5be6dc36def7ee011764db7c87b87ee2cbe98c41"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "09148472b3706090d2e70c94c28cd18dba903f5ed9327bd224c6c2be377075c4",
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "28d8ccc8a7ee45300c4f1d450bba5edce20930b95b3893bf1ef6e3a18ef925ef"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "0a5b1cb2da3fae2892fae8e3a082e0126c6063c191213ef76118383a64e4e939",
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "37a50f73582444e78f32da375028a26b468ff5f126f3eeaca65b5118248bda8d"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "4c4863738ae88a5a383592e387e4978d1586c9c8fded57bd2f8057e698255ce0",
+      "label": "dense/seed161803/adamw-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/adamw-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "698edc65d0073a9a4cda109708441cc40617a9a9c7d16b42ccc74ccd5bda3d75"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "86f5db37c0d5fd3d9c37015956fe5a9932e22580714ca7d7d8dc465b3efa072b",
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "d813d31cd316e5c4d7aa6d308e1244b2d334b85db3c5952188bd87163db1c503"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "3344db67b5ba43c05af381440aee88b50f1b8e3e15f01d8ea3ec0423fc3f8308",
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "1e2412461e7e768cbb008aa971ee4513be9010dbf3bad11e0888e7a31216d778"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "c848abe5b3f995af555923d93844fa2732ee2df3e443c57895376eec3b49e13d",
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "bcc30a642d2484a1322c3cddac3cd0ed62e979fccc53a64f7182b2573803a66f"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "5b486ba44f148bd49e4dc247de152ba85c6860fe702752814fb8fc2194f69109",
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "d254062f55fd90bc437d68bead17c1f3d4f8bf6a3b2dfddd3148306c40ea65a7"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "6ca066cbfa17c6f1f77757c229c29c7b7de0e425fc7df2fb0afc53d655a5c9d7",
+      "label": "dense/seed161803/muon-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/muon-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "08278e5afa4984a796f154772b762d8e90fefdafec4fd4de2ab771c723cd08bb"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "c48bd609c1096470b82827858dea7448d5e9b1fcf6d9e4bc870aa3898a1d0dbc",
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "d8d87ba4d0a32f1337acf79b310b29d28cc8c9652784b33f8a577f56a5dc8919"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "77079b0cd361b558dd5a7f81f4a7968ad89e5ac869692ec66d30b19c5bffe7f7",
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "2ec7bd1bb8e1112075bf1a377c952ab70a92b314546e0de9c9646d37b7b60c89"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "18514f8bb1e4d0b89e217c85b9c6b0841627a3a1c9fe716936c65262665b2df7",
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "b8a448212952ca22410790e19aaf190cd14dcd54b342978615388fd71fb7fa91"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "b444d97f0402a1b6f12f663c9bb5de10410aa61d7bf7f1b48a82c83abb67a840",
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "822fc183ff84aa3482fdaaa17f202714ae144dfbc4304124048edb424c9037ab"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "cd59765e488a7c10ea87ff74ac15870012f3c2f22dd86d34238c9135adb7ce5b",
+      "label": "dense/seed161803/normuon-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed161803/dense/normuon-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "81927dedf467325d2166a71d00cf6758f15b7f64cac1db9bb0cce48381c94702"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "e39a9d585cb2f69b2ffed0634bf13014a13eefb7bd1cc8a3ae8890cdcecf57aa",
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "04918eb269b0ed902fb8839abcae0c17e295830773c368f11399da44f813daef"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "04ac19573830da5e4f0f85750f5f8141bea024cd6c9b9c11da8c07612dd4061a",
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "3b34e86eb4f6c3e2d92126a0c81016aa991273a89fe1228c65eea5515a6dd102"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "f8b98bd5337317766c9e209798720a4624677d9353adcbea47feacbadff6eb3e",
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "5edc558053f4090a8308bb62c0fb630e8195780b3b194da0386308ecb6e594c0"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "b35e2ce9e985295badbe0f5264ca4221f64b25342210432a61c12094a871d734",
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "acbcca03525ec21c5da31dbd5ed8ca7f91813ec549581904a4db05313d8e32ea"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "0eb62c7a8e8d863cc814a22176a0fa886babbb66f461a06fcd3ea702c8d72c80",
+      "label": "dense/seed271828/adamw-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/adamw-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "18ba28af953bb0e0d159240b751dfdfd3e9859474dd7297b4ca4e2ef03ccb498"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "bcbe643b0d2cff3096bba36c3d4c6a341c212017eefbc887ac05286e2e5cf335",
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "f45f40989042d44d82e12f117e7b85bacf2bc7b32652ab0f2f8d064aaab9a179"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "a0b7c9ed9c71216d0e00933cb203d9c6f6736c0c685cb5a8a63e37c6f207bb7f",
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "421ccde33c93a9be045c4b5bc67e79a729a6b49c8d149ba311612e7ef04cb7a1"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "b363a99cd10ee6fc560926e30a5aca130758a645963843baa8004225e56141fb",
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "df16e2e770e8a5c5ea988410dbc9d6ce9ee20480f9480842bbf53c40ab241abd"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "100b92dbff488a17d2998d9d7f79df8828366ff746abb4cf87dc42ee6222ed1e",
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "d7bbcc6b5746dd52d4fc628a450cf6cb5d578121e0c644517a07d3570cc9cdde"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "763ea7c416ee72648fd6664dd3094a8749d24e7508d5f9a55e40d2becbd9c2d7",
+      "label": "dense/seed271828/muon-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/muon-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "96f6d6e0edb44d0331a36c37989d1b76c7e951c3baa9f8b2155b45d3c0b96ee1"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "89546695249455bafd7cf4a6f30419d83f081ddb9c67b0228760e4372681d5bc",
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "5202381bc66e61bfd63f225e018d6d57c84e7d5d69d76094f7b80b43ade30a97"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "55be7a24bb5d793c204513273f374b75620b57fb799611b78b684da3c69affb1",
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "8d887df354529c78b81403db1057ec9a053e61b798949f0b60d12272cec50e22"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "07d732df28617878c94eabe80f14d5a937abda4a58e7e07a64f59e80245e58e6",
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "922f28084862bc5489ae650a59f2a18c6b654c0a4ef31b881a9a6206bbd3ec7f"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "f33747c342db7ee3e11d2d69360acb8f6abf538deef6e3465cee78bd5ee00326",
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "7843a6dd264df9344f7bc57973b1ce5559ba53b06fd204c3e5702ab99195d3e6"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "6de52b1be19ecafac4d8c3f44bc4917304b4329229172d70576959ea98970865",
+      "label": "dense/seed271828/normuon-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed271828/dense/normuon-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "bc935a7f7bed7f9edfb72beb261dc7de972005cf1a28f251f9261c1c23cb7cd4"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "31c1631c06e07ccf1ca7c93289a3802167a5bc70fe5d15f80b12e3a430a41fd8",
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "5ddbc5d51a1125e42fdbf3b0348fd3e37ad8870814bbd6e3ab210de46f47a0a5"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "19d06a7bfd07eb27704c8d0e6ccf45a75ac1104d8ca15e7c386c4412acf2d0ff",
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "bc613768e8591baf73963866df0d71b9626a17772db89d7c11103365735b7c86"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "ed7e1b240a37d44906508ffad114c7bf45aa10d919b41058269b0aeea64fbb9b",
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "e9596485588cc52683506c4b773bf87c259eacfb0773efbd43023737d15b6c7a"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "862fce5802f7a58e97999f2c909719d068d058263634f4044759ffa38b7e4dbd",
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "064cb2663517b3ecbba873713e543bd2a14f649025441f1ba9bcdbd887bba27c"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "4094c733ad02d996acef72a9062945fc33ea8e4bfa593d3e50a18386068df0be",
+      "label": "dense/seed314159/adamw-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/adamw-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "a114ce29870b4fee185db94fd3630ffab688d33e26e759bb2c42596c65a9ab48"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "e7c50fa84014218b60993fa298c1a8ab203638547fbed1dee156b5208eabdac3",
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "90d6ca79908234c2ea44cf1d0d424354bc4ded8b9b73c3a8c36aa2c54a1613a1"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "b7f29cbea4dcfe49a98adbe6d97e787197bec7d7dad20bcd98d2eb69590fd254",
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "76a15f285351a5e40bca29266efd794b1f51cc83a173efa60d2bdf96643eb386"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "d38ce2318c88c592bc2da9b12e2c5cbf3989f806715b6fb8b537dacaf63eaff9",
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "a74109eb21e5b0622382ae8ea5da0df717c891a02776a33dacc8e846d509a866"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "97725fc75326e816df080884b216f7713aac668e6d9d4c0ca65425e6493ee1ca",
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "4dc570d204ee6d99f544d2222d6307b0c469eb8687b48ffd5f72a16c5dac63c1"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "bf306cef1a0a64d259d94e4bcaf75421a2960504f82beed21f6a0296d3f9cbe0",
+      "label": "dense/seed314159/muon-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/muon-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "7bd3d7bff3b21b7738be321a029df77d1bed8a9dd17c152067e73402606461a5"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-79/group_metrics.jsonl",
+      "group_metrics_sha256": "2167f69a02e8776e722b8104171374bd04e6a0def95667855e2dd8f58e5293cc",
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-79",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-79/manifest.json",
+      "manifest_sha256": "37571b6fc21f8b79c28ff01e6597d6942eafa873f642e14f443fbbb3ced20e40"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-157/group_metrics.jsonl",
+      "group_metrics_sha256": "2ffdb4c8a7bca5553ff8f86976f88cbbd8c4182f1e960ddad731937f8cae4494",
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-157",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-157/manifest.json",
+      "manifest_sha256": "1d9422d5df1a5e0f5f4a47ebadac708766656c6975febd1b75e2ad29385161cd"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-235/group_metrics.jsonl",
+      "group_metrics_sha256": "e55604fa450b30ca62ba1e4e10dd90eb51713f3a1647bd402deeea60c562e9df",
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-235",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-235/manifest.json",
+      "manifest_sha256": "25ba15203c2a0016fa4f011ea54d13095a57cc903ed85131db7b00c48f046aa6"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-313/group_metrics.jsonl",
+      "group_metrics_sha256": "675bab1e29aeaa33a0517b8e2107f8bf7a7620b55171f3cc4705c3f71c5104ab",
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-313",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-313/manifest.json",
+      "manifest_sha256": "e4a3965147dec1634486c278e78239fdf929f0552f8e48df5e5b6c58087bdd64"
+    },
+    {
+      "group_metrics_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-391/group_metrics.jsonl",
+      "group_metrics_sha256": "3261ef27a57980791406f87f91df841ea818b87aee3fd646af39ae7c2440cb4e",
+      "label": "dense/seed314159/normuon-scale-matched/checkpoint-391",
+      "manifest_path": "/root/embedding-optimizer-study/results/short-branch/query-disjoint/seed314159/dense/normuon-scale-matched/checkpoint-391/manifest.json",
+      "manifest_sha256": "baaca81950ebbe8cff7ea52204cd792443d8705dbb65e6fcdbc09a11ee0dd10c"
+    }
+  ]
+}
