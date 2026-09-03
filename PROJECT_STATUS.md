@@ -57,6 +57,14 @@ overlaps. It explicitly does not relabel the displacement between retained check
 per-step optimizer update. The retrieval bridge uses four leave-dose-index-out folds and publishes
 all predeclared features rather than selecting one after seeing BEIR.
 
+The corrected outcome implementation is locked separately in
+`configs/dense_no_packing_outcome_protocol.json`, also before corrected validation or BEIR output
+exists. It fail-closes unless the full 840-unit grid and all 12 validation/system rows pass their
+source and checkpoint audits. The primary task effect averages all four rates within optimizer;
+the validation-selected recipe result is explicitly secondary. Both report the three common-
+resample, 50,000-draw simultaneous max-T intervals defined in that protocol. Observed dynamics AUC
+covers 20%–100% only and does not invent an initialization score.
+
 ## Result that currently governs the paper
 
 The validation-frozen three-seed full-corpus comparison is negative for the selected high-dose
@@ -181,6 +189,8 @@ missing, extra, or size-mismatched files for every refreshed prefix:
     `docs/dense-no-packing-retrain.md` for exact resume/evaluation commands.
 11. Materialize geometry only through `python -m embed_optim.corrected_geometry_matrix`; it verifies
     the analysis protocol and source bindings before reading complete corrected checkpoints.
+12. Build corrected inference only through `python -m embed_optim.corrected_outcome_summary`; it
+    requires the complete validation and 840-unit retrieval grid and verifies the outcome protocol.
 
 ## Operational constraints
 
