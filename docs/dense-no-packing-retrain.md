@@ -117,6 +117,18 @@ The default public destination is
 `qcz/embedding-optimizer-study-checkpoints/corrected-dense-no-packing-v1/dense/<run-id>`.
 The command refuses incomplete runs and writes one local audit receipt per uploaded run.
 
+Audit the live source runs on W&B without changing their histories or metadata:
+
+```bash
+python -m embed_optim.corrected_wandb_audit --allow-partial
+```
+
+Partial mode permits matrix runs that have not started yet, but it still fails on a missing remote
+run after local completion, configuration drift, wrong deterministic run ID/name/group/tags, or a
+finished run with the wrong terminal step or epoch. After 12/12 training completion, omit
+`--allow-partial`; the complete audit then requires all 12 exact remote runs to be finished. The
+receipt is a post-output operational provenance check and does not add a scientific endpoint.
+
 The detached completion controller performs that upload incrementally while later training runs
 continue, then executes the entire locked validation, BEIR, geometry, inference, publication, and
 release-audit chain after training reaches 12/12:
