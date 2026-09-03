@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "status": "corrected_retrieval_bridge_implementation_lock",
+  "frozen_at_utc": "2026-09-03T13:50:22Z",
+  "purpose": "Repair the pre-output outcome-manifest key lookup in the executable corrected Dense geometry-to-retrieval bridge while preserving the frozen scientific plan.",
+  "supersedes": {
+    "path": "configs/dense_no_packing_bridge_implementation_protocol.json",
+    "sha256": "2400d1717dab777c0dbe077d3ffd8502f6419cd13243bb3815e8f2840a34c0aa",
+    "execution_status": "never_run_on_corrected_outputs",
+    "reason": "The v1 integration fixture used the filename run_stage_scores.csv as the outcome-manifest key, but corrected_outcome_summary writes the logical key run_stage_scores. The v1 reader would have rejected a valid future outcome manifest before fitting any model."
+  },
+  "scientific_plan_change": false,
+  "prospective_plan_status": "The nine features, baseline, folds, support rule, association table, and claim boundary remain exactly those frozen in the parent analysis protocol before the first corrected checkpoint existed.",
+  "visibility_at_repair_freeze": {
+    "historical_training_and_analysis_visible": true,
+    "corrected_training_logs_visible": true,
+    "corrected_checkpoint_weights_visible": true,
+    "corrected_checkpoint_state": "Two active AdamW runs had written checkpoint-782 and were at step 999; no checkpoint tensor was read to design or test this interface repair.",
+    "corrected_complete_runs": 0,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "corrected_weight_space_outputs_visible": false,
+    "corrected_outcome_outputs_visible": false,
+    "corrected_bridge_outputs_visible": false
+  },
+  "implementation_parent_commit": "87ed3dbf102565b138e3e9bbe242a28378f921f4",
+  "parent_bindings": {
+    "analysis_protocol": {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+    },
+    "outcome_protocol": {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "sha256": "773f0eb6a1eb4562856dcebf0f8f59e30ac41b517d713a4a698c1340f4bc75d3"
+    },
+    "matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  },
+  "source_bindings": {
+    "corrected_retrieval_bridge": {
+      "path": "src/embed_optim/corrected_retrieval_bridge.py",
+      "bytes": 26258,
+      "sha256": "347331a3c35d12a95188c0927a327b06bd30dd4ffa11b161c432117b4299eb10"
+    },
+    "config": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "geometry": {
+      "path": "src/embed_optim/geometry.py",
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    }
+  },
+  "interface_repair": {
+    "geometry_manifest_keys": [
+      "checkpoint_geometry.csv",
+      "run_pair_subspace_overlap.csv"
+    ],
+    "outcome_manifest_key": "run_stage_scores",
+    "outcome_filename": "run_stage_scores.csv",
+    "rule": "Verify the manifest's logical output key and then independently verify the fixed local filename's byte count, SHA-256, and row count. Never infer one identifier from the other."
+  },
+  "implementation_choices": {
+    "unit": "All 60 run-by-retained-stage rows; no learning-rate or checkpoint selection.",
+    "outcome": "Mean decontaminated BEIR nDCG@10 across the 14 pinned tasks at the same run and stage.",
+    "feature_log": "Use the natural logarithm for the positive saved-segment-to-weight ratio. The logarithm base cannot change an unregularized one-feature OLS prediction.",
+    "adamw_overlap": "For each Muon or NorMuon row use the arithmetic mean over all four AdamW rates at the same stage and displacement kind. For each AdamW row use the arithmetic mean over the other three AdamW rates.",
+    "baseline_coding": "Intercept; Muon and NorMuon indicators with AdamW as reference; stage 2 through 5 indicators with stage 1 as reference; and log10 learning rate centered over the four rates within each optimizer.",
+    "fold_assignment": "Sort the four rates ascending within optimizer. In fold k, hold out rate index k for every optimizer and all five stages, yielding 45 training and 15 test rows.",
+    "feature_scaling": "Within each fold, z-standardize the added feature using the 45 training rows and apply that training transform to the held-out rows. No regularization is used.",
+    "estimator": "Ordinary least squares through numpy.linalg.lstsq for both the baseline and baseline-plus-one-feature models.",
+    "pooled_rmse": "Concatenate each row's exactly-once held-out prediction over the four folds, then take the square root of the mean squared error over all 60 rows.",
+    "support_rule": "A feature is predictively useful only if pooled held-out RMSE is strictly lower and fold RMSE is strictly lower in at least three of four folds.",
+    "residual_association": "On all 60 rows, separately residualize outcome and each feature on the locked baseline. Report Pearson correlation and Spearman correlation computed from average ranks of the residuals.",
+    "multiple_features": "Fit and report each of the nine frozen features separately; do not choose a multivariable model or tune a feature after viewing corrected retrieval outcomes."
+  },
+  "expected_outputs": {
+    "bridge_rows": 60,
+    "features": 9,
+    "leave_dose_fold_rows": 36,
+    "feature_prediction_summary_rows": 9,
+    "residual_association_rows": 9
+  },
+  "claim_boundary": "This is one-seed, post-diagnosis mechanism triangulation. It can show whether a predeclared geometry feature tracks or predicts retrieval variation beyond the locked optimizer, stage, and learning-rate baseline in this pinned grid. It cannot identify mediation, prove causality, or establish a universal optimizer mechanism."
+}

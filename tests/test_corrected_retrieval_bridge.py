@@ -182,7 +182,7 @@ def test_prediction_rejects_incomplete_panel() -> None:
 def test_checked_in_bridge_protocol_binds_current_sources() -> None:
     repository = Path(__file__).resolve().parents[1]
     payload = _load_implementation_protocol(
-        repository / "configs/dense_no_packing_bridge_implementation_protocol.json",
+        repository / "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
         repository,
     )
     assert payload["expected_outputs"] == {
@@ -235,7 +235,7 @@ def test_build_report_audits_and_writes_complete_bridge(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     outcome_outputs = {
-        "run_stage_scores.csv": _write_bound_table(outcomes_dir, "run_stage_scores.csv", score_rows)
+        "run_stage_scores": _write_bound_table(outcomes_dir, "run_stage_scores.csv", score_rows)
     }
     outcome_protocol = repository / "configs/dense_no_packing_outcome_protocol.json"
     (outcomes_dir / "summary_manifest.json").write_text(
@@ -252,7 +252,7 @@ def test_build_report_audits_and_writes_complete_bridge(tmp_path: Path) -> None:
     output_dir = tmp_path / "bridge"
     report = build_report(
         argparse.Namespace(
-            protocol=repository / "configs/dense_no_packing_bridge_implementation_protocol.json",
+            protocol=repository / "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
             matrix=repository / "configs/dense_no_packing_retrain.yaml",
             geometry_dir=geometry_dir,
             outcomes_dir=outcomes_dir,
