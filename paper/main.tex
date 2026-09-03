@@ -11,12 +11,13 @@
 \usepackage{amssymb}
 \usepackage{multirow}
 \usepackage{url}
+\usepackage{placeins}
 
 \input{results}
 \input{generated/causal-chain}
 
-\title{Beyond the First Step:\\
-How Muon Changes Dense-Retriever Optimization Trajectories}
+\title{Better Retrievers from Worse First Steps:\\
+What Muon Changes in Dense-Retriever Training}
 
 \author{Anonymous ACL submission}
 
@@ -24,43 +25,48 @@ How Muon Changes Dense-Retriever Optimization Trajectories}
 \maketitle
 
 \begin{abstract}
-Muon reshapes matrix updates and can tolerate learning rates far above those used by AdamW, but its
-effect on dense retrieval is not understood. We compare AdamW, Muon, and NorMuon while adapting
-DenseOn on the same 500,000-query training view. The retrieval result is promising: the best Muon
-and NorMuon runs improve mean decontaminated-BEIR nDCG@10 from 0.5899 to 0.5923 and 0.5934, winning
-on 10 and 11 of 14 tasks, and three of four Muon-family rates reach the AdamW reference versus two
-of four AdamW rates. The mechanism is not the obvious one. From identical weights and matched
-update norms, AdamW produces the larger immediate mean margin gain, while repeated shared-start
-Muon updates finish with a positive unseen-margin contrast in all three seeds. Muon-family models
-also move roughly twice as far in weight space for nearly the same fixed-probe score drift. These
-results point to an optimizer-induced trajectory effect rather than a superior isolated step.
-However, familiar spectral signatures do not explain that effect: temporal prediction, controlled
-spectral transplants, and a held-run retrieval bridge all fail their frozen tests. A separate
-model-selection audit reveals why the useful Muon region is easy to miss: a packed eight-way
-validator selects a damaging ten-times larger rate because its embeddings depend on batch
-composition. Independent padding removes that high-dose advantage before candidate breadth grows.
-We therefore use a fresh, independently padded 12-run matrix as the final adjudicator. The emerging
-picture is that Muon's retrieval advantage, when it survives clean replication, comes from the
-trajectory of states and gradients created by repeated updates---not from spectral flattening or a
-better first step alone.
+Dense retrievers are usually adapted with AdamW. We ask whether Muon's matrix-aware updates offer a
+better path. On the same 500,000-query DenseOn problem, the best Muon and NorMuon runs raise mean
+decontaminated-BEIR nDCG@10 from AdamW's 0.5899 to 0.5923 and 0.5934 and win on 10 and 11 of 14
+tasks. Three of four Muon-family rates reach the AdamW reference, compared with two of four AdamW
+rates; a good Muon trajectory reaches it in about 0.75 useful hours rather than 1.41 despite lower
+per-step throughput. This creates a paradox. From identical weights and with update norms matched,
+AdamW gives the larger immediate mean margin improvement. After repeated shared-start updates,
+however, Muon finishes with a positive unseen-margin contrast in all three seeds, while Muon-family
+trajectories move roughly twice as far in weight space for nearly the same fixed-probe score drift.
+The advantage therefore emerges along the trajectory rather than from a better isolated step.
+Muon's familiar spectral flattening does not explain this emergence: temporal prediction,
+controlled spectral transplants, and held-run retrieval prediction all fail their frozen tests. We
+also find that a packed validator makes embeddings depend on batch composition and selects a
+damaging ten-times larger Muon rate. A fresh independently padded 12-run matrix is the final
+adjudicator. Together, the results recast Muon's promise for retrieval as a question about the
+sequence of states and gradients produced by repeated matrix-conditioned updates.
 \end{abstract}
 
 \section{Introduction}
 
-Muon works unusually well in our dense-retrieval sweep. At its best learning rate it improves mean
-decontaminated-BEIR nDCG@10 over the best AdamW run on 10 of 14 tasks; NorMuon improves on 11. Across
-the whole four-rate grid, both matrix-aware optimizers have a higher median endpoint and one more
-rate reaches the AdamW reference. One Muon-family configuration reaches that reference after roughly
-0.75 useful hours, compared with 1.41 hours for the fastest observed AdamW configuration. These are
-the kind of results that make Muon interesting for embedding training.
+Dense retrievers are almost universally adapted with AdamW, even though retrieval is an unusually
+indirect optimization problem: a contrastive loss over a few negatives must produce embeddings that
+rank an entire corpus. Muon offers a qualitatively different update rule. It approximately
+orthogonalizes momentum updates for hidden matrices and remains trainable at numerical learning
+rates far above the AdamW range \citep{loshchilov2019decoupled,liu2025muon}. The practical question
+is simple: does that difference produce a better retriever?
 
-The obvious explanation does not fit. AdamW treats coordinates independently, whereas Muon
-approximately orthogonalizes momentum updates for hidden matrices
-\citep{loshchilov2019decoupled,liu2025muon}. If that conditioning simply produced a better descent
-direction, then at the same weights and update norm it should yield a larger immediate functional
-gain. We observe the reverse: AdamW improves mean query margin more on a matched virtual step, even
-though full Muon trajectories reach the better retriever. The scientific question is therefore not
-only \emph{whether} Muon helps, but how a locally weaker direction becomes a globally better path.
+In our DenseOn sweep, it does. The best Muon model reaches 0.5923 mean nDCG@10 on 14 decontaminated
+BEIR tasks, and NorMuon reaches 0.5934, compared with 0.5899 for AdamW. They outperform the best
+AdamW model on 10 and 11 tasks, respectively. The result is not confined to the winning cell: across
+four learning rates, the Muon-family optimizers have higher median endpoints, favorable five-stage
+averages, and three rates reaching the AdamW reference instead of two. A useful high-dose trajectory
+first reaches that reference after about 0.75 useful hours, versus 1.41 for AdamW. Muon is slightly
+slower per step on our stack; it reaches a good retriever sooner because its trajectory is more
+productive.
+
+The obvious explanation is wrong. If Muon's conditioning simply produced a better descent
+direction, then a norm-matched update from the same weights should improve a retrieval-relevant
+functional measure more than AdamW. It does not: AdamW gives the larger immediate mean query-margin
+gain. Yet after committing repeated updates from a shared checkpoint, Muon finishes ahead on unseen
+margin in all three order seeds. The phenomenon to explain is therefore a local-to-global reversal:
+\emph{a worse first step leads to a better retriever}.
 
 Dense retrieval makes that question harder than ordinary loss minimization. Training observes one
 positive document and a short list of labeled negatives, whereas deployment ranks against an entire
@@ -70,19 +76,21 @@ corpus. The relevant causal chain is
 \text{shortlist scores} &\longrightarrow \text{selected checkpoint}, \\
 \text{selected checkpoint} &\longrightarrow \text{corpus ranking}.
 \end{align*}
-Every arrow can fail, and repeated updates change the future states and gradients on which the next
-update acts. We call this accumulated dependence an \emph{optimizer-induced trajectory effect}.
-Our matched-step, shared-start, and weight/function-space results are consistent with such an effect:
-Muon moves farther in parameters without proportionally larger score drift, changes which queries
-occupy the adverse tail, and turns a weaker immediate mean step into a positive final margin contrast
-in every shared-start seed. Conversely, the familiar story that spectral flattening itself mediates
-the gain fails temporal, component-intervention, and held-run prediction tests.
+Every arrow can fail, and each accepted update changes the weights, optimizer state, and future
+gradients on which the next update acts. We call the resulting dependence an
+\emph{optimizer-induced trajectory effect}. Three observations make it a useful account of the
+local-to-global reversal. Muon moves roughly twice as far in parameter space without a proportional
+increase in fixed-probe score drift; it changes which queries occupy the adverse tail; and repeated
+shared-start Muon updates turn the weaker immediate mean step into a positive terminal margin
+contrast. This is evidence that the advantage emerges through accumulation, not proof of a single
+mediator. Indeed, the most familiar candidate---spectral flattening---fails our temporal,
+component-intervention, and held-run prediction tests.
 
-Model selection introduces a second puzzle. A query-disjoint eight-way validator chooses the largest
-tested Muon-family rate, not the retrieval-optimal region. Retraining those frozen recipes on three
-independently resampled negative views produces a large, consistent loss to AdamW. At first this
-resembles a cost of Muon's flexibility: it may be exceptionally good at suppressing seven observed
-negatives while damaging the rest of the corpus.
+The same flexibility creates a second problem: selecting the useful trajectory. A query-disjoint
+eight-way validator chooses the largest tested Muon-family rate, ten times the retrieval-optimal
+rate. Retraining those frozen recipes on three independently resampled negative views produces a
+large, consistent loss to AdamW. At first this resembles shortlist overfitting by a high-dose matrix
+optimizer.
 
 That explanation is wrong for a more consequential reason. Before widening the candidate set, we
 attempted to reproduce the original eight-way score with independently padded inputs. It could not
@@ -92,33 +100,33 @@ example changes its cosine score by as much as 0.2119; with forced padding the d
 adding candidates up to width 2,048 does not restore it. The historical study is reproducible for
 its pinned implementation, but it cannot identify a clean optimizer effect.
 
-The audit matters because it separates two claims that the original draft conflated. The good
-full-corpus Muon region is a real observation under the historical training stack; the catastrophic
-high-rate recipe is largely a selection-path artifact. To learn whether the positive retrieval result
-itself survives without packed execution, we rerun the complete 12-configuration matrix with
-independent padding in training, validation, checkpoint reload, and full-corpus evaluation. The
-primary estimand averages all four predeclared rates per optimizer, with validation-selected recipes
-secondary and five checkpoints exposing the trajectory.
+This discovery separates optimizer quality from optimizer selection. The useful full-corpus Muon
+region is a reproducible observation under the historical stack; the catastrophic high-rate recipe
+is largely a selection-path artifact. We therefore rerun the entire 12-configuration surface with
+independent padding in training, validation, checkpoint reload, and corpus evaluation. The primary
+estimand averages all four predeclared rates per optimizer, so the conclusion does not depend on
+choosing one favorable cell; validation-selected recipes and five-checkpoint trajectories are
+secondary views.
 
-The paper makes three contributions:
+This investigation yields three results:
 \begin{itemize}
-    \item It identifies a promising DenseOn regime in which Muon and NorMuon outperform the best
-    AdamW configuration across most decontaminated BEIR tasks and reach the AdamW reference earlier
-    in their fastest observed runs.
-    \item It shows that this advantage is trajectory-level rather than a better isolated descent
-    step: same-state matched updates favor AdamW in immediate mean margin, while repeated shared-start
-    Muon updates produce a positive final unseen-margin contrast in all three seeds.
-    \item It rejects spectral flattening as the tested explanation and identifies a packed-validation
-    failure that selects outside the useful Muon region, then subjects the positive result to a
-    source-bound, independently padded 12-run replication.
+    \item \textbf{Muon finds a useful retrieval region.} Its best and median endpoints improve over
+    AdamW, the gain spans most BEIR tasks, and good Muon-family trajectories reach the AdamW quality
+    reference earlier despite lower per-step throughput.
+    \item \textbf{The gain appears after the first step.} Norm-matched same-state updates favor
+    AdamW in immediate mean margin, whereas repeated shared-start Muon updates reverse the ordering.
+    The standard spectral account fails prospective prediction and controlled intervention tests.
+    \item \textbf{Finding the region requires an invariant selector.} Packed execution makes a text
+    embedding depend on its batch companions and selects a damaging high-rate recipe. A fully padded,
+    source-bound 12-run replication therefore governs the final optimizer recommendation.
 \end{itemize}
 
 \section{Why Dense Retrieval Makes Optimizer Claims Fragile}
 
 \subsection{The loss sees a shortlist; evaluation sees a corpus}
 
-For query $q_i$, positive $d_i^+$, and seven sampled negatives $C_i^-$, our contrastive objective is
-Let $z_{id}=s(q_i,d)/\tau$. The loss is
+For query $q_i$, positive $d_i^+$, and seven sampled negatives $C_i^-$, let
+$z_{id}=s(q_i,d)/\tau$. The contrastive loss is
 \begin{align}
 \ell_i &= -z_i^+ + \log Z_i, \\
 Z_i &= \exp(z_i^+) + \sum_{d\in C_i^-}\exp(z_{id}).
@@ -167,7 +175,7 @@ and layer-dependent matrix geometry \citep{ruan2026features,pang2026htmuon,du202
 massena2026schatten}. Our question is downstream and retrieval-specific: which geometric changes
 survive optimizer state feedback, preserve unseen scores, and predict corpus ranking?
 
-\section{A Staged Test Rather Than a Leaderboard}
+\section{Tracing an Optimizer Effect from Step to Retrieval}
 
 \subsection{One controlled adaptation problem}
 
@@ -338,12 +346,13 @@ perfectly identify Muon and still add no information about which Muon rate retri
 
 \section{Discussion}
 
-\paragraph{Muon's advantage is real evidence, but not yet a universal ranking.}
-The historical sweep shows a coherent useful region: better best-run and median retrieval, more
-rates reaching the AdamW reference, favorable five-stage averages, and gains on most BEIR tasks.
-That is stronger than one cherry-picked endpoint. It is still exploratory because the evaluation
-suite reveals the best rate and because training used the packed path. The independently padded
-matrix is therefore the primary comparison that decides how far the positive result generalizes.
+\paragraph{The phenomenon is Muon's positive retrieval region.}
+The historical sweep shows better best-run and median retrieval, more rates reaching the AdamW
+reference, favorable five-stage averages, and gains on most BEIR tasks. The paper begins from this
+coherent result rather than from Muon's already-known operator signature. Because BEIR reveals the
+winning rate and the historical trainer used the packed path, the result establishes a phenomenon
+to replicate rather than a universal ranking. The independently padded matrix determines how far
+that phenomenon generalizes.
 
 \paragraph{A larger usable learning-rate range changes model-selection risk.}
 Muon's ability to train at a large numerical learning rate is not equivalent to validation
@@ -368,19 +377,21 @@ visually distinctive statistic must be the cause.
 
 \CandidateBreadthDiscussion
 
+\FloatBarrier
+
 \section{Conclusion}
 
-Muon and NorMuon reach better DenseOn retrievers than AdamW across a coherent part of the historical
-learning-rate surface, including gains on 10 and 11 of 14 tasks. Their advantage does not come from
-a better norm-matched first step: AdamW has the larger immediate mean margin gain, whereas repeated
-Muon updates alter the state and gradient sequence and finish ahead on the shared-start unseen-margin
-endpoint. The obvious geometric explanation also fails---larger displacement and flatter spectra
-identify the optimizer but do not predict the retrieval gain in our frozen interventions. Finally,
-a batch-dependent packed validator selects far outside Muon's useful regime, showing why optimizer
-quality and optimizer selection must be evaluated separately. The corrected independently padded
-matrix is the sole basis for the final recommendation, but the central mechanistic lesson is already
-sharper than an optimizer leaderboard: Muon's promise lies in the trajectory created by repeated
-updates, not in spectral flattening or a superior isolated step alone.
+The central empirical result is that Muon and NorMuon reach better DenseOn retrievers across a
+coherent learning-rate region, with gains on 10 and 11 of 14 tasks. The central scientific result is
+the local-to-global reversal behind that gain: AdamW takes the better norm-matched immediate step,
+but repeated Muon updates finish ahead on the shared-start unseen-margin endpoint. Larger
+displacement and flatter spectra identify the optimizer, yet neither predicts the retrieval gain in
+our frozen interventions. The advantage therefore lives in the path created by repeated updates,
+not in the spectral signature of one update. A batch-dependent packed validator can still select
+far outside that useful path, so optimizer quality and optimizer selection must be evaluated
+separately. The independently padded matrix supplies the final recommendation; the broader lesson
+is that explaining a retrieval optimizer requires following its effects from local updates through
+evolving states to corpus ranking.
 
 \ResultConclusion
 

@@ -1,7 +1,23 @@
-# A packed validation trap in dense retriever adaptation
+# Better retrievers from worse first steps: Muon for dense retrieval
 
-> A controlled DenseOn study of AdamW, Muon, and NorMuon—and how a batch-dependent packed encoder
-> made a seven-negative validation result look better than independent retrieval scoring.
+> Muon reaches a better DenseOn retrieval region sooner than AdamW even though its norm-matched
+> first step is worse. We trace that local-to-global reversal through the training trajectory, reject
+> spectral flattening as the tested explanation, and show how a packed validator can miss the useful
+> Muon regime.
+
+The headline is positive. In the historical four-rate sweep, the best AdamW, Muon, and NorMuon runs
+reach 0.5899, 0.5923, and 0.5934 mean nDCG@10 on 14 decontaminated BEIR tasks. Muon and NorMuon beat
+the best AdamW point on 10 and 11 tasks, and a good Muon-family trajectory reaches the AdamW quality
+reference in about 0.75 useful hours instead of 1.41. This is not faster per-step execution: Muon is
+slightly slower per step on this stack. It is faster progress toward a useful retriever.
+
+The scientific puzzle is that Muon's familiar matrix geometry does not make its isolated update
+better. Starting from identical weights and matching update norms, AdamW improves mean query margin
+more. Only after updates accumulate does Muon reverse the ordering on the shared-start unseen-margin
+probe. The story is therefore about how an optimizer changes the future states and gradients it will
+encounter—not about rediscovering that Muon flattens singular values. A separate packed-execution
+failure explains why the original validator selected a damaging learning rate; it is an important
+boundary on the result, not the paper's main character.
 
 **Study status:** the original DenseOn discovery sweep is complete. The generated
 [completion outcome](#audited-completion-status) records the audited state and claimability of the
@@ -33,12 +49,13 @@ claim protocol can still be audited.
 
 Muon approximately orthogonalizes momentum updates for hidden weight matrices. NorMuon adds a
 row-wise historical normalizer and restores the matrix-level update norm. Those operator properties
-are interesting, but they are not a retrieval result. The study asks two questions that should not
-be collapsed into one:
+are interesting, but they are not a retrieval result. The study begins from one empirical result
+and asks one mechanistic question: why can Muon reach a better retriever when its immediate
+norm-matched step is worse? A second, practical question follows: can a held-out contrastive
+selector find that useful trajectory without seeing the full corpus?
 
-> After appropriate retrieval-aware tuning, can a matrix-aware optimizer improve zero-shot
-> rankings? And can the usual held-out contrastive loss select that useful configuration without
-> seeing the full retrieval corpus?
+> Which trajectory-level changes let repeated matrix-aware updates improve zero-shot rankings, and
+> which validation path reliably selects that trajectory?
 
 The evidence is organized to separate five things that are often conflated:
 
