@@ -25,6 +25,8 @@ jobs:
           uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn --dry-run -r requirements-formal-flash.txt
       - run: uv build
       - run: uv run embed-optim-audit-distribution
+      - name: Audit portable paper evidence closure
+        run: uv run python scripts/portable_evidence.py --audit-only
       - run: uv run pytest
-      - run: uv run ruff check src tests scripts/eval
-      - run: uv run ruff format --check src tests scripts/eval
+      - run: uv run ruff check src tests scripts
+      - run: uv run ruff format --check src tests scripts

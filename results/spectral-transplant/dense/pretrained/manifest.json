@@ -1,0 +1,186 @@
+{
+  "checkpoint": {
+    "inputs": [
+      {
+        "bytes": 312,
+        "path": "1_Pooling/config.json",
+        "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+      },
+      {
+        "bytes": 1208,
+        "path": "config.json",
+        "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+      },
+      {
+        "bytes": 300,
+        "path": "config_sentence_transformers.json",
+        "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+      },
+      {
+        "bytes": 596070136,
+        "path": "model.safetensors",
+        "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+      },
+      {
+        "bytes": 229,
+        "path": "modules.json",
+        "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+      },
+      {
+        "bytes": 57,
+        "path": "sentence_bert_config.json",
+        "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+      },
+      {
+        "bytes": 694,
+        "path": "special_tokens_map.json",
+        "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+      },
+      {
+        "bytes": 3583485,
+        "path": "tokenizer.json",
+        "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+      },
+      {
+        "bytes": 21030,
+        "path": "tokenizer_config.json",
+        "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+      }
+    ],
+    "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/snapshots/0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+    "run_config": null
+  },
+  "claim_boundary": "This intervention can causally attribute immediate fixed-state functional differences to singular values versus singular vectors. It cannot alone show that the attributed component causes a full-training BEIR gain; that requires the independently frozen shared-start branches or a later explicitly disclosed spectral-operator branch.",
+  "condition_records": 11,
+  "conditions": [
+    {
+      "algorithm": null,
+      "condition": "baseline",
+      "direction": "baseline",
+      "relative_scale": 0.0,
+      "signed_scale": 0.0
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-native",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-native",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "adam-basis__spectrum-lambda-0.25",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "adam-basis__spectrum-lambda-0.50",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "adam-basis__spectrum-lambda-0.75",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "adam-basis__muon-spectrum",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "muon-basis__adam-spectrum",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "adam-basis__muon-head-spectrum",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "adam-basis__muon-middle-spectrum",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "spectral_transplant",
+      "condition": "adam-basis__muon-tail-spectrum",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    }
+  ],
+  "direction_manifest": {
+    "bytes": 5885,
+    "path": "/root/embedding-optimizer-study/results/spectral-transplant/dense/pretrained/directions/manifest.json",
+    "sha256": "de446223f884a4083b91cb8963bec4eebaaf2f1ccf824ef8cd9df6eec6fa5b8f"
+  },
+  "family": "dense",
+  "outputs": {
+    "condition_metrics": {
+      "bytes": 4640,
+      "path": "condition_metrics.jsonl",
+      "sha256": "47d0e4a69738cc700dadece9c45ec7fbae804701c604d8d24af0af0490145312"
+    },
+    "sample_metrics": {
+      "bytes": 1004355,
+      "path": "sample_metrics.jsonl",
+      "sha256": "105497050588249d6b8b74e11ee6e7e10c0bbf1060d3100c8994a645b5293c68"
+    }
+  },
+  "probe": {
+    "dataset_fingerprint": "25781e5413d94c3a",
+    "frozen_spec": {
+      "expected_manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+      "path": "/root/embedding-optimizer-study/configs/beir_representation_probe.json",
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    "manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+    "path": "/root/embedding-optimizer-study/data/probes/decontaminated-beir-224-seed4242",
+    "selected_sample_ids_sha256": "30894b71513c7b4b7140960a01f9c7f73d5cdc9d405cc3d59202d49f7ea3b624",
+    "selection_sha256": "2d6a8224b5e8ed233d62f0ac8f7719c77ae5a07f038d5702e6db99105487f136"
+  },
+  "runtime": {
+    "cuda": "12.9",
+    "device": "cuda",
+    "gpu_name": "NVIDIA L20Z",
+    "pylate": "1.6.0",
+    "sentence_transformers": "5.7.0",
+    "torch": "2.9.1+cu129"
+  },
+  "sample_records": 2464,
+  "schema_version": 1,
+  "source_update_manifest": {
+    "bytes": 3559,
+    "path": "/root/embedding-optimizer-study/results/common-state/dense/pretrained/updates/manifest.json",
+    "sha256": "fe7f04d899c44a2605e82025eabb5393c5db1d0bf57066d09c7429dfbbfe79e1"
+  },
+  "spectral_transplant_spec": {
+    "bytes": 7829,
+    "path": "/root/embedding-optimizer-study/configs/spectral_transplant_intervention.json",
+    "sha256": "c80709158e0d9b2d83b6fd24240cf05e32bec272087d71e91bda2ac76b19a36b"
+  },
+  "status": "complete",
+  "temperature": 0.02
+}

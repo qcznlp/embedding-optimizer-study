@@ -28,6 +28,7 @@ from embed_optim.paper_audit import (
     _causal_chain_source_complete,
     _causal_evidence_snapshot,
     _complete_manifest,
+    _declared_path,
     _final_document_language_problems,
     _macros,
     _paper_figures_complete,
@@ -122,6 +123,32 @@ def test_causal_evidence_snapshot_cache_loads_once(monkeypatch: pytest.MonkeyPat
     assert second is expected
 
 
+def test_declared_path_rebases_legacy_checkout_to_current_repository(tmp_path: Path) -> None:
+    repository = tmp_path / "renamed-clean-checkout"
+    repository.mkdir()
+    (repository / "pyproject.toml").write_text("[project]\nname='test'\n", encoding="utf-8")
+    expected = repository / "results" / "suite" / "result.json"
+    legacy = Path("/root") / "embedding-optimizer-study" / "results/suite/result.json"
+
+    observed = _declared_path(
+        repository / "reports" / "summary",
+        {"path": str(legacy)},
+    )
+
+    assert observed == expected.resolve()
+
+
+def test_declared_path_does_not_rebase_unrelated_absolute_path(tmp_path: Path) -> None:
+    repository = tmp_path / "checkout"
+    repository.mkdir()
+    (repository / "pyproject.toml").write_text("[project]\nname='test'\n", encoding="utf-8")
+    unrelated = Path("/unavailable/producer/checkout/results/result.json")
+
+    observed = _declared_path(repository, {"path": str(unrelated)})
+
+    assert observed == unrelated.resolve()
+
+
 @pytest.fixture
 def checked_in_dense_audit():
     return audit_paper(
@@ -134,6 +161,7 @@ def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_aud
     result = checked_in_dense_audit
 
     assert result["complete"] is True
+    assert result["evidence_mode"]["mode"] == "checkpoint-backed-full-source"
     assert result["constant_macros"]["NumDiscoveryRuns"] == "12"
     assert result["constant_macros"]["NumDiscoveryUnits"] == "840"
     assert result["constant_macros"]["NumWeightPairs"] == "20"

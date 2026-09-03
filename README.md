@@ -34,6 +34,27 @@ also read [AGENTS.md](AGENTS.md) before taking action.
 > a general clean eight-way optimizer result. See
 > [the handoff](PROJECT_STATUS.md#critical-execution-finding) and the source-bound candidate report.
 
+## Verify a clean clone
+
+The Git repository includes a 107.4MB minimal, content-addressed paper-evidence closure; it does not
+duplicate the 416GB public checkpoint archive. A new contributor or agent can therefore validate
+the released claims immediately after installing the development dependencies:
+
+~~~bash
+uv sync --extra dev --extra eval --extra analysis
+uv run python scripts/portable_evidence.py --audit-only
+uv run embed-optim-audit-paper \
+  --strict \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+uv run pytest
+~~~
+
+The first command rehashes all 2,785 included evaluation files and reconstructs the exact expected
+closure from four source manifests. On the experiment host, where `outputs/` is present, the Dense
+five-stage audit keeps using the full checkpoint-backed reconstruction. In a clean clone, it uses
+the explicit portable closure and reports that narrower provenance boundary.
+
 ## Scope disclosure
 
 The original discovery matrix contained DenseOn and LateOn. After discovery and exploratory
@@ -155,6 +176,7 @@ identification of orthogonalization alone.
 | docs/blog.md | Dense-only Markdown article with generated result blocks |
 | paper/ | ACL manuscript and generated result tables |
 | reports/ | Content-addressed summaries and publication figures |
+| configs/portable_paper_evidence.json | Exact minimal evidence closure for clean-clone auditing |
 | tests/ | Unit, integration, provenance, distribution, and numerical regression tests |
 
 ## Restore large artifacts on another machine

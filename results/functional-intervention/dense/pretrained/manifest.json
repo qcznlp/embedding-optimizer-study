@@ -1,0 +1,194 @@
+{
+  "checkpoint": {
+    "inputs": [
+      {
+        "bytes": 312,
+        "path": "1_Pooling/config.json",
+        "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+      },
+      {
+        "bytes": 1208,
+        "path": "config.json",
+        "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+      },
+      {
+        "bytes": 300,
+        "path": "config_sentence_transformers.json",
+        "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+      },
+      {
+        "bytes": 596070136,
+        "path": "model.safetensors",
+        "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+      },
+      {
+        "bytes": 229,
+        "path": "modules.json",
+        "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+      },
+      {
+        "bytes": 57,
+        "path": "sentence_bert_config.json",
+        "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+      },
+      {
+        "bytes": 694,
+        "path": "special_tokens_map.json",
+        "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+      },
+      {
+        "bytes": 3583485,
+        "path": "tokenizer.json",
+        "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+      },
+      {
+        "bytes": 21030,
+        "path": "tokenizer_config.json",
+        "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+      }
+    ],
+    "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/snapshots/0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+    "run_config": null
+  },
+  "common_state_updates": {
+    "bytes": 3559,
+    "path": "/root/embedding-optimizer-study/results/common-state/dense/pretrained/updates/manifest.json",
+    "sha256": "fe7f04d899c44a2605e82025eabb5393c5db1d0bf57066d09c7429dfbbfe79e1"
+  },
+  "condition_records": 13,
+  "conditions": [
+    {
+      "algorithm": null,
+      "condition": "baseline",
+      "direction": "baseline",
+      "relative_scale": 0.0,
+      "signed_scale": 0.0
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-descent-1e-04",
+      "direction": "descent",
+      "relative_scale": 0.0001,
+      "signed_scale": 0.0001
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-descent-3e-04",
+      "direction": "descent",
+      "relative_scale": 0.0003,
+      "signed_scale": 0.0003
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-descent-1e-03",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "adamw",
+      "condition": "adamw-sign-reversal-1e-03",
+      "direction": "sign_reversal",
+      "relative_scale": 0.001,
+      "signed_scale": -0.001
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-descent-1e-04",
+      "direction": "descent",
+      "relative_scale": 0.0001,
+      "signed_scale": 0.0001
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-descent-3e-04",
+      "direction": "descent",
+      "relative_scale": 0.0003,
+      "signed_scale": 0.0003
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-descent-1e-03",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "muon",
+      "condition": "muon-sign-reversal-1e-03",
+      "direction": "sign_reversal",
+      "relative_scale": 0.001,
+      "signed_scale": -0.001
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-descent-1e-04",
+      "direction": "descent",
+      "relative_scale": 0.0001,
+      "signed_scale": 0.0001
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-descent-3e-04",
+      "direction": "descent",
+      "relative_scale": 0.0003,
+      "signed_scale": 0.0003
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-descent-1e-03",
+      "direction": "descent",
+      "relative_scale": 0.001,
+      "signed_scale": 0.001
+    },
+    {
+      "algorithm": "normuon",
+      "condition": "normuon-sign-reversal-1e-03",
+      "direction": "sign_reversal",
+      "relative_scale": 0.001,
+      "signed_scale": -0.001
+    }
+  ],
+  "family": "dense",
+  "intervention_spec": {
+    "bytes": 2651,
+    "path": "/root/embedding-optimizer-study/configs/functional_intervention.json",
+    "sha256": "8f8a478bede92f9b2e1999b5491a3983cc244fad90ec5321b6d8914a2f633bab"
+  },
+  "outputs": {
+    "condition_metrics": {
+      "bytes": 5341,
+      "path": "condition_metrics.jsonl",
+      "sha256": "58c6347aa08dd75ca27c037d053834d8f047f4c2e9aaa61eb19572c409f6811a"
+    },
+    "sample_metrics": {
+      "bytes": 1152217,
+      "path": "sample_metrics.jsonl",
+      "sha256": "484259156ef9f2aa22fc9deba3e6d920863cb7debc9944aae6c4cc1f33457aa4"
+    }
+  },
+  "probe": {
+    "dataset_fingerprint": "25781e5413d94c3a",
+    "frozen_spec": {
+      "expected_manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+      "path": "/root/embedding-optimizer-study/configs/beir_representation_probe.json",
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    "manifest_sha256": "89fb514b73d3e3c06a6e68d7042b40e99d9ca02ac6220216f43363622b6d9b0d",
+    "path": "/root/embedding-optimizer-study/data/probes/decontaminated-beir-224-seed4242",
+    "selected_sample_ids_sha256": "30894b71513c7b4b7140960a01f9c7f73d5cdc9d405cc3d59202d49f7ea3b624",
+    "selection_sha256": "2d6a8224b5e8ed233d62f0ac8f7719c77ae5a07f038d5702e6db99105487f136"
+  },
+  "runtime": {
+    "cuda": "12.9",
+    "device": "cuda",
+    "gpu_name": "NVIDIA L20Z",
+    "pylate": "1.6.0",
+    "sentence_transformers": "5.7.0",
+    "torch": "2.9.1+cu129"
+  },
+  "sample_records": 2912,
+  "schema_version": 1,
+  "status": "complete",
+  "temperature": 0.02
+}

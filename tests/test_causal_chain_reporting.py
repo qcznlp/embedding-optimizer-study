@@ -649,6 +649,21 @@ def test_persisted_complete_tree_strict_loads_after_repository_relocation(
     )
 
 
+def test_legacy_absolute_path_prefers_active_checkout(tmp_path: Path) -> None:
+    active = tmp_path / "renamed-checkout"
+    active.mkdir()
+    expected = active / "results" / "suite" / "sample_metrics.jsonl"
+    legacy = Path("/root") / "embedding-optimizer-study" / "results/suite/sample_metrics.jsonl"
+
+    candidates = reporting._candidate_paths(
+        str(legacy),
+        active,
+        active / "reports",
+    )
+
+    assert candidates == (expected.resolve(),)
+
+
 def test_exit_snapshot_rehashes_non_table_branch_outputs(complete_root: Path) -> None:
     evidence = load_causal_chain_evidence(complete_root, allow_pending=False)
     assert _causal_snapshot_still_current(complete_root, evidence)

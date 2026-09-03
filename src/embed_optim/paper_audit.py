@@ -6,6 +6,7 @@ import hashlib
 import json
 import math
 import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -52,6 +53,14 @@ from .scope import ALL_FAMILIES, resolve_scope
 
 FAMILIES = ALL_FAMILIES
 CausalEvidenceCache = dict[Path, tuple[dict[str, Any] | None, Exception | None]]
+LEGACY_CHECKOUT_NAME = "embedding-optimizer-study"
+PORTABLE_EVIDENCE_MANIFEST = Path("configs/portable_paper_evidence.json")
+PORTABLE_EVIDENCE_SOURCE_MANIFESTS = (
+    Path("reports/retrieval-dynamics/summary_manifest.json"),
+    Path("reports/tail-stability/summary_manifest.json"),
+    Path("reports/spectral-transplant/summary_manifest.json"),
+    Path("reports/dense-retrieval-dynamics/summary_manifest.json"),
+)
 
 HEADLINE_MACROS = (
     "DiscoveryHeadline",
@@ -849,7 +858,13 @@ def _complete_manifest(
                 path.parent,
             )
         except (OSError, TypeError, ValueError):
-            return False
+            # A source checkout contains the original model checkpoints and must pass the full
+            # reconstruction above.  A clean distribution intentionally omits hundreds of GB of
+            # checkpoints, so it instead verifies every content-addressed evaluation input in the
+            # checked-in portable closure.
+            if (root / "outputs").exists():
+                return False
+            return _portable_dense_retrieval_dynamics_complete(path, payload, families, scope)
         return bool(
             receipt.get("complete") is True
             and receipt.get("read_only") is True
@@ -890,11 +905,36 @@ def _complete_manifest(
     return payload.get("schema_version") == SCHEMA_VERSION and payload.get("complete") is True
 
 
+@lru_cache(maxsize=None)
+def _repository_root(root: Path) -> Path:
+    """Find the active checkout even when an audit helper receives a report directory."""
+
+    resolved = root.resolve()
+    start = resolved.parent if resolved.is_file() else resolved
+    for candidate in (start, *start.parents):
+        if (candidate / "pyproject.toml").is_file():
+            return candidate
+    return start
+
+
 def _declared_path(root: Path, record: Any) -> Path | None:
     if not isinstance(record, dict) or not isinstance(record.get("path"), str):
         return None
     declared = Path(record["path"])
-    return declared.resolve() if declared.is_absolute() else (root / declared).resolve()
+    if not declared.is_absolute():
+        return (root / declared).resolve()
+
+    # Historical receipts intentionally preserve the producer checkout.  Rebase only paths whose
+    # ancestry explicitly names this project; all other absolute paths keep their original meaning.
+    # The caller still checks byte size and SHA-256, so relocation never substitutes by filename.
+    parts = declared.parts
+    project_indexes = [index for index, part in enumerate(parts) if part == LEGACY_CHECKOUT_NAME]
+    if not project_indexes:
+        return declared.resolve()
+    relative = Path(*parts[project_indexes[-1] + 1 :])
+    if not relative.parts:
+        return None
+    return (_repository_root(root) / relative).resolve()
 
 
 def _hashed_file_complete(
@@ -990,6 +1030,194 @@ def _declared_reference_paths(value: Any, *, root: Path) -> list[Path]:
         if name not in {"path", "bytes", "sha256", "rows"}
         for path in _declared_reference_paths(item, root=root)
     ]
+
+
+def _portable_evidence_records(root: Path) -> dict[Path, dict[str, Any]] | None:
+    try:
+        payload = _json(_repository_root(root) / PORTABLE_EVIDENCE_MANIFEST)
+    except (OSError, json.JSONDecodeError, TypeError, ValueError):
+        return None
+    repository = _repository_root(root)
+    expected_bindings = {
+        "generator": repository / "scripts/portable_evidence.py",
+        "audit_implementation": repository / "src/embed_optim/paper_audit.py",
+    }
+    source_manifests = payload.get("source_manifests")
+    if (
+        payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("status") != "portable-paper-evidence-closure"
+        or payload.get("complete") is not True
+        or any(
+            not _hashed_file_complete(repository, payload.get(name), expected_path=path)
+            for name, path in expected_bindings.items()
+        )
+        or not isinstance(source_manifests, list)
+        or len(source_manifests) != len(PORTABLE_EVIDENCE_SOURCE_MANIFESTS)
+        or any(
+            not _hashed_file_complete(
+                repository,
+                record,
+                expected_path=repository / relative,
+            )
+            for record, relative in zip(
+                source_manifests, PORTABLE_EVIDENCE_SOURCE_MANIFESTS, strict=True
+            )
+        )
+        or not isinstance(payload.get("files"), list)
+    ):
+        return None
+    records: dict[Path, dict[str, Any]] = {}
+    for record in payload["files"]:
+        path = _declared_path(repository, record)
+        if (
+            path is None
+            or path in records
+            or not _hashed_file_complete(repository, record, expected_path=path)
+        ):
+            return None
+        records[path] = record
+    summary = payload.get("summary")
+    if not isinstance(summary, dict) or summary != {
+        "files": len(records),
+        "bytes": sum(path.stat().st_size for path in records),
+    }:
+        return None
+    return records
+
+
+def _portable_evidence_covers(root: Path, paths: list[Path]) -> bool:
+    records = _portable_evidence_records(root)
+    return bool(records is not None and set(paths).issubset(records))
+
+
+def _portable_reference_tree_complete(value: Any, *, root: Path) -> bool:
+    """Rehash a tree whose legacy records may omit byte counts but always bind SHA-256."""
+
+    if isinstance(value, list):
+        return all(_portable_reference_tree_complete(item, root=root) for item in value)
+    if not isinstance(value, dict):
+        return True
+    if "path" in value or "sha256" in value:
+        validator = _hashed_file_complete if "bytes" in value else _hash_only_file_complete
+        if not validator(root, value):
+            return False
+    return all(
+        _portable_reference_tree_complete(item, root=root)
+        for name, item in value.items()
+        if name not in {"path", "bytes", "sha256", "rows"}
+    )
+
+
+def _portable_dense_retrieval_dynamics_complete(
+    path: Path,
+    payload: dict[str, Any],
+    families: tuple[str, ...],
+    scope: dict[str, Any] | None,
+) -> bool:
+    """Verify the complete 910-result dynamics closure without local model checkpoints."""
+
+    repository = path.parents[2]
+    coverage = {
+        "runs": 13,
+        "stages_per_run": 5,
+        "trajectory_rows": 65,
+        "tasks_per_stage": 14,
+        "task_units": 910,
+        "dynamics_units": 728,
+        "formal_stage5_units": 182,
+    }
+    outputs = payload.get("outputs")
+    expected_outputs = {
+        "trajectory_csv": ("five_stage_retrieval_dynamics.csv", 65),
+        "figure_svg": ("five_stage_retrieval_dynamics.svg", None),
+        "figure_pdf": ("five_stage_retrieval_dynamics.pdf", None),
+    }
+    sources = payload.get("sources")
+    if (
+        families != ("dense",)
+        or scope is None
+        or payload.get("schema_version") != SCHEMA_VERSION
+        or payload.get("status") != "complete"
+        or payload.get("complete") is not True
+        or payload.get("families") != ["dense"]
+        or payload.get("coverage") != coverage
+        or payload.get("inference_boundary", {}).get("formal_inference_reads_joined_outputs")
+        is not False
+        or not isinstance(outputs, dict)
+        or set(outputs) != set(expected_outputs)
+        or not isinstance(sources, dict)
+    ):
+        return False
+    for name, (filename, rows) in expected_outputs.items():
+        record = outputs[name]
+        if not _hashed_file_complete(
+            repository,
+            record,
+            expected_path=path.parent / filename,
+            expected_rows=rows,
+        ):
+            return False
+        if rows is None and "rows" in record:
+            return False
+    expected_source_files = {
+        "implementation": repository / "src/embed_optim/dense_retrieval_dynamics_summary.py",
+        "contract": repository / "configs/dense_retrieval_dynamics_extension.json",
+        "confirmatory_protocol": repository / "configs/confirmatory_protocol.json",
+    }
+    if any(
+        not _hashed_file_complete(repository, sources.get(name), expected_path=source_path)
+        for name, source_path in expected_source_files.items()
+    ):
+        return False
+    dynamics_audit = sources.get("dynamics_audit")
+    formal_audit = sources.get("formal_confirmatory_audit")
+    if dynamics_audit != {
+        "complete": True,
+        "expected_units": 728,
+        "valid_units": 728,
+        "contract_sha256": sources["contract"]["sha256"],
+    } or formal_audit != {
+        "complete": True,
+        "expected_units": 126,
+        "valid_units": 126,
+        "protocol_sha256": sources["confirmatory_protocol"]["sha256"],
+        "matrix_manifest_sha256": sources.get("confirmatory_matrix_manifest_sha256"),
+    }:
+        return False
+    partitions = sources.get("partitions")
+    if not isinstance(partitions, list) or len(partitions) != 8:
+        return False
+    expected_partitions = {
+        ("hybrid", None, "dynamics-stage1-4"): 224,
+        ("hybrid", None, "formal-stage5"): 56,
+        **{("confirmatory", seed, "dynamics-stage1-4"): 168 for seed in (314159, 271828, 161803)},
+    }
+    expected_partitions.update(
+        {("confirmatory", seed, "formal-stage5"): 42 for seed in (314159, 271828, 161803)}
+    )
+    observed_partitions: dict[tuple[str, int | None, str], int] = {}
+    for partition in partitions:
+        if not isinstance(partition, dict):
+            return False
+        identity = (partition.get("suite"), partition.get("seed"), partition.get("partition"))
+        if identity in observed_partitions or partition.get("valid_units") != partition.get(
+            "expected_units"
+        ):
+            return False
+        result_sources = partition.get("result_sources")
+        if not isinstance(result_sources, list) or len(result_sources) != partition.get(
+            "expected_units"
+        ):
+            return False
+        observed_partitions[identity] = len(result_sources)
+    source_paths = _declared_reference_paths(partitions, root=repository)
+    return bool(
+        observed_partitions == expected_partitions
+        and len(source_paths) == 926
+        and len(set(source_paths)) == len(source_paths)
+        and _portable_reference_tree_complete(partitions, root=repository)
+        and _portable_evidence_covers(repository, source_paths)
+    )
 
 
 def _csv_identity_set(
@@ -2616,6 +2844,30 @@ def audit_paper(
         and not document_language_problems
         and causal_chain_complete
     )
+    portable_manifest_path = root / PORTABLE_EVIDENCE_MANIFEST
+    if (root / "outputs").exists():
+        evidence_mode = {
+            "mode": "checkpoint-backed-full-source",
+            "checkpoint_tree_present": True,
+        }
+    else:
+        try:
+            portable_payload = _json(portable_manifest_path)
+            portable_summary = portable_payload["summary"]
+        except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+            portable_summary = {}
+        evidence_mode = {
+            "mode": "portable-evaluation-closure",
+            "checkpoint_tree_present": False,
+            "manifest": {
+                "path": str(portable_manifest_path),
+                "sha256": (
+                    _sha256(portable_manifest_path) if portable_manifest_path.is_file() else None
+                ),
+            },
+            "files": portable_summary.get("files"),
+            "bytes": portable_summary.get("bytes"),
+        }
     result = {
         "schema_version": SCHEMA_VERSION,
         "complete": complete,
@@ -2645,6 +2897,7 @@ def audit_paper(
         "incomplete_blog_marker_blocks": incomplete_blog_marker_blocks,
         "document_language_problems": document_language_problems,
         "causal_chain": causal_chain,
+        "evidence_mode": evidence_mode,
     }
     if scope is not None:
         result["families"] = list(families)

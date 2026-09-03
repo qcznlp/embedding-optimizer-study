@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA_VERSION = 1
+LEGACY_CHECKOUT_NAME = "embedding-optimizer-study"
 CAUSAL_PROTOCOL_SHA256 = "813538910dbd32d6fcfb65ee8736816cd573ae122ec907d25d7208229720cd7f"
 CAUSAL_SOURCE_PATHS = (
     "configs/short_branch_protocol.json",
@@ -268,20 +269,13 @@ def _candidate_paths(raw: str, root: Path, manifest_dir: Path) -> tuple[Path, ..
     root = root.resolve()
     path = Path(raw)
     if path.is_absolute():
-        # Completed receipts produced before the portable-path contract embedded
-        # their checkout root.  Retain that literal target and every possible
-        # repository-root relocation of its suffix.  Identity validation below
-        # requires a unique match, so a stale checkout cannot silently win over
-        # the current clone.
-        candidates = [path.resolve()]
-        for index in range(1, len(path.parts) - 1):
-            candidate = (root / Path(*path.parts[index:])).resolve()
-            try:
-                candidate.relative_to(root)
-            except ValueError:
-                continue
-            candidates.append(candidate)
-        return tuple(dict.fromkeys(candidates))
+        # Early receipts embedded the producer checkout.  Prefer the exact project-relative
+        # suffix in the active clone so an old checkout that still exists on the same machine
+        # cannot make relocation ambiguous.  Unrelated absolute paths retain literal semantics.
+        indexes = [index for index, part in enumerate(path.parts) if part == LEGACY_CHECKOUT_NAME]
+        if not indexes or indexes[-1] + 1 >= len(path.parts):
+            return (path.resolve(),)
+        return ((root / Path(*path.parts[indexes[-1] + 1 :])).resolve(),)
     candidates = []
     for candidate in ((root / path).resolve(), (manifest_dir / path).resolve()):
         try:

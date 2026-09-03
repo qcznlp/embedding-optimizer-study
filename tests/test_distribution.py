@@ -63,8 +63,8 @@ def test_public_governance_reproduces_release_checks_and_private_reporting() -> 
         "uv build",
         "uv run embed-optim-audit-distribution",
         "uv run pytest",
-        "uv run ruff check src tests scripts/eval",
-        "uv run ruff format --check src tests scripts/eval",
+        "uv run ruff check src tests scripts",
+        "uv run ruff format --check src tests scripts",
         "uv run embed-optim-render-paper-results",
         "uv run embed-optim-audit-paper",
     )

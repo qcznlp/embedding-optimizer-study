@@ -15,9 +15,10 @@ uv sync --extra dev --extra eval --extra analysis
 uv run cffconvert --validate --infile CITATION.cff
 uv build
 uv run embed-optim-audit-distribution
+uv run python scripts/portable_evidence.py --audit-only
 uv run pytest
-uv run ruff check src tests scripts/eval
-uv run ruff format --check src tests scripts/eval
+uv run ruff check src tests scripts
+uv run ruff format --check src tests scripts
 ```
 
 Changes to the manuscript, Blog, result renderers, or claim logic must additionally preserve the
@@ -30,6 +31,7 @@ uv run embed-optim-render-paper-results \
   --scope-amendment configs/dense_scope_amendment.json
 make -C paper all PYTHON="$PWD/.venv/bin/python"
 uv run embed-optim-audit-paper \
+  --strict \
   --families dense \
   --scope-amendment configs/dense_scope_amendment.json
 ```
@@ -45,5 +47,7 @@ comparable and must update the Blog's limitations section. Historical LateOn art
 available for provenance, but they cannot be promoted into the active DenseOn confirmatory claims.
 
 Do not commit API keys, local datasets, model checkpoints, W&B run files, MTEB caches, or PLAID
-indexes. The repository `.gitignore` covers the standard locations, but contributors remain
-responsible for reviewing their diff.
+indexes. The only tracked files under `results/` are the deterministic minimal paper-evidence set
+listed in `configs/portable_paper_evidence.json`; update it through its builder and include a reason
+in the pull request. The repository `.gitignore` covers the standard locations, but contributors
+remain responsible for reviewing their diff.

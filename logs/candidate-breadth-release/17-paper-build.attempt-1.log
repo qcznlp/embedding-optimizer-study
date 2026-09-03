@@ -1,0 +1,2291 @@
+make: Entering directory '/root/embedding-optimizer-study/paper'
+make clean
+make[1]: Entering directory '/root/embedding-optimizer-study/paper'
+Rc files read:
+  /etc/LatexMk
+Latexmk: This is Latexmk, John Collins, 31 Jan. 2024. Version 4.83.
+Latexmk: Doing main (small) clean up for 'main.tex'
+
+make[1]: Leaving directory '/root/embedding-optimizer-study/paper'
+cd .. && /root/embedding-optimizer-study/.venv/bin/python -m embed_optim.paper_results --repo-root . \
+	--families dense \
+	--scope-amendment configs/dense_scope_amendment.json
+{
+  "causal_chain": {
+    "dose_band": {
+      "bytes": 7209,
+      "claim_boundary": "The transplant randomizes spectral components at fixed weights and can identify immediate functional effects. Its task-aligned forward prediction is out-of-run evidence for a causal-chain bridge, but it is not a trained spectral-operator intervention and cannot by itself identify formal mediation of final BEIR gains.",
+      "claimable": true,
+      "path": "reports/dose-band/summary_manifest.json",
+      "sha256": "a0424e8562b9eeb64892510bb18b3ce5a3684ce30e32bc5eaf4d5b010b11c9e6",
+      "status": "negative",
+      "supported": false
+    },
+    "temporal_short_branch": {
+      "bytes": 2641,
+      "claim_boundary": "The shared-start randomization identifies optimizer-level accumulated effects. The post-treatment spectral predictor analysis is a small-sample, falsifiable causal-chain triangulation, not a formally identified causal mediation estimate.",
+      "claimable": true,
+      "path": "reports/temporal-short-branch/summary_manifest.json",
+      "sha256": "a9983f246b7315e343b9aad7a7e09240d0ffd99b776428fe5248b58225b8da4a",
+      "status": "negative",
+      "supported": false
+    }
+  },
+  "causal_chain_display": {
+    "compact_markdown_sha256": "f0d6fa0a3b602afbe5454bbb849d8ac805a11e02a8bc1ea8dff5e0379ff330ff",
+    "complete": true,
+    "dose_anchors": 10,
+    "dose_bridge_rows": 2,
+    "dose_criteria": 4,
+    "dose_heldout_rows": 84,
+    "dose_rmse_rows": 5,
+    "evidence_sha256": "e9a6843790fef4404643c75753118349dec2d438155ceeb47ced5ca8de59c4ae",
+    "full_markdown_sha256": "e224aa23bbd814ad11aa411d9a9a9979c9bc09af8c2d14c9cec5a7e9bbc719e8",
+    "latex_sha256": "a5b0eef96fe8dfc151f0410a9e9e4910d0e1e6cc17e6e5e516e0b3759c00e885",
+    "overall_verdict": "not_supported_claimable_negative",
+    "source_tables": 5,
+    "temporal_criteria": 5,
+    "temporal_estimates": 16,
+    "temporal_loso_rows": 96,
+    "temporal_paired_rows": 6
+  },
+  "claim_boundary": "These macros report the complete prespecified contrasts and interval classifications; they do not convert descriptive checkpoint associations into causal evidence. The tail and spectrum-versus-basis tables are explicitly post-hoc causal decomposition at fixed states and do not establish mediation of the full-training BEIR outcome.",
+  "claim_protocol": {
+    "bytes": 10889,
+    "frozen_at": "2026-08-26T17:49:04Z",
+    "path": "configs/paper_claim_protocol.json",
+    "sha256": "0ddff916eccedbe493b41a07538d0e4e9e058a784f5440e10d688f5270609949",
+    "status": "prospective_completion_lock"
+  },
+  "complete": true,
+  "conclusion": {
+    "causal": {
+      "dose_band": "negative",
+      "overall": "not_supported_claimable_negative",
+      "temporal": "negative"
+    },
+    "classifications": {
+      "DenseOn": {
+        "Muon - AdamW": "negative",
+        "NorMuon - AdamW": "negative"
+      }
+    },
+    "markdown": "Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.",
+    "plain": "Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.",
+    "routing_controls": {
+      "DenseOn": {
+        "learning_rates": 4,
+        "mean_delta_ndcg_at_10": "+0.0001",
+        "negative_learning_rates": 1,
+        "positive_learning_rates": 3,
+        "zero_learning_rates": 0
+      }
+    },
+    "status": "complete",
+    "tail_decisions": {
+      "DenseOn": {
+        "Muon": "mixed",
+        "NorMuon": "mixed"
+      }
+    }
+  },
+  "conclusion_macro": {
+    "name": "ResultConclusion",
+    "value": "Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95\\% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95\\% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking."
+  },
+  "dynamics_extension": {
+    "blog": {
+      "block_bytes": 1640,
+      "block_sha256": "446e5915823d70fe57db9b9f9987852b372a84903723cb3eb57c6cf786b3f4b1",
+      "markers": [
+        "<!-- DENSE-RETRIEVAL-DYNAMICS:BEGIN -->",
+        "<!-- DENSE-RETRIEVAL-DYNAMICS:END -->"
+      ],
+      "path": "docs/blog.md"
+    },
+    "figure_pdf": {
+      "bytes": 30000,
+      "path": "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf",
+      "sha256": "db310530d9b5fc60a8a43761d9fc52d26ef8ad9550b7bc932a50f523af039edd"
+    },
+    "figure_svg": {
+      "bytes": 123395,
+      "path": "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.svg",
+      "sha256": "9bb43a01da4f89e73ff6826b83d2d8d579fd2869475b2dc0fed027d5a627ad97"
+    },
+    "formal_inference_reads_joined_outputs": false,
+    "generated_tex": {
+      "bytes": 1684,
+      "path": "paper/generated/retrieval-dynamics-extension.tex",
+      "sha256": "025f3b160f75d14b032d7a56bcd416683ecbc033831d36947f01a702599883d5"
+    },
+    "manifest": {
+      "bytes": 350830,
+      "path": "reports/dense-retrieval-dynamics/summary_manifest.json",
+      "sha256": "6f5d369263af719997161d76b0f8fbd0b6f940a6ee2e87393ed8f83d27d28e4d"
+    },
+    "role": "descriptive-only",
+    "summary_rows": [
+      [
+        "Hybrid AdamW",
+        "4",
+        "0.5684",
+        "0.5765",
+        "0.5794",
+        "0.5810",
+        "0.5817"
+      ],
+      [
+        "Confirmatory AdamW",
+        "3",
+        "0.5840",
+        "0.5884",
+        "0.5897",
+        "0.5907",
+        "0.5905"
+      ],
+      [
+        "Confirmatory Muon",
+        "3",
+        "0.5328",
+        "0.5296",
+        "0.5337",
+        "0.5540",
+        "0.5599"
+      ],
+      [
+        "Confirmatory NorMuon",
+        "3",
+        "0.5407",
+        "0.5360",
+        "0.5437",
+        "0.5548",
+        "0.5601"
+      ]
+    ],
+    "trajectory_csv": {
+      "bytes": 16502,
+      "path": "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.csv",
+      "sha256": "66f826875adb470a54aac3852eb84d19d1998674fba6fa1ae0e68deae4cd314e"
+    }
+  },
+  "evidence_manifests": [
+    {
+      "bytes": 53403,
+      "path": "reports/basis-sensitivity/summary_manifest.json",
+      "sha256": "236f7bd9f810c9507bc8bb8cf33b14362fc143e54f0b2ca55e6811743e067e2d"
+    },
+    {
+      "bytes": 15973,
+      "path": "reports/common-state/summary_manifest.json",
+      "sha256": "d4bea7b45cf5b985b46eb72fea724dff400a92a9a6301e7a8bdf1689bb1218b1"
+    },
+    {
+      "bytes": 55456,
+      "path": "reports/confirmatory/summary_manifest.json",
+      "sha256": "7a1c05eba176f82ba8732159dc330b8d8b62f67075ab82c5ffb88be6caf3915d"
+    },
+    {
+      "bytes": 6065,
+      "path": "reports/dense-discovery/coverage.json",
+      "sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36"
+    },
+    {
+      "bytes": 350830,
+      "path": "reports/dense-retrieval-dynamics/summary_manifest.json",
+      "sha256": "6f5d369263af719997161d76b0f8fbd0b6f940a6ee2e87393ed8f83d27d28e4d"
+    },
+    {
+      "bytes": 13494,
+      "path": "reports/functional-intervention/manifest.json",
+      "sha256": "34665e5e25859c681bf067c02120c30c6abb678e634eb955ffd8e663ad844ee0"
+    },
+    {
+      "bytes": 36346,
+      "path": "reports/hybrid-adamw/summary_manifest.json",
+      "sha256": "46988e7a6ba8fa267da07eba60f08e16571ece3a4dc8034144d07a0ef41244d6"
+    },
+    {
+      "bytes": 6721,
+      "path": "reports/mechanism-bridge/summary_manifest.json",
+      "sha256": "6fb5970fb8d487eef4619ebcd5ca42ffa6a4dd6297743cc40879cf5f6adf1834"
+    },
+    {
+      "bytes": 10106,
+      "path": "reports/outcome-summary.manifest.json",
+      "sha256": "aa9301439d164e5273b0af500dfba0e500e44472306336734791ff9f246dc310"
+    },
+    {
+      "bytes": 4584,
+      "path": "reports/retrieval-dynamics-dense/summary_manifest.json",
+      "sha256": "b1d2a6f07f185f2ce566521ca8e780a48ab57aa067216e78e51faf8a806a8ab9"
+    },
+    {
+      "bytes": 33968,
+      "path": "reports/short-branch/summary_manifest.json",
+      "sha256": "8faece8a5538e2cd8f5e7fd83c6729255a8005daf5ee85de2dc844942d853a43"
+    },
+    {
+      "bytes": 11469,
+      "path": "reports/spectral-transplant/summary_manifest.json",
+      "sha256": "4fb46792a45598147ae58c64ebb9145c5b1db8fb02b5cbbda6b38b89668b3374"
+    },
+    {
+      "bytes": 53378,
+      "path": "reports/tail-stability/summary_manifest.json",
+      "sha256": "8450e0238e2841bb23581948f8575ac0097c5cbfd82bd92f7572a87a3307f475"
+    },
+    {
+      "bytes": 1382,
+      "path": "reports/training-dynamics/plot_manifest.json",
+      "sha256": "84e0e17780af4df586b6cad3c091a76ae916afe9f442d5d5870877e8fe3f4925"
+    },
+    {
+      "bytes": 18266,
+      "path": "reports/training-dynamics/summary_manifest.json",
+      "sha256": "033dd06f7de59bfb11eacf345a7469068b8429f3878d4dd7cc81d122880749d5"
+    },
+    {
+      "bytes": 9918,
+      "path": "results/common-state-spectra/summary/summary_manifest.json",
+      "sha256": "8d3c3fbd6b2113a5228b3e0b77f965284cd2beeccecfcade30671534586bfd65"
+    },
+    {
+      "bytes": 69138,
+      "path": "results/representation-space/decontaminated-beir/summary/summary_manifest.json",
+      "sha256": "242ca2c8efe0b80744d1babf2475b5912561d7996b8ae1820ba435ca876a1800"
+    },
+    {
+      "bytes": 66243,
+      "path": "results/representation-space/training/summary/summary_manifest.json",
+      "sha256": "58e47da5b2ab040a939d2daa41fa91f6d56ba59f469465fea1b4a37a4a04c20a"
+    }
+  ],
+  "families": [
+    "dense"
+  ],
+  "figures": {
+    "panels": [
+      {
+        "bytes": 178837,
+        "name": "dense_training_dynamics_by_run",
+        "path": "reports/dense-discovery/figures/dense-training-dynamics-by-run.png",
+        "sha256": "830f4d93a0b54f6a9e5bd6a92aed82b1c5da329be3963bebb1b417f8dcf6b76a"
+      },
+      {
+        "bytes": 91862,
+        "name": "dense_lr_sensitivity",
+        "path": "reports/dense-discovery/figures/dense-lr-sensitivity.png",
+        "sha256": "4c417d01be3a2c26ed4f5bf66ac72c5a8efac83c4cfc3fdfdbe95235c241acea"
+      }
+    ],
+    "source_manifest": {
+      "bytes": 6065,
+      "path": "reports/dense-discovery/coverage.json",
+      "sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36"
+    }
+  },
+  "headlines": {
+    "CommonStateHeadline": "At shared-gradient common states, DenseOn Muon/NorMuon row-CV ratios to AdamW were 2.855/0.711 and their normalized exact stable ranks were 0.5772/0.4153.",
+    "ConfirmationHeadline": "The validation-frozen three-seed paired nDCG@10 contrasts were DenseOn: Muon--AdamW -0.0306 [-0.0464, -0.0138] (negative), NorMuon--AdamW -0.0304 [-0.0446, -0.0138] (negative), NorMuon--Muon 0.0002 [-0.0126, 0.0084] (inconclusive).",
+    "DiscoveryHeadline": "For AdamW/Muon/NorMuon respectively, DenseOn median final nDCG@10 was 0.5858/0.5901/0.5910, with 2/3/3 of four learning rates reaching the frozen AdamW reference. DenseOn median throughput ratios to AdamW were 1.00x/0.95x/0.93x for AdamW/Muon/NorMuon; Muon-family training was not faster on this stack.",
+    "InterventionHeadline": "For AdamW/Muon/NorMuon respectively, DenseOn matched-step margin changes were 0.0009/0.0006/0.0005, final shared-start Muon--AdamW/NorMuon--Muon margin contrasts were 0.0024 (3/0/0)/-0.0007 (1/0/2), and mean hybrid-routing AdamW change was 0.0001. Frozen causal-chain tests: temporal 2/5, primary LOSO relative RMSE gains for loss/margin -0.237277/-0.688154; fixed-state loss/margin/tail/basis support 0/0/0/2 of 10; 84-row spectrum loss/margin RMSE gains -0.000150847/-7.12409e-05 versus matched basis -9.78894e-07/-3.39735e-05; matched decision gaps loss/margin -1.508471e-04/-7.124088e-05; joint result claimable negative. These tests constrain a spectral-component explanation but do not identify formal mediation of full-training BEIR gains.",
+    "RepresentationHeadline": "For AdamW/Muon/NorMuon respectively, DenseOn unseen margins were 0.2499/0.2609/0.2611. The descriptive within-run margin-to-BEIR Spearman rho was 0.531 for DenseOn. In the explicitly post-hoc loss diagnostic, the corresponding trailing-training-loss-to-BEIR rho was -0.684."
+  },
+  "result_tables": [
+    {
+      "bytes": 1364,
+      "path": "paper/generated/discovery.tex",
+      "sha256": "bfbe00c9153c9644852b2fa8be650db54d2dffc60ab113446aa0d2dbd1159e8d"
+    },
+    {
+      "bytes": 2429,
+      "path": "paper/generated/per-task.tex",
+      "sha256": "a66c71ce54af9586819c94f66a368153cef8b0dd871367b37e88c2a925e24c74"
+    },
+    {
+      "bytes": 404,
+      "path": "paper/generated/common-state.tex",
+      "sha256": "a33a66b903ccd4d6d40f600c2842af7577a87cafd1be9647ad0cb67f8c966f99"
+    },
+    {
+      "bytes": 478,
+      "path": "paper/generated/representation.tex",
+      "sha256": "76d2183a66ece6e6ea89c0c00918b7c801ccb42d8a4b7ff9632a274792d3cfc7"
+    },
+    {
+      "bytes": 470,
+      "path": "paper/generated/intervention.tex",
+      "sha256": "ed96c6d71120f9bc66d4d68f27baef9df1031e435ca4f4a0fd81a77163f09dad"
+    },
+    {
+      "bytes": 878,
+      "path": "paper/generated/confirmation.tex",
+      "sha256": "c979f4d39d5356b5de4e30f0cc22032d8c7ba4e0aae716b76ca6dfce1c4d7f85"
+    },
+    {
+      "bytes": 4145,
+      "path": "paper/generated/diagnostics.tex",
+      "sha256": "3ff01bfe882153bb087c0726bf4e557bb96e9625305b3a4838f56ff8a4d15da9"
+    },
+    {
+      "bytes": 10928,
+      "path": "paper/generated/causal-chain.tex",
+      "sha256": "a5b0eef96fe8dfc151f0410a9e9e4910d0e1e6cc17e6e5e516e0b3759c00e885"
+    }
+  ],
+  "results_tex": {
+    "bytes": 3691,
+    "path": "paper/results.tex",
+    "sha256": "17e9ab4effe77ea0a9420737ef5574a1b728dae84309da45233229551c52cfd4"
+  },
+  "schema_version": 1,
+  "scope_amendment": {
+    "amended_at_utc": "2026-08-30T20:14:42Z",
+    "claim_boundary": "The scope reduction is post hoc and must be disclosed in the paper and blog. Confirmatory optimizer claims are DenseOn-only. Existing LateOn discovery and mechanism artifacts remain available for audit but cannot supply missing controls or be selectively promoted as confirmatory evidence.",
+    "path": "configs/dense_scope_amendment.json",
+    "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
+    "status": "user_directed_post_hoc_scope_amendment"
+  },
+  "source_tables": [
+    {
+      "bytes": 19961,
+      "path": "reports/retrieval-dynamics/checkpoint_dynamics.csv",
+      "sha256": "72c079715d2d79b594d90f623692d56454f150c6facc6ab0692671bd53095bfa"
+    },
+    {
+      "bytes": 1451,
+      "path": "reports/retrieval-dynamics/optimizer_first_passage.csv",
+      "sha256": "921749b7755ae5c39deed65441163f17651dcef76258ad0b4bd369a039b47d40"
+    },
+    {
+      "bytes": 2298,
+      "path": "reports/retrieval-dynamics/best_config_task_comparison.csv",
+      "sha256": "f682f702a7be67b1f0473b5e8feffa535402610850fc2e0f2a7fef098da85378"
+    },
+    {
+      "bytes": 2039,
+      "path": "reports/retrieval-dynamics/task_delta_stability.csv",
+      "sha256": "8ffb8857673b25dd4cb8ee886c489b643ee56a54a7513670b7f1b93def060755"
+    },
+    {
+      "bytes": 1795,
+      "path": "reports/training-dynamics/optimizer_system_summary.csv",
+      "sha256": "5784f419a5a03b80fb03430bedecfd9ab5ddff07e2d8c933b661a6eb530d9a15"
+    },
+    {
+      "bytes": 16502,
+      "path": "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.csv",
+      "sha256": "66f826875adb470a54aac3852eb84d19d1998674fba6fa1ae0e68deae4cd314e"
+    },
+    {
+      "bytes": 12906,
+      "path": "reports/common-state/anchor_contrasts.csv",
+      "sha256": "75258e6e16d0fcc6c97b93fe425ee208af928e2dc0269cd57f9bffbfd8227a45"
+    },
+    {
+      "bytes": 1245,
+      "path": "reports/basis-sensitivity/summary.csv",
+      "sha256": "d05a7d6fb54891d6d8f53e63b5623d34da49f7221f70dd76d5a68fb85c626fa5"
+    },
+    {
+      "bytes": 85946,
+      "path": "results/common-state-spectra/summary/spectrum_metrics.csv",
+      "sha256": "1b1d41bde4066bb7a51d7e159e27f94f0b91307904a596988cd53c765c8f1588"
+    },
+    {
+      "bytes": 78592,
+      "path": "reports/mechanism-bridge/checkpoint_bridge.csv",
+      "sha256": "52af9cf0c97fbaa93086e9b5319ea5f875adf5fd03cd3bd3d2276ee71491d586"
+    },
+    {
+      "bytes": 33918,
+      "path": "reports/mechanism-bridge/descriptive_correlations.csv",
+      "sha256": "1cfd4262e073fa76d556386f0e51ead9d3bac76f1b1fbcbd7695fa798174e3b1"
+    },
+    {
+      "bytes": 7842,
+      "path": "reports/functional-intervention/family_summary.csv",
+      "sha256": "7cbb66460c8d6022a30b6378f5f07091a030698650dd5cf0ddc88e0a7cae9872"
+    },
+    {
+      "bytes": 482,
+      "path": "reports/hybrid-adamw/final_summary.csv",
+      "sha256": "a9015195c9c2411b908824ec23eba441b6ed34009dc906f3e09b722da78b5710"
+    },
+    {
+      "bytes": 6103,
+      "path": "reports/short-branch/paired_dynamics_summary.csv",
+      "sha256": "9b273b6886d63cea12c5fb74bdf7d379011203e5219c16b05db6a03013a56d07"
+    },
+    {
+      "bytes": 998,
+      "path": "reports/tail-stability/discovery_cross_tail_summary.csv",
+      "sha256": "db15c1ec644acc046d77291507b26c5b59fe64065d8674eede43ffe0d4376eaf"
+    },
+    {
+      "bytes": 876,
+      "path": "reports/tail-stability/short_branch_final_summary.csv",
+      "sha256": "c6b396d451d9bec569ee6c81edad4cdb108740e1a8ae6d52f00e98f36977af2b"
+    },
+    {
+      "bytes": 1370,
+      "path": "reports/spectral-transplant/family_factorial_summary.csv",
+      "sha256": "4bfdd08bd3b273f992547f365758128c593ea7485aa4ad15548c5bdf11a05db0"
+    },
+    {
+      "bytes": 6055,
+      "path": "reports/spectral-transplant/family_query_tail_summary.csv",
+      "sha256": "d651c8e986f0a59486d13ebff4badc37f6e650607201a67223fd888d1c678586"
+    },
+    {
+      "bytes": 1169,
+      "path": "reports/confirmatory/paired_summary.csv",
+      "sha256": "6bdd0c66acfce093c5661bccab6e8b04779cc4e6d804bdc29e0917cf5142e83a"
+    },
+    {
+      "bytes": 1644,
+      "path": "reports/temporal-short-branch/paired_contrasts.csv",
+      "sha256": "c6012076baa20be0f5caf530b1ebe749ad2f02b6f28526fe5c0fe47ee10af1b9"
+    },
+    {
+      "bytes": 16059,
+      "path": "reports/temporal-short-branch/loso_predictions.csv",
+      "sha256": "678d72549011f1f346c5f82a315d5a38e51eb694e0942bdc9e34349c4b4edc60"
+    },
+    {
+      "bytes": 4081,
+      "path": "reports/temporal-short-branch/estimates.csv",
+      "sha256": "298766768b78d73452edf132643326c99c04b21277b037a84bdf9365940d4fd3"
+    },
+    {
+      "bytes": 3453,
+      "path": "reports/dose-band/anchor_tests.csv",
+      "sha256": "3cb3657f14afc5779000f3d22c22698a7d3fa7685b6a7f299b18ba181b08fa76"
+    },
+    {
+      "bytes": 20899,
+      "path": "reports/dose-band/heldout_predictions.csv",
+      "sha256": "27602693778f746ca548a1a05740424a554b6753b250eb208889b57dd653392c"
+    }
+  ]
+}
+make build/main.pdf
+make[1]: Entering directory '/root/embedding-optimizer-study/paper'
+mkdir -p build
+TEXINPUTS=/root/embedding-optimizer-study/paper/vendor//: BSTINPUTS=/root/embedding-optimizer-study/paper/vendor//: \
+	latexmk -pdf -bibtex -interaction=nonstopmode -halt-on-error \
+	-outdir=build main.tex
+Rc files read:
+  /etc/LatexMk
+Latexmk: This is Latexmk, John Collins, 31 Jan. 2024. Version 4.83.
+No existing .aux file, so I'll make a simple one, and require run of *latex.
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Category 'other':
+  Rerun of 'pdflatex' forced or previously required:
+    Reason or flag: 'Initial setup'
+
+------------
+Run number 1 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -halt-on-error -recorder -output-directory="build"  "main.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-22>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo))
+(/root/embedding-optimizer-study/paper/vendor/acl.sty
+Conference Style for ACL
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/latex/lineno/lineno.sty
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/latexsym.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty) (./results.tex)
+ (./generated/causal-chain.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(build/main.aux)
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg)
+
+Package lineno Warning: Line number reference failed, re-run to get it right.
+
+
+Underfull \hbox (badness 1014) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) these regimes, com-par-ing AdamW, Muon,
+
+Underfull \hbox (badness 3068) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) frozen three-seed paired nDCG@10 con-
+
+Underfull \hbox (badness 4072) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) [-0.0464, -0.0138] (neg-a-tive), NorMuon--
+
+Package natbib Warning: Citation `loshchilov2019decoupled' on page 1 undefined 
+on input line 48.
+
+
+Package natbib Warning: Citation `liu2025muon' on page 1 undefined on input lin
+e 48.
+
+
+Package natbib Warning: Citation `li2025normuon' on page 1 undefined on input l
+ine 48.
+
+
+Underfull \vbox (badness 6396) has occurred while \output is active
+
+Package natbib Warning: Citation `qu2026finetune' on page 1 undefined on input 
+line 55.
+
+
+Package natbib Warning: Citation `liu2026consistency' on page 1 undefined on in
+put line 55.
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+Underfull \hbox (badness 3568) in paragraph at lines 84--87
+\OT1/ptm/m/n/10.95 (+20) Muon, and Nor-Muon over a com-plete
+
+Underfull \hbox (badness 1137) in paragraph at lines 87--91
+\OT1/ptm/m/n/10.95 (+20) the ap-par-ent shortlist--corpus gap is con-
+
+Underfull \hbox (badness 1168) in paragraph at lines 91--94
+\OT1/ptm/m/n/10.95 (+20) a sim-i-lar fixed-probe score drift through
+
+Underfull \hbox (badness 1546) in paragraph at lines 94--98
+[]\OT1/ptm/m/n/10.95 (+20) Falsifiable tests of the optimization-dose
+
+Underfull \hbox (badness 2310) in paragraph at lines 94--98
+\OT1/ptm/m/n/10.95 (+20) ac-count us-ing shared-start scale-matched
+
+Underfull \hbox (badness 6173) in paragraph at lines 94--98
+\OT1/ptm/m/n/10.95 (+20) branches, query-tail out-comes, spec-tral
+
+Underfull \hbox (badness 1783) in paragraph at lines 98--102
+\OT1/ptm/m/n/10.95 (+20) sures group-ing and auxiliary-rate ef-fects
+
+Underfull \hbox (badness 1968) in paragraph at lines 98--102
+\OT1/ptm/m/n/10.95 (+20) family recipes, to-gether with three new
+
+Package natbib Warning: Citation `jordan2024muon' on page 2 undefined on input 
+line 115.
+
+
+Package natbib Warning: Citation `li2025normuon' on page 2 undefined on input l
+ine 118.
+
+
+Package natbib Warning: Citation `pang2026htmuon' on page 2 undefined on input 
+line 123.
+
+
+Package natbib Warning: Citation `qu2026finetune' on page 2 undefined on input 
+line 123.
+
+[2]
+Underfull \hbox (badness 1325) in paragraph at lines 156--162
+\OT1/ptm/m/n/10.95 (+20) We com-pare op-ti-mizer di-rec-tions at iden-ti-cal
+
+Package natbib Warning: Citation `thakur2021beir' on page 3 undefined on input 
+line 168.
+
+
+Package natbib Warning: Citation `sourty2026denseon' on page 3 undefined on inp
+ut line 170.
+
+
+Package natbib Warning: Citation `kim2024hil' on page 3 undefined on input line
+ 171.
+
+
+Package natbib Warning: Citation `liu2025muon' on page 3 undefined on input lin
+e 176.
+
+
+Package natbib Warning: Citation `li2025normuon' on page 3 undefined on input l
+ine 177.
+
+
+Package natbib Warning: Citation `qu2026finetune' on page 3 undefined on input 
+line 179.
+
+
+Package natbib Warning: Citation `liu2026consistency' on page 3 undefined on in
+put line 179.
+
+
+Package natbib Warning: Citation `ruan2026features' on page 3 undefined on inpu
+t line 180.
+
+
+Package natbib Warning: Citation `pang2026htmuon' on page 3 undefined on input 
+line 181.
+
+
+Package natbib Warning: Citation `du2026newtonmuon' on page 3 undefined on inpu
+t line 182.
+
+
+Package natbib Warning: Citation `massena2026schatten' on page 3 undefined on i
+nput line 183.
+
+
+Underfull \hbox (badness 7558) in paragraph at lines 175--186
+ []\OT1/ptm/b/n/10.95 (+20) Matrix-aware op-ti-miza-tion and op-ti-mizer
+
+Package natbib Warning: Citation `sourty2026denseon' on page 3 undefined on inp
+ut line 204.
+
+
+LaTeX Warning: Reference `sec:execution-audit' on page 3 undefined on input lin
+e 215.
+
+[3]
+
+Package natbib Warning: Citation `thakur2021beir' on page 4 undefined on input 
+line 230.
+
+
+LaTeX Warning: Reference `sec:causal-chain-diagnostics' on page 4 undefined on 
+input line 259.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) For AdamW/Muon/NorMuon re-spec-tively,
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) DenseOn me-dian fi-nal nDCG@10 was
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) 0.5858/0.5901/0.5910, with 2/3/3 of four
+
+Underfull \hbox (badness 4752) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) learn-ing rates reach-ing the frozen AdamW
+
+Underfull \hbox (badness 2573) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) ref-er-ence. DenseOn me-dian through-put ra-
+
+Underfull \hbox (badness 3386) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) tios to AdamW were 1.00x/0.95x/0.93x for
+(./generated/discovery.tex)
+
+LaTeX Warning: Reference `tab:training-systems-results' on page 4 undefined on 
+input line 274.
+
+
+Underfull \hbox (badness 1655) in paragraph at lines 267--275
+[]\OT1/ptm/m/n/10.95 (+20) The gen-er-ated dis-cov-ery ar-ti-fact is strictly
+[4]
+Underfull \hbox (badness 1509) in paragraph at lines 276--281
+\OT1/ptm/m/n/10.95 (+20) reach mean nDCG@10 0.5921/0.5922 ver-sus
+
+Underfull \hbox (badness 1077) in paragraph at lines 276--281
+\OT1/ptm/m/n/10.95 (+20) AdamW's fi-nal 0.5899, but their task counts
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+[]\OT1/ptm/m/n/10.95 (+20) Post-hoc high-dose-minus-oracle training-
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+\OT1/ptm/m/n/10.95 (+20) loss/validation-loss/BEIR deltas are
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+\OT1/cmr/m/n/10.95 +0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 1210\OML/cmm/m/it/
+10.95 = \OMS/cmsy/m/n/10.95 ^^@ \OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/c
+mr/m/n/10.95 3696\OML/cmm/m/it/10.95 = \OMS/cmsy/m/n/10.95 ^^@ \OT1/cmr/m/n/10.
+95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 0315$ \OT1/ptm/m/n/10.95 (+20) for 
+Muon
+
+Underfull \hbox (badness 1132) in paragraph at lines 291--296
+\OT1/ptm/m/n/10.95 (+20) ac-count but, be-cause all in-puts were al-ready
+(./generated/candidate-breadth.tex
+
+LaTeX Warning: Reference `fig:candidate-breadth' on page 5 undefined on input l
+ine 23.
+
+)
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+ []\OT1/ptm/b/n/10.95 (+20) Candidate-breadth de-ci-sion.[] \OT1/ptm/m/n/10.95 
+(+20) Frozen de-
+
+Underfull \hbox (badness 1803) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) ci-sion: Not sup-ported. Width 7 $\OMS/cmsy/m/n/10.95 
+!$ \OT1/ptm/m/n/10.95 (+20) 2,048
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) loss/margin deltas are Muon +0.17706/-
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) 0.00667$\OMS/cmsy/m/n/10.95 !$\OT1/ptm/m/n/10.95 (+20)
+ +0.10865/+0.00097; Nor-Muon
+[5 <../reports/dense-discovery/figures/dense-training-dynamics-by-run.png> <../
+reports/dense-discovery/figures/dense-lr-sensitivity.png>]
+
+LaTeX Warning: Reference `sec:execution-audit-details' on page 6 undefined on i
+nput line 314.
+
+
+LaTeX Warning: Reference `tab:confirmation-results' on page 6 undefined on inpu
+t line 325.
+
+(./generated/confirmation.tex) (./generated/common-state.tex)
+
+LaTeX Warning: Reference `tab:basis-sensitivity-results' on page 6 undefined on
+ input line 361.
+
+
+LaTeX Warning: Reference `tab:tail-identity-results' on page 6 undefined on inp
+ut line 362.
+
+
+LaTeX Warning: Reference `tab:spectral-tail-results' on page 6 undefined on inp
+ut line 362.
+
+
+Underfull \hbox (badness 2020) in paragraph at lines 369--376
+\OT1/ptm/m/n/10.95 (+20) DenseOn matched-step mar-gin changes were
+[6] (./generated/intervention.tex)
+
+LaTeX Warning: Reference `tab:causal-chain-summary' on page 7 undefined on inpu
+t line 381.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 393--393
+[]\OT1/ptm/m/n/7 (+20) dRMSE S(L/M) -0.000150847/-7.12409e-05;
+
+Underfull \hbox (badness 10000) in paragraph at lines 393--393
+\OT1/ptm/m/n/7 (+20) B(L/M) -9.78894e-07/-3.39735e-05; gaps -
+
+Underfull \hbox (badness 1635) in paragraph at lines 397--411
+\OT1/ptm/m/n/10.95 (+20) minus-native mean nDCG@10 is $\OT1/cmr/m/n/10.95 +0\OM
+L/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 000201$\OT1/ptm/m/n/10.95 (+20) ,
+
+LaTeX Warning: Reference `tab:representation-results' on page 7 undefined on in
+put line 418.
+
+
+Underfull \vbox (badness 2310) has occurred while \output is active [7]
+
+LaTeX Warning: Reference `fig:corpus-size-diagnostic' on page 8 undefined on in
+put line 433.
+
+[8] (build/main.bbl [9]
+Underfull \hbox (badness 1983) in paragraph at lines 83--89
+[]\OT1/ptm/m/n/10 (+20) Rapha[]el Sourty, An-toine Chaf-fin, Paulo Roberto
+
+Underfull \hbox (badness 1648) in paragraph at lines 83--89
+\OT1/ptm/m/n/10 (+20) with the La-teOn: Fully open dense and late-
+)
+Underfull \hbox (badness 3291) in paragraph at lines 515--515
+ []\OT1/ptm/b/n/10.95 (+20) Candidate-breadth un-cer-tainty and paired
+
+Underfull \hbox (badness 1721) in paragraph at lines 515--515
+\OT1/ptm/b/n/10.95 (+20) preva-lence.[] \OT1/ptm/m/n/10.95 (+20) The pre-req-ui
+-site width-7 bridge
+
+Underfull \hbox (badness 1210) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) (max-i-mum er-ror 8.286419). On the padded
+
+Underfull \hbox (badness 8151) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) 0.00667 [-0.01222, -0.00102] to +0.10865
+
+Underfull \hbox (badness 10000) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) [-0.06652, +0.28457]/+0.00097 [-0.00443,
+
+Underfull \hbox (badness 1960) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) [-0.01062, +0.00139] to +0.11576 [-0.07579,
+
+Underfull \hbox (badness 3417) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) ter-vals use 50,000 re-sam-ples, in-de-pen-dently
+
+Underfull \hbox (badness 1052) in paragraph at lines 520--527
+\OT1/ptm/m/n/10.95 (+20) All 224 queries and their positive-plus-seven-
+
+Underfull \hbox (badness 10000) in paragraph at lines 528--534
+[]\OT1/ptm/m/n/10.95 (+20) At width 7, high-dose mi-nus retrieval-
+
+Underfull \hbox (badness 5147) in paragraph at lines 528--534
+\OT1/ptm/m/n/10.95 (+20) optimal Muon changes loss by $\OT1/cmr/m/n/10.95 +0\OM
+L/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 177064$
+(./generated/corpus-size-diagnostic-appendix.tex
+
+LaTeX Warning: Reference `fig:corpus-size-diagnostic' on page 10 undefined on i
+nput line 3.
+
+[10])
+Underfull \hbox (badness 4048) in paragraph at lines 547--547
+[]\OT1/ptm/m/n/9 (+20) validation-frozen recipe, new seeds, paired
+
+Underfull \hbox (badness 10000) in paragraph at lines 550--550
+[]\OT1/ptm/m/n/9 (+20) Accumulation ex-plains
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]\OT1/ptm/m/n/9 (+20) Difference sur-vives
+
+Underfull \hbox (badness 2096) in paragraph at lines 553--553
+[]\OT1/ptm/m/n/9 (+20) Muon-family high-dose
+
+Underfull \hbox (badness 4229) in paragraph at lines 553--553
+\OT1/ptm/m/n/9 (+20) or-der-ing re-verses with
+(./generated/diagnostics.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 572--573
+[]\OT1/ptm/m/n/10.95 (+20) For AdamW/Muon/NorMuon re-spec-
+
+Underfull \hbox (badness 10000) in paragraph at lines 572--573
+\OT1/ptm/m/n/10.95 (+20) tively, DenseOn un-seen mar-gins were
+(./generated/representation.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active [11 <../re
+ports/candidate-breadth/candidate_breadth_calibration.pdf> <../reports/corpus-s
+ize-diagnostic/corpus_size_association.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/7 (+20) validation loss p95 primary=-0.237277, update/weight=-2.
+46124/-0.900387, de-ci-sion
+
+Underfull \hbox (badness 2253) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/7 (+20) validation loss p95 muon abs(beta)=0.182353 to 5.20136 (
+gap -5.019009e+00); nor-muon
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) Muon $\OML/cmm/m/it/6 ^^L$ \OT1/ptm/m/n/6 (+20) before$\
+OMS/cmsy/m/n/6 !$\OT1/ptm/m/n/6 (+20) after
+
+Underfull \hbox (badness 6220) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) NorMuon $\OML/cmm/m/it/6 ^^L$ \OT1/ptm/m/n/6 (+20) befor
+e$\OMS/cmsy/m/n/6 !$\OT1/ptm/m/n/6 (+20) after
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +5.20136 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +5.58902 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +11.0792 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.0387 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -2.53666 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to -2.50893 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +10.0127 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.0604 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +10.9809 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.8482 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -1.50232 (-
+
+Underfull \hbox (badness 5231) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +0.342982 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +2.13117 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +2.1721 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -26.6727 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to -26.5591 (-
+
+Underfull \hbox (badness 2050) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) 0 / +0.112292 / +0.14693 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.191247 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.11791 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.12e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.119569 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.096515 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00556641 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -8.58e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.158669 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0746775 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.159435 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0841789 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.04e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.0958187 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0795917 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.09e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.100107 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0651468 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -7.13e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.072524 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0593137 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.159967 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0918381 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.04e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.116788 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0890134 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -5.25e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.126736 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0805851 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -8.32e-02 / -3.91e-03 /
+(./generated/retrieval-dynamics-extension.tex) (./generated/per-task.tex)
+
+Package natbib Warning: There were undefined citations.
+
+[12] [13] [14 <../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamic
+s.pdf>] [15] [16] (build/main.aux
+
+Package natbib Warning: Citation(s) may have changed.
+(natbib)                Rerun to get citations correct.
+
+)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8
+a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on build/main.pdf (16 pages, 582867 bytes).
+Transcript written on build/main.log.
+Latexmk: Getting log file 'build/main.log'
+Latexmk: Examining 'build/main.fls'
+Latexmk: Examining 'build/main.log'
+Latexmk: Found input bbl file 'build/main.bbl'
+Latexmk: References changed.
+Latexmk: References changed.
+Latexmk: References changed.
+Latexmk: Log file says output to 'build/main.pdf'
+Latexmk: Found bibliography file(s):
+  ./references.bib
+Latexmk: applying rule 'bibtex build/main'...
+Rule 'bibtex build/main':  Reasons for rerun
+Category 'other':
+  Rerun of 'bibtex build/main' forced or previously required:
+    Reason or flag: 'Initial set up of rule'
+
+------------
+Run number 1 of rule 'bibtex build/main'
+------------
+====== ENV{BIBINPUTS} changed to '/root/embedding-optimizer-study/paper:build:/root/embedding-optimizer-study/paper/build:'
+Latexmk: Change directory to 'build/'.
+To assist finding of files in document directory, I set
+  BIBINPUTS='/root/embedding-optimizer-study/paper:build:/root/embedding-optimizer-study/paper/build:'
+  BSTINPUTS='/root/embedding-optimizer-study/paper:/root/embedding-optimizer-study/paper/vendor//:'.
+------------
+Running 'bibtex  "main.aux"'
+------------
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+The top-level auxiliary file: main.aux
+The style file: acl_natbib.bst
+Database file #1: references.bib
+Latexmk: Change directory back to '/root/embedding-optimizer-study/paper'
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  build/main.aux
+  build/main.out
+
+------------
+Run number 2 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -halt-on-error -recorder -output-directory="build"  "main.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-22>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo))
+(/root/embedding-optimizer-study/paper/vendor/acl.sty
+Conference Style for ACL
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/latex/lineno/lineno.sty
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/latexsym.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty) (./results.tex)
+ (./generated/causal-chain.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(build/main.aux)
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(build/main.out) (build/main.out)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg)
+Underfull \hbox (badness 1014) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) these regimes, com-par-ing AdamW, Muon,
+
+Underfull \hbox (badness 3068) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) frozen three-seed paired nDCG@10 con-
+
+Underfull \hbox (badness 4072) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) [-0.0464, -0.0138] (neg-a-tive), NorMuon--
+
+Underfull \vbox (badness 6396) has occurred while \output is active [1{/var/lib
+/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/
+enc/dvips/base/8r.enc}]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+Underfull \hbox (badness 3568) in paragraph at lines 84--87
+\OT1/ptm/m/n/10.95 (+20) Muon, and Nor-Muon over a com-plete
+
+Underfull \hbox (badness 1137) in paragraph at lines 87--91
+\OT1/ptm/m/n/10.95 (+20) the ap-par-ent shortlist--corpus gap is con-
+
+Underfull \hbox (badness 1168) in paragraph at lines 91--94
+\OT1/ptm/m/n/10.95 (+20) a sim-i-lar fixed-probe score drift through
+
+Underfull \hbox (badness 1546) in paragraph at lines 94--98
+[]\OT1/ptm/m/n/10.95 (+20) Falsifiable tests of the optimization-dose
+
+Underfull \hbox (badness 2310) in paragraph at lines 94--98
+\OT1/ptm/m/n/10.95 (+20) ac-count us-ing shared-start scale-matched
+
+Underfull \hbox (badness 6173) in paragraph at lines 94--98
+\OT1/ptm/m/n/10.95 (+20) branches, query-tail out-comes, spec-tral
+
+Underfull \hbox (badness 1783) in paragraph at lines 98--102
+\OT1/ptm/m/n/10.95 (+20) sures group-ing and auxiliary-rate ef-fects
+
+Underfull \hbox (badness 1968) in paragraph at lines 98--102
+\OT1/ptm/m/n/10.95 (+20) family recipes, to-gether with three new
+[2]
+Underfull \hbox (badness 1325) in paragraph at lines 156--162
+\OT1/ptm/m/n/10.95 (+20) We com-pare op-ti-mizer di-rec-tions at iden-ti-cal
+
+Underfull \hbox (badness 7558) in paragraph at lines 175--186
+ []\OT1/ptm/b/n/10.95 (+20) Matrix-aware op-ti-miza-tion and op-ti-mizer
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) For AdamW/Muon/NorMuon re-spec-tively,
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) DenseOn me-dian fi-nal nDCG@10 was
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) 0.5858/0.5901/0.5910, with 2/3/3 of four
+
+Underfull \hbox (badness 4752) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) learn-ing rates reach-ing the frozen AdamW
+
+Underfull \hbox (badness 2573) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) ref-er-ence. DenseOn me-dian through-put ra-
+
+Underfull \hbox (badness 3386) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) tios to AdamW were 1.00x/0.95x/0.93x for
+(./generated/discovery.tex)
+Underfull \hbox (badness 1655) in paragraph at lines 267--275
+[]\OT1/ptm/m/n/10.95 (+20) The gen-er-ated dis-cov-ery ar-ti-fact is strictly
+[4]
+Underfull \hbox (badness 1509) in paragraph at lines 276--281
+\OT1/ptm/m/n/10.95 (+20) reach mean nDCG@10 0.5921/0.5922 ver-sus
+
+Underfull \hbox (badness 1077) in paragraph at lines 276--281
+\OT1/ptm/m/n/10.95 (+20) AdamW's fi-nal 0.5899, but their task counts
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+[]\OT1/ptm/m/n/10.95 (+20) Post-hoc high-dose-minus-oracle training-
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+\OT1/ptm/m/n/10.95 (+20) loss/validation-loss/BEIR deltas are
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+\OT1/cmr/m/n/10.95 +0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 1210\OML/cmm/m/it/
+10.95 = \OMS/cmsy/m/n/10.95 ^^@ \OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/c
+mr/m/n/10.95 3696\OML/cmm/m/it/10.95 = \OMS/cmsy/m/n/10.95 ^^@ \OT1/cmr/m/n/10.
+95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 0315$ \OT1/ptm/m/n/10.95 (+20) for 
+Muon
+
+Underfull \hbox (badness 1132) in paragraph at lines 291--296
+\OT1/ptm/m/n/10.95 (+20) ac-count but, be-cause all in-puts were al-ready
+(./generated/candidate-breadth.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+ []\OT1/ptm/b/n/10.95 (+20) Candidate-breadth de-ci-sion.[] \OT1/ptm/m/n/10.95 
+(+20) Frozen de-
+
+Underfull \hbox (badness 1803) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) ci-sion: Not sup-ported. Width 7 $\OMS/cmsy/m/n/10.95 
+!$ \OT1/ptm/m/n/10.95 (+20) 2,048
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) loss/margin deltas are Muon +0.17706/-
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) 0.00667$\OMS/cmsy/m/n/10.95 !$\OT1/ptm/m/n/10.95 (+20)
+ +0.10865/+0.00097; Nor-Muon
+[5 <../reports/dense-discovery/figures/dense-training-dynamics-by-run.png> <../
+reports/dense-discovery/figures/dense-lr-sensitivity.png>]
+(./generated/confirmation.tex) (./generated/common-state.tex)
+Underfull \hbox (badness 2020) in paragraph at lines 369--376
+\OT1/ptm/m/n/10.95 (+20) DenseOn matched-step mar-gin changes were
+[6] (./generated/intervention.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 393--393
+[]\OT1/ptm/m/n/7 (+20) dRMSE S(L/M) -0.000150847/-7.12409e-05;
+
+Underfull \hbox (badness 10000) in paragraph at lines 393--393
+\OT1/ptm/m/n/7 (+20) B(L/M) -9.78894e-07/-3.39735e-05; gaps -
+
+Underfull \hbox (badness 1635) in paragraph at lines 397--411
+\OT1/ptm/m/n/10.95 (+20) minus-native mean nDCG@10 is $\OT1/cmr/m/n/10.95 +0\OM
+L/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 000201$\OT1/ptm/m/n/10.95 (+20) ,
+[7] [8]
+Underfull \vbox (badness 10000) has occurred while \output is active
+(build/main.bbl [9]
+Underfull \hbox (badness 1983) in paragraph at lines 83--89
+[]\OT1/ptm/m/n/10 (+20) Rapha[]el Sourty, An-toine Chaf-fin, Paulo Roberto
+
+Underfull \hbox (badness 1648) in paragraph at lines 83--89
+\OT1/ptm/m/n/10 (+20) with the La-teOn: Fully open dense and late-
+)
+Underfull \hbox (badness 3291) in paragraph at lines 515--515
+ []\OT1/ptm/b/n/10.95 (+20) Candidate-breadth un-cer-tainty and paired
+
+Underfull \hbox (badness 1721) in paragraph at lines 515--515
+\OT1/ptm/b/n/10.95 (+20) preva-lence.[] \OT1/ptm/m/n/10.95 (+20) The pre-req-ui
+-site width-7 bridge
+
+Underfull \hbox (badness 1210) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) (max-i-mum er-ror 8.286419). On the padded
+
+Underfull \hbox (badness 8151) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) 0.00667 [-0.01222, -0.00102] to +0.10865
+
+Underfull \hbox (badness 10000) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) [-0.06652, +0.28457]/+0.00097 [-0.00443,
+
+Underfull \hbox (badness 1960) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) [-0.01062, +0.00139] to +0.11576 [-0.07579,
+
+Underfull \hbox (badness 3417) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) ter-vals use 50,000 re-sam-ples, in-de-pen-dently
+
+Underfull \hbox (badness 1052) in paragraph at lines 520--527
+\OT1/ptm/m/n/10.95 (+20) All 224 queries and their positive-plus-seven-
+
+Underfull \hbox (badness 10000) in paragraph at lines 528--534
+[]\OT1/ptm/m/n/10.95 (+20) At width 7, high-dose mi-nus retrieval-
+
+Underfull \hbox (badness 5147) in paragraph at lines 528--534
+\OT1/ptm/m/n/10.95 (+20) optimal Muon changes loss by $\OT1/cmr/m/n/10.95 +0\OM
+L/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 177064$
+(./generated/corpus-size-diagnostic-appendix.tex [10])
+Underfull \hbox (badness 4048) in paragraph at lines 547--547
+[]\OT1/ptm/m/n/9 (+20) validation-frozen recipe, new seeds, paired
+
+Underfull \hbox (badness 10000) in paragraph at lines 550--550
+[]\OT1/ptm/m/n/9 (+20) Accumulation ex-plains
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]\OT1/ptm/m/n/9 (+20) Difference sur-vives
+
+Underfull \hbox (badness 2096) in paragraph at lines 553--553
+[]\OT1/ptm/m/n/9 (+20) Muon-family high-dose
+
+Underfull \hbox (badness 4229) in paragraph at lines 553--553
+\OT1/ptm/m/n/9 (+20) or-der-ing re-verses with
+
+Underfull \vbox (badness 1205) has occurred while \output is active
+(./generated/diagnostics.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 572--573
+[]\OT1/ptm/m/n/10.95 (+20) For AdamW/Muon/NorMuon re-spec-
+
+Underfull \hbox (badness 10000) in paragraph at lines 572--573
+\OT1/ptm/m/n/10.95 (+20) tively, DenseOn un-seen mar-gins were
+[11 <../reports/candidate-breadth/candidate_breadth_calibration.pdf> <../report
+s/corpus-size-diagnostic/corpus_size_association.pdf>]
+(./generated/representation.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/7 (+20) validation loss p95 primary=-0.237277, update/weight=-2.
+46124/-0.900387, de-ci-sion
+
+Underfull \hbox (badness 2253) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/7 (+20) validation loss p95 muon abs(beta)=0.182353 to 5.20136 (
+gap -5.019009e+00); nor-muon
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) Muon $\OML/cmm/m/it/6 ^^L$ \OT1/ptm/m/n/6 (+20) before$\
+OMS/cmsy/m/n/6 !$\OT1/ptm/m/n/6 (+20) after
+
+Underfull \hbox (badness 6220) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) NorMuon $\OML/cmm/m/it/6 ^^L$ \OT1/ptm/m/n/6 (+20) befor
+e$\OMS/cmsy/m/n/6 !$\OT1/ptm/m/n/6 (+20) after
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +5.20136 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +5.58902 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +11.0792 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.0387 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -2.53666 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to -2.50893 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +10.0127 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.0604 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +10.9809 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.8482 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -1.50232 (-
+
+Underfull \hbox (badness 5231) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +0.342982 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +2.13117 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +2.1721 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -26.6727 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to -26.5591 (-
+
+Underfull \hbox (badness 2050) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) 0 / +0.112292 / +0.14693 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.191247 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.11791 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.12e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.119569 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.096515 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00556641 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -8.58e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.158669 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0746775 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.159435 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0841789 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.04e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.0958187 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0795917 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.09e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.100107 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0651468 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -7.13e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.072524 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0593137 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.159967 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0918381 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.04e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.116788 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0890134 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -5.25e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.126736 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0805851 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -8.32e-02 / -3.91e-03 /
+(./generated/retrieval-dynamics-extension.tex)
+
+Package lineno Warning: Line number reference failed, re-run to get it right.
+
+(./generated/per-task.tex) [12] [13] [14 <../reports/dense-retrieval-dynamics/f
+ive_stage_retrieval_dynamics.pdf>] [15] [16] (build/main.aux) )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8
+a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on build/main.pdf (16 pages, 588644 bytes).
+Transcript written on build/main.log.
+Latexmk: Getting log file 'build/main.log'
+Latexmk: Examining 'build/main.fls'
+Latexmk: Examining 'build/main.log'
+Latexmk: Found input bbl file 'build/main.bbl'
+Latexmk: Log file says output to 'build/main.pdf'
+Latexmk: Found bibliography file(s):
+  ./references.bib
+Latexmk: applying rule 'bibtex build/main'...
+Rule 'bibtex build/main':  Reasons for rerun
+Changed files or newly in use/created:
+  build/main.aux
+
+------------
+Run number 2 of rule 'bibtex build/main'
+------------
+====== ENV{BIBINPUTS} changed to '/root/embedding-optimizer-study/paper:build:/root/embedding-optimizer-study/paper/build:'
+Latexmk: Change directory to 'build/'.
+To assist finding of files in document directory, I set
+  BIBINPUTS='/root/embedding-optimizer-study/paper:build:/root/embedding-optimizer-study/paper/build:'
+  BSTINPUTS='/root/embedding-optimizer-study/paper:/root/embedding-optimizer-study/paper/vendor//:'.
+------------
+Running 'bibtex  "main.aux"'
+------------
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+The top-level auxiliary file: main.aux
+The style file: acl_natbib.bst
+Database file #1: references.bib
+Latexmk: Change directory back to '/root/embedding-optimizer-study/paper'
+Latexmk: applying rule 'pdflatex'...
+Rule 'pdflatex':  Reasons for rerun
+Changed files or newly in use/created:
+  build/main.aux
+
+------------
+Run number 3 of rule 'pdflatex'
+------------
+------------
+Running 'pdflatex  -interaction=nonstopmode -halt-on-error -recorder -output-directory="build"  "main.tex"'
+------------
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(./main.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-22>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size11.clo))
+(/root/embedding-optimizer-study/paper/vendor/acl.sty
+Conference Style for ACL
+(/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/latex/lineno/lineno.sty
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty))))
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/base/latexsym.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg))
+(/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty) (./results.tex)
+ (./generated/causal-chain.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(build/main.aux)
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(build/main.out) (build/main.out)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-cmr.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg)
+Underfull \hbox (badness 1014) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) these regimes, com-par-ing AdamW, Muon,
+
+Underfull \hbox (badness 3068) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) frozen three-seed paired nDCG@10 con-
+
+Underfull \hbox (badness 4072) in paragraph at lines 27--42
+\OT1/ptm/m/n/10 (+20) [-0.0464, -0.0138] (neg-a-tive), NorMuon--
+
+Underfull \vbox (badness 6396) has occurred while \output is active [1{/var/lib
+/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/
+enc/dvips/base/8r.enc}]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+Underfull \hbox (badness 3568) in paragraph at lines 84--87
+\OT1/ptm/m/n/10.95 (+20) Muon, and Nor-Muon over a com-plete
+
+Underfull \hbox (badness 1137) in paragraph at lines 87--91
+\OT1/ptm/m/n/10.95 (+20) the ap-par-ent shortlist--corpus gap is con-
+
+Underfull \hbox (badness 1168) in paragraph at lines 91--94
+\OT1/ptm/m/n/10.95 (+20) a sim-i-lar fixed-probe score drift through
+
+Underfull \hbox (badness 1546) in paragraph at lines 94--98
+[]\OT1/ptm/m/n/10.95 (+20) Falsifiable tests of the optimization-dose
+
+Underfull \hbox (badness 2310) in paragraph at lines 94--98
+\OT1/ptm/m/n/10.95 (+20) ac-count us-ing shared-start scale-matched
+
+Underfull \hbox (badness 6173) in paragraph at lines 94--98
+\OT1/ptm/m/n/10.95 (+20) branches, query-tail out-comes, spec-tral
+
+Underfull \hbox (badness 1783) in paragraph at lines 98--102
+\OT1/ptm/m/n/10.95 (+20) sures group-ing and auxiliary-rate ef-fects
+
+Underfull \hbox (badness 1968) in paragraph at lines 98--102
+\OT1/ptm/m/n/10.95 (+20) family recipes, to-gether with three new
+[2]
+Underfull \hbox (badness 1325) in paragraph at lines 156--162
+\OT1/ptm/m/n/10.95 (+20) We com-pare op-ti-mizer di-rec-tions at iden-ti-cal
+
+Underfull \hbox (badness 7558) in paragraph at lines 175--186
+ []\OT1/ptm/b/n/10.95 (+20) Matrix-aware op-ti-miza-tion and op-ti-mizer
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) For AdamW/Muon/NorMuon re-spec-tively,
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) DenseOn me-dian fi-nal nDCG@10 was
+
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) 0.5858/0.5901/0.5910, with 2/3/3 of four
+
+Underfull \hbox (badness 4752) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) learn-ing rates reach-ing the frozen AdamW
+
+Underfull \hbox (badness 2573) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) ref-er-ence. DenseOn me-dian through-put ra-
+
+Underfull \hbox (badness 3386) in paragraph at lines 263--264
+\OT1/ptm/m/n/10.95 (+20) tios to AdamW were 1.00x/0.95x/0.93x for
+(./generated/discovery.tex)
+Underfull \hbox (badness 1655) in paragraph at lines 267--275
+[]\OT1/ptm/m/n/10.95 (+20) The gen-er-ated dis-cov-ery ar-ti-fact is strictly
+[4]
+Underfull \hbox (badness 1509) in paragraph at lines 276--281
+\OT1/ptm/m/n/10.95 (+20) reach mean nDCG@10 0.5921/0.5922 ver-sus
+
+Underfull \hbox (badness 1077) in paragraph at lines 276--281
+\OT1/ptm/m/n/10.95 (+20) AdamW's fi-nal 0.5899, but their task counts
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+[]\OT1/ptm/m/n/10.95 (+20) Post-hoc high-dose-minus-oracle training-
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+\OT1/ptm/m/n/10.95 (+20) loss/validation-loss/BEIR deltas are
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--296
+\OT1/cmr/m/n/10.95 +0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 1210\OML/cmm/m/it/
+10.95 = \OMS/cmsy/m/n/10.95 ^^@ \OT1/cmr/m/n/10.95 0\OML/cmm/m/it/10.95 :\OT1/c
+mr/m/n/10.95 3696\OML/cmm/m/it/10.95 = \OMS/cmsy/m/n/10.95 ^^@ \OT1/cmr/m/n/10.
+95 0\OML/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 0315$ \OT1/ptm/m/n/10.95 (+20) for 
+Muon
+
+Underfull \hbox (badness 1132) in paragraph at lines 291--296
+\OT1/ptm/m/n/10.95 (+20) ac-count but, be-cause all in-puts were al-ready
+(./generated/candidate-breadth.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+ []\OT1/ptm/b/n/10.95 (+20) Candidate-breadth de-ci-sion.[] \OT1/ptm/m/n/10.95 
+(+20) Frozen de-
+
+Underfull \hbox (badness 1803) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) ci-sion: Not sup-ported. Width 7 $\OMS/cmsy/m/n/10.95 
+!$ \OT1/ptm/m/n/10.95 (+20) 2,048
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) loss/margin deltas are Muon +0.17706/-
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--308
+\OT1/ptm/m/n/10.95 (+20) 0.00667$\OMS/cmsy/m/n/10.95 !$\OT1/ptm/m/n/10.95 (+20)
+ +0.10865/+0.00097; Nor-Muon
+[5 <../reports/dense-discovery/figures/dense-training-dynamics-by-run.png> <../
+reports/dense-discovery/figures/dense-lr-sensitivity.png>]
+(./generated/confirmation.tex) (./generated/common-state.tex)
+Underfull \hbox (badness 2020) in paragraph at lines 369--376
+\OT1/ptm/m/n/10.95 (+20) DenseOn matched-step mar-gin changes were
+[6] (./generated/intervention.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 393--393
+[]\OT1/ptm/m/n/7 (+20) dRMSE S(L/M) -0.000150847/-7.12409e-05;
+
+Underfull \hbox (badness 10000) in paragraph at lines 393--393
+\OT1/ptm/m/n/7 (+20) B(L/M) -9.78894e-07/-3.39735e-05; gaps -
+
+Underfull \hbox (badness 1635) in paragraph at lines 397--411
+\OT1/ptm/m/n/10.95 (+20) minus-native mean nDCG@10 is $\OT1/cmr/m/n/10.95 +0\OM
+L/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 000201$\OT1/ptm/m/n/10.95 (+20) ,
+[7] [8]
+Underfull \vbox (badness 10000) has occurred while \output is active
+(build/main.bbl [9]
+Underfull \hbox (badness 1983) in paragraph at lines 83--89
+[]\OT1/ptm/m/n/10 (+20) Rapha[]el Sourty, An-toine Chaf-fin, Paulo Roberto
+
+Underfull \hbox (badness 1648) in paragraph at lines 83--89
+\OT1/ptm/m/n/10 (+20) with the La-teOn: Fully open dense and late-
+)
+Underfull \hbox (badness 3291) in paragraph at lines 515--515
+ []\OT1/ptm/b/n/10.95 (+20) Candidate-breadth un-cer-tainty and paired
+
+Underfull \hbox (badness 1721) in paragraph at lines 515--515
+\OT1/ptm/b/n/10.95 (+20) preva-lence.[] \OT1/ptm/m/n/10.95 (+20) The pre-req-ui
+-site width-7 bridge
+
+Underfull \hbox (badness 1210) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) (max-i-mum er-ror 8.286419). On the padded
+
+Underfull \hbox (badness 8151) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) 0.00667 [-0.01222, -0.00102] to +0.10865
+
+Underfull \hbox (badness 10000) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) [-0.06652, +0.28457]/+0.00097 [-0.00443,
+
+Underfull \hbox (badness 1960) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) [-0.01062, +0.00139] to +0.11576 [-0.07579,
+
+Underfull \hbox (badness 3417) in paragraph at lines 515--515
+\OT1/ptm/m/n/10.95 (+20) ter-vals use 50,000 re-sam-ples, in-de-pen-dently
+
+Underfull \hbox (badness 1052) in paragraph at lines 520--527
+\OT1/ptm/m/n/10.95 (+20) All 224 queries and their positive-plus-seven-
+
+Underfull \hbox (badness 10000) in paragraph at lines 528--534
+[]\OT1/ptm/m/n/10.95 (+20) At width 7, high-dose mi-nus retrieval-
+
+Underfull \hbox (badness 5147) in paragraph at lines 528--534
+\OT1/ptm/m/n/10.95 (+20) optimal Muon changes loss by $\OT1/cmr/m/n/10.95 +0\OM
+L/cmm/m/it/10.95 :\OT1/cmr/m/n/10.95 177064$
+(./generated/corpus-size-diagnostic-appendix.tex [10])
+Underfull \hbox (badness 4048) in paragraph at lines 547--547
+[]\OT1/ptm/m/n/9 (+20) validation-frozen recipe, new seeds, paired
+
+Underfull \hbox (badness 10000) in paragraph at lines 550--550
+[]\OT1/ptm/m/n/9 (+20) Accumulation ex-plains
+
+Underfull \hbox (badness 10000) in paragraph at lines 552--552
+[]\OT1/ptm/m/n/9 (+20) Difference sur-vives
+
+Underfull \hbox (badness 2096) in paragraph at lines 553--553
+[]\OT1/ptm/m/n/9 (+20) Muon-family high-dose
+
+Underfull \hbox (badness 4229) in paragraph at lines 553--553
+\OT1/ptm/m/n/9 (+20) or-der-ing re-verses with
+
+Underfull \vbox (badness 1205) has occurred while \output is active
+(./generated/diagnostics.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 572--573
+[]\OT1/ptm/m/n/10.95 (+20) For AdamW/Muon/NorMuon re-spec-
+
+Underfull \hbox (badness 10000) in paragraph at lines 572--573
+\OT1/ptm/m/n/10.95 (+20) tively, DenseOn un-seen mar-gins were
+[11 <../reports/candidate-breadth/candidate_breadth_calibration.pdf> <../report
+s/corpus-size-diagnostic/corpus_size_association.pdf>]
+(./generated/representation.tex)
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/7 (+20) validation loss p95 primary=-0.237277, update/weight=-2.
+46124/-0.900387, de-ci-sion
+
+Underfull \hbox (badness 2253) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/7 (+20) validation loss p95 muon abs(beta)=0.182353 to 5.20136 (
+gap -5.019009e+00); nor-muon
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) Muon $\OML/cmm/m/it/6 ^^L$ \OT1/ptm/m/n/6 (+20) before$\
+OMS/cmsy/m/n/6 !$\OT1/ptm/m/n/6 (+20) after
+
+Underfull \hbox (badness 6220) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) NorMuon $\OML/cmm/m/it/6 ^^L$ \OT1/ptm/m/n/6 (+20) befor
+e$\OMS/cmsy/m/n/6 !$\OT1/ptm/m/n/6 (+20) after
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +5.20136 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +5.58902 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +11.0792 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.0387 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -2.53666 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to -2.50893 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +10.0127 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.0604 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +10.9809 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +10.8482 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -1.50232 (-
+
+Underfull \hbox (badness 5231) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +0.342982 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to +2.13117 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to +2.1721 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.182353 to -26.6727 (-
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.131624 to -26.5591 (-
+
+Underfull \hbox (badness 2050) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) 0 / +0.112292 / +0.14693 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.191247 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.11791 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.12e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.119569 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.096515 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00556641 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -8.58e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.158669 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0746775 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.159435 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0841789 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.04e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.0958187 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0795917 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.09e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.100107 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0651468 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -7.13e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.072524 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0593137 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.159967 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0918381 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -1.04e-01 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.116788 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0890134 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) -0.00390625 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -5.25e-02 / -3.91e-03 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) +0.126736 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) +0.0805851 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -0.0078125 / -
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+\OT1/ptm/m/n/6 (+20) 0.00390625 /
+
+Underfull \hbox (badness 10000) in paragraph at lines 582--582
+[]\OT1/ptm/m/n/6 (+20) -8.32e-02 / -3.91e-03 /
+(./generated/retrieval-dynamics-extension.tex) (./generated/per-task.tex)
+[12] [13] [14 <../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamic
+s.pdf>] [15] [16] (build/main.aux) )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8
+a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on build/main.pdf (16 pages, 588584 bytes).
+Transcript written on build/main.log.
+Latexmk: Getting log file 'build/main.log'
+Latexmk: Examining 'build/main.fls'
+Latexmk: Examining 'build/main.log'
+Latexmk: Found input bbl file 'build/main.bbl'
+Latexmk: Log file says output to 'build/main.pdf'
+Latexmk: Found bibliography file(s):
+  ./references.bib
+Latexmk: All targets (build/main.pdf) are up-to-date
+
+make[1]: Leaving directory '/root/embedding-optimizer-study/paper'
+/root/embedding-optimizer-study/.venv/bin/python -m embed_optim.paper_layout --paper-dir . --max-main-page 8
+{
+  "appendix_float_pages": {
+    "fig:candidate-breadth": 11,
+    "fig:corpus-size-diagnostic": 11,
+    "fig:extended-retrieval-dynamics": 14,
+    "tab:basis-sensitivity-results": 13,
+    "tab:causal-dose-anchors": 15,
+    "tab:causal-dose-diagnostics": 14,
+    "tab:causal-forward-rmse": 15,
+    "tab:causal-temporal-diagnostics": 13,
+    "tab:causal-temporal-estimates": 14,
+    "tab:causal-temporal-pairs": 14,
+    "tab:claim-firewall": 12,
+    "tab:denseon-per-task-results": 15,
+    "tab:extended-retrieval-dynamics": 15,
+    "tab:representation-results": 13,
+    "tab:spectral-factorial-results": 13,
+    "tab:spectral-tail-results": 13,
+    "tab:tail-identity-results": 13,
+    "tab:tail-persistence-results": 13,
+    "tab:task-delta-stability": 16,
+    "tab:training-systems-results": 12
+  },
+  "aux_path": "/root/embedding-optimizer-study/paper/build/main.aux",
+  "complete": true,
+  "label": "paper-main-end",
+  "main_end_page": 8,
+  "main_float_pages": {
+    "fig:dense-discovery-dynamics": 5,
+    "tab:causal-chain-summary": 8,
+    "tab:common-state-results": 7,
+    "tab:confirmation-results": 7,
+    "tab:discovery-results": 5,
+    "tab:intervention-results": 8
+  },
+  "max_main_page": 8
+}
+make: Leaving directory '/root/embedding-optimizer-study/paper'

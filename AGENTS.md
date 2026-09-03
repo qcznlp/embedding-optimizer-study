@@ -21,3 +21,7 @@ check `git diff --check`, and verify that the manuscript has no pending result m
 fonts. Do not push generated evidence or change GitHub pull-request state until its source-bound
 audits pass. Never print or commit credentials.
 
+For a fast repository handoff check, run `python scripts/portable_evidence.py --audit-only`, then the
+strict Dense paper audit documented in `README.md`. The portable closure is the clean-clone evidence
+boundary; the public Hugging Face checkpoint archive is required for full model-state
+reconstruction. Never relax either audit to turn a failure into a pass.

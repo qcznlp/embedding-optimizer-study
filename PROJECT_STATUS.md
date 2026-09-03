@@ -22,6 +22,7 @@ provenance under the user-directed scope amendment.
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
+| Clean-clone paper audit | Complete locally | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 
 The 34 Dense training runs are finished. No historical checkpoint should be overwritten. The next
 scientific phase, if broader optimizer claims are desired, is a corrected no-packing rerun in a new
@@ -75,10 +76,31 @@ Primary receipts:
 - `reports/candidate-breadth/packing_invariance.json`
 - `logs/candidate-breadth-release/pipeline-ledger.json`
 
-The candidate addendum release controller completed all 21 steps at
-`2026-09-03T04:53:55Z`. Its ledger records return code 0 for every step, including two strict paper
-audits, the full test suite, PDF release, and distribution audit. The compiled paper is 16 pages;
-the audited main-text endpoint is page 8, and all embedded fonts are non-Type-3.
+The candidate addendum release controller completed all 21 steps against the current source
+contract at `2026-09-03T08:14:21Z`. Its checked-in ledger records return code 0 for every step,
+including two strict paper audits, the full test suite, PDF release, and distribution audit. The
+step-contract SHA-256 is
+`63a7d0b932743adcbb172cbe7a03a863dba2e5d4d987792fbc1b0931e5cb63e8`. The compiled paper is 16
+pages; the audited main-text endpoint is page 8, and all embedded fonts are non-Type-3.
+
+## Repository and agent handoff health
+
+`README.md` is the public entry point, this file is the canonical live state, and `AGENTS.md`
+contains the non-negotiable operating rules. A clean index checkout now passes the strict Dense
+paper audit using `configs/portable_paper_evidence.json`: 2,785 required evaluation artifacts,
+107,442,256 bytes total, with every path, byte count, and SHA-256 checked. The closure is rebuilt
+from the retrieval-dynamics, tail-stability, spectral-transplant, and supplemental five-stage
+source manifests, so it cannot silently become stale.
+
+Full model-state reconstruction remains a separate stronger mode. If the repository contains an
+`outputs/` tree, the supplemental five-stage audit requires the original checkpoint-backed path and
+will not fall back after a source failure. A clean clone without that 416GB tree validates the
+published evaluation closure instead. Restore the Hugging Face checkpoint backup to perform the
+full-source reconstruction.
+
+The publication changes are maintained in GitHub PR #38. Local full-source release gates and the
+clean-index portable audit are green; GitHub clean-clone CI must also be green before the PR is
+marked ready or merged.
 
 ## Public artifacts
 
@@ -100,19 +122,21 @@ missing, extra, or size-mismatched files for every refreshed prefix:
 
 ## Safe continuation order
 
-1. Run `git status` and preserve the in-progress evidence merge; never discard generated reports.
-2. Read `configs/dense_scope_amendment.json` and `configs/candidate_breadth_probe.json`.
-3. Audit candidate results with
+1. Read this file, `README.md`, and `AGENTS.md`; then run `git status` and preserve all evidence.
+2. Audit the clean-clone evidence with `python scripts/portable_evidence.py --audit-only` and the
+   strict Dense paper-audit command shown in `README.md`.
+3. Read `configs/dense_scope_amendment.json` and `configs/candidate_breadth_probe.json`.
+4. Audit candidate results with
    `python -m embed_optim.candidate_breadth_summary --audit-only`.
-4. Reproduce the implementation control on a free CUDA device with
+5. Reproduce the implementation control on a free CUDA device with
    `python -m embed_optim.packing_invariance --device cuda`, then verify its source hashes without
    model inference using `python -m embed_optim.packing_invariance --audit-only`.
-5. Treat the completed 21/21 candidate release ledger as the source of truth. If source-bound files
+6. Treat the completed 21/21 candidate release ledger as the source of truth. If source-bound files
    change, start a new audited release attempt rather than editing the completed receipt.
-6. Treat the uploaded candidate addendum and project snapshot as immutable receipts. If any source
+7. Treat the uploaded candidate addendum and project snapshot as immutable receipts. If any source
    changes, upload into a new namespace or refresh the exact affected prefix and repeat the remote
    relative-path/byte-size audit.
-7. For corrected training, disable dense input flattening explicitly and use new run IDs/output
+8. For corrected training, disable dense input flattening explicitly and use new run IDs/output
    roots. Do not relabel or overwrite any of the 34 historical runs.
 
 ## Operational constraints
