@@ -20,7 +20,8 @@ Read these sources in order before acting:
    bridge implementation in `configs/dense_no_packing_bridge_implementation_protocol_v2.json`;
    corrected outcome aggregation must follow `configs/dense_no_packing_outcome_protocol.json`, and
    historical/corrected comparisons must follow
-   `configs/dense_no_packing_sensitivity_implementation_protocol.json`.
+   `configs/dense_no_packing_sensitivity_implementation_protocol.json`. Final blog and paper
+   rendering must follow `configs/dense_no_packing_publication_protocol.json`.
 6. `docs/dense-no-packing-retrain.md` — exact operational commands.
 
 On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
@@ -48,8 +49,11 @@ governed by `configs/dense_no_packing_bridge_implementation_protocol_v2.json`. T
 implementation lock is a superseded, never-executed receipt and must not be used. Validation
 selection, max-T inference, and retrieval dynamics are governed by
 `configs/dense_no_packing_outcome_protocol.json`; execution-path sensitivity is governed by
-`configs/dense_no_packing_sensitivity_implementation_protocol.json`. Do not launch or interpret
-corrected runs from an uncommitted matrix.
+`configs/dense_no_packing_sensitivity_implementation_protocol.json`. Generate the complete
+corrected publication block only through `python -m embed_optim.corrected_publication`, which
+verifies all four upstream manifests and the source-bound publication protocol. Do not hand edit
+its marked blog block or generated paper include. Do not launch or interpret corrected runs from
+an uncommitted matrix.
 
 The active paper scope is DenseOn only. LateOn files are historical provenance and must not be
 promoted into primary inference or used to justify new computation.

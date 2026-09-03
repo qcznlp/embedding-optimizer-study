@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 13:50 UTC
+Last updated: 2026-09-03 14:15 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -26,12 +26,13 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; 2 active; 2/60 resumable checkpoints |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; 2 active at step 1207; 2/60 resumable checkpoints |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
-| GitHub main CI | Green | merge `87ed3db`, workflow run `33762543551` |
+| Corrected publication renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, blog + paper + standalone report |
+| GitHub main CI | Green | see the repository Actions history for the current merge |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
 The corrected no-packing phase now has an explicit implementation. Its worst-case 256-row
@@ -75,6 +76,15 @@ covers 20%–100% only and does not invent an initialization score. The geometry
 were reviewed and merged into `main` through
 [PR #44](https://github.com/qcznlp/embedding-optimizer-study/pull/44) and
 [PR #45](https://github.com/qcznlp/embedding-optimizer-study/pull/45), respectively.
+
+The final corrected publication path is also fixed before results. The source-bound renderer in
+`src/embed_optim/corrected_publication.py` consumes only complete, hashed outcome, geometry,
+bridge, and execution-sensitivity manifests. It publishes all primary and secondary contrasts,
+all 15 dynamics rows, all nine frozen geometry features, and the full sensitivity comparison into
+one standalone report, the marked blog section, and the manuscript include. Its timing,
+requirements, source hashes, and claim boundary are frozen in
+`configs/dense_no_packing_publication_protocol.json`; no corrected evaluation or analysis output
+existed when that lock was written.
 
 ## Result that currently governs the paper
 
@@ -208,6 +218,9 @@ missing, extra, or size-mismatched files for every refreshed prefix:
 14. Compare historical and corrected executions only through
     `python -m embed_optim.corrected_execution_sensitivity`; it matches all fixed rates and stages
     but never pools the executions or labels their difference a causal packing estimate.
+15. Render final corrected prose and tables only through
+    `python -m embed_optim.corrected_publication`; do not hand edit its marked blog block or
+    generated paper include.
 
 ## Operational constraints
 
