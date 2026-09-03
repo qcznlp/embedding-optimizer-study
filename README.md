@@ -33,6 +33,7 @@ is tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/is
 - Frozen scientific contract: [configs/dense_no_packing_execution_protocol.json](configs/dense_no_packing_execution_protocol.json)
 - Frozen reload/evaluation contract: [configs/dense_no_packing_evaluation_protocol.json](configs/dense_no_packing_evaluation_protocol.json)
 - Frozen weight-space/bridge contract: [configs/dense_no_packing_analysis_protocol.json](configs/dense_no_packing_analysis_protocol.json)
+- Frozen outcome/statistical contract: [configs/dense_no_packing_outcome_protocol.json](configs/dense_no_packing_outcome_protocol.json)
 
 On the experiment host, refresh the artifact-only snapshot without inspecting system processes:
 

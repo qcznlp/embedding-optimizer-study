@@ -10,8 +10,9 @@ immutable; all corrected artifacts use new `dense-no-packing` namespaces.
 2. `configs/dense_no_packing_execution_protocol.json`
 3. `configs/dense_no_packing_evaluation_protocol.json`
 4. `configs/dense_no_packing_analysis_protocol.json`
-5. `configs/dense_no_packing_retrain.yaml`
-6. GitHub issue #41
+5. `configs/dense_no_packing_outcome_protocol.json`
+6. `configs/dense_no_packing_retrain.yaml`
+7. GitHub issue #41
 
 The formal matrix contains 12 DenseOn runs: four fixed learning rates for each of AdamW, Muon, and
 NorMuon. Every run uses the same 500k rows, seed 42, seven explicit random hard negatives, no
@@ -114,6 +115,22 @@ optimizer update. Rank-16 left/right subspace overlaps are computed for every un
 zero serialized displacements remain undefined and their coverage is reported rather than
 imputed. Exact definitions and the predeclared retrieval-prediction test are in
 `configs/dense_no_packing_analysis_protocol.json`.
+
+## Corrected outcome summary
+
+After all validation and BEIR units are complete, generate the inference and dynamics tables only
+through the source-bound corrected entrypoint:
+
+```bash
+python -m embed_optim.corrected_outcome_summary
+```
+
+It refuses anything other than the complete 12-run, 60-checkpoint, 840-task-unit grid. The primary
+estimand averages all four learning rates within optimizer before taking paired task contrasts. The
+secondary estimand reads recipes chosen by independently padded validation loss. Both use a common
+50,000-sample paired-task bootstrap and simultaneous max-T intervals over all three optimizer
+contrasts. Five-stage AUC covers the observed 20%–100% range only and never imputes an initialization
+score. See `configs/dense_no_packing_outcome_protocol.json` for the exact locked definition.
 
 If only one four-GPU training job remains, the other disjoint pool may evaluate already completed
 runs by passing their IDs and the idle GPU list to `corrected_beir_evaluation`. Do not overlap an

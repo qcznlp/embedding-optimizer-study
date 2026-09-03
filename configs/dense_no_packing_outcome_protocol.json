@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "status": "prospective_corrected_outcome_implementation_lock",
+  "frozen_at_utc": "2026-09-03T13:15:26Z",
+  "purpose": "Bind the corrected Dense validation selection, retrieval inference, and dynamics implementation before any corrected validation or BEIR output exists.",
+  "visibility_at_freeze": {
+    "historical_outcomes_visible": true,
+    "corrected_training_logs_visible": true,
+    "corrected_checkpoint_weights_may_exist": false,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "corrected_outcome_summary_visible": false
+  },
+  "implementation_parent_commit": "41f32a476f6e02c84bb363053bbbf041fc4ab311",
+  "parent_bindings": {
+    "execution_protocol": {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+    },
+    "evaluation_protocol": {
+      "path": "configs/dense_no_packing_evaluation_protocol.json",
+      "sha256": "b3f4bdf0a1d80c4f5926c3620234b6bd2aae2c6befa2bed1e25951e97698d149"
+    },
+    "analysis_protocol": {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+    },
+    "matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    },
+    "validation_spec": {
+      "path": "configs/validation_probe.json",
+      "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+    }
+  },
+  "source_bindings": {
+    "corrected_outcome_summary": {
+      "path": "src/embed_optim/corrected_outcome_summary.py",
+      "bytes": 19823,
+      "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+    },
+    "corrected_beir_evaluation": {
+      "path": "src/embed_optim/corrected_beir_evaluation.py",
+      "bytes": 9893,
+      "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+    },
+    "corrected_validation_matrix": {
+      "path": "src/embed_optim/corrected_validation_matrix.py",
+      "bytes": 8315,
+      "sha256": "3604920cbd5c1b55b5f39c265345e77a71c279bbcc0668e4d4b46b2efaaeed50"
+    },
+    "corrected_input_execution": {
+      "path": "src/embed_optim/corrected_input_execution.py",
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "aggregate": {
+      "path": "src/embed_optim/aggregate.py",
+      "bytes": 116247,
+      "sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0"
+    },
+    "config": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "decontamination": {
+      "path": "src/embed_optim/decontamination.py",
+      "bytes": 5282,
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "evaluation_utils": {
+      "path": "src/embed_optim/evaluation_utils.py",
+      "bytes": 6170,
+      "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+    },
+    "validation_data": {
+      "path": "src/embed_optim/validation_data.py",
+      "bytes": 22754,
+      "sha256": "ae1311e7cae7c5b8a1a6991e687be6709358bec77b4592d2cd63cbfd98f5ec2d"
+    },
+    "geometry": {
+      "path": "src/embed_optim/geometry.py",
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    }
+  },
+  "validation_selection": {
+    "scope": "The final checkpoint of each of the 12 corrected runs on the same 4096-row query-disjoint validation view.",
+    "metric": "independently padded mean contrastive loss over all validation rows",
+    "rule": "Within optimizer, choose minimum loss; an exact tie chooses the lower learning rate. Positive margin and BEIR are reported but are not tie breakers.",
+    "expected_selected_recipes": 3
+  },
+  "inference": {
+    "primary_estimand": "For each task at stage 5, average nDCG@10 over all four predeclared learning rates within optimizer, then average each of Muon-AdamW, NorMuon-AdamW, and NorMuon-Muon over the 14 paired tasks.",
+    "secondary_estimand": "At stage 5, contrast the three independently padded validation-selected optimizer recipes over the same 14 paired tasks.",
+    "contrasts": [
+      "muon-adamw",
+      "normuon-adamw",
+      "normuon-muon"
+    ],
+    "bootstrap_samples": 50000,
+    "bootstrap_seed": 20260903,
+    "resampling_unit": "task",
+    "common_resample": "Each replicate uses the same 14 sampled task indices for all three contrasts.",
+    "max_t_definition": "For each contrast compute its observed across-task standard error. In each common paired-task bootstrap replicate, center the bootstrap mean at the observed mean and divide by that fixed observed standard error. The simultaneous critical value is the 95th percentile of the maximum absolute statistic over the three contrasts.",
+    "simultaneous_interval": "observed mean plus or minus the common max-T critical value times the contrast's observed across-task standard error",
+    "support_rule": "A simultaneous interval wholly above zero is positive; wholly below zero is negative; otherwise inconclusive. Primary superiority additionally requires all four rates for every optimizer to have completed.",
+    "nominal_interval": "Paired-task bootstrap 2.5th and 97.5th percentiles are reported for context but cannot determine support."
+  },
+  "dynamics": {
+    "reported_units": "All 840 run-by-stage-by-task values, 60 run-stage means, and 15 optimizer-stage summaries.",
+    "observed_auc": "Trapezoidal area over retained normalized progress 0.2 through 1.0. Also divide by 0.8 to report the observed-range mean. No unobserved initialization score is imputed.",
+    "claim_boundary": "Dynamics are descriptive; the final-stage primary interval remains the inferential endpoint."
+  },
+  "systems": {
+    "rows": 12,
+    "metrics": [
+      "accepted useful wall time",
+      "samples and optimizer steps per second",
+      "peak allocated and reserved memory",
+      "checkpoint bytes",
+      "optimizer-state bytes"
+    ],
+    "rule": "Report every run, including a persistent numerical failure if one occurs; do not average away missing high-rate runs."
+  },
+  "expected_outputs": {
+    "primary_task_effects_rows": 14,
+    "primary_summary_rows": 3,
+    "secondary_task_effects_rows": 14,
+    "secondary_summary_rows": 3,
+    "run_stage_score_rows": 60,
+    "optimizer_stage_score_rows": 15,
+    "run_observed_auc_rows": 12,
+    "validation_run_metric_rows": 12,
+    "system_metric_rows": 12
+  },
+  "claim_boundary": "The corrected outcome supports claims about this pinned DenseOn model, deterministic 500k-query seven-negative view, one training seed, optimizer implementations, and declared rate grids. Task bootstrap intervals quantify benchmark-task variation, not training-seed variation. The post-diagnosis origin and single seed preclude universal optimizer claims."
+}
