@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "status": "post_hoc_three_regime_diagnostic",
+  "frozen_at_utc": "2026-09-01T09:40:00Z",
+  "timing": {
+    "discovery_training_losses_visible": true,
+    "query_disjoint_validation_metrics_visible": true,
+    "discovery_full_corpus_beir_visible": true,
+    "confirmatory_final_beir_visible": true,
+    "confirmatory_dynamics_results_visible": false,
+    "candidate_breadth_data_or_scores_visible": false
+  },
+  "scope": {
+    "family": "dense",
+    "scope_amendment": {
+      "path": "configs/dense_scope_amendment.json",
+      "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+    }
+  },
+  "sources": {
+    "mechanism_bridge": {
+      "manifest": "reports/mechanism-bridge/summary_manifest.json",
+      "manifest_sha256": "6fb5970fb8d487eef4619ebcd5ca42ffa6a4dd6297743cc40879cf5f6adf1834",
+      "output_key": "checkpoint_bridge"
+    },
+    "query_disjoint_validation": {
+      "manifest": "reports/recipe-validation/manifest.json",
+      "manifest_sha256": "8ff05565413b02df5dde2e1cb19b21937552585bff841fb7d716b898bd337386",
+      "output_key": "run_metrics"
+    }
+  },
+  "metrics": {
+    "training": "ten-observation trailing mean contrastive loss at the final checkpoint",
+    "validation": "contrastive loss and positive margin on 4,096 query-disjoint positive-plus-seven-negative examples",
+    "retrieval": "mean nDCG@10 over 14 decontaminated full-corpus BEIR tasks"
+  },
+  "comparisons": [
+    {
+      "optimizer": "muon",
+      "validation_selected_run_id": "muon-lr3e-3",
+      "retrieval_oracle_run_id": "muon-lr3e-4"
+    },
+    {
+      "optimizer": "normuon",
+      "validation_selected_run_id": "normuon-lr3e-3",
+      "retrieval_oracle_run_id": "normuon-lr3e-4"
+    }
+  ],
+  "three_regime_definition": {
+    "contrast": "validation-selected high dose minus within-optimizer discovery retrieval oracle",
+    "required_conditions": [
+      "training trailing loss increases",
+      "query-disjoint validation loss decreases",
+      "query-disjoint validation positive margin increases",
+      "full-corpus BEIR nDCG@10 decreases"
+    ]
+  },
+  "claim_boundary": "This diagnostic was designed after every discovery loss, validation metric, discovery BEIR score, and confirmatory final-BEIR result was visible. It is a descriptive post-hoc decomposition of the already observed shortlist-corpus gap. It cannot alter recipe selection, confirmatory optimizer inference, or establish that candidate coverage causes the reversal; the separately frozen candidate-breadth intervention is required for that mechanism test."
+}

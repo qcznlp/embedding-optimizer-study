@@ -9,7 +9,8 @@ available for provenance but are not maintained as separately supported releases
 
 Please do not disclose a suspected vulnerability in a public issue. Use GitHub's private
 **Security → Report a vulnerability** flow when it is available. Otherwise, contact the repository
-owner privately through the contact route on their GitHub profile.
+owner privately at `stevezenguom@gmail.com`. If private vulnerability reporting is unavailable, do not
+fall back to a public issue for sensitive reports.
 
 Include the affected commit or version, environment, reproduction steps, potential impact, and any
 suggested mitigation. Remove API keys, access tokens, private datasets, model credentials, and user

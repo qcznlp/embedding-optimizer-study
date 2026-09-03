@@ -130,6 +130,35 @@ def _dense_dynamics_distribution_problems(
     ]
 
 
+def _candidate_breadth_distribution_problems(
+    root: Path, data_files: dict[str, PurePosixPath]
+) -> list[str]:
+    summary = root / "reports/candidate-breadth/summary.json"
+    if not summary.is_file():
+        return []
+    try:
+        payload = json.loads(summary.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ["Candidate-breadth distribution summary is unreadable"]
+    if payload.get("status") != "complete":
+        return []
+    expected = {
+        "reports/candidate-breadth/data-audit.json",
+        "reports/candidate-breadth/summary.json",
+        "reports/candidate-breadth/calibration_by_width.csv",
+        "reports/candidate-breadth/high_dose_contrasts.csv",
+        "reports/candidate-breadth/candidate_breadth_calibration.svg",
+        "reports/candidate-breadth/candidate_breadth_calibration.pdf",
+        "reports/candidate-breadth/packing_invariance.json",
+        "reports/candidate-breadth/publication_manifest.json",
+    }
+    return [
+        f"completed candidate-breadth distribution missing: {source}"
+        for source in sorted(expected)
+        if source not in data_files or not (root / source).is_file()
+    ]
+
+
 def _wandb_source_receipt_distribution_problems(
     root: Path,
     data_files: dict[str, PurePosixPath],
@@ -428,6 +457,7 @@ def audit_distribution(
 
     problems: list[str] = []
     problems.extend(_dense_dynamics_distribution_problems(root, data_files))
+    problems.extend(_candidate_breadth_distribution_problems(root, data_files))
     problems.extend(_wandb_source_receipt_distribution_problems(root, data_files))
     package_sources = sorted((root / "src" / "embed_optim").glob("*.py"))
     runtime_configs = _runtime_config_references(package_sources, root)

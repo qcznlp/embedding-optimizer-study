@@ -22,3 +22,5 @@ Confirmatory NorMuon & 3 & 0.5407 & 0.5360 & 0.5437 & 0.5548 & 0.5601 \\
 \caption{Mean nDCG@10 across the four hybrid learning-rate runs or three new seeds per optimizer. These are descriptive aggregates of the source-bound 65-row CSV, not additional formal contrasts.}
 \label{tab:extended-retrieval-dynamics}
 \end{table*}
+
+\paragraph{Descriptive time-to-quality.} Using mean stage-5 confirmatory AdamW nDCG@10 (0.5905) as the displayed four-decimal fixed reference, the earliest retained checkpoint matching or exceeding it is: AdamW 80\%; Muon not reached; NorMuon not reached. Normalized 20--100\% trajectory AUC is: AdamW 0.5890, Muon 0.5409, NorMuon 0.5462. Checkpoint attainment and AUC summarize the joined curves only; they do not alter the stage-5 confirmatory test.

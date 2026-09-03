@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Modified from lightonai/mdenseon-mlateon at commit
+# b0db47a48f969d825446668b5b17bfc27a359fc1; see THIRD_PARTY_NOTICES.md.
 """Task-parallel MTEB evaluation for dense models: one task per GPU.
 
 Each task runs as an independent single-GPU subprocess, up to one per GPU in

@@ -172,13 +172,11 @@ def build_final_conclusion_contract(
             classification = _interval_classification(row[4])
             classifications[family][contrast] = classification
             comparison_parts.append(
-                f"{contrast.replace(' - ', ' versus ')} was {classification} "
-                f"(mean delta nDCG@10 {row[2]}; familywise 95% CI {row[4]})"
+                f"{contrast.replace(' - ', ' versus ')}: {classification}, {row[2]} "
+                f"nDCG@10 (familywise 95% CI {row[4]})"
             )
         result_sentences.append(
-            f"On the validation-frozen three-seed {family} retrieval comparison, "
-            + ", while ".join(comparison_parts)
-            + "."
+            f"Validation-frozen three-seed {family}: " + "; ".join(comparison_parts) + "."
         )
         routing_deltas = [
             float(hybrid[(family, learning_rate)][4]) for learning_rate in hybrid_learning_rates
@@ -195,12 +193,10 @@ def build_final_conclusion_contract(
             "zero_learning_rates": zero,
         }
         routing_sentences.append(
-            f"Across {family}'s four frozen learning rates, routing-matched hybrid AdamW minus "
-            f"native AdamW averaged {routing_mean:+.4f} nDCG@10, with {positive} positive, "
-            f"{negative} negative, and {zero} zero learning-rate points. This is descriptive "
-            "evidence about parameter routing as an alternative explanation; it does not by "
-            "itself identify the matrix rule or prove that routing accounts for the confirmatory "
-            "Muon-family contrast."
+            f"The routing-matched hybrid AdamW minus native AdamW averaged {routing_mean:+.4f} "
+            f"across {family}'s four rates ({positive} positive, {negative} negative, and {zero} "
+            "zero learning-rate points), descriptive evidence about parameter routing as an "
+            "alternative explanation."
         )
         tail_decisions[family] = {}
         tail_parts = []
@@ -211,9 +207,7 @@ def build_final_conclusion_contract(
             tail_decisions[family][challenger] = decision
             tail_parts.append(f"{challenger}: {decision}")
         tail_sentences.append(
-            f"The frozen shared-start tail endpoint for {family} concluded "
-            + "; ".join(tail_parts)
-            + "."
+            f"Frozen shared-start tail endpoints for {family}: " + "; ".join(tail_parts) + "."
         )
 
     temporal = causal_evidence["temporal_short_branch"]
@@ -239,10 +233,9 @@ def build_final_conclusion_contract(
     dose_label = "supported" if dose["supported"] is True else "a claimable negative"
     overall = "supported" if overall_verdict == "supported" else "a claimable negative"
     causal_sentence = (
-        f"The frozen temporal spectral bridge was {temporal_label}, the fixed-state dose/band "
-        f"chain was {dose_label}, and their joint spectral-component account was {overall}. "
-        "This explains only the tested chain: it does not identify formal mediation or establish "
-        "a universal optimizer ranking."
+        f"The temporal bridge was {temporal_label}, the fixed-state chain was {dose_label}, and "
+        f"their joint spectral-component account was {overall}; this rejects only the tested "
+        "mechanism, not formal mediation or a universal optimizer ranking."
     )
     plain = " ".join((*result_sentences, *routing_sentences, *tail_sentences, causal_sentence))
     return {

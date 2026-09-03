@@ -1,0 +1,23 @@
+\newcommand{\CandidateBreadthConclusion}{%
+The post-hoc nested-candidate decision was not supported; it supplements but does not alter the validation-frozen three-seed comparison.
+}
+
+\newcommand{\CandidateBreadthDiscussion}{%
+Because padded width-7 scoring failed to reproduce legacy packed validation, the frozen post-hoc candidate-breadth decision was not supported and missing-candidate coverage is not an explanation here.
+}
+
+\newcommand{\CandidateBreadthFigure}{%
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.88\textwidth]{../reports/candidate-breadth/candidate_breadth_calibration.pdf}
+\caption{Post-hoc nested candidate-breadth diagnostic on 224 balanced, query-disjoint queries. Top: within-optimizer validation-metric correlation with discovery BEIR over four learning rates. Bottom: paired high-dose ($3\!\times\!10^{-3}$) minus retrieval-optimal ($3\!\times\!10^{-4}$) contrasts. Width 7 exactly nests inside every broader set; shaded bands are descriptive 95\% source-stratified paired percentile bootstrap intervals. Frozen decision: Not supported.}
+\label{fig:candidate-breadth}
+\end{figure*}
+\paragraph{Candidate-breadth uncertainty and paired prevalence.}
+The prerequisite width-7 bridge failed: independently padded scoring did not reproduce the legacy packed validation outputs (maximum error 8.286419). On the padded path, the Muon-family high-dose advantage is already absent at width 7, and widening to 2,048 candidates does not produce the required joint reversal. Missing-candidate coverage therefore does not explain the observed shortlist--corpus gap. Exact endpoint intervals are Muon loss/margin deltas move from +0.17706 [+0.08924, +0.27961]/-0.00667 [-0.01222, -0.00102] to +0.10865 [-0.06652, +0.28457]/+0.00097 [-0.00443, +0.00638]; NorMuon loss/margin deltas move from +0.19077 [+0.06092, +0.33202]/-0.00457 [-0.01062, +0.00139] to +0.11576 [-0.07579, +0.30990]/-0.00096 [-0.00692, +0.00494]. Intervals use 50,000 resamples, independently preserving each of the seven 32-query source strata; they are descriptive and do not enter the frozen support rule.
+
+\paragraph{Descriptive paired prevalence.} The earliest retained width at which both mean contrasts favor the retrieval-optimal $3\!\times\!10^{-4}$ dose is Muon: 7 negatives; paired high-dose win fractions (loss/margin) 43.8\%/42.9\% at width 7 to 48.7\%/49.1\% at width 2,048; NorMuon: 7 negatives; paired high-dose win fractions (loss/margin) 47.8\%/47.3\% at width 7 to 51.8\%/51.8\% at width 2,048. This is a crossing on the six-point frozen grid, not an estimated threshold; the curves need not be monotone.
+}
+
+\paragraph{Candidate-breadth decision.}
+Frozen decision: Not supported. Width 7 $\rightarrow$ 2,048 loss/margin deltas are Muon +0.17706/-0.00667$\rightarrow$+0.10865/+0.00097; NorMuon +0.19077/-0.00457$\rightarrow$+0.11576/-0.00096. Source-stratified intervals and paired prevalence appear in Figure~\ref{fig:candidate-breadth}; this post-hoc diagnostic cannot alter the three-seed comparison. Width-7 loss/margin Spearman pairs are AdamW $(-1.00,+1.00)$; Muon $(-1.00,+0.00)$; NorMuon $(-0.80,+0.00)$.

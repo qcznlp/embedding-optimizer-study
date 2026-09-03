@@ -5,6 +5,8 @@ import posixpath
 import re
 from pathlib import Path, PurePosixPath
 
+import yaml
+
 from embed_optim.distribution_audit import (
     _checkout_path_findings,
     _data_files,
@@ -12,6 +14,67 @@ from embed_optim.distribution_audit import (
 )
 
 ROOT = Path(__file__).parents[1]
+
+
+def test_third_party_notices_cover_modified_upstream_files() -> None:
+    upstream_commit = "b0db47a48f969d825446668b5b17bfc27a359fc1"
+    notice = (ROOT / "THIRD_PARTY_NOTICES.md").read_text()
+    assert upstream_commit in notice
+    assert "c6989a8354730695d9f5a9faa6c55eeb24865209" in notice
+    assert "d5adc823ff0f80f98c80405ca0ab66c68e684409" in notice
+    assert "LaTeX Project Public License" in notice
+
+    modified_upstream_files = (
+        "README.md",
+        "pyproject.toml",
+        "scripts/eval/dense_parallel.py",
+        "scripts/eval/dense_sequential.py",
+        "scripts/eval/late_interaction.py",
+    )
+    for source in modified_upstream_files:
+        assert f"`{source}`" in notice
+        header = "\n".join((ROOT / source).read_text().splitlines()[:6])
+        assert upstream_commit in header
+        assert "THIRD_PARTY_NOTICES.md" in header
+
+
+def test_distribution_bundles_third_party_notices() -> None:
+    installed = _installed_data_paths()
+    assert installed["THIRD_PARTY_NOTICES.md"] == PurePosixPath(
+        "share/embedding-optimizer-study/THIRD_PARTY_NOTICES.md"
+    )
+
+
+def test_private_release_citation_metadata_has_no_premature_release_date() -> None:
+    citation = yaml.safe_load((ROOT / "CITATION.cff").read_text(encoding="utf-8"))
+    assert citation["cff-version"] == "1.2.0"
+    assert citation["type"] == "software"
+    assert citation["repository-code"] == "https://github.com/qcznlp/embedding-optimizer-study"
+    assert citation["license"] == "Apache-2.0"
+    assert "date-released" not in citation
+
+
+def test_public_governance_reproduces_release_checks_and_private_reporting() -> None:
+    contributing = (ROOT / "CONTRIBUTING.md").read_text(encoding="utf-8")
+    security = (ROOT / "SECURITY.md").read_text(encoding="utf-8")
+    required_commands = (
+        "uv sync --extra dev --extra eval --extra analysis",
+        "uv run cffconvert --validate --infile CITATION.cff",
+        "uv build",
+        "uv run embed-optim-audit-distribution",
+        "uv run pytest",
+        "uv run ruff check src tests scripts/eval",
+        "uv run ruff format --check src tests scripts/eval",
+        "uv run embed-optim-render-paper-results",
+        "uv run embed-optim-audit-paper",
+    )
+    for command in required_commands:
+        assert command in contributing
+    assert "Do not hand-edit generated result blocks" in contributing
+    assert "active DenseOn confirmatory claims" in contributing
+    normalized_security = " ".join(security.split())
+    assert "stevezenguom@gmail.com" in normalized_security
+    assert "do not fall back to a public issue" in normalized_security
 
 
 def test_distribution_scanner_rejects_producer_checkout_paths() -> None:
@@ -220,6 +283,15 @@ def test_distribution_bundles_dense_retrieval_dynamics_extension() -> None:
     )
 
 
+def test_distribution_exposes_candidate_breadth_release_controller() -> None:
+    scripts = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    scripts = scripts.split("[project.scripts]", 1)[1].split("\n[", 1)[0]
+    assert (
+        "embed-optim-candidate-breadth-release = "
+        '"embed_optim.candidate_breadth_release:main"' in scripts
+    )
+
+
 def test_distribution_bundles_portable_generated_training_matrix_closure() -> None:
     installed = _installed_data_paths()
     phases = ("confirmatory", "short-branch")
@@ -279,6 +351,7 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
     )
     result_tables = (
         "paper/generated/causal-chain.tex",
+        "paper/generated/candidate-breadth.tex",
         "paper/generated/common-state.tex",
         "paper/generated/confirmation.tex",
         "paper/generated/diagnostics.tex",
@@ -304,6 +377,11 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         "../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf)" in makefile
     )
     assert "$(EXTENDED_RESULT_FIGURE)" in makefile
+    assert (
+        "CANDIDATE_BREADTH_FIGURE := $(wildcard "
+        "../reports/candidate-breadth/candidate_breadth_calibration.pdf)" in makefile
+    )
+    assert "$(CANDIDATE_BREADTH_FIGURE)" in makefile
     for source in result_tables:
         table = PurePosixPath(source).stem
         assert f"\\input{{generated/{table}}}" in main

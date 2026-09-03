@@ -6,6 +6,12 @@ study. It uses the official ACL style files pinned to commit
 [`acl-org/acl-style-files`](https://github.com/acl-org/acl-style-files). The style files are fetched
 into an ignored local directory so the repository does not silently fork the conference template.
 
+The current paper is an audited failure-analysis manuscript, not a clean optimizer leaderboard. A
+post-failure control found material batch non-invariance in the historical flattened/packed
+SentenceTransformers path. The existing three-seed comparison is retained for the exact pinned
+implementation; generalizing it to isolated eight-way training requires a corrected no-packing
+rerun. See `../PROJECT_STATUS.md` before editing result language.
+
 Build the review-format PDF with:
 
 ```bash
@@ -46,7 +52,10 @@ The central result sequence is deliberately gated:
 4. a post-hoc cosine synthesis motivates optimizer-induced state feedback but is not causal;
 5. three-seed shared-start branches test whether the advantage accumulates;
 6. hybrid AdamW tests whether parameter routing is sufficient; and
-7. three new negative-sampling seeds determine the final retrieval claim.
+7. three new negative-sampling seeds determine the final retrieval claim; while
+8. the post-hoc nested candidate-breadth diagnostic tests whether missing candidate coverage
+   explains the proxy reversal; its width-7 prerequisite fails and exposes packed-path batch
+   non-invariance, so its frozen conclusion is `not_supported`.
 
 Exact state-feedback cosines, shared-start outcomes, hybrid results, confirmatory intervals, and the
 temporal and dose/band causal-chain estimates must enter through audited macros or generated tables.
@@ -65,6 +74,25 @@ Run `embed-optim-audit-paper` during drafting. It reports unresolved evidence wi
 exists, run `embed-optim-render-paper-results`; it replaces only authorized headline macros and table
 files, writes `reports/paper-results.manifest.json`, and binds rendered bytes to the claim protocol,
 evidence manifests, and source tables.
+
+After the separately frozen candidate-breadth matrix completes, run
+`embed-optim-summarize-candidate-breadth` and `embed-optim-render-candidate-breadth`, followed by each
+command's `--audit-only` mode. The publication renderer owns only the marked blog block and
+`generated/candidate-breadth.tex`; the latter supplies the appendix result-figure macro, main-text
+evidence paragraph, result-bound `\CandidateBreadthDiscussion`, and bounded
+`\CandidateBreadthConclusion` used by the final Conclusion. Its
+manifest binds both publication outputs to all 12 evaluation manifests, the discovery BEIR table,
+the nested-width protocol, and the deterministic SVG/PDF figure.
+The separate `python -m embed_optim.packing_invariance --audit-only` command verifies the score-level
+implementation receipt against its checkpoint and validation hashes without rerunning inference.
+The paired loss and margin contrasts carry descriptive 95% source-stratified paired percentile
+bootstrap intervals from 50,000 resamples, with the seven fixed 32-query source strata resampled
+independently. The interval plan is frozen before candidate data or scores are visible and does not
+change the supported/partial/not-supported rule.
+For the final publication handoff, `embed-optim-candidate-breadth-release --resume` performs those
+steps after validating the complete canonical Dense finalization ledger and all of its hashed logs,
+then reruns the current report renderers, strict paper audits, release PDF build, tests, style checks,
+and distribution audit under a new content-addressed ledger.
 
 `make -C paper` invokes the renderer with `--if-ready`: incomplete experiments keep audited red
 placeholders, while complete evidence can be rendered before LaTeX compilation. This preserves a
@@ -96,11 +124,13 @@ verify the DenseOn subset explicitly.
 | Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and manifests under `reports/training-dynamics/` | 12 DenseOn runs and 60 checkpoints; every history, terminal record, systems summary, and source-bound figure passes audit |
 | Discovery retrieval behavior | [`reports/dense-discovery/coverage.json`](../reports/dense-discovery/coverage.json), strict aggregate tables, and plot sidecars | exactly 840 DenseOn checkpoint--task cells across 14 decontaminated-BEIR tasks |
 | Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics-dense/summary_manifest.json` | 60 DenseOn checkpoint means and all 840 source task files pass hashes; right-censored AdamW-median rule and post-hoc timing are disclosed |
+| Post-hoc corpus-size diagnostic | `configs/corpus_size_diagnostic.json` and `reports/corpus-size-diagnostic/publication_manifest.json` | 140 selected-run task-stage deltas and 10 deterministic association rows reproduce from hash-bound discovery tables; same-suite selection, 14-task scope, and non-causal boundary remain visible |
 | Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 12 DenseOn runs and 60 checkpoints with verified model inputs |
 | Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | every frozen DenseOn anchor, gradient replay, transform, and spectrum passes Cartesian and source-hash audits |
 | Immediate causal intervention | `reports/functional-intervention/manifest.json` | every DenseOn anchor and paired query record passes scale, sign, pairing, and source audits |
 | Post-hoc state-feedback synthesis | common-state cosine summary and `reports/local-global-reversal/summary_manifest.json` | trajectory-conditioned AdamW--Muon, Muon--NorMuon, and terminal-gradient alignments are source-bound and labeled post hoc |
 | Post-hoc symmetric tail diagnostic | `configs/tail_stability_analysis.json` and `reports/tail-stability/summary_manifest.json` | fixed DenseOn quantiles and Adam/challenger cross-tails are labeled post hoc; no robustness claim without the accumulated gate |
+| Post-hoc candidate-breadth diagnostic | `configs/candidate_breadth_probe.json`, `reports/candidate-breadth/summary.json`, and `publication_manifest.json` | 12 width-7 baseline reproductions plus nested widths 10--2,048 for 224 balanced queries; paired loss/margin deltas include descriptive 50,000-resample source-stratified 95% intervals; support requires both Muon-family endpoint reversals and never replaces three-seed inference |
 | Spectrum/basis attribution | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | complete DenseOn spectrum, basis, interaction, path, and band cells; this fixed-state tier is insufficient for long-horizon causality |
 | Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 9 DenseOn runs and 45 checkpoints on both frozen probes; three-seed joint loss-p95/unseen-margin-p05 endpoint |
 | Temporal causal-chain bridge | `reports/temporal-short-branch/summary_manifest.json`, `paired_contrasts.csv`, `loso_predictions.csv`, and `estimates.csv` in that directory | every frozen predictor and norm control is reported across held-out seeds; numerical RMSE changes and optimizer-coefficient changes are displayed even when the bridge is negative |

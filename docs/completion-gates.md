@@ -12,11 +12,13 @@ identity.
 | Requirement | Authoritative evidence | DenseOn passing condition |
 | --- | --- | --- |
 | Scope | configs/dense_scope_amendment.json | families=["dense"]; historical Late is retained, not used in primary inference |
+| Execution contract | configs/experiment.yaml, README.md, and docs/blog.md | eight H100-equivalent GPUs are documented as two disjoint four-GPU training pools; each run retains four ranks; exact task-parallel evaluation and numerical acceleration boundaries are disclosed |
 | Shared data | materialized 500K manifest and row ledger | 500,000 rows, seven source quotas, seven distinct seeded negatives, one training-view fingerprint |
 | Discovery training | configs/experiment.yaml plus completion/checkpoint audit | 12 runs, 60 checkpoints, all model/optimizer/scheduler/Trainer/RNG payloads deep-valid |
 | Discovery evaluation | [reports/dense-discovery/coverage.json](../reports/dense-discovery/coverage.json) and provenance-valid MTEB files | 12 × 5 × 14 = 840 DenseOn units selected only after the full historical source contract passes |
 | Training dynamics | reports/training-dynamics manifests | 12 DenseOn run rows and 60 five-stage rows after strict full-source audit and filtering |
 | Retrieval dynamics | reports/retrieval-dynamics-dense/summary_manifest.json | 60 checkpoints, 840 source units, 12 first-passage rows, 8 adjacent-stage task-stability rows |
+| Corpus-size diagnostic | configs/corpus_size_diagnostic.json and reports/corpus-size-diagnostic/publication_manifest.json | 2 optimizers × 5 stages × 14 tasks; 200,000-permutation associations and robustness summaries reproduce exactly and are labeled post hoc, same-suite-selected, and non-causal |
 | Weight trajectories | reports/weight-space/summary_manifest.json | 12 runs, 60 checkpoints, 20 matched Muon/NorMuon checkpoint pairs |
 | Common state | reports/common-state/summary_manifest.json | 10 DenseOn anchors and all three transforms at every anchor |
 | Exact spectra | results/common-state-spectra/summary/summary_manifest.json | 180 spectra: 10 anchors × 3 optimizers × 6 selected matrices |
@@ -26,6 +28,7 @@ identity.
 | Confirmatory training | generated matrices and deep checkpoint audits | 3 seeds × 3 optimizers = 9 terminal runs and 45 checkpoints |
 | Confirmatory evaluation | reports/confirmatory/summary_manifest.json | 9 × 14 = 126 units; seed-by-task bootstrap and the original six-comparison Bonferroni family remain valid while only Dense rows are shown |
 | Extended Dense retrieval dynamics | reports/dense-retrieval-dynamics/summary_manifest.json | 13 runs × 5 stages = 65 rows and 910 task units: 728 isolated stage-1–4 units plus 182 formal stage-5 units; stages 1–4 are descriptive only |
+| Candidate breadth | configs/candidate_breadth_probe.json, results/candidate-breadth/matrix-receipt.json, reports/candidate-breadth/summary.json, publication_manifest.json, and logs/candidate-breadth-release/pipeline-ledger.json | 12 discovery final checkpoints × 6 nested widths = 72 run-width cells over the same 224 queries; all width-7 baselines reproduce within 1e-5; 50,000-resample source-stratified paired 95% intervals are present for loss/margin deltas; the frozen supported/partial/not-supported rule is reported without promoting this post-hoc diagnostic to confirmation; all 21 release steps and their hashed logs are complete |
 | Shared-start training | generated matrices and deep checkpoint audits | 3 seeds × 3 operators = 9 runs and 45 checkpoints from one frozen AdamW start |
 | Shared-start probes | reports/short-branch/summary_manifest.json | 45 query-disjoint checkpoint rows plus 46 unseen-probe jobs (45 checkpoints and one pretrained reference), with the three-seed endpoint decision |
 | Temporal shared-start mechanism | reports/short-branch/temporal_mechanism_predictors.manifest.json and reports/temporal-short-branch/summary_manifest.json | Predictor extraction and the scope-bound temporal analysis are each complete; both strict `--audit` steps rehash every declared input and output, and tail-stability outcomes are built before the temporal join |
@@ -37,6 +40,9 @@ identity.
 | Blog | [docs/blog.md](blog.md) | each generated marker has exactly one pair and matches its hashed report byte-for-byte |
 | Paper | reports/paper-results.manifest.json and paper/ | Dense constants are 12/60/840/20; no pending macro; strict paper audit, strict ACL release build, and the post-build strict re-audit pass |
 | W&B | reports/wandb/dense_source_provenance_audit.json plus remote content-addressed histories | exact config, Git, finished-state, tags/group, and normalized history for all 34 frozen Dense source runs (12 discovery + 4 hybrid + 9 confirmatory + 9 shared-start), followed by exactly 12 Dense canonical discovery identities; historical Late runs are retained and clearly tagged |
+| Third-party attribution | THIRD_PARTY_NOTICES.md plus file-level modification notices | DenseOn, PyTorch Muon, NorMuon, and pinned ACL build inputs are identified; every materially modified upstream file names the pinned DenseOn source commit; the notice is bundled byte-for-byte in wheel and sdist |
+| Citation metadata | CITATION.cff and CI `cffconvert --validate` gate | CFF 1.2 schema validates; software, study scope, author, license, repository, and upstream references are recorded; `date-released` remains absent while the repository is private and is set only at actual publication |
+| Contributor and security governance | CONTRIBUTING.md, SECURITY.md, and CODE_OF_CONDUCT.md | contributor commands reproduce locked CI/CFF/distribution/style gates; result-generating changes preserve Dense-only provenance; sensitive reports have a private email fallback when GitHub private reporting is unavailable |
 | Distribution | wheel, sdist, tests, CI | tests/lint/format, PDF, package build, and distribution audit all pass |
 | Publication hygiene | tracked tree, Git history, distributions, GitHub settings | no credentials; repository remains private until the user requests publication |
 
@@ -119,7 +125,30 @@ W&B verification is a mandatory publication gate. The compatibility flag is show
 the canonical command, but the finalizer cannot produce a publication-complete ledger without the
 read-only 34-source audit and the 12-run canonical synchronization/readback audit.
 
-For independent inspection, its complete ordered finalization sequence is:
+After that canonical finalizer has completed and the post-hoc story branch has been integrated, run
+the separate candidate-breadth publication release:
+
+~~~bash
+embed-optim-candidate-breadth-release \
+  --upstream-finalization-ledger logs/dense-finalization-pipeline/pipeline-ledger.json \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7 \
+  --workdir "$PWD" \
+  --resume
+~~~
+
+This second controller requires the exact complete 18-step finalization ledger, rehashes its bound
+completion ledger and every attempt log, and records that historical release as an immutable input.
+It does not compare the old implementation-source bytes with the post-hoc checkout, because adding
+the already frozen candidate diagnostic must not retroactively invalidate the formal experiment.
+Its own 21-step contract is instead bound to the complete current source tree. It materializes and
+audits the 224-query nested dataset, evaluates all 12 final discovery checkpoints, applies the
+frozen breadth decision, regenerates current report blocks, renders and re-audits the candidate Blog
+and paper block, then reruns the strict paper, test, style, PDF, distribution-build, and distribution
+audit gates. Resume reruns the controller while individual evaluation outputs are reused only after
+their content-addressed audits pass.
+
+For independent inspection, the canonical upstream finalizer's complete ordered sequence is:
 
 ~~~bash
 python -m embed_optim.temporal_short_branch_predictors \
@@ -205,7 +234,11 @@ Finally verify:
 
 - the GitHub repository is still private;
 - CI belongs to the final commit;
+- `logs/candidate-breadth-release/pipeline-ledger.json` is complete, contains exactly 21 successful
+  steps, and still hashes the complete upstream finalization ledger and frozen candidate protocol;
 - the blog, paper, manifests, built archives, and W&B histories all identify the same Dense scope;
+- third-party notices name every adapted implementation and build input, and the modified upstream
+  files retain their file-level source notice in both the tracked tree and built archives;
 - a secret-pattern scan of the tracked tree, reachable Git history, and distributions returns no
   credentials;
 - remaining mentions of LateOn are limited to transparent historical-scope disclosure or source

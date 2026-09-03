@@ -1,0 +1,200 @@
+{
+  "association_rows": 10,
+  "claim_boundary": "This diagnostic was designed after the discovery task scores and their corpus-size association were visible. It is descriptive, post hoc, and based on BEIR-selected learning rates. It cannot establish that corpus size causes optimizer gains, alter the frozen candidate-breadth prediction, or replace the validation-frozen three-seed comparison. Corpus size is also a proxy for unmeasured task properties.",
+  "complete": true,
+  "optimizer_summaries": {
+    "muon": {
+      "exclude_nq_spearman_rho": 0.6703296703296703,
+      "final_permutation_pvalue_two_sided": 0.030439847800760995,
+      "final_spearman_rho": 0.5868131868131868,
+      "large_corpus_half": {
+        "mean_delta": 0.00302142857142858,
+        "median_delta": 0.0032200000000000006,
+        "positive_tasks": 7,
+        "spearman_rho": 0.10714285714285714,
+        "tasks": 7
+      },
+      "leave_one_task_out": [
+        {
+          "held_out_task": "ArguAna",
+          "spearman_rho": 0.6043956043956044
+        },
+        {
+          "held_out_task": "ClimateFEVER",
+          "spearman_rho": 0.554945054945055
+        },
+        {
+          "held_out_task": "DBPedia",
+          "spearman_rho": 0.6263736263736264
+        },
+        {
+          "held_out_task": "FEVER",
+          "spearman_rho": 0.6648351648351648
+        },
+        {
+          "held_out_task": "FiQA2018",
+          "spearman_rho": 0.6043956043956044
+        },
+        {
+          "held_out_task": "HotpotQA",
+          "spearman_rho": 0.5824175824175825
+        },
+        {
+          "held_out_task": "MSMARCO",
+          "spearman_rho": 0.5824175824175825
+        },
+        {
+          "held_out_task": "NFCorpus",
+          "spearman_rho": 0.489010989010989
+        },
+        {
+          "held_out_task": "NQ",
+          "spearman_rho": 0.6703296703296703
+        },
+        {
+          "held_out_task": "QuoraRetrieval",
+          "spearman_rho": 0.6263736263736264
+        },
+        {
+          "held_out_task": "SCIDOCS",
+          "spearman_rho": 0.4835164835164835
+        },
+        {
+          "held_out_task": "SciFact",
+          "spearman_rho": 0.489010989010989
+        },
+        {
+          "held_out_task": "TRECCOVID",
+          "spearman_rho": 0.532967032967033
+        },
+        {
+          "held_out_task": "Touche2020",
+          "spearman_rho": 0.6703296703296703
+        }
+      ],
+      "leave_one_task_out_rho_max": 0.6703296703296703,
+      "leave_one_task_out_rho_min": 0.4835164835164835,
+      "other_tasks": {
+        "mean_delta": 0.0009400000000000026,
+        "median_delta": 0.0012599999999999278,
+        "positive_tasks": 5,
+        "spearman_rho": 0.75,
+        "tasks": 9
+      },
+      "partial_rank_correlation_controlling_training_source": 0.4921415407622402,
+      "small_corpus_half": {
+        "mean_delta": 0.001862857142857158,
+        "median_delta": -0.00037999999999993594,
+        "positive_tasks": 3,
+        "spearman_rho": 0.8571428571428571,
+        "tasks": 7
+      },
+      "training_source_tasks": {
+        "mean_delta": 0.005146000000000028,
+        "median_delta": 0.0032200000000000006,
+        "positive_tasks": 5,
+        "spearman_rho": -0.4,
+        "tasks": 5
+      }
+    },
+    "normuon": {
+      "exclude_nq_spearman_rho": 0.6538461538461539,
+      "final_permutation_pvalue_two_sided": 0.034814825925870374,
+      "final_spearman_rho": 0.5736263736263736,
+      "large_corpus_half": {
+        "mean_delta": 0.004249999999999992,
+        "median_delta": 0.002950000000000008,
+        "positive_tasks": 7,
+        "spearman_rho": 0.03571428571428571,
+        "tasks": 7
+      },
+      "leave_one_task_out": [
+        {
+          "held_out_task": "ArguAna",
+          "spearman_rho": 0.510989010989011
+        },
+        {
+          "held_out_task": "ClimateFEVER",
+          "spearman_rho": 0.5384615384615384
+        },
+        {
+          "held_out_task": "DBPedia",
+          "spearman_rho": 0.6153846153846154
+        },
+        {
+          "held_out_task": "FEVER",
+          "spearman_rho": 0.5989010989010989
+        },
+        {
+          "held_out_task": "FiQA2018",
+          "spearman_rho": 0.6538461538461539
+        },
+        {
+          "held_out_task": "HotpotQA",
+          "spearman_rho": 0.5989010989010989
+        },
+        {
+          "held_out_task": "MSMARCO",
+          "spearman_rho": 0.5989010989010989
+        },
+        {
+          "held_out_task": "NFCorpus",
+          "spearman_rho": 0.4725274725274725
+        },
+        {
+          "held_out_task": "NQ",
+          "spearman_rho": 0.6538461538461539
+        },
+        {
+          "held_out_task": "QuoraRetrieval",
+          "spearman_rho": 0.6098901098901099
+        },
+        {
+          "held_out_task": "SCIDOCS",
+          "spearman_rho": 0.4835164835164835
+        },
+        {
+          "held_out_task": "SciFact",
+          "spearman_rho": 0.4725274725274725
+        },
+        {
+          "held_out_task": "TRECCOVID",
+          "spearman_rho": 0.532967032967033
+        },
+        {
+          "held_out_task": "Touche2020",
+          "spearman_rho": 0.6538461538461539
+        }
+      ],
+      "leave_one_task_out_rho_max": 0.6538461538461539,
+      "leave_one_task_out_rho_min": 0.4725274725274725,
+      "other_tasks": {
+        "mean_delta": 0.002268888888888885,
+        "median_delta": 0.0013799999999999368,
+        "positive_tasks": 6,
+        "spearman_rho": 0.7833333333333333,
+        "tasks": 9
+      },
+      "partial_rank_correlation_controlling_training_source": 0.48977518971776113,
+      "small_corpus_half": {
+        "mean_delta": 0.00287428571428573,
+        "median_delta": 0.0006299999999999917,
+        "positive_tasks": 4,
+        "spearman_rho": 0.75,
+        "tasks": 7
+      },
+      "training_source_tasks": {
+        "mean_delta": 0.005890000000000018,
+        "median_delta": 0.002950000000000008,
+        "positive_tasks": 5,
+        "spearman_rho": -0.5,
+        "tasks": 5
+      }
+    }
+  },
+  "schema_version": 1,
+  "selection": "same-suite-final-BEIR-selected-discovery-runs",
+  "status": "post_hoc_discovery_corpus_size_diagnostic",
+  "task_stage_rows": 140,
+  "tasks": 14
+}

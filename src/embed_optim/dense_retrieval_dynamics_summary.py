@@ -319,6 +319,8 @@ def _trajectory_figure(
     import matplotlib
 
     matplotlib.use("Agg")
+    matplotlib.rcParams["pdf.fonttype"] = 42
+    matplotlib.rcParams["ps.fonttype"] = 42
     matplotlib.rcParams["svg.hashsalt"] = "dense-retrieval-dynamics-extension-v1"
     import matplotlib.pyplot as plt
 

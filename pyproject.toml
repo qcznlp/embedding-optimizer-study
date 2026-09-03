@@ -1,3 +1,5 @@
+# This build configuration substantially modifies lightonai/mdenseon-mlateon at commit
+# b0db47a48f969d825446668b5b17bfc27a359fc1; see THIRD_PARTY_NOTICES.md.
 [project]
 name = "embedding-optimizer-study"
 version = "0.1.0"
@@ -28,6 +30,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+  "cffconvert==2.0.0",
   "pytest>=8,<10",
   "pytest-cov>=6,<8",
   "ruff>=0.12,<1",
@@ -48,6 +51,14 @@ embed-optim-prepare = "embed_optim.data:main"
 embed-optim-prepare-probe = "embed_optim.probes:main"
 embed-optim-prepare-beir-probe = "embed_optim.beir_probe:main"
 embed-optim-prepare-validation = "embed_optim.validation_data:main"
+embed-optim-prepare-candidate-breadth = "embed_optim.candidate_breadth_data:main"
+embed-optim-evaluate-candidate-breadth = "embed_optim.candidate_breadth_evaluation:main"
+embed-optim-candidate-breadth-matrix = "embed_optim.candidate_breadth_matrix:main"
+embed-optim-summarize-candidate-breadth = "embed_optim.candidate_breadth_summary:main"
+embed-optim-render-candidate-breadth = "embed_optim.candidate_breadth_publication:main"
+embed-optim-candidate-breadth-release = "embed_optim.candidate_breadth_release:main"
+embed-optim-corpus-size-diagnostic = "embed_optim.corpus_size_diagnostic:main"
+embed-optim-three-regime-diagnostic = "embed_optim.three_regime_diagnostic:main"
 embed-optim-prepare-confirmatory-data = "embed_optim.confirmatory_data:main"
 embed-optim-generate-confirmatory-matrices = "embed_optim.confirmatory_matrix:main"
 embed-optim-evaluate-confirmatory = "embed_optim.confirmatory_evaluation:main"
@@ -129,6 +140,9 @@ where = ["src"]
 
 [tool.setuptools.data-files]
 "share/embedding-optimizer-study/configs" = [
+  "configs/candidate_breadth_probe.json",
+  "configs/corpus_size_diagnostic.json",
+  "configs/three_regime_diagnostic.json",
   "configs/beir_representation_probe.json",
   "configs/basis_sensitivity.json",
   "configs/causal_chain_analysis.json",
@@ -173,9 +187,11 @@ where = ["src"]
   "scripts/eval/dense_sequential.py",
 ]
 "share/embedding-optimizer-study" = [
+  "AGENTS.md",
   "CITATION.cff",
   "CODE_OF_CONDUCT.md",
   "CONTRIBUTING.md",
+  "PROJECT_STATUS.md",
   "requirements-formal.lock",
   "requirements-formal-flash.txt",
   "SECURITY.md",
@@ -197,6 +213,7 @@ where = ["src"]
 ]
 "share/embedding-optimizer-study/paper/generated" = [
   "paper/generated/causal-chain.tex",
+  "paper/generated/candidate-breadth.tex",
   "paper/generated/common-state.tex",
   "paper/generated/confirmation.tex",
   "paper/generated/diagnostics.tex",
@@ -205,6 +222,17 @@ where = ["src"]
   "paper/generated/per-task.tex",
   "paper/generated/representation.tex",
   "paper/generated/retrieval-dynamics-extension.tex",
+]
+"share/embedding-optimizer-study/reports/candidate-breadth" = [
+  "reports/candidate-breadth/*.csv",
+  "reports/candidate-breadth/*.json",
+  "reports/candidate-breadth/*.pdf",
+  "reports/candidate-breadth/*.svg",
+]
+"share/embedding-optimizer-study/reports/three-regime-diagnostic" = [
+  "reports/three-regime-diagnostic/*.csv",
+  "reports/three-regime-diagnostic/*.json",
+  "reports/three-regime-diagnostic/*.md",
 ]
 "share/embedding-optimizer-study/reports/weight-space" = [
   "reports/weight-space/README.md",

@@ -1,17 +1,24 @@
+<!--
+This README substantially modifies the lightonai/mdenseon-mlateon README at commit
+b0db47a48f969d825446668b5b17bfc27a359fc1. See THIRD_PARTY_NOTICES.md.
+-->
+
 # Muon for dense-retriever adaptation
 
 A reproducible study of AdamW, Muon, and NorMuon for supervised adaptation of
 [DenseOn-unsupervised](https://huggingface.co/lightonai/DenseOn-unsupervised).
 
 The project compares complete training dynamics, zero-shot retrieval quality, systems cost, and
-weight/update geometry. Its central question is not whether Muon produces flatter update spectra—that
-is largely built into the operator—but why a matrix-aware optimizer can lose a matched one-step
-functional comparison while showing higher one-seed, four-learning-rate-median final BEIR. The
-[generated completion outcome](docs/blog.md#audited-completion-status) records whether the recipe
-frozen by query-disjoint validation passes its prospective gates.
+weight/update geometry. Its central question is not whether Muon produces flatter update
+spectra—that is largely built into the operator—but whether its apparent optimization gains survive
+independent full-corpus evaluation and implementation-invariance checks. The
+[generated completion outcome](docs/blog.md#audited-completion-status) records the formal
+three-seed result; the candidate addendum records why the historical validation recipe is now
+treated as implementation-confounded.
 
-The repository remains private until the project owner requests publication. It is structured for a
-later public release under Apache-2.0.
+The repository is public under Apache-2.0. For the current verified state, known limitations, and
+exact continuation order, start with [PROJECT_STATUS.md](PROJECT_STATUS.md). Coding agents should
+also read [AGENTS.md](AGENTS.md) before taking action.
 
 - Full study write-up: [docs/blog.md](docs/blog.md)
 - Dense-only NAACL plan: [docs/naacl-dense-paper-plan.md](docs/naacl-dense-paper-plan.md)
@@ -19,6 +26,13 @@ later public release under Apache-2.0.
 - Live dashboard: [Weights & Biases](https://wandb.ai/stevezenguom/embedding-optimizer-study)
 - Public checkpoint backup: [qcz/embedding-optimizer-study-checkpoints](https://huggingface.co/qcz/embedding-optimizer-study-checkpoints)
 - Public analysis-artifact backup: [qcz/embedding-optimizer-study-analysis-artifacts](https://huggingface.co/datasets/qcz/embedding-optimizer-study-analysis-artifacts)
+
+> **Current reproducibility warning.** The frozen candidate-breadth audit exposed material batch
+> non-invariance in the historical SentenceTransformers flattened ModernBERT FlashAttention path.
+> Historical Dense training used that pinned path, while corpus retrieval used padded independent
+> encoding. The existing comparison is therefore evidence about this exact implementation, not yet
+> a general clean eight-way optimizer result. See
+> [the handoff](PROJECT_STATUS.md#critical-execution-finding) and the source-bound candidate report.
 
 ## Scope disclosure
 
@@ -48,6 +62,20 @@ the hybrid and confirmatory inferential summaries continue to read their indepen
 stage-5 roots.
 Shared-start controls instead use five-stage query-disjoint and unseen probes, not BEIR inference.
 
+Audit the complete study status without conflating those two evaluation contracts:
+
+```bash
+embed-optim-evaluation-progress \
+  --study-root "$PWD" \
+  --output logs/evaluation/study-live-audit.json
+```
+
+This mode provenance-validates the exact 1,750-unit DenseOn BEIR grid, reports discovery, hybrid,
+and each confirmatory seed separately, and shows progress through the 31-step completion, 18-step
+finalization, and 21-step candidate-breadth release controllers. It also reports the 45
+query-disjoint and 46 unseen shared-start probe jobs as a separate mechanism contract; controller
+counts are informational and never replace their own content-addressed audits.
+
 | Optimizer | Same-suite BEIR-best LR | Exploratory BEIR-best final | Four-LR final mean | Four-LR final median |
 | --- | ---: | ---: | ---: | ---: |
 | AdamW | 3e-5 | 0.5899 | 0.5816 | 0.5858 |
@@ -59,6 +87,13 @@ These are exploratory estimates because BEIR is used for discovery selection. Th
 validation rule instead selects AdamW 3e-5 (discovery BEIR 0.5899), Muon 3e-3 (0.5608), and NorMuon
 3e-3 (0.5634). Three new seeds using recipes frozen by that validation rule provide the confirmatory
 comparison.
+
+The completed 14-task routing control makes the main optimizer comparison essentially unchanged.
+Across all four AdamW learning rates, routing hidden matrices separately and fixing the auxiliary
+AdamW rate changes mean nDCG@10 by only +0.000077. Three learning-rate contrasts are positive and one
+is negative; the 56 task-by-learning-rate units contain 28 wins, 6 ties, and 22 losses. Parameter
+routing is therefore too small and inconsistent to explain the Muon-family discovery or selection
+effects, although this control does not isolate orthogonalization from update scale.
 
 The strongest current mechanism observation is a local-to-global reversal:
 
@@ -77,7 +112,7 @@ boundaries.
 
 <!-- FINAL-CONCLUSION:BEGIN -->
 
-On the validation-frozen three-seed DenseOn retrieval comparison, Muon versus AdamW was negative (mean delta nDCG@10 -0.0306; familywise 95% CI [-0.0464, -0.0138]), while NorMuon versus AdamW was negative (mean delta nDCG@10 -0.0304; familywise 95% CI [-0.0446, -0.0138]). Across DenseOn's four frozen learning rates, routing-matched hybrid AdamW minus native AdamW averaged +0.0001 nDCG@10, with 3 positive, 1 negative, and 0 zero learning-rate points. This is descriptive evidence about parameter routing as an alternative explanation; it does not by itself identify the matrix rule or prove that routing accounts for the confirmatory Muon-family contrast. The frozen shared-start tail endpoint for DenseOn concluded Muon: mixed; NorMuon: mixed. The frozen temporal spectral bridge was a claimable negative, the fixed-state dose/band chain was a claimable negative, and their joint spectral-component account was a claimable negative. This explains only the tested chain: it does not identify formal mediation or establish a universal optimizer ranking.
+Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.
 
 <!-- FINAL-CONCLUSION:END -->
 
@@ -99,7 +134,7 @@ On the validation-frozen three-seed DenseOn retrieval comparison, Muon versus Ad
 | Full-length retrieval dynamics | 12 discovery + 4 hybrid + 9 confirmatory runs, five stages each |
 | Supplemental inference boundary | Hybrid/confirmatory stages 1–4 descriptive; stage 5 formal |
 | Confirmation | Three new negative-sampling/data-order seeds |
-| Default compute | Two independent four-GPU pools |
+| Compute | Eight H100-equivalent GPUs, split into two disjoint four-GPU pools |
 
 Muon and NorMuon operate on the 88 two-dimensional Transformer hidden matrices
 (110,297,088 parameters). Embeddings, pooling projection, norms, and biases use auxiliary AdamW at
@@ -321,6 +356,133 @@ the orchestration again from step 1. Individual evaluators may still skip units 
 content-addressed audits prove the checkpoint, runtime, and result identity unchanged. This same
 full rerun upgrades legacy completion ledgers to the current provenance schema.
 
+## Run the post-hoc candidate-breadth diagnostic
+
+The source-bound three-regime diagnostic reconstructs the final discovery training loss,
+query-disjoint validation metrics, and full-corpus BEIR score for all 12 DenseOn discovery runs:
+
+~~~bash
+embed-optim-three-regime-diagnostic \
+  --protocol configs/three_regime_diagnostic.json \
+  --output-dir reports/three-regime-diagnostic
+embed-optim-three-regime-diagnostic \
+  --protocol configs/three_regime_diagnostic.json \
+  --output-dir reports/three-regime-diagnostic \
+  --audit
+~~~
+
+Its checked-in [report](reports/three-regime-diagnostic/README.md) is explicitly post hoc and cannot
+alter the three-seed optimizer comparison or substitute for the nested candidate-breadth test.
+
+This diagnostic is deliberately separate from the frozen three-seed comparison. It asks whether the
+Muon-family validation ordering changes when the same 224 query-positive pairs are scored against
+nested sets of 7, 10, 32, 128, 512, and 2,048 mined negatives. The width-7 slice must first reproduce
+the original query-disjoint validation outputs within the frozen sample-level tolerance. A structural
+source or checkpoint mismatch still fails hard. A numerical reproduction failure is retained as a
+falsification result, forces the frozen decision to `not_supported`, and prevents the wider slices
+from being interpreted as a causal bridge.
+
+The completed audit did fail that prerequisite: the maximum width-7 sample/metric discrepancy is
+8.286419 against a tolerance of 1e-5. A controlled two-row check localizes the problem to the
+historical flattened/packed SentenceTransformers path: changing packed batch composition changes a
+cosine score by as much as 0.211914, while the padded control changes it by at most 0.001953 in BF16.
+On padded width 7, the high-dose Muon-family advantage is already absent, and widening to 2,048
+candidates does not yield the required reversal. The missing-candidate explanation is therefore not
+supported; the historical selection result is implementation-confounded.
+
+Prepare and independently audit the source-bound nested candidate data:
+
+~~~bash
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901 \
+  --resume
+
+embed-optim-prepare-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --output data/candidate-breadth-224-seed20260901 \
+  --audit-only \
+  --receipt reports/candidate-breadth/data-audit.json
+~~~
+
+The release audit does not trust hashes reported by the generated manifest. It reselects the 224
+rows from the frozen validation ledger, reconstructs all 2,048 negative IDs from the pinned mined
+score revision, verifies the source document text, and compares every materialized query and
+candidate row. Checkpoint evaluators repeat the complete local file and row audit but reuse that
+one release-gated upstream reconstruction, avoiding twelve redundant scans of the source parquet
+files.
+
+Evaluate all 12 discovery final checkpoints, then build and re-audit the frozen decision summary:
+
+~~~bash
+embed-optim-candidate-breadth-matrix \
+  --protocol configs/candidate_breadth_probe.json \
+  --source-audit-receipt reports/candidate-breadth/data-audit.json \
+  --gpus 0,1,2,3,4,5,6,7
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-summarize-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json
+
+embed-optim-render-candidate-breadth \
+  --protocol configs/candidate_breadth_probe.json \
+  --audit-only
+
+python -m embed_optim.packing_invariance \
+  --device cuda
+python -m embed_optim.packing_invariance \
+  --audit-only
+~~~
+
+Matrix resume is evidence-preserving rather than a manifest-only shortcut: every existing run reloads
+its `scores.npz`, checks the exact query and width axes, recomputes all sample and source aggregates,
+byte-compares both JSONL outputs, and reruns the width-7 frozen-baseline check before it may skip model
+inference.
+
+For the publication handoff, use the single post-hoc release controller after the canonical Dense
+finalizer has completed and its story changes have been integrated:
+
+~~~bash
+embed-optim-candidate-breadth-release \
+  --upstream-finalization-ledger logs/dense-finalization-pipeline/pipeline-ledger.json \
+  --protocol configs/candidate_breadth_probe.json \
+  --gpus 0,1,2,3,4,5,6,7 \
+  --workdir "$PWD" \
+  --resume
+~~~
+
+The controller requires the exact 18-step upstream ledger, rehashes its completion source and every
+attempt log, and binds that immutable historical release into a new ledger. It intentionally does
+not compare the historical implementation hashes with the post-hoc checkout: adding the frozen
+candidate diagnostic changes those source bytes without invalidating the already completed formal
+experiment. Before and after every new step it nevertheless rehashes both ledgers, the candidate
+protocol, and the complete current source/command contract. It prepares or audits the data,
+content-resumes the 12-checkpoint matrix, rebuilds the current result blocks, renders the candidate
+figure and publication text, and reruns the paper, test, style, build, and distribution gates.
+
+The primary rule was frozen before any candidate-breadth data or scores were visible. Its decision
+is labelled supported only if all 12 width-7 reproductions pass and both Muon and NorMuon reverse
+their high-dose-versus-retrieval-optimal loss and margin ordering by width 2,048. Attenuation without
+reversal is reported separately, and an unchanged anti-calibrated ordering falsifies this proposed
+account. The observed prerequisite failure also forces `not_supported`; the later padded widths are
+reported as an explicitly post-failure diagnostic rather than as a successful nested bridge. A
+passing rule would have been consistent with missing-candidate coverage contributing to the gap; the
+post-hoc diagnostic does not establish that contribution causally and cannot replace the formal
+full-corpus optimizer comparison. Paired loss and margin contrasts additionally receive descriptive
+95% source-stratified paired percentile bootstrap intervals: 50,000 resamples independently preserve
+each of the seven fixed 32-query source strata. This uncertainty plan was recorded before candidate
+data or scores were visible and does not enter the frozen decision rule. The summary writes audited
+calibration and paired-contrast tables plus publication-ready SVG/PDF panels under
+`reports/candidate-breadth/`. The final two commands update only the owned blog marker and
+`paper/generated/candidate-breadth.tex`, then verify both against a content-addressed publication
+manifest.
+
 ## Render the final Dense-only deliverables
 
 After the Dense completion ledger passes, the canonical, resume-safe finalizer regenerates every
@@ -344,6 +506,9 @@ its full orchestration rather than trusting an old finalization prefix. If an ol
 ledger lacks those bindings, upgrade it with the completion `--resume` command first.
 W&B verification is mandatory for publication completion: the finalizer cannot report a complete
 release while offline or while any frozen source run is missing, unfinished, or inconsistent.
+The candidate-breadth release command above is the only additional controller needed after this
+canonical finalizer; it treats this finalization ledger as immutable upstream evidence and does not
+repeat the already audited W&B mutations.
 
 For an independent step-by-step audit, the complete ordered finalizer is:
 

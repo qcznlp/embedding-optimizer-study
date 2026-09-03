@@ -100,10 +100,14 @@ PAPER_MAIN_REQUIRED_ONCE = (
     *PAPER_APPENDIX_GENERATED_INPUTS,
     *PAPER_DEFINITION_GENERATED_INPUTS,
     rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}",
+    r"\input{generated/candidate-breadth}",
     r"\CausalChainSummaryTable",
     r"\CausalChainDiagnostics",
     r"\section{Conclusion}",
     r"\ResultConclusion",
+    r"\CandidateBreadthDiscussion",
+    r"\CandidateBreadthConclusion",
+    r"\CandidateBreadthFigure",
     rf"\label{{{MAIN_END_LABEL}}}",
     r"\section{Limitations}",
     r"\section{Ethical Considerations}",
@@ -2133,6 +2137,7 @@ def _paper_main_topology_complete(root: Path) -> bool:
         )
         and main_text.find(r"\CausalChainSummaryTable") < main_end_label
         and all(main_text.find(token) > appendix for token in appendix_inputs)
+        and main_text.find(r"\CandidateBreadthFigure") > appendix
         and main_text.find(r"\CausalChainDiagnostics") > appendix
     )
 

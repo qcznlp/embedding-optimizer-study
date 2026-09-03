@@ -75,7 +75,12 @@ def test_summary_rejects_stage_five_in_the_dynamics_partition():
         summary.summarize_five_stage_trajectories(rows)
 
 
-def test_summary_outputs_pdf_svg_csv_and_hashes_every_file(tmp_path):
+def test_summary_outputs_pdf_svg_csv_and_hashes_every_file(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+):
+    matplotlib = pytest.importorskip("matplotlib")
+    monkeypatch.setitem(matplotlib.rcParams, "pdf.fonttype", 3)
+    monkeypatch.setitem(matplotlib.rcParams, "ps.fonttype", 3)
     trajectories = summary.summarize_five_stage_trajectories(_task_rows())
     output = tmp_path / "reports/dense-retrieval-dynamics"
 
@@ -85,6 +90,8 @@ def test_summary_outputs_pdf_svg_csv_and_hashes_every_file(tmp_path):
         repository=tmp_path,
     )
 
+    assert matplotlib.rcParams["pdf.fonttype"] == 42
+    assert matplotlib.rcParams["ps.fonttype"] == 42
     assert set(records) == {"trajectory_csv", "figure_svg", "figure_pdf"}
     assert records["trajectory_csv"]["rows"] == 65
     for record in records.values():
@@ -93,7 +100,9 @@ def test_summary_outputs_pdf_svg_csv_and_hashes_every_file(tmp_path):
         assert record["bytes"] == path.stat().st_size
         assert record["sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
     assert (tmp_path / records["figure_svg"]["path"]).read_text().startswith("<?xml")
-    assert (tmp_path / records["figure_pdf"]["path"]).read_bytes().startswith(b"%PDF")
+    pdf = (tmp_path / records["figure_pdf"]["path"]).read_bytes()
+    assert pdf.startswith(b"%PDF")
+    assert b"/Subtype /Type3" not in pdf
 
 
 def test_output_hash_gate_rejects_tampering(tmp_path):

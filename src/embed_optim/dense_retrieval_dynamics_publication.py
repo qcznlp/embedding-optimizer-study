@@ -30,6 +30,12 @@ GROUPS = (
     ("confirmatory", "normuon", "Confirmatory NorMuon", 3),
 )
 
+CONFIRMATORY_LABELS = (
+    "Confirmatory AdamW",
+    "Confirmatory Muon",
+    "Confirmatory NorMuon",
+)
+
 
 def _declared_path(root: Path, record: Any) -> Path:
     if not isinstance(record, dict) or not isinstance(record.get("path"), str):
@@ -185,6 +191,72 @@ def summarize_publication_rows(rows: Sequence[dict[str, str]]) -> list[list[str]
     return output
 
 
+def _time_to_quality_summary(
+    summary_rows: Sequence[Sequence[str]],
+) -> tuple[float, list[tuple[str, str, float]]]:
+    """Describe checkpoint attainment and trajectory AUC without adding inference."""
+
+    by_label: dict[str, list[float]] = {}
+    for row in summary_rows:
+        if len(row) != 7:
+            raise ValueError("Dense retrieval-dynamics summary row has invalid width")
+        label = str(row[0])
+        try:
+            values = [float(value) for value in row[2:]]
+        except (TypeError, ValueError) as error:
+            raise ValueError("Dense retrieval-dynamics summary score is invalid") from error
+        if label in by_label or any(not math.isfinite(value) for value in values):
+            raise ValueError("Dense retrieval-dynamics summary labels/scores are invalid")
+        by_label[label] = values
+    if any(label not in by_label for label in CONFIRMATORY_LABELS):
+        raise ValueError("Dense retrieval-dynamics summary lacks confirmatory groups")
+
+    target = by_label["Confirmatory AdamW"][-1]
+    output: list[tuple[str, str, float]] = []
+    for label in CONFIRMATORY_LABELS:
+        values = by_label[label]
+        reached = next(
+            (f"{stage * 20}%" for stage, value in enumerate(values, start=1) if value >= target),
+            "not reached",
+        )
+        auc = sum((left + right) / 2 for left, right in zip(values, values[1:])) / 4
+        output.append((label.removeprefix("Confirmatory "), reached, auc))
+    return target, output
+
+
+def _time_to_quality_markdown(summary_rows: Sequence[Sequence[str]]) -> str:
+    target, records = _time_to_quality_summary(summary_rows)
+    attainment = "; ".join(f"{label} {stage}" for label, stage, _auc in records)
+    aucs = ", ".join(f"{label} {auc:.4f}" for label, _stage, auc in records)
+    return (
+        "**Descriptive time-to-quality:** using mean stage-5 confirmatory AdamW nDCG@10 "
+        f"({target:.4f}) as the displayed four-decimal fixed reference, the earliest retained "
+        "checkpoint matching or exceeding it is: "
+        f"{attainment}. Normalized 20–100% trajectory AUC is: {aucs}. Checkpoint attainment and "
+        "AUC summarize the joined curves only; they do not alter the stage-5 confirmatory test."
+    )
+
+
+def _time_to_quality_latex(summary_rows: Sequence[Sequence[str]]) -> str:
+    target, records = _time_to_quality_summary(summary_rows)
+    attainment_parts = []
+    for label, stage, _auc in records:
+        escaped_stage = stage.replace("%", r"\%")
+        attainment_parts.append(f"{label} {escaped_stage}")
+    attainment = "; ".join(attainment_parts)
+    aucs = ", ".join(f"{label} {auc:.4f}" for label, _stage, auc in records)
+    return (
+        r"\paragraph{Descriptive time-to-quality.} "
+        "Using mean stage-5 confirmatory AdamW nDCG@10 "
+        f"({target:.4f}) as the displayed four-decimal fixed reference, the earliest retained "
+        "checkpoint matching or exceeding it is: "
+        f"{attainment}. Normalized 20--100"
+        r"\% trajectory AUC is: "
+        f"{aucs}. Checkpoint attainment and "
+        "AUC summarize the joined curves only; they do not alter the stage-5 confirmatory test."
+    )
+
+
 def render_publication_markdown(summary_rows: Sequence[Sequence[str]]) -> str:
     header = ("Series", "Runs", "20%", "40%", "60%", "80%", "100%")
     lines = [
@@ -201,6 +273,8 @@ def render_publication_markdown(summary_rows: Sequence[Sequence[str]]) -> str:
         "| " + " | ".join(header) + " |",
         "| " + " | ".join("---" if index < 2 else "---:" for index in range(len(header))) + " |",
         *("| " + " | ".join(row) + " |" for row in summary_rows),
+        "",
+        _time_to_quality_markdown(summary_rows),
         "",
         "**Inference boundary:** these joined curves are descriptive training dynamics only. "
         "The hybrid-routing and confirmatory comparisons continue to read only their disjoint, "
@@ -234,6 +308,8 @@ def render_publication_latex(summary_rows: Sequence[Sequence[str]]) -> str:
             r"\caption{Mean nDCG@10 across the four hybrid learning-rate runs or three new seeds per optimizer. These are descriptive aggregates of the source-bound 65-row CSV, not additional formal contrasts.}",
             r"\label{tab:extended-retrieval-dynamics}",
             r"\end{table*}",
+            "",
+            _time_to_quality_latex(summary_rows),
             "",
         )
     )

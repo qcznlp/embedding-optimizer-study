@@ -1,4 +1,4 @@
-# Dense-only release surface. These retained repository artifacts are legacy
-# audit inputs, not part of the distributable study bundle.
-exclude reports/local-global-reversal/summary_manifest.json
-exclude scripts/eval/late_interaction.py
+# The Dense-only distribution surface is declared explicitly in
+# ``tool.setuptools.data-files``. Retained legacy audit inputs are deliberately
+# absent from that allowlist and therefore need no warning-producing ``exclude``
+# directives here.

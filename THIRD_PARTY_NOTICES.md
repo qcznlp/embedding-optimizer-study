@@ -1,8 +1,19 @@
 # Third-party notices
 
 This repository is derived in part from
-[`lightonai/mdenseon-mlateon`](https://github.com/lightonai/mdenseon-mlateon), distributed under the
-Apache License 2.0. Its original copyright notices and repository history are retained.
+[`lightonai/mdenseon-mlateon`](https://github.com/lightonai/mdenseon-mlateon) at commit
+`b0db47a48f969d825446668b5b17bfc27a359fc1`, distributed under the Apache License 2.0. The original
+repository history is retained. The following upstream files have been modified and carry a
+file-level modification notice:
+
+- `README.md`;
+- `pyproject.toml`;
+- `scripts/eval/dense_parallel.py`;
+- `scripts/eval/dense_sequential.py`;
+- `scripts/eval/late_interaction.py`.
+
+Other retained files under `scripts/finetune/` and `scripts/pretrain/` are unchanged from that pinned
+upstream commit.
 
 The Muon polynomial, momentum update, and learning-rate adjustment semantics in
 `src/embed_optim/optimizers.py` are adapted from
@@ -116,6 +127,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+The paper build downloads the official ACL style files `acl.sty` and `acl_natbib.bst` from
+[`acl-org/acl-style-files`](https://github.com/acl-org/acl-style-files) at commit
+`d5adc823ff0f80f98c80405ca0ab66c68e684409`. They are build-time inputs and are not redistributed in
+this repository's source or Python distributions. The upstream `acl_natbib.bst` header states that
+it is distributed under the LaTeX Project Public License; its copyright and license header remain
+intact in the downloaded file. The build does not modify either style file.
 
 Runtime dependencies keep their respective upstream licenses. Model and dataset artifacts are not
 redistributed by this repository and remain governed by their Hugging Face repository licenses.

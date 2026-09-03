@@ -19,7 +19,7 @@ EXPECTED_FLOAT_ROWS = {
     "tab:intervention-results": 1,
     "tab:causal-chain-summary": 3,
     "tab:confirmation-results": 3,
-    "tab:claim-firewall": 7,
+    "tab:claim-firewall": 8,
     "tab:training-systems-results": 3,
     "tab:basis-sensitivity-results": 3,
     "tab:representation-results": 3,
@@ -132,6 +132,13 @@ def test_layout_gate_rejects_appendix_float_before_main_endpoint(tmp_path: Path)
         audit_paper_layout(tmp_path / "paper")
 
 
+def test_corpus_size_diagnostic_is_frozen_as_appendix_only():
+    label = "fig:corpus-size-diagnostic"
+
+    assert label in APPENDIX_FLOAT_LABELS
+    assert label not in MAIN_TEXT_FLOAT_LABELS
+
+
 def test_layout_gate_rejects_missing_or_unclassified_float(tmp_path: Path):
     aux = _complete_aux(tmp_path)
     text = aux.read_text(encoding="utf-8")
@@ -203,6 +210,16 @@ def test_final_results_fill_every_headline_and_conclusion_without_pending_placeh
     assert "Temporal spectral bridge rejected" in causal
     assert "Frozen component account rejected" in causal
     assert "No forward bridge; fixed-state conclusion only" in causal
+    candidate = (ROOT / "paper/generated/candidate-breadth.tex").read_text(encoding="utf-8")
+    assert r"\newcommand{\CandidateBreadthConclusion}" in candidate
+    assert r"\newcommand{\CandidateBreadthDiscussion}" in candidate
+    assert r"\newcommand{\CandidateBreadthFigure}" in candidate
+    assert r"\label{fig:candidate-breadth}" in candidate
+    assert "nested-candidate decision was not supported" in candidate
+    assert "prerequisite width-7 bridge failed" in candidate
+    assert "maximum error 8.286419" in candidate
+    assert "Candidate-breadth uncertainty and paired prevalence" in candidate
+    assert r"Width 7 $\rightarrow$ 2,048 loss/margin deltas" in candidate
 
 
 def test_release_runs_layout_gate_only_after_pdf_build():

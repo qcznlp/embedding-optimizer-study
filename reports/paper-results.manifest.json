@@ -58,8 +58,8 @@
         "NorMuon - AdamW": "negative"
       }
     },
-    "markdown": "On the validation-frozen three-seed DenseOn retrieval comparison, Muon versus AdamW was negative (mean delta nDCG@10 -0.0306; familywise 95% CI [-0.0464, -0.0138]), while NorMuon versus AdamW was negative (mean delta nDCG@10 -0.0304; familywise 95% CI [-0.0446, -0.0138]). Across DenseOn's four frozen learning rates, routing-matched hybrid AdamW minus native AdamW averaged +0.0001 nDCG@10, with 3 positive, 1 negative, and 0 zero learning-rate points. This is descriptive evidence about parameter routing as an alternative explanation; it does not by itself identify the matrix rule or prove that routing accounts for the confirmatory Muon-family contrast. The frozen shared-start tail endpoint for DenseOn concluded Muon: mixed; NorMuon: mixed. The frozen temporal spectral bridge was a claimable negative, the fixed-state dose/band chain was a claimable negative, and their joint spectral-component account was a claimable negative. This explains only the tested chain: it does not identify formal mediation or establish a universal optimizer ranking.",
-    "plain": "On the validation-frozen three-seed DenseOn retrieval comparison, Muon versus AdamW was negative (mean delta nDCG@10 -0.0306; familywise 95% CI [-0.0464, -0.0138]), while NorMuon versus AdamW was negative (mean delta nDCG@10 -0.0304; familywise 95% CI [-0.0446, -0.0138]). Across DenseOn's four frozen learning rates, routing-matched hybrid AdamW minus native AdamW averaged +0.0001 nDCG@10, with 3 positive, 1 negative, and 0 zero learning-rate points. This is descriptive evidence about parameter routing as an alternative explanation; it does not by itself identify the matrix rule or prove that routing accounts for the confirmatory Muon-family contrast. The frozen shared-start tail endpoint for DenseOn concluded Muon: mixed; NorMuon: mixed. The frozen temporal spectral bridge was a claimable negative, the fixed-state dose/band chain was a claimable negative, and their joint spectral-component account was a claimable negative. This explains only the tested chain: it does not identify formal mediation or establish a universal optimizer ranking.",
+    "markdown": "Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.",
+    "plain": "Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking.",
     "routing_controls": {
       "DenseOn": {
         "learning_rates": 4,
@@ -79,12 +79,12 @@
   },
   "conclusion_macro": {
     "name": "ResultConclusion",
-    "value": "On the validation-frozen three-seed DenseOn retrieval comparison, Muon versus AdamW was negative (mean delta nDCG@10 -0.0306; familywise 95\\% CI [-0.0464, -0.0138]), while NorMuon versus AdamW was negative (mean delta nDCG@10 -0.0304; familywise 95\\% CI [-0.0446, -0.0138]). Across DenseOn's four frozen learning rates, routing-matched hybrid AdamW minus native AdamW averaged +0.0001 nDCG@10, with 3 positive, 1 negative, and 0 zero learning-rate points. This is descriptive evidence about parameter routing as an alternative explanation; it does not by itself identify the matrix rule or prove that routing accounts for the confirmatory Muon-family contrast. The frozen shared-start tail endpoint for DenseOn concluded Muon: mixed; NorMuon: mixed. The frozen temporal spectral bridge was a claimable negative, the fixed-state dose/band chain was a claimable negative, and their joint spectral-component account was a claimable negative. This explains only the tested chain: it does not identify formal mediation or establish a universal optimizer ranking."
+    "value": "Validation-frozen three-seed DenseOn: Muon versus AdamW: negative, -0.0306 nDCG@10 (familywise 95\\% CI [-0.0464, -0.0138]); NorMuon versus AdamW: negative, -0.0304 nDCG@10 (familywise 95\\% CI [-0.0446, -0.0138]). The routing-matched hybrid AdamW minus native AdamW averaged +0.0001 across DenseOn's four rates (3 positive, 1 negative, and 0 zero learning-rate points), descriptive evidence about parameter routing as an alternative explanation. Frozen shared-start tail endpoints for DenseOn: Muon: mixed; NorMuon: mixed. The temporal bridge was a claimable negative, the fixed-state chain was a claimable negative, and their joint spectral-component account was a claimable negative; this rejects only the tested mechanism, not formal mediation or a universal optimizer ranking."
   },
   "dynamics_extension": {
     "blog": {
-      "block_bytes": 1196,
-      "block_sha256": "84328fde8b4c85b7a94aa0327b710f7d14d0dc36bbd966ce990deb404bd8ecfa",
+      "block_bytes": 1640,
+      "block_sha256": "446e5915823d70fe57db9b9f9987852b372a84903723cb3eb57c6cf786b3f4b1",
       "markers": [
         "<!-- DENSE-RETRIEVAL-DYNAMICS:BEGIN -->",
         "<!-- DENSE-RETRIEVAL-DYNAMICS:END -->"
@@ -92,9 +92,9 @@
       "path": "docs/blog.md"
     },
     "figure_pdf": {
-      "bytes": 32547,
+      "bytes": 30000,
       "path": "reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf",
-      "sha256": "0eab4738450ddefac4795f5df4b770be228c3880e92872a213e9c59873829fec"
+      "sha256": "db310530d9b5fc60a8a43761d9fc52d26ef8ad9550b7bc932a50f523af039edd"
     },
     "figure_svg": {
       "bytes": 123395,
@@ -103,14 +103,14 @@
     },
     "formal_inference_reads_joined_outputs": false,
     "generated_tex": {
-      "bytes": 1231,
+      "bytes": 1684,
       "path": "paper/generated/retrieval-dynamics-extension.tex",
-      "sha256": "b874bd56d339d78f870e2aa821c45c2b52f70394ef6e74bf4fb922943595be24"
+      "sha256": "025f3b160f75d14b032d7a56bcd416683ecbc033831d36947f01a702599883d5"
     },
     "manifest": {
       "bytes": 350830,
       "path": "reports/dense-retrieval-dynamics/summary_manifest.json",
-      "sha256": "071b435d40001169b462826e2b6dd5bbde2036ab403f167d2f175cf7a16bf715"
+      "sha256": "6f5d369263af719997161d76b0f8fbd0b6f940a6ee2e87393ed8f83d27d28e4d"
     },
     "role": "descriptive-only",
     "summary_rows": [
@@ -181,7 +181,7 @@
     {
       "bytes": 350830,
       "path": "reports/dense-retrieval-dynamics/summary_manifest.json",
-      "sha256": "071b435d40001169b462826e2b6dd5bbde2036ab403f167d2f175cf7a16bf715"
+      "sha256": "6f5d369263af719997161d76b0f8fbd0b6f940a6ee2e87393ed8f83d27d28e4d"
     },
     {
       "bytes": 13494,
@@ -199,9 +199,9 @@
       "sha256": "6fb5970fb8d487eef4619ebcd5ca42ffa6a4dd6297743cc40879cf5f6adf1834"
     },
     {
-      "bytes": 10664,
+      "bytes": 10106,
       "path": "reports/outcome-summary.manifest.json",
-      "sha256": "2ede070a0dc085c4194dde1058d73f089ba3ab685332cfbcd9f601aaf0076452"
+      "sha256": "aa9301439d164e5273b0af500dfba0e500e44472306336734791ff9f246dc310"
     },
     {
       "bytes": 4584,
@@ -323,9 +323,9 @@
     }
   ],
   "results_tex": {
-    "bytes": 3969,
+    "bytes": 3691,
     "path": "paper/results.tex",
-    "sha256": "14a025f9315fc1277ebb54ccd7b2d35dbcbf3c4ab2d78d9afb018726527f9fe2"
+    "sha256": "17e9ab4effe77ea0a9420737ef5574a1b728dae84309da45233229551c52cfd4"
   },
   "schema_version": 1,
   "scope_amendment": {
