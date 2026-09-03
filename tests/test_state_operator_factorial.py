@@ -97,18 +97,26 @@ def test_padded_dense_loader_records_observed_execution(tmp_path: Path, monkeypa
 def test_scale_calibration_uses_global_hidden_frobenius_ratio(tmp_path: Path) -> None:
     _write_calibration(tmp_path, "adamw_state", adamw=1.0, muon=4.0)
 
-    identity, ratios = factorial._load_calibration_metrics("adamw_state", tmp_path)
+    identity, ratios = factorial._load_calibration_metrics(
+        "adamw_state", tmp_path, verify_provenance=False
+    )
 
     assert identity["metrics"]["sha256"]
     assert math.isclose(ratios["adamw"], 0.5)
     assert math.isclose(ratios["muon"], 2.0)
 
 
-def test_generate_and_audit_six_two_run_matrices(tmp_path: Path) -> None:
+def test_generate_and_audit_six_two_run_matrices(tmp_path: Path, monkeypatch) -> None:
     calibration = tmp_path / "calibration"
     matrices = tmp_path / "matrices"
     _write_calibration(calibration, "adamw_state", adamw=1.0, muon=2.0)
     _write_calibration(calibration, "muon_state", adamw=2.0, muon=4.0)
+    original_load = factorial._load_calibration_metrics
+
+    def load_without_provenance(state, root, **_kwargs):
+        return original_load(state, root, verify_provenance=False)
+
+    monkeypatch.setattr(factorial, "_load_calibration_metrics", load_without_provenance)
 
     manifest = factorial.generate_factorial_matrices(
         matrix_root=matrices,

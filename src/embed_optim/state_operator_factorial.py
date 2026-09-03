@@ -611,7 +611,11 @@ def analyze_calibration_directions(
 
 
 def _load_calibration_metrics(
-    state: str, calibration_root: str | Path = CALIBRATION_ROOT
+    state: str,
+    calibration_root: str | Path = CALIBRATION_ROOT,
+    *,
+    protocol_path: str | Path = SCIENTIFIC_PROTOCOL,
+    verify_provenance: bool = True,
 ) -> tuple[dict[str, Any], dict[str, float]]:
     manifest_path, metrics_path = _calibration_metric_paths(state, calibration_root)
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -627,8 +631,42 @@ def _load_calibration_metrics(
         or output.get("sha256") != _sha256(metrics_path)
     ):
         raise ValueError(f"{state}: direction calibration manifest is inconsistent")
+    if verify_provenance:
+        resolved, protocol = load_factorial_protocol(protocol_path)
+        source = _state_index(protocol).get(state)
+        if source is None:
+            raise ValueError(f"{state}: source state is absent from the scientific protocol")
+        gradient_identity = manifest.get("gradient_manifest", {})
+        receipt_identity = manifest.get("padded_execution_receipt", {})
+        gradient_path = Path(gradient_identity.get("path", ""))
+        receipt_path = Path(receipt_identity.get("path", ""))
+        expected_analysis = {
+            "operator": dataclasses.asdict(UpdateOperatorConfig()),
+            "operator_device": "cuda:0",
+            "weight_decay_included": False,
+            "stored_matched_updates": False,
+            "purpose": "global Frobenius scale calibration only",
+        }
+        if (
+            manifest.get("scientific_protocol", {}).get("sha256") != _sha256(resolved)
+            or manifest.get("checkpoint", {}).get("path") != str(_repo_path(source["checkpoint"]))
+            or manifest.get("analysis_config") != expected_analysis
+            or manifest.get("gradient_steps")
+            != protocol["scale_calibration"]["gradient_history_steps"]
+            or not gradient_path.is_file()
+            or gradient_identity.get("bytes") != gradient_path.stat().st_size
+            or gradient_identity.get("sha256") != _sha256(gradient_path)
+            or not receipt_path.is_file()
+            or receipt_identity.get("bytes") != receipt_path.stat().st_size
+            or receipt_identity.get("sha256") != _sha256(receipt_path)
+        ):
+            raise ValueError(f"{state}: direction calibration provenance differs")
     rows = [json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines()]
-    if len(rows) != EXPECTED_HIDDEN_TENSORS or len({row["tensor"] for row in rows}) != len(rows):
+    if (
+        len(rows) != EXPECTED_HIDDEN_TENSORS
+        or len({row["tensor"] for row in rows}) != len(rows)
+        or any(row.get("gradient_steps") not in {None, 8} for row in rows)
+    ):
         raise ValueError(f"{state}: direction calibration tensor coverage differs")
     weight_sq = sum(float(row["weight_frobenius_norm"]) ** 2 for row in rows)
     ratios = {
@@ -682,7 +720,9 @@ def generate_factorial_matrices(
     ratios: dict[str, dict[str, float]] = {}
     learning_rates: dict[str, dict[str, float]] = {}
     for label in states:
-        calibration[label], ratios[label] = _load_calibration_metrics(label, calibration_root)
+        calibration[label], ratios[label] = _load_calibration_metrics(
+            label, calibration_root, protocol_path=resolved
+        )
         learning_rates[label] = {
             operator: target / ratios[label][operator] for operator in CONTINUATION_OPERATORS
         }
@@ -801,7 +841,7 @@ def audit_factorial_matrices(
     target = float(protocol["scale_calibration"]["target_global_hidden_update_to_weight"])
     expected_lrs = {}
     for state in states:
-        _, ratios = _load_calibration_metrics(state, calibration_root)
+        _, ratios = _load_calibration_metrics(state, calibration_root, protocol_path=resolved)
         expected_lrs[state] = {
             operator: target / ratios[operator] for operator in CONTINUATION_OPERATORS
         }
