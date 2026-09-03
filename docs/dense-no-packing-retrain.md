@@ -66,6 +66,17 @@ evaluates all 60 checkpoints over the same 14 pinned decontaminated tasks (840 t
 entrypoints force and verify `can_flatten_inputs=false` after every model reload. Result roots bind
 the protocol, matrix, checkpoint weights, package versions, and evaluator source hashes.
 
+After a run is deeply complete, upload and remotely size-audit its entire output directory with:
+
+```bash
+python -m embed_optim.corrected_checkpoint_backup \
+  --run-ids padded-adamw-1e-6
+```
+
+The default public destination is
+`qcz/embedding-optimizer-study-checkpoints/corrected-dense-no-packing-v1/dense/<run-id>`.
+The command refuses incomplete runs and writes one local audit receipt per uploaded run.
+
 If only one four-GPU training job remains, the other disjoint pool may evaluate already completed
 runs by passing their IDs and the idle GPU list to `corrected_beir_evaluation`. Do not overlap an
 evaluation GPU with the active training pool.
