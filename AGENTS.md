@@ -66,6 +66,11 @@ verifies all four upstream manifests and the source-bound publication protocol. 
 its marked blog block or generated paper include. Do not launch or interpret corrected runs from
 an uncommitted matrix.
 
+Use `python -m embed_optim.corrected_wandb_audit --allow-partial` for a read-only audit of active
+corrected source runs. Omit the partial flag only after 12/12 training completion. This check may
+verify W&B identity, configuration, and state, but it must not mutate source histories or supply a
+scientific result.
+
 The active paper scope is DenseOn only. LateOn files are historical provenance and must not be
 promoted into primary inference or used to justify new computation.
 

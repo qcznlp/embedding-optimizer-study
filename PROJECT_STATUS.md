@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 20:05 UTC
+Last updated: 2026-09-03 20:18 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -29,6 +29,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair active; 10/60 resumable checkpoints |
 | Corrected completion handoff | Detached operational controller active | 2/2 completed runs remotely verified; then incremental backup and locked evaluation/analysis/publication chain |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
+| Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
 | Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected: 202 files, 19,120,907,393 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
@@ -126,6 +127,12 @@ tree (2,031,870 bytes) is remotely verified under
 `qcz/embedding-optimizer-study-analysis-artifacts/corrected-dense-no-packing-v1/weight-space`.
 This is an incremental computation and durability receipt only: no cross-optimizer geometry
 summary or mechanism interpretation is permitted before the complete 12-run matrix.
+
+The corrected W&B source-run path now has a dedicated read-only audit. Its first receipt at 20:18
+UTC found the two locally complete runs remotely `finished` at step 3907, the two active runs
+remotely `running`, and all eight future runs absent as expected. All four visible runs match the
+deterministic ID, run name, group, tags, and resolved padded matrix configuration, with zero
+problems. This post-output operational receipt does not modify W&B or add a scientific endpoint.
 
 ## Historical findings that motivate clean adjudication
 

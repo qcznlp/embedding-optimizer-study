@@ -1,0 +1,201 @@
+{
+  "audit_source": {
+    "bytes": 11925,
+    "path": "src/embed_optim/corrected_wandb_audit.py",
+    "sha256": "d33f22f6893a76f6c25e99e16137100aa500a126252c84d2be984280fb620b3b"
+  },
+  "claim_boundary": "This receipt verifies W&B source-run identity, configuration, and terminal metadata. It does not validate retrieval results or add a scientific endpoint.",
+  "classification": "post-output read-only operational provenance audit",
+  "complete": false,
+  "entity": "stevezenguom",
+  "execution_protocol": {
+    "bytes": 6054,
+    "path": "configs/dense_no_packing_execution_protocol.json",
+    "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+  },
+  "expected_runs": 12,
+  "local_complete_runs": 2,
+  "matrix": {
+    "bytes": 1601,
+    "path": "configs/dense_no_packing_retrain.yaml",
+    "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+  },
+  "observed_at_utc": "2026-09-03T20:18:08+00:00",
+  "problems": [],
+  "project": "embedding-optimizer-study",
+  "remote_finished_runs": 2,
+  "remote_visible_runs": 4,
+  "runs": [
+    {
+      "config_mismatches": [],
+      "learning_rate": 1e-06,
+      "local_complete": true,
+      "optimizer": "adamw",
+      "problems": [],
+      "remote_group": "dense",
+      "remote_name": "dense-padded-adamw-1e-6",
+      "remote_state": "finished",
+      "remote_tags": [
+        "adamw",
+        "dense",
+        "seed-42"
+      ],
+      "remote_visible": true,
+      "run_id": "padded-adamw-1e-6",
+      "source_wandb_run_id": "study-v2-dense-padded-adamw-1e-6-seed42",
+      "status": "valid",
+      "summary_epoch": 1,
+      "summary_global_step": 3907,
+      "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v2-dense-padded-adamw-1e-6-seed42"
+    },
+    {
+      "config_mismatches": [],
+      "learning_rate": 3e-06,
+      "local_complete": true,
+      "optimizer": "adamw",
+      "problems": [],
+      "remote_group": "dense",
+      "remote_name": "dense-padded-adamw-3e-6",
+      "remote_state": "finished",
+      "remote_tags": [
+        "adamw",
+        "dense",
+        "seed-42"
+      ],
+      "remote_visible": true,
+      "run_id": "padded-adamw-3e-6",
+      "source_wandb_run_id": "study-v2-dense-padded-adamw-3e-6-seed42",
+      "status": "valid",
+      "summary_epoch": 1,
+      "summary_global_step": 3907,
+      "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v2-dense-padded-adamw-3e-6-seed42"
+    },
+    {
+      "config_mismatches": [],
+      "learning_rate": 1e-05,
+      "local_complete": false,
+      "optimizer": "adamw",
+      "problems": [],
+      "remote_group": "dense",
+      "remote_name": "dense-padded-adamw-1e-5",
+      "remote_state": "running",
+      "remote_tags": [
+        "adamw",
+        "dense",
+        "seed-42"
+      ],
+      "remote_visible": true,
+      "run_id": "padded-adamw-1e-5",
+      "source_wandb_run_id": "study-v2-dense-padded-adamw-1e-5-seed42",
+      "status": "valid",
+      "summary_epoch": 0.0896,
+      "summary_global_step": 350,
+      "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v2-dense-padded-adamw-1e-5-seed42"
+    },
+    {
+      "config_mismatches": [],
+      "learning_rate": 3e-05,
+      "local_complete": false,
+      "optimizer": "adamw",
+      "problems": [],
+      "remote_group": "dense",
+      "remote_name": "dense-padded-adamw-3e-5",
+      "remote_state": "running",
+      "remote_tags": [
+        "adamw",
+        "dense",
+        "seed-42"
+      ],
+      "remote_visible": true,
+      "run_id": "padded-adamw-3e-5",
+      "source_wandb_run_id": "study-v2-dense-padded-adamw-3e-5-seed42",
+      "status": "valid",
+      "summary_epoch": 0.0896,
+      "summary_global_step": 350,
+      "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v2-dense-padded-adamw-3e-5-seed42"
+    },
+    {
+      "learning_rate": 0.0001,
+      "local_complete": false,
+      "optimizer": "muon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-muon-1e-4",
+      "source_wandb_run_id": "study-v3-dense-padded-muon-1e-4-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    },
+    {
+      "learning_rate": 0.0003,
+      "local_complete": false,
+      "optimizer": "muon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-muon-3e-4",
+      "source_wandb_run_id": "study-v3-dense-padded-muon-3e-4-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    },
+    {
+      "learning_rate": 0.001,
+      "local_complete": false,
+      "optimizer": "muon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-muon-1e-3",
+      "source_wandb_run_id": "study-v3-dense-padded-muon-1e-3-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    },
+    {
+      "learning_rate": 0.003,
+      "local_complete": false,
+      "optimizer": "muon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-muon-3e-3",
+      "source_wandb_run_id": "study-v3-dense-padded-muon-3e-3-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    },
+    {
+      "learning_rate": 0.0001,
+      "local_complete": false,
+      "optimizer": "normuon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-normuon-1e-4",
+      "source_wandb_run_id": "study-v3-dense-padded-normuon-1e-4-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    },
+    {
+      "learning_rate": 0.0003,
+      "local_complete": false,
+      "optimizer": "normuon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-normuon-3e-4",
+      "source_wandb_run_id": "study-v3-dense-padded-normuon-3e-4-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    },
+    {
+      "learning_rate": 0.001,
+      "local_complete": false,
+      "optimizer": "normuon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-normuon-1e-3",
+      "source_wandb_run_id": "study-v3-dense-padded-normuon-1e-3-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    },
+    {
+      "learning_rate": 0.003,
+      "local_complete": false,
+      "optimizer": "normuon",
+      "problems": [],
+      "remote_visible": false,
+      "run_id": "padded-normuon-3e-3",
+      "source_wandb_run_id": "study-v3-dense-padded-normuon-3e-3-seed42-unfused-bfloat16-v1",
+      "status": "not_started"
+    }
+  ],
+  "schema_version": 1,
+  "status": "partial",
+  "valid_remote_runs": 4
+}
