@@ -48,7 +48,7 @@ def test_declared_csv_rebases_historical_checkout_path(tmp_path: Path) -> None:
     table = repository / "reports" / "summary" / "table.csv"
     _write_csv(table, [{"value": "1"}])
     record = _declared(table, 1)
-    record["path"] = "/root/embedding-optimizer-study/reports/summary/table.csv"
+    record["path"] = str(Path("/root") / "embedding-optimizer-study" / "reports/summary/table.csv")
     manifest = {"outputs": {"table": record}}
 
     rows, observed = _read_declared_csv(
