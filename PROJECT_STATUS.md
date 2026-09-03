@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 UTC
+Last updated: 2026-09-03 13:25 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -26,21 +26,23 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 runs; 2 active |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; 2 active; 2/60 resumable checkpoints |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
-| GitHub main CI | Green | merge `2f56b33`, workflow run `33756993807` |
+| GitHub main CI | Green | merge `5beaee0`, workflow run `33760865424` |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
 The corrected no-packing phase now has an explicit implementation. Its worst-case 256-row
 engineering preflight passed at micro-batch 8 with 39,977,408,000 allocated bytes and
 44,021,317,632 reserved bytes on the slowest/largest rank. The final corrective execution and
 analysis protocol is locked at `configs/dense_no_packing_execution_protocol.json`; it uses a new
-output namespace. Formal training started at 2026-09-03 19:50 UTC with `padded-adamw-1e-6` and
-`padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs completed initial optimizer steps
-without a CUDA or distributed failure; neither is yet complete.
+output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the host's UTC+8 local
+time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
+have written their first resumable checkpoint at step 782, including the model, optimizer,
+scheduler, trainer state, and all four RNG-state payloads. They continued training without a CUDA,
+distributed, non-finite, or traceback marker; neither run is yet complete.
 
 SentenceTransformers does not serialize the runtime `can_flatten_inputs` value into a saved Dense
 checkpoint. Corrected validation and BEIR therefore use new isolated entrypoints that force and
@@ -63,7 +65,10 @@ exists. It fail-closes unless the full 840-unit grid and all 12 validation/syste
 source and checkpoint audits. The primary task effect averages all four rates within optimizer;
 the validation-selected recipe result is explicitly secondary. Both report the three common-
 resample, 50,000-draw simultaneous max-T intervals defined in that protocol. Observed dynamics AUC
-covers 20%–100% only and does not invent an initialization score.
+covers 20%–100% only and does not invent an initialization score. The geometry and outcome locks
+were reviewed and merged into `main` through
+[PR #44](https://github.com/qcznlp/embedding-optimizer-study/pull/44) and
+[PR #45](https://github.com/qcznlp/embedding-optimizer-study/pull/45), respectively.
 
 ## Result that currently governs the paper
 
