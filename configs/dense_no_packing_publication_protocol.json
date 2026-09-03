@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "status": "corrected_publication_implementation_lock",
+  "frozen_at_utc": "2026-09-03T14:12:44Z",
+  "purpose": "Bind the complete corrected Dense publication renderer before corrected validation, BEIR, geometry, outcome, bridge, sensitivity, or publication outputs exist.",
+  "prospective_plan_status": "The parent protocols froze the estimands, uncertainty procedure, geometry features, held-out bridge rule, execution-sensitivity comparison, and claim boundaries before their corrected outputs existed. This lock fixes how every result is validated and rendered rather than introducing a new analysis.",
+  "visibility_at_implementation_freeze": {
+    "historical_training_and_analysis_visible": true,
+    "corrected_training_logs_visible": true,
+    "corrected_checkpoint_weights_visible": true,
+    "corrected_checkpoint_state": "Two active AdamW runs had written checkpoint-782 and were at step 1180; no checkpoint tensor was read to design, tune, or test the renderer.",
+    "corrected_complete_runs": 0,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "corrected_geometry_outputs_visible": false,
+    "corrected_outcome_outputs_visible": false,
+    "corrected_bridge_outputs_visible": false,
+    "corrected_sensitivity_outputs_visible": false,
+    "corrected_publication_outputs_visible": false
+  },
+  "implementation_parent_commit": "3dc0ac7373ce04ce5a8e751904faced113ccf697",
+  "parent_bindings": {
+    "analysis_protocol": {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+    },
+    "outcome_protocol": {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "sha256": "773f0eb6a1eb4562856dcebf0f8f59e30ac41b517d713a4a698c1340f4bc75d3"
+    },
+    "bridge_protocol": {
+      "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+      "sha256": "6a2fc040cb43d28b98e600c0ba8c3ac1318d25e957ad17cf5be7dfb184893b14"
+    },
+    "sensitivity_protocol": {
+      "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+      "sha256": "51cbad27a7cb9c1ed5b2ccb8cb11e650b512fb34b4f9066ccb41131d91211df9"
+    }
+  },
+  "source_bindings": {
+    "corrected_publication": {
+      "path": "src/embed_optim/corrected_publication.py",
+      "bytes": 38563,
+      "sha256": "e47099639b7dcfacd689aeaeb429b1e40435388b46b93e5b389c4cc4675b475b"
+    },
+    "geometry_helpers": {
+      "path": "src/embed_optim/geometry.py",
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    }
+  },
+  "input_contract": {
+    "outcome": "Require the complete source-bound 840-unit outcome manifest, all three primary and secondary contrasts, all 15 optimizer-stage rows, all 12 validation rows, all 12 system rows, and the exact validation-selection receipt.",
+    "geometry": "Require the complete source-bound 60-row checkpoint geometry and 660 run-pair subspace manifest.",
+    "bridge": "Require all nine frozen features, all 36 leave-dose fold rows in its coverage receipt, and recompute the pooled-RMSE plus at-least-three-of-four-fold support rule.",
+    "sensitivity": "Require all 60 matched rows in its coverage receipt, ten optimizer-minus-AdamW stage contrasts, five rankings, and no pooling.",
+    "provenance": "Verify every upstream protocol hash plus each consumed file's byte count, SHA-256, and row count before rendering. Fail closed on any mismatch."
+  },
+  "rendering_contract": {
+    "primary": "Render all three four-rate simultaneous max-T contrasts as the headline result.",
+    "secondary": "Render all three independently padded validation-selected simultaneous max-T contrasts and identify both selected run IDs.",
+    "dynamics": "Render all 15 optimizer-by-stage four-rate mean and median retrieval rows.",
+    "systems": "Render four-rate optimizer means without selecting a favorable rate.",
+    "geometry": "Render final-stage four-rate optimizer means for segment magnitude, stable/effective rank, row concentration, and cumulative displacement.",
+    "bridge": "Render all nine frozen features regardless of support, including held-out RMSE reduction, improved-fold count, and descriptive residual correlations.",
+    "sensitivity": "Render all ten execution contrasts and five optimizer rankings while keeping historical and corrected executions separate.",
+    "destinations": "Write one standalone Markdown report, replace exactly one marked block in docs/blog.md, write the paper include paper/generated/corrected-no-packing.tex, and emit a source-addressed summary manifest."
+  },
+  "expected_outputs": {
+    "standalone_markdown": "reports/dense-no-packing-publication/corrected_dense_results.md",
+    "summary_manifest": "reports/dense-no-packing-publication/summary_manifest.json",
+    "blog": "docs/blog.md",
+    "paper_latex": "paper/generated/corrected-no-packing.tex",
+    "primary_contrasts": 3,
+    "secondary_contrasts": 3,
+    "optimizer_stage_rows": 15,
+    "geometry_features": 9,
+    "sensitivity_contrasts": 10,
+    "sensitivity_rankings": 5
+  },
+  "claim_boundary": "The corrected conclusion is one-seed, pinned-grid evidence. The primary comparison averages every predeclared rate; validation selection is secondary; all nine geometry features must be disclosed. Predictive geometry support is not causal mediation, and historical-versus-corrected shifts are execution-path sensitivity rather than a randomized causal effect of packing."
+}

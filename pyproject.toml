@@ -57,6 +57,7 @@ embed-optim-analyze-dense-no-packing-geometry = "embed_optim.corrected_geometry_
 embed-optim-summarize-dense-no-packing = "embed_optim.corrected_outcome_summary:main"
 embed-optim-bridge-dense-no-packing = "embed_optim.corrected_retrieval_bridge:main"
 embed-optim-sensitivity-dense-no-packing = "embed_optim.corrected_execution_sensitivity:main"
+embed-optim-render-dense-no-packing = "embed_optim.corrected_publication:main"
 embed-optim-prepare-probe = "embed_optim.probes:main"
 embed-optim-prepare-beir-probe = "embed_optim.beir_probe:main"
 embed-optim-prepare-validation = "embed_optim.validation_data:main"
@@ -170,6 +171,7 @@ where = ["src"]
   "configs/dense_no_packing_bridge_implementation_protocol.json",
   "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
   "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+  "configs/dense_no_packing_publication_protocol.json",
   "configs/dense_retrieval_dynamics_extension.json",
   "configs/dense_training_queue.json",
   "configs/functional_intervention.json",
@@ -245,6 +247,7 @@ where = ["src"]
   "paper/generated/per-task.tex",
   "paper/generated/representation.tex",
   "paper/generated/retrieval-dynamics-extension.tex",
+  "paper/generated/corrected-no-packing.tex",
 ]
 "share/embedding-optimizer-study/reports/candidate-breadth" = [
   "reports/candidate-breadth/*.csv",

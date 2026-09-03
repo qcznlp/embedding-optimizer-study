@@ -1288,6 +1288,16 @@ finished state, required tags/group, and normalized histories before any remote 
 step synchronizes and reads back the 12 canonical discovery histories, and only then does the release
 build package the secret-free, self-hashed 34-run audit receipt.
 
+## Corrected independently padded replication
+
+<!-- CORRECTED-DENSE-NO-PACKING:BEGIN -->
+
+The source-bound 12-run corrective replication is still running. This block is replaced only after
+all 60 checkpoints, 840 BEIR task units, validation selection, weight-space summaries, retrieval
+bridge, and execution-sensitivity manifests pass their frozen audits.
+
+<!-- CORRECTED-DENSE-NO-PACKING:END -->
+
 ## Limitations
 
 - The scope reduction occurred after discovery and exploratory mechanism results were visible.

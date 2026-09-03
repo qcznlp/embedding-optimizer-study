@@ -36,6 +36,7 @@ is tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/is
 - Frozen outcome/statistical contract: [configs/dense_no_packing_outcome_protocol.json](configs/dense_no_packing_outcome_protocol.json)
 - Source-bound bridge implementation: [configs/dense_no_packing_bridge_implementation_protocol_v2.json](configs/dense_no_packing_bridge_implementation_protocol_v2.json)
 - Historical/corrected sensitivity implementation: [configs/dense_no_packing_sensitivity_implementation_protocol.json](configs/dense_no_packing_sensitivity_implementation_protocol.json)
+- Source-bound final publication renderer: [configs/dense_no_packing_publication_protocol.json](configs/dense_no_packing_publication_protocol.json)
 
 On the experiment host, refresh the artifact-only snapshot without inspecting system processes:
 

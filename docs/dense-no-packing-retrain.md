@@ -13,8 +13,9 @@ immutable; all corrected artifacts use new `dense-no-packing` namespaces.
 5. `configs/dense_no_packing_outcome_protocol.json`
 6. `configs/dense_no_packing_bridge_implementation_protocol_v2.json`
 7. `configs/dense_no_packing_sensitivity_implementation_protocol.json`
-8. `configs/dense_no_packing_retrain.yaml`
-9. GitHub issue #41
+8. `configs/dense_no_packing_publication_protocol.json`
+9. `configs/dense_no_packing_retrain.yaml`
+10. GitHub issue #41
 
 The formal matrix contains 12 DenseOn runs: four fixed learning rates for each of AdamW, Muon, and
 NorMuon. Every run uses the same 500k rows, seed 42, seven explicit random hard negatives, no
@@ -169,6 +170,23 @@ each normalized stage, keeping the two executions separate. It intentionally com
 confidence interval or causal packing estimate. The historical table, implementation, matching
 rules, and output counts are source-bound in
 `configs/dense_no_packing_sensitivity_implementation_protocol.json`.
+
+## Final publication rendering
+
+After the complete outcome, geometry, bridge, and sensitivity manifests exist, generate all
+corrected result prose and tables with:
+
+```bash
+python -m embed_optim.corrected_publication
+```
+
+The renderer verifies every parent protocol and every consumed file by byte count and SHA-256. It
+then writes the standalone corrected report, replaces exactly one marked block in `docs/blog.md`,
+writes `paper/generated/corrected-no-packing.tex`, and emits its own source-addressed manifest. It
+publishes every frozen contrast and all nine geometry features, including null or adverse results;
+do not hand edit the generated sections. The complete rendering contract was frozen before any
+corrected validation, BEIR, geometry, outcome, bridge, or sensitivity output existed in
+`configs/dense_no_packing_publication_protocol.json`.
 
 If only one four-GPU training job remains, the other disjoint pool may evaluate already completed
 runs by passing their IDs and the idle GPU list to `corrected_beir_evaluation`. Do not overlap an
