@@ -93,4 +93,8 @@ def test_state_operator_factorial_protocol_is_self_consistent() -> None:
         "state_operator_interaction",
         "uncertainty",
         "multiplicity",
+        "decision_rule",
     }
+    assert "wholly above zero" in protocol["estimands"]["decision_rule"]
+    assert len(protocol["pre_output_clarifications"]) == 2
+    assert all(item["outcomes_visible"] is False for item in protocol["pre_output_clarifications"])

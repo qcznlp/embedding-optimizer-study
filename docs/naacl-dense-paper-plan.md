@@ -152,8 +152,10 @@ a state-invariant ranking of isolated directions, but it is not yet a mechanism 
 The corrected follow-up is frozen in
 `configs/dense_no_packing_state_operator_factorial_protocol.json`. At the 60% checkpoints of the
 historically retrieval-optimal AdamW and Muon rates, it crosses two weight states with two reset
-continuation operators on the same 50K branch view and three fixed order seeds. The first hidden
-update is scale matched in every cell. Final full-corpus BEIR yields three predeclared contrasts:
+continuation operators on the same 50K branch view and three fixed order seeds. The fixed
+calibration-probe hidden update is scale matched in every cell; this does not assert that the first
+training batch produces an identical realized update. Final full-corpus BEIR yields three
+predeclared contrasts:
 the carried weight-state effect, the continuation-operator effect, and their interaction.
 
 This factorial decides what the mechanism section is allowed to say:

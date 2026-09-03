@@ -103,7 +103,7 @@
     "gradient_history_steps": 8,
     "gradient_selection": "Reuse the sample identities and order fixed by configs/common_state_probe.json, but recompute gradients with independent padding at each corrected source state.",
     "weight_decay_included": false,
-    "normalization": "Choose a separate hidden learning rate for every source-state-by-operator cell so the first branch update has global hidden Frobenius update-to-weight ratio 5e-4.",
+    "normalization": "Choose a separate hidden learning rate for every source-state-by-operator cell so the fixed calibration-probe update has global hidden Frobenius update-to-weight ratio 5e-4.",
     "target_global_hidden_update_to_weight": 0.0005,
     "fixed_after_calibration": true,
     "reason": "The factorial tests update direction and accumulated state, not an arbitrary numerical learning-rate scale difference."
@@ -131,7 +131,8 @@
     "operator_effect": "0.5 * ((Y(adamw_state, muon) - Y(adamw_state, adamw)) + (Y(muon_state, muon) - Y(muon_state, adamw))).",
     "state_operator_interaction": "(Y(muon_state, muon) - Y(muon_state, adamw)) - (Y(adamw_state, muon) - Y(adamw_state, adamw)).",
     "uncertainty": "Report exact per-seed and per-task contrasts plus a fixed-seed two-way cluster bootstrap that resamples the three order seeds and 14 retrieval tasks independently with replacement; 100000 replicates; percentile 95% intervals; seed 20260904.",
-    "multiplicity": "The three named estimands are co-primary mechanism contrasts. Report all three without selecting a preferred contrast after outcomes are visible."
+    "multiplicity": "The three named estimands are co-primary mechanism contrasts. Report all three without selecting a preferred contrast after outcomes are visible.",
+    "decision_rule": "Call an estimand supported positive only when its fixed two-way cluster-bootstrap 95% interval lies wholly above zero, supported negative only when it lies wholly below zero, and otherwise inconclusive. Always report the point estimate, interval, and every exact seed-by-task contrast."
   },
   "decision_map": {
     "positive_weight_state_effect": "Muon-created weights carry retrieval benefit even after optimizer state is reset and the continuation operator is averaged out.",
@@ -142,6 +143,18 @@
     "no_stable_effect": "The state-feedback account is not supported by this corrected factorial; retain the retrieval result without a positive mechanism claim."
   },
   "historical_motivation_boundary": "The post-hoc historical crossover may motivate this design and may be shown as exploratory evidence, but it cannot pass this corrected experiment's decision rule or be pooled into its estimates.",
+  "pre_output_clarifications": [
+    {
+      "recorded_at_utc": "2026-09-03T23:06:13Z",
+      "change": "Clarified that scale matching targets the fixed calibration-probe update, not the realized first update on the first shuffled training batch.",
+      "outcomes_visible": false
+    },
+    {
+      "recorded_at_utc": "2026-09-03T23:06:13Z",
+      "change": "Made the conservative interval-based positive/negative/inconclusive decision rule explicit before any corrected factorial output existed.",
+      "outcomes_visible": false
+    }
+  ],
   "implementation_gate": "Before execution, bind the exact matrix generator, scale calibrator, trainer wrapper, evaluator, summarizer, source identities, expected cardinalities, and commands in a separate implementation protocol. Do not change this scientific design while adding that executable binding.",
   "claim_boundary": "This crossed experiment can distinguish a carried weight-state effect, an averaged continuation-operator effect, and their interaction for one DenseOn checkpoint pair, one branch length, and one fixed data view. It does not isolate every optimizer-state moment, prove mediation over the full 500K run, or establish a universal Muon mechanism."
 }
