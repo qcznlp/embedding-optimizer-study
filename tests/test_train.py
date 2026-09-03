@@ -21,6 +21,30 @@ def test_training_arguments_explicitly_pin_ddp_drop_last(monkeypatch):
     assert arguments.gradient_accumulation_steps == 4
 
 
+def test_dense_input_execution_is_applied_and_receipted():
+    config = load_matrix(
+        Path(__file__).parents[1] / "configs" / "dense_no_packing_retrain.yaml"
+    )[0]
+    first_module = SimpleNamespace(can_flatten_inputs=True)
+    model = SimpleNamespace(_first_module=lambda: first_module)
+
+    train._configure_dense_input_execution(model, config)
+
+    assert first_module.can_flatten_inputs is False
+    assert train._input_execution_receipt(model, config) == {
+        "mode": "independently_padded",
+        "sentence_transformers_can_flatten_inputs": False,
+    }
+
+
+def test_dense_input_execution_refuses_an_unverifiable_model():
+    config = load_matrix(Path(__file__).parents[1] / "configs" / "experiment.yaml")[0]
+    model = SimpleNamespace(_first_module=lambda: SimpleNamespace())
+
+    with pytest.raises(RuntimeError, match="does not expose can_flatten_inputs"):
+        train._configure_dense_input_execution(model, config)
+
+
 def test_stop_after_step_preserves_horizon_and_requests_durable_save():
     callback = StopAfterStepCallback(1905)
     control = SimpleNamespace(should_save=False, should_training_stop=False)

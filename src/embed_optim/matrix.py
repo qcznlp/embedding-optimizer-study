@@ -178,6 +178,14 @@ def _run_is_complete(config: RunConfig) -> bool:
         or final_step != steps[-1]
     ):
         return False
+    if config.model_family == "dense" and not getattr(
+        config, "dense_can_flatten_inputs", True
+    ):
+        if completed.get("input_execution") != {
+            "mode": "independently_padded",
+            "sentence_transformers_can_flatten_inputs": False,
+        }:
+            return False
     accepted_summary = completed.get("accepted_timing")
     if accepted_summary is not None:
         timing_path = output / "accepted_timing.json"

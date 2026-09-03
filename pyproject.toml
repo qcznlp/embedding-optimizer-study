@@ -48,6 +48,7 @@ flash = ["flash-attn==2.7.4.post1"]
 
 [project.scripts]
 embed-optim-prepare = "embed_optim.data:main"
+embed-optim-prepare-dense-no-packing-preflight = "embed_optim.dense_no_packing_preflight:main"
 embed-optim-prepare-probe = "embed_optim.probes:main"
 embed-optim-prepare-beir-probe = "embed_optim.beir_probe:main"
 embed-optim-prepare-validation = "embed_optim.validation_data:main"
@@ -151,6 +152,8 @@ where = ["src"]
   "configs/common_state_spectrum_probe.json",
   "configs/confirmatory_protocol.json",
   "configs/dense_scope_amendment.json",
+  "configs/dense_no_packing_retrain.yaml",
+  "configs/dense_no_packing_preflight.yaml",
   "configs/dense_retrieval_dynamics_extension.json",
   "configs/dense_training_queue.json",
   "configs/functional_intervention.json",

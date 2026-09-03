@@ -26,6 +26,29 @@ def test_matrix_has_24_controlled_runs():
         assert {run.optimizer.name for run in family_runs} == {"adamw", "muon", "normuon"}
         assert all(len(run.checkpoint_fractions) == 5 for run in family_runs)
         assert all(run.model_revision and len(run.model_revision) == 40 for run in family_runs)
+        assert all(run.dense_can_flatten_inputs is True for run in family_runs)
+
+
+def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
+    path = Path(__file__).parents[1] / "configs" / "dense_no_packing_retrain.yaml"
+    runs = load_matrix(path)
+
+    assert len(runs) == 12
+    assert {run.model_family for run in runs} == {"dense"}
+    assert {run.optimizer.name for run in runs} == {"adamw", "muon", "normuon"}
+    assert {
+        optimizer: {run.optimizer.lr for run in runs if run.optimizer.name == optimizer}
+        for optimizer in ("adamw", "muon", "normuon")
+    } == {
+        "adamw": {1e-6, 3e-6, 1e-5, 3e-5},
+        "muon": {1e-4, 3e-4, 1e-3, 3e-3},
+        "normuon": {1e-4, 3e-4, 1e-3, 3e-3},
+    }
+    assert all(run.run_id.startswith("padded-") for run in runs)
+    assert all(run.output_root == "outputs/dense-no-packing-v1" for run in runs)
+    assert all(run.dense_can_flatten_inputs is False for run in runs)
+    assert all(run.dataset_path == "data/denseon-sft-500k-seed42" for run in runs)
+    assert all(run.seed == 42 and len(run.checkpoint_fractions) == 5 for run in runs)
 
 
 def test_public_docs_record_compute_and_acceleration_contract() -> None:

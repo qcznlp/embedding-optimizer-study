@@ -62,6 +62,11 @@ class RunConfig:
     dataloader_workers: int = 8
     gradient_checkpointing: bool = True
     flash_attention: bool = True
+    # SentenceTransformers 5 enables flattened variable-length FlashAttention
+    # inputs for supported Transformer modules.  Keep True as the historical
+    # default so old matrices remain byte-for-behavior compatible; corrected
+    # padded runs must opt out explicitly in their matrix.
+    dense_can_flatten_inputs: bool = True
     wandb_project: str = "embedding-optimizer-study"
     wandb_entity: str | None = None
     checkpoint_fractions: tuple[float, ...] = (0.2, 0.4, 0.6, 0.8, 1.0)
