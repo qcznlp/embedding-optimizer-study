@@ -141,6 +141,33 @@ The narrative spine stays fixed, but the final wording follows the independently
 No branch may be chosen before all 12 runs, 60 checkpoints, 840 BEIR task units, validation outputs,
 geometry rows, and source-bound audits are complete.
 
+## Prospective state-by-operator factorial
+
+The paper needs a positive explanation only if it survives a direct attempt to separate the state
+reached by an optimizer from the operator applied next. The historical fixed-state interventions
+contain a useful but post-hoc crossover: on AdamW trajectory anchors, a matched Muon step often
+looks better than AdamW, while on Muon trajectory anchors that ordering often reverses. This rejects
+a state-invariant ranking of isolated directions, but it is not yet a mechanism result.
+
+The corrected follow-up is frozen in
+`configs/dense_no_packing_state_operator_factorial_protocol.json`. At the 60% checkpoints of the
+historically retrieval-optimal AdamW and Muon rates, it crosses two weight states with two reset
+continuation operators on the same 50K branch view and three fixed order seeds. The first hidden
+update is scale matched in every cell. Final full-corpus BEIR yields three predeclared contrasts:
+the carried weight-state effect, the continuation-operator effect, and their interaction.
+
+This factorial decides what the mechanism section is allowed to say:
+
+- a weight-state effect means Muon reaches weights whose advantage survives an optimizer reset;
+- an operator effect means Muon's transform helps from both source states;
+- a positive interaction means the Muon state and Muon continuation reinforce one another, which
+  is the direct evidence needed for a closed-loop state-feedback account; and
+- no stable contrast means the paper keeps the positive retrieval result but makes no positive
+  mechanism claim.
+
+NorMuon is intentionally excluded from this factorial. It remains a secondary optimizer ablation;
+the causal story being tested is the AdamW--Muon comparison that anchors the paper.
+
 ## Claim discipline
 
 Use these distinctions consistently:
