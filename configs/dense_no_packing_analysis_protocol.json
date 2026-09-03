@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "status": "prospective_corrected_analysis_lock",
+  "frozen_at_utc": "2026-09-03T13:03:35Z",
+  "purpose": "Predeclare the corrected Dense weight-space summaries and retrieval bridge before the first corrected checkpoint exists.",
+  "visibility_at_freeze": {
+    "historical_training_and_analysis_visible": true,
+    "corrected_training_logs_visible": true,
+    "corrected_optimizer_steps_completed": true,
+    "corrected_checkpoint_weights_visible": false,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "corrected_weight_space_outputs_visible": false,
+    "observed_corrected_state": "Two AdamW runs were in progress below checkpoint-782; no corrected checkpoint directory was deeply resumable."
+  },
+  "implementation_parent_commit": "a3030673818a176867c0ca4a3a45369b37991a95",
+  "parent_bindings": {
+    "execution_protocol": {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+    },
+    "evaluation_protocol": {
+      "path": "configs/dense_no_packing_evaluation_protocol.json",
+      "sha256": "b3f4bdf0a1d80c4f5926c3620234b6bd2aae2c6befa2bed1e25951e97698d149"
+    },
+    "matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  },
+  "source_bindings": {
+    "corrected_geometry_matrix": {
+      "path": "src/embed_optim/corrected_geometry_matrix.py",
+      "bytes": 7170,
+      "sha256": "b08d9e6d7b7f57fbd1f8504a81c002d1b287c2ced82f33ee8780fa4d0681dfe6"
+    },
+    "corrected_geometry_summary": {
+      "path": "src/embed_optim/corrected_geometry_summary.py",
+      "bytes": 23632,
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    "geometry": {
+      "path": "src/embed_optim/geometry.py",
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "config": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "optimizers": {
+      "path": "src/embed_optim/optimizers.py",
+      "bytes": 11839,
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "aggregate": {
+      "path": "src/embed_optim/aggregate.py",
+      "bytes": 116247,
+      "sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0"
+    },
+    "corrected_input_execution": {
+      "path": "src/embed_optim/corrected_input_execution.py",
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "matrix_runner": {
+      "path": "src/embed_optim/matrix.py",
+      "bytes": 15720,
+      "sha256": "ffea83211823aa9d5f49f615020034cf2c1db4538fe67e6061bf1d6750da6bb7"
+    }
+  },
+  "weight_space": {
+    "scope": "The 88 hidden two-dimensional matrices routed to the main optimizer; auxiliary embeddings, pooling, norms, and biases are excluded from the headline geometry.",
+    "checkpoints": [
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "saved_segment_definition": "At stage 1, checkpoint weight minus the pinned pretrained initialization. At stages 2-5, current checkpoint weight minus the preceding retained checkpoint weight.",
+    "cumulative_definition": "Checkpoint weight minus the pinned pretrained initialization.",
+    "terminology_boundary": "Saved-segment displacement is a coarse parameter displacement over many optimizer steps. It is not an instantaneous update, the sum of per-step update norms, or optimizer path length.",
+    "sketch_rank": 64,
+    "subspace_rank": 16,
+    "oversample": 8,
+    "power_iterations": 2,
+    "seed": 20260903,
+    "per_checkpoint_metrics": [
+      "saved-segment Frobenius norm and segment-to-weight ratio",
+      "cumulative displacement Frobenius norm and displacement-to-weight ratio",
+      "parameter-weighted stable rank and stable-rank fraction",
+      "parameter-weighted top-64 sketch entropy effective rank and rank fraction",
+      "top-64 captured Frobenius energy",
+      "row-norm coefficient of variation and top-1-percent row energy",
+      "fraction of hidden parameters with nonzero saved displacement after checkpoint serialization"
+    ],
+    "subspace_metric": "For every unordered run pair at the same stage and displacement kind, compute rank-16 randomized left and right singular bases per hidden matrix. Normalize squared Frobenius canonical overlap by retained rank, average left and right, then parameter-weight across tensors for which both displacements are nonzero.",
+    "zero_displacement_rule": "A matrix with exactly zero serialized displacement has undefined singular subspace. Exclude it from overlap numerators and denominators and report the defined-parameter fraction; never impute zero or one overlap.",
+    "rate_pair_policy": "Compute all unordered run pairs. For optimizer-pair summaries, average all available learning-rate pairs equally without BEIR or validation selection.",
+    "expected_outputs": {
+      "checkpoint_geometry_rows": 60,
+      "run_pair_subspace_rows": 660,
+      "optimizer_pair_subspace_rows": 60
+    }
+  },
+  "retrieval_bridge": {
+    "status": "locked_before_corrected_retrieval_outputs",
+    "unit": "run by retained checkpoint, 60 rows",
+    "outcome": "mean decontaminated BEIR nDCG@10 over the 14 pinned tasks at the same checkpoint",
+    "features": [
+      "log saved-segment-to-weight ratio",
+      "saved-segment stable-rank fraction",
+      "saved-segment sketch effective-rank fraction",
+      "saved-segment row-norm CV",
+      "saved-segment top-1-percent row energy",
+      "cumulative displacement-to-weight ratio",
+      "cumulative stable-rank fraction",
+      "mean saved-segment subspace overlap to all AdamW rates at the same stage",
+      "mean cumulative subspace overlap to all AdamW rates at the same stage"
+    ],
+    "adamw_overlap_rule": "For Muon and NorMuon rows average overlap to all four AdamW rates. For an AdamW row average the other three AdamW rates, excluding self-comparison.",
+    "prediction_test": "For each feature separately, compare a baseline containing optimizer indicators, stage indicators, and within-optimizer centered log10 learning rate with the same model plus the feature. Use four leave-dose-index-out folds, holding out the corresponding ordered learning-rate index for every optimizer and all stages.",
+    "support_rule": "Call a feature predictively useful only if adding it lowers pooled held-out RMSE and lowers RMSE in at least three of four folds. Report every feature and fold; do not select a feature for the paper based only on the pooled score.",
+    "association_table": "Also report Pearson and Spearman associations after residualizing outcome and each feature on the locked baseline. These are descriptive and are not a substitute for held-out prediction.",
+    "claim_boundary": "This is one-seed, post-diagnosis mechanism triangulation. It can show whether geometry tracks or predicts retrieval variation beyond the locked baseline in this grid; it cannot identify mediation, prove causality, or generalize beyond the pinned model/data/optimizer grids."
+  },
+  "historical_bridge": {
+    "rule": "Compare corrected and historical optimizer rankings and optimizer-minus-AdamW deltas descriptively at matched normalized stages. Do not pool checkpoints or use historical results in corrected inference.",
+    "interpretation": "A ranking change is execution-path sensitivity evidence, not a new randomized factor or a causal estimate of packing."
+  }
+}

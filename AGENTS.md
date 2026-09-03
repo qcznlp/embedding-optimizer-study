@@ -15,7 +15,8 @@ Read these sources in order before acting:
 4. `configs/dense_scope_amendment.json` — active Dense-only scope.
 5. The frozen protocol relevant to the task. For the current phase, read
    `configs/dense_no_packing_execution_protocol.json`, its preflight parent, and
-   `configs/dense_no_packing_evaluation_protocol.json`.
+   `configs/dense_no_packing_evaluation_protocol.json`. Weight-space and retrieval-bridge work
+   must additionally follow `configs/dense_no_packing_analysis_protocol.json`.
 6. `docs/dense-no-packing-retrain.md` — exact operational commands.
 
 On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
@@ -36,8 +37,10 @@ checkpoint into the blog or paper.
 
 The active corrective phase is governed by `configs/dense_no_packing_execution_protocol.json`;
 its engineering parent is `configs/dense_no_packing_preflight_protocol.json`, and corrected
-checkpoint reloads are governed by `configs/dense_no_packing_evaluation_protocol.json`. Do not
-launch or interpret corrected runs from an uncommitted matrix.
+checkpoint reloads are governed by `configs/dense_no_packing_evaluation_protocol.json`. The
+weight-space operationalization and retrieval bridge are governed by
+`configs/dense_no_packing_analysis_protocol.json`. Do not launch or interpret corrected runs from
+an uncommitted matrix.
 
 The active paper scope is DenseOn only. LateOn files are historical provenance and must not be
 promoted into primary inference or used to justify new computation.

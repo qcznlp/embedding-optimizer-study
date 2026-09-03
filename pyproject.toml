@@ -53,6 +53,7 @@ embed-optim-validate-dense-no-packing = "embed_optim.corrected_validation_matrix
 embed-optim-evaluate-dense-no-packing = "embed_optim.corrected_beir_evaluation:main"
 embed-optim-dense-no-packing-progress = "embed_optim.corrected_progress:main"
 embed-optim-backup-dense-no-packing = "embed_optim.corrected_checkpoint_backup:main"
+embed-optim-analyze-dense-no-packing-geometry = "embed_optim.corrected_geometry_matrix:main"
 embed-optim-prepare-probe = "embed_optim.probes:main"
 embed-optim-prepare-beir-probe = "embed_optim.beir_probe:main"
 embed-optim-prepare-validation = "embed_optim.validation_data:main"
@@ -161,6 +162,7 @@ where = ["src"]
   "configs/dense_no_packing_preflight_protocol.json",
   "configs/dense_no_packing_execution_protocol.json",
   "configs/dense_no_packing_evaluation_protocol.json",
+  "configs/dense_no_packing_analysis_protocol.json",
   "configs/dense_retrieval_dynamics_extension.json",
   "configs/dense_training_queue.json",
   "configs/functional_intervention.json",
