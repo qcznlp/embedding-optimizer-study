@@ -117,6 +117,23 @@ The default public destination is
 `qcz/embedding-optimizer-study-checkpoints/corrected-dense-no-packing-v1/dense/<run-id>`.
 The command refuses incomplete runs and writes one local audit receipt per uploaded run.
 
+The completion controller waits for all five checkpoints before uploading a run. To close the
+durability gap when the host may be shut down, upload an already sealed scheduled checkpoint with:
+
+```bash
+python -m embed_optim.incremental_checkpoint_backup \
+  --run-ids padded-adamw-1e-5 padded-adamw-3e-5 \
+  --steps 782
+```
+
+This command requires explicit runs and steps. It checks the frozen checkpoint schedule, all model,
+optimizer, scheduler, trainer, and four-rank RNG payloads, the trainer's exact global step, a stable
+local file snapshot, and the safetensors index. After upload it verifies every file by byte size and
+either the Hugging Face LFS SHA-256 or Git-blob SHA-1 digest. Receipts live under
+`reports/dense-no-packing/incremental-checkpoint-backup/` and explicitly set
+`scientific_completion=false`; the ordinary completed-run backup remains authoritative for final
+closure.
+
 Audit the live source runs on W&B without changing their histories or metadata:
 
 ```bash

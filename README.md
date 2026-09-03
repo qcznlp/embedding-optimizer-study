@@ -238,10 +238,17 @@ hf download qcz/embedding-optimizer-study-analysis-artifacts \
   --exclude 'project/**'
 ~~~
 
-The checkpoint backup contains 5,546 files (416,844,858,513 bytes) in 251 checkpoint directories.
-The analysis backup contains 4,937 result files (128,939,133,525 bytes). Both were checked against
-the local trees by relative path and byte size after upload. The analysis repository additionally
-stores a `project/` snapshot of configs, reports, and pipeline ledgers.
+The historical checkpoint namespace contains 5,546 files (416,844,858,513 bytes) in 251 checkpoint
+directories. The corrected namespace is uploaded incrementally; its current exact coverage is
+recorded in [PROJECT_STATUS.md](PROJECT_STATUS.md) and the backup receipts rather than frozen in this
+paragraph. The analysis backup contains 4,937 result files (128,939,133,525 bytes). The analysis
+repository additionally stores a `project/` snapshot of configs, reports, and pipeline ledgers.
+
+On a live experiment host, an already sealed intermediate corrected checkpoint can be preserved
+before its run finishes with `python -m embed_optim.incremental_checkpoint_backup --run-ids ...
+--steps ...`. This is a digest-verified durability operation, not evidence of run completion; exact
+commands and receipt semantics are documented in
+[the corrected retraining handoff](docs/dense-no-packing-retrain.md).
 
 ## Installation
 
