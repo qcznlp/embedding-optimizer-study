@@ -23,7 +23,7 @@ provenance under the user-directed scope amendment.
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
-| GitHub pull-request CI | Green before final receipt refresh | PR #38; latest head must remain green before merge |
+| GitHub main CI | Green | merge `1cb9f66`, workflow run `33747507631` |
 
 The 34 Dense training runs are finished. No historical checkpoint should be overwritten. The next
 scientific phase, if broader optimizer claims are desired, is a corrected no-packing rerun in a new
@@ -106,10 +106,9 @@ will not fall back after a source failure. A clean clone without that 416GB tree
 published evaluation closure instead. Restore the Hugging Face checkpoint backup to perform the
 full-source reconstruction.
 
-The publication changes are maintained in GitHub PR #38. Local full-source release gates and the
-GitHub clean-clone workflow are green for the path-portability implementation. The current PR head
-must remain green after this refreshed receipt/status commit before the PR is marked ready or
-merged.
+The publication changes were merged to `main` through GitHub PR #38 at
+`2026-09-03T11:02:11Z`. Both the final PR head and merge commit passed the clean-clone workflow;
+the merge-commit run is <https://github.com/qcznlp/embedding-optimizer-study/actions/runs/33747507631>.
 
 ## Public artifacts
 
@@ -125,8 +124,8 @@ missing, extra, or size-mismatched files for every refreshed prefix:
 
 - `candidate-breadth`: 49 files, 24,378,651 bytes.
 - `project/data/candidate-breadth-224-seed20260901`: 26 files, 302,374,905 bytes.
-- `project/configs`: 39 files, 137,560 bytes.
-- `project/logs`: 2,533 files, 82,515,170 bytes.
+- `project/configs`: 40 files, 875,816 bytes.
+- `project/logs`: 2,533 files, 82,798,459 bytes.
 - `project/reports`: 232 files, 16,246,897 bytes.
 
 ## Safe continuation order
