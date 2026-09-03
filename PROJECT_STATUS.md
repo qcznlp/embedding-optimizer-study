@@ -26,7 +26,8 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; active steps 3423/3430; 8/60 resumable checkpoints |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 complete; first pair approaching the final checkpoint; 8/60 resumable checkpoints |
+| Corrected completion handoff | Operational controller implemented; launch pending merge | Incremental verified checkpoint backup, then locked evaluation/analysis/publication chain |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
@@ -99,6 +100,14 @@ one standalone report, the marked blog section, and the manuscript include. Its 
 requirements, source hashes, and claim boundary are frozen in
 `configs/dense_no_packing_publication_protocol.json`; no corrected evaluation or analysis output
 existed when that lock was written.
+
+An operational completion controller now closes the handoff gap after formal training. It watches
+only deep artifact completeness, uploads and remotely size-audits each corrected run as soon as it
+finishes, and after 12/12 runs invokes the already locked padded validation, 840-unit BEIR grid,
+weight-space analysis, outcome inference, retrieval bridge, execution sensitivity, publication
+renderer, and release audits in dependency order. Its own source, parent protocols, commands, and
+arguments are content-bound in an atomic runtime ledger; it makes no new scientific selection and
+does not alter the training supervisor.
 
 ## Historical findings that motivate clean adjudication
 
@@ -246,6 +255,10 @@ missing, extra, or size-mismatched files for every refreshed prefix:
 15. Render final corrected prose and tables only through
     `python -m embed_optim.corrected_publication`; do not hand edit its marked blog block or
     generated paper include.
+16. Keep `python -m embed_optim.corrected_completion_pipeline` running as the operational handoff.
+    It backs up deeply complete runs during the matrix and starts final evaluation only after all
+    12 runs pass the deep completion gate. Read its atomic ledger under
+    `logs/dense-no-packing-finalization/` before starting any competing finalizer.
 
 ## Operational constraints
 
