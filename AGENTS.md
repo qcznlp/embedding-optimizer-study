@@ -74,6 +74,13 @@ scientific result.
 The active paper scope is DenseOn only. LateOn files are historical provenance and must not be
 promoted into primary inference or used to justify new computation.
 
+The completion controller uploads a run after all five scheduled checkpoints are deeply complete.
+If a machine-shutdown risk requires earlier durability, use
+`python -m embed_optim.incremental_checkpoint_backup` only on an already sealed scheduled
+checkpoint. Its receipt must report `scientific_completion=false`, verify the local payload is
+stable, and compare Hugging Face LFS SHA-256 or Git-blob SHA-1 digests after upload. This operation
+preserves a resumable state; it must never promote a partial run into a completed result.
+
 Never inspect, read, edit, signal, stop, replace, or otherwise touch `gpu.py` or its processes. It
 is outside this repository and automatically yields to study jobs.
 

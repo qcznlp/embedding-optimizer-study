@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 20:18 UTC
+Last updated: 2026-09-03 21:20 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -26,16 +26,16 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair active; 10/60 resumable checkpoints |
-| Corrected completion handoff | Detached operational controller active | 2/2 completed runs remotely verified; then incremental backup and locked evaluation/analysis/publication chain |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair active; 12/60 resumable checkpoints |
+| Corrected completion handoff | Detached operational controller active | 2/2 completed runs plus both active step-782 checkpoints remotely verified; then locked evaluation/analysis/publication chain |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
 | Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
-| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected: 202 files, 19,120,907,393 bytes |
+| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected: 236 files, 22,705,078,092 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected publication renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, blog + paper + standalone report |
-| Manuscript narrative | Rewritten around the positive Muon trajectory result | 7-page main text; clean outcome block remains source-gated |
+| Manuscript narrative | Rewritten around the positive Muon trajectory result | 8-page main text; clean outcome block remains source-gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
@@ -47,9 +47,9 @@ output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the 
 time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
 deeply completed at step 3907 with all five scheduled checkpoints, including the model, optimizer,
 scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
-`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 19:40 UTC artifact snapshot both were at step 6.
-Across the corrected phase there is still no CUDA OOM, NCCL data-plane, non-finite, or traceback
-marker.
+`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 21:20 UTC artifact snapshot they were at steps
+886 and 876, respectively, and both had deeply valid step-782 checkpoints. Across the corrected
+phase there is still no CUDA OOM, NCCL data-plane, non-finite, or traceback marker.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
 leaving the eight established training ranks adopted by PID 1. The NCCL data plane continued to
@@ -119,6 +119,17 @@ Its current runtime contract SHA-256 is
 uploaded and remotely size-audited by 19:43 UTC: 202 files and 19,120,907,393 bytes in total, with
 zero missing, extra, or size-mismatched paths. The immutable per-run receipts are under
 `reports/dense-no-packing/checkpoint-backup/`.
+
+Because the experiment host may be shut down before an active run reaches all five stages, the two
+sealed step-782 checkpoints from the second AdamW pair were independently uploaded at 21:17--21:18
+UTC. A separate read-only pass verified 34 files and 3,584,170,699 bytes by exact path and byte size,
+then matched every Hugging Face LFS object by SHA-256 and every ordinary Git object by blob SHA-1;
+all missing, extra, size-mismatch, and digest-mismatch sets are empty. The receipts under
+`reports/dense-no-packing/incremental-checkpoint-backup/` bind commits
+`c3953328ee6e57ec20ce78f11b1a490b70fec385` and
+`1aed10f29770d31b2eff1c158a4216e3223af2d8` and explicitly set
+`scientific_completion=false`. The full-run completion controller remains authoritative and will
+re-audit these paths together with all later checkpoints after each run finishes.
 
 The frozen corrected geometry implementation has also completed all five stages for both finished
 AdamW runs. Each stage contains exactly 88 hidden-matrix records; every recorded scalar is finite,
