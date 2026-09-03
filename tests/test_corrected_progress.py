@@ -24,9 +24,7 @@ def test_corrected_progress_is_artifact_only_and_counts_runs(monkeypatch, tmp_pa
     ]
     log_dir = tmp_path / "logs"
     log_dir.mkdir()
-    (log_dir / "dense-padded-adamw.log").write_text(
-        "134/134\n10/3907\r20/3907\n", encoding="utf-8"
-    )
+    (log_dir / "dense-padded-adamw.log").write_text("134/134\n10/3907\r20/3907\n", encoding="utf-8")
     (log_dir / "dense-padded-muon.log").write_text(
         "3/3907\nTraceback (most recent call last)\n", encoding="utf-8"
     )

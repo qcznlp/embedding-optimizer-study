@@ -51,24 +51,28 @@ def test_corrected_validation_matrix_accepts_only_the_twelve_padded_runs(monkeyp
     assert len(jobs) == 12
     assert len({job.label for job in jobs}) == 12
     assert all(job.output_dir.parent == (tmp_path / "results").resolve() for job in jobs)
-    invalid = [SimpleNamespace(**{**config.__dict__, "dense_can_flatten_inputs": True}) for config in configs]
+    invalid = [
+        SimpleNamespace(**{**config.__dict__, "dense_can_flatten_inputs": True})
+        for config in configs
+    ]
     with pytest.raises(ValueError, match="12 padded Dense"):
         build_jobs(invalid, tmp_path / "invalid")
 
 
 def test_corrected_preflight_receipt_is_bound_to_padded_mode():
     report = json.loads(
-        (
-            Path(__file__).parents[1]
-            / "reports/dense-no-packing/preflight-selection.json"
-        ).read_text(encoding="utf-8")
+        (Path(__file__).parents[1] / "reports/dense-no-packing/preflight-selection.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert report["input_execution"] == PADDED_DENSE_RECEIPT
 
 
 def test_corrected_beir_selection_requires_terminal_padding_receipts(monkeypatch, tmp_path):
     matrix = Path(__file__).parents[1] / "configs" / "dense_no_packing_retrain.yaml"
-    configs = [dataclasses.replace(config, output_root=str(tmp_path)) for config in load_matrix(matrix)]
+    configs = [
+        dataclasses.replace(config, output_root=str(tmp_path)) for config in load_matrix(matrix)
+    ]
     for config in configs:
         config.output_dir.mkdir(parents=True)
         (config.output_dir / "completed.json").write_text(
@@ -97,4 +101,6 @@ def test_corrected_beir_source_manifest_covers_wrapper_and_legacy_workers():
     assert "scripts/eval/dense_parallel.py" in manifest
     assert "scripts/eval/dense_sequential.py" in manifest
     assert "src/embed_optim/corrected_input_execution.py" in manifest
-    assert all(identity["bytes"] > 0 and len(identity["sha256"]) == 64 for identity in manifest.values())
+    assert all(
+        identity["bytes"] > 0 and len(identity["sha256"]) == 64 for identity in manifest.values()
+    )

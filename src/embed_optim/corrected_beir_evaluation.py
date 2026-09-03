@@ -77,14 +77,18 @@ def _selected_configs(
 def _validate_training(configs: list[RunConfig]) -> None:
     dataset = audit_dataset_artifacts(configs)
     if not dataset["complete"]:
-        raise RuntimeError("Corrected BEIR training-data audit failed: " + "; ".join(dataset["errors"][:5]))
+        raise RuntimeError(
+            "Corrected BEIR training-data audit failed: " + "; ".join(dataset["errors"][:5])
+        )
     training = audit_training_artifacts(
         configs,
         deep=True,
         expected_dataset_fingerprint=dataset.get("training_view_fingerprint"),
     )
     if not training["complete"]:
-        raise RuntimeError("Corrected BEIR checkpoint audit failed: " + "; ".join(training["errors"][:5]))
+        raise RuntimeError(
+            "Corrected BEIR checkpoint audit failed: " + "; ".join(training["errors"][:5])
+        )
 
 
 def _model_folder(checkpoint: Path) -> str:
@@ -198,9 +202,7 @@ def run(args: argparse.Namespace) -> dict:
     matrix_path, configs = _selected_configs(args.matrix, args.run_ids)
     _validate_training(configs)
     checkpoints = [
-        checkpoint
-        for config in configs
-        for checkpoint in checkpoint_paths(config, args.stages)
+        checkpoint for config in configs for checkpoint in checkpoint_paths(config, args.stages)
     ]
     python = _worker_python(args.python)
     _validate_formal_runtime(python, matrix_path)
@@ -228,7 +230,9 @@ def run(args: argparse.Namespace) -> dict:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--matrix", type=Path, default=Path("configs/dense_no_packing_retrain.yaml"))
+    parser.add_argument(
+        "--matrix", type=Path, default=Path("configs/dense_no_packing_retrain.yaml")
+    )
     parser.add_argument(
         "--protocol", type=Path, default=Path("configs/dense_no_packing_execution_protocol.json")
     )
@@ -241,7 +245,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--audit-only", action="store_true")
     args = parser.parse_args(argv)
-    if args.stages and (len(set(args.stages)) != len(args.stages) or any(not 1 <= value <= 5 for value in args.stages)):
+    if args.stages and (
+        len(set(args.stages)) != len(args.stages)
+        or any(not 1 <= value <= 5 for value in args.stages)
+    ):
         parser.error("--stages must contain unique values in [1, 5]")
     return args
 

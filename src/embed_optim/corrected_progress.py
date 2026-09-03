@@ -27,9 +27,11 @@ def _log_progress(path: Path) -> tuple[int, int | None, dict[str, int]]:
     # Logs also contain model-loading bars such as 134/134. The training
     # horizon is the largest declared total; select progress within that bar.
     step, total = max(matches, default=(0, None), key=lambda item: (item[1], item[0]))
-    return step, total, {
-        name: len(pattern.findall(text)) for name, pattern in ERROR_PATTERNS.items()
-    }
+    return (
+        step,
+        total,
+        {name: len(pattern.findall(text)) for name, pattern in ERROR_PATTERNS.items()},
+    )
 
 
 def build_progress(
@@ -96,7 +98,9 @@ def build_progress(
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--matrix", type=Path, default=Path("configs/dense_no_packing_retrain.yaml"))
+    parser.add_argument(
+        "--matrix", type=Path, default=Path("configs/dense_no_packing_retrain.yaml")
+    )
     parser.add_argument("--log-dir", type=Path, default=Path("logs/dense-no-packing-v1"))
     args = parser.parse_args(argv)
     print(json.dumps(build_progress(args.matrix, args.log_dir), indent=2, sort_keys=True))

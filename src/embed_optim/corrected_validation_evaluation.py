@@ -70,7 +70,9 @@ def run_corrected_validation_evaluation(
         if manifest.get("input_execution") != PADDED_DENSE_RECEIPT:
             raise RuntimeError("Existing corrected validation has a different input mode")
         if manifest.get("corrected_source_files") != source:
-            raise RuntimeError("Existing corrected validation was produced by different source files")
+            raise RuntimeError(
+                "Existing corrected validation was produced by different source files"
+            )
         return manifest
     manifest = {
         **manifest,

@@ -92,7 +92,9 @@ def _validate_training(configs: list[RunConfig]) -> None:
         expected_dataset_fingerprint=dataset.get("training_view_fingerprint"),
     )
     if not training["complete"]:
-        raise RuntimeError("Corrected validation checkpoint audit failed: " + "; ".join(training["errors"][:5]))
+        raise RuntimeError(
+            "Corrected validation checkpoint audit failed: " + "; ".join(training["errors"][:5])
+        )
 
 
 def _launch(job: Job, gpu: str, args: argparse.Namespace, attempt: int) -> Running:
@@ -125,7 +127,9 @@ def _launch(job: Job, gpu: str, args: argparse.Namespace, attempt: int) -> Runni
 
 
 def run_jobs(jobs: list[Job], args: argparse.Namespace) -> int:
-    pending = [job for job in jobs if not job_complete(job, args.validation_spec, args.verify_hashes)]
+    pending = [
+        job for job in jobs if not job_complete(job, args.validation_spec, args.verify_hashes)
+    ]
     print(json.dumps({"complete": len(jobs) - len(pending), "expected": len(jobs)}), flush=True)
     if args.audit_only:
         return len(pending)
@@ -168,10 +172,16 @@ def run_jobs(jobs: list[Job], args: argparse.Namespace) -> int:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--matrix", type=Path, default=Path("configs/dense_no_packing_retrain.yaml"))
+    parser.add_argument(
+        "--matrix", type=Path, default=Path("configs/dense_no_packing_retrain.yaml")
+    )
     parser.add_argument("--probe", type=Path, default=Path("data/validation-4096-seed20260826"))
-    parser.add_argument("--validation-spec", type=Path, default=Path("configs/validation_probe.json"))
-    parser.add_argument("--output-root", type=Path, default=Path("results/dense-no-packing-validation"))
+    parser.add_argument(
+        "--validation-spec", type=Path, default=Path("configs/validation_probe.json")
+    )
+    parser.add_argument(
+        "--output-root", type=Path, default=Path("results/dense-no-packing-validation")
+    )
     parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
     parser.add_argument("--log-dir", type=Path, default=Path("logs/dense-no-packing-validation"))
     parser.add_argument("--max-retries", type=int, default=1)
@@ -198,7 +208,9 @@ def main(argv: list[str] | None = None) -> None:
             audit_probe=False,
         )
         return
-    audit_validation_data(args.probe.resolve(), spec["source"]["training_data"], spec_path=args.validation_spec)
+    audit_validation_data(
+        args.probe.resolve(), spec["source"]["training_data"], spec_path=args.validation_spec
+    )
     matrix = resolve_matrix_path(args.matrix).resolve()
     configs = load_matrix(matrix)
     jobs = build_jobs(configs, args.output_root)
