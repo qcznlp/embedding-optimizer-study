@@ -15,8 +15,8 @@
 \input{results}
 \input{generated/causal-chain}
 
-\title{A Packed Validation Trap in Dense Retriever Adaptation:\\
-Auditing AdamW, Muon, and NorMuon}
+\title{Beyond the First Step:\\
+How Muon Changes Dense-Retriever Optimization Trajectories}
 
 \author{Anonymous ACL submission}
 
@@ -24,431 +24,363 @@ Auditing AdamW, Muon, and NorMuon}
 \maketitle
 
 \begin{abstract}
-Dense retrievers learn from a small shortlist of labeled negatives but are judged against an entire
-corpus. We ask whether changing the optimizer changes calibration between these regimes, comparing
-AdamW, Muon, and NorMuon while adapting DenseOn on one deterministic
-\NumTrainingQueries-query view. Direct full-corpus selection gives modest exploratory Muon-family
-gains, whereas query-disjoint eight-way validation selects a ten-times larger learning rate whose
-retrieval is worse. A frozen nested-candidate follow-up fails its prerequisite: independently padded
-width-7 scoring cannot reproduce the historical flattened/packed validation path. A two-example
-control changes a cosine score by up to 0.2119 under packed execution versus 0.0020 when padding is
-forced. On the padded path the apparent high-dose advantage is already absent at width 7, and
-widening to 2,048 candidates does not reverse it. Thus candidate coverage does not explain the
-gap; the historical comparison is evidence about the exact pinned implementation, not yet a clean
-eight-way optimizer effect. Weight/function-space and frozen intervention analyses further reject
-the tested spectral-dose account. \DiscoveryHeadline \ConfirmationHeadline The project originally
-included exploratory LateOn runs; a user-directed, post-hoc scope amendment excludes them from
-primary and confirmatory inference.
+Muon reshapes matrix updates and can tolerate learning rates far above those used by AdamW, but its
+effect on dense retrieval is not understood. We compare AdamW, Muon, and NorMuon while adapting
+DenseOn on the same 500,000-query training view. The retrieval result is promising: the best Muon
+and NorMuon runs improve mean decontaminated-BEIR nDCG@10 from 0.5899 to 0.5923 and 0.5934, winning
+on 10 and 11 of 14 tasks, and three of four Muon-family rates reach the AdamW reference versus two
+of four AdamW rates. The mechanism is not the obvious one. From identical weights and matched
+update norms, AdamW produces the larger immediate mean margin gain, while repeated shared-start
+Muon updates finish with a positive unseen-margin contrast in all three seeds. Muon-family models
+also move roughly twice as far in weight space for nearly the same fixed-probe score drift. These
+results point to an optimizer-induced trajectory effect rather than a superior isolated step.
+However, familiar spectral signatures do not explain that effect: temporal prediction, controlled
+spectral transplants, and a held-run retrieval bridge all fail their frozen tests. A separate
+model-selection audit reveals why the useful Muon region is easy to miss: a packed eight-way
+validator selects a damaging ten-times larger rate because its embeddings depend on batch
+composition. Independent padding removes that high-dose advantage before candidate breadth grows.
+We therefore use a fresh, independently padded 12-run matrix as the final adjudicator. The emerging
+picture is that Muon's retrieval advantage, when it survives clean replication, comes from the
+trajectory of states and gradients created by repeated updates---not from spectral flattening or a
+better first step alone.
 \end{abstract}
 
 \section{Introduction}
 
-AdamW is the default optimizer for adapting text embedding models. Muon instead approximately
-orthogonalizes momentum updates for hidden matrices, and NorMuon follows that transform with
-neuron-wise adaptation \citep{loshchilov2019decoupled,liu2025muon,li2025normuon}. Their matrix-aware
-updates have shown attractive scaling and memory behavior in language-model training. Dense
-retrieval introduces a different constraint: the learner sees one positive and a small set of hard
-negatives, whereas deployment ranks that query against millions of documents. A lower contrastive
-loss is useful only when its ordering transfers beyond the observed shortlist.
+Muon works unusually well in our dense-retrieval sweep. At its best learning rate it improves mean
+decontaminated-BEIR nDCG@10 over the best AdamW run on 10 of 14 tasks; NorMuon improves on 11. Across
+the whole four-rate grid, both matrix-aware optimizers have a higher median endpoint and one more
+rate reaches the AdamW reference. One Muon-family configuration reaches that reference after roughly
+0.75 useful hours, compared with 1.41 hours for the fastest observed AdamW configuration. These are
+the kind of results that make Muon interesting for embedding training.
 
-Recent work shows that switching an Adam-pretrained model to Muon can disrupt pretrained knowledge
-as update strength grows \citep{qu2026finetune,liu2026consistency}. That observation does not answer
-the retrieval question. A retriever may preserve its score function on a fixed eight-document probe
-yet change the ordering of unseen corpus documents, or it may move far in weight space while making
-a small functional change. We therefore treat optimizer geometry, shortlist metrics, and
-full-corpus rankings as separate objects rather than interchangeable measures of progress.
+The obvious explanation does not fit. AdamW treats coordinates independently, whereas Muon
+approximately orthogonalizes momentum updates for hidden matrices
+\citep{loshchilov2019decoupled,liu2025muon}. If that conditioning simply produced a better descent
+direction, then at the same weights and update norm it should yield a larger immediate functional
+gain. We observe the reverse: AdamW improves mean query margin more on a matched virtual step, even
+though full Muon trajectories reach the better retriever. The scientific question is therefore not
+only \emph{whether} Muon helps, but how a locally weaker direction becomes a globally better path.
 
-Our historical result appears to be an optimizer-specific calibration failure. On the
-query-disjoint validation shortlist, minimizing loss selects learning rate
-$3\!\times\!10^{-3}$ for both Muon and NorMuon; direct full-corpus discovery instead selects
-$3\!\times\!10^{-4}$. Moving between these rates suppresses the selected hard negatives and
-improves the observed margin in every inspected optimizer--source transition, but lowers full-corpus
-nDCG in every transition. A later frozen candidate-breadth test, however, exposes an upstream
-implementation confound: the packed validation path is not batch invariant and cannot be reproduced
-by independent padded scoring of the same texts. The three-seed comparison therefore estimates the
-consequence of recipes selected by that historical path. It does not establish that Muon
-intrinsically makes a clean eight-way objective anti-calibrated.
+Dense retrieval makes that question harder than ordinary loss minimization. Training observes one
+positive document and a short list of labeled negatives, whereas deployment ranks against an entire
+corpus. The relevant causal chain is
+\begin{align*}
+\text{update geometry} &\longrightarrow \text{shortlist scores}, \\
+\text{shortlist scores} &\longrightarrow \text{selected checkpoint}, \\
+\text{selected checkpoint} &\longrightarrow \text{corpus ranking}.
+\end{align*}
+Every arrow can fail, and repeated updates change the future states and gradients on which the next
+update acts. We call this accumulated dependence an \emph{optimizer-induced trajectory effect}.
+Our matched-step, shared-start, and weight/function-space results are consistent with such an effect:
+Muon moves farther in parameters without proportionally larger score drift, changes which queries
+occupy the adverse tail, and turns a weaker immediate mean step into a positive final margin contrast
+in every shared-start seed. Conversely, the familiar story that spectral flattening itself mediates
+the gain fails temporal, component-intervention, and held-run prediction tests.
 
-The remaining geometry is not a restatement of Muon's spectral equalization. At the
-retrieval-optimal points,
-all three optimizers induce almost the same score drift on a fixed unseen probe, while Muon and
-NorMuon move about twice as far from the pretrained weights. At excessive learning rates, weight
-distance continues to rise even as score drift falls and retrieval partly recovers, so parameter
-distance alone is not an explanation either. This motivated an optimization-dose account, but the
-frozen temporal and intervention chain is negative. The implementation audit instead identifies a
-concrete failure mode that must be removed before optimizer-specific generalization mechanisms can
-be inferred.
+Model selection introduces a second puzzle. A query-disjoint eight-way validator chooses the largest
+tested Muon-family rate, not the retrieval-optimal region. Retraining those frozen recipes on three
+independently resampled negative views produces a large, consistent loss to AdamW. At first this
+resembles a cost of Muon's flexibility: it may be exceptionally good at suppressing seven observed
+negatives while damaging the rest of the corpus.
 
-Our contributions are:
+That explanation is wrong for a more consequential reason. Before widening the candidate set, we
+attempted to reproduce the original eight-way score with independently padded inputs. It could not
+be reproduced. Under the historical flattened/packed path, placing the same text beside a different
+example changes its cosine score by as much as 0.2119; with forced padding the discrepancy is
+0.0020. The apparent high-rate validation advantage vanishes at width 7 on the padded path, and
+adding candidates up to width 2,048 does not restore it. The historical study is reproducible for
+its pinned implementation, but it cannot identify a clean optimizer effect.
+
+The audit matters because it separates two claims that the original draft conflated. The good
+full-corpus Muon region is a real observation under the historical training stack; the catastrophic
+high-rate recipe is largely a selection-path artifact. To learn whether the positive retrieval result
+itself survives without packed execution, we rerun the complete 12-configuration matrix with
+independent padding in training, validation, checkpoint reload, and full-corpus evaluation. The
+primary estimand averages all four predeclared rates per optimizer, with validation-selected recipes
+secondary and five checkpoints exposing the trajectory.
+
+The paper makes three contributions:
 \begin{itemize}
-    \item A controlled DenseOn comparison of AdamW, Muon, and NorMuon over a complete learning-rate
-    sweep, five-stage training dynamics, and a decontaminated BEIR evaluation, with optimizer-state,
-    throughput, and time-to-quality reported separately.
-    \item A source-bound failure analysis showing that the apparent shortlist--corpus gap is
-    confounded by batch-dependent flattened/packed execution; corrected padded width-7 scoring
-    removes the high-dose advantage, while widening to 2,048 candidates does not support the
-    missing-candidate account.
-    \item A weight/function-space decomposition showing that useful Muon-family solutions reach a
-    similar fixed-probe score drift through substantially larger parameter displacement, while
-    displacement alone fails to predict high-dose retrieval behavior.
-    \item Falsifiable tests of the optimization-dose account using shared-start scale-matched
-    branches, query-tail outcomes, spectral dose/band/basis transplants, and a prospectively declared
-    held-run bridge. Failed links remain reportable negative results rather than being replaced
-    post hoc.
-    \item Routing-matched hybrid AdamW that measures grouping and auxiliary-rate effects within
-    AdamW and supplies a separately tuned, matched-routing comparator for Muon-family recipes,
-    together with three new negative-sampling seeds that keep the final optimizer comparison
-    independent of BEIR-based discovery selection.
+    \item It identifies a promising DenseOn regime in which Muon and NorMuon outperform the best
+    AdamW configuration across most decontaminated BEIR tasks and reach the AdamW reference earlier
+    in their fastest observed runs.
+    \item It shows that this advantage is trajectory-level rather than a better isolated descent
+    step: same-state matched updates favor AdamW in immediate mean margin, while repeated shared-start
+    Muon updates produce a positive final unseen-margin contrast in all three seeds.
+    \item It rejects spectral flattening as the tested explanation and identifies a packed-validation
+    failure that selects outside the useful Muon region, then subjects the positive result to a
+    source-bound, independently padded 12-run replication.
 \end{itemize}
 
-\section{Background and Mechanistic Predictions}
+\section{Why Dense Retrieval Makes Optimizer Claims Fragile}
 
-\subsection{Three update rules}
+\subsection{The loss sees a shortlist; evaluation sees a corpus}
 
-For a matrix parameter $W$ with gradient $G_t$, AdamW applies an element-wise preconditioner,
-\begin{equation}
-\Delta W_t^{\mathrm{AdamW}} =
--\eta\frac{\widehat{M}_t}{\sqrt{\widehat{V}_t}+\epsilon}-\eta\lambda W_t.
-\end{equation}
-Muon instead applies a Newton--Schulz approximation to the polar factor of a momentum matrix. If
-$M=U\Sigma V^\top$, the idealized transform is $\operatorname{polar}(M)=UV^\top$, approximately
-equalizing nonzero singular values \citep{jordan2024muon}. The practical bfloat16 polynomial is an
-approximation rather than an exact projection. NorMuon then forms a row-wise historical second
-moment and rescales the orthogonalized update before restoring a matrix-level scale
-\citep{li2025normuon}.
+For query $q_i$, positive $d_i^+$, and seven sampled negatives $C_i^-$, our contrastive objective is
+Let $z_{id}=s(q_i,d)/\tau$. The loss is
+\begin{align}
+\ell_i &= -z_i^+ + \log Z_i, \\
+Z_i &= \exp(z_i^+) + \sum_{d\in C_i^-}\exp(z_{id}).
+\end{align}
+Full-corpus retrieval instead depends on the rank of $d_i^+$ among all documents in
+$\mathcal D_i$. Holding out queries prevents direct query memorization, but it does not make
+$C_i^-$ representative of $\mathcal D_i\setminus C_i^-$. Consequently, validation loss can improve
+while nDCG falls. We call a change in optimizer ordering between these measurements the
+\emph{shortlist--corpus gap}.
 
-Spectral equalization is intrinsic to Muon's operator, and row-wise historical adaptation is
-intrinsic to NorMuon. Neither fact establishes better retrieval. A flatter update can amplify weak
-or noisy directions, and row balancing can change strongly without affecting a ranking
-\citep{pang2026htmuon,qu2026finetune}. We accordingly treat spectra and row statistics as operator
-fingerprints. They become explanatory only if a controlled change reaches margins or rankings and
-persists under repeated updates.
+There is a second interface: the score function must be the same in training, validation, and
+retrieval. Modern encoders may take different computational paths for flattened/packed inputs and
+independently padded examples. If batch composition changes a nominally per-text embedding, then
+the validator is not merely a noisy proxy for corpus retrieval; it evaluates a different function.
 
-\subsection{Shortlist loss versus corpus retrieval}
+\subsection{Update geometry is not an outcome}
 
-For query $q_i$, positive document $d_i^+$, and sampled negative set $C_i^-$, the training and
-validation objective observes only
-\begin{equation}
-\begin{aligned}
-  \ell_i &=-s(q_i,d_i^+)/\tau+\log Z_i,\\
-  Z_i &=\exp(s(q_i,d_i^+)/\tau)
-       +\sum_{d\in C_i^-}\exp(s(q_i,d)/\tau).
-\end{aligned}
-\end{equation}
-Full-corpus retrieval instead depends on the rank of $d_i^+$ among every document in a corpus
-$\mathcal D_i$. Holding out queries prevents direct query memorization, but it does not ensure that
-$C_i^-$ represents the score changes over $\mathcal D_i\setminus C_i^-$. Consequently, two
-optimizers can agree on the observed positive and selected hard negatives while changing the
-unobserved score field differently.
+For a matrix parameter $W$ with gradient $G_t$, AdamW applies an element-wise second-moment
+preconditioner. Muon instead applies a Newton--Schulz approximation to the polar factor of a momentum
+matrix. If $M=U\Sigma V^\top$, its idealized transform is $UV^\top$, which approximately equalizes
+nonzero singular values \citep{jordan2024muon}. NorMuon adds a row-wise historical rescaling after
+orthogonalization \citep{li2025normuon}.
 
-We call the difference between optimizer ordering under $\ell_i$ and under full-corpus nDCG the
-\emph{shortlist--corpus gap}. It is a selection failure, not a claim that the shortlist loss is
-incorrect: the loss is exactly the objective supplied to the optimizer. A candidate-breadth
-diagnostic expands a fixed query's nested comparison set from the original seven sampled negatives
-to the ten-candidate source pool and then to 32, 128, 512, and 2,048 candidates from the same pinned
-mined list. If missing-candidate coverage drives the reversal, the apparent high-dose advantage
-should shrink or reverse as breadth grows. Because this diagnostic was designed after the initial
-gap was observed, we label it post hoc, keep it outside confirmatory inference, and exclude its
-descriptive source-stratified 95\% intervals (50,000 resamples) from the decision rule.
-
-\subsection{From directions to trajectories}
-
-We compare optimizer directions at identical weights and matched Frobenius budgets, then distinguish
-their mean and adverse-tail query effects. These one-step interventions identify immediate direction
-differences but not accumulated adaptation, because every committed update changes future gradients
-and optimizer state. Shared-start branches test accumulation; spectral dose, band, and basis
-transplants test whether a specific update component reaches the retrieval function. Geometry is
-explanatory only when it predicts held-out outcomes beyond optimizer labels and norm controls.
+These are operator properties, not retrieval explanations. A flatter update can amplify weak or
+noisy directions, and large weight motion can leave the ranking nearly unchanged
+\citep{pang2026htmuon,qu2026finetune}. We therefore distinguish four levels of evidence:
+same-state update geometry, immediate score changes after a norm-matched virtual step, accumulated
+trajectories from a shared checkpoint, and final corpus rankings. A mechanism must cross these
+levels; recognizing Muon's spectrum is only an implementation check.
 
 \section{Related Work}
 
-\paragraph{Dense retrieval.}
-Dense dual encoders compress queries and documents into single vectors and rank by their similarity.
-BEIR established heterogeneous zero-shot retrieval as a demanding test of whether adaptation
-preserves broadly useful ranking behavior \citep{thakur2021beir}. DenseOn provides an unsupervised,
-not-yet-fine-tuned starting checkpoint with an open training recipe
-\citep{sourty2026denseon}. Representation geometry has been linked to retrieval quality, including
-work balancing isotropic and anisotropic components \citep{kim2024hil}; here, rank and isotropy are
-possible bridge variables rather than endpoints.
+Dense dual encoders compress queries and documents into single vectors and rank by similarity.
+BEIR evaluates whether such representations transfer across heterogeneous retrieval tasks
+\citep{thakur2021beir}. DenseOn provides the unsupervised, not-yet-fine-tuned checkpoint and open
+training recipe used here \citep{sourty2026denseon}. Work on representation isotropy and effective
+rank motivates possible bridges between optimization and retrieval, but those statistics are not
+surrogates for ranking quality \citep{kim2024hil}.
 
-\paragraph{Matrix-aware optimization and optimizer switching.}
-Muon exploits hidden-matrix structure and has shown favorable scaling in language-model pretraining
-\citep{liu2025muon}; NorMuon adds neuron-wise adaptation after orthogonalization
-\citep{li2025normuon}. Concurrent studies warn that switching an Adam-pretrained model to Muon can
-degrade downstream performance as update strength increases
-\citep{qu2026finetune,liu2026consistency}. Other analyses connect Muon to larger margins and feature
-rank \citep{ruan2026features}, or warn that spectral equalization can overemphasize noise-dominated
-directions \citep{pang2026htmuon}. Newton--Muon highlights missing input-covariance preconditioning
-\citep{du2026newtonmuon}, while adaptive Schatten geometry argues against a single matrix rule for
-every layer \citep{massena2026schatten}. Our contribution is not another intrinsic description of
-these operators; it is the controlled path from a same-state direction, through query-level effects
-and accumulated adaptation, to dense retrieval rankings.
+Muon has shown attractive scaling in language-model pretraining, while NorMuon augments its
+matrix-level transform with neuron-wise adaptation \citep{liu2025muon,li2025normuon}. Concurrent
+work warns that switching an Adam-pretrained model to Muon can disrupt pretrained knowledge as
+update strength grows \citep{qu2026finetune,liu2026consistency}. Other analyses relate Muon to
+feature rank or margins, identify risks from spectral equalization, or argue for covariance-aware
+and layer-dependent matrix geometry \citep{ruan2026features,pang2026htmuon,du2026newtonmuon,
+massena2026schatten}. Our question is downstream and retrieval-specific: which geometric changes
+survive optimizer state feedback, preserve unseen scores, and predict corpus ranking?
 
-\section{Controlled Dense Retrieval Study}
+\section{A Staged Test Rather Than a Leaderboard}
 
-\subsection{Scope amendment}
+\subsection{One controlled adaptation problem}
 
-The project was originally designed as a two-architecture DenseOn/LateOn study. After the original
-discovery runs and some exploratory mechanism outputs were visible, the user directing the project
-requested that subsequent work focus on dense retrieval because LateOn training was substantially
-slower and the intended paper audience placed less value on that architecture. This is a
-\emph{user-directed, post-hoc scope amendment}, not a preregistered scientific exclusion. We preserve
-the LateOn configurations, checkpoints, logs, and exploratory tables for audit, but do not pool them
-with DenseOn, use them as replication, estimate architecture interactions from them, or let them
-affect primary/confirmatory wording. All main-text hypotheses, accumulated branches, routing controls,
-and three-seed inference below concern DenseOn only.
+We adapt the released DenseOn unsupervised checkpoint on one deterministic view of
+\NumTrainingQueries{} queries. Each group contains one positive and \NumHardNegatives{} distinct
+sampled hard negatives. Queries are allocated proportionally across seven source datasets; a
+candidate is eligible only when its mined score is below $0.95$ times the positive score, and the
+seven negatives are sampled without replacement from the first ten eligible candidates using
+stable seed-42 hashes. Every optimizer receives identical group identities and order. We use cosine
+InfoNCE at temperature 0.02, no in-batch or cross-device negatives, maximum context length
+\ContextLength{}, global batch size 128, one epoch, and bfloat16 forward passes.
 
-\subsection{Model, data, and objective}
+The grid contains four learning rates per optimizer: $\{10^{-6},3\!\times\!10^{-6},10^{-5},
+3\!\times\!10^{-5}\}$ for AdamW and $\{10^{-4},3\!\times\!10^{-4},10^{-3},3\!\times\!10^{-3}\}$
+for Muon and NorMuon. Muon-family runs route hidden two-dimensional matrices through the matrix
+rule and auxiliary parameters through AdamW at $3\!\times\!10^{-6}$. Each run keeps checkpoints at
+20, 40, 60, 80, and 100\% of 3,907 optimizer steps. Every checkpoint is evaluated on the same
+\NumBEIRTasks-task decontaminated BEIR suite.
 
-DenseOn has undergone unsupervised retrieval pretraining but not the supervised adaptation studied
-here \citep{sourty2026denseon}. We select one deterministic view of \NumTrainingQueries{} queries
-from the released corpus. Each group contains one positive and \NumHardNegatives{} distinct sampled
-negatives. We allocate queries proportionally over the seven source datasets, reject a candidate
-unless its mined score is below $0.95$ times the positive score, and sample without replacement from
-the first ten eligible candidates using stable seed-42 hashes. All discovery runs share group
-identities and order. DenseOn uses cosine InfoNCE at temperature 0.02, without in-batch or
-cross-device negatives, a maximum query/document context length of \ContextLength{}, global batch
-size 128, one epoch, bfloat16 forward passes, FlashAttention, and gradient checkpointing.
-The historical trainer and query-disjoint validator pass tokenized groups through
-SentenceTransformers with input flattening enabled. Full-corpus retrieval and the later
-candidate-breadth evaluator use independently padded examples. This distinction was not part of
-the original optimizer hypothesis; Section~\ref{sec:execution-audit} reports the post-failure audit
-that revealed its consequence.
+\subsection{Four stages of evidence}
 
-\subsection{Discovery matrix and evaluation}
+The historical discovery grid asks whether any learning-rate region is promising and records full
+learning curves, systems costs, and failures. It is exploratory because BEIR is visible. A frozen
+4,096-query validation set then selects one recipe per optimizer by minimum eight-way loss, maximum
+margin, and finally smaller learning rate. Three new negative-sampling seeds test those recipes while
+preserving query and positive identities.
 
-We train AdamW, Muon, and NorMuon at four learning rates each. AdamW uses
-$\{10^{-6},3\!\times\!10^{-6},10^{-5},3\!\times\!10^{-5}\}$; Muon and NorMuon use
-$\{10^{-4},3\!\times\!10^{-4},10^{-3},3\!\times\!10^{-3}\}$. Muon-family optimizers route hidden
-two-dimensional Transformer matrices through the matrix rule and auxiliary parameters through
-AdamW at $3\!\times\!10^{-6}$. We retain checkpoints at 20, 40, 60, 80, and 100\% of training. Runs
-use four GPUs, micro-batch 8 per GPU, four accumulation steps, 10\% linear warmup, linear decay, and
-global gradient clipping at 1.0. The final partial accumulation is retained, so all 500K groups are
-consumed in 3,907 optimizer steps.
+The failed reproduction described below changes the role of this evidence. The packed historical
+grid becomes a diagnostic dataset, not the primary optimizer comparison. The corrected grid repeats
+all 12 rates with independent padding throughout. Its primary outcome is the all-rate optimizer
+contrast with simultaneous max-$T$ uncertainty over tasks; independently padded validation
+selection is secondary. This ordering was frozen before corrected outcomes existed.
 
-Every checkpoint is evaluated on the same \NumBEIRTasks-task decontaminated BEIR suite
-\citep{thakur2021beir}. We report nDCG@10 against steps, examples, useful wall time, and GPU-hours,
-and report peak memory and optimizer-state size separately. Full learning-rate trajectories are
-retained; best-test-cell selection is never treated as confirmatory evidence.
+Finally, the mechanism analysis asks a prediction question. Nine weight-space features are computed
+for every corrected run and stage. Each is added to a baseline containing optimizer, stage, and
+learning-rate dose, and evaluated by leave-dose-index-out prediction. A feature is supported only if
+it lowers pooled held-out RMSE and improves at least three of four folds. Descriptive correlations
+cannot pass this gate.
 
-\subsection{Selection and three-seed confirmation}
+\section{Muon Reaches Better Retrievers---and Validation Misses Them}
 
-The discovery grid is exploratory. One recipe per optimizer is selected using a frozen 4,096-query
-validation set disjoint from the 500K training ledger and without access to BEIR scores. The rule
-first minimizes eight-way validation loss, then maximizes positive margin, with the smaller learning
-rate as the final tie-breaker. Three new seeds preserve query and positive identities while
-independently resampling negatives from reconstructed candidate pools. Only these new-seed DenseOn
-runs support the confirmatory AdamW--Muon and AdamW--NorMuon comparisons.
-
-We independently resample seeds and tasks in a deterministic 20,000-draw hierarchical bootstrap and
-report nominal and familywise 95\% intervals for the two primary optimizer contrasts. The Bonferroni
-interval retains all six comparisons fixed before the post-hoc Dense-only scope amendment, even
-though only DenseOn rows enter the paper. Positive, negative, or inconclusive headline wording is
-determined only after the frozen three-seed matrix is complete. Aggregate MTEB outputs do not contain
-per-query rankings, so we make no query-level significance claim for BEIR.
-
-\subsection{Frozen causal-chain protocol}
-
-Nine shared-start branches provide 45 adjacent displacements. The frozen temporal test asks whether
-early hidden-matrix tail spectral energy predicts final query-disjoint loss p95 and unseen margin p05
-under leave-one-seed-out evaluation, beyond optimizer labels and update/weight norm controls. A
-separate fixed-state test interpolates Muon singular values into the AdamW basis and requires
-prespecified dose monotonicity, tail-band localization, spectrum-over-basis specificity, and improved
-leave-one-source-run-out prediction of next-checkpoint BEIR. Every condition and negative control is
-reported; failure of any required link rejects the spectral-component account rather than triggering
-a replacement explanation. Full decision rules appear in Appendix~\ref{sec:causal-chain-diagnostics}.
-
-\section{Retrieval Outcomes and Training Dynamics}
+\subsection{Direct retrieval tuning makes Muon look better}
 
 \DiscoveryHeadline
 
 \input{generated/discovery}
 
-The generated discovery artifact is strictly DenseOn-only. LateOn outputs from the original
-exploratory scope remain in the repository's historical archive outside the manuscript and are not
-an additional inferential family. We report complete five-stage quality trajectories, observed first
-passage to the median final AdamW reference, unstable configurations, memory, optimizer-state size,
-and all task scores. Lower training loss is never substituted for retrieval quality. The
-first-passage rule and later loss--BEIR join retain their recorded post-hoc status and cannot affect
-recipe selection or confirmatory wording. Full throughput, memory, optimizer-state, and checkpoint
-measurements appear in Appendix~\ref{tab:training-systems-results}.
+Across the four final checkpoints, median nDCG@10 is 0.5858 for AdamW, 0.5901 for Muon, and 0.5910
+for NorMuon. At the best rate, Muon reaches 0.5923 and NorMuon 0.5934 versus AdamW's 0.5899;
+the task-level counts are 10/4 and 11/3 wins/losses. The best-configuration five-stage average also
+favors Muon and NorMuon (0.5910/0.5918 versus 0.5880), so the difference is not created by one lucky
+final checkpoint. Three of four Muon-family rates reach the frozen AdamW reference, compared with
+two of four AdamW rates.
 
-At 40\%, same-suite-selected Muon/NorMuon reach mean nDCG@10 0.5921/0.5922 versus AdamW's final
-0.5899, but their task counts against that endpoint are only 6/0/8 and 5/0/9 wins/ties/losses
-(median delta $-0.00055$ for both); this exploratory macro-average is not a universal 60\% compute
-saving. Query-disjoint validation instead selects $3\!\times\!10^{-3}$, whose discovery-BEIR score
-is below AdamW; only the new-seed matrix using those frozen recipes grounds the final claim.
+The systems result is more nuanced. Muon and NorMuon achieve only 0.95$\times$ and 0.93$\times$
+AdamW throughput on this stack, so they are not faster per training step. Their fastest observed
+time to the AdamW reference is nevertheless about 0.75 hours versus 1.41 hours for AdamW because a
+useful high-dose trajectory reaches the target by 40\%. We therefore distinguish computational
+throughput from time-to-quality.
 
-\subsection{When the validation proxy wins and retrieval loses}
+\subsection{A held-out selector chooses the losing regime}
 
-The discrepancy is systematic across the completed discovery sweep. Spearman correlation between
-validation loss and final BEIR is $-1.0$ for AdamW, so lower loss orders its four learning rates in
-the desired retrieval direction. The correlation is $+0.8$ for both Muon and NorMuon. Validation
-margin shows the corresponding sign reversal: $+1.0$ for AdamW and $-0.8$ for each Muon-family
-optimizer. Thus the same query-disjoint proxy is calibrated for one update rule and anti-calibrated
-for the other two over this grid.
+The query-disjoint validator selects $3\!\times\!10^{-3}$ for both Muon variants, ten times the
+retrieval-optimal rate. Across the four-rate sweep, lower validation loss orders AdamW rates in the
+same direction as final BEIR (Spearman $-1.0$), but orders Muon and NorMuon rates in the opposite
+direction ($+0.8$ for both). Margin exhibits the corresponding sign reversal.
 
-Post-hoc high-dose-minus-oracle training-loss/validation-loss/BEIR deltas are
-$+0.1210/-0.3696/-0.0315$ for Muon and $+0.1068/-0.4268/-0.0300$ for NorMuon. Thus sampled-tuple
-fit worsens while shortlist validation improves and corpus retrieval worsens, ruling out simple
-memorization as a sufficient account but, because all inputs were already visible, not identifying
-the cause.
+The discrepancy survives three new training views when those frozen recipes are used. Muon loses
+0.0306 nDCG@10 to AdamW (familywise 95\% CI $[-0.0464,-0.0138]$), and NorMuon loses 0.0304
+($[-0.0446,-0.0138]$). These estimates are internally valid for the pinned historical recipe, but
+their interpretation will change in the next section.
 
-We also isolate five source-aligned tasks for which the validation queries and full retrieval corpus
-come from the same underlying source. Comparing the validation-selected $3\!\times\!10^{-3}$ rate
-with the retrieval-optimal $3\!\times\!10^{-4}$ rate yields ten optimizer--source transitions. In
-all ten, the selected hardest negative is suppressed and the eight-way positive margin increases;
-in all ten, full-corpus nDCG decreases. The mean selected-negative score change is $-0.0369$, the
-mean positive-score change is $-0.0115$, the mean margin change is $+0.0254$, and the mean nDCG
-change is $-0.0255$. Because positive scores increase in three transitions, the effect is not merely
-uniform positive forgetting. These are exploratory, post-selection diagnostics, but they rule out
-ordinary source-domain shift as a sufficient explanation of the observed gap.
-
-\input{generated/candidate-breadth}
-
-\paragraph{Post-failure execution-path audit.}
-\label{sec:execution-audit}
-The texts and checkpoints match, but all 12 padded width-7 evaluations fail the frozen reproduction
-test. A two-example control changes a packed-path cosine score by 0.211914 versus 0.001953 when
-padding is forced. Padded width 7 already removes the high-dose advantage, and width 2,048 does not
-restore it; Appendix~\ref{sec:execution-audit-details} reports the full post-failure audit.
-
-\section{Three-Seed Retrieval Confirmation}
-\label{sec:confirmation}
-
-The validation-frozen recipes are retrained on three independently resampled negative views. All
-views retain the same ordered 500,000 query--positive groups and ten-candidate pools; only the seven
-distinct negatives per group and the training shuffle change with the seed. The pairwise fraction
-of groups with a changed seven-negative tuple is 99.158--99.177\%. The confirmatory headline and
-table are rendered only after all DenseOn training, strict BEIR evaluation, and source-hash audits
-pass. Discovery point estimates, LateOn history, and the exploratory tail analysis cannot determine
-their wording. Table~\ref{tab:confirmation-results} reports the complete contrast family.
 \ConfirmationHeadline
 
 \input{generated/confirmation}
 
-\section{From Same-State Updates to Query Effects}
+The reversal is not explained by simple training memorization or domain mismatch. Relative to each
+Muon-family retrieval optimum, the high-rate model has worse training loss, better shortlist
+validation loss, and worse BEIR. On five source-aligned tasks, all ten optimizer--source transitions
+from $3\!\times\!10^{-4}$ to $3\!\times\!10^{-3}$ suppress the selected hard negative and improve
+the observed margin, while all ten reduce full-corpus nDCG. The mean margin change is $+0.0254$ and
+the mean nDCG change is $-0.0255$. At this point the natural hypothesis is that seven negatives are
+too narrow to select a high-dose matrix optimizer.
 
-\subsection{Weight distance is not functional distance}
+\section{Why Model Selection Hides the Useful Muon Regime}
+\label{sec:execution-audit}
 
-At each optimizer's retrieval-optimal discovery point, the mean absolute score drift on the fixed
-224-query unseen probe is 0.0604 for AdamW, 0.0619 for Muon, and 0.0606 for NorMuon: a relative
-range of only 2.5\%. The corresponding pretrained-reference hidden-weight displacement ratios are
-0.00960, 0.01881, and 0.01885. Across all five checkpoints of these runs, the median ratio of
-weight displacement to score drift is 1.90 times AdamW for Muon and 1.94 times AdamW for NorMuon.
-The matrix-aware optimizers therefore use substantially more parameter motion for a similar change
-on this fixed functional probe.
+We designed a nested-candidate test of that hypothesis. For the same queries and checkpoints, it
+expands the negative set from 7 to 10, 32, 128, 512, and 2,048 documents. The test had a necessary
+first gate: independently padded width-7 scoring had to reproduce the historical eight-way result.
+All 12 runs fail that gate, with a maximum metric discrepancy of 8.2864.
 
-This relationship is not monotone outside the useful regime. At $3\!\times\!10^{-3}$, Muon-family
-weight distance keeps increasing after the first checkpoint while fixed-probe score drift falls and
-BEIR partly recovers. We therefore use displacement as an optimization-dose diagnostic, not as a
-surrogate outcome. The shortlist--corpus hypothesis specifically predicts that a fixed eight-way
-probe can miss score changes over documents that never enter its candidate set.
+A minimal control isolates the cause. Scoring a text alone versus beside one other example changes
+a packed-path cosine score by as much as 0.211914. With flattening disabled, the largest bfloat16
+disagreement is 0.001953. More importantly, the scientific ordering changes before candidate width
+changes: under padded width-7 scoring, the high-dose Muon model has \emph{higher} loss and lower
+margin than its retrieval-optimal counterpart. Increasing the width to 2,048 does not produce the
+predeclared joint reversal.
 
-\subsection{Same-state directions and query tails}
+\input{generated/candidate-breadth}
 
-At ten pretrained or trajectory anchors, we freeze weights and replay the same eight-gradient
-history into every optimizer, separating weight decay and matching direction norms. Muon-family
-directions have much flatter spectra but do not exceed AdamW's mean immediate margin gain. Symmetric
-worst-tail comparisons instead show redistribution: each optimizer helps some queries that are
-fragile under the other while selecting a different adverse set. A post-hoc cosine analysis is
-consistent with optimizer-induced state feedback, but neither spectrum nor direction angle is a
-retrieval explanation by itself. \CommonStateHeadline
+This result eliminates the attractive missing-negative story for the selection failure. The packed
+validator did not faithfully measure a small version of the corpus objective; it measured a
+batch-dependent score function. Because the trainer used the same packed path, the historical
+three-seed experiment remains evidence about that exact selection system, but its negative result is
+not evidence that Muon lacks a useful retrieval regime. Query disjointness and more random seeds
+cannot repair a mismatch in the function being selected.
 
-\input{generated/common-state}
-
-The complete basis-sensitivity, cross-tail, and spectrum readouts appear in Appendix
-Tables~\ref{tab:basis-sensitivity-results} and
-\ref{tab:tail-identity-results}--\ref{tab:spectral-tail-results}. The prospective shared-start and
-spectral tests below determine whether any immediate difference accumulates and reaches retrieval.
-
-\section{Does the Effect Accumulate?}
-
-\subsection{Shared-start branches}
-
-DenseOn branches from the same 60\% AdamW checkpoint. AdamW, Muon, and NorMuon receive hidden learning
-rates calibrated to a common global $\lVert\Delta W\rVert_F/\lVert W\rVert_F$ target and train over
-the same 50K groups under three order seeds. All five checkpoints are scored on query-disjoint and
-unseen functional probes. The frozen endpoint requires simultaneous improvement in query-disjoint
-loss p95 and unseen margin p05 under the three-seed median. This directly tests whether the immediate
-tail redistribution becomes a beneficial accumulated adaptation rather than assuming that a local
-step predicts the final trajectory. \InterventionHeadline
-
-\input{generated/intervention}
-
-\subsection{Falsifiable spectrum-to-retrieval chain}
-
-Table~\ref{tab:causal-chain-summary} reports the frozen temporal, component, and forward-retrieval
-verdicts without assuming that the hypothesis succeeds. A supported result means that early spectral
-redistribution predicts accumulated tail outcomes beyond labels and norms, and that controlled
-singular-value changes pass the dose, localization, specificity, and held-run bridge tests. If either
-analysis is a claimable negative, we instead reject the tested spectral explanation while retaining
-any independently established local direction, shared-start, or retrieval result. In neither case do
-we interpret the chain as a formally identified mediation effect.
-
-If every frozen component passes, the evidence supports a spectral-component chain across
-randomized branches, fixed-state interventions, and held-run prediction, but still does not
-identify formal mediation of the final BEIR contrast.
-
-\CausalChainSummaryTable
-
-\subsection{Routing-matched AdamW}
-
-Native AdamW applies one learning rate to every trainable parameter, whereas Muon-family runs route
-hidden matrices through one rule and auxiliary parameters through AdamW. A hybrid AdamW control uses
-the identical partition and auxiliary learning rate. Native AdamW versus hybrid AdamW therefore
-measures routing and auxiliary-rate effects within AdamW at each shared AdamW learning rate. Hybrid
-AdamW versus Muon matches routing and the auxiliary rate, but each rule retains its independently
-swept learning-rate range; it compares separately tuned recipes rather than identifying
-orthogonalization, the matrix rule, or update scale alone. A full-length scale-matched component
-control would be needed for that attribution. The present control removes a routing confound from
-the recipe comparison but is not by itself a causal decomposition of Muon. Across the four shared
-AdamW learning rates, hybrid-minus-native mean nDCG@10 is $+0.000201$, $-0.000331$, $+0.000383$, and
-$+0.000055$. The aggregate change over all 56 task--learning-rate units is $+0.000077$ (28 wins, 6
-ties, and 22 losses), and the best AdamW point changes only from 0.589867 to 0.589922. Thus routing
-and the fixed auxiliary rate are far too small and inconsistent to account for the optimizer-level
-retrieval differences.
-
-\subsection{Representation and score geometry}
-
-On fixed in-distribution and unseen probes, we measure the full query-margin distribution, embedding
-effective rank and isotropy, hubness, and top-$k$ agreement with the pretrained model. We join these
-quantities to DenseOn trajectories and separately analyze within-run first differences.
-The complete numerical headline and representation readout are reported in
-Appendix~\ref{tab:representation-results}.
-
-Checkpoint correlations are observational. A representation metric enters the mechanism only if it
-changes under a controlled direction or shared-start branch and aligns temporally with a later
-functional effect.
+The only defensible adjudication is a new experiment. We therefore repeat every optimizer--rate cell
+in a fresh namespace with flattening disabled during training and every checkpoint reload. The data,
+schedule, hardware allocation, negative identities, and evaluation suite remain fixed. The primary
+comparison averages all four predeclared rates; a clean, independently padded validator supplies a
+secondary recipe comparison. Five-stage results distinguish a stable optimizer effect from a
+single-checkpoint accident.
 
 \input{generated/corrected-no-packing}
 
+\section{A Trajectory Effect, but Not a Spectral Explanation}
+
+\subsection{Large parameter motion need not be large functional motion}
+
+At the historical retrieval-optimal points, mean absolute score drift on a fixed unseen probe is
+0.0604 for AdamW, 0.0619 for Muon, and 0.0606 for NorMuon. Hidden-weight displacement from the
+pretrained model is 0.00960, 0.01881, and 0.01885, respectively. Muon-family models therefore move
+roughly twice as far in weight space for nearly the same change on this probe. At the largest rate,
+weight distance continues rising while score drift falls and BEIR partly recovers. Distance is an
+optimization-dose measurement, not an explanation of retrieval.
+
+\subsection{Same-state steps reject the simplest mechanism}
+
+At ten pretrained or trajectory anchors, we replay the same ordered gradient history into all three
+optimizers, remove weight decay, and match update norms. Muon and NorMuon display distinct spectra
+and row-energy allocation, but their mean immediate margin gains are 0.0006 and 0.0005 versus
+AdamW's 0.0009. Their adverse query sets differ rather than uniformly improving the same tail.
+Thus the historical retrieval difference cannot be explained by a better average next step from the
+same state.
+
+\CommonStateHeadline
+
+\input{generated/common-state}
+
+\subsection{Accumulation helps some tails, but spectra do not carry the explanation}
+
+Shared-start branches begin at the same 60\% AdamW checkpoint, match the initial global relative
+update budget, and train on the same 50,000 groups under three order seeds. Muon improves the final
+unseen-margin contrast in all three seeds, but the predeclared joint tail endpoint is mixed; NorMuon
+is mixed as well. A routing-matched hybrid AdamW changes mean nDCG by only $+0.000077$, ruling out
+the hidden-matrix/auxiliary-parameter partition as a sufficient recipe explanation in this grid.
+
+\InterventionHeadline
+
+\input{generated/intervention}
+
+We then test the more specific claim that Muon's spectral redistribution causes the accumulated
+effect. Early tail singular-value energy fails to improve leave-one-seed-out prediction of final
+loss p95 or unseen margin p05. At fixed weights, interpolating Muon singular values into the AdamW
+basis produces neither the required dose response nor tail-band localization, and spectrum features
+do not improve held-run prediction of the next BEIR checkpoint beyond the basis controls. The
+predeclared chain is therefore a claimable negative: spectral flattening is visible, but it does not
+explain retrieval in these interventions.
+
+\CausalChainSummaryTable
+
+The corrected study asks the same question more directly and with less researcher freedom. All nine
+frozen geometry features are reported, but only out-of-dose retrieval prediction can promote one
+from an optimizer signature to a candidate bridge. This distinction is essential: a feature can
+perfectly identify Muon and still add no information about which Muon rate retrieves well.
+
 \section{Discussion}
 
-Discovery suggests a small Muon-family advantage under direct full-corpus tuning, whereas the
-historical validator selects a ten-times larger rate with worse retrieval. The three-seed experiment
-estimates the consequence of that frozen recipe, but the execution audit changes its scope: the
-validator and trainer used a batch-dependent packed path, so the comparison is reproducible for the
-pinned stack but cannot establish an intrinsic failure of a clean eight-way objective.
+\paragraph{Muon's advantage is real evidence, but not yet a universal ranking.}
+The historical sweep shows a coherent useful region: better best-run and median retrieval, more
+rates reaching the AdamW reference, favorable five-stage averages, and gains on most BEIR tasks.
+That is stronger than one cherry-picked endpoint. It is still exploratory because the evaluation
+suite reveals the best rate and because training used the packed path. The independently padded
+matrix is therefore the primary comparison that decides how far the positive result generalizes.
 
-Same-source transitions and a post-hoc corpus-size association ($\rho=.587/.574$;
-Appendix~\ref{fig:corpus-size-diagnostic}) do not prove missing-candidate coverage. The frozen nested
-test rejects that account: its width-7 bridge fails and padded scoring removes the apparent high-dose
-advantage before any candidates are added. Candidate breadth remains a design variable, but it is
-not the explanation supported by these data.
+\paragraph{A larger usable learning-rate range changes model-selection risk.}
+Muon's ability to train at a large numerical learning rate is not equivalent to validation
+robustness. A wider effective dose range can reach quality earlier, but also gives a biased or
+execution-mismatched proxy more room to select a damaging endpoint. Retrieval studies should report
+the full optimizer--rate surface and trajectory, not only the best cell, and should separate an
+all-rate comparison from selector-dependent recipes.
+
+\paragraph{Batch invariance is part of the estimand.}
+For a dual encoder, users reasonably assume that a document embedding is a function of that document
+and the model. Packed execution violated that assumption strongly enough to alter optimizer
+selection. A two-example batch-composition test should therefore be a preflight check whenever
+training, validation, and indexing use different collation paths.
+
+\paragraph{Geometry must earn explanatory status.}
+Muon's spectrum and NorMuon's row adaptation describe how their updates are constructed. Our
+negative bridges show why reproducing these signatures during embedding training is not a research
+contribution by itself. The useful question is whether geometry predicts functional tails and
+corpus ranking outside the rates and stages on which it was measured. If no feature passes that
+test, the correct conclusion is that the optimizer effect remains unexplained, not that the most
+visually distinctive statistic must be the cause.
+
 \CandidateBreadthDiscussion
 
-At useful points, Muon and NorMuon move roughly twice as far for nearly the same fixed-probe score
-drift, yet high-dose trajectories decouple distance and drift. The failed shared-start and spectral
-chain therefore rejects that mechanism, not the observed calibration failure.
-
-Lower training-loss variation does not imply retrieval robustness. In practice, dense fine-tuning
-should first disable or validate packed execution with batch-composition invariance controls, then
-use retrieval-aware validation. Broader candidates may still help training, but do not repair this
-historical gap; a larger usable learning-rate range does not make its validation-selected maximum
-safe.
-
 \section{Conclusion}
+
+Muon and NorMuon reach better DenseOn retrievers than AdamW across a coherent part of the historical
+learning-rate surface, including gains on 10 and 11 of 14 tasks. Their advantage does not come from
+a better norm-matched first step: AdamW has the larger immediate mean margin gain, whereas repeated
+Muon updates alter the state and gradient sequence and finish ahead on the shared-start unseen-margin
+endpoint. The obvious geometric explanation also fails---larger displacement and flatter spectra
+identify the optimizer but do not predict the retrieval gain in our frozen interventions. Finally,
+a batch-dependent packed validator selects far outside Muon's useful regime, showing why optimizer
+quality and optimizer selection must be evaluated separately. The corrected independently padded
+matrix is the sole basis for the final recommendation, but the central mechanistic lesson is already
+sharper than an optimizer leaderboard: Muon's promise lies in the trajectory created by repeated
+updates, not in spectral flattening or a superior isolated step alone.
 
 \ResultConclusion
 
@@ -459,80 +391,74 @@ safe.
 \section{Limitations}
 
 Primary inference concerns one 149M-parameter DenseOn checkpoint, one English supervised corpus,
-and one epoch of full-parameter adaptation. It does not establish behavior at other scales,
-languages, objectives, pooling schemes, or sparse and late-interaction retrievers. The base model was
-pretrained with an Adam-family optimizer, so the study tests optimizer switching rather than
-Muon-from-scratch pretraining. Four learning rates provide a broad but finite search, and three
-confirmation seeds may leave small effects uncertain. Intrinsic geometry metrics are not causal by
-themselves; causal language is restricted to fixed-state interventions and shared-start branches.
-Decontamination reduces known overlap but cannot prove the absence of every semantic duplicate.
-The nested candidate-breadth diagnostic was designed after observing the shortlist--corpus gap and
-therefore cannot confirm the optimizer comparison or establish mediation. Its mined lists designate
-one positive per query but do not exhaustively judge every other document; an apparent negative can
-contain an unjudged relevant passage. The experiment tests score-field coverage under a fixed mined
-ordering, not recall over a fully adjudicated relevance set.
-More importantly, its prerequisite width-7 bridge fails because the historical flattened/packed
-path is materially batch dependent in the pinned stack. The current three-seed result is therefore
-about recipes selected by that implementation. Corrected no-packing retraining in a new namespace is
-required before generalizing the contrast to isolated eight-way dense-retriever training.
+and one epoch of full-parameter adaptation. The base model was pretrained with an Adam-family
+optimizer, so this is a study of optimizer switching rather than Muon-from-scratch pretraining.
+Four learning rates provide a broad but finite grid. The corrected all-rate contrast reduces
+selector dependence but remains a one-seed, pinned-grid result; the secondary selected-recipe
+comparison does not replace replication across training views.
 
-The temporal bridge uses nine branches and only three randomized order seeds, and its spectral
-predictor is measured after optimizer assignment; leave-one-seed-out performance is therefore a
-small-sample stress test rather than an identified mediator estimate. The 84-row forward bridge holds
-out source runs but reuses the same 14 benchmark tasks, while the dose and band interventions change
-components at frozen weights rather than training a controlled spectral operator. Even joint passage
-supports causal-chain triangulation, not formal mediation of the full-training retrieval effect.
+Decontamination reduces known benchmark overlap but cannot establish the absence of every semantic
+duplicate. Aggregate MTEB outputs lack per-query rankings, so uncertainty is computed over tasks and
+we make no query-level BEIR significance claim. The candidate-breadth study was designed after the
+shortlist--corpus gap was observed and uses mined documents with incomplete relevance judgments. It
+is possible for an apparent negative to be an unjudged relevant document. The analysis is a
+falsification diagnostic, not a confirmatory estimate of candidate-set size.
 
-The Dense-only scope was adopted post hoc after some two-architecture results were visible. Its
-operational motivation does not erase the risk of selective emphasis. We mitigate that risk by
-retaining the complete LateOn provenance, labeling it exploratory, excluding it from all main
-confidence intervals and architecture claims, and stating the amendment in the abstract, methods,
-and artifact documentation.
+The historical packed and corrected padded studies are not randomized assignments of execution
+mode: they were run sequentially after the reproduction failure. Their difference is sensitivity
+evidence, not a causal effect of packing. Historical shared-start and spectral analyses use nine
+branches, three order seeds, and fixed-state interventions. They can reject the tested mechanism but
+cannot identify formal mediation of a final BEIR contrast. The corrected geometry bridge is
+predictive rather than causal and may miss a useful feature outside the nine frozen candidates.
+
+The project originally included LateOn. After exploratory outputs were visible, the project scope
+was narrowed to DenseOn because LateOn was substantially slower and less central to the intended
+paper. This user-directed, post-hoc amendment is not a preregistered scientific exclusion. LateOn is
+not pooled with DenseOn or used as a replication; its configurations and artifacts remain available
+for audit.
 
 \section{Ethical Considerations}
 
-This study does not collect new human-subject data or deploy a retrieval system to users. It adapts
-released models and datasets whose source corpora can nevertheless contain social biases, harmful
-content, copyrighted material, or personal information. Higher benchmark nDCG is not evidence of
-fairness, safety, privacy, or suitability for a particular deployment. A deployed retriever would
-require corpus-specific auditing, filtering and access controls, and human review appropriate to its
-users and failure costs.
+This study does not collect new human-subject data or deploy a retrieval system to users. Released
+models and corpora can nevertheless contain social biases, harmful material, copyrighted text, or
+personal information. Higher benchmark nDCG is not evidence of fairness, safety, privacy, or
+deployment readiness. A production retriever requires corpus-specific auditing, filtering, access
+controls, and human review appropriate to its users and failure costs.
 
-We report useful wall time, throughput, and GPU-hours because an optimizer recommendation also has
-resource consequences. Those measurements are specific to this hardware and software stack and do
-not justify unbounded hyperparameter search. Any public artifact release must additionally respect
-the licenses and usage terms of the upstream model, training sources, and evaluation datasets.
+We report useful wall time, throughput, GPU-hours, and optimizer-state size because an optimizer
+recommendation has resource consequences. These measurements are specific to the pinned hardware
+and software stack and do not justify unbounded hyperparameter search. Public artifacts must respect
+the licenses and usage terms of upstream models, datasets, and evaluation collections.
 
 \bibliography{references}
 
 \appendix
+
 \section{Artifact and Reproducibility}
 
-We preserve frozen task, checkpoint, and learning-rate cells, including failures, together with
-model revisions, dataset fingerprints, negative-sampling seeds, package versions, checkpoint hashes,
-and W\&B histories. The confirmatory seed and validation selection protocols remain separate from
-the exploratory BEIR matrix. Released code supports strict artifact audits before producing tables
-or figures. Historical LateOn artifacts are retained rather than deleted after the scope amendment.
+We preserve the exact model and dataset revisions, deterministic 500K training ledger, negative
+sampling seeds, optimizer routing, package locks, W\&B histories, checkpoint hashes, and evaluation
+receipts. Historical packed outputs and corrected padded outputs use separate namespaces and are
+never pooled. Every table is generated only after source-bound completeness and provenance audits.
+The dated Dense-only scope amendment retains LateOn as historical exploratory material without
+allowing it to affect primary intervals or claims.
 
 \CandidateBreadthFigure
 
 \section{Execution-Path Audit Details}
 \label{sec:execution-audit-details}
 
-All 224 queries and their positive-plus-seven-negative texts match the frozen validation source,
-and checkpoint hashes match. Nevertheless, all 12 padded width-7 evaluations fail the predeclared
-$10^{-5}$ reproduction tolerance; the largest sample/metric discrepancy is 8.286419. In a pinned
-two-example control at one AdamW checkpoint, scoring an example in a packed pair versus by itself
-changes a cosine score by as much as 0.211914. With flattening disabled, padded pair-versus-singleton
-disagreement is at most 0.001953 in bfloat16. This unplanned diagnostic identifies implementation
-semantics rather than an optimizer effect.
+All 224 candidate-breadth queries, positives, negatives, and checkpoint hashes match their frozen
+sources. Nevertheless, all 12 independently padded width-7 evaluations fail the predeclared
+$10^{-5}$ historical reproduction tolerance. The largest sample/metric discrepancy is 8.286419.
+The two-example control changes a packed score by at most 0.211914 and a padded score by at most
+0.001953.
 
 At width 7, high-dose minus retrieval-optimal Muon changes loss by $+0.177064$ [0.089243, 0.279614]
-and margin by $-0.006670$ [$-0.012219$, $-0.001019$]; NorMuon changes loss by $+0.190773$
-[0.060921, 0.332021] and margin by $-0.004567$ [$-0.010618$, 0.001391]. Thus the high-dose advantage
-is already absent before candidate breadth grows. Width 2,048 does not produce the required joint
-reversal. The frozen decision is not supported, and missing candidates cannot account for the
-historical packed--corpus discrepancy.
+and margin by $-0.006670$ [$-0.012219$, $-0.001019$]. NorMuon changes loss by $+0.190773$
+[0.060921, 0.332021] and margin by $-0.004567$ [$-0.010618$, 0.001391]. Thus the historical
+high-dose advantage is absent before candidate breadth grows. Width 2,048 does not satisfy the
+joint reversal rule.
 
 \input{generated/corpus-size-diagnostic-appendix}
 
@@ -545,29 +471,25 @@ historical packed--corpus discrepancy.
 \toprule
 Claim & Required evidence & Insufficient evidence alone \\
 \midrule
-Faster adaptation & useful wall time, examples/s, GPU-hours, and matched-hardware time-to-quality & lower loss at equal steps \\
-Better DenseOn recipe & validation-frozen recipe, new seeds, paired seed/task uncertainty & best discovery learning rate on BEIR \\
-Local direction helps & Frobenius-matched same-state functional intervention & flatter update spectrum \\
-Tail robustness & frozen three-seed shared-start loss-p95 and margin-p05 endpoint & one inspected worst-tail set \\
-Accumulation explains gain & shared-start branches plus temporal functional evidence & endpoint checkpoint correlation \\
-Spectral component explains retrieval & all five temporal rules plus dose, band, basis, and 84-row held-run bridge & intrinsic flattening, in-sample fit, or one local transplant \\
-Difference survives matched routing & separately tuned hybrid-AdamW comparison & native AdamW comparison alone \\
-Muon-family high-dose ordering reverses with candidate breadth & all width-7 reproductions plus both frozen Muon-family width-2,048 endpoint reversals & a favorable narrow-set curve, one optimizer, or the exploratory BEIR correlation alone \\
+Faster adaptation & useful wall time, examples/s, GPU-hours, matched-hardware time-to-quality & lower loss at equal steps \\
+Better DenseOn optimizer & corrected all-rate contrast over 14 tasks & best BEIR cell in discovery \\
+Better deployable recipe & independently padded validation selection and full-corpus evaluation & packed shortlist validation \\
+Local direction helps & norm-matched same-state functional intervention & flatter update spectrum \\
+Accumulation helps & shared-start branches with frozen functional endpoints & checkpoint correlation \\
+Geometry explains retrieval & held-out prediction beyond optimizer, stage, and dose & optimizer-identifying geometry \\
+Routing explains retrieval & routing-matched AdamW across the full rate grid & native AdamW alone \\
+Muon-family high-dose ordering reverses with candidate breadth & all width-7 reproductions plus both frozen Muon-family width-2,048 endpoint reversals & one favorable curve \\
 \bottomrule
 \end{tabular}
-\caption{Minimum evidence required for each DenseOn headline claim.}
+\caption{The minimum evidence required for each headline claim.}
 \label{tab:claim-firewall}
 \end{table*}
 
-The temporal and held-run predictors triangulate links in a prespecified chain; because the spectral
-quantity is post-treatment and the fixed-state transplant is not a trained optimizer assignment,
-even complete support is explicitly not a formal causal mediation estimate.
+\section{Detailed Systems and Historical Mechanism Readouts}
 
-\section{Detailed Systems and Mechanism Readouts}
-
-The main text retains the tables that determine the discovery, common-state, accumulated-control,
-causal-chain, and confirmatory headlines. The complete systems, basis-sensitivity, representation,
-tail, and spectrum-versus-basis readouts appear below.
+The main text retains only measurements that advance the shortlist--corpus and mechanism argument.
+The tables below provide the complete systems, basis-sensitivity, representation, query-tail, and
+spectral readouts for audit.
 
 \input{generated/diagnostics}
 
@@ -578,8 +500,15 @@ tail, and spectrum-versus-basis readouts appear below.
 \section{Causal-Chain Diagnostics}
 \label{sec:causal-chain-diagnostics}
 
-The main text reports one compact decision table. The complete all-required checks appear below so a
-claimable negative cannot be hidden by an overall label or replaced by a favorable secondary metric.
+All frozen temporal, norm-control, dose, band, basis, and held-run checks are reported below. A
+failed link remains a negative result and is not replaced by a favorable post-hoc feature.
+In neither case do we interpret the chain as a formally identified mediation effect. If every
+frozen component passes, the evidence supports a spectral-component chain across randomized
+branches, fixed-state interventions, and held-run prediction, but still does not identify formal
+mediation of the final BEIR contrast. Even joint passage supports causal-chain triangulation, not
+formal mediation of the full-training retrieval effect. Because the proposed spectral quantity is
+post-treatment and the fixed-state transplant is not a trained optimizer assignment, even complete
+support is explicitly not a formal causal mediation estimate.
 
 \CausalChainDiagnostics
 
@@ -589,21 +518,15 @@ claimable negative cannot be hidden by an overall label or replaced by a favorab
 
 \section{Historical LateOn Exploration}
 
-LateOn belonged to the original discovery design. Its completed and partial artifacts remain in the
-repository so the scope change cannot silently erase contrary or inconvenient evidence. They are
-historical exploratory material only: they do not count as a second model family in confidence
-intervals, do not validate DenseOn, do not support token-level or architecture-interaction claims,
-and do not determine any main-text conclusion. The dated, content-hashed scope amendment records
-which outputs existed when the user requested the change.
+LateOn belonged to the original exploratory design. Its artifacts remain in the repository so the
+scope change cannot silently erase inconvenient evidence. They do not enter DenseOn confidence
+intervals, validate the dense result, or support architecture-interaction claims.
 
 \section{Full Experimental Matrix}
 
-The primary DenseOn discovery matrix contains three optimizer rules, four learning rates per rule,
-five checkpoints, and \NumBEIRTasks{} tasks. Dataset rows preserve one query, one positive,
-\NumHardNegatives{} explicit negatives, source identity, and deterministic order. Formal manifests
-bind model and dataset revisions. The source-hashed configuration records optimizer, schedule,
-routing, precision, and seed settings. Every generated appendix table is strictly DenseOn-only;
-LateOn tables remain only in the repository's historical archive outside the manuscript.
+The primary corrected DenseOn matrix contains three optimizers, four rates per optimizer, five
+checkpoints, and \NumBEIRTasks{} tasks: 12 runs, 60 checkpoints, and 840 checkpoint--task units.
+The historical packed matrix has the same topology but a distinct estimand and namespace.
 
 \input{generated/per-task}
 
