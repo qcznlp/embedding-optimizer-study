@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "status": "prospective_scientific_lock_pending_implementation",
+  "frozen_at_utc": "2026-09-03T22:30:23Z",
+  "purpose": "Separate the weight-state effect created by an AdamW or Muon trajectory from the immediate effect of the continuation operator, using a crossed reset-state branch experiment on corrected independently padded DenseOn checkpoints.",
+  "motivation": "Historical same-state interventions show that the AdamW-versus-Muon one-step ordering changes with the source trajectory. This experiment tests that state-by-operator interaction prospectively on corrected checkpoints instead of treating Muon's spectral fingerprint as an explanation.",
+  "visibility_at_freeze": {
+    "historical_dense_retrieval_and_mechanism_outputs_visible": true,
+    "historical_state_operator_interaction_observed_post_hoc": true,
+    "corrected_complete_runs": 2,
+    "corrected_active_runs": [
+      "padded-adamw-1e-5",
+      "padded-adamw-3e-5"
+    ],
+    "corrected_active_runs_below_source_checkpoint_step": true,
+    "corrected_muon_or_normuon_runs_started": false,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "corrected_state_operator_outputs_visible": false,
+    "note": "The source states, branch operators, scale rule, seeds, endpoints, contrasts, and decision map were fixed before any corrected Muon checkpoint or corrected retrieval outcome existed. The motivating historical crossover is disclosed and is not confirmatory evidence for this experiment."
+  },
+  "parent_bindings": {
+    "execution_protocol": {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+    },
+    "analysis_protocol": {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+    },
+    "matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    },
+    "scope_amendment": {
+      "path": "configs/dense_scope_amendment.json",
+      "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+    }
+  },
+  "source_states": {
+    "checkpoint_step": 2345,
+    "checkpoint_fraction": 0.6,
+    "selection_rule": "Use the historical retrieval-optimal AdamW and Muon rates, fixed before corrected outcomes: AdamW 3e-5 and Muon 3e-4.",
+    "states": [
+      {
+        "label": "adamw_state",
+        "run_id": "padded-adamw-3e-5",
+        "optimizer": "adamw",
+        "learning_rate": 0.00003,
+        "checkpoint": "outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-2345"
+      },
+      {
+        "label": "muon_state",
+        "run_id": "padded-muon-3e-4",
+        "optimizer": "muon",
+        "learning_rate": 0.0003,
+        "checkpoint": "outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-2345"
+      }
+    ]
+  },
+  "branch_data": {
+    "path": "data/short-branch-50k-seed20260826",
+    "rows": 50000,
+    "manifest_sha256": "eee88aa0ef11cd43343dc4f40d1385b6829d7e1d4887ab406724849dbaa21bb0",
+    "row_ledger_sha256": "2d340f4ddbe29d28dac2b0456ed0ed4d3dd6c23bcdfdd484658acf599c2fd56e",
+    "selected_sample_ids_sha256": "a05f02c97a299abe43f43ee5452339cb381c62a43acabb89bba1696de27892a4",
+    "portable_receipt": {
+      "path": "reports/short-branch/subset-receipt.json",
+      "sha256": "855bf0c76403ad45ee8901051f354f3a31da57b3c1f1fd2d21c7891d22bf942e"
+    },
+    "relationship_to_source_training": "A fixed proportional subset of intact query-positive-seven-negative groups from the common 500K training view. It was created prospectively for the historical shared-start study and is reused unchanged for both source states.",
+    "order_seeds": [314159, 271828, 161803]
+  },
+  "factorial_design": {
+    "factors": {
+      "weight_state": ["adamw_state", "muon_state"],
+      "continuation_operator": ["adamw", "muon"]
+    },
+    "replicates": "three fixed branch-data order seeds per cell",
+    "expected_runs": 12,
+    "optimizer_state_at_branch_start": "reset to zero for both operators in every cell",
+    "adamw_hidden_routing": "Apply AdamW to the same 88 hidden two-dimensional matrices routed to Muon; route auxiliary parameters through the common auxiliary AdamW optimizer.",
+    "auxiliary_adamw_learning_rate": 0.000003,
+    "dense_input_execution": {
+      "mode": "independently_padded",
+      "sentence_transformers_can_flatten_inputs": false
+    },
+    "training": {
+      "epochs": 1.0,
+      "global_batch_size": 128,
+      "micro_batch_size": 8,
+      "max_length": 8192,
+      "temperature": 0.02,
+      "hard_negatives": 7,
+      "in_batch_negatives": false,
+      "checkpoint_fractions": [0.2, 0.4, 0.6, 0.8, 1.0],
+      "expected_optimizer_steps": 391,
+      "expected_checkpoint_steps": [79, 157, 235, 313, 391]
+    }
+  },
+  "scale_calibration": {
+    "gradient_groups": 32,
+    "gradient_history_steps": 8,
+    "gradient_selection": "Reuse the sample identities and order fixed by configs/common_state_probe.json, but recompute gradients with independent padding at each corrected source state.",
+    "weight_decay_included": false,
+    "normalization": "Choose a separate hidden learning rate for every source-state-by-operator cell so the first branch update has global hidden Frobenius update-to-weight ratio 5e-4.",
+    "target_global_hidden_update_to_weight": 0.0005,
+    "fixed_after_calibration": true,
+    "reason": "The factorial tests update direction and accumulated state, not an arbitrary numerical learning-rate scale difference."
+  },
+  "evaluation": {
+    "all_five_checkpoints": {
+      "probe": "data/probes/decontaminated-beir-224-seed4242",
+      "metrics": [
+        "contrastive loss",
+        "positive margin mean and p05",
+        "reciprocal rank",
+        "top-1 accuracy",
+        "pretrained ranking agreement"
+      ]
+    },
+    "final_checkpoint": {
+      "suite": "the same 14-task decontaminated BEIR suite used by the corrected matrix",
+      "primary_metric": "task-macro mean nDCG@10",
+      "report": "Every seed-by-task cell, every factorial cell mean, and all predeclared contrasts."
+    }
+  },
+  "estimands": {
+    "coding": "For each order-seed-by-task cell, let Y(state, operator) be final nDCG@10.",
+    "weight_state_effect": "0.5 * ((Y(muon_state, adamw) - Y(adamw_state, adamw)) + (Y(muon_state, muon) - Y(adamw_state, muon))).",
+    "operator_effect": "0.5 * ((Y(adamw_state, muon) - Y(adamw_state, adamw)) + (Y(muon_state, muon) - Y(muon_state, adamw))).",
+    "state_operator_interaction": "(Y(muon_state, muon) - Y(muon_state, adamw)) - (Y(adamw_state, muon) - Y(adamw_state, adamw)).",
+    "uncertainty": "Report exact per-seed and per-task contrasts plus a fixed-seed two-way cluster bootstrap that resamples the three order seeds and 14 retrieval tasks independently with replacement; 100000 replicates; percentile 95% intervals; seed 20260904.",
+    "multiplicity": "The three named estimands are co-primary mechanism contrasts. Report all three without selecting a preferred contrast after outcomes are visible."
+  },
+  "decision_map": {
+    "positive_weight_state_effect": "Muon-created weights carry retrieval benefit even after optimizer state is reset and the continuation operator is averaged out.",
+    "positive_operator_effect": "The Muon transform improves the continuation across both source states after first-update scale matching.",
+    "positive_interaction": "Muon-created weights and Muon continuation are complementary, supporting a closed-loop state-update feedback account.",
+    "weight_state_without_operator_or_interaction": "The practical gain is primarily inherited in the reached weight state, not in a universally better local Muon direction.",
+    "operator_without_weight_state_or_interaction": "The continuation transform is the main contributor over this branch horizon.",
+    "no_stable_effect": "The state-feedback account is not supported by this corrected factorial; retain the retrieval result without a positive mechanism claim."
+  },
+  "historical_motivation_boundary": "The post-hoc historical crossover may motivate this design and may be shown as exploratory evidence, but it cannot pass this corrected experiment's decision rule or be pooled into its estimates.",
+  "implementation_gate": "Before execution, bind the exact matrix generator, scale calibrator, trainer wrapper, evaluator, summarizer, source identities, expected cardinalities, and commands in a separate implementation protocol. Do not change this scientific design while adding that executable binding.",
+  "claim_boundary": "This crossed experiment can distinguish a carried weight-state effect, an averaged continuation-operator effect, and their interaction for one DenseOn checkpoint pair, one branch length, and one fixed data view. It does not isolate every optimizer-state moment, prove mediation over the full 500K run, or establish a universal Muon mechanism."
+}
