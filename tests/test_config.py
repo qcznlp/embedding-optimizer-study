@@ -26,6 +26,101 @@ def test_matrix_has_24_controlled_runs():
         assert {run.optimizer.name for run in family_runs} == {"adamw", "muon", "normuon"}
         assert all(len(run.checkpoint_fractions) == 5 for run in family_runs)
         assert all(run.model_revision and len(run.model_revision) == 40 for run in family_runs)
+        assert all(run.dense_can_flatten_inputs is True for run in family_runs)
+
+
+def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
+    path = Path(__file__).parents[1] / "configs" / "dense_no_packing_retrain.yaml"
+    runs = load_matrix(path)
+
+    assert len(runs) == 12
+    assert {run.model_family for run in runs} == {"dense"}
+    assert {run.optimizer.name for run in runs} == {"adamw", "muon", "normuon"}
+    assert {
+        optimizer: {run.optimizer.lr for run in runs if run.optimizer.name == optimizer}
+        for optimizer in ("adamw", "muon", "normuon")
+    } == {
+        "adamw": {1e-6, 3e-6, 1e-5, 3e-5},
+        "muon": {1e-4, 3e-4, 1e-3, 3e-3},
+        "normuon": {1e-4, 3e-4, 1e-3, 3e-3},
+    }
+    assert all(run.run_id.startswith("padded-") for run in runs)
+    assert all(run.output_root == "outputs/dense-no-packing-v1" for run in runs)
+    assert all(run.dense_can_flatten_inputs is False for run in runs)
+    assert all(run.dataset_path == "data/denseon-sft-500k-seed42" for run in runs)
+    assert all(run.seed == 42 and len(run.checkpoint_fractions) == 5 for run in runs)
+
+    protocol_path = path.with_name("dense_no_packing_preflight_protocol.json")
+    protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
+    assert protocol["status"] == "prospective_engineering_preflight_lock"
+    assert protocol["freeze_context"]["corrected_no_packing_full_run_outputs_visible"] is False
+    assert protocol["memory_selection"]["candidate_micro_batch_sizes_in_order"] == [8, 4, 2, 1]
+    assert protocol["memory_selection"]["global_batch_size"] == 128
+    assert protocol["memory_selection"]["input_execution"]["dense_can_flatten_inputs"] is False
+    assert protocol["planned_formal_training"]["runs"] == 12
+    assert (
+        protocol["source_hashes"]["initial_formal_matrix"]
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )
+    preflight_matrix = path.with_name("dense_no_packing_preflight.yaml")
+    assert (
+        protocol["source_hashes"]["preflight_matrix"]
+        == hashlib.sha256(preflight_matrix.read_bytes()).hexdigest()
+    )
+
+    execution_path = path.with_name("dense_no_packing_execution_protocol.json")
+    execution = json.loads(execution_path.read_text(encoding="utf-8"))
+    assert execution["status"] == "prospective_corrective_execution_lock"
+    assert execution["design_context"]["formal_corrected_training_outputs_visible"] is False
+    assert execution["training"]["micro_batch_size"] == 8
+    assert execution["training"]["global_batch_size"] == 128
+    assert execution["training"]["expected_checkpoint_steps"] == [782, 1563, 2345, 3126, 3907]
+    assert execution["evaluation"]["expected_task_units"] == 840
+    assert (
+        execution["source_bindings"]["formal_matrix"]["sha256"]
+        == hashlib.sha256(path.read_bytes()).hexdigest()
+    )
+    preflight_protocol = path.with_name("dense_no_packing_preflight_protocol.json")
+    assert (
+        execution["source_bindings"]["preflight_protocol"]["sha256"]
+        == hashlib.sha256(preflight_protocol.read_bytes()).hexdigest()
+    )
+    report = Path(__file__).parents[1] / "reports" / "dense-no-packing" / "preflight-selection.json"
+    assert (
+        execution["source_bindings"]["preflight_selection"]["sha256"]
+        == hashlib.sha256(report.read_bytes()).hexdigest()
+    )
+
+    evaluation_path = path.with_name("dense_no_packing_evaluation_protocol.json")
+    evaluation = json.loads(evaluation_path.read_text(encoding="utf-8"))
+    assert evaluation["status"] == "prospective_corrected_evaluation_implementation_lock"
+    assert evaluation["freeze_context"]["corrected_checkpoint_weights_visible"] is False
+    assert evaluation["input_execution"]["sentence_transformers_can_flatten_inputs"] is False
+    assert evaluation["beir"]["expected_task_units"] == 840
+    root = Path(__file__).parents[1]
+    evaluation_sources = {
+        "formal_matrix": path,
+        "corrected_input_execution": root / "src/embed_optim/corrected_input_execution.py",
+        "corrected_validation_evaluation": root
+        / "src/embed_optim/corrected_validation_evaluation.py",
+        "corrected_validation_matrix": root / "src/embed_optim/corrected_validation_matrix.py",
+        "corrected_beir_evaluation": root / "src/embed_optim/corrected_beir_evaluation.py",
+        "shared_evaluate_matrix": root / "src/embed_optim/evaluate_matrix.py",
+        "shared_evaluation_utils": root / "src/embed_optim/evaluation_utils.py",
+        "shared_decontamination": root / "src/embed_optim/decontamination.py",
+        "shared_aggregate": root / "src/embed_optim/aggregate.py",
+        "corrected_dense_worker": root / "scripts/eval/dense_no_packing_parallel.py",
+        "historical_dense_parallel_import": root / "scripts/eval/dense_parallel.py",
+        "historical_dense_sequential_import": root / "scripts/eval/dense_sequential.py",
+    }
+    assert evaluation["source_hashes"] == {
+        label: hashlib.sha256(source.read_bytes()).hexdigest()
+        for label, source in evaluation_sources.items()
+    }
+    assert (
+        evaluation["parent_protocol"]["sha256"]
+        == hashlib.sha256(execution_path.read_bytes()).hexdigest()
+    )
 
 
 def test_public_docs_record_compute_and_acceleration_contract() -> None:

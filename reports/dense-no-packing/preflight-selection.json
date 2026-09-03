@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "completed_at_utc": "2026-09-03T11:47:31Z",
+  "protocol": "configs/dense_no_packing_preflight_protocol.json",
+  "protocol_sha256": "b1ca8c25e1292b6436a9faca80bfc454b5c1b54be094e2d1f4a2699e8230ffc4",
+  "selected_micro_batch_size": 8,
+  "candidates_attempted": [8],
+  "world_size": 4,
+  "global_batch_size": 128,
+  "gradient_accumulation_steps": 4,
+  "optimizer_steps": 2,
+  "input_execution": {
+    "mode": "independently_padded",
+    "sentence_transformers_can_flatten_inputs": false
+  },
+  "device": {
+    "name": "NVIDIA L20Z",
+    "peak_allocated_bytes_max_rank": 39977408000,
+    "peak_reserved_bytes_max_rank": 44021317632
+  },
+  "source_receipts": {
+    "completed_json": {
+      "path": "outputs/preflight/dense-no-packing-longest256/dense/padded-adamw-longest256/completed.json",
+      "bytes": 1533,
+      "sha256": "601ba878b9b82c8b45d9468e299212b9eda6b68ac21c0ae26b56d90e089e57c9"
+    },
+    "run_config_json": {
+      "path": "outputs/preflight/dense-no-packing-longest256/dense/padded-adamw-longest256/run_config.json",
+      "bytes": 1093,
+      "sha256": "dbea4d16df56afe9a18ef0f8d06b2778b7dad58e40c0cb92e14ac1a9589d59c2"
+    },
+    "checkpoint_schedule_json": {
+      "path": "outputs/preflight/dense-no-packing-longest256/dense/padded-adamw-longest256/checkpoint_schedule.json",
+      "bytes": 118,
+      "sha256": "b7002da75e36be14534527479176fa8f9e4ea59bb8c8d354d1d14756f178f31e"
+    },
+    "accepted_timing_json": {
+      "path": "outputs/preflight/dense-no-packing-longest256/dense/padded-adamw-longest256/accepted_timing.json",
+      "bytes": 614,
+      "sha256": "40912dcb7f0f134b4bcaadf941d07a603e3a76d9370739bf18c3305154cea757"
+    }
+  },
+  "scientific_eligibility": "none; this receipt selects execution scheduling only"
+}

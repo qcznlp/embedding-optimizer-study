@@ -1,0 +1,210 @@
+{
+  "active_phase": "corrected_dense_no_packing_training",
+  "active_protocol": "configs/dense_no_packing_execution_protocol.json",
+  "canonical_handoff": "PROJECT_STATUS.md",
+  "complete_runs": 0,
+  "error_markers": {
+    "cuda_oom": 0,
+    "nccl_error": 0,
+    "non_finite": 0,
+    "traceback": 0
+  },
+  "evaluation_protocol": "configs/dense_no_packing_evaluation_protocol.json",
+  "implementation_pull_request": "https://github.com/qcznlp/embedding-optimizer-study/pull/42",
+  "matrix": "configs/dense_no_packing_retrain.yaml",
+  "objective": "Compare AdamW, Muon, and NorMuon for corrected independently padded DenseOn retriever adaptation.",
+  "observation": "artifact_only_no_process_inspection",
+  "observed_at_utc": "2026-09-03T12:41:29+00:00",
+  "pending_runs": 10,
+  "planned_beir_task_units": 840,
+  "planned_checkpoints": 60,
+  "planned_runs": 12,
+  "resumable_checkpoints": 0,
+  "runs": [
+    {
+      "declared_total_steps": 3907,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 422,
+      "learning_rate": 1e-06,
+      "optimizer": "adamw",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-adamw-1e-6",
+      "state": "started_artifacts_present"
+    },
+    {
+      "declared_total_steps": 3907,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 424,
+      "learning_rate": 3e-06,
+      "optimizer": "adamw",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-adamw-3e-6",
+      "state": "started_artifacts_present"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 1e-05,
+      "optimizer": "adamw",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-adamw-1e-5",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 3e-05,
+      "optimizer": "adamw",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-adamw-3e-5",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.0001,
+      "optimizer": "muon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-muon-1e-4",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.0003,
+      "optimizer": "muon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-muon-3e-4",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.001,
+      "optimizer": "muon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-muon-1e-3",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.003,
+      "optimizer": "muon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-muon-3e-3",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.0001,
+      "optimizer": "normuon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-normuon-1e-4",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.0003,
+      "optimizer": "normuon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-normuon-3e-4",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.001,
+      "optimizer": "normuon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-normuon-1e-3",
+      "state": "pending"
+    },
+    {
+      "declared_total_steps": null,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 0,
+      "learning_rate": 0.003,
+      "optimizer": "normuon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-normuon-3e-3",
+      "state": "pending"
+    }
+  ],
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing",
+  "started_incomplete_runs": 2,
+  "study_status": "active",
+  "tracking_issue": "https://github.com/qcznlp/embedding-optimizer-study/issues/41"
+}

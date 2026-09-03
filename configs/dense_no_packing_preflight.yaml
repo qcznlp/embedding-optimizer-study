@@ -1,0 +1,27 @@
+common:
+  dataset_path: data/dense-no-packing-preflight-longest256
+  output_root: outputs/preflight/dense-no-packing-longest256
+  seed: 42
+  epochs: 1.0
+  global_batch_size: 128
+  micro_batch_size: 8
+  max_length: 8192
+  warmup_ratio: 0.1
+  max_grad_norm: 1.0
+  dataloader_workers: 0
+  gradient_checkpointing: true
+  flash_attention: true
+  dense_can_flatten_inputs: false
+  wandb_project: embedding-optimizer-study
+  checkpoint_fractions: [0.2, 0.4, 0.6, 0.8, 1.0]
+
+models:
+  dense:
+    model_name: lightonai/DenseOn-unsupervised
+    model_revision: 0edbd55684eb782bce55ee74c95b25c97cbe7f43
+    temperature: 0.02
+
+optimizers:
+  - id: padded-adamw-longest256
+    name: adamw
+    lr: 3.0e-6

@@ -175,6 +175,39 @@ def test_run_completion_requires_consistent_terminal_artifacts(tmp_path):
     assert not _run_is_complete(config)
 
 
+def test_corrected_dense_completion_requires_padded_execution_receipt(tmp_path):
+    output = tmp_path / "dense" / "run"
+    steps = [2, 4, 6, 8, 10]
+    for step in steps:
+        _write_checkpoint(output, step)
+    final = output / "final"
+    final.mkdir()
+    (final / "model.safetensors").write_bytes(b"model")
+    (output / "checkpoint_schedule.json").write_text(json.dumps({"steps": steps}))
+    (output / "trainer_state_final.json").write_text(json.dumps({"global_step": 10}))
+    completed = {
+        "run_id": "run",
+        "model_family": "dense",
+        "global_step": 10,
+        "checkpoints": steps,
+    }
+    (output / "completed.json").write_text(json.dumps(completed))
+    config = SimpleNamespace(
+        output_dir=output,
+        run_id="run",
+        model_family="dense",
+        dense_can_flatten_inputs=False,
+    )
+
+    assert not _run_is_complete(config)
+    completed["input_execution"] = {
+        "mode": "independently_padded",
+        "sentence_transformers_can_flatten_inputs": False,
+    }
+    (output / "completed.json").write_text(json.dumps(completed))
+    assert _run_is_complete(config)
+
+
 def test_run_completion_validates_declared_accepted_timing(tmp_path):
     output = tmp_path / "dense" / "run"
     steps = [2, 4, 6, 8, 10]

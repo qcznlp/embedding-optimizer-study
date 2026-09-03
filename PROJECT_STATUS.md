@@ -6,6 +6,13 @@ This is the canonical handoff page for humans and coding agents. Read it before 
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
 provenance under the user-directed scope amendment.
 
+For a fresh, artifact-only view on the experiment host, run
+`python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json`. The tracked
+`CURRENT_PROGRESS.json` is the latest durable machine-readable handoff snapshot; it is updated at
+meaningful state transitions rather than every optimizer step. The active implementation is in
+[PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and the execution checklist
+is [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).
+
 ## Snapshot
 
 | Workstream | Status | Audited coverage |
@@ -19,15 +26,27 @@ provenance under the user-directed scope amendment.
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 0/12 runs; 2 active |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | GitHub main CI | Green | merge `1cb9f66`, workflow run `33747507631` |
 
-The 34 Dense training runs are finished. No historical checkpoint should be overwritten. The next
-scientific phase, if broader optimizer claims are desired, is a corrected no-packing rerun in a new
-output namespace.
+The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
+The corrected no-packing phase now has an explicit implementation. Its worst-case 256-row
+engineering preflight passed at micro-batch 8 with 39,977,408,000 allocated bytes and
+44,021,317,632 reserved bytes on the slowest/largest rank. The final corrective execution and
+analysis protocol is locked at `configs/dense_no_packing_execution_protocol.json`; it uses a new
+output namespace. Formal training started at 2026-09-03 19:50 UTC with `padded-adamw-1e-6` and
+`padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs completed initial optimizer steps
+without a CUDA or distributed failure; neither is yet complete.
+
+SentenceTransformers does not serialize the runtime `can_flatten_inputs` value into a saved Dense
+checkpoint. Corrected validation and BEIR therefore use new isolated entrypoints that force and
+verify padding after every reload. Their implementation was locked before any corrected checkpoint
+or evaluation output existed in `configs/dense_no_packing_evaluation_protocol.json`; the historical
+source-bound evaluators remain unchanged.
 
 ## Result that currently governs the paper
 
@@ -146,6 +165,11 @@ missing, extra, or size-mismatched files for every refreshed prefix:
    relative-path/byte-size audit.
 8. For corrected training, disable dense input flattening explicitly and use new run IDs/output
    roots. Do not relabel or overwrite any of the 34 historical runs.
+9. For the active corrective phase, read `configs/dense_no_packing_execution_protocol.json` and its
+   preflight parent. Micro-batch 8 is selected for all 12 runs; do not tune execution scheduling by
+   optimizer or change the locked analysis after formal outputs are visible.
+10. Use `python -m embed_optim.corrected_progress` for an artifact-only status report and
+    `docs/dense-no-packing-retrain.md` for exact resume/evaluation commands.
 
 ## Operational constraints
 

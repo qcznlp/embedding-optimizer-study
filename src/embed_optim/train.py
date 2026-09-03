@@ -71,6 +71,38 @@ def _model_kwargs(config: RunConfig) -> dict:
     }
 
 
+def _configure_dense_input_execution(model, config: RunConfig) -> None:
+    """Apply and verify the matrix-declared SentenceTransformers input mode."""
+
+    first_module = model._first_module()
+    if not hasattr(first_module, "can_flatten_inputs"):
+        raise RuntimeError(
+            "Dense transformer does not expose can_flatten_inputs; refusing to run an "
+            "unverifiable input-execution contract"
+        )
+    first_module.can_flatten_inputs = config.dense_can_flatten_inputs
+    if bool(first_module.can_flatten_inputs) != config.dense_can_flatten_inputs:
+        raise RuntimeError("Dense transformer did not retain the declared input-execution mode")
+
+
+def _input_execution_receipt(model, config: RunConfig) -> dict:
+    if config.model_family == "dense":
+        first_module = model._first_module()
+        if not hasattr(first_module, "can_flatten_inputs"):
+            raise RuntimeError("Dense input-execution mode is no longer observable")
+        observed = bool(first_module.can_flatten_inputs)
+        if observed != config.dense_can_flatten_inputs:
+            raise RuntimeError(
+                "Dense input-execution mode changed during training: "
+                f"declared={config.dense_can_flatten_inputs}, observed={observed}"
+            )
+        return {
+            "mode": "flattened_packed" if observed else "independently_padded",
+            "sentence_transformers_can_flatten_inputs": observed,
+        }
+    return {"mode": "pylate_dynamic_padding"}
+
+
 def _load_model_and_loss(config: RunConfig):
     if config.model_family == "dense":
         model = SentenceTransformer(
@@ -79,6 +111,7 @@ def _load_model_and_loss(config: RunConfig):
             model_kwargs=_model_kwargs(config),
         )
         model.max_seq_length = config.max_length
+        _configure_dense_input_execution(model, config)
         loss = ExplicitDenseInfoNCELoss(model, temperature=config.resolved_temperature)
         collator = DenseGroupCollator(model.preprocess)
     elif config.model_family == "late":
@@ -251,6 +284,7 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
             "optimizer_partition": trainer.optimizer_partition_summary,
             "dataset_rows": len(dataset),
             "dataset_fingerprint": dataset._fingerprint,
+            "input_execution": _input_execution_receipt(model, config),
             "system_metrics": {
                 "wall_time_seconds_max_rank": wall_time_seconds,
                 "peak_allocated_bytes_max_rank": int(peak_allocated_bytes),
