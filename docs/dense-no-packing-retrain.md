@@ -9,8 +9,9 @@ immutable; all corrected artifacts use new `dense-no-packing` namespaces.
 1. `PROJECT_STATUS.md`
 2. `configs/dense_no_packing_execution_protocol.json`
 3. `configs/dense_no_packing_evaluation_protocol.json`
-4. `configs/dense_no_packing_retrain.yaml`
-5. GitHub issue #41
+4. `configs/dense_no_packing_analysis_protocol.json`
+5. `configs/dense_no_packing_retrain.yaml`
+6. GitHub issue #41
 
 The formal matrix contains 12 DenseOn runs: four fixed learning rates for each of AdamW, Muon, and
 NorMuon. Every run uses the same 500k rows, seed 42, seven explicit random hard negatives, no
@@ -87,6 +88,32 @@ python -m embed_optim.corrected_checkpoint_backup \
 The default public destination is
 `qcz/embedding-optimizer-study-checkpoints/corrected-dense-no-packing-v1/dense/<run-id>`.
 The command refuses incomplete runs and writes one local audit receipt per uploaded run.
+
+## Corrected weight-space analysis
+
+The weight-space implementation and retrieval bridge were frozen before the first corrected
+checkpoint existed. After one or more runs are deeply complete, their source-bound geometry can be
+materialized incrementally with:
+
+```bash
+python -m embed_optim.corrected_geometry_matrix \
+  --allow-partial \
+  --skip-summary \
+  --local-files-only
+```
+
+After all 12 runs are complete, omit the partial flags to generate the complete 60-row checkpoint
+table, 660 all-rate run-pair subspace comparisons, and 60 optimizer-pair stage summaries:
+
+```bash
+python -m embed_optim.corrected_geometry_matrix --local-files-only
+```
+
+The analysis distinguishes the displacement between retained checkpoints from an instantaneous
+optimizer update. Rank-16 left/right subspace overlaps are computed for every unordered run pair;
+zero serialized displacements remain undefined and their coverage is reported rather than
+imputed. Exact definitions and the predeclared retrieval-prediction test are in
+`configs/dense_no_packing_analysis_protocol.json`.
 
 If only one four-GPU training job remains, the other disjoint pool may evaluate already completed
 runs by passing their IDs and the idle GPU list to `corrected_beir_evaluation`. Do not overlap an

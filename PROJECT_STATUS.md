@@ -48,6 +48,15 @@ verify padding after every reload. Their implementation was locked before any co
 or evaluation output existed in `configs/dense_no_packing_evaluation_protocol.json`; the historical
 source-bound evaluators remain unchanged.
 
+The corrected weight-space implementation and retrieval bridge are separately locked in
+`configs/dense_no_packing_analysis_protocol.json`. That lock was written while the two active runs
+were still below checkpoint 782 and no corrected checkpoint weights, validation outputs, BEIR
+outputs, or corrected geometry outputs existed. It reports saved-checkpoint segment displacement
+and cumulative displacement, stable/effective ranks, and all-rate rank-16 left/right subspace
+overlaps. It explicitly does not relabel the displacement between retained checkpoints as a
+per-step optimizer update. The retrieval bridge uses four leave-dose-index-out folds and publishes
+all predeclared features rather than selecting one after seeing BEIR.
+
 ## Result that currently governs the paper
 
 The validation-frozen three-seed full-corpus comparison is negative for the selected high-dose
@@ -170,6 +179,8 @@ missing, extra, or size-mismatched files for every refreshed prefix:
    optimizer or change the locked analysis after formal outputs are visible.
 10. Use `python -m embed_optim.corrected_progress` for an artifact-only status report and
     `docs/dense-no-packing-retrain.md` for exact resume/evaluation commands.
+11. Materialize geometry only through `python -m embed_optim.corrected_geometry_matrix`; it verifies
+    the analysis protocol and source bindings before reading complete corrected checkpoints.
 
 ## Operational constraints
 
