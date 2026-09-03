@@ -35,6 +35,12 @@ output namespace. Formal training started at 2026-09-03 19:50 UTC with `padded-a
 `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs completed initial optimizer steps
 without a CUDA or distributed failure; neither is yet complete.
 
+SentenceTransformers does not serialize the runtime `can_flatten_inputs` value into a saved Dense
+checkpoint. Corrected validation and BEIR therefore use new isolated entrypoints that force and
+verify padding after every reload. Their implementation was locked before any corrected checkpoint
+or evaluation output existed in `configs/dense_no_packing_evaluation_protocol.json`; the historical
+source-bound evaluators remain unchanged.
+
 ## Result that currently governs the paper
 
 The validation-frozen three-seed full-corpus comparison is negative for the selected high-dose

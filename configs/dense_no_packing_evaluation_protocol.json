@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "status": "prospective_corrected_evaluation_implementation_lock",
+  "frozen_at_utc": "2026-09-03T12:02:43Z",
+  "purpose": "Ensure validation and full-corpus evaluation reload corrected checkpoints with SentenceTransformers input flattening explicitly disabled.",
+  "implementation_commit": "860cf8d5c3f27b326d3f211226dd3d15fef96c55",
+  "parent_protocol": {
+    "path": "configs/dense_no_packing_execution_protocol.json",
+    "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+  },
+  "freeze_context": {
+    "corrected_training_started": true,
+    "corrected_training_logs_and_initial_steps_visible": true,
+    "corrected_checkpoint_weights_visible": false,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "evaluation_design_was_already_locked_before_training": true,
+    "note": "This child lock fixes only the reload-time implementation: can_flatten_inputs is not serialized by SentenceTransformers checkpoints. It does not change any metric, task, recipe-selection rule, or statistical endpoint."
+  },
+  "input_execution": {
+    "mode": "independently_padded",
+    "sentence_transformers_can_flatten_inputs": false,
+    "enforcement": "Every evaluator sets the first SentenceTransformers module to false after checkpoint load and fails if the value cannot be observed or retained.",
+    "training_receipt_requirement": "Every evaluated completed.json must contain the identical independently_padded receipt."
+  },
+  "validation": {
+    "entrypoint": "python -m embed_optim.corrected_validation_matrix",
+    "matrix": "configs/dense_no_packing_retrain.yaml",
+    "runs": 12,
+    "checkpoint_stage": 5,
+    "probe": "data/validation-4096-seed20260826",
+    "validation_spec": "configs/validation_probe.json",
+    "validation_spec_sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1",
+    "output_root": "results/dense-no-packing-validation",
+    "role": "Select one final-checkpoint learning rate per optimizer using the parent protocol only."
+  },
+  "beir": {
+    "entrypoint": "python -m embed_optim.corrected_beir_evaluation",
+    "matrix": "configs/dense_no_packing_retrain.yaml",
+    "checkpoints": 60,
+    "tasks_per_checkpoint": 14,
+    "expected_task_units": 840,
+    "results_root": "results/dense-no-packing-beir",
+    "task_parallelism": "one task per visible GPU with deterministic longest-corpus-first scheduling",
+    "checkpoint_identity": "Every resumable result root is content-addressed by checkpoint safetensors digest before scoring.",
+    "source_identity": "The result runtime manifest hashes the corrected wrapper and every historical worker/helper source it imports."
+  },
+  "compatibility_boundary": {
+    "historical_evaluator_files_modified": false,
+    "historical_results_reused": false,
+    "historical_result_cache_reused": false,
+    "reason": "Historical source-bound evidence remains immutable; corrected caches live in new namespaces."
+  },
+  "source_hashes": {
+    "formal_matrix": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7",
+    "corrected_input_execution": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0",
+    "corrected_validation_evaluation": "ce6b3f23f42ec2fcae69521901b7c8b697b93f21dbcf89a419014c2200b97898",
+    "corrected_validation_matrix": "d8774606613f4723e72d623c717ebed735ad9373018340e6217a3487f4780155",
+    "corrected_beir_evaluation": "c721e0288ab761dbdd8cf269105c463bf955da87cecc9967eb1cecdc724ee313",
+    "shared_evaluate_matrix": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2",
+    "shared_evaluation_utils": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53",
+    "shared_decontamination": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6",
+    "shared_aggregate": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0",
+    "corrected_dense_worker": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a",
+    "historical_dense_parallel_import": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72",
+    "historical_dense_sequential_import": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906"
+  },
+  "claim_boundary": "This implementation lock prevents reload-time execution drift. Scientific interpretation remains governed by the parent corrective protocol."
+}

@@ -86,6 +86,36 @@ def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
         report.read_bytes()
     ).hexdigest()
 
+    evaluation_path = path.with_name("dense_no_packing_evaluation_protocol.json")
+    evaluation = json.loads(evaluation_path.read_text(encoding="utf-8"))
+    assert evaluation["status"] == "prospective_corrected_evaluation_implementation_lock"
+    assert evaluation["freeze_context"]["corrected_checkpoint_weights_visible"] is False
+    assert evaluation["input_execution"]["sentence_transformers_can_flatten_inputs"] is False
+    assert evaluation["beir"]["expected_task_units"] == 840
+    root = Path(__file__).parents[1]
+    evaluation_sources = {
+        "formal_matrix": path,
+        "corrected_input_execution": root / "src/embed_optim/corrected_input_execution.py",
+        "corrected_validation_evaluation": root
+        / "src/embed_optim/corrected_validation_evaluation.py",
+        "corrected_validation_matrix": root / "src/embed_optim/corrected_validation_matrix.py",
+        "corrected_beir_evaluation": root / "src/embed_optim/corrected_beir_evaluation.py",
+        "shared_evaluate_matrix": root / "src/embed_optim/evaluate_matrix.py",
+        "shared_evaluation_utils": root / "src/embed_optim/evaluation_utils.py",
+        "shared_decontamination": root / "src/embed_optim/decontamination.py",
+        "shared_aggregate": root / "src/embed_optim/aggregate.py",
+        "corrected_dense_worker": root / "scripts/eval/dense_no_packing_parallel.py",
+        "historical_dense_parallel_import": root / "scripts/eval/dense_parallel.py",
+        "historical_dense_sequential_import": root / "scripts/eval/dense_sequential.py",
+    }
+    assert evaluation["source_hashes"] == {
+        label: hashlib.sha256(source.read_bytes()).hexdigest()
+        for label, source in evaluation_sources.items()
+    }
+    assert evaluation["parent_protocol"]["sha256"] == hashlib.sha256(
+        execution_path.read_bytes()
+    ).hexdigest()
+
 
 def test_public_docs_record_compute_and_acceleration_contract() -> None:
     root = Path(__file__).parents[1]
