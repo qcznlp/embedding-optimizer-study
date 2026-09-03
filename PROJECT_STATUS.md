@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 22:46 UTC
+Last updated: 2026-09-03 23:32 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -36,7 +36,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected publication renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, blog + paper + standalone report |
-| Corrected state-by-operator factorial | Scientific design frozen; executable binding pending | 2 source states x 2 reset continuation operators x 3 order seeds |
+| Corrected state-by-operator factorial | Scientific and source-bound implementation locks complete; waiting for source checkpoints | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started |
 | Manuscript narrative | Rewritten around the positive Muon trajectory result | 8-page main text; clean outcome block remains source-gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
@@ -176,8 +176,14 @@ AdamW and Muon continuation operators on the same fixed 50K branch view and thre
 predeclared final-BEIR estimands separately measure the carried weight-state effect, the averaged
 continuation-operator effect, and their interaction. This is the direct test of the paper's
 state-feedback account; the motivating historical crossover remains explicitly post hoc. The
-scientific lock is not authorization to run an unbound implementation: an exact executable and
-cardinality contract must be added and audited before launch.
+scientific lock is paired with the pre-output, source-bound implementation at
+`configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`. That executable
+contract covers padded gradient calibration, a storage-efficient direction-norm pass, six
+two-run reset-continuation matrices, all-five-checkpoint unseen-probe evaluation, 168 final-BEIR
+task units, and the 100,000-replicate two-way seed/task bootstrap. Every execution entry point
+fails closed if a bound source changes. No factorial output exists yet; each source checkpoint must
+first pass both deep local validation and sealed remote-backup verification. Exact commands and
+interpretation rules are in `docs/state-operator-factorial.md`.
 
 ## Historical findings that motivate clean adjudication
 
@@ -325,10 +331,11 @@ missing, extra, or size-mismatched files for every refreshed prefix:
 15. Render final corrected prose and tables only through
     `python -m embed_optim.corrected_publication`; do not hand edit its marked blog block or
     generated paper include.
-16. Implement the frozen state-by-operator factorial only against
-    `configs/dense_no_packing_state_operator_factorial_protocol.json`, then bind the exact matrix,
-    calibration, training, evaluation, and summary sources before launch. Do not reinterpret the
-    historical crossover as confirmatory evidence.
+16. Run the source-bound state-by-operator factorial only after each checkpoint-2345 source passes
+    its deep local and sealed remote-backup gates. Follow
+    `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json` and
+    `docs/state-operator-factorial.md`; do not reinterpret the historical crossover as
+    confirmatory evidence.
 17. Keep `python -m embed_optim.corrected_completion_pipeline` running as the operational handoff.
     It backs up deeply complete runs during the matrix and starts final evaluation only after all
     12 runs pass the deep completion gate. Read its atomic ledger under

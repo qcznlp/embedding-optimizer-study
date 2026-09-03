@@ -158,6 +158,11 @@ training batch produces an identical realized update. Final full-corpus BEIR yie
 predeclared contrasts:
 the carried weight-state effect, the continuation-operator effect, and their interaction.
 
+Its exact calibration, reset-continuation training, padded probe, final-BEIR, and two-way bootstrap
+implementation is independently source-bound in
+`configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`; execution and
+interpretation commands are documented in `docs/state-operator-factorial.md`.
+
 This factorial decides what the mechanism section is allowed to say:
 
 - a weight-state effect means Muon reaches weights whose advantage survives an optimizer reset;

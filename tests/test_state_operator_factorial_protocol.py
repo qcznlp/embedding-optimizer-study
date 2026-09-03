@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 from embed_optim.config import load_matrix
+from embed_optim.state_operator_factorial_contract import require_factorial_implementation
 
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "configs/dense_no_packing_state_operator_factorial_protocol.json"
@@ -98,3 +99,22 @@ def test_state_operator_factorial_protocol_is_self_consistent() -> None:
     assert "wholly above zero" in protocol["estimands"]["decision_rule"]
     assert len(protocol["pre_output_clarifications"]) == 2
     assert all(item["outcomes_visible"] is False for item in protocol["pre_output_clarifications"])
+
+
+def test_state_operator_factorial_implementation_is_source_bound() -> None:
+    path, protocol = require_factorial_implementation()
+
+    assert path.name == ("dense_no_packing_state_operator_factorial_implementation_protocol.json")
+    assert protocol["implementation_commit"] == "dd7396b00ca2cc6f9248471eeaa5c7d4eea889b5"
+    assert protocol["visibility_at_freeze"]["corrected_factorial_beir_outputs"] is False
+    assert protocol["cardinalities"]["training_runs"] == 12
+    assert protocol["cardinalities"]["final_beir_task_units"] == 168
+    assert protocol["cardinalities"]["estimand_seed_task_cells"] == 126
+    assert protocol["execution"]["requires_clean_source_content_receipt"] is True
+    assert "--device cuda:0" in protocol["commands"]["calibration"][0]
+    assert len(protocol["commands"]["training_order"]) == 6
+    assert len(protocol["commands"]["full_beir_parallel_pairs"]) == 3
+    assert protocol["source_bindings"]["factorial_training_wrapper"]["sha256"]
+    assert protocol["commands"]["training_template"].startswith(
+        "uv run embed-optim-train-state-operator-factorial"
+    )
