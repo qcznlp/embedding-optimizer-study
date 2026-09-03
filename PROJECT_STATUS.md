@@ -18,11 +18,12 @@ provenance under the user-directed scope amendment.
 | Supplemental five-stage dynamics | Complete | 65 rows, 910 task units |
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
-| Candidate addendum release | Complete | 21/21 source-bound steps passed |
+| Candidate addendum release | Complete | 21/21 current-source steps passed |
 | Public checkpoint backup | Complete | 5,546 files, 416,844,858,513 bytes |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
-| Clean-clone paper audit | Complete locally | 2,785 files, 107,442,256 bytes, SHA-256 verified |
+| Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
+| GitHub pull-request CI | Green before final receipt refresh | PR #38; latest head must remain green before merge |
 
 The 34 Dense training runs are finished. No historical checkpoint should be overwritten. The next
 scientific phase, if broader optimizer claims are desired, is a corrected no-packing rerun in a new
@@ -77,10 +78,10 @@ Primary receipts:
 - `logs/candidate-breadth-release/pipeline-ledger.json`
 
 The candidate addendum release controller completed all 21 steps against the current source
-contract at `2026-09-03T09:23:23Z`. Its checked-in ledger records return code 0 for every step,
+contract at `2026-09-03T10:57:12Z`. Its checked-in ledger records return code 0 for every step,
 including two strict paper audits, the full test suite, PDF release, and distribution audit. The
 step-contract SHA-256 is
-`a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36`. The compiled paper is 16
+`197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149`. The compiled paper is 16
 pages; the audited main-text endpoint is page 8, and all embedded fonts are non-Type-3.
 
 ## Repository and agent handoff health
@@ -92,6 +93,13 @@ paper audit using `configs/portable_paper_evidence.json`: 2,785 required evaluat
 from the retrieval-dynamics, tail-stability, spectral-transplant, and supplemental five-stage
 source manifests, so it cannot silently become stale.
 
+GitHub CI exposed one additional portability defect that the producer host had masked: the deep
+outcome-summary reconstruction still opened historical absolute CSV paths directly. Those paths
+happened to exist on the producer host but were inaccessible in the GitHub runner. Historical
+project paths are now rebased by the shared report reader, unrelated absolute paths retain literal
+meaning, and a regression test covers a renamed clean checkout. The paper audit also reports the
+specific failed outcome sub-contract instead of returning only an opaque false value.
+
 Full model-state reconstruction remains a separate stronger mode. If the repository contains an
 `outputs/` tree, the supplemental five-stage audit requires the original checkpoint-backed path and
 will not fall back after a source failure. A clean clone without that 416GB tree validates the
@@ -99,8 +107,9 @@ published evaluation closure instead. Restore the Hugging Face checkpoint backup
 full-source reconstruction.
 
 The publication changes are maintained in GitHub PR #38. Local full-source release gates and the
-clean-index portable audit are green; GitHub clean-clone CI must also be green before the PR is
-marked ready or merged.
+GitHub clean-clone workflow are green for the path-portability implementation. The current PR head
+must remain green after this refreshed receipt/status commit before the PR is marked ready or
+merged.
 
 ## Public artifacts
 

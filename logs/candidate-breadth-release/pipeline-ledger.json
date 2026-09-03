@@ -8,7 +8,7 @@
   "families": [
     "dense"
   ],
-  "finished_at": "2026-09-03T09:23:23.651800Z",
+  "finished_at": "2026-09-03T10:57:12.026904Z",
   "input_binding": {
     "candidate_protocol": {
       "bytes": 5469,
@@ -22,7 +22,7 @@
       "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
       "status": "user_directed_post_hoc_scope_amendment"
     },
-    "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+    "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
     "upstream_finalization_ledger": {
       "bytes": 87908,
       "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -188,7 +188,7 @@
       {
         "bytes": 738256,
         "path": "/root/embedding-optimizer-study/configs/portable_paper_evidence.json",
-        "sha256": "246f6ba0d4b575c0552e0bf1d5d0eab771e93f620317f79ea367117f6e7ec28f"
+        "sha256": "b01d917f60afd0433482d03de9e482a1557112a89c8114ba8804e0d51df13ac1"
       },
       {
         "bytes": 867,
@@ -566,9 +566,9 @@
         "sha256": "e7d68227aa259be027c828945e149d951524b245cf36eafd6b6ee435277438a2"
       },
       {
-        "bytes": 54412,
+        "bytes": 54767,
         "path": "/root/embedding-optimizer-study/src/embed_optim/mechanism_report.py",
-        "sha256": "05ccc06a6d76312838b0bc6a7cfc6551e5328c8c709342dddc11c14c3ea0505b"
+        "sha256": "bf9b3aad72e050cf013ce490146d074c032476e1b9ca4a12b2047ce3b92939d0"
       },
       {
         "bytes": 11839,
@@ -576,9 +576,9 @@
         "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
       },
       {
-        "bytes": 54555,
+        "bytes": 54382,
         "path": "/root/embedding-optimizer-study/src/embed_optim/outcome_report.py",
-        "sha256": "e758e5c0f9ebc033192b054fae92375c64598317fa9027342d972bc9f183c5ec"
+        "sha256": "07d1e69031960f58bcc0c8f5af276a93009fe127ab8665327ae0f975411ba024"
       },
       {
         "bytes": 12288,
@@ -586,9 +586,9 @@
         "sha256": "19563cf41c2599c0c34905f07ab1fd95a3c5aac5b46c307d657535a62fa1ff2b"
       },
       {
-        "bytes": 119006,
+        "bytes": 120259,
         "path": "/root/embedding-optimizer-study/src/embed_optim/paper_audit.py",
-        "sha256": "df1146bb1aa0ca4b8b72bbb88221fbecfe79d051a442fa0d2ca54ef788c6971c"
+        "sha256": "1968f6260fa3a1260d7fc237b6e95ed617f359ba85e0967d7f0ebd68a38a0a8f"
       },
       {
         "bytes": 5726,
@@ -1006,9 +1006,9 @@
         "sha256": "6d597d1e288f04c79e368e5e3b6b162754e93ece7adda3be1de7004338cd6e2d"
       },
       {
-        "bytes": 23693,
+        "bytes": 24501,
         "path": "/root/embedding-optimizer-study/tests/test_mechanism_report.py",
-        "sha256": "c450a7ff630b63dda9158098e2e12253b135ad35b2b53575f0e530c95cac6416"
+        "sha256": "2873957bf11b4fcfd986e50f181a2cc2829611d94d3270bd32f721cfb95e8cd8"
       },
       {
         "bytes": 8868,
@@ -1026,9 +1026,9 @@
         "sha256": "496ab247a999d974e2716f15ae6f46cf5e95895d04230bac471846da4a63498a"
       },
       {
-        "bytes": 62464,
+        "bytes": 62565,
         "path": "/root/embedding-optimizer-study/tests/test_paper_audit.py",
-        "sha256": "16d2e9e033c45227d9319184aa2537dbafe6bcd800a8cdb329c234f5891466dc"
+        "sha256": "46038541dfeb896fa3f861767ed2c7d13a4fd92c46a38d7ee734e64c7fad70c6"
       },
       {
         "bytes": 9372,
@@ -1197,11 +1197,11 @@
       }
     ],
     "schema_version": 1,
-    "sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+    "sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
     "steps": [
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_data",
           "--protocol",
@@ -1215,7 +1215,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_data",
           "--protocol",
@@ -1231,7 +1231,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_matrix",
           "--protocol",
@@ -1241,7 +1241,7 @@
           "--gpus",
           "0,1,2,3,4,5,6,7",
           "--python",
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "--retries",
           "1"
         ],
@@ -1250,7 +1250,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_summary",
           "--protocol",
@@ -1263,7 +1263,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_summary",
           "--protocol",
@@ -1277,7 +1277,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.aggregate",
           "--families",
@@ -1291,7 +1291,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.retrieval_dynamics",
           "--families",
@@ -1304,7 +1304,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.mechanism_report",
           "--families",
@@ -1317,7 +1317,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.outcome_report",
           "--families",
@@ -1330,7 +1330,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_publication",
           "--protocol",
@@ -1349,7 +1349,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_publication",
           "--protocol",
@@ -1369,7 +1369,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.paper_results",
           "--families",
@@ -1382,7 +1382,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.paper_audit",
           "--strict",
@@ -1396,7 +1396,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "pytest",
           "-q"
@@ -1406,7 +1406,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "ruff",
           "check",
@@ -1419,7 +1419,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "ruff",
           "format",
@@ -1437,14 +1437,14 @@
           "-C",
           "paper",
           "release",
-          "PYTHON=/root/embedding-optimizer-study/.venv/bin/python"
+          "PYTHON=/root/embedding-optimizer-study/.venv/bin/python3"
         ],
         "index": 17,
         "name": "paper-build"
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.candidate_breadth_publication",
           "--protocol",
@@ -1464,7 +1464,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.paper_audit",
           "--strict",
@@ -1486,7 +1486,7 @@
       },
       {
         "command": [
-          "/root/embedding-optimizer-study/.venv/bin/python",
+          "/root/embedding-optimizer-study/.venv/bin/python3",
           "-m",
           "embed_optim.distribution_audit"
         ],
@@ -1500,18 +1500,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:19:04.887620Z",
+          "finished_at": "2026-09-03T09:52:32.640224Z",
           "log": {
             "bytes": 900,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/01-candidate-data-resume.attempt-1.log",
             "sha256": "df2af25510e22bd188ea871ddd715d9f789d95076e31c4865a0b357ba1e0645b"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:18:59.991908Z"
+          "started_at": "2026-09-03T09:52:27.775472Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_data",
         "--protocol",
@@ -1521,7 +1521,7 @@
         "--resume"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:19:04.913015Z",
+      "finished_at": "2026-09-03T09:52:32.665454Z",
       "index": 1,
       "input_binding": {
         "candidate_protocol": {
@@ -1536,7 +1536,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1549,18 +1549,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:20:39.360807Z",
+          "finished_at": "2026-09-03T09:54:06.587728Z",
           "log": {
             "bytes": 1287,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/02-candidate-data-audit.attempt-1.log",
-            "sha256": "6069ebe3b0fbd1e8e1458a3be571e95f202c93789a16276381901e2ae6d7bd2c"
+            "sha256": "4a8a6570bc2ae7f104e050fc18d9e3288d87fef3d7de50438d9fbbda5857e4e8"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:19:04.940118Z"
+          "started_at": "2026-09-03T09:52:32.693012Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_data",
         "--protocol",
@@ -1572,7 +1572,7 @@
         "/root/embedding-optimizer-study/reports/candidate-breadth/data-audit.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:20:39.386196Z",
+      "finished_at": "2026-09-03T09:54:06.612885Z",
       "index": 2,
       "input_binding": {
         "candidate_protocol": {
@@ -1587,7 +1587,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1600,18 +1600,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:03.763279Z",
+          "finished_at": "2026-09-03T09:54:30.740546Z",
           "log": {
             "bytes": 9326,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/03-candidate-evaluation.attempt-1.log",
-            "sha256": "c55d4c527eadaa0ca235e908bdef86ece6a289fa106488798ca94ee2e8e493bb"
+            "sha256": "621a5fd21697b73d40a0af13c589e151abfb2ca6422cd8ac557667c5589c094a"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:20:39.413796Z"
+          "started_at": "2026-09-03T09:54:06.639999Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_matrix",
         "--protocol",
@@ -1621,12 +1621,12 @@
         "--gpus",
         "0,1,2,3,4,5,6,7",
         "--python",
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "--retries",
         "1"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:03.788722Z",
+      "finished_at": "2026-09-03T09:54:30.765683Z",
       "index": 3,
       "input_binding": {
         "candidate_protocol": {
@@ -1641,7 +1641,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1654,18 +1654,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:11.960412Z",
+          "finished_at": "2026-09-03T09:54:39.138343Z",
           "log": {
             "bytes": 5309,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/04-candidate-summary.attempt-1.log",
-            "sha256": "6d164038c8f3de72a3d61f99edff884eb7ba08d9e8423335b01627627af660b2"
+            "sha256": "c05565d8d4b21726d54965024a156cf52bc2737a2b3885ec6333061640f7a155"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:03.816306Z"
+          "started_at": "2026-09-03T09:54:30.793182Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_summary",
         "--protocol",
@@ -1674,7 +1674,7 @@
         "/root/embedding-optimizer-study/reports/candidate-breadth"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:11.985807Z",
+      "finished_at": "2026-09-03T09:54:39.164587Z",
       "index": 4,
       "input_binding": {
         "candidate_protocol": {
@@ -1689,7 +1689,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1702,18 +1702,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:20.348820Z",
+          "finished_at": "2026-09-03T09:54:47.630775Z",
           "log": {
             "bytes": 5309,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/05-candidate-summary-audit.attempt-1.log",
-            "sha256": "6d164038c8f3de72a3d61f99edff884eb7ba08d9e8423335b01627627af660b2"
+            "sha256": "c05565d8d4b21726d54965024a156cf52bc2737a2b3885ec6333061640f7a155"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:12.013348Z"
+          "started_at": "2026-09-03T09:54:39.192190Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_summary",
         "--protocol",
@@ -1723,7 +1723,7 @@
         "--audit-only"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:20.374066Z",
+      "finished_at": "2026-09-03T09:54:47.655962Z",
       "index": 5,
       "input_binding": {
         "candidate_protocol": {
@@ -1738,7 +1738,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1751,18 +1751,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:28.735546Z",
+          "finished_at": "2026-09-03T09:54:55.976125Z",
           "log": {
             "bytes": 6048,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/06-discovery-report.attempt-1.log",
             "sha256": "063cbeab26acbc39322afe72a1bdd70bdc8f0b5017085eb11e2c6081eb1eba7b"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:20.401655Z"
+          "started_at": "2026-09-03T09:54:47.683484Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.aggregate",
         "--families",
@@ -1772,7 +1772,7 @@
         "--strict"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:28.760842Z",
+      "finished_at": "2026-09-03T09:54:56.001535Z",
       "index": 6,
       "input_binding": {
         "candidate_protocol": {
@@ -1787,7 +1787,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1800,18 +1800,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:36.051798Z",
+          "finished_at": "2026-09-03T09:55:03.199981Z",
           "log": {
             "bytes": 4584,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/07-retrieval-dynamics.attempt-1.log",
             "sha256": "b1d2a6f07f185f2ce566521ca8e780a48ab57aa067216e78e51faf8a806a8ab9"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:28.788806Z"
+          "started_at": "2026-09-03T09:54:56.029487Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.retrieval_dynamics",
         "--families",
@@ -1820,7 +1820,7 @@
         "/root/embedding-optimizer-study/configs/dense_scope_amendment.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:36.076992Z",
+      "finished_at": "2026-09-03T09:55:03.225075Z",
       "index": 7,
       "input_binding": {
         "candidate_protocol": {
@@ -1835,7 +1835,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1848,18 +1848,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:38.717972Z",
+          "finished_at": "2026-09-03T09:55:05.780287Z",
           "log": {
             "bytes": 6355,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/08-mechanism-report.attempt-1.log",
             "sha256": "2f31f63f096da568469ac852f3bc15a8cd0f6a3ee7cc93844d0fa14a6fc2a821"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:36.104667Z"
+          "started_at": "2026-09-03T09:55:03.253130Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.mechanism_report",
         "--families",
@@ -1868,7 +1868,7 @@
         "/root/embedding-optimizer-study/configs/dense_scope_amendment.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:38.744144Z",
+      "finished_at": "2026-09-03T09:55:05.805509Z",
       "index": 8,
       "input_binding": {
         "candidate_protocol": {
@@ -1883,7 +1883,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1896,18 +1896,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:41.158378Z",
+          "finished_at": "2026-09-03T09:55:08.224930Z",
           "log": {
             "bytes": 8940,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/09-outcome-report.attempt-1.log",
             "sha256": "4fc000560129cae9630cf88879d3deb2d55cd7e1de948eb02349363903607bde"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:38.772401Z"
+          "started_at": "2026-09-03T09:55:05.835800Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.outcome_report",
         "--families",
@@ -1916,7 +1916,7 @@
         "/root/embedding-optimizer-study/configs/dense_scope_amendment.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:41.183658Z",
+      "finished_at": "2026-09-03T09:55:08.250360Z",
       "index": 9,
       "input_binding": {
         "candidate_protocol": {
@@ -1931,7 +1931,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1944,18 +1944,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:49.316974Z",
+          "finished_at": "2026-09-03T09:55:16.402131Z",
           "log": {
             "bytes": 2286,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/10-candidate-publication.attempt-1.log",
-            "sha256": "591b373f194a9df48c0de37fc9a99823686ab3731dc037cd6e3a190141d6912c"
+            "sha256": "39aef3d1be203f120d485ab07015b6bbbbdb342fba6210505b8adadc2b8994f2"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:41.211604Z"
+          "started_at": "2026-09-03T09:55:08.278421Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_publication",
         "--protocol",
@@ -1970,7 +1970,7 @@
         "/root/embedding-optimizer-study/reports/candidate-breadth/publication_manifest.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:49.342211Z",
+      "finished_at": "2026-09-03T09:55:16.427291Z",
       "index": 10,
       "input_binding": {
         "candidate_protocol": {
@@ -1985,7 +1985,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -1998,18 +1998,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:21:57.616005Z",
+          "finished_at": "2026-09-03T09:55:24.752916Z",
           "log": {
             "bytes": 2286,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/11-candidate-publication-audit.attempt-1.log",
-            "sha256": "591b373f194a9df48c0de37fc9a99823686ab3731dc037cd6e3a190141d6912c"
+            "sha256": "39aef3d1be203f120d485ab07015b6bbbbdb342fba6210505b8adadc2b8994f2"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:49.370042Z"
+          "started_at": "2026-09-03T09:55:16.455837Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_publication",
         "--protocol",
@@ -2025,7 +2025,7 @@
         "--audit-only"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:21:57.641229Z",
+      "finished_at": "2026-09-03T09:55:24.779037Z",
       "index": 11,
       "input_binding": {
         "candidate_protocol": {
@@ -2040,7 +2040,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2053,18 +2053,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:33:52.669405Z",
+          "finished_at": "2026-09-03T10:07:30.469447Z",
           "log": {
             "bytes": 20356,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/12-paper-results.attempt-1.log",
             "sha256": "db218300620997a5a2672bf63fa86487e365efeb37311ede976c97a496625997"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:21:57.669218Z"
+          "started_at": "2026-09-03T09:55:24.807697Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.paper_results",
         "--families",
@@ -2073,7 +2073,7 @@
         "/root/embedding-optimizer-study/configs/dense_scope_amendment.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:33:52.704577Z",
+      "finished_at": "2026-09-03T10:07:30.494736Z",
       "index": 12,
       "input_binding": {
         "candidate_protocol": {
@@ -2088,7 +2088,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2101,18 +2101,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:46:00.135413Z",
+          "finished_at": "2026-09-03T10:19:33.534208Z",
           "log": {
             "bytes": 17186,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/13-paper-audit-strict.attempt-1.log",
             "sha256": "a2555b8d61da829eb85774039bd3624a1b92f73d4d8619008ed97311a73e98ca"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:33:52.733922Z"
+          "started_at": "2026-09-03T10:07:30.522946Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.paper_audit",
         "--strict",
@@ -2122,7 +2122,7 @@
         "/root/embedding-optimizer-study/configs/dense_scope_amendment.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:46:00.160730Z",
+      "finished_at": "2026-09-03T10:19:33.559431Z",
       "index": 13,
       "input_binding": {
         "candidate_protocol": {
@@ -2137,7 +2137,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2150,24 +2150,24 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:59:11.000751Z",
+          "finished_at": "2026-09-03T10:32:47.808751Z",
           "log": {
             "bytes": 1515,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/14-tests.attempt-1.log",
-            "sha256": "c52bcaa689a0c5f0929e1ccb110611230467b71447a9e2261730bf8083484833"
+            "sha256": "58855f99cb3e3cfbc8fb780456d5966f71a6205147239ddc10bfe09aa9c1df5a"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:46:00.188959Z"
+          "started_at": "2026-09-03T10:19:33.587965Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "pytest",
         "-q"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:59:11.025924Z",
+      "finished_at": "2026-09-03T10:32:47.835298Z",
       "index": 14,
       "input_binding": {
         "candidate_protocol": {
@@ -2182,7 +2182,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2195,18 +2195,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:59:11.098771Z",
+          "finished_at": "2026-09-03T10:32:47.915935Z",
           "log": {
             "bytes": 19,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/15-ruff-check.attempt-1.log",
             "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:59:11.054262Z"
+          "started_at": "2026-09-03T10:32:47.870035Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "ruff",
         "check",
@@ -2215,7 +2215,7 @@
         "scripts/eval"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:59:11.122758Z",
+      "finished_at": "2026-09-03T10:32:47.939825Z",
       "index": 15,
       "input_binding": {
         "candidate_protocol": {
@@ -2230,7 +2230,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2243,18 +2243,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T08:59:11.200972Z",
+          "finished_at": "2026-09-03T10:32:48.017532Z",
           "log": {
             "bytes": 28,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/16-ruff-format-check.attempt-1.log",
             "sha256": "b221fa32ed80fb2ebc9605eb60fdfa0a5eaa83ce614a9f728a4fa4632fbfa89a"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:59:11.152730Z"
+          "started_at": "2026-09-03T10:32:47.968110Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "ruff",
         "format",
@@ -2264,7 +2264,7 @@
         "scripts/eval"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T08:59:11.224742Z",
+      "finished_at": "2026-09-03T10:32:48.040941Z",
       "index": 16,
       "input_binding": {
         "candidate_protocol": {
@@ -2279,7 +2279,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2292,14 +2292,14 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T09:11:11.402035Z",
+          "finished_at": "2026-09-03T10:44:56.666899Z",
           "log": {
-            "bytes": 98214,
+            "bytes": 98216,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/17-paper-build.attempt-1.log",
-            "sha256": "484963e38c122e93b2120f1f628ffe5e10820649a2a5c5c83517f7f8f75ff1cc"
+            "sha256": "edfc831ed8bf21761d29cc90a6b1df08abceb9633d6a65ced3cbbf4981209d55"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T08:59:11.252558Z"
+          "started_at": "2026-09-03T10:32:48.068731Z"
         }
       ],
       "command": [
@@ -2307,10 +2307,10 @@
         "-C",
         "paper",
         "release",
-        "PYTHON=/root/embedding-optimizer-study/.venv/bin/python"
+        "PYTHON=/root/embedding-optimizer-study/.venv/bin/python3"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T09:11:11.427579Z",
+      "finished_at": "2026-09-03T10:44:56.692407Z",
       "index": 17,
       "input_binding": {
         "candidate_protocol": {
@@ -2325,7 +2325,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2338,18 +2338,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T09:11:19.769836Z",
+          "finished_at": "2026-09-03T10:45:05.026229Z",
           "log": {
             "bytes": 2286,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/18-candidate-publication-post-build-audit.attempt-1.log",
-            "sha256": "591b373f194a9df48c0de37fc9a99823686ab3731dc037cd6e3a190141d6912c"
+            "sha256": "39aef3d1be203f120d485ab07015b6bbbbdb342fba6210505b8adadc2b8994f2"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T09:11:11.455987Z"
+          "started_at": "2026-09-03T10:44:56.720832Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.candidate_breadth_publication",
         "--protocol",
@@ -2365,7 +2365,7 @@
         "--audit-only"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T09:11:19.795049Z",
+      "finished_at": "2026-09-03T10:45:05.051367Z",
       "index": 18,
       "input_binding": {
         "candidate_protocol": {
@@ -2380,7 +2380,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2393,18 +2393,18 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T09:23:20.353492Z",
+          "finished_at": "2026-09-03T10:57:08.774166Z",
           "log": {
             "bytes": 17186,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/19-paper-audit-post-build-strict.attempt-1.log",
             "sha256": "a2555b8d61da829eb85774039bd3624a1b92f73d4d8619008ed97311a73e98ca"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T09:11:19.823484Z"
+          "started_at": "2026-09-03T10:45:05.080322Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.paper_audit",
         "--strict",
@@ -2414,7 +2414,7 @@
         "/root/embedding-optimizer-study/configs/dense_scope_amendment.json"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T09:23:20.389416Z",
+      "finished_at": "2026-09-03T10:57:08.800681Z",
       "index": 19,
       "input_binding": {
         "candidate_protocol": {
@@ -2429,7 +2429,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2442,14 +2442,14 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T09:23:22.763754Z",
+          "finished_at": "2026-09-03T10:57:11.138771Z",
           "log": {
             "bytes": 100783,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/20-distribution-build.attempt-1.log",
-            "sha256": "338dd9b28f2d1118c0bb8991f6e755f8041f265501813b4340186afcd12f4750"
+            "sha256": "6de94b16d5a565b4ce05cbff7f8b271a082afab1655b51af4a0986087bc7cbb5"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T09:23:20.431312Z"
+          "started_at": "2026-09-03T10:57:08.829522Z"
         }
       ],
       "command": [
@@ -2457,7 +2457,7 @@
         "build"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T09:23:22.789071Z",
+      "finished_at": "2026-09-03T10:57:11.163976Z",
       "index": 20,
       "input_binding": {
         "candidate_protocol": {
@@ -2472,7 +2472,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",
@@ -2485,23 +2485,23 @@
       "attempts": [
         {
           "attempt": 1,
-          "finished_at": "2026-09-03T09:23:23.600913Z",
+          "finished_at": "2026-09-03T10:57:11.969491Z",
           "log": {
             "bytes": 895,
             "path": "/root/embedding-optimizer-study/logs/candidate-breadth-release/21-distribution-audit.attempt-1.log",
-            "sha256": "d9e3814e31bab682baafd8ba1657fc0503595c4dd35d5e5ccabb782bf3f4bb98"
+            "sha256": "fd3f770b06666d9fb0e431778566995f88bd67e6bcbdbf9af64d26d81f840947"
           },
           "return_code": 0,
-          "started_at": "2026-09-03T09:23:22.821998Z"
+          "started_at": "2026-09-03T10:57:11.193670Z"
         }
       ],
       "command": [
-        "/root/embedding-optimizer-study/.venv/bin/python",
+        "/root/embedding-optimizer-study/.venv/bin/python3",
         "-m",
         "embed_optim.distribution_audit"
       ],
       "complete": true,
-      "finished_at": "2026-09-03T09:23:23.625534Z",
+      "finished_at": "2026-09-03T10:57:11.993952Z",
       "index": 21,
       "input_binding": {
         "candidate_protocol": {
@@ -2516,7 +2516,7 @@
           "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5",
           "status": "user_directed_post_hoc_scope_amendment"
         },
-        "step_contract_sha256": "a7c119816eb0927523c46bea35964f2820d248d82ac0f678900dabc2e7170a36",
+        "step_contract_sha256": "197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149",
         "upstream_finalization_ledger": {
           "bytes": 87908,
           "path": "/root/embedding-optimizer-study/logs/dense-finalization-pipeline/pipeline-ledger.json",

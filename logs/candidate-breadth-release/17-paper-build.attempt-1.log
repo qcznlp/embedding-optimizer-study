@@ -7,7 +7,7 @@ Latexmk: This is Latexmk, John Collins, 31 Jan. 2024. Version 4.83.
 Latexmk: Doing main (small) clean up for 'main.tex'
 
 make[1]: Leaving directory '/root/embedding-optimizer-study/paper'
-cd .. && /root/embedding-optimizer-study/.venv/bin/python -m embed_optim.paper_results --repo-root . \
+cd .. && /root/embedding-optimizer-study/.venv/bin/python3 -m embed_optim.paper_results --repo-root . \
 	--families dense \
 	--scope-amendment configs/dense_scope_amendment.json
 {
@@ -2250,7 +2250,7 @@ Latexmk: Found bibliography file(s):
 Latexmk: All targets (build/main.pdf) are up-to-date
 
 make[1]: Leaving directory '/root/embedding-optimizer-study/paper'
-/root/embedding-optimizer-study/.venv/bin/python -m embed_optim.paper_layout --paper-dir . --max-main-page 8
+/root/embedding-optimizer-study/.venv/bin/python3 -m embed_optim.paper_layout --paper-dir . --max-main-page 8
 {
   "appendix_float_pages": {
     "fig:candidate-breadth": 11,
