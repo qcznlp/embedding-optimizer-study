@@ -1,9 +1,14 @@
+import hashlib
 import json
 from pathlib import Path
 
 import pytest
 
 import embed_optim.completion_backup_contract_migration as migration
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _identity(path: str, digest: str) -> dict[str, object]:
@@ -114,3 +119,38 @@ def test_migration_preserves_prior_history_and_archives_exact_ledger(monkeypatch
     assert migration.migrate_ledger(ledger_path, protocol_path, tmp_path)["status"] == (
         "already_migrated"
     )
+
+
+def test_checked_in_hardening_receipt_binds_sources_and_preserved_upload_commits():
+    root = Path.cwd()
+    receipt = json.loads(
+        (root / "reports/dense-no-packing/backup-provenance-migration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert receipt["complete"] is True
+    assert receipt["migration"]["scientific_contract_changed"] is False
+    assert receipt["resume"]["status"] == "waiting_for_training"
+    assert receipt["resume"]["failed_step"] is None
+    identities = [
+        receipt["migration"]["implementation"],
+        receipt["migration"]["protocol"],
+        *receipt["migration"]["bound_sources"],
+    ]
+    for identity in identities:
+        path = root / identity["path"]
+        assert path.stat().st_size == identity["bytes"]
+        assert _sha256(path) == identity["sha256"]
+
+    expected_commits = {
+        "padded-adamw-1e-6": "71c58f98367eea5a15464163600a22c2005f7c76",
+        "padded-adamw-3e-6": "fd47604c588deae679e17411a6acfc0d455613f9",
+    }
+    for audit in receipt["resume"]["remote_backup_reaudits"]:
+        assert audit["upload_commit_oid"] == expected_commits[audit["run_id"]]
+        full_receipt = (
+            root / "reports/dense-no-packing/checkpoint-backup" / f"{audit['run_id']}.json"
+        )
+        assert full_receipt.stat().st_size == audit["receipt_bytes"]
+        assert _sha256(full_receipt) == audit["receipt_sha256"]
