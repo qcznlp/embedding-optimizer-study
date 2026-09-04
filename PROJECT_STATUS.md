@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 06:33 UTC
+Last updated: 2026-09-04 06:42 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -55,8 +55,8 @@ deeply completed at step 3907 with all five scheduled checkpoints, including the
 scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
 `padded-adamw-1e-5` and `padded-adamw-3e-5`; both deeply completed at step 3907 by 03:27 UTC with
 all five scheduled checkpoints. The existing matrix then immediately launched
-`padded-muon-1e-4` and `padded-muon-3e-4` on the released four-GPU pools. At the 03:29 UTC W&B
-audit they were at steps 60 and 20, respectively. Across the corrected phase there is still no CUDA
+`padded-muon-1e-4` and `padded-muon-3e-4` on the released four-GPU pools. At the 06:41 UTC W&B
+audit they were at steps 1690 and 1640, respectively. Across the corrected phase there is still no CUDA
 OOM, NCCL data-plane, non-finite, or traceback marker.
 
 At 04:53--04:58 UTC both active Muon runs produced their first deeply valid checkpoint at step 782
@@ -284,9 +284,9 @@ partial tree (4,061,425 bytes) is remotely size- and digest-verified at Hugging 
 This is an incremental computation and durability receipt only: no cross-optimizer geometry
 summary or mechanism interpretation is permitted before the complete 12-run matrix.
 
-The corrected W&B source-run path now has a dedicated read-only audit. Its latest receipt at 03:29
+The corrected W&B source-run path now has a dedicated read-only audit. Its latest receipt at 06:41
 UTC found the four locally complete runs remotely `finished` at step 3907, the two active Muon runs
-remotely `running`, and all six future runs absent as expected. All six visible runs match the
+remotely `running` at steps 1690 and 1640, and all six future runs absent as expected. All six visible runs match the
 deterministic ID, run name, group, tags, and resolved padded matrix configuration, with zero
 problems. This post-output operational receipt does not modify W&B or add a scientific endpoint.
 
