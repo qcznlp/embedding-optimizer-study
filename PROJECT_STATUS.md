@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 09:40 UTC
+Last updated: 2026-09-04 11:15 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -29,13 +29,13 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate paper artifact | Complete | Source-addressed manifest and all declared outputs verify |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 4/12 complete; first Muon pair running; 28/60 resumable checkpoints |
-| Corrected completion handoff | Detached controller active after four audited migrations | Waiting for training under contract `4152531e...`; 4/4 complete runs uploaded and remotely audited; no failed step |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 6/12 complete; second Muon pair running; 30/60 resumable checkpoints |
+| Corrected completion handoff | Detached controller active after four audited migrations | Waiting for training under contract `4152531e...`; 6/6 complete runs uploaded and remotely audited; no failed step |
 | Corrected next-pair handoff | Artifact-only guard completed without takeover | Existing matrix launched both Muon successors; guard yielded with `takeover_launched=false` |
-| Sealed-checkpoint durability | Detached CPU/network supervisor active | 28/60 checkpoints covered; 32 not yet generated; 0 cycle failures |
-| Corrected weight-space | Incremental frozen analysis active | 4/12 runs, 20/60 stages; 24 source-bound files remotely digest-verified |
-| Corrected W&B provenance | Read-only partial audit complete | 6/12 visible: 4 finished, 2 running at steps 3190/3140, 0 identity/config/state problems |
-| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; all 4 complete corrected runs remotely verified; stage receipts cover 28/60 checkpoints |
+| Sealed-checkpoint durability | Detached CPU/network supervisor active | 30/60 checkpoints covered; 30 not yet generated; 0 cycle failures |
+| Corrected weight-space | Incremental frozen analysis active | 6/12 runs and 30/60 stages computed locally; the first 4 runs and 20 stages are remotely digest-verified |
+| Corrected W&B provenance | Read-only partial audit complete | 8/12 visible: 6 finished, 2 running at steps 60/10, 0 identity/config/state problems |
+| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; all 6 complete corrected runs remotely verified; stage receipts cover 30/60 checkpoints |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
@@ -55,9 +55,11 @@ deeply completed at step 3907 with all five scheduled checkpoints, including the
 scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
 `padded-adamw-1e-5` and `padded-adamw-3e-5`; both deeply completed at step 3907 by 03:27 UTC with
 all five scheduled checkpoints. The existing matrix then immediately launched
-`padded-muon-1e-4` and `padded-muon-3e-4` on the released four-GPU pools. At the 09:40 UTC W&B
-audit they were at steps 3190 and 3140, respectively. Across the corrected phase there is still no
-CUDA OOM, NCCL data-plane, non-finite, or traceback marker.
+`padded-muon-1e-4` and `padded-muon-3e-4` on the released four-GPU pools. Both deeply completed at
+step 3907 by 11:12 UTC with all five scheduled checkpoints. The matrix immediately advanced to
+`padded-muon-1e-3` and `padded-muon-3e-3`; the 11:14 UTC artifact-only snapshot observed them at
+steps 64 and 12. Across the corrected phase there is still no CUDA OOM, NCCL data-plane,
+non-finite, or traceback marker.
 
 At 04:53--04:58 UTC both active Muon runs produced their first deeply valid checkpoint at step 782
 and continued to advance without a fatal marker. The sealed-checkpoint supervisor uploaded 17 files
@@ -93,6 +95,14 @@ identical local and remote inventories with empty missing, extra, size-mismatch,
 digest-mismatch sets and retain `scientific_completion=false`. The 09:40 artifact-only snapshot
 observed steps 3190 and 3141; the concurrent W&B audit observed steps 3190 and 3140 with all six
 visible corrected runs provenance-valid and no reported problem.
+
+At 11:06--11:12 UTC the completion controller uploaded and remotely audited both complete first-pair
+Muon run directories. Each contains 101 files: `padded-muon-1e-4` has 7,354,270,671 bytes at
+Hugging Face commit `fc3be88227387b943f0b8ca7207aacd4013cb554`, while
+`padded-muon-3e-4` has 7,354,271,465 bytes at commit
+`b78f81f89e65180fec08817d152ee72a9ab68ba3`. Both local and remote inventories are identical with
+empty missing, extra, and size-mismatch sets. The finalizer returned to `waiting_for_training`
+under contract `4152531e...` with 6/12 runs complete and no failed step.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
 leaving the eight established training ranks adopted by PID 1. The NCCL data plane continued to
@@ -287,24 +297,26 @@ lease-protected supervisor so every later sealed checkpoint receives the same di
 backup without an interactive handoff. Its artifact lease remains held; it reads only training
 artifacts, uses CPU/network resources, and neither imports CUDA nor controls training. Its runtime contract
 SHA-256 is `a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7`;
-the current atomic state records 28/60 checkpoints covered, 32 not yet generated, and zero cycle
+the current atomic state records 30/60 checkpoints covered, 30 not yet generated, and zero cycle
 failures. Whole-run receipts cover completed runs, intermediate receipts cover active stages, and
 the final stage yields to the existing whole-run controller before the checkpoint-level fallback.
 The live state and exclusive lease are under `logs/dense-no-packing-sealed-backup/`; none of these
 durability states constitute scientific completion.
 
 The frozen corrected geometry implementation has now completed all five stages for all four
-finished AdamW runs. Each stage contains exactly 88 hidden-matrix records; every recorded scalar is
-finite, and all 20 record files match their manifest byte counts and SHA-256 digests. The 24-file
-partial tree (4,061,425 bytes) is remotely size- and digest-verified at Hugging Face commit
+finished AdamW runs and both finished first-pair Muon runs. Each stage contains exactly 88
+hidden-matrix records; the two new Muon manifests each bind five checkpoint record files. The
+earlier 24-file AdamW partial tree (4,061,425 bytes) is remotely size- and digest-verified at
+Hugging Face commit
 `54135027f4dec5e48c3822ad43f5f852fdef7d07` under
 `qcz/embedding-optimizer-study-analysis-artifacts/corrected-dense-no-packing-v1/weight-space`.
-This is an incremental computation and durability receipt only: no cross-optimizer geometry
-summary or mechanism interpretation is permitted before the complete 12-run matrix.
+The two Muon trajectories are currently local incremental computation only and will join the same
+remote audit path at the next analysis-artifact refresh. No cross-optimizer geometry summary or
+mechanism interpretation is permitted before the complete 12-run matrix.
 
-The corrected W&B source-run path now has a dedicated read-only audit. Its latest receipt at 09:40
-UTC found the four locally complete runs remotely `finished` at step 3907, the two active Muon runs
-remotely `running` at steps 3190 and 3140, and all six future runs absent as expected. All six
+The corrected W&B source-run path now has a dedicated read-only audit. Its latest receipt at 11:14
+UTC found all six locally complete runs remotely `finished` at step 3907, the second Muon pair
+remotely `running` at steps 60 and 10, and all four future NorMuon runs absent as expected. All eight
 visible runs match the deterministic ID, run name, group, tags, and resolved padded matrix
 configuration, with zero problems. This post-output operational receipt does not modify W&B or add
 a scientific endpoint.
