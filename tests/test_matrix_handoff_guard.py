@@ -1,3 +1,4 @@
+import hashlib
 import json
 import subprocess
 from argparse import Namespace
@@ -7,6 +8,10 @@ from types import SimpleNamespace
 import pytest
 
 import embed_optim.matrix_handoff_guard as guard
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _protocol() -> dict:
@@ -131,3 +136,20 @@ def test_checked_in_guard_contract_is_source_bound_and_process_free():
     assert protocol["successor_run_ids"] == ["padded-muon-1e-4", "padded-muon-3e-4"]
     assert "gpu.py" not in " ".join(command)
     assert command[command.index("--max-launches") + 1] == "0"
+
+
+def test_checked_in_guard_activation_receipt_binds_implementation_and_protocol():
+    root = Path.cwd()
+    receipt = json.loads(
+        (root / "reports/dense-no-packing/matrix-handoff-guard.json").read_text(encoding="utf-8")
+    )
+
+    assert receipt["status"] == "waiting_for_current_runs"
+    assert receipt["complete"] is False
+    assert receipt["controller_lease"] == "held"
+    assert receipt["takeover_launched"] is False
+    for name in ("implementation", "protocol"):
+        identity = receipt[name]
+        path = root / identity["path"]
+        assert path.stat().st_size == identity["bytes"]
+        assert _sha256(path) == identity["sha256"]

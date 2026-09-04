@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 01:43 UTC
+Last updated: 2026-09-04 01:52 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -31,7 +31,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
 | Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 2997/2967; 16/60 resumable checkpoints |
 | Corrected completion handoff | Detached controller restored after two audited migrations | Waiting for training under contract `25eefbe5...`; 2/2 full-run backups re-audited with upload commit IDs intact; no failed step |
-| Corrected next-pair handoff | Artifact-only guard locked before current-pair completion | Wait for both current runs, then yield on any Muon successor artifact or take over only after a five-minute absence grace |
+| Corrected next-pair handoff | Artifact-only guard active with lease held | Waiting for both current runs; then yield on any Muon successor artifact or take over only after a five-minute absence grace |
 | Sealed-checkpoint durability | Detached CPU/network supervisor active | 16/60 checkpoints covered; 44 not yet generated; 0 cycle failures |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
 | Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
@@ -170,6 +170,12 @@ Muon pair's log/output artifacts. It yields immediately if the existing matrix a
 invokes the unchanged recovery supervisor after the full absence grace and a final race check. Its
 source, matrix, supervisor, GPU pools, ports, and timing are content-bound; live state is under
 `logs/dense-no-packing-handoff-guard/`.
+
+The guard passed PR [#68](https://github.com/qcznlp/embedding-optimizer-study/pull/68), started at
+01:52 UTC, acquired its dedicated lease, and published `waiting_for_current_runs` with neither
+current run yet marked complete and `takeover_launched=false`. Its distributable activation receipt
+is `reports/dense-no-packing/matrix-handoff-guard.json`; later yield or takeover replaces this
+operational status at the corresponding meaningful transition.
 
 Because the experiment host may be shut down before an active run reaches all five stages, the two
 sealed step-782 checkpoints from the second AdamW pair were independently uploaded at 21:17--21:18
