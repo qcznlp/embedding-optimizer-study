@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 01:23 UTC
+Last updated: 2026-09-04 01:33 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -29,8 +29,8 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 2878/2850; 16/60 resumable checkpoints |
-| Corrected completion handoff | Backup-provenance hardening locked; second resume pending | Paper-only migration succeeded; audit-only commit-ID bug fixed and backup implementation added to the controller contract |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 2997/2967; 16/60 resumable checkpoints |
+| Corrected completion handoff | Detached controller restored after two audited migrations | Waiting for training under contract `25eefbe5...`; 2/2 full-run backups re-audited with upload commit IDs intact; no failed step |
 | Sealed-checkpoint durability | Detached CPU/network supervisor active | 16/60 checkpoints covered; 44 not yet generated; 0 cycle failures |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
 | Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
@@ -52,8 +52,8 @@ output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the 
 time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
 deeply completed at step 3907 with all five scheduled checkpoints, including the model, optimizer,
 scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
-`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 01:18 UTC artifact snapshot they were at steps
-2878 and 2850, respectively, and both had deeply valid checkpoints through step 2345. Across
+`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 01:33 UTC artifact snapshot they were at steps
+2997 and 2967, respectively, and both had deeply valid checkpoints through step 2345. Across
 the corrected phase there is still no CUDA OOM, NCCL data-plane, non-finite, or traceback marker.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
@@ -150,8 +150,14 @@ fix now preserves those fields only when the run, repository, prefix, local root
 digest all match, and fails closed otherwise. It also adds the invoked backup implementation to
 the completion controller source contract. The exact second transition from `8687929d...` to
 `25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13` is frozen in
-`configs/dense_no_packing_backup_provenance_migration.json`. Training and the independent sealed
-backup supervisor remain unaffected while this operational fix passes review.
+`configs/dense_no_packing_backup_provenance_migration.json`. It passed PR
+[#66](https://github.com/qcznlp/embedding-optimizer-study/pull/66), executed at 01:30 UTC, and
+archived the prior 12,031-byte ledger under SHA-256
+`e75215aa6d8600769e35fcc044871eaf902cee6b4f105d5b9ab0ad377f7942e6`. The resumed controller
+re-audited both complete runs with the original commit IDs intact, then returned to
+`waiting_for_training` at 01:32 UTC with its lease held and no failed step. The distributable
+receipt is `reports/dense-no-packing/backup-provenance-migration.json`. Training and the independent
+sealed backup supervisor were unaffected throughout.
 
 Because the experiment host may be shut down before an active run reaches all five stages, the two
 sealed step-782 checkpoints from the second AdamW pair were independently uploaded at 21:17--21:18

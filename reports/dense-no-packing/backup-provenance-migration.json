@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_backup_provenance_contract_migration",
+  "status": "complete",
+  "complete": true,
+  "incident": {
+    "observed_at_utc": "2026-09-04T01:16:49Z",
+    "effect": "Audit-only full-run verification temporarily replaced the two stored upload commit identities with null. Remote inventories remained complete and unchanged.",
+    "recovery": "The authoritative upload commit identities were restored from the tracked pre-audit receipts before the corrected implementation was re-audited."
+  },
+  "migration": {
+    "executed_at_utc": "2026-09-04T01:30:59Z",
+    "from_contract_sha256": "8687929d22adf4a6a07593b5aa67669f816aef0b902f2d035522802fd94b4c96",
+    "to_contract_sha256": "25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13",
+    "scientific_contract_changed": false,
+    "implementation": {
+      "path": "src/embed_optim/completion_backup_contract_migration.py",
+      "bytes": 7643,
+      "sha256": "df3e71a5342706026284ab5baac0de61130045a2250a46970aafb97da6a4b149"
+    },
+    "protocol": {
+      "path": "configs/dense_no_packing_backup_provenance_migration.json",
+      "bytes": 2030,
+      "sha256": "72e7a155a44c0a684e6574f4c76d02f2e1b87500ba2f1b51ff0eac0de876e1e3"
+    },
+    "source_ledger_archive": {
+      "host_path": "logs/dense-no-packing-finalization/pipeline-ledger.pre-backup-provenance-hardening-8687929d.json",
+      "bytes": 12031,
+      "sha256": "e75215aa6d8600769e35fcc044871eaf902cee6b4f105d5b9ab0ad377f7942e6"
+    },
+    "bound_sources": [
+      {
+        "path": "src/embed_optim/corrected_completion_pipeline.py",
+        "bytes": 20348,
+        "sha256": "7f3e6f440d4b79b2a7aea3d5336b9458fbeb8cb61c5537fdda13fea72d591972"
+      },
+      {
+        "path": "src/embed_optim/corrected_checkpoint_backup.py",
+        "bytes": 7953,
+        "sha256": "29935e16ad8469fb75efa4272c215c235e60bda15ad5d1be1fe7a5ec9e1b1727"
+      }
+    ]
+  },
+  "resume": {
+    "resumed_at_utc": "2026-09-04T01:31:03Z",
+    "verified_at_utc": "2026-09-04T01:32:07Z",
+    "controller_lease": "held",
+    "status": "waiting_for_training",
+    "failed_step": null,
+    "training_runs_complete": 2,
+    "training_runs_expected": 12,
+    "remote_backup_reaudits": [
+      {
+        "run_id": "padded-adamw-1e-6",
+        "return_code": 0,
+        "upload_commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+        "receipt_bytes": 861,
+        "receipt_sha256": "664901fe21658cf33be96f2a31495fc82bc35f015089db4d7ee7cff13de710cf"
+      },
+      {
+        "run_id": "padded-adamw-3e-6",
+        "return_code": 0,
+        "upload_commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+        "receipt_bytes": 861,
+        "receipt_sha256": "2dce8c584a0903b1c04d70a55215648eb6ec7ca64c95fcce598867d566c5f8b9"
+      }
+    ]
+  },
+  "claim_boundary": "This is an operational durability and provenance repair. It does not change a remote checkpoint, training run, scientific estimand, threshold, evaluation, or analysis. The redundant per-checkpoint receipts created during the brief null-receipt window remain durability evidence only."
+}
