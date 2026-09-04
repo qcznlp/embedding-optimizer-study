@@ -83,7 +83,9 @@ packed-selector claim moves to the appendix. After this change reaches the exper
 the controller releases its lease, migrate with
 `/usr/bin/python3 -m embed_optim.completion_contract_migration --protocol
 configs/dense_no_packing_publication_narrative_migration.json`, then resume the ordinary controller
-with `/usr/bin/python3`. Do not use that migration for any other source drift.
+with `/usr/bin/python3`. This migration was executed at 03:12 UTC on 2026-09-04; its distributable
+receipt is `reports/dense-no-packing/publication-narrative-migration.json`. Do not rerun it or use it
+for any other source drift.
 
 If `logs/dense-no-packing-sealed-backup/state.json` exists, it is the independent per-checkpoint
 durability state. Its supervisor only reads training artifacts and uses CPU/network resources. Do
