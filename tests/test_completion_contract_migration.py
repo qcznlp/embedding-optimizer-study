@@ -1,9 +1,14 @@
+import hashlib
 import json
 from pathlib import Path
 
 import pytest
 
 import embed_optim.completion_contract_migration as migration
+
+
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def _identity(path: str, digest: str) -> dict[str, object]:
@@ -138,3 +143,22 @@ def test_complete_ledger_is_never_migrated(monkeypatch, tmp_path: Path):
 
     with pytest.raises(ValueError, match="complete completion ledger"):
         migration.migrate_ledger(ledger_path, protocol_path, tmp_path)
+
+
+def test_checked_in_migration_receipt_binds_implementation_and_protocol():
+    root = Path.cwd()
+    receipt = json.loads(
+        (root / "reports/dense-no-packing/completion-contract-migration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert receipt["complete"] is True
+    assert receipt["migration"]["scientific_contract_changed"] is False
+    assert receipt["resume"]["status"] == "waiting_for_training"
+    assert receipt["resume"]["failed_step"] is None
+    for name in ("implementation", "protocol"):
+        identity = receipt["migration"][name]
+        path = root / identity["path"]
+        assert path.stat().st_size == identity["bytes"]
+        assert _sha256(path) == identity["sha256"]

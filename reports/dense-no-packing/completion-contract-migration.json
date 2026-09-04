@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_completion_contract_migration",
+  "status": "complete",
+  "complete": true,
+  "incident": {
+    "observed_at_utc": "2026-09-04T00:07:05Z",
+    "failure": "Corrected completion source or command contract changed while running",
+    "effect": "The completion handoff controller stopped before any new run completion or finalization step; training and the independent sealed-checkpoint backup supervisor continued."
+  },
+  "migration": {
+    "executed_at_utc": "2026-09-04T01:16:32Z",
+    "from_contract_sha256": "55fdd9d6eb159d7784bbb4f9c53e1f0baba99440ab44203e2bcdb3888d3a1e05",
+    "to_contract_sha256": "8687929d22adf4a6a07593b5aa67669f816aef0b902f2d035522802fd94b4c96",
+    "scientific_contract_changed": false,
+    "implementation": {
+      "path": "src/embed_optim/completion_contract_migration.py",
+      "bytes": 10130,
+      "sha256": "83bc97699336265efe26b258a19eb8604a9d41ee4a334909ea0702f5d364e76c"
+    },
+    "protocol": {
+      "path": "configs/dense_no_packing_completion_contract_migration.json",
+      "bytes": 2753,
+      "sha256": "d11000cfe46ffcee5f4594e7b8c5d704fbd4a7b22c9a050e0a98b97e0377f9dd"
+    },
+    "source_ledger_archive": {
+      "host_path": "logs/dense-no-packing-finalization/pipeline-ledger.pre-paper-only-contract-55fdd9d6.json",
+      "bytes": 10069,
+      "sha256": "7d4da69912e39199bc14a176d95d102a593e7f12b267b35dc13a20b3bd040c93"
+    }
+  },
+  "resume": {
+    "resumed_at_utc": "2026-09-04T01:16:47Z",
+    "verified_at_utc": "2026-09-04T01:17:51Z",
+    "controller_lease": "held",
+    "status": "waiting_for_training",
+    "failed_step": null,
+    "training_runs_complete": 2,
+    "training_runs_expected": 12,
+    "remote_backup_reaudits": [
+      {
+        "run_id": "padded-adamw-1e-6",
+        "return_code": 0,
+        "log_bytes": 79,
+        "log_sha256": "b0e49ac36a7fe138ac59f3485804ad14e26a50011caafc9bd35b42434382a7b4"
+      },
+      {
+        "run_id": "padded-adamw-3e-6",
+        "return_code": 0,
+        "log_bytes": 79,
+        "log_sha256": "7a4bd4e4693baf5dadb2c41bbf5a0a49ebc6bbf440e3127159432a6a30c97ddb"
+      }
+    ]
+  },
+  "claim_boundary": "This is an operational recovery receipt. It preserves completed backup records and permits only the exact paper-only source transition frozen before execution. It does not change or complete any training run, scientific estimand, threshold, evaluation, or analysis."
+}

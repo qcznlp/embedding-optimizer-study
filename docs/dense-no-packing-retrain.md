@@ -198,6 +198,23 @@ matrix, execution protocol, arguments, and step order, plus the six explicit non
 paper-only amendments. It archives the original ledger byte-for-byte before updating the live
 binding. It must not be reused for later source drift.
 
+The first audit-only backup pass after that migration exposed a separate receipt bug: a successful
+audit rewrote the original upload commit fields as null because it had not itself uploaded. The
+fix preserves an existing commit identity only after the run, repository, prefix, and inventory
+digest all match, and fails closed on mismatched provenance. The follow-up contract hardening also
+adds the invoked backup implementation to the completion controller's bound sources. Its one-time
+transition is frozen in `configs/dense_no_packing_backup_provenance_migration.json` and runs as:
+
+```bash
+python -m embed_optim.completion_backup_contract_migration
+python -m embed_optim.corrected_completion_pipeline --resume
+```
+
+The two original full-run upload commit identities remain authoritative. Redundant per-checkpoint
+receipts created by the independent sealed-backup supervisor during the brief null-receipt window
+remain valid durability evidence but do not replace the full-run receipts or change scientific
+completion.
+
 ## Corrected weight-space analysis
 
 The weight-space definitions and retrieval-bridge scientific plan were frozen before the first

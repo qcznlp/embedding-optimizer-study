@@ -238,7 +238,11 @@ def _contract(
         "dense_no_packing_sensitivity_implementation_protocol.json",
         "dense_no_packing_publication_protocol.json",
     )
-    sources = [Path(__file__).resolve(), args.matrix.resolve()]
+    sources = [
+        Path(__file__).resolve(),
+        (repository / "src/embed_optim/corrected_checkpoint_backup.py").resolve(),
+        args.matrix.resolve(),
+    ]
     sources.extend((repository / "configs" / name).resolve() for name in protocol_names)
     body = {
         "schema_version": 1,
