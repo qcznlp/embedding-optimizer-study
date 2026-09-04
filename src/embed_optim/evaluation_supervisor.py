@@ -129,7 +129,7 @@ def _evaluation_command(args: argparse.Namespace) -> list[str]:
     return command
 
 
-def _aggregate_command(args: argparse.Namespace, *, render_blog: bool = False) -> list[str]:
+def _aggregate_command(args: argparse.Namespace) -> list[str]:
     command = [
         args.python,
         "-m",
@@ -140,16 +140,12 @@ def _aggregate_command(args: argparse.Namespace, *, render_blog: bool = False) -
         args.results_root,
         "--output-dir",
         args.output_dir,
-        "--blog",
-        args.blog,
         "--families",
         *args.families,
     ]
     if args.scope_amendment is not None:
         command.extend(["--scope-amendment", str(args.scope_amendment)])
     command.append("--strict")
-    if not render_blog:
-        command.append("--no-render-blog")
     return command
 
 
@@ -261,10 +257,10 @@ def supervise(
                 sleeper(args.restart_delay)
             continue
 
-        final_report = run_command(_aggregate_command(args, render_blog=True), check=False)
-        print(f"Final report and blog render exited {final_report.returncode}", flush=True)
+        final_report = run_command(_aggregate_command(args), check=False)
+        print(f"Final report render exited {final_report.returncode}", flush=True)
         if final_report.returncode == 0:
-            print("Evaluation, W&B histories, reports, and blog are complete", flush=True)
+            print("Evaluation, W&B histories, and reports are complete", flush=True)
             return 0
 
         if not args.max_launches or cycles < args.max_launches:
@@ -288,7 +284,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--results-root", default="results/decontaminated-beir")
     parser.add_argument("--log-dir", default="logs/evaluation")
     parser.add_argument("--output-dir", default="reports")
-    parser.add_argument("--blog", default="docs/blog.md")
     parser.add_argument("--python", default=sys.executable)
     parser.add_argument(
         "--worker-python",
@@ -322,7 +317,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--skip-wandb-sync",
         action="store_true",
-        help="Skip canonical W&B publication while retaining strict evaluation and blog gates",
+        help="Skip canonical W&B publication while retaining strict evaluation and report gates",
     )
     parser.add_argument(
         "--max-launches",

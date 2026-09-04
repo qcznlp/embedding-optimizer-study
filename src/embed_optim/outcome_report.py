@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import statistics
@@ -20,8 +21,6 @@ from .mechanism_report import (
     _finite,
     _format,
     _load_manifest,
-    _marked_block_complete,
-    _marked_block_record,
     _portable_path,
     _read_declared_csv,
     _repository_root,
@@ -36,7 +35,6 @@ FINAL_CONCLUSION_MARKERS = (
     "<!-- FINAL-CONCLUSION:END -->",
 )
 FINAL_CONCLUSION_PENDING = "FINAL_CONCLUSION_PENDING"
-MECHANISM_MARKERS = ("<!-- MECHANISM:BEGIN -->", "<!-- MECHANISM:END -->")
 FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CONTRASTS = (("muon", "adamw"), ("normuon", "adamw"), ("normuon", "muon"))
@@ -66,7 +64,7 @@ def _replace_marked(
     content: str,
     markers: tuple[str, str] = OUTCOME_MARKERS,
     *,
-    context: str = "blog",
+    context: str = "document",
 ) -> str:
     begin, end = markers
     if text.count(begin) != 1 or text.count(end) != 1:
@@ -74,6 +72,22 @@ def _replace_marked(
     before, remainder = text.split(begin)
     _, after = remainder.split(end)
     return f"{before}{begin}\n\n{content}\n\n{end}{after}"
+
+
+def _marked_section_record(path: Path, markers: tuple[str, str]) -> dict[str, Any]:
+    text = path.read_text(encoding="utf-8")
+    begin, end = markers
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise ValueError(f"Expected exactly one marker pair {markers}")
+    start = text.index(begin)
+    stop = text.index(end, start + len(begin)) + len(end)
+    block = text[start:stop].encode("utf-8")
+    return {
+        "path": str(path.resolve()),
+        "markers": list(markers),
+        "block_bytes": len(block),
+        "block_sha256": hashlib.sha256(block).hexdigest(),
+    }
 
 
 def _interval_classification(cell: str) -> str:
@@ -100,7 +114,7 @@ def build_final_conclusion_contract(
     *,
     families: tuple[str, ...] = FAMILIES,
 ) -> dict[str, Any]:
-    """Build one evidence-bound conclusion shared by the paper, blog, and README."""
+    """Build one evidence-bound conclusion shared by the paper and README."""
 
     if causal_evidence.get("complete") is not True:
         pending = (
@@ -271,7 +285,6 @@ def _source(
 
 def _validate_mechanism_section(
     report_path: Path,
-    blog_path: Path,
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: dict[str, Any] | None = None,
 ) -> Path:
@@ -296,20 +309,6 @@ def _validate_mechanism_section(
         or _sha256(report_path) != output.get("sha256")
     ):
         raise ValueError("Mechanism report differs from its strict manifest")
-    if not _marked_block_complete(
-        blog_path,
-        manifest.get("blog"),
-        MECHANISM_MARKERS,
-        repository_root=repository_root,
-    ):
-        raise ValueError("Final blog mechanism marker differs from its rendered manifest")
-    blog = blog_path.read_text(encoding="utf-8")
-    begin, end = MECHANISM_MARKERS
-    if blog.count(begin) != 1 or blog.count(end) != 1:
-        raise ValueError("Expected exactly one mechanism marker pair in the blog")
-    rendered = blog.split(begin, 1)[1].split(end, 1)[0].strip()
-    if rendered != report_path.read_text(encoding="utf-8").strip():
-        raise ValueError("Final blog mechanism marker differs from its rendered report")
     return manifest_path
 
 
@@ -964,7 +963,6 @@ def render_outcome_report(
     short_branch_dir: Path,
     confirmatory_dir: Path,
     mechanism_report: Path,
-    blog_path: Path,
     output_path: Path,
     *,
     readme_path: Path | None = None,
@@ -978,10 +976,7 @@ def render_outcome_report(
     causal_evidence = load_causal_chain_evidence(repository_root, allow_pending=True)
     causal_section = render_causal_chain_markdown(causal_evidence, detailed=False, heading_level=3)
     causal_display = causal_chain_display_contract(causal_evidence)
-    blog_path = blog_path.resolve()
-    mechanism_manifest_path = _validate_mechanism_section(
-        mechanism_report, blog_path, families, scope
-    )
+    mechanism_manifest_path = _validate_mechanism_section(mechanism_report, families, scope)
     causal_chain: dict[str, dict[str, Any]] = {}
     causal_table_paths: list[Path] = []
     if causal_evidence["complete"]:
@@ -1154,15 +1149,6 @@ def render_outcome_report(
     content += "\n\n## Conclusion\n\n" + conclusion["markdown"]
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
-    blog_text = _replace_marked(blog_path.read_text(encoding="utf-8"), content)
-    if all(marker in blog_text for marker in FINAL_CONCLUSION_MARKERS):
-        blog_text = _replace_marked(
-            blog_text,
-            conclusion["markdown"],
-            FINAL_CONCLUSION_MARKERS,
-            context="final-conclusion blog",
-        )
-    _atomic_text(blog_path, blog_text)
     resolved_readme: Path | None = None
     if readme_path is not None:
         resolved_readme = (
@@ -1240,10 +1226,6 @@ def render_outcome_report(
             "bytes": output_path.stat().st_size,
             "sha256": _sha256(output_path),
         },
-        "blog": {
-            **_marked_block_record(blog_path, OUTCOME_MARKERS),
-            "path": _portable_path(blog_path, repository_root),
-        },
         "claim_boundary": (
             "Routing and local-step tables are controls; short branches test accumulation on frozen "
             "probes; the tail and spectrum-versus-basis analyses are post-hoc causal decomposition "
@@ -1251,14 +1233,9 @@ def render_outcome_report(
             "three-seed BEIR table is confirmatory retrieval evidence."
         ),
     }
-    if all(marker in blog_path.read_text(encoding="utf-8") for marker in FINAL_CONCLUSION_MARKERS):
-        manifest["blog_conclusion"] = {
-            **_marked_block_record(blog_path, FINAL_CONCLUSION_MARKERS),
-            "path": _portable_path(blog_path, repository_root),
-        }
     if resolved_readme is not None:
         manifest["readme_conclusion"] = {
-            **_marked_block_record(resolved_readme, FINAL_CONCLUSION_MARKERS),
+            **_marked_section_record(resolved_readme, FINAL_CONCLUSION_MARKERS),
             "path": _portable_path(resolved_readme, repository_root),
         }
     if scope is not None:
@@ -1270,7 +1247,7 @@ def render_outcome_report(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Render strict causal-control and confirmation tables into the final blog"
+        description="Render strict causal-control and confirmation evidence"
     )
     parser.add_argument(
         "--functional-dir", type=Path, default=Path("reports/functional-intervention")
@@ -1287,7 +1264,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--mechanism-report", type=Path, default=Path("reports/mechanism-summary.md")
     )
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument("--readme", type=Path, default=Path("README.md"))
     parser.add_argument("--output", type=Path, default=Path("reports/outcome-summary.md"))
     parser.add_argument(
@@ -1305,7 +1281,6 @@ def main(argv: list[str] | None = None) -> None:
         args.short_branch_dir,
         args.confirmatory_dir,
         args.mechanism_report,
-        args.blog,
         args.output,
         readme_path=args.readme,
         tail_stability_dir=args.tail_stability_dir,

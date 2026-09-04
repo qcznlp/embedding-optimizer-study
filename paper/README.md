@@ -82,11 +82,11 @@ evidence manifests, and source tables.
 
 After the separately frozen candidate-breadth matrix completes, run
 `embed-optim-summarize-candidate-breadth` and `embed-optim-render-candidate-breadth`, followed by each
-command's `--audit-only` mode. The publication renderer owns only the marked blog block and
-`generated/candidate-breadth.tex`; the latter supplies the appendix result-figure macro, main-text
+command's `--audit-only` mode. The publication renderer owns only
+`generated/candidate-breadth.tex`; it supplies the appendix result-figure macro, main-text
 evidence paragraph, result-bound `\CandidateBreadthDiscussion`, and bounded
 `\CandidateBreadthConclusion` used by the final Conclusion. Its
-manifest binds both publication outputs to all 12 evaluation manifests, the discovery BEIR table,
+manifest binds the manuscript output to all 12 evaluation manifests, the discovery BEIR table,
 the nested-width protocol, and the deterministic SVG/PDF figure.
 The separate `python -m embed_optim.packing_invariance --audit-only` command verifies the score-level
 implementation receipt against its checkpoint and validation hashes without rerunning inference.

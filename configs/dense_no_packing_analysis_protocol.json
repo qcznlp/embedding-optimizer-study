@@ -21,7 +21,7 @@
     },
     "evaluation_protocol": {
       "path": "configs/dense_no_packing_evaluation_protocol.json",
-      "sha256": "b3f4bdf0a1d80c4f5926c3620234b6bd2aae2c6befa2bed1e25951e97698d149"
+      "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98"
     },
     "matrix": {
       "path": "configs/dense_no_packing_retrain.yaml",
@@ -56,8 +56,8 @@
     },
     "aggregate": {
       "path": "src/embed_optim/aggregate.py",
-      "bytes": 116247,
-      "sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0"
+      "bytes": 111685,
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
     },
     "corrected_input_execution": {
       "path": "src/embed_optim/corrected_input_execution.py",
@@ -125,6 +125,13 @@
     "support_rule": "Call a feature predictively useful only if adding it lowers pooled held-out RMSE and lowers RMSE in at least three of four folds. Report every feature and fold; do not select a feature for the paper based only on the pooled score.",
     "association_table": "Also report Pearson and Spearman associations after residualizing outcome and each feature on the locked baseline. These are descriptive and are not a substitute for held-out prediction.",
     "claim_boundary": "This is one-seed, post-diagnosis mechanism triangulation. It can show whether geometry tracks or predicts retrieval variation beyond the locked baseline in this grid; it cannot identify mediation, prove causality, or generalize beyond the pinned model/data/optimizer grids."
+  },
+  "publication_only_amendment": {
+    "amended_at_utc": "2026-09-04T00:26:24Z",
+    "reason": "Rebind the shared aggregator after removing a retired parallel Markdown article interface. Geometry definitions, bridge features, folds, support thresholds, and inference inputs are unchanged.",
+    "previous_evaluation_protocol_sha256": "b3f4bdf0a1d80c4f5926c3620234b6bd2aae2c6befa2bed1e25951e97698d149",
+    "previous_aggregate_sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0",
+    "scientific_contract_changed": false
   },
   "historical_bridge": {
     "rule": "Compare corrected and historical optimizer rankings and optimizer-minus-AdamW deltas descriptively at matched normalized stages. Do not pool checkpoints or use historical results in corrected inference.",

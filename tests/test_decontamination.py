@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 from datasets import Dataset
 
@@ -23,15 +21,10 @@ def test_pinned_corpus_sizes_cover_the_suite():
     assert decontaminated_corpus_size("SciFactDecontaminated") == 858
 
 
-def test_blog_records_exact_pinned_evaluation_inputs():
-    blog = (Path(__file__).parents[1] / "docs" / "blog.md").read_text()
-    for task_name, (dataset_path, revision) in DECONTAMINATED_BEIR.items():
-        split = "dev" if task_name == "MSMARCO" else "test"
-        expected_row = (
-            f"| {task_name} | `{dataset_path}` | `{revision}` | {split} | "
-            f"{DECONTAMINATED_CORPUS_SIZES[task_name]:,} |"
-        )
-        assert expected_row in blog
+def test_pinned_evaluation_inputs_are_complete_and_unique():
+    assert len({dataset_path for dataset_path, _revision in DECONTAMINATED_BEIR.values()}) == 14
+    assert len({revision for _dataset_path, revision in DECONTAMINATED_BEIR.values()}) == 14
+    assert all(size > 0 for size in DECONTAMINATED_CORPUS_SIZES.values())
 
 
 def test_decontaminated_task_preserves_protocol_and_replaces_dataset():

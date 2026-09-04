@@ -507,12 +507,6 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
         "five_stage_retrieval_dynamics.pdf",
     ):
         (dynamics_dir / name).write_text(f"{name}\n", encoding="utf-8")
-    blog = tmp_path / "docs/blog.md"
-    blog.parent.mkdir()
-    blog.write_text(
-        "<!-- DENSE-RETRIEVAL-DYNAMICS:BEGIN -->\npending\n<!-- DENSE-RETRIEVAL-DYNAMICS:END -->\n",
-        encoding="utf-8",
-    )
     claim = tmp_path / "claim.json"
     claim.write_text("{}")
     source = tmp_path / "source.csv"
@@ -566,10 +560,6 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     monkeypatch.setattr(
         "embed_optim.paper_results.render_publication_latex",
         lambda _rows: "generated extension latex\n",
-    )
-    monkeypatch.setattr(
-        "embed_optim.paper_results.render_publication_markdown",
-        lambda _rows: "generated extension markdown",
     )
     monkeypatch.setattr(
         "embed_optim.paper_results.PAPER_SOURCE_TABLE_PATHS",
@@ -700,9 +690,7 @@ def test_complete_renderer_routes_per_task_rows_only_to_result_tables(tmp_path, 
     mutation_targets = [results, tmp_path / DYNAMICS_EXTENSION_TEX]
     mutation_targets.extend(tmp_path / relative for relative in PAPER_RESULT_TABLE_PATHS)
     before = {path: path.read_bytes() for path in mutation_targets}
-    blog.write_text("missing dynamics marker\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="exactly one Dense retrieval-dynamics blog marker pair"):
-        render_paper_results(repo_root=tmp_path)
+    render_paper_results(repo_root=tmp_path)
     assert {path: path.read_bytes() for path in mutation_targets} == before
 
 

@@ -16,11 +16,9 @@ from .causal_chain_rendering import (
 from .causal_chain_reporting import load_causal_chain_evidence
 from .decontamination import DECONTAMINATED_TASK_NAMES
 from .dense_retrieval_dynamics_publication import (
-    DYNAMICS_EXTENSION_MARKERS,
     DYNAMICS_EXTENSION_TEX,
     load_publication_rows,
     render_publication_latex,
-    render_publication_markdown,
     summarize_publication_rows,
 )
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
@@ -30,7 +28,6 @@ from .mechanism_report import (
     _basis_rows,
     _bridge_rows,
     _common_state_rows,
-    _marked_block_record,
     _read_declared_csv,
     _retrieval_rows,
     _spectrum_rows,
@@ -39,7 +36,6 @@ from .outcome_report import (
     _confirmation_rows,
     _functional_rows,
     _hybrid_rows,
-    _replace_marked,
     _short_branch_rows,
     _spectral_transplant_rows,
     _tail_stability_rows,
@@ -1135,7 +1131,6 @@ def render_paper_results(
     repo_root: Path = Path("."),
     results_path: Path = Path("paper/results.tex"),
     output_manifest: Path = Path("reports/paper-results.manifest.json"),
-    blog_path: Path = Path("docs/blog.md"),
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: str | Path | None = None,
 ) -> dict[str, Any]:
@@ -1169,18 +1164,6 @@ def render_paper_results(
     extension_rows, _extension_manifest = load_publication_rows(root)
     extension_summary_rows = summarize_publication_rows(extension_rows)
     extension_latex = render_publication_latex(extension_summary_rows)
-    extension_markdown = render_publication_markdown(extension_summary_rows)
-    rendered_blog_path = (
-        blog_path.resolve() if blog_path.is_absolute() else (root / blog_path).resolve()
-    )
-    # Validate and render the exact marker pair before mutating any paper artifact.
-    # A missing or duplicated marker must not leave a partially refreshed release.
-    rendered_blog = _replace_marked(
-        rendered_blog_path.read_text(encoding="utf-8"),
-        extension_markdown,
-        DYNAMICS_EXTENSION_MARKERS,
-        context="Dense retrieval-dynamics blog",
-    )
     claim_path, claim_protocol, _claim_sources = load_paper_claim_protocol(repo_root=root)
     paper_results = (root / results_path).resolve()
     current_macros = _macros(paper_results)
@@ -1350,7 +1333,6 @@ def render_paper_results(
         _atomic_text(root / relative, content)
     _atomic_text(root / DYNAMICS_EXTENSION_TEX, extension_latex)
     _atomic_text(paper_results, rendered_results)
-    _atomic_text(rendered_blog_path, rendered_blog)
     if any(_macros(paper_results).get(name) != value for name, value in rendered_macros.items()):
         raise ValueError("Rendered paper headline macros do not round-trip")
     if any(
@@ -1388,10 +1370,6 @@ def render_paper_results(
                 root,
             ),
             "generated_tex": _source(root / DYNAMICS_EXTENSION_TEX, root),
-            "blog": {
-                **_marked_block_record(rendered_blog_path, DYNAMICS_EXTENSION_MARKERS),
-                "path": str(rendered_blog_path.relative_to(root)),
-            },
             "summary_rows": extension_summary_rows,
             "role": "descriptive-only",
             "formal_inference_reads_joined_outputs": False,
@@ -1425,7 +1403,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--repo-root", type=Path, default=Path("."))
     parser.add_argument("--results", type=Path, default=Path("paper/results.tex"))
     parser.add_argument("--output", type=Path, default=Path("reports/paper-results.manifest.json"))
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument(
         "--if-ready",
         action="store_true",
@@ -1445,7 +1422,6 @@ def main(argv: list[str] | None = None) -> None:
             repo_root=args.repo_root,
             results_path=args.results,
             output_manifest=args.output,
-            blog_path=args.blog,
             families=tuple(args.families),
             scope_amendment=args.scope_amendment,
         )

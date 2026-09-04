@@ -19,10 +19,6 @@ from .decontamination import DECONTAMINATED_CORPUS_SIZES, DECONTAMINATED_TASK_NA
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CHALLENGERS = ("muon", "normuon")
 LABELS = {"muon": "Muon", "normuon": "NorMuon"}
-BLOG_MARKERS = (
-    "<!-- CORPUS-SIZE-DIAGNOSTIC:BEGIN -->",
-    "<!-- CORPUS-SIZE-DIAGNOSTIC:END -->",
-)
 
 
 def _sha256(path: Path) -> str:
@@ -527,32 +523,9 @@ def _latex_appendix(summary: dict[str, Any]) -> str:
     )
 
 
-def _render_blog(path: Path, content: str, *, audit_only: bool) -> dict[str, Any]:
-    text = path.read_text(encoding="utf-8")
-    begin, end = BLOG_MARKERS
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError("Blog requires exactly one corpus-size marker pair")
-    before, rest = text.split(begin)
-    _old, after = rest.split(end)
-    block = f"{begin}\n\n{content}\n\n{end}"
-    rendered = f"{before}{block}{after}"
-    if audit_only:
-        observed = text[text.index(begin) : text.index(end) + len(end)]
-        if observed != block:
-            raise ValueError("Blog corpus-size block differs from recomputed content")
-    else:
-        _atomic_bytes(path, rendered.encode())
-    return {
-        "path": str(path),
-        "bytes": len(block.encode()),
-        "sha256": hashlib.sha256(block.encode()).hexdigest(),
-    }
-
-
 def render_diagnostic(
     protocol_path: str | Path = "configs/corpus_size_diagnostic.json",
     output_dir: str | Path = "reports/corpus-size-diagnostic",
-    blog: str | Path = "docs/blog.md",
     paper_appendix: str | Path = "paper/generated/corpus-size-diagnostic-appendix.tex",
     *,
     audit_only: bool = False,
@@ -560,7 +533,6 @@ def render_diagnostic(
     resolved_protocol, protocol = load_protocol(protocol_path)
     task_rows, association_rows, summary = build_diagnostic(resolved_protocol)
     output = Path(output_dir).resolve()
-    blog_path = Path(blog).resolve()
     paper_appendix_path = Path(paper_appendix).resolve()
     task_fields = list(task_rows[0])
     association_fields = list(association_rows[0])
@@ -593,7 +565,6 @@ def render_diagnostic(
             }
             for name in expected_files
         }
-    blog_record = _render_blog(blog_path, _markdown(summary), audit_only=audit_only)
     appendix_payload = _latex_appendix(summary).encode()
     if audit_only:
         if (
@@ -617,7 +588,6 @@ def render_diagnostic(
         },
         "outputs": output_records,
         "publication": {
-            "blog_block": blog_record,
             "paper_appendix_block": appendix_record,
         },
         "figures": figures,
@@ -639,7 +609,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--protocol", type=Path, default=Path("configs/corpus_size_diagnostic.json")
     )
     parser.add_argument("--output-dir", type=Path, default=Path("reports/corpus-size-diagnostic"))
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument(
         "--paper-appendix",
         type=Path,
@@ -654,7 +623,6 @@ def main(argv: list[str] | None = None) -> None:
     manifest = render_diagnostic(
         args.protocol,
         args.output_dir,
-        args.blog,
         args.paper_appendix,
         audit_only=args.audit_only,
     )

@@ -14,7 +14,6 @@ from embed_optim.causal_chain_rendering import (
     render_causal_chain_headline_fragment,
 )
 from embed_optim.paper_audit import (
-    BLOG_MARKERS,
     PAPER_APPENDIX_GENERATED_INPUTS,
     PAPER_DEFINITION_GENERATED_INPUTS,
     PAPER_DISCOVERY_FIGURE_CAPTION,
@@ -37,7 +36,6 @@ from embed_optim.paper_audit import (
     _paper_results_complete,
     _paper_source_tables_complete,
     _paper_systems_complete,
-    _renderer_marker_blocks_complete,
     _spectral_transplant_complete,
     _tail_stability_complete,
     audit_paper,
@@ -54,7 +52,6 @@ def test_active_manuscript_sources_do_not_overclaim_hybrid_identification():
     active_sources = (
         REPOSITORY / "paper" / "main.tex",
         REPOSITORY / "README.md",
-        REPOSITORY / "docs" / "blog.md",
         REPOSITORY / "docs" / "naacl-dense-paper-plan.md",
     )
     forbidden = (
@@ -189,17 +186,12 @@ def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_aud
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
     assert result["paper_results"]["complete"] is True
-    assert set(result["blog_marker_blocks"]) == set(BLOG_MARKERS)
     assert result["document_language_problems"] == []
 
 
 def _stub_completed_nonheadline_audit_gates(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "embed_optim.paper_audit._complete_manifest", lambda *_args, **_kwargs: True
-    )
-    monkeypatch.setattr(
-        "embed_optim.paper_audit._blog_marker_audit",
-        lambda *_args, **_kwargs: {name: {"complete": True} for name in BLOG_MARKERS},
     )
     monkeypatch.setattr(
         "embed_optim.paper_audit._final_document_language_problems",
@@ -279,7 +271,6 @@ def test_synthetic_future_final_state_can_pass_every_completion_gate(
     assert synthetic_future_final_audit["complete"] is True
     assert synthetic_future_final_audit["pending_headlines"] == []
     assert synthetic_future_final_audit["incomplete_evidence"] == []
-    assert synthetic_future_final_audit["incomplete_blog_marker_blocks"] == []
 
 
 def test_paper_claim_protocol_freezes_result_contingent_language_before_completion():
@@ -687,7 +678,7 @@ def test_retrieval_dynamics_manifest_accepts_expanded_hashed_contract(tmp_path: 
     assert _complete_manifest(path) is False
 
 
-def test_outcome_manifest_requires_final_blog_and_source_hash_contract(tmp_path: Path):
+def test_outcome_manifest_requires_final_report_and_source_hash_contract(tmp_path: Path):
     path = tmp_path / "reports" / "outcome-summary.manifest.json"
     path.parent.mkdir(parents=True)
     path.write_text('{"schema_version":1,"complete":true}\n', encoding="utf-8")
@@ -1015,22 +1006,15 @@ def test_paper_main_topology_uses_only_active_latex_source(tmp_path: Path) -> No
 
 def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_path: Path):
     readme = tmp_path / "README.md"
-    blog = tmp_path / "docs/blog.md"
     paper = tmp_path / "paper/main.tex"
-    blog.parent.mkdir(parents=True)
     paper.parent.mkdir(parents=True)
     readme.write_text("Final repository status.\n", encoding="utf-8")
-    blog.write_text("Final prose.\n", encoding="utf-8")
     paper.write_text("Final manuscript.\n", encoding="utf-8")
 
     assert _final_document_language_problems(tmp_path) == []
 
     readme.write_text(
         "Status: remaining DenseOn confirmation is running. Once complete, the supplemental view changes.\n",
-        encoding="utf-8",
-    )
-    blog.write_text(
-        "Results will be inserted here after evaluation. When complete, those 728 rows change.\n",
         encoding="utf-8",
     )
     paper.write_text(
@@ -1042,8 +1026,6 @@ def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_p
     assert problems == [
         "README.md: remaining DenseOn confirmation is running",
         "README.md: Once complete, the supplemental",
-        "docs/blog.md: Results will be inserted here",
-        "docs/blog.md: When complete, those 728 rows",
         "paper/main.tex: The final analysis will report",
         "paper/main.tex: intentionally left unresolved",
     ]
@@ -1094,21 +1076,12 @@ def test_paper_dynamics_extension_contract_is_exact_and_tamper_evident(
         "five_stage_retrieval_dynamics.pdf}\n"
         "This descriptive artifact is not an inference input.\n"
     )
-    expected_markdown = (
-        "[Source-bound CSV](../reports/dense-retrieval-dynamics/"
-        "five_stage_retrieval_dynamics.csv)\n\n"
-        "![Five-stage dynamics](../reports/dense-retrieval-dynamics/"
-        "five_stage_retrieval_dynamics.svg)"
-    )
     monkeypatch.setattr(paper_audit_module, "load_publication_rows", lambda _root: ([], {}))
     monkeypatch.setattr(
         paper_audit_module, "summarize_publication_rows", lambda _rows: summary_rows
     )
     monkeypatch.setattr(
         paper_audit_module, "render_publication_latex", lambda _rows: expected_latex
-    )
-    monkeypatch.setattr(
-        paper_audit_module, "render_publication_markdown", lambda _rows: expected_markdown
     )
 
     report = tmp_path / "reports/dense-retrieval-dynamics"
@@ -1122,24 +1095,12 @@ def test_paper_dynamics_extension_contract_is_exact_and_tamper_evident(
     )
     main = tmp_path / "paper/main.tex"
     main.write_text("\\input{generated/retrieval-dynamics-extension}\n", encoding="utf-8")
-    begin, end = paper_audit_module.DYNAMICS_EXTENSION_MARKERS
-    blog = tmp_path / "docs/blog.md"
-    blog.parent.mkdir(parents=True)
-    blog.write_text(f"{begin}\n\n{expected_markdown}\n\n{end}\n", encoding="utf-8")
-    block = blog.read_text(encoding="utf-8").split(end, 1)[0] + end
-    block_bytes = block.encode("utf-8")
     contract = {
         "manifest": manifest_record,
         "trajectory_csv": csv_record,
         "figure_svg": svg_record,
         "figure_pdf": pdf_record,
         "generated_tex": generated_record,
-        "blog": {
-            "path": "docs/blog.md",
-            "markers": [begin, end],
-            "block_bytes": len(block_bytes),
-            "block_sha256": hashlib.sha256(block_bytes).hexdigest(),
-        },
         "summary_rows": summary_rows,
         "role": "descriptive-only",
         "formal_inference_reads_joined_outputs": False,
@@ -1151,9 +1112,6 @@ def test_paper_dynamics_extension_contract_is_exact_and_tamper_evident(
     assert paper_audit_module._paper_dynamics_extension_complete(tmp_path, contract) is False
     pdf_path.write_text("pdf\n", encoding="utf-8")
     assert paper_audit_module._paper_dynamics_extension_complete(tmp_path, contract) is True
-
-    blog.write_text(f"{begin}\n\n{expected_markdown}\n\nextra\n\n{end}\n", encoding="utf-8")
-    assert paper_audit_module._paper_dynamics_extension_complete(tmp_path, contract) is False
 
 
 @pytest.mark.parametrize(
@@ -1418,56 +1376,6 @@ def _csv_record(
 
 def _generic_rows(count: int) -> list[dict[str, object]]:
     return [{"row_id": index} for index in range(count)]
-
-
-def _marker_record(text: str, markers: tuple[str, str]) -> dict[str, object]:
-    start = text.index(markers[0])
-    stop = text.index(markers[1], start) + len(markers[1])
-    block = text[start:stop].encode()
-    return {
-        "begin_marker": markers[0],
-        "end_marker": markers[1],
-        "encoding": "utf-8",
-        "bytes": len(block),
-        "sha256": hashlib.sha256(block).hexdigest(),
-    }
-
-
-def test_renderer_marker_hashes_are_block_local_not_whole_blog(tmp_path: Path):
-    blog = tmp_path / "docs/blog.md"
-    blog.parent.mkdir(parents=True)
-    text = (
-        "editable introduction\n"
-        f"{BLOG_MARKERS['results'][0]}\nresult body\n{BLOG_MARKERS['results'][1]}\n"
-        f"{BLOG_MARKERS['systems'][0]}\nsystems body\n{BLOG_MARKERS['systems'][1]}\n"
-        "editable conclusion\n"
-    )
-    blog.write_text(text, encoding="utf-8")
-    record = {
-        "schema_version": 1,
-        "path": "docs/blog.md",
-        "blocks": {
-            name: _marker_record(text, BLOG_MARKERS[name]) for name in ("results", "systems")
-        },
-    }
-
-    assert _renderer_marker_blocks_complete(
-        tmp_path,
-        record,
-        {name: BLOG_MARKERS[name] for name in ("results", "systems")},
-    )
-    blog.write_text("new preface\n" + text, encoding="utf-8")
-    assert _renderer_marker_blocks_complete(
-        tmp_path,
-        record,
-        {name: BLOG_MARKERS[name] for name in ("results", "systems")},
-    )
-    blog.write_text(("new preface\n" + text).replace("result body", "tampered"), encoding="utf-8")
-    assert not _renderer_marker_blocks_complete(
-        tmp_path,
-        record,
-        {name: BLOG_MARKERS[name] for name in ("results", "systems")},
-    )
 
 
 def test_tail_stability_future_manifest_requires_every_hashed_source_and_row(

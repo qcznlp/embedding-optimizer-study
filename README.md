@@ -19,10 +19,9 @@ survives an execution-invariant comparison.
 The project compares complete training dynamics, zero-shot retrieval quality, systems cost, and
 weight/update geometry. Its central question is not whether Muon produces flatter update
 spectra—that is largely built into the operator—but whether its apparent optimization gains survive
-independent full-corpus evaluation and implementation-invariance checks. The
-[generated completion outcome](docs/blog.md#audited-completion-status) records the formal
-three-seed result; the candidate addendum records why the historical validation recipe is now
-treated as implementation-confounded.
+independent full-corpus evaluation and implementation-invariance checks. The manuscript and its
+source-bound generated tables are the sole publication deliverable; standalone reports remain
+auditable evidence rather than a parallel article.
 
 The repository is public under Apache-2.0. For the current verified state, known limitations, and
 exact continuation order, start with [PROJECT_STATUS.md](PROJECT_STATUS.md). Coding agents should
@@ -44,7 +43,7 @@ is tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/is
 - Frozen outcome/statistical contract: [configs/dense_no_packing_outcome_protocol.json](configs/dense_no_packing_outcome_protocol.json)
 - Source-bound bridge implementation: [configs/dense_no_packing_bridge_implementation_protocol_v2.json](configs/dense_no_packing_bridge_implementation_protocol_v2.json)
 - Historical/corrected sensitivity implementation: [configs/dense_no_packing_sensitivity_implementation_protocol.json](configs/dense_no_packing_sensitivity_implementation_protocol.json)
-- Source-bound final publication renderer: [configs/dense_no_packing_publication_protocol.json](configs/dense_no_packing_publication_protocol.json)
+- Source-bound paper renderer: [configs/dense_no_packing_publication_protocol.json](configs/dense_no_packing_publication_protocol.json)
 - Prospective state×operator mechanism follow-up: [docs/state-operator-factorial.md](docs/state-operator-factorial.md)
 - Its frozen contracts: [scientific](configs/dense_no_packing_state_operator_factorial_protocol.json), [implementation](configs/dense_no_packing_state_operator_factorial_implementation_protocol.json)
 - Active control-plane recovery receipt: [configs/dense_no_packing_control_plane_recovery.json](configs/dense_no_packing_control_plane_recovery.json)
@@ -61,9 +60,8 @@ local state. Meaningful transitions—completed/failed runs, evaluation mileston
 backups, or changed scientific conclusions—must also be recorded in `PROJECT_STATUS.md` and issue
 #41. The external `gpu.py` utility and its processes are strictly out of scope.
 
-- Full study write-up: [docs/blog.md](docs/blog.md)
 - Dense-only NAACL plan: [docs/naacl-dense-paper-plan.md](docs/naacl-dense-paper-plan.md)
-- Result-safe ACL manuscript: [paper/](paper/README.md)
+- Authoritative manuscript: [paper/](paper/README.md)
 - Live dashboard: [Weights & Biases](https://wandb.ai/stevezenguom/embedding-optimizer-study)
 - Public checkpoint backup: [qcz/embedding-optimizer-study-checkpoints](https://huggingface.co/qcz/embedding-optimizer-study-checkpoints)
 - Public analysis-artifact backup: [qcz/embedding-optimizer-study-analysis-artifacts](https://huggingface.co/datasets/qcz/embedding-optimizer-study-analysis-artifacts)
@@ -167,8 +165,8 @@ The strongest current mechanism observation is a local-to-global reversal:
 - spectral flattening alone has little or no anchor-level association with tail protection.
 
 Shared-start branches and frozen spectrum-versus-basis transplants test whether repeated
-optimizer-induced state feedback explains the reversal. See the blog for values and claim
-boundaries.
+optimizer-induced state feedback explains the reversal. The manuscript and its generated tables
+carry the values and claim boundaries.
 
 ## Final result-driven conclusion
 
@@ -214,8 +212,7 @@ identification of orthogonalization alone.
 | configs/dense_retrieval_dynamics_extension.json | Source-bound five-stage hybrid/confirmation extension |
 | src/embed_optim/ | Training, evaluation, optimizers, audits, reports, and interventions |
 | scripts/eval/dense_parallel.py | Eight-GPU dense retrieval evaluator |
-| docs/blog.md | Dense-only Markdown article with generated result blocks |
-| paper/ | ACL manuscript and generated result tables |
+| paper/ | Authoritative ACL/NAACL manuscript and generated result tables |
 | reports/ | Content-addressed summaries and publication figures |
 | configs/portable_paper_evidence.json | Exact minimal evidence closure for clean-clone auditing |
 | tests/ | Unit, integration, provenance, distribution, and numerical regression tests |
@@ -555,14 +552,14 @@ full-corpus optimizer comparison. Paired loss and margin contrasts additionally 
 each of the seven fixed 32-query source strata. This uncertainty plan was recorded before candidate
 data or scores were visible and does not enter the frozen decision rule. The summary writes audited
 calibration and paired-contrast tables plus publication-ready SVG/PDF panels under
-`reports/candidate-breadth/`. The final two commands update only the owned blog marker and
-`paper/generated/candidate-breadth.tex`, then verify both against a content-addressed publication
+`reports/candidate-breadth/`. The final publication step updates
+`paper/generated/candidate-breadth.tex` and verifies it against a content-addressed publication
 manifest.
 
 ## Render the final Dense-only deliverables
 
 After the Dense completion ledger passes, the canonical, resume-safe finalizer regenerates every
-scoped report and marker, audits the paper, runs the local quality gates, builds the paper and Python
+scoped evidence report, audits the paper, runs the local quality gates, builds the paper and Python
 distributions, and audits the distributions:
 
 ~~~bash

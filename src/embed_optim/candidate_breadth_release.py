@@ -268,7 +268,6 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
     protocol = str(_under_workdir(args.protocol, workdir))
     data_output = str(_under_workdir(args.data_output, workdir))
     summary_dir = str(_under_workdir(args.summary_dir, workdir))
-    blog = str(_under_workdir(args.blog, workdir))
     paper = str(_under_workdir(args.paper, workdir))
     manifest = str(_under_workdir(args.publication_manifest, workdir))
     scope = str(_under_workdir(args.scope_amendment, workdir))
@@ -281,8 +280,6 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
         protocol,
         "--summary-dir",
         summary_dir,
-        "--blog",
-        blog,
         "--paper",
         paper,
         "--manifest",
@@ -669,7 +666,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--data-output", type=Path, default=Path("data/candidate-breadth-224-seed20260901")
     )
     parser.add_argument("--summary-dir", type=Path, default=Path("reports/candidate-breadth"))
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument("--paper", type=Path, default=Path("paper/generated/candidate-breadth.tex"))
     parser.add_argument(
         "--publication-manifest",

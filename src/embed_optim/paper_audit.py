@@ -24,25 +24,17 @@ from .decontamination import DECONTAMINATED_TASK_NAMES
 from .dense_retrieval_dynamics_publication import (
     DYNAMICS_EXTENSION_CSV,
     DYNAMICS_EXTENSION_MANIFEST,
-    DYNAMICS_EXTENSION_MARKERS,
     DYNAMICS_EXTENSION_PDF,
     DYNAMICS_EXTENSION_SVG,
     DYNAMICS_EXTENSION_TEX,
     load_publication_rows,
     render_publication_latex,
-    render_publication_markdown,
     summarize_publication_rows,
 )
 from .geometry import SCHEMA_VERSION, _sha256
-from .mechanism_report import (
-    MECHANISM_MARKERS,
-    _marked_block_bytes,
-    _marked_block_complete,
-)
 from .outcome_report import (
     FINAL_CONCLUSION_MARKERS,
     FINAL_CONCLUSION_PENDING,
-    OUTCOME_MARKERS,
     _confirmation_rows,
     _hybrid_rows,
     _tail_stability_rows,
@@ -212,33 +204,11 @@ SCOPED_DENSE_DISCOVERY_EVIDENCE = (
     Path("reports/retrieval-dynamics-dense/summary_manifest.json"),
     DYNAMICS_EXTENSION_MANIFEST,
 )
-BLOG_MARKERS = {
-    "results": ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->"),
-    "systems": ("<!-- SYSTEMS:BEGIN -->", "<!-- SYSTEMS:END -->"),
-    "task_delta_stability": (
-        "<!-- TASK-DELTA-STABILITY:BEGIN -->",
-        "<!-- TASK-DELTA-STABILITY:END -->",
-    ),
-    "mechanism": MECHANISM_MARKERS,
-    "outcomes": OUTCOME_MARKERS,
-    "final_conclusion": FINAL_CONCLUSION_MARKERS,
-    "dense_retrieval_dynamics": DYNAMICS_EXTENSION_MARKERS,
-}
 MACRO_PATTERN = re.compile(r"^\\newcommand\{\\([A-Za-z]+)\}\{(.*)\}$")
 FINAL_DOCUMENT_STALE_PHRASES = {
     Path("README.md"): (
         "remaining DenseOn confirmation is running",
         "Once complete, the supplemental",
-    ),
-    Path("docs/blog.md"): (
-        "**Experiment status:** training matrix in progress.",
-        "Results will be inserted here",
-        "will be inserted after strict retrieval",
-        "will be inserted here only after",
-        "Retrieval time-to-quality remains pending",
-        "intervention are running under the post-hoc scope amendment",
-        "remain gated on the running",
-        "When complete, those 728 rows",
     ),
     Path("paper/main.tex"): (
         "The final analysis will report",
@@ -958,6 +928,37 @@ def _hashed_file_complete(
     )
 
 
+def _marked_section_complete(
+    path: Path,
+    record: Any,
+    markers: tuple[str, str],
+    *,
+    repository_root: Path,
+) -> bool:
+    if not isinstance(record, dict) or record.get("markers") != list(markers):
+        return False
+    declared = Path(str(record.get("path", "")))
+    declared_path = (
+        declared.resolve() if declared.is_absolute() else (repository_root / declared).resolve()
+    )
+    if declared_path != path.resolve():
+        return False
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return False
+    begin, end = markers
+    if text.count(begin) != 1 or text.count(end) != 1:
+        return False
+    start = text.index(begin)
+    stop = text.index(end, start + len(begin)) + len(end)
+    block = text[start:stop].encode("utf-8")
+    return bool(
+        record.get("block_bytes") == len(block)
+        and record.get("block_sha256") == hashlib.sha256(block).hexdigest()
+    )
+
+
 def _hash_only_file_complete(
     root: Path,
     record: Any,
@@ -1238,55 +1239,6 @@ def _csv_identity_set(
     return identities if len(identities) == len(rows) else None
 
 
-def _renderer_marker_blocks_complete(
-    root: Path,
-    record: Any,
-    expected: dict[str, tuple[str, str]],
-) -> bool:
-    if not isinstance(record, dict):
-        return False
-    blog_path = root / "docs/blog.md"
-    blocks = record.get("blocks")
-    if (
-        record.get("schema_version") != SCHEMA_VERSION
-        or record.get("path") != "docs/blog.md"
-        or not isinstance(blocks, dict)
-        or set(blocks) != set(expected)
-    ):
-        return False
-    try:
-        text = blog_path.read_text(encoding="utf-8")
-    except (OSError, UnicodeDecodeError):
-        return False
-    for name, markers in expected.items():
-        item = blocks.get(name)
-        if not isinstance(item, dict) or set(item) != {
-            "begin_marker",
-            "end_marker",
-            "encoding",
-            "bytes",
-            "sha256",
-        }:
-            return False
-        if (
-            item.get("begin_marker") != markers[0]
-            or item.get("end_marker") != markers[1]
-            or item.get("encoding") != "utf-8"
-        ):
-            return False
-        try:
-            block = _marked_block_bytes(text, markers)
-        except ValueError:
-            return False
-        if (
-            isinstance(item.get("bytes"), bool)
-            or item.get("bytes") != len(block)
-            or item.get("sha256") != hashlib.sha256(block).hexdigest()
-        ):
-            return False
-    return True
-
-
 def _dense_discovery_coverage_complete(
     path: Path,
     payload: dict[str, Any],
@@ -1395,14 +1347,6 @@ def _dense_discovery_coverage_complete(
         )
         and _complete_manifest(expected_reports["coverage"])
         and outputs_complete
-        and _renderer_marker_blocks_complete(
-            root,
-            payload.get("blog_marker_blocks"),
-            {
-                "results": BLOG_MARKERS["results"],
-                "systems": BLOG_MARKERS["systems"],
-            },
-        )
     )
 
 
@@ -1497,11 +1441,7 @@ def _dense_retrieval_dynamics_complete(
         or not _complete_manifest(expected_sources["strict_coverage"])
     ):
         return False
-    return _renderer_marker_blocks_complete(
-        root,
-        payload.get("blog_marker_blocks"),
-        {"task_delta_stability": BLOG_MARKERS["task_delta_stability"]},
-    )
+    return True
 
 
 def _retrieval_dynamics_complete(
@@ -2000,23 +1940,13 @@ def _mechanism_report_complete(
         return False
 
     report_path = root / "reports/mechanism-summary.md"
-    blog_path = root / "docs/blog.md"
-    if not _hashed_file_complete(
-        root, payload.get("output"), expected_path=report_path
-    ) or not _marked_block_complete(
-        blog_path,
-        payload.get("blog"),
-        MECHANISM_MARKERS,
-        repository_root=root,
-    ):
+    if not _hashed_file_complete(root, payload.get("output"), expected_path=report_path):
         return False
     try:
-        blog = blog_path.read_text(encoding="utf-8")
-        rendered = blog.split(MECHANISM_MARKERS[0], 1)[1].split(MECHANISM_MARKERS[1], 1)[0]
         report = report_path.read_text(encoding="utf-8")
-    except (OSError, UnicodeDecodeError, IndexError):
+    except (OSError, UnicodeDecodeError):
         return False
-    return rendered.strip() == report.strip() and report.count(causal_markdown) == 1
+    return report.count(causal_markdown) == 1
 
 
 def _outcome_report_complete(
@@ -2130,23 +2060,11 @@ def _outcome_report_complete(
         return fail("source_table_contract")
 
     report_path = root / "reports/outcome-summary.md"
-    blog_path = root / "docs/blog.md"
     readme_path = root / "README.md"
-    if not _hashed_file_complete(
-        root, payload.get("output"), expected_path=report_path
-    ) or not _marked_block_complete(
-        blog_path,
-        payload.get("blog"),
-        OUTCOME_MARKERS,
-        repository_root=root,
-    ):
-        return fail("rendered_output_or_blog_contract")
+    if not _hashed_file_complete(root, payload.get("output"), expected_path=report_path):
+        return fail("rendered_output_contract")
     try:
-        blog = blog_path.read_text(encoding="utf-8")
         outcome = report_path.read_text(encoding="utf-8").strip()
-        mechanism_manifest = _json(expected_sources["mechanism_report"])
-        mechanism_path = _declared_path(root, mechanism_manifest.get("output"))
-        mechanism = mechanism_path.read_text(encoding="utf-8").strip()
         readme = readme_path.read_text(encoding="utf-8")
         confirmation_rows, _confirmation_table, _confirmation_manifest = _confirmation_rows(
             root / "reports/confirmatory", families, scope
@@ -2166,42 +2084,19 @@ def _outcome_report_complete(
         )
     except (OSError, AttributeError, json.JSONDecodeError, TypeError, ValueError) as error:
         return fail(f"conclusion_reconstruction:{type(error).__name__}:{error}")
-    outcome_begin, outcome_end = OUTCOME_MARKERS
-    mechanism_begin, mechanism_end = MECHANISM_MARKERS
     conclusion_begin, conclusion_end = FINAL_CONCLUSION_MARKERS
     final_checks = {
-        "outcome_marker_count": blog.count(outcome_begin) == blog.count(outcome_end) == 1,
-        "mechanism_marker_count": blog.count(mechanism_begin) == blog.count(mechanism_end) == 1,
-        "outcome_block_matches": blog.split(outcome_begin, 1)[1].split(outcome_end, 1)[0].strip()
-        == outcome,
-        "mechanism_block_matches": blog.split(mechanism_begin, 1)[1]
-        .split(mechanism_end, 1)[0]
-        .strip()
-        == mechanism,
         "causal_markdown_once": outcome.count(causal_markdown) == 1,
         "conclusion_complete": expected_conclusion.get("status") == "complete",
         "conclusion_not_pending": FINAL_CONCLUSION_PENDING
         not in expected_conclusion.get("plain", ""),
         "conclusion_payload_matches": payload.get("conclusion") == expected_conclusion,
-        "blog_conclusion_record": _marked_block_complete(
-            blog_path,
-            payload.get("blog_conclusion"),
-            FINAL_CONCLUSION_MARKERS,
-            repository_root=root,
-        ),
-        "readme_conclusion_record": _marked_block_complete(
+        "readme_conclusion_record": _marked_section_complete(
             readme_path,
             payload.get("readme_conclusion"),
             FINAL_CONCLUSION_MARKERS,
             repository_root=root,
         ),
-        "blog_conclusion_marker_count": blog.count(conclusion_begin)
-        == blog.count(conclusion_end)
-        == 1,
-        "blog_conclusion_matches": blog.split(conclusion_begin, 1)[1]
-        .split(conclusion_end, 1)[0]
-        .strip()
-        == expected_conclusion["markdown"],
         "readme_conclusion_matches": readme.split(conclusion_begin, 1)[1]
         .split(conclusion_end, 1)[0]
         .strip()
@@ -2211,137 +2106,6 @@ def _outcome_report_complete(
     if failed:
         return fail("final_render_contract:" + ",".join(failed))
     return True
-
-
-def _blog_marker_audit(
-    root: Path,
-    families: tuple[str, ...],
-    scope_amendment: str | Path | None,
-) -> dict[str, dict[str, Any]]:
-    try:
-        _families, scope = resolve_scope(families, scope_amendment)
-    except (OSError, json.JSONDecodeError, TypeError, ValueError):
-        scope = None
-    discovery_path = (
-        root / "reports/dense-discovery/coverage.json"
-        if families == ("dense",)
-        else root / "reports/coverage.json"
-    )
-    retrieval_path = (
-        root / "reports/retrieval-dynamics-dense/summary_manifest.json"
-        if families == ("dense",)
-        else root / "reports/retrieval-dynamics/summary_manifest.json"
-    )
-    mechanism_path = root / "reports/mechanism-summary.manifest.json"
-    outcome_path = root / "reports/outcome-summary.manifest.json"
-    paper_results_path = root / "reports/paper-results.manifest.json"
-
-    def load(path: Path) -> dict[str, Any]:
-        try:
-            return _json(path)
-        except (OSError, json.JSONDecodeError, TypeError, ValueError):
-            return {}
-
-    discovery = load(discovery_path)
-    retrieval = load(retrieval_path)
-    mechanism = load(mechanism_path)
-    outcome = load(outcome_path)
-    paper_results = load(paper_results_path)
-    discovery_complete = _renderer_marker_blocks_complete(
-        root,
-        discovery.get("blog_marker_blocks"),
-        {
-            "results": BLOG_MARKERS["results"],
-            "systems": BLOG_MARKERS["systems"],
-        },
-    )
-    retrieval_complete = _renderer_marker_blocks_complete(
-        root,
-        retrieval.get("blog_marker_blocks"),
-        {"task_delta_stability": BLOG_MARKERS["task_delta_stability"]},
-    )
-    blog_path = root / "docs/blog.md"
-    mechanism_complete = bool(
-        _scope_matches(mechanism, families, scope)
-        and _marked_block_complete(
-            blog_path,
-            mechanism.get("blog"),
-            MECHANISM_MARKERS,
-            repository_root=root,
-        )
-    )
-    outcome_complete = bool(
-        _scope_matches(outcome, families, scope)
-        and _marked_block_complete(
-            blog_path,
-            outcome.get("blog"),
-            OUTCOME_MARKERS,
-            repository_root=root,
-        )
-    )
-    final_conclusion_complete = bool(
-        _scope_matches(outcome, families, scope)
-        and outcome.get("conclusion", {}).get("status") == "complete"
-        and FINAL_CONCLUSION_PENDING not in outcome.get("conclusion", {}).get("plain", "")
-        and _marked_block_complete(
-            blog_path,
-            outcome.get("blog_conclusion"),
-            FINAL_CONCLUSION_MARKERS,
-            repository_root=root,
-        )
-        and _marked_block_complete(
-            root / "README.md",
-            outcome.get("readme_conclusion"),
-            FINAL_CONCLUSION_MARKERS,
-            repository_root=root,
-        )
-    )
-    dynamics_extension_complete = bool(
-        _scope_matches(paper_results, families, scope)
-        and _marked_block_complete(
-            blog_path,
-            paper_results.get("dynamics_extension", {}).get("blog"),
-            DYNAMICS_EXTENSION_MARKERS,
-            repository_root=root,
-        )
-    )
-    return {
-        "results": {
-            "complete": discovery_complete,
-            "manifest": str(discovery_path),
-            "markers": list(BLOG_MARKERS["results"]),
-        },
-        "systems": {
-            "complete": discovery_complete,
-            "manifest": str(discovery_path),
-            "markers": list(BLOG_MARKERS["systems"]),
-        },
-        "task_delta_stability": {
-            "complete": retrieval_complete,
-            "manifest": str(retrieval_path),
-            "markers": list(BLOG_MARKERS["task_delta_stability"]),
-        },
-        "mechanism": {
-            "complete": mechanism_complete,
-            "manifest": str(mechanism_path),
-            "markers": list(MECHANISM_MARKERS),
-        },
-        "outcomes": {
-            "complete": outcome_complete,
-            "manifest": str(outcome_path),
-            "markers": list(OUTCOME_MARKERS),
-        },
-        "final_conclusion": {
-            "complete": final_conclusion_complete,
-            "manifest": str(outcome_path),
-            "markers": list(FINAL_CONCLUSION_MARKERS),
-        },
-        "dense_retrieval_dynamics": {
-            "complete": dynamics_extension_complete,
-            "manifest": str(paper_results_path),
-            "markers": list(DYNAMICS_EXTENSION_MARKERS),
-        },
-    }
 
 
 def _paper_main_topology_complete(root: Path) -> bool:
@@ -2591,9 +2355,7 @@ def _paper_dynamics_extension_complete(root: Path, contract: Any) -> bool:
         rows, _manifest = load_publication_rows(root)
         summary_rows = summarize_publication_rows(rows)
         expected_latex = render_publication_latex(summary_rows)
-        expected_markdown = render_publication_markdown(summary_rows)
         generated_tex = (root / DYNAMICS_EXTENSION_TEX).read_text(encoding="utf-8")
-        blog = (root / "docs/blog.md").read_text(encoding="utf-8")
         main = (root / "paper/main.tex").read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError, TypeError, ValueError):
         return False
@@ -2609,11 +2371,6 @@ def _paper_dynamics_extension_complete(root: Path, contract: Any) -> bool:
         for name, path in expected_records.items()
     ):
         return False
-    begin, end = DYNAMICS_EXTENSION_MARKERS
-    try:
-        rendered_markdown = blog.split(begin, 1)[1].split(end, 1)[0].strip()
-    except IndexError:
-        return False
     return bool(
         contract.get("summary_rows") == summary_rows
         and contract.get("role") == "descriptive-only"
@@ -2622,16 +2379,6 @@ def _paper_dynamics_extension_complete(root: Path, contract: Any) -> bool:
         and "\\ResultPending" not in generated_tex
         and generated_tex.count("five_stage_retrieval_dynamics.pdf") == 1
         and generated_tex.count("not an inference input") == 1
-        and _marked_block_complete(
-            root / "docs/blog.md",
-            contract.get("blog"),
-            DYNAMICS_EXTENSION_MARKERS,
-            repository_root=root,
-        )
-        and blog.count(begin) == blog.count(end) == 1
-        and rendered_markdown == expected_markdown
-        and blog.count("five_stage_retrieval_dynamics.svg") == 1
-        and blog.count("five_stage_retrieval_dynamics.csv") == 1
         and main.count(r"\input{generated/retrieval-dynamics-extension}") == 1
     )
 
@@ -2849,10 +2596,6 @@ def audit_paper(
         scope_amendment=scope_amendment,
         causal_cache=causal_cache,
     )
-    blog_marker_blocks = _blog_marker_audit(root, families, scope_amendment)
-    incomplete_blog_marker_blocks = sorted(
-        name for name, item in blog_marker_blocks.items() if item.get("complete") is not True
-    )
     document_language_problems = _final_document_language_problems(root)
     causal_chain = _causal_chain_evidence(root, causal_cache)
     snapshot, snapshot_error = causal_cache.get(root, (None, None))
@@ -2866,7 +2609,6 @@ def audit_paper(
         not pending
         and not incomplete_evidence
         and paper_results_complete
-        and not incomplete_blog_marker_blocks
         and not document_language_problems
         and causal_chain_complete
     )
@@ -2919,8 +2661,6 @@ def audit_paper(
             "complete": paper_results_complete,
             "sha256": _sha256(paper_results_path) if paper_results_path.is_file() else None,
         },
-        "blog_marker_blocks": blog_marker_blocks,
-        "incomplete_blog_marker_blocks": incomplete_blog_marker_blocks,
         "document_language_problems": document_language_problems,
         "causal_chain": causal_chain,
         "evidence_mode": evidence_mode,
@@ -2933,7 +2673,6 @@ def audit_paper(
             "Paper is not final: "
             f"pending_headlines={pending}, incomplete_evidence={incomplete_evidence}, "
             f"paper_results_complete={paper_results_complete}, "
-            f"incomplete_blog_marker_blocks={incomplete_blog_marker_blocks}, "
             f"document_language_problems={document_language_problems}"
             f", causal_chain_complete={causal_chain_complete}"
         )

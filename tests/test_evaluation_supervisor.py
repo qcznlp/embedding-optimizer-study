@@ -59,7 +59,6 @@ def _args(**overrides):
         "results_root": "results/decontaminated-beir",
         "log_dir": "logs/evaluation",
         "output_dir": "reports",
-        "blog": "docs/blog.md",
         "python": "/system/python",
         "worker_python": "/worker/python",
         "training_poll_seconds": 2.0,
@@ -196,7 +195,7 @@ def test_evaluation_supervisor_adopts_multiple_coordinators_before_recovery(monk
     assert commands == ["embed_optim.evaluate_matrix", "embed_optim.aggregate"]
 
 
-def test_evaluation_only_skips_wandb_and_final_render(monkeypatch):
+def test_evaluation_only_skips_wandb_and_keeps_strict_report(monkeypatch):
     config = _config("late", "muon")
     monkeypatch.setattr("embed_optim.evaluation_supervisor.load_matrix", lambda matrix: [config])
     monkeypatch.setattr("embed_optim.evaluation_supervisor._run_is_complete", lambda config: True)
@@ -213,7 +212,7 @@ def test_evaluation_only_skips_wandb_and_final_render(monkeypatch):
         "embed_optim.evaluate_matrix",
         "embed_optim.aggregate",
     ]
-    assert "--no-render-blog" in commands[-1]
+    assert commands[-1][-1] == "--strict"
 
 
 def test_evaluation_supervisor_adopts_orphan_workers_by_command(monkeypatch):
@@ -282,7 +281,6 @@ def test_evaluation_supervisor_respects_launch_limit(monkeypatch):
 def test_evaluation_supervisor_commands_pin_worker_and_strict_audit():
     evaluation = _evaluation_command(_args())
     aggregate = _aggregate_command(_args())
-    final_aggregate = _aggregate_command(_args(), render_blog=True)
     wandb = _wandb_command(_args())
 
     assert evaluation[:3] == ["/system/python", "-m", "embed_optim.evaluate_matrix"]
@@ -292,9 +290,7 @@ def test_evaluation_supervisor_commands_pin_worker_and_strict_audit():
         "late",
     ]
     assert aggregate[:3] == ["/system/python", "-m", "embed_optim.aggregate"]
-    assert aggregate[-2:] == ["--strict", "--no-render-blog"]
-    assert final_aggregate[-1] == "--strict"
-    assert "--no-render-blog" not in final_aggregate
+    assert aggregate[-1] == "--strict"
     assert wandb[:3] == ["/system/python", "-m", "embed_optim.wandb_sync"]
     assert wandb[-3:] == ["--families", "dense", "late"]
 

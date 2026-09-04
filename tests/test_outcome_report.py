@@ -7,7 +7,6 @@ from pathlib import Path
 import pytest
 
 from embed_optim.geometry import _sha256
-from embed_optim.mechanism_report import MECHANISM_MARKERS, _marked_block_record
 from embed_optim.outcome_report import (
     FINAL_CONCLUSION_PENDING,
     build_final_conclusion_contract,
@@ -424,12 +423,6 @@ def _inputs(
     mechanism = tmp_path / "reports" / "mechanism-summary.md"
     mechanism.parent.mkdir(parents=True, exist_ok=True)
     mechanism.write_text("mechanism evidence\n", encoding="utf-8")
-    blog = tmp_path / "blog.md"
-    blog.write_text(
-        "before\n<!-- MECHANISM:BEGIN -->\nmechanism evidence\n<!-- MECHANISM:END -->\n"
-        "<!-- OUTCOMES:BEGIN -->\nold\n<!-- OUTCOMES:END -->\nafter\n",
-        encoding="utf-8",
-    )
     mechanism_payload = {
         "schema_version": 1,
         "complete": True,
@@ -438,12 +431,11 @@ def _inputs(
             "bytes": mechanism.stat().st_size,
             "sha256": _sha256(mechanism),
         },
-        "blog": _marked_block_record(blog, MECHANISM_MARKERS),
     }
     if scope is not None:
         mechanism_payload.update({"families": list(families), "scope_amendment": scope})
     _manifest(mechanism.with_suffix(".manifest.json"), mechanism_payload)
-    return functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog
+    return functional, hybrid, short, tail, spectral, confirmatory, mechanism
 
 
 def test_final_conclusion_is_result_driven_and_pending_is_explicit():
@@ -560,7 +552,7 @@ def test_final_conclusion_is_result_driven_and_pending_is_explicit():
 
 
 def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path):
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism = _inputs(tmp_path)
     output = tmp_path / "reports" / "outcome-summary.md"
 
     manifest = render_outcome_report(
@@ -569,19 +561,17 @@ def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path
         short,
         confirmatory,
         mechanism,
-        blog,
         output,
         tail_stability_dir=tail,
         spectral_transplant_dir=spectral,
     )
-    first = (output.read_bytes(), blog.read_bytes())
+    first = output.read_bytes()
     repeated = render_outcome_report(
         functional,
         hybrid,
         short,
         confirmatory,
         mechanism,
-        blog,
         output,
         tail_stability_dir=tail,
         spectral_transplant_dir=spectral,
@@ -589,7 +579,7 @@ def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path
 
     assert manifest == repeated
     assert manifest["complete"] is True
-    assert (output.read_bytes(), blog.read_bytes()) == first
+    assert output.read_bytes() == first
     text = output.read_text(encoding="utf-8")
     assert "AdamW parameter routing" in text
     assert "matched optimizer directions" in text
@@ -607,22 +597,17 @@ def test_outcome_report_renders_all_causal_and_confirmation_tiers(tmp_path: Path
         "confirmation",
     }
     assert len(manifest["source_tables"]) == 8
-    assert "sha256" not in manifest["blog"]
-    assert "bytes" not in manifest["blog"]
-    assert manifest["blog"]["block_bytes"] > 0
     assert "familywise 95% CI" in text
     assert "Only the familywise interval" in text
-    assert "\nold\n" not in blog.read_text(encoding="utf-8")
 
 
 def test_outcome_accepts_portable_mechanism_paths_outside_repository_cwd(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism = _inputs(tmp_path)
     manifest_path = mechanism.with_suffix(".manifest.json")
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     payload["output"]["path"] = str(mechanism.relative_to(tmp_path))
-    payload["blog"]["path"] = str(blog.relative_to(tmp_path))
     _manifest(manifest_path, payload)
     monkeypatch.chdir(tmp_path.parent)
 
@@ -632,7 +617,6 @@ def test_outcome_accepts_portable_mechanism_paths_outside_repository_cwd(
         short,
         confirmatory,
         mechanism,
-        blog,
         tmp_path / "reports/outcome-summary.md",
         tail_stability_dir=tail,
         spectral_transplant_dir=spectral,
@@ -643,7 +627,7 @@ def test_outcome_accepts_portable_mechanism_paths_outside_repository_cwd(
 
 def test_outcome_report_renders_strict_dense_scope_without_late_rows(tmp_path: Path):
     families, scope = resolve_scope(("dense",), "configs/dense_scope_amendment.json")
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism = _inputs(
         tmp_path, families, scope
     )
     output = tmp_path / "reports" / "outcome-summary.md"
@@ -654,7 +638,6 @@ def test_outcome_report_renders_strict_dense_scope_without_late_rows(tmp_path: P
         short,
         confirmatory,
         mechanism,
-        blog,
         output,
         tail_stability_dir=tail,
         spectral_transplant_dir=spectral,
@@ -677,7 +660,7 @@ def test_outcome_report_renders_strict_dense_scope_without_late_rows(tmp_path: P
 
 def test_outcome_report_rejects_incomplete_dense_summary(tmp_path: Path):
     families, scope = resolve_scope(("dense",), "configs/dense_scope_amendment.json")
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism = _inputs(
         tmp_path, families, scope
     )
     manifest_path = short / "summary_manifest.json"
@@ -692,7 +675,6 @@ def test_outcome_report_rejects_incomplete_dense_summary(tmp_path: Path):
             short,
             confirmatory,
             mechanism,
-            blog,
             tmp_path / "outcome.md",
             tail_stability_dir=tail,
             spectral_transplant_dir=spectral,
@@ -702,7 +684,7 @@ def test_outcome_report_rejects_incomplete_dense_summary(tmp_path: Path):
 
 
 def test_outcome_report_rejects_hashed_table_drift(tmp_path: Path):
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism = _inputs(tmp_path)
     (confirmatory / "paired_summary.csv").write_text("changed\n", encoding="utf-8")
 
     with pytest.raises(ValueError, match="Declared table differs"):
@@ -712,7 +694,6 @@ def test_outcome_report_rejects_hashed_table_drift(tmp_path: Path):
             short,
             confirmatory,
             mechanism,
-            blog,
             tmp_path / "outcome.md",
             tail_stability_dir=tail,
             spectral_transplant_dir=spectral,
@@ -720,7 +701,7 @@ def test_outcome_report_rejects_hashed_table_drift(tmp_path: Path):
 
 
 def test_outcome_report_recomputes_tail_decision_from_effect_signs(tmp_path: Path):
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism = _inputs(tmp_path)
     table = tail / "short_branch_final_summary.csv"
     with table.open(encoding="utf-8", newline="") as handle:
         rows = list(csv.DictReader(handle))
@@ -738,25 +719,6 @@ def test_outcome_report_recomputes_tail_decision_from_effect_signs(tmp_path: Pat
             short,
             confirmatory,
             mechanism,
-            blog,
-            tmp_path / "outcome.md",
-            tail_stability_dir=tail,
-            spectral_transplant_dir=spectral,
-        )
-
-
-def test_outcome_report_rejects_stale_mechanism_marker(tmp_path: Path):
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
-    blog.write_text(blog.read_text().replace("mechanism evidence", "stale"), encoding="utf-8")
-
-    with pytest.raises(ValueError, match="mechanism marker differs"):
-        render_outcome_report(
-            functional,
-            hybrid,
-            short,
-            confirmatory,
-            mechanism,
-            blog,
             tmp_path / "outcome.md",
             tail_stability_dir=tail,
             spectral_transplant_dir=spectral,
@@ -770,7 +732,7 @@ def test_outcome_report_rejects_stale_mechanism_marker(tmp_path: Path):
 def test_outcome_report_requires_complete_posthoc_decomposition(
     tmp_path: Path, directory: str, message: str
 ):
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
+    functional, hybrid, short, tail, spectral, confirmatory, mechanism = _inputs(tmp_path)
     target = tail if directory == "tail" else spectral
     manifest_path = target / "summary_manifest.json"
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -784,40 +746,7 @@ def test_outcome_report_requires_complete_posthoc_decomposition(
             short,
             confirmatory,
             mechanism,
-            blog,
             tmp_path / "outcome.md",
             tail_stability_dir=tail,
             spectral_transplant_dir=spectral,
         )
-
-
-def test_outcome_blog_hash_is_owned_marker_block_not_whole_document(tmp_path: Path):
-    functional, hybrid, short, tail, spectral, confirmatory, mechanism, blog = _inputs(tmp_path)
-    output = tmp_path / "reports/outcome-summary.md"
-    first = render_outcome_report(
-        functional,
-        hybrid,
-        short,
-        confirmatory,
-        mechanism,
-        blog,
-        output,
-        tail_stability_dir=tail,
-        spectral_transplant_dir=spectral,
-    )
-    blog.write_text("external renderer edit\n" + blog.read_text(encoding="utf-8"), encoding="utf-8")
-
-    repeated = render_outcome_report(
-        functional,
-        hybrid,
-        short,
-        confirmatory,
-        mechanism,
-        blog,
-        output,
-        tail_stability_dir=tail,
-        spectral_transplant_dir=spectral,
-    )
-
-    assert repeated["blog"] == first["blog"]
-    assert blog.read_text(encoding="utf-8").startswith("external renderer edit\n")

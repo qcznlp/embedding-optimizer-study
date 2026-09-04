@@ -26,7 +26,7 @@
     },
     "analysis_protocol": {
       "path": "configs/dense_no_packing_analysis_protocol.json",
-      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+      "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
     },
     "matrix": {
       "path": "configs/dense_no_packing_retrain.yaml",
@@ -155,6 +155,12 @@
       "outcomes_visible": false
     }
   ],
+  "paper_only_amendment": {
+    "amended_at_utc": "2026-09-04T00:26:24Z",
+    "reason": "Rebind the unchanged analysis parent after retirement of a parallel publication interface. Source states, operators, seeds, endpoints, estimands, bootstrap, and decision map are unchanged.",
+    "previous_analysis_protocol_sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32",
+    "scientific_design_changed": false
+  },
   "implementation_gate": "Before execution, bind the exact matrix generator, scale calibrator, trainer wrapper, evaluator, summarizer, source identities, expected cardinalities, and commands in a separate implementation protocol. Do not change this scientific design while adding that executable binding.",
   "claim_boundary": "This crossed experiment can distinguish a carried weight-state effect, an averaged continuation-operator effect, and their interaction for one DenseOn checkpoint pair, one branch length, and one fixed data view. It does not isolate every optimizer-state moment, prove mediation over the full 500K run, or establish a universal Muon mechanism."
 }

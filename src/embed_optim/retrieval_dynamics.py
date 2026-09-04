@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
 import json
 import math
 import statistics
@@ -27,10 +26,6 @@ FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
 OPTIMIZER_LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
-TASK_STABILITY_MARKERS = (
-    "<!-- TASK-DELTA-STABILITY:BEGIN -->",
-    "<!-- TASK-DELTA-STABILITY:END -->",
-)
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -502,40 +497,6 @@ def _task_stability_markdown(
     return "\n".join(lines)
 
 
-def render_task_stability_blog(
-    path: Path,
-    rows: list[dict[str, Any]],
-    families: tuple[str, ...] = FAMILIES,
-) -> dict[str, str | int]:
-    text = path.read_text(encoding="utf-8")
-    begin, end = TASK_STABILITY_MARKERS
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError("Blog requires exactly one task-delta stability marker pair")
-    before, remainder = text.split(begin)
-    _old, after = remainder.split(end)
-    content = _task_stability_markdown(rows, families)
-    rendered = f"{before}{begin}\n\n{content}\n\n{end}{after}"
-    temporary = path.with_name(f".{path.name}.tmp")
-    temporary.write_text(rendered, encoding="utf-8")
-    temporary.replace(path)
-    written = path.read_text(encoding="utf-8")
-    if written.count(begin) != 1 or written.count(end) != 1:
-        raise ValueError("Written blog has an invalid task-delta stability marker pair")
-    start = written.index(begin)
-    stop = written.index(end, start) + len(end)
-    observed = written[start:stop].encode("utf-8")
-    expected = f"{begin}\n\n{content}\n\n{end}".encode("utf-8")
-    if observed != expected:
-        raise ValueError("Written task-delta stability marker block differs after render")
-    return {
-        "begin_marker": begin,
-        "end_marker": end,
-        "encoding": "utf-8",
-        "bytes": len(observed),
-        "sha256": hashlib.sha256(observed).hexdigest(),
-    }
-
-
 def _quality_figure(
     rows: list[dict[str, Any]],
     path: Path,
@@ -732,7 +693,6 @@ def _build_scoped_retrieval_from_report(
     repository_root: Path,
     coverage_file: Path,
     output_dir: str | Path,
-    blog_path: str | Path | None,
     families: tuple[str, ...],
     scope: dict[str, Any],
 ) -> dict[str, Any]:
@@ -812,18 +772,7 @@ def _build_scoped_retrieval_from_report(
         },
         "outputs": outputs,
         "interpretation": interpretation,
-        "blog_marker_blocks": None,
     }
-    if blog_path is not None:
-        resolved_blog = Path(blog_path).resolve()
-        block = render_task_stability_blog(
-            resolved_blog, selected["task_delta_stability"], families
-        )
-        manifest["blog_marker_blocks"] = {
-            "schema_version": 1,
-            "path": _portable_path(resolved_blog, repository_root),
-            "blocks": {"task_delta_stability": block},
-        }
     _atomic_json(output / "summary_manifest.json", manifest)
     return manifest
 
@@ -835,7 +784,6 @@ def build_retrieval_dynamics(
     training_dir: str | Path = "reports/training-dynamics",
     output_dir: str | Path = "reports/retrieval-dynamics",
     protocol_path: str | Path = "configs/retrieval_dynamics_protocol.json",
-    blog_path: str | Path | None = None,
     *,
     families: tuple[str, ...] = FAMILIES,
     scope_amendment: str | Path | None = None,
@@ -861,7 +809,6 @@ def build_retrieval_dynamics(
             repository_root=repository_root,
             coverage_file=coverage_file,
             output_dir=output_dir,
-            blog_path=blog_path,
             families=families,
             scope=scope,
         )
@@ -984,8 +931,6 @@ def build_retrieval_dynamics(
         ),
     }
     _atomic_json(output / "summary_manifest.json", manifest)
-    if blog_path is not None:
-        render_task_stability_blog(Path(blog_path).resolve(), task_stability_rows)
     return manifest
 
 
@@ -1001,7 +946,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--protocol", type=Path, default=Path("configs/retrieval_dynamics_protocol.json")
     )
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument(
         "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
     )
@@ -1018,7 +962,6 @@ def main(argv: list[str] | None = None) -> None:
         args.training_dir,
         args.output_dir,
         args.protocol,
-        args.blog,
         families=tuple(args.families),
         scope_amendment=args.scope_amendment,
     )

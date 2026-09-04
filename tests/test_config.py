@@ -126,19 +126,19 @@ def test_corrected_dense_matrix_is_isolated_and_explicitly_padded():
 def test_public_docs_record_compute_and_acceleration_contract() -> None:
     root = Path(__file__).parents[1]
     readme = (root / "README.md").read_text(encoding="utf-8")
-    blog = (root / "docs/blog.md").read_text(encoding="utf-8")
+    paper = (root / "paper/main.tex").read_text(encoding="utf-8")
     gates = (root / "docs/completion-gates.md").read_text(encoding="utf-8")
 
-    for document in (readme, blog, gates):
+    for document in (readme, paper, gates):
         normalized = document.lower()
         assert "eight h100-equivalent gpus" in normalized
         assert "two disjoint four-gpu" in normalized
-    compact_blog = " ".join(blog.split())
-    assert "task-parallel retrieval evaluation" in compact_blog
-    assert "exact retrieval rather than approximate ranking" in compact_blog
-    assert "fused CUDA AdamW" in compact_blog
-    assert "decomposed-bfloat16" in compact_blog
-    assert "None of these systems optimizations introduces in-batch negatives" in compact_blog
+    compact_paper = " ".join(paper.split())
+    assert "Retrieval evaluation is task-parallel" in compact_paper
+    assert "exact retrieval rather than approximate ranking" in compact_paper
+    assert "fused CUDA AdamW" in compact_paper
+    assert "decomposed-bfloat16" in compact_paper
+    assert "None of these systems optimizations introduces in-batch negatives" in compact_paper
 
 
 def test_hybrid_adamw_matrix_is_an_eight_run_routing_control():

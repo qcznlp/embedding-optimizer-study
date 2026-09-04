@@ -7,7 +7,6 @@ from pathlib import Path
 import pytest
 
 from embed_optim.candidate_breadth_publication import (
-    CANDIDATE_BREADTH_MARKERS,
     _paired_transition_records,
     candidate_breadth_latex,
     candidate_breadth_markdown,
@@ -186,7 +185,7 @@ def _record(path: Path) -> dict:
     return {"path": path.name, "bytes": path.stat().st_size, "sha256": _sha256(path)}
 
 
-def test_renderer_round_trips_blog_paper_and_manifest(monkeypatch, tmp_path: Path) -> None:
+def test_renderer_round_trips_paper_and_manifest(monkeypatch, tmp_path: Path) -> None:
     protocol = tmp_path / "configs" / "candidate_breadth_probe.json"
     protocol.parent.mkdir(parents=True)
     protocol.write_text("{}\n", encoding="utf-8")
@@ -212,12 +211,6 @@ def test_renderer_round_trips_blog_paper_and_manifest(monkeypatch, tmp_path: Pat
     (summary_dir / "summary.json").write_text(
         json.dumps(summary, sort_keys=True) + "\n", encoding="utf-8"
     )
-    blog = tmp_path / "docs" / "blog.md"
-    blog.parent.mkdir(parents=True)
-    blog.write_text(
-        f"before\n{CANDIDATE_BREADTH_MARKERS[0]}\npending\n{CANDIDATE_BREADTH_MARKERS[1]}\nafter\n",
-        encoding="utf-8",
-    )
     paper = tmp_path / "paper" / "generated" / "candidate-breadth.tex"
     paper.parent.mkdir(parents=True)
     paper.write_text("pending\n", encoding="utf-8")
@@ -230,14 +223,12 @@ def test_renderer_round_trips_blog_paper_and_manifest(monkeypatch, tmp_path: Pat
     rendered = render_candidate_breadth_publication(
         protocol,
         summary_dir=summary_dir,
-        blog_path=blog,
         paper_path=paper,
         manifest_path=manifest,
     )
     audited = render_candidate_breadth_publication(
         protocol,
         summary_dir=summary_dir,
-        blog_path=blog,
         paper_path=paper,
         manifest_path=manifest,
         audit_only=True,
@@ -245,7 +236,6 @@ def test_renderer_round_trips_blog_paper_and_manifest(monkeypatch, tmp_path: Pat
 
     assert rendered == audited
     assert rendered["status"] == "complete"
-    assert "Frozen decision: Supported" in blog.read_text(encoding="utf-8")
     paper_text = paper.read_text(encoding="utf-8")
     assert r"\label{fig:candidate-breadth}" in paper_text
     assert r"\newcommand{\CandidateBreadthConclusion}" in paper_text

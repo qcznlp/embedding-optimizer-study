@@ -12,7 +12,7 @@ identity.
 | Requirement | Authoritative evidence | DenseOn passing condition |
 | --- | --- | --- |
 | Scope | configs/dense_scope_amendment.json | families=["dense"]; historical Late is retained, not used in primary inference |
-| Execution contract | configs/experiment.yaml, README.md, and docs/blog.md | eight H100-equivalent GPUs are documented as two disjoint four-GPU training pools; each run retains four ranks; exact task-parallel evaluation and numerical acceleration boundaries are disclosed |
+| Execution contract | configs/experiment.yaml, README.md, and paper/main.tex | eight H100-equivalent GPUs are documented as two disjoint four-GPU training pools; each run retains four ranks; exact task-parallel evaluation and numerical acceleration boundaries are disclosed |
 | Shared data | materialized 500K manifest and row ledger | 500,000 rows, seven source quotas, seven distinct seeded negatives, one training-view fingerprint |
 | Discovery training | configs/experiment.yaml plus completion/checkpoint audit | 12 runs, 60 checkpoints, all model/optimizer/scheduler/Trainer/RNG payloads deep-valid |
 | Discovery evaluation | [reports/dense-discovery/coverage.json](../reports/dense-discovery/coverage.json) and provenance-valid MTEB files | 12 × 5 × 14 = 840 DenseOn units selected only after the full historical source contract passes |
@@ -36,8 +36,8 @@ identity.
 | Spectrum/basis transplant | reports/spectral-transplant/summary_manifest.json | all conditions at 10 anchors; native, 2×2, path, and band summaries complete |
 | Dose/band mechanism | reports/dose-band/summary_manifest.json | Dense-only, scope-bound dose/band analysis is complete; its strict `--audit` rehashes every declared input and output |
 | Mechanism report | reports/mechanism-summary.manifest.json | families=["dense"], same scope hash, 10 anchors, 180 spectra, 60 bridge checkpoints, 840 retrieval units |
-| Outcome report | reports/outcome-summary.manifest.json | hybrid, shared-start, spectral transplant, and confirmation are all strict and rendered into the blog |
-| Blog | [docs/blog.md](blog.md) | each generated marker has exactly one pair and matches its hashed report byte-for-byte |
+| Outcome report | reports/outcome-summary.manifest.json | hybrid, shared-start, spectral transplant, and confirmation are all strict and rendered into the paper evidence chain |
+| Paper | [paper/main.tex](../paper/main.tex) | generated includes and headline macros match their hashed reports byte-for-byte |
 | Paper | reports/paper-results.manifest.json and paper/ | Dense constants are 12/60/840/20; no pending macro; strict paper audit, strict ACL release build, and the post-build strict re-audit pass |
 | W&B | reports/wandb/dense_source_provenance_audit.json plus remote content-addressed histories | exact config, Git, finished-state, tags/group, and normalized history for all 34 frozen Dense source runs (12 discovery + 4 hybrid + 9 confirmatory + 9 shared-start), followed by exactly 12 Dense canonical discovery identities; historical Late runs are retained and clearly tagged |
 | Third-party attribution | THIRD_PARTY_NOTICES.md plus file-level modification notices | DenseOn, PyTorch Muon, NorMuon, and pinned ACL build inputs are identified; every materially modified upstream file names the pinned DenseOn source commit; the notice is bundled byte-for-byte in wheel and sdist |
@@ -70,7 +70,7 @@ spectral-transplant step, and dose/band analysis. Each new build is followed imm
 strict `--audit`; a pending
 receipt, failed audit, or incomplete step blocks final reporting. The commands and source hashes are
 part of the completion ledger's step contract, and the finalizer binds its provenance to the exact
-completed ledger before rendering the mechanism report, blog, and paper.
+completed ledger before rendering the mechanism report and paper.
 
 The dynamics extension is frozen in
 [`configs/dense_retrieval_dynamics_extension.json`](../configs/dense_retrieval_dynamics_extension.json).
@@ -143,8 +143,8 @@ It does not compare the old implementation-source bytes with the post-hoc checko
 the already frozen candidate diagnostic must not retroactively invalidate the formal experiment.
 Its own 21-step contract is instead bound to the complete current source tree. It materializes and
 audits the 224-query nested dataset, evaluates all 12 final discovery checkpoints, applies the
-frozen breadth decision, regenerates current report blocks, renders and re-audits the candidate Blog
-and paper block, then reruns the strict paper, test, style, PDF, distribution-build, and distribution
+frozen breadth decision, regenerates current report blocks, renders and re-audits the candidate
+manuscript block, then reruns the strict paper, test, style, PDF, distribution-build, and distribution
 audit gates. Resume reruns the controller while individual evaluation outputs are reused only after
 their content-addressed audits pass.
 
@@ -236,7 +236,7 @@ Finally verify:
 - CI belongs to the final commit;
 - `logs/candidate-breadth-release/pipeline-ledger.json` is complete, contains exactly 21 successful
   steps, and still hashes the complete upstream finalization ledger and frozen candidate protocol;
-- the blog, paper, manifests, built archives, and W&B histories all identify the same Dense scope;
+- the paper, manifests, built archives, and W&B histories all identify the same Dense scope;
 - third-party notices name every adapted implementation and build input, and the modified upstream
   files retain their file-level source notice in both the tracked tree and built archives;
 - a secret-pattern scan of the tracked tree, reachable Git history, and distributions returns no

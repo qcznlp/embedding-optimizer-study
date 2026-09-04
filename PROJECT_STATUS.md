@@ -1,10 +1,13 @@
 # Project status and handoff
 
-Last updated: 2026-09-03 23:32 UTC
+Last updated: 2026-09-04 00:31 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
 provenance under the user-directed scope amendment.
+
+The owner retired the separate Markdown article on 2026-09-04. The manuscript under `paper/` is
+now the sole publication deliverable; Markdown reports remain source-addressed evidence only.
 
 For a fresh, artifact-only view on the experiment host, run
 `python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json`. The tracked
@@ -26,16 +29,16 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 1598/1584; 14/60 resumable checkpoints |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 2476/2454; 16/60 resumable checkpoints |
 | Corrected completion handoff | Detached operational controller active | 2/2 completed runs plus both active step-782 and step-1563 checkpoints remotely verified; then locked evaluation/analysis/publication chain |
-| Sealed-checkpoint durability | Detached CPU/network supervisor active | 14/60 checkpoints covered; 46 not yet generated; 0 cycle failures |
+| Sealed-checkpoint durability | Detached CPU/network supervisor active | 16/60 checkpoints covered; 44 not yet generated; 0 cycle failures |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
 | Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
-| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected: 270 files, 26,289,281,507 bytes |
+| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected whole-run snapshot: 270 files, 26,289,281,507 bytes; stage receipts cover 16/60 checkpoints |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
-| Corrected publication renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, blog + paper + standalone report |
+| Corrected paper renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, paper + standalone evidence report |
 | Corrected state-by-operator factorial | Scientific and source-bound implementation locks complete; waiting for source checkpoints | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started |
 | Manuscript narrative | Rewritten around the positive Muon trajectory result | 8-page main text; clean outcome block remains source-gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
@@ -49,8 +52,8 @@ output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the 
 time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
 deeply completed at step 3907 with all five scheduled checkpoints, including the model, optimizer,
 scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
-`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 22:46 UTC artifact snapshot they were at steps
-1598 and 1584, respectively, and both had deeply valid step-782 and step-1563 checkpoints. Across
+`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 00:31 UTC artifact snapshot they were at steps
+2476 and 2454, respectively, and both had deeply valid checkpoints through step 2345. Across
 the corrected phase there is still no CUDA OOM, NCCL data-plane, non-finite, or traceback marker.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
@@ -101,7 +104,7 @@ The final corrected publication path is also fixed before results. The source-bo
 `src/embed_optim/corrected_publication.py` consumes only complete, hashed outcome, geometry,
 bridge, and execution-sensitivity manifests. It publishes all primary and secondary contrasts,
 all 15 dynamics rows, all nine frozen geometry features, and the full sensitivity comparison into
-one standalone report, the marked blog section, and the manuscript include. Its timing,
+one standalone evidence report and the manuscript include. Its timing,
 requirements, source hashes, and claim boundary are frozen in
 `configs/dense_no_packing_publication_protocol.json`; no corrected evaluation or analysis output
 existed when that lock was written.
@@ -148,7 +151,7 @@ lease-protected supervisor so every later sealed checkpoint receives the same di
 backup without an interactive handoff. It is active as PID 54860, reads only training artifacts,
 uses CPU/network resources, and neither imports CUDA nor controls training. Its runtime contract
 SHA-256 is `a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7`;
-the current atomic state records 14/60 checkpoints covered, 46 not yet generated, and zero cycle
+the current atomic state records 16/60 checkpoints covered, 44 not yet generated, and zero cycle
 failures. Whole-run receipts cover completed runs, intermediate receipts cover active stages, and
 the final stage yields to the existing whole-run controller before the checkpoint-level fallback.
 The live state and exclusive lease are under `logs/dense-no-packing-sealed-backup/`; none of these
@@ -329,8 +332,7 @@ missing, extra, or size-mismatched files for every refreshed prefix:
     `python -m embed_optim.corrected_execution_sensitivity`; it matches all fixed rates and stages
     but never pools the executions or labels their difference a causal packing estimate.
 15. Render final corrected prose and tables only through
-    `python -m embed_optim.corrected_publication`; do not hand edit its marked blog block or
-    generated paper include.
+    `python -m embed_optim.corrected_publication`; do not hand edit its generated paper include.
 16. Run the source-bound state-by-operator factorial only after each checkpoint-2345 source passes
     its deep local and sealed remote-backup gates. Follow
     `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json` and
