@@ -13,7 +13,6 @@ from embed_optim.corrected_publication import (
     SYSTEM_FIELDS,
     _bridge_table,
     _load_publication_protocol,
-    _replace_marked,
     _validate_contrasts,
     build_conclusion,
     load_publication_evidence,
@@ -178,14 +177,6 @@ def test_conclusion_reports_supported_features_without_cherry_picking() -> None:
     assert "none of the nine frozen features" in conclusion
 
 
-def test_marker_replacement_requires_exactly_one_pair() -> None:
-    text = "before\n<!-- CORRECTED-DENSE-NO-PACKING:BEGIN -->\nold\n<!-- CORRECTED-DENSE-NO-PACKING:END -->\nafter\n"
-    replaced = _replace_marked(text, "new")
-    assert "\n\nnew\n\n<!-- CORRECTED-DENSE-NO-PACKING:END -->" in replaced
-    with pytest.raises(ValueError, match="exactly one"):
-        _replace_marked("no markers", "new")
-
-
 def test_contrast_validation_recomputes_support_and_common_max_t() -> None:
     rows = []
     for treatment, baseline, mean in (
@@ -257,7 +248,6 @@ def test_checked_in_publication_protocol_binds_current_sources_before_results() 
     assert protocol["expected_outputs"] == {
         "standalone_markdown": ("reports/dense-no-packing-publication/corrected_dense_results.md"),
         "summary_manifest": "reports/dense-no-packing-publication/summary_manifest.json",
-        "blog": "docs/blog.md",
         "paper_latex": "paper/generated/corrected-no-packing.tex",
         "primary_contrasts": 3,
         "secondary_contrasts": 3,

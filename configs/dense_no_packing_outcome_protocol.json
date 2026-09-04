@@ -19,11 +19,11 @@
     },
     "evaluation_protocol": {
       "path": "configs/dense_no_packing_evaluation_protocol.json",
-      "sha256": "b3f4bdf0a1d80c4f5926c3620234b6bd2aae2c6befa2bed1e25951e97698d149"
+      "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98"
     },
     "analysis_protocol": {
       "path": "configs/dense_no_packing_analysis_protocol.json",
-      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+      "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
     },
     "matrix": {
       "path": "configs/dense_no_packing_retrain.yaml",
@@ -57,8 +57,8 @@
     },
     "aggregate": {
       "path": "src/embed_optim/aggregate.py",
-      "bytes": 116247,
-      "sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0"
+      "bytes": 111685,
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
     },
     "config": {
       "path": "src/embed_optim/config.py",
@@ -135,6 +135,14 @@
     "run_observed_auc_rows": 12,
     "validation_run_metric_rows": 12,
     "system_metric_rows": 12
+  },
+  "publication_only_amendment": {
+    "amended_at_utc": "2026-09-04T00:26:24Z",
+    "reason": "Rebind unchanged evaluation parsing after removing a retired parallel Markdown article interface from the shared aggregator.",
+    "previous_evaluation_protocol_sha256": "b3f4bdf0a1d80c4f5926c3620234b6bd2aae2c6befa2bed1e25951e97698d149",
+    "previous_analysis_protocol_sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32",
+    "previous_aggregate_sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0",
+    "estimands_or_thresholds_changed": false
   },
   "claim_boundary": "The corrected outcome supports claims about this pinned DenseOn model, deterministic 500k-query seven-negative view, one training seed, optimizer implementations, and declared rate grids. Task bootstrap intervals quantify benchmark-task variation, not training-seed variation. The post-diagnosis origin and single seed preclude universal optimizer claims."
 }

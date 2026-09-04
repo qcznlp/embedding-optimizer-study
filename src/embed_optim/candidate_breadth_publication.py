@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
 import json
 import math
 from pathlib import Path
@@ -12,10 +11,6 @@ from .candidate_breadth_summary import build_candidate_breadth_summary
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .mechanism_report import _atomic_text
 
-CANDIDATE_BREADTH_MARKERS = (
-    "<!-- CANDIDATE-BREADTH:BEGIN -->",
-    "<!-- CANDIDATE-BREADTH:END -->",
-)
 WIDTHS = (7, 10, 32, 128, 512, 2048)
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CHALLENGERS = ("muon", "normuon")
@@ -490,38 +485,12 @@ def candidate_breadth_latex(
     )
 
 
-def _replace_marked(text: str, content: str) -> str:
-    begin, end = CANDIDATE_BREADTH_MARKERS
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError("Expected exactly one candidate-breadth marker pair in the blog")
-    before, remainder = text.split(begin, 1)
-    _, after = remainder.split(end, 1)
-    return f"{before}{begin}\n\n{content}\n\n{end}{after}"
-
-
-def _block_record(path: Path, root: Path) -> dict[str, Any]:
-    text = path.read_text(encoding="utf-8")
-    begin, end = CANDIDATE_BREADTH_MARKERS
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError("Expected exactly one candidate-breadth marker pair in the blog")
-    start = text.index(begin)
-    stop = text.index(end, start) + len(end)
-    payload = text[start:stop].encode("utf-8")
-    return {
-        "path": _relative(path, root),
-        "markers": list(CANDIDATE_BREADTH_MARKERS),
-        "block_bytes": len(payload),
-        "block_sha256": hashlib.sha256(payload).hexdigest(),
-    }
-
-
 def _publication_manifest(
     *,
     root: Path,
     protocol_path: Path,
     summary_dir: Path,
     summary: dict[str, Any],
-    blog_path: Path,
     paper_path: Path,
 ) -> dict[str, Any]:
     return {
@@ -536,7 +505,6 @@ def _publication_manifest(
         },
         "decision": summary["decision"],
         "outputs": {
-            "blog": _block_record(blog_path, root),
             "paper_tex": _file_record(paper_path, root),
         },
         "claim_boundary": summary["claim_boundary"],
@@ -547,7 +515,6 @@ def render_candidate_breadth_publication(
     protocol_path: str | Path = "configs/candidate_breadth_probe.json",
     *,
     summary_dir: str | Path = "reports/candidate-breadth",
-    blog_path: str | Path = "docs/blog.md",
     paper_path: str | Path = "paper/generated/candidate-breadth.tex",
     manifest_path: str | Path = "reports/candidate-breadth/publication_manifest.json",
     audit_only: bool = False,
@@ -560,20 +527,15 @@ def render_candidate_breadth_publication(
         return value.resolve() if value.is_absolute() else (root / value).resolve()
 
     summary_dir = resolve(summary_dir)
-    blog_path = resolve(blog_path)
     paper_path = resolve(paper_path)
     manifest_path = resolve(manifest_path)
     summary = build_candidate_breadth_summary(
         protocol_path, output_dir=summary_dir, audit_only=True
     )
     calibration, contrasts = load_candidate_breadth_publication_rows(summary_dir, summary)
-    markdown = candidate_breadth_markdown(calibration, contrasts, summary)
     latex = candidate_breadth_latex(calibration, contrasts, summary)
-    expected_blog = _replace_marked(blog_path.read_text(encoding="utf-8"), markdown)
 
     if audit_only:
-        if blog_path.read_text(encoding="utf-8") != expected_blog:
-            raise ValueError("Candidate-breadth blog block differs from recomputed evidence")
         if not paper_path.is_file() or paper_path.read_text(encoding="utf-8") != latex:
             raise ValueError("Candidate-breadth paper block differs from recomputed evidence")
         if not manifest_path.is_file():
@@ -583,7 +545,6 @@ def render_candidate_breadth_publication(
             protocol_path=protocol_path,
             summary_dir=summary_dir,
             summary=summary,
-            blog_path=blog_path,
             paper_path=paper_path,
         )
         existing = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -591,14 +552,12 @@ def render_candidate_breadth_publication(
             raise ValueError("Candidate-breadth publication manifest changed")
         return existing
 
-    _atomic_text(blog_path, expected_blog)
     _atomic_text(paper_path, latex)
     manifest = _publication_manifest(
         root=root,
         protocol_path=protocol_path,
         summary_dir=summary_dir,
         summary=summary,
-        blog_path=blog_path,
         paper_path=paper_path,
     )
     _atomic_json(manifest_path, manifest)
@@ -607,13 +566,12 @@ def render_candidate_breadth_publication(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Render or audit the post-hoc candidate-breadth blog and paper artifacts"
+        description="Render or audit the post-hoc candidate-breadth paper artifact"
     )
     parser.add_argument(
         "--protocol", type=Path, default=Path("configs/candidate_breadth_probe.json")
     )
     parser.add_argument("--summary-dir", type=Path, default=Path("reports/candidate-breadth"))
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument("--paper", type=Path, default=Path("paper/generated/candidate-breadth.tex"))
     parser.add_argument(
         "--manifest",
@@ -629,7 +587,6 @@ def main(argv: list[str] | None = None) -> None:
     result = render_candidate_breadth_publication(
         args.protocol,
         summary_dir=args.summary_dir,
-        blog_path=args.blog,
         paper_path=args.paper,
         manifest_path=args.manifest,
         audit_only=args.audit_only,

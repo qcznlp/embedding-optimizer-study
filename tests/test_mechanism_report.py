@@ -8,8 +8,6 @@ import pytest
 
 from embed_optim.geometry import _sha256
 from embed_optim.mechanism_report import (
-    MECHANISM_MARKERS,
-    _marked_block_complete,
     _read_declared_csv,
     ensure_retrieval_dynamics,
     render_mechanism_report,
@@ -426,12 +424,7 @@ def _inputs(tmp_path: Path):
         _figure(tmp_path / "figures" / "representation.svg"),
         _figure(tmp_path / "figures" / "late.svg"),
     )
-    blog = tmp_path / "blog.md"
-    blog.write_text(
-        "before\n<!-- MECHANISM:BEGIN -->\nold\n<!-- MECHANISM:END -->\nafter\n",
-        encoding="utf-8",
-    )
-    return common, basis, spectra, bridge, retrieval, figures, blog
+    return common, basis, spectra, bridge, retrieval, figures
 
 
 def _scope_amendment(root: Path, *, bad_hash: bool = False) -> Path:
@@ -466,10 +459,8 @@ def _accept_fixture_basis_audit(monkeypatch):
     monkeypatch.setattr("embed_optim.mechanism_report.audit_basis_sensitivity", audit)
 
 
-def test_mechanism_report_strictly_renders_fixed_blog_section(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-):
-    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
+def test_mechanism_report_strictly_renders_fixed_report(tmp_path: Path):
+    common, basis, spectra, bridge, retrieval, figures = _inputs(tmp_path)
     output = tmp_path / "reports" / "mechanism-summary.md"
 
     manifest = render_mechanism_report(
@@ -477,20 +468,18 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(
         spectra,
         bridge,
         retrieval,
-        blog,
         output,
         basis_dir=basis,
         spectrum_figure=figures[0],
         representation_figure=figures[1],
         late_token_figure=figures[2],
     )
-    first = (output.read_bytes(), blog.read_bytes())
+    first = output.read_bytes()
     repeated = render_mechanism_report(
         common,
         spectra,
         bridge,
         retrieval,
-        blog,
         output,
         basis_dir=basis,
         spectrum_figure=figures[0],
@@ -502,42 +491,18 @@ def test_mechanism_report_strictly_renders_fixed_blog_section(
     assert "families" not in manifest
     assert "scope_amendment" not in manifest
     assert repeated == manifest
-    assert (output.read_bytes(), blog.read_bytes()) == first
+    assert output.read_bytes() == first
     assert "Same-state optimizer fingerprints" in output.read_text()
     assert "Function-preserving basis sensitivity" in output.read_text()
     assert "Retrieval time to an AdamW reference" in output.read_text()
     assert "first seven geometry associations were fixed" in output.read_text()
     assert "trailing training loss (post-hoc)" in output.read_text()
     assert "1,456/1,680" in output.read_text()
-    assert "old" not in blog.read_text()
-    assert set(manifest["blog"]) == {
-        "path",
-        "markers",
-        "block_bytes",
-        "block_sha256",
-    }
-    local_blog_record = {**manifest["blog"], "path": str(blog.resolve())}
-    assert _marked_block_complete(blog, local_blog_record, MECHANISM_MARKERS)
-    monkeypatch.chdir(tmp_path.parent)
-    assert _marked_block_complete(
-        blog,
-        manifest["blog"],
-        MECHANISM_MARKERS,
-        repository_root=tmp_path,
-    )
     assert json.loads(output.with_suffix(".manifest.json").read_text()) == manifest
-
-    blog.write_text("other renderer\n" + blog.read_text(encoding="utf-8"), encoding="utf-8")
-    assert _marked_block_complete(blog, local_blog_record, MECHANISM_MARKERS)
-    blog.write_text(
-        blog.read_text(encoding="utf-8").replace("Same-state optimizer fingerprints", "changed"),
-        encoding="utf-8",
-    )
-    assert not _marked_block_complete(blog, local_blog_record, MECHANISM_MARKERS)
 
 
 def test_mechanism_report_renders_strict_dense_scope(tmp_path: Path):
-    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path / "inputs")
+    common, basis, spectra, bridge, retrieval, figures = _inputs(tmp_path / "inputs")
     amendment = _scope_amendment(tmp_path / "scope")
     output = tmp_path / "reports" / "dense-mechanism-summary.md"
 
@@ -546,7 +511,6 @@ def test_mechanism_report_renders_strict_dense_scope(tmp_path: Path):
         spectra,
         bridge,
         retrieval,
-        blog,
         output,
         basis_dir=basis,
         spectrum_figure=figures[0],
@@ -572,11 +536,10 @@ def test_mechanism_report_renders_strict_dense_scope(tmp_path: Path):
     assert "DenseOn" in rendered
     assert "Late" not in rendered
     assert "MaxSim" not in rendered
-    assert rendered.strip() in blog.read_text(encoding="utf-8")
 
 
 def test_mechanism_report_rejects_changed_scope_binding(tmp_path: Path):
-    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path / "inputs")
+    common, basis, spectra, bridge, retrieval, figures = _inputs(tmp_path / "inputs")
     amendment = _scope_amendment(tmp_path / "scope", bad_hash=True)
 
     with pytest.raises(ValueError, match="Scope-amendment source differs"):
@@ -585,7 +548,6 @@ def test_mechanism_report_rejects_changed_scope_binding(tmp_path: Path):
             spectra,
             bridge,
             retrieval,
-            blog,
             tmp_path / "mechanism.md",
             basis_dir=basis,
             spectrum_figure=figures[0],
@@ -597,7 +559,7 @@ def test_mechanism_report_rejects_changed_scope_binding(tmp_path: Path):
 
 
 def test_mechanism_report_rejects_figure_hash_drift(tmp_path: Path):
-    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
+    common, basis, spectra, bridge, retrieval, figures = _inputs(tmp_path)
     figures[1].write_text("changed\n", encoding="utf-8")
 
     with pytest.raises(ValueError, match="figure differs"):
@@ -606,7 +568,6 @@ def test_mechanism_report_rejects_figure_hash_drift(tmp_path: Path):
             spectra,
             bridge,
             retrieval,
-            blog,
             tmp_path / "mechanism.md",
             basis_dir=basis,
             spectrum_figure=figures[0],
@@ -616,7 +577,7 @@ def test_mechanism_report_rejects_figure_hash_drift(tmp_path: Path):
 
 
 def test_mechanism_report_rejects_partial_common_state(tmp_path: Path):
-    common, basis, spectra, bridge, retrieval, figures, blog = _inputs(tmp_path)
+    common, basis, spectra, bridge, retrieval, figures = _inputs(tmp_path)
     manifest_path = common / "summary_manifest.json"
     manifest = json.loads(manifest_path.read_text())
     manifest["complete"] = False
@@ -628,7 +589,6 @@ def test_mechanism_report_rejects_partial_common_state(tmp_path: Path):
             spectra,
             bridge,
             retrieval,
-            blog,
             tmp_path / "mechanism.md",
             basis_dir=basis,
             spectrum_figure=figures[0],

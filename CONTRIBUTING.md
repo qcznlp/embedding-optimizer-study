@@ -21,7 +21,7 @@ uv run ruff check src tests scripts
 uv run ruff format --check src tests scripts
 ```
 
-Changes to the manuscript, Blog, result renderers, or claim logic must additionally preserve the
+Changes to the manuscript, result renderers, or claim logic must additionally preserve the
 active Dense-only scope and pass the result-safe paper build and audit:
 
 ```bash
@@ -43,7 +43,7 @@ are incomplete.
 
 Changes to data sampling, negatives, loss logits, checkpoint fractions, task definitions, or score
 aggregation alter the experimental contract. Such pull requests must explain whether prior runs remain
-comparable and must update the Blog's limitations section. Historical LateOn artifacts remain
+comparable and must update the paper's limitations section. Historical LateOn artifacts remain
 available for provenance, but they cannot be promoted into the active DenseOn confirmatory claims.
 
 Do not commit API keys, local datasets, model checkpoints, W&B run files, MTEB caches, or PLAID

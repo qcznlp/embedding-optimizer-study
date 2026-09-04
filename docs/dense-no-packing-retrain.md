@@ -271,8 +271,8 @@ python -m embed_optim.corrected_publication
 ```
 
 The renderer verifies every parent protocol and every consumed file by byte count and SHA-256. It
-then writes the standalone corrected report, replaces exactly one marked block in `docs/blog.md`,
-writes `paper/generated/corrected-no-packing.tex`, and emits its own source-addressed manifest. It
+then writes the standalone corrected evidence report, writes
+`paper/generated/corrected-no-packing.tex`, and emits its own source-addressed manifest. It
 publishes every frozen contrast and all nine geometry features, including null or adverse results;
 do not hand edit the generated sections. The complete rendering contract was frozen before any
 corrected validation, BEIR, geometry, outcome, bridge, or sensitivity output existed in

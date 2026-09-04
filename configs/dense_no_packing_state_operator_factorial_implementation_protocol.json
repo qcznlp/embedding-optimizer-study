@@ -17,8 +17,8 @@
   "parent_bindings": {
     "scientific_protocol": {
       "path": "configs/dense_no_packing_state_operator_factorial_protocol.json",
-      "bytes": 9914,
-      "sha256": "67c7a24b64e6651ffc48eedcb73bbabd8dda42c2264057b71640364f058605b5"
+      "bytes": 10347,
+      "sha256": "5773943a3ae9b581021a0f7b85b162c74d5c497eeca1386578ff9d2c3bcafe76"
     },
     "corrected_execution_protocol": {
       "path": "configs/dense_no_packing_execution_protocol.json",
@@ -159,8 +159,8 @@
     },
     "evaluation_parser": {
       "path": "src/embed_optim/aggregate.py",
-      "bytes": 116247,
-      "sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0"
+      "bytes": 111685,
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
     },
     "gpu_lease": {
       "path": "src/embed_optim/gpu_lease.py",
@@ -306,6 +306,13 @@
     "interval": "linear percentile 95%",
     "decision": "supported_positive iff lower endpoint > 0; supported_negative iff upper endpoint < 0; otherwise inconclusive",
     "estimands": ["weight_state_effect", "operator_effect", "state_operator_interaction"]
+  },
+  "paper_only_amendment": {
+    "amended_at_utc": "2026-09-04T00:26:24Z",
+    "reason": "Rebind the amended scientific protocol and evaluation parser after retirement of the parallel Markdown article interface. Factorial executable behavior is unchanged.",
+    "previous_scientific_protocol_sha256": "67c7a24b64e6651ffc48eedcb73bbabd8dda42c2264057b71640364f058605b5",
+    "previous_evaluation_parser_sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0",
+    "scientific_or_executable_behavior_changed": false
   },
   "claim_boundary": "This lock operationalizes the already-frozen scientific design. It does not permit changing source states, branch data, continuation operators, target scale, seeds, endpoint, estimands, uncertainty, or decision rules after any factorial output appears."
 }

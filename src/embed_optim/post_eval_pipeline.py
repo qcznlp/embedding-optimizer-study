@@ -43,7 +43,7 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
     shared = ("--matrix", matrix)
     steps = [
         PipelineStep(
-            "strict-evaluation-audit",
+            "strict-evaluation-report",
             _module(
                 args.python,
                 "embed_optim.aggregate",
@@ -52,10 +52,7 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 args.results_root,
                 "--output-dir",
                 args.reports_dir,
-                "--blog",
-                args.blog,
                 "--strict",
-                "--no-render-blog",
             ),
         ),
     ]
@@ -75,21 +72,6 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
         )
     steps.extend(
         [
-            PipelineStep(
-                "strict-blog-render",
-                _module(
-                    args.python,
-                    "embed_optim.aggregate",
-                    *shared,
-                    "--results-root",
-                    args.results_root,
-                    "--output-dir",
-                    args.reports_dir,
-                    "--blog",
-                    args.blog,
-                    "--strict",
-                ),
-            ),
             PipelineStep(
                 "weight-space-reaudit",
                 _module(
@@ -350,7 +332,7 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(args.python, "embed_optim.mechanism_bridge", *shared),
             ),
             PipelineStep(
-                "mechanism-blog-render",
+                "mechanism-report-render",
                 _module(args.python, "embed_optim.mechanism_report"),
             ),
         ]
@@ -519,7 +501,7 @@ def pipeline_steps(args: argparse.Namespace) -> list[PipelineStep]:
                 _module(args.python, "embed_optim.short_branch_summary"),
             ),
             PipelineStep(
-                "outcome-blog-render",
+                "outcome-report-render",
                 _module(args.python, "embed_optim.outcome_report"),
             ),
             PipelineStep(
@@ -1044,7 +1026,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--progress", default="logs/evaluation/live-audit.json")
     parser.add_argument("--results-root", default="results/decontaminated-beir")
     parser.add_argument("--reports-dir", default="reports")
-    parser.add_argument("--blog", default="docs/blog.md")
     parser.add_argument("--gpus", default="0,1,2,3,4,5,6,7")
     parser.add_argument("--gpus-a", default="0,1,2,3")
     parser.add_argument("--gpus-b", default="4,5,6,7")

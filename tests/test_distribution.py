@@ -111,17 +111,6 @@ def _resolve_relative(source: PurePosixPath, target: str) -> PurePosixPath:
 def test_distribution_preserves_weight_space_document_links() -> None:
     installed = _installed_data_paths()
     expected_links = {
-        "docs/blog.md": (
-            "../configs/dense_scope_amendment.json",
-            "../reports/dense-discovery/figures/dense-training-dynamics.png",
-            "../reports/dense-discovery/figures/dense-training-dynamics-by-run.png",
-            "../reports/dense-discovery/figures/dense-lr-sensitivity.png",
-            "../reports/weight-space/optimizer_pair_contrast_trajectory.svg",
-            "../reports/weight-space/optimizer_geometry_phase.svg",
-            "../reports/weight-space/README.md",
-            "naacl-dense-paper-plan.md",
-            "naacl-paper-plan.md",
-        ),
         "docs/naacl-dense-paper-plan.md": (),
         "docs/naacl-paper-plan.md": (
             "../reports/weight-space/optimizer_pair_contrasts.csv",
@@ -132,7 +121,6 @@ def test_distribution_preserves_weight_space_document_links() -> None:
         "docs/completion-gates.md": (
             "../configs/dense_scope_amendment.json",
             "../reports/weight-space/summary_manifest.json",
-            "blog.md",
         ),
     }
 

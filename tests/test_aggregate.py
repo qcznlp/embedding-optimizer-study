@@ -9,8 +9,6 @@ from types import SimpleNamespace
 import pytest
 
 from embed_optim.aggregate import (
-    RESULTS_MARKERS,
-    SYSTEMS_MARKERS,
     _accepted_timing_problems,
     _contains_run_id,
     _dataset_rows_audit,
@@ -21,7 +19,6 @@ from embed_optim.aggregate import (
     _plot,
     _render_results,
     _render_systems,
-    _replace_marked,
     _run_settings_scope_matches,
     _system_summaries,
     _timing_adjustment_problems,
@@ -33,7 +30,6 @@ from embed_optim.aggregate import (
     collect_evaluations,
     collect_system_metrics,
     parse_args,
-    render_blog,
 )
 from embed_optim.config import MUON_NS_IMPLEMENTATION, OptimizerConfig, RunConfig, load_matrix
 from embed_optim.decontamination import DECONTAMINATED_BEIR
@@ -170,12 +166,6 @@ def test_run_settings_scope_schema_is_selected_by_mteb_version():
     )
     with pytest.raises(ValueError, match="Unsupported MTEB"):
         _run_settings_scope_matches(plural, "test", "default", "1.38.0")
-
-
-def test_replace_marked_preserves_the_markers():
-    text = "before\n<!-- A -->\nold\n<!-- B -->\nafter\n"
-    result = _replace_marked(text, ("<!-- A -->", "<!-- B -->"), "new")
-    assert result == "before\n<!-- A -->\n\nnew\n\n<!-- B -->\nafter\n"
 
 
 def test_dataset_row_audit_proves_identity_negatives_and_checksum(tmp_path):
@@ -372,30 +362,6 @@ def test_result_render_reports_auc_paired_task_counts_and_figure_paths():
     assert paired_rows == _paired_comparisons(task_rows, bootstrap_samples=1_000)
 
 
-def test_render_blog_replaces_both_sections_and_completion_status(tmp_path, monkeypatch):
-    blog = tmp_path / "blog.md"
-    blog.write_text(
-        "**Experiment status:** training matrix in progress. This document already records the frozen protocol;\n"
-        "the results sections are populated only from strictly validated aggregation artifacts after coverage reaches\n"
-        "1,680/1,680.\n\n"
-        "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
-        "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n"
-    )
-    monkeypatch.setattr("embed_optim.aggregate._render_results", lambda *args: "new results")
-    monkeypatch.setattr("embed_optim.aggregate._render_systems", lambda *args: "new systems")
-
-    render_blog(blog, [], [], [], [], [])
-
-    rendered = blog.read_text()
-    assert "<!-- RESULTS:BEGIN -->\n\nnew results\n\n<!-- RESULTS:END -->" in rendered
-    assert "<!-- SYSTEMS:BEGIN -->\n\nnew systems\n\n<!-- SYSTEMS:END -->" in rendered
-    assert (
-        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
-        "checkpoint/task evaluations." in rendered
-    )
-    assert "training matrix in progress" not in rendered
-
-
 def test_aggregate_cli_defaults_to_the_original_two_family_contract():
     args = parse_args([])
 
@@ -405,14 +371,6 @@ def test_aggregate_cli_defaults_to_the_original_two_family_contract():
 
 
 def test_dense_aggregate_filters_frozen_full_report_without_overwriting_it(tmp_path):
-    blog = tmp_path / "blog.md"
-    blog.write_text(
-        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
-        "checkpoint/task evaluations.\n\n"
-        "<!-- RESULTS:BEGIN -->\nold results\n<!-- RESULTS:END -->\n\n"
-        "<!-- SYSTEMS:BEGIN -->\nold systems\n<!-- SYSTEMS:END -->\n",
-        encoding="utf-8",
-    )
     output_root = tmp_path / "reports"
     args = parse_args(
         [
@@ -422,8 +380,6 @@ def test_dense_aggregate_filters_frozen_full_report_without_overwriting_it(tmp_p
             "configs/dense_scope_amendment.json",
             "--output-dir",
             str(output_root),
-            "--blog",
-            str(blog),
             "--strict",
         ]
     )
@@ -434,7 +390,6 @@ def test_dense_aggregate_filters_frozen_full_report_without_overwriting_it(tmp_p
     coverage = json.loads((scoped / "coverage.json").read_text(encoding="utf-8"))
     with (scoped / "evaluation_long.csv").open(encoding="utf-8") as handle:
         rows = list(csv.DictReader(handle))
-    rendered = blog.read_text(encoding="utf-8")
     assert coverage["complete"] is True
     assert coverage["families"] == ["dense"]
     assert coverage["verified_experiment_runs"] == coverage["expected_experiment_runs"] == 12
@@ -448,27 +403,6 @@ def test_dense_aggregate_filters_frozen_full_report_without_overwriting_it(tmp_p
     assert len(rows) == 840
     assert {row["model_family"] for row in rows} == {"dense"}
     assert not (output_root / "coverage.json").exists()
-    assert "Dense discovery view complete" in rendered
-    assert "All 840 planned" in rendered
-    assert "Late" not in rendered
-    assert "MaxSim" not in rendered
-    marker_receipt = coverage["blog_marker_blocks"]
-    assert marker_receipt["schema_version"] == 1
-    assert marker_receipt["path"] == str(blog.resolve())
-    for label, markers in (("results", RESULTS_MARKERS), ("systems", SYSTEMS_MARKERS)):
-        begin, end = markers
-        start = rendered.index(begin)
-        stop = rendered.index(end, start) + len(end)
-        payload = rendered[start:stop].encode("utf-8")
-        record = marker_receipt["blocks"][label]
-        assert record == {
-            "begin_marker": begin,
-            "end_marker": end,
-            "encoding": "utf-8",
-            "bytes": len(payload),
-            "sha256": hashlib.sha256(payload).hexdigest(),
-        }
-        assert record["sha256"] != hashlib.sha256(rendered.encode("utf-8")).hexdigest()
     outputs = coverage["outputs"]
     assert len(outputs) == 12
     for record in outputs.values():
@@ -485,7 +419,6 @@ def test_dense_aggregate_requires_the_bound_scope_amendment(tmp_path):
             "dense",
             "--output-dir",
             str(tmp_path),
-            "--no-render-blog",
         ]
     )
 
@@ -493,7 +426,7 @@ def test_dense_aggregate_requires_the_bound_scope_amendment(tmp_path):
         aggregate(args)
 
 
-def test_plot_generates_every_figure_referenced_by_the_blog(tmp_path):
+def test_plot_generates_every_publication_figure(tmp_path):
     summary = []
     for family in ("dense", "late"):
         for optimizer_index, optimizer in enumerate(("adamw", "muon", "normuon")):

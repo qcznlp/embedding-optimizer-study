@@ -195,6 +195,13 @@ rule and auxiliary parameters through AdamW at $3\!\times\!10^{-6}$. Each run ke
 20, 40, 60, 80, and 100\% of 3,907 optimizer steps. Every checkpoint is evaluated on the same
 \NumBEIRTasks-task decontaminated BEIR suite.
 
+We use eight H100-equivalent GPUs as two disjoint four-GPU training pools, retaining four ranks per
+run. Retrieval evaluation is task-parallel across otherwise idle devices and uses exact retrieval
+rather than approximate ranking. AdamW uses fused CUDA AdamW; Muon and NorMuon use the documented
+decomposed-bfloat16 Newton--Schulz path after the native addmm decomposition proved unstable on the
+pinned distributed stack. None of these systems optimizations introduces in-batch negatives or
+changes example identities, ordering, checkpoint boundaries, or scoring semantics.
+
 \subsection{Four stages of evidence}
 
 The historical discovery grid asks whether any learning-rate region is promising and records full
@@ -392,6 +399,12 @@ far outside that useful path, so optimizer quality and optimizer selection must 
 separately. The independently padded matrix supplies the final recommendation; the broader lesson
 is that explaining a retrieval optimizer requires following its effects from local updates through
 evolving states to corpus ranking.
+
+\paragraph{Historical selector evidence.}
+The generated result below concerns the recipe chosen by the packed validator, not the full
+optimizer surface. Its negative three-seed contrast coexists with the positive Muon region because
+the selector chose a ten-times larger, batch-dependent rate. The corrected padded matrix adjudicates
+the optimizer claim.
 
 \ResultConclusion
 

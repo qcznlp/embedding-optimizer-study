@@ -116,7 +116,6 @@ def _args(repository: Path) -> Namespace:
         protocol=Path("configs/candidate_breadth_probe.json"),
         data_output=Path("data/candidate-breadth"),
         summary_dir=Path("reports/candidate-breadth"),
-        blog=Path("docs/blog.md"),
         paper=Path("paper/generated/candidate-breadth.tex"),
         publication_manifest=Path("reports/candidate-breadth/publication_manifest.json"),
         log_dir=Path("logs/candidate-release"),
@@ -378,20 +377,18 @@ def test_completion_gates_require_the_posthoc_release_after_canonical_finalizati
 def test_publication_keeps_candidate_breadth_claim_boundaries_visible() -> None:
     root = Path(__file__).parents[1]
     paper = (root / "paper/main.tex").read_text(encoding="utf-8")
-    blog = (root / "docs/blog.md").read_text(encoding="utf-8")
 
-    for document in (paper, blog):
-        normalized = " ".join(document.split()).lower()
-        assert "designed after" in normalized
-        assert "unjudged relevant" in normalized
-        assert "formal mediation" in normalized
+    normalized = " ".join(paper.split()).lower()
+    assert "designed after" in normalized
+    assert "unjudged relevant" in normalized
+    assert "formal mediation" in normalized
     assert "Muon-family high-dose ordering reverses with candidate breadth" in paper
     assert "width-2,048 endpoint reversals" in paper
     assert "directly supports missing-candidate coverage as the mechanism" not in paper
     assert r"\CandidateBreadthDiscussion" in paper
     assert r"\CandidateBreadthConclusion" in paper
     assert r"\CandidateBreadthFigure" in paper
-    normalized_blog = " ".join(blog.split())
-    assert "prerequisite width-7 bridge failed" in normalized_blog
-    assert "Missing-candidate coverage therefore does not explain" in normalized_blog
-    assert "batch-composition invariance" in normalized_blog
+    generated = (root / "paper/generated/candidate-breadth.tex").read_text(encoding="utf-8")
+    assert "prerequisite width-7 bridge failed" in generated
+    assert "Missing-candidate coverage therefore does not explain" in generated
+    assert "batch-composition" in paper

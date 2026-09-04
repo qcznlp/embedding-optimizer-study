@@ -20,11 +20,11 @@
   "parent_bindings": {
     "analysis_protocol": {
       "path": "configs/dense_no_packing_analysis_protocol.json",
-      "sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32"
+      "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
     },
     "outcome_protocol": {
       "path": "configs/dense_no_packing_outcome_protocol.json",
-      "sha256": "773f0eb6a1eb4562856dcebf0f8f59e30ac41b517d713a4a698c1340f4bc75d3"
+      "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
     },
     "matrix": {
       "path": "configs/dense_no_packing_retrain.yaml",
@@ -34,8 +34,8 @@
   "historical_bindings": {
     "coverage": {
       "path": "reports/dense-discovery/coverage.json",
-      "bytes": 6065,
-      "sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36"
+      "bytes": 5438,
+      "sha256": "c3c50fd1bb342c3f23afed90c7c405d502bf7b8432020a5f0b83194b0dfbdd2a"
     },
     "checkpoint_summary": {
       "path": "reports/dense-discovery/checkpoint_summary.csv",
@@ -73,6 +73,14 @@
     "optimizer_stage_sensitivity_rows": 15,
     "optimizer_minus_adamw_sensitivity_rows": 10,
     "stage_optimizer_rankings_rows": 5
+  },
+  "paper_only_amendment": {
+    "amended_at_utc": "2026-09-04T00:26:24Z",
+    "reason": "Rebind publication-only parent amendments and the paper-only dense discovery manifest. Matching, aggregation, ranking, output cardinalities, and claim boundary are unchanged.",
+    "previous_analysis_protocol_sha256": "4a8b3420703f45e0f619e273be0cffce56bd077c286a1ff8137a0371001a6a32",
+    "previous_outcome_protocol_sha256": "773f0eb6a1eb4562856dcebf0f8f59e30ac41b517d713a4a698c1340f4bc75d3",
+    "previous_dense_coverage_sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36",
+    "scientific_or_executable_behavior_changed": false
   },
   "claim_boundary": "A ranking or optimizer-minus-AdamW change is execution-path sensitivity evidence. The historical and corrected checkpoints are not a newly randomized packing experiment, so this summary is not a causal estimate of packing and must not be pooled into corrected inference."
 }

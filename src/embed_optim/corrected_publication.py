@@ -1,4 +1,4 @@
-"""Render the complete corrected Dense evidence into blog and paper artifacts."""
+"""Render the complete corrected Dense evidence into report and paper artifacts."""
 
 from __future__ import annotations
 
@@ -18,10 +18,6 @@ SCHEMA_VERSION = 1
 OPTIMIZERS = ("adamw", "muon", "normuon")
 CONTRASTS = (("muon", "adamw"), ("normuon", "adamw"), ("normuon", "muon"))
 LABELS = {"adamw": "AdamW", "muon": "Muon", "normuon": "NorMuon"}
-CORRECTED_MARKERS = (
-    "<!-- CORRECTED-DENSE-NO-PACKING:BEGIN -->",
-    "<!-- CORRECTED-DENSE-NO-PACKING:END -->",
-)
 FEATURE_LABELS = {
     "log_saved_segment_to_weight_ratio": "log segment/weight norm",
     "saved_segment_stable_rank_fraction": "segment stable-rank fraction",
@@ -79,15 +75,6 @@ def _atomic_text(path: Path, content: str) -> None:
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(temporary, path)
-
-
-def _replace_marked(text: str, content: str) -> str:
-    begin, end = CORRECTED_MARKERS
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError("Expected exactly one corrected Dense marker pair in the blog")
-    before, remainder = text.split(begin, 1)
-    _, after = remainder.split(end, 1)
-    return f"{before}{begin}\n\n{content}\n\n{end}{after}"
 
 
 def _file_record(path: Path) -> dict[str, Any]:
@@ -890,9 +877,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     _atomic_text(markdown_path, standalone)
     latex_path = args.latex_output.resolve()
     _atomic_text(latex_path, latex)
-    blog_path = args.blog.resolve()
-    blog_text = blog_path.read_text(encoding="utf-8")
-    _atomic_text(blog_path, _replace_marked(blog_text, block))
     manifest = {
         "schema_version": SCHEMA_VERSION,
         "status": "complete",
@@ -913,7 +897,6 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         "outputs": {
             "standalone_markdown": _file_record(markdown_path),
             "paper_latex": _file_record(latex_path),
-            "blog": _file_record(blog_path),
         },
         "conclusion": build_conclusion(evidence),
     }
@@ -943,7 +926,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--output-dir", type=Path, default=Path("reports/dense-no-packing-publication")
     )
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument(
         "--latex-output",
         type=Path,

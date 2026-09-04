@@ -7,12 +7,10 @@ import pytest
 
 from embed_optim import corpus_size_diagnostic
 from embed_optim.corpus_size_diagnostic import (
-    BLOG_MARKERS,
     _latex,
     _latex_appendix,
     _markdown,
     _permutation_pvalue,
-    _render_blog,
     _spearman,
     build_diagnostic,
     load_protocol,
@@ -71,7 +69,7 @@ def test_permutation_test_is_deterministic_and_two_sided() -> None:
     assert 0 < first[1] < 0.1
 
 
-def test_publication_blocks_keep_exploratory_boundary_visible(tmp_path: Path) -> None:
+def test_publication_blocks_keep_exploratory_boundary_visible() -> None:
     summary = json.loads(
         Path("reports/corpus-size-diagnostic/summary.json").read_text(encoding="utf-8")
     )
@@ -85,13 +83,6 @@ def test_publication_blocks_keep_exploratory_boundary_visible(tmp_path: Path) ->
     assert "cannot distinguish corpus size" in latex
     assert "includegraphics" not in latex
     assert "includegraphics" in appendix
-
-    begin, end = BLOG_MARKERS
-    blog = tmp_path / "blog.md"
-    blog.write_text(f"before\n{begin}\nold\n{end}\nafter\n", encoding="utf-8")
-    _render_blog(blog, markdown, audit_only=False)
-    _render_blog(blog, markdown, audit_only=True)
-    assert blog.read_text(encoding="utf-8").count(begin) == 1
 
 
 def test_protocol_rejects_changed_source_hash(tmp_path: Path) -> None:

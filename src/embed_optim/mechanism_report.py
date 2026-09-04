@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
 import json
 import math
 import os
@@ -20,7 +19,6 @@ from .causal_chain_reporting import load_causal_chain_evidence
 from .geometry import SCHEMA_VERSION, _atomic_json, _sha256
 from .scope import ALL_FAMILIES, normalize_families, resolve_scope
 
-MECHANISM_MARKERS = ("<!-- MECHANISM:BEGIN -->", "<!-- MECHANISM:END -->")
 FAMILIES = ALL_FAMILIES
 OPTIMIZERS = ("adamw", "muon", "normuon")
 FAMILY_LABELS = {"dense": "DenseOn", "late": "LateOn"}
@@ -736,66 +734,6 @@ def _retrieval_rows(
     return output, manifest, table, figure
 
 
-def _replace_marked(text: str, content: str) -> str:
-    begin, end = MECHANISM_MARKERS
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError("Expected exactly one mechanism marker pair in the blog")
-    before, remainder = text.split(begin)
-    _, after = remainder.split(end)
-    return f"{before}{begin}\n\n{content}\n\n{end}{after}"
-
-
-def _marked_block_bytes(text: str, markers: tuple[str, str]) -> bytes:
-    """Return the exact UTF-8 bytes owned by one blog renderer."""
-
-    begin, end = markers
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError(f"Expected exactly one marker pair {markers}")
-    start = text.index(begin)
-    stop = text.index(end, start + len(begin)) + len(end)
-    return text[start:stop].encode("utf-8")
-
-
-def _marked_block_record(path: Path, markers: tuple[str, str]) -> dict[str, Any]:
-    block = _marked_block_bytes(path.read_text(encoding="utf-8"), markers)
-    return {
-        "path": str(path.resolve()),
-        "markers": list(markers),
-        "block_bytes": len(block),
-        "block_sha256": hashlib.sha256(block).hexdigest(),
-    }
-
-
-def _marked_block_complete(
-    path: Path,
-    record: Any,
-    markers: tuple[str, str],
-    *,
-    repository_root: Path | None = None,
-) -> bool:
-    declared = Path(str(record.get("path", ""))) if isinstance(record, dict) else Path()
-    declared_path = (
-        declared.resolve()
-        if declared.is_absolute() or repository_root is None
-        else (repository_root.resolve() / declared).resolve()
-    )
-    if (
-        not isinstance(record, dict)
-        or not isinstance(record.get("path"), str)
-        or declared_path != path.resolve()
-        or record.get("markers") != list(markers)
-    ):
-        return False
-    try:
-        block = _marked_block_bytes(path.read_text(encoding="utf-8"), markers)
-    except (OSError, UnicodeDecodeError, ValueError):
-        return False
-    return bool(
-        record.get("block_bytes") == len(block)
-        and record.get("block_sha256") == hashlib.sha256(block).hexdigest()
-    )
-
-
 def _atomic_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.tmp.{os.getpid()}")
@@ -827,7 +765,6 @@ def render_mechanism_report(
     spectrum_dir: Path,
     bridge_dir: Path,
     retrieval_dir: Path,
-    blog_path: Path,
     output_path: Path,
     *,
     basis_dir: Path,
@@ -1125,9 +1062,6 @@ def render_mechanism_report(
     content += "\n\n" + causal_section
     output_path = output_path.resolve()
     _atomic_text(output_path, content + "\n")
-    blog_path = blog_path.resolve()
-    rendered_blog = _replace_marked(blog_path.read_text(encoding="utf-8"), content)
-    _atomic_text(blog_path, rendered_blog)
     source_manifests = {
         "common_state": {
             "path": _portable_path(common_state_dir / "summary_manifest.json", repository_root),
@@ -1186,10 +1120,6 @@ def render_mechanism_report(
             "bytes": output_path.stat().st_size,
             "sha256": _sha256(output_path),
         },
-        "blog": {
-            **_marked_block_record(blog_path, MECHANISM_MARKERS),
-            "path": _portable_path(blog_path, repository_root),
-        },
         "aggregation": {
             "retrieval_dynamics": "six-family-optimizer-groups-over-four-learning-rate-points",
             "common_state": "median-over-ten-frozen-anchors-per-family-operator",
@@ -1239,7 +1169,7 @@ def render_mechanism_report(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Render the strict update-to-retrieval mechanism section into the final blog"
+        description="Render the strict update-to-retrieval mechanism evidence report"
     )
     parser.add_argument("--common-state-dir", type=Path, default=Path("reports/common-state"))
     parser.add_argument("--basis-dir", type=Path, default=Path("reports/basis-sensitivity"))
@@ -1250,7 +1180,6 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--bridge-dir", type=Path, default=Path("reports/mechanism-bridge"))
     parser.add_argument("--retrieval-dir", type=Path, default=Path("reports/retrieval-dynamics"))
-    parser.add_argument("--blog", type=Path, default=Path("docs/blog.md"))
     parser.add_argument("--output", type=Path, default=Path("reports/mechanism-summary.md"))
     parser.add_argument(
         "--spectrum-figure",
@@ -1284,7 +1213,6 @@ def main(argv: list[str] | None = None) -> None:
         args.spectrum_dir,
         args.bridge_dir,
         args.retrieval_dir,
-        args.blog,
         args.output,
         basis_dir=args.basis_dir,
         spectrum_figure=args.spectrum_figure,

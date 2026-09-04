@@ -398,10 +398,20 @@ def test_publication_contract_requires_wandb_before_distribution_and_tracks_rece
     gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
     assert "!reports/wandb/dense_source_provenance_audit.json" in gitignore
 
-    for path in (ROOT / "README.md", ROOT / "docs/blog.md"):
+    command_sets = (
+        (
+            ROOT / "README.md",
+            "embed-optim-audit-wandb-dense-sources",
+            "embed-optim-sync-wandb",
+        ),
+        (
+            ROOT / "docs/completion-gates.md",
+            "python -m embed_optim.wandb_dense_provenance_audit",
+            "python -m embed_optim.wandb_sync",
+        ),
+    )
+    for path, source_command, sync_command in command_sets:
         document = path.read_text(encoding="utf-8")
-        source_command = "embed-optim-audit-wandb-dense-sources"
-        sync_command = "embed-optim-sync-wandb"
         assert "--include-wandb" in document
         assert "34 frozen Dense source runs" in " ".join(document.split())
         assert (

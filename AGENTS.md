@@ -20,8 +20,8 @@ Read these sources in order before acting:
    bridge implementation in `configs/dense_no_packing_bridge_implementation_protocol_v2.json`;
    corrected outcome aggregation must follow `configs/dense_no_packing_outcome_protocol.json`, and
    historical/corrected comparisons must follow
-   `configs/dense_no_packing_sensitivity_implementation_protocol.json`. Final blog and paper
-   rendering must follow `configs/dense_no_packing_publication_protocol.json`.
+   `configs/dense_no_packing_sensitivity_implementation_protocol.json`. Final paper rendering
+   must follow `configs/dense_no_packing_publication_protocol.json`.
 6. For the prospective state-by-operator mechanism follow-up, read both
    `configs/dense_no_packing_state_operator_factorial_protocol.json` and
    `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`, then follow
@@ -59,7 +59,7 @@ scientific interpretation changes. At the same boundary, refresh `CURRENT_PROGRE
 GitHub issue #41, and commit and push the documentation/evidence change once its checks pass. Do
 not commit a new snapshot for every training step; the JSON is a durable handoff receipt, while the
 command above is the live view. Never put claims based only on a running or partially written
-checkpoint into the blog or paper.
+checkpoint into the paper.
 
 The active corrective phase is governed by `configs/dense_no_packing_execution_protocol.json`;
 its engineering parent is `configs/dense_no_packing_preflight_protocol.json`, and corrected
@@ -71,9 +71,9 @@ implementation lock is a superseded, never-executed receipt and must not be used
 selection, max-T inference, and retrieval dynamics are governed by
 `configs/dense_no_packing_outcome_protocol.json`; execution-path sensitivity is governed by
 `configs/dense_no_packing_sensitivity_implementation_protocol.json`. Generate the complete
-corrected publication block only through `python -m embed_optim.corrected_publication`, which
+corrected paper tables only through `python -m embed_optim.corrected_publication`, which
 verifies all four upstream manifests and the source-bound publication protocol. Do not hand edit
-its marked blog block or generated paper include. Do not launch or interpret corrected runs from
+its generated paper include. Do not launch or interpret corrected runs from
 an uncommitted matrix.
 
 Use `python -m embed_optim.corrected_wandb_audit --allow-partial` for a read-only audit of active

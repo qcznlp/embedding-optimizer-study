@@ -38,10 +38,11 @@ def _fixture_project(
             )
         )
     (root / "src/embed_optim/__init__.py").write_text(package_source)
-    (root / "docs/blog.md").write_text("# Result-safe blog\n")
+    (root / "paper").mkdir()
+    (root / "paper/main.tex").write_text("\\section{Result-safe paper}\n")
     (root / "README.md").write_text("# Demo\n")
     (root / "LICENSE").write_text("license\n")
-    declared_data = {"docs/blog.md": "share/demo/blog.md"}
+    declared_data = {"paper/main.tex": "share/demo/paper/main.tex"}
     config_groups = ""
     if config_closure is not None:
         if config_closure not in {"entry-only", "complete"}:
@@ -80,8 +81,8 @@ version = "1.2.3"
 demo-command = "embed_optim:main"
 
 [tool.setuptools.data-files]
-"share/demo" = [
-  "docs/blog.md",
+"share/demo/paper" = [
+  "paper/main.tex",
 ]
 """
         + config_groups
@@ -151,19 +152,21 @@ def test_distribution_audit_rejects_declared_data_missing_from_wheel(tmp_path: P
     result = audit_distribution(tmp_path)
 
     assert result["complete"] is False
-    assert result["problems"] == ["wheel missing: demo_project-1.2.3.data/data/share/demo/blog.md"]
+    assert result["problems"] == [
+        "wheel missing: demo_project-1.2.3.data/data/share/demo/paper/main.tex"
+    ]
 
 
 def test_distribution_audit_rejects_stale_archive_content(tmp_path: Path):
     _fixture_project(tmp_path)
-    (tmp_path / "docs/blog.md").write_text("# Changed after build\n")
+    (tmp_path / "paper/main.tex").write_text("\\section{Changed after build}\n")
 
     result = audit_distribution(tmp_path)
 
     assert result["complete"] is False
     assert result["problems"] == [
-        "wheel content mismatch: demo_project-1.2.3.data/data/share/demo/blog.md != docs/blog.md",
-        "sdist content mismatch: docs/blog.md",
+        "wheel content mismatch: demo_project-1.2.3.data/data/share/demo/paper/main.tex != paper/main.tex",
+        "sdist content mismatch: paper/main.tex",
     ]
 
 

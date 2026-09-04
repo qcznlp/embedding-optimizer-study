@@ -7,7 +7,6 @@ import csv
 import hashlib
 import json
 import math
-import os
 import random
 import re
 import statistics
@@ -23,8 +22,6 @@ from .decontamination import DECONTAMINATED_BEIR, DECONTAMINATED_TASK_NAMES
 from .scope import ALL_FAMILIES, resolve_scope, select_family_configs
 
 CHECKPOINT_PATTERN = re.compile(r"checkpoint-(\d+)")
-RESULTS_MARKERS = ("<!-- RESULTS:BEGIN -->", "<!-- RESULTS:END -->")
-SYSTEMS_MARKERS = ("<!-- SYSTEMS:BEGIN -->", "<!-- SYSTEMS:END -->")
 EVALUATION_PACKAGES = {
     "mteb",
     "torch",
@@ -2235,92 +2232,6 @@ def _render_systems(
     )
 
 
-def _replace_marked(text: str, markers: tuple[str, str], content: str) -> str:
-    begin, end = markers
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError(f"Expected exactly one marker pair {markers}")
-    before, remainder = text.split(begin)
-    _, after = remainder.split(end)
-    return f"{before}{begin}\n\n{content}\n\n{end}{after}"
-
-
-def _verified_marker_block(
-    path: Path,
-    markers: tuple[str, str],
-    content: str,
-) -> dict[str, str | int]:
-    """Re-read and fingerprint exactly one rendered marker block, not its document."""
-
-    text = path.read_text(encoding="utf-8")
-    begin, end = markers
-    if text.count(begin) != 1 or text.count(end) != 1:
-        raise ValueError(f"Expected exactly one written marker pair {markers}")
-    start = text.index(begin)
-    stop = text.index(end, start) + len(end)
-    observed = text[start:stop].encode("utf-8")
-    expected = f"{begin}\n\n{content}\n\n{end}".encode("utf-8")
-    if observed != expected:
-        raise ValueError(f"Written marker block differs after render: {markers}")
-    return {
-        "begin_marker": begin,
-        "end_marker": end,
-        "encoding": "utf-8",
-        "bytes": len(observed),
-        "sha256": hashlib.sha256(observed).hexdigest(),
-    }
-
-
-def render_blog(
-    blog_path: Path,
-    optimizer_rows: list[dict],
-    best_dynamics: list[dict],
-    task_rows: list[dict],
-    paired_rows: list[dict],
-    system_rows: list[dict],
-    families: tuple[str, ...] = ALL_FAMILIES,
-    figure_prefix: str = "../reports/figures",
-    system_metrics_path: str = "reports/system_metrics.csv",
-) -> dict[str, dict[str, str | int]]:
-    text = blog_path.read_text(encoding="utf-8")
-    results_content = _render_results(
-        optimizer_rows,
-        best_dynamics,
-        task_rows,
-        paired_rows,
-        families,
-        figure_prefix,
-    )
-    systems_content = _render_systems(system_rows, system_metrics_path)
-    text = _replace_marked(
-        text,
-        RESULTS_MARKERS,
-        results_content,
-    )
-    text = _replace_marked(text, SYSTEMS_MARKERS, systems_content)
-    status_in_progress = (
-        "**Experiment status:** training matrix in progress. This document already records the frozen "
-        "protocol;\nthe results sections are populated only from strictly validated aggregation "
-        "artifacts after coverage reaches\n1,680/1,680."
-    )
-    full_status = (
-        "**Experiment status:** complete — 24/24 training runs and 1,680/1,680 "
-        "checkpoint/task evaluations."
-    )
-    dense_status = (
-        "**Experiment status:** Dense discovery view complete — 12/12 training runs and "
-        "840/840 checkpoint/task evaluations, filtered from the strictly audited discovery source."
-    )
-    replacement = full_status if families == ALL_FAMILIES else dense_status
-    for candidate in (status_in_progress, full_status, dense_status):
-        if candidate != replacement:
-            text = text.replace(candidate, replacement)
-    blog_path.write_text(text, encoding="utf-8")
-    return {
-        "results": _verified_marker_block(blog_path, RESULTS_MARKERS, results_content),
-        "systems": _verified_marker_block(blog_path, SYSTEMS_MARKERS, systems_content),
-    }
-
-
 def _coverage(
     rows: list[dict],
     summary: list[dict],
@@ -2542,7 +2453,6 @@ def _aggregate_scoped_from_reports(
         "selected_experiment_runs": len(scoped_configs),
         "selected_training_checkpoints": len(scoped_configs) * 5,
         "outputs": None,
-        "blog_marker_blocks": None,
         "source_full_discovery": {
             "complete": True,
             "verified_experiment_runs": source_coverage["verified_experiment_runs"],
@@ -2606,31 +2516,6 @@ def _aggregate_scoped_from_reports(
             )
         },
     }
-    if not args.no_render_blog:
-        blog_path = Path(args.blog).resolve()
-        figure_prefix = os.path.relpath((output / "figures").resolve(), blog_path.parent).replace(
-            os.sep, "/"
-        )
-        blocks = render_blog(
-            blog_path,
-            optimizer_rows,
-            best_dynamics,
-            task_rows,
-            paired_rows,
-            system_rows,
-            families,
-            figure_prefix,
-            str(output / "system_metrics.csv"),
-        )
-        try:
-            portable_blog = str(blog_path.relative_to(repository_root.resolve()))
-        except ValueError:
-            portable_blog = str(blog_path)
-        coverage["blog_marker_blocks"] = {
-            "schema_version": 1,
-            "path": portable_blog,
-            "blocks": blocks,
-        }
     (output / "coverage.json").write_text(json.dumps(coverage, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({key: value for key, value in coverage.items() if key != "missing"}, indent=2))
 
@@ -2684,10 +2569,6 @@ def aggregate(args: argparse.Namespace) -> None:
     _plot(summary, output)
     print(json.dumps({key: value for key, value in coverage.items() if key != "missing"}, indent=2))
 
-    if coverage["complete"] and not args.no_render_blog:
-        render_blog(
-            Path(args.blog), optimizer_rows, best_dynamics, task_rows, paired_rows, system_rows
-        )
     if args.strict and not coverage["complete"]:
         raise RuntimeError("Evaluation matrix is incomplete; see coverage.json")
 
@@ -2697,12 +2578,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--matrix", default="configs/experiment.yaml")
     parser.add_argument("--results-root", default="results/decontaminated-beir")
     parser.add_argument("--output-dir", default="reports")
-    parser.add_argument("--blog", default="docs/blog.md")
     parser.add_argument(
         "--families", nargs="+", choices=("dense", "late"), default=["dense", "late"]
     )
     parser.add_argument("--scope-amendment", type=Path)
-    parser.add_argument("--no-render-blog", action="store_true")
     parser.add_argument("--strict", action="store_true")
     return parser.parse_args(argv)
 

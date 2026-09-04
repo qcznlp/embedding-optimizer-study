@@ -66,19 +66,16 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     args = _args(tmp_path, "--dry-run")
     steps = pipeline_steps(args)
 
-    assert len(steps) == 55
-    assert steps[0].name == "strict-evaluation-audit"
+    assert len(steps) == 54
+    assert steps[0].name == "strict-evaluation-report"
     assert steps[-1].name == "paper-final-strict-audit"
     assert steps[-1].command[-1] == "--strict"
-    assert [step.name for step in steps].index("strict-blog-render") < [
-        step.name for step in steps
-    ].index("retrieval-dynamics-summary")
     assert [step.name for step in steps].index("training-dynamics-summary") < [
         step.name for step in steps
     ].index("retrieval-dynamics-summary")
     assert [step.name for step in steps].index("mechanism-bridge") < [
         step.name for step in steps
-    ].index("mechanism-blog-render")
+    ].index("mechanism-report-render")
     assert [step.name for step in steps].index("common-state-matrix") < [
         step.name for step in steps
     ].index("training-dense-representation-matrix")
@@ -150,11 +147,11 @@ def test_pipeline_dry_run_covers_all_post_evaluation_gates(tmp_path: Path, capsy
     ].index("short-branch-summary")
     assert [step.name for step in steps].index("short-branch-summary") < [
         step.name for step in steps
-    ].index("outcome-blog-render")
+    ].index("outcome-report-render")
     assert [step.name for step in steps].index("confirmatory-summary") < [
         step.name for step in steps
-    ].index("outcome-blog-render")
-    assert [step.name for step in steps].index("outcome-blog-render") < [
+    ].index("outcome-report-render")
+    assert [step.name for step in steps].index("outcome-report-render") < [
         step.name for step in steps
     ].index("paper-results-render")
     assert [step.name for step in steps].index("paper-results-render") < [
@@ -183,7 +180,7 @@ def test_full_pipeline_commands_have_importable_cli_contracts(tmp_path: Path):
     args.skip_validation = False
     steps = pipeline_steps(args)
 
-    assert len(steps) == 61
+    assert len(steps) == 60
     for step in steps:
         command = list(step.command)
         if len(command) >= 3 and command[1] == "-m":
@@ -259,12 +256,12 @@ def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
         )
         == 0
     )
-    assert len(commands) == 55
+    assert len(commands) == 54
     ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
     assert ledger["complete"] is True
     assert ledger["wait_pids"] == [12345]
     assert ledger["wait_for_commands"] == ["scripts/eval/dense_parallel.py"]
-    assert len(ledger["steps"]) == 55
+    assert len(ledger["steps"]) == 54
     assert all(step["complete"] for step in ledger["steps"])
     assert all(len(step["attempts"]) == 1 for step in ledger["steps"])
     for step in ledger["steps"]:
@@ -273,11 +270,11 @@ def test_pipeline_wait_gate_and_ledger_are_complete(tmp_path: Path):
         assert log.is_absolute()
         assert attempt["bytes"] == log.stat().st_size
         assert attempt["sha256"] == sha256(log.read_bytes()).hexdigest()
-    assert len(list(Path(args.log_dir).glob("*.log"))) == 55
+    assert len(list(Path(args.log_dir).glob("*.log"))) == 54
     audit = audit_pipeline_ledger(Path(args.log_dir) / "pipeline-ledger.json", pipeline_steps(args))
     assert audit["complete"] is True
-    assert audit["steps"] == 55
-    assert audit["attempts"] == 55
+    assert audit["steps"] == 54
+    assert audit["attempts"] == 54
     assert len(audit["sha256"]) == 64
 
 
@@ -295,7 +292,7 @@ def test_pipeline_retries_then_records_failed_step(tmp_path: Path):
     assert len(calls) == 2
     ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
     assert ledger["complete"] is False
-    assert ledger["failed_step"] == "strict-evaluation-audit"
+    assert ledger["failed_step"] == "strict-evaluation-report"
     assert len(ledger["steps"][0]["attempts"]) == 2
 
 
@@ -312,7 +309,7 @@ def test_pipeline_resume_skips_only_matching_completed_prefix(tmp_path: Path):
     assert supervise_post_eval(args, run_command=fail_second) == 1
     failed = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
     assert failed["steps"][0]["complete"] is True
-    assert failed["failed_step"] == "strict-blog-render"
+    assert failed["failed_step"] == "weight-space-reaudit"
 
     args.resume = True
     resumed_calls = []
@@ -323,21 +320,21 @@ def test_pipeline_resume_skips_only_matching_completed_prefix(tmp_path: Path):
         return subprocess.CompletedProcess(command, 0)
 
     assert supervise_post_eval(args, run_command=succeed) == 0
-    assert len(resumed_calls) == 54
-    assert resumed_calls[0][2] == "embed_optim.aggregate"
+    assert len(resumed_calls) == 53
+    assert resumed_calls[0][2] == "embed_optim.geometry_summary"
     ledger = json.loads((Path(args.log_dir) / "pipeline-ledger.json").read_text())
     assert ledger["complete"] is True
     assert ledger["resume_count"] == 1
-    assert len(ledger["steps"]) == 55
+    assert len(ledger["steps"]) == 54
     assert ledger["steps"][0] == failed["steps"][0]
     assert ledger["resume_history"][0]["completed_prefix"] == 1
-    assert ledger["resume_history"][0]["failed_step"] == "strict-blog-render"
+    assert ledger["resume_history"][0]["failed_step"] == "weight-space-reaudit"
     source = ledger["resume_history"][0]["source"]
     archive = Path(source["path"])
     assert source["bytes"] == archive.stat().st_size
     assert source["sha256"] == sha256(archive.read_bytes()).hexdigest()
     assert json.loads(archive.read_text()) == failed
-    assert len(list(Path(args.log_dir).glob("*.resume-1.attempt-1.log"))) == 54
+    assert len(list(Path(args.log_dir).glob("*.resume-1.attempt-1.log"))) == 53
     audit = audit_pipeline_ledger(Path(args.log_dir) / "pipeline-ledger.json", pipeline_steps(args))
     assert audit["resume_count"] == 1
 
@@ -365,7 +362,7 @@ def test_pipeline_resume_reexecutes_after_completed_command_drift(tmp_path: Path
         return subprocess.CompletedProcess(command, 0)
 
     assert supervise_post_eval(args, run_command=rerun) == 0
-    assert len(calls) == 55
+    assert len(calls) == 54
 
 
 def test_pipeline_resume_migrates_a_complete_pre_hash_ledger_without_rerunning(
@@ -395,7 +392,7 @@ def test_pipeline_resume_migrates_a_complete_pre_hash_ledger_without_rerunning(
     migrated = json.loads(ledger_path.read_text())
     assert migrated["complete"] is True
     assert migrated["resume_count"] == 1
-    assert migrated["resume_history"][0]["completed_prefix"] == 55
+    assert migrated["resume_history"][0]["completed_prefix"] == 54
     assert all(
         "bytes" in attempt and "sha256" in attempt
         for step in migrated["steps"]
@@ -452,7 +449,7 @@ def test_pipeline_resume_reexecutes_from_a_tampered_completed_log(tmp_path: Path
         return subprocess.CompletedProcess(command, 0)
 
     assert supervise_post_eval(args, run_command=rerun) == 0
-    assert len(calls) == 55
+    assert len(calls) == 54
     resumed = json.loads(ledger_path.read_text())
     assert resumed["resume_history"][0]["completed_prefix"] == 0
     assert audit_pipeline_ledger(ledger_path, pipeline_steps(args))["complete"] is True
@@ -511,7 +508,7 @@ def test_pipeline_ledger_only_audit_does_not_wait_or_launch(tmp_path: Path, caps
     )
     payload = json.loads(capsys.readouterr().out)
     assert payload["complete"] is True
-    assert payload["steps"] == 55
+    assert payload["steps"] == 54
 
 
 def test_pipeline_ledger_audit_rejects_a_tampered_resume_archive(tmp_path: Path):
