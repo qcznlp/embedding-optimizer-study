@@ -87,6 +87,44 @@ def _selected_configs(matrix: Path, run_ids: list[str]) -> list[RunConfig]:
     return [config for config in configs if not requested or config.run_id in requested]
 
 
+def _preserved_upload_commit(
+    receipt_path: Path,
+    *,
+    run_id: str,
+    local_root: Path,
+    repo_id: str,
+    remote_prefix: str,
+    inventory_sha256: str,
+) -> tuple[str | None, str | None]:
+    if not receipt_path.is_file():
+        return None, None
+    previous = json.loads(receipt_path.read_text(encoding="utf-8"))
+    expected = {
+        "schema_version": 1,
+        "status": "complete",
+        "run_id": run_id,
+        "local_root": str(local_root),
+        "repo_id": repo_id,
+        "repo_type": "model",
+        "remote_prefix": remote_prefix,
+        "inventory_sha256": inventory_sha256,
+    }
+    mismatched = [key for key, value in expected.items() if previous.get(key) != value]
+    if mismatched:
+        raise RuntimeError(
+            f"Refusing to preserve upload provenance from a mismatched receipt: {mismatched}"
+        )
+    commit_url = previous.get("commit_url")
+    commit_oid = previous.get("commit_oid")
+    if not isinstance(commit_url, str) or not commit_url:
+        commit_url = None
+    if not isinstance(commit_oid, str) or not commit_oid:
+        commit_oid = None
+    if (commit_url is None) != (commit_oid is None):
+        raise RuntimeError("Existing backup receipt has incomplete upload commit provenance")
+    return commit_url, commit_oid
+
+
 def backup_run(
     api: HfApi,
     config: RunConfig,
@@ -120,6 +158,21 @@ def backup_run(
             f"missing={audit['missing'][:3]} extra={audit['extra'][:3]} "
             f"size_mismatch={audit['size_mismatch'][:3]}"
         )
+    receipt_root.mkdir(parents=True, exist_ok=True)
+    path = receipt_root / f"{config.run_id}.json"
+    inventory_sha256 = _inventory_digest(local)
+    if audit_only:
+        commit_url, commit_oid = _preserved_upload_commit(
+            path,
+            run_id=config.run_id,
+            local_root=config.output_dir,
+            repo_id=repo_id,
+            remote_prefix=prefix,
+            inventory_sha256=inventory_sha256,
+        )
+    else:
+        commit_url = str(getattr(commit, "commit_url", "")) or None
+        commit_oid = str(getattr(commit, "oid", "")) or None
     receipt = {
         "schema_version": 1,
         "status": "complete",
@@ -129,13 +182,11 @@ def backup_run(
         "repo_id": repo_id,
         "repo_type": "model",
         "remote_prefix": prefix,
-        "inventory_sha256": _inventory_digest(local),
+        "inventory_sha256": inventory_sha256,
         "inventory": audit,
-        "commit_url": str(getattr(commit, "commit_url", "")) or None,
-        "commit_oid": str(getattr(commit, "oid", "")) or None,
+        "commit_url": commit_url,
+        "commit_oid": commit_oid,
     }
-    receipt_root.mkdir(parents=True, exist_ok=True)
-    path = receipt_root / f"{config.run_id}.json"
     temporary = path.with_suffix(".tmp")
     temporary.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     temporary.replace(path)

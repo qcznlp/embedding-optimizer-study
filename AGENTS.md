@@ -48,6 +48,14 @@ The migration archives the original ledger byte-for-byte and verifies that the m
 protocol, controller, arguments, and command order did not change. Never generalize this path to
 accept arbitrary contract drift.
 
+The first resumed audit exposed a narrower operational bug: audit-only full-run verification erased
+the stored upload commit identity. The hardening transition is frozen separately in
+`configs/dense_no_packing_backup_provenance_migration.json`; it preserves the original upload
+commit during audits and adds `corrected_checkpoint_backup.py` to the controller's own contract.
+If the live ledger still has that protocol's exact source hash and the controller lease is free,
+run `python -m embed_optim.completion_backup_contract_migration`, then resume normally. This second
+one-time transition must not be substituted for any future source change.
+
 If `logs/dense-no-packing-sealed-backup/state.json` exists, it is the independent per-checkpoint
 durability state. Its supervisor only reads training artifacts and uses CPU/network resources. Do
 not launch a duplicate while `logs/dense-no-packing-sealed-backup/supervisor.lease` is held. A

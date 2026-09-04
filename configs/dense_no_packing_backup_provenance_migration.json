@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_backup_provenance_contract_migration",
+  "created_at_utc": "2026-09-04T01:23:20Z",
+  "reason": "Fix audit-only checkpoint backup so it preserves the original Hugging Face upload commit identity, and bind that operational implementation into the completion controller contract.",
+  "from_contract_sha256": "8687929d22adf4a6a07593b5aa67669f816aef0b902f2d035522802fd94b4c96",
+  "to_contract_sha256": "25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13",
+  "scientific_contract_changed": false,
+  "required_unchanged_sources": [
+    "configs/dense_no_packing_retrain.yaml",
+    "configs/dense_no_packing_execution_protocol.json",
+    "configs/dense_no_packing_evaluation_protocol.json",
+    "configs/dense_no_packing_analysis_protocol.json",
+    "configs/dense_no_packing_outcome_protocol.json",
+    "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+    "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+    "configs/dense_no_packing_publication_protocol.json"
+  ],
+  "allowed_changed_sources": [
+    "src/embed_optim/corrected_completion_pipeline.py"
+  ],
+  "allowed_added_sources": [
+    "src/embed_optim/corrected_checkpoint_backup.py"
+  ],
+  "target_source_identities": [
+    {
+      "path": "src/embed_optim/corrected_completion_pipeline.py",
+      "bytes": 20348,
+      "sha256": "7f3e6f440d4b79b2a7aea3d5336b9458fbeb8cb61c5537fdda13fea72d591972"
+    },
+    {
+      "path": "src/embed_optim/corrected_checkpoint_backup.py",
+      "bytes": 7953,
+      "sha256": "29935e16ad8469fb75efa4272c215c235e60bda15ad5d1be1fe7a5ec9e1b1727"
+    }
+  ],
+  "archive_basename": "pipeline-ledger.pre-backup-provenance-hardening-8687929d.json",
+  "claim_boundary": "This one-time operational migration fixes receipt provenance preservation and expands the controller contract to cover the invoked backup implementation. It does not alter a remote checkpoint, training run, scientific estimand, threshold, evaluation, or analysis."
+}
