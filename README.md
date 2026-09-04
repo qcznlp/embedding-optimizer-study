@@ -132,10 +132,11 @@ embed-optim-evaluation-progress \
 ```
 
 This mode provenance-validates the exact 1,750-unit DenseOn BEIR grid, reports discovery, hybrid,
-and each confirmatory seed separately, and shows progress through the 31-step completion, 18-step
-finalization, and 21-step candidate-breadth release controllers. It also reports the 45
-query-disjoint and 46 unseen shared-start probe jobs as a separate mechanism contract; controller
-counts are informational and never replace their own content-addressed audits.
+and each confirmatory seed separately, shows progress through the 31-step completion and 18-step
+finalization controllers, and verifies the current source-addressed candidate-breadth paper
+artifact. It also reports the 45 query-disjoint and 46 unseen shared-start probe jobs as a separate
+mechanism contract; controller counts are informational and never replace their own
+content-addressed audits.
 
 | Optimizer | Same-suite BEIR-best LR | Exploratory BEIR-best final | Four-LR final mean | Four-LR final median |
 | --- | ---: | ---: | ---: | ---: |

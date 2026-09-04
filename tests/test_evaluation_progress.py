@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -7,13 +8,11 @@ from types import SimpleNamespace
 import pytest
 
 from embed_optim.aggregate import DECONTAMINATED_TASK_NAMES
-from embed_optim.candidate_breadth_release import (
-    RELEASE_STEP_NAMES,
-    UPSTREAM_FINALIZATION_STEP_NAMES,
-)
+from embed_optim.candidate_breadth_release import UPSTREAM_FINALIZATION_STEP_NAMES
 from embed_optim.config import OptimizerConfig, RunConfig
 from embed_optim.dense_completion_pipeline import CORE_STEP_NAMES
 from embed_optim.evaluation_progress import (
+    _candidate_publication_progress,
     _ledger_progress,
     evaluation_progress,
     study_evaluation_progress,
@@ -204,11 +203,12 @@ def test_study_progress_uses_exact_1750_beir_units_and_separates_short_probes(
     }
     assert not snapshot["complete"]
     assert all(item["status"] == "pending" for item in snapshot["controllers"].values())
+    assert snapshot["publications"]["candidate_breadth"]["status"] == "pending"
 
 
 @pytest.mark.parametrize(
     "names",
-    (CORE_STEP_NAMES, UPSTREAM_FINALIZATION_STEP_NAMES, RELEASE_STEP_NAMES),
+    (CORE_STEP_NAMES, UPSTREAM_FINALIZATION_STEP_NAMES),
 )
 def test_ledger_progress_requires_exact_ordered_complete_contract(tmp_path: Path, names):
     path = tmp_path / "ledger.json"
@@ -254,3 +254,54 @@ def test_ledger_progress_requires_exact_ordered_complete_contract(tmp_path: Path
     invalid = _ledger_progress(path, names)
     assert invalid["status"] == "invalid"
     assert not invalid["complete"]
+
+
+def test_candidate_publication_progress_verifies_source_records(tmp_path: Path) -> None:
+    source_paths = {
+        "configs/protocol.json": b"{}\n",
+        "reports/candidate-breadth/summary.json": b"{}\n",
+        "paper/generated/candidate-breadth.tex": b"% generated\n",
+        "reports/candidate-breadth/contrasts.csv": b"delta\n",
+    }
+    for relative, body in source_paths.items():
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(body)
+
+    def record(relative: str) -> dict[str, object]:
+        body = source_paths[relative]
+        return {
+            "path": relative,
+            "bytes": len(body),
+            "sha256": hashlib.sha256(body).hexdigest(),
+        }
+
+    manifest = tmp_path / "reports/candidate-breadth/publication_manifest.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "status": "complete",
+                "protocol": record("configs/protocol.json"),
+                "summary": record("reports/candidate-breadth/summary.json"),
+                "outputs": {"paper_tex": record("paper/generated/candidate-breadth.tex")},
+                "summary_outputs": {"contrasts": record("reports/candidate-breadth/contrasts.csv")},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    complete = _candidate_publication_progress(manifest, tmp_path)
+    assert complete == {
+        "status": "complete",
+        "complete": True,
+        "verified_records": 4,
+        "path": str(manifest),
+        "problems": [],
+    }
+
+    (tmp_path / "paper/generated/candidate-breadth.tex").write_text("% changed\n", encoding="utf-8")
+    invalid = _candidate_publication_progress(manifest, tmp_path)
+    assert invalid["status"] == "invalid"
+    assert invalid["complete"] is False
+    assert any("paper_tex" in problem for problem in invalid["problems"])

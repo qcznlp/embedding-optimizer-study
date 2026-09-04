@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 06:42 UTC
+Last updated: 2026-09-04 08:13 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -28,7 +28,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Supplemental five-stage dynamics | Complete | 65 rows, 910 task units |
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
-| Candidate addendum release | Complete | 21/21 current-source steps passed |
+| Candidate paper artifact | Complete | Source-addressed manifest and all declared outputs verify |
 | Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 4/12 complete; first Muon pair running; 24/60 resumable checkpoints |
 | Corrected completion handoff | Detached controller active after four audited migrations | Waiting for training under contract `4152531e...`; 4/4 complete runs uploaded and remotely audited; no failed step |
 | Corrected next-pair handoff | Artifact-only guard completed without takeover | Existing matrix launched both Muon successors; guard yielded with `takeover_launched=false` |
@@ -394,14 +394,13 @@ Primary receipts:
 - `reports/candidate-breadth/summary.json`
 - `reports/candidate-breadth/high_dose_contrasts.csv`
 - `reports/candidate-breadth/packing_invariance.json`
-- `logs/candidate-breadth-release/pipeline-ledger.json`
+- `reports/candidate-breadth/publication_manifest.json`
 
-The candidate addendum release controller completed all 21 steps against the current source
-contract at `2026-09-03T10:57:12Z`. Its checked-in ledger records return code 0 for every step,
-including two strict paper audits, the full test suite, PDF release, and distribution audit. The
-step-contract SHA-256 is
-`197cc2e24767220113b9d0be4c631c840f09d1e89a893d816069d4d0a3422149`. The compiled paper is 16
-pages; the audited main-text endpoint is page 8, and all embedded fonts are non-Type-3.
+The current candidate-breadth publication manifest directly hashes the frozen protocol, summary,
+paper include, figure, and supporting tables. The retired mixed-publication release logs were
+removed from the current tree on the owner-directed paper-only cleanup; they remain recoverable
+from Git history and are no longer used to decide present publication readiness. Strict paper,
+test, PDF, and distribution gates remain the current release authority.
 
 ## Repository and agent handoff health
 
