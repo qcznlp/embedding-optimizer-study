@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 00:31 UTC
+Last updated: 2026-09-04 01:10 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -29,8 +29,8 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 2476/2454; 16/60 resumable checkpoints |
-| Corrected completion handoff | Detached operational controller active | 2/2 completed runs plus both active step-782 and step-1563 checkpoints remotely verified; then locked evaluation/analysis/publication chain |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 2765/2738; 16/60 resumable checkpoints |
+| Corrected completion handoff | Paper-only contract migration locked; resume pending | Existing controller failed closed at 00:07 UTC after publication-source changes; training and sealed backup remain independent |
 | Sealed-checkpoint durability | Detached CPU/network supervisor active | 16/60 checkpoints covered; 44 not yet generated; 0 cycle failures |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
 | Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
@@ -52,8 +52,8 @@ output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the 
 time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
 deeply completed at step 3907 with all five scheduled checkpoints, including the model, optimizer,
 scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
-`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 00:31 UTC artifact snapshot they were at steps
-2476 and 2454, respectively, and both had deeply valid checkpoints through step 2345. Across
+`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 01:05 UTC artifact snapshot they were at steps
+2765 and 2738, respectively, and both had deeply valid checkpoints through step 2345. Across
 the corrected phase there is still no CUDA OOM, NCCL data-plane, non-finite, or traceback marker.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
@@ -124,6 +124,16 @@ Its current runtime contract SHA-256 is
 uploaded and remotely size-audited by 19:43 UTC: 202 files and 19,120,907,393 bytes in total, with
 zero missing, extra, or size-mismatched paths. The immutable per-run receipts are under
 `reports/dense-no-packing/checkpoint-backup/`.
+
+At 00:07 UTC on 2026-09-04 that controller detected the owner-directed paper-only source change and
+failed closed before any new training completion or finalization step. Its lease is free; the
+training matrix continued to advance and the independent sealed-checkpoint backup lease remained
+held. A one-time transition from the exact old contract hash above to
+`8687929d22adf4a6a07593b5aa67669f816aef0b902f2d035522802fd94b4c96` is frozen in
+`configs/dense_no_packing_completion_contract_migration.json`. The migration accepts only the six
+declared publication-bound protocol changes, requires the controller, matrix, execution protocol,
+arguments, and command order to remain identical, and archives the original ledger byte-for-byte.
+After that audited transition, the ordinary `--resume` path is authoritative again.
 
 Because the experiment host may be shut down before an active run reaches all five stages, the two
 sealed step-782 checkpoints from the second AdamW pair were independently uploaded at 21:17--21:18
