@@ -14,17 +14,17 @@
     "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
   },
   "expected_runs": 12,
-  "local_complete_runs": 4,
+  "local_complete_runs": 6,
   "matrix": {
     "bytes": 1601,
     "path": "configs/dense_no_packing_retrain.yaml",
     "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
   },
-  "observed_at_utc": "2026-09-04T09:40:46+00:00",
+  "observed_at_utc": "2026-09-04T11:14:43+00:00",
   "problems": [],
   "project": "embedding-optimizer-study",
-  "remote_finished_runs": 4,
-  "remote_visible_runs": 6,
+  "remote_finished_runs": 6,
+  "remote_visible_runs": 8,
   "runs": [
     {
       "config_mismatches": [],
@@ -117,12 +117,12 @@
     {
       "config_mismatches": [],
       "learning_rate": 0.0001,
-      "local_complete": false,
+      "local_complete": true,
       "optimizer": "muon",
       "problems": [],
       "remote_group": "dense",
       "remote_name": "dense-padded-muon-1e-4",
-      "remote_state": "running",
+      "remote_state": "finished",
       "remote_tags": [
         "dense",
         "muon",
@@ -132,19 +132,19 @@
       "run_id": "padded-muon-1e-4",
       "source_wandb_run_id": "study-v3-dense-padded-muon-1e-4-seed42-unfused-bfloat16-v1",
       "status": "valid",
-      "summary_epoch": 0.81664,
-      "summary_global_step": 3190,
+      "summary_epoch": 1,
+      "summary_global_step": 3907,
       "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v3-dense-padded-muon-1e-4-seed42-unfused-bfloat16-v1"
     },
     {
       "config_mismatches": [],
       "learning_rate": 0.0003,
-      "local_complete": false,
+      "local_complete": true,
       "optimizer": "muon",
       "problems": [],
       "remote_group": "dense",
       "remote_name": "dense-padded-muon-3e-4",
-      "remote_state": "running",
+      "remote_state": "finished",
       "remote_tags": [
         "dense",
         "muon",
@@ -154,29 +154,53 @@
       "run_id": "padded-muon-3e-4",
       "source_wandb_run_id": "study-v3-dense-padded-muon-3e-4-seed42-unfused-bfloat16-v1",
       "status": "valid",
-      "summary_epoch": 0.80384,
-      "summary_global_step": 3140,
+      "summary_epoch": 1,
+      "summary_global_step": 3907,
       "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v3-dense-padded-muon-3e-4-seed42-unfused-bfloat16-v1"
     },
     {
+      "config_mismatches": [],
       "learning_rate": 0.001,
       "local_complete": false,
       "optimizer": "muon",
       "problems": [],
-      "remote_visible": false,
+      "remote_group": "dense",
+      "remote_name": "dense-padded-muon-1e-3",
+      "remote_state": "running",
+      "remote_tags": [
+        "dense",
+        "muon",
+        "seed-42"
+      ],
+      "remote_visible": true,
       "run_id": "padded-muon-1e-3",
       "source_wandb_run_id": "study-v3-dense-padded-muon-1e-3-seed42-unfused-bfloat16-v1",
-      "status": "not_started"
+      "status": "valid",
+      "summary_epoch": 0.01536,
+      "summary_global_step": 60,
+      "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v3-dense-padded-muon-1e-3-seed42-unfused-bfloat16-v1"
     },
     {
+      "config_mismatches": [],
       "learning_rate": 0.003,
       "local_complete": false,
       "optimizer": "muon",
       "problems": [],
-      "remote_visible": false,
+      "remote_group": "dense",
+      "remote_name": "dense-padded-muon-3e-3",
+      "remote_state": "running",
+      "remote_tags": [
+        "dense",
+        "muon",
+        "seed-42"
+      ],
+      "remote_visible": true,
       "run_id": "padded-muon-3e-3",
       "source_wandb_run_id": "study-v3-dense-padded-muon-3e-3-seed42-unfused-bfloat16-v1",
-      "status": "not_started"
+      "status": "valid",
+      "summary_epoch": 0.00256,
+      "summary_global_step": 10,
+      "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/study-v3-dense-padded-muon-3e-3-seed42-unfused-bfloat16-v1"
     },
     {
       "learning_rate": 0.0001,
@@ -221,5 +245,5 @@
   ],
   "schema_version": 1,
   "status": "partial",
-  "valid_remote_runs": 6
+  "valid_remote_runs": 8
 }
