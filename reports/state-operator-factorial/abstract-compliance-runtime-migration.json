@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "scope": "state_operator_abstract_compliance_runtime_migration",
+  "executed_at_utc": "2026-09-04T06:17:59Z",
+  "merged_source": {
+    "pull_request": "https://github.com/qcznlp/embedding-optimizer-study/pull/78",
+    "commit": "918b560e862aa9f27a61a0ff3553137165702ad4"
+  },
+  "migration_protocol": {
+    "path": "configs/dense_no_packing_state_operator_abstract_compliance_migration.json",
+    "bytes": 4326,
+    "sha256": "e4ef66061165e0632c1ecaf8b0f2b8643ff488ca37118401444bc3dbe6faebe1"
+  },
+  "pre_transition": {
+    "controller_pid": 411725,
+    "controller_command": "/usr/bin/python3 -m embed_optim.state_operator_factorial_completion --resume",
+    "controller_identity_verified": true,
+    "controller_stopped_normally": true,
+    "ledger": {
+      "path": "logs/state-operator-factorial/completion/pipeline-ledger.json",
+      "bytes": 14432,
+      "sha256": "380a82d4a78a5009859b0b185fd7adc47c3fcf0898eb23a2cb0a8aa94a8a2ba5",
+      "status": "waiting_for_main_completion",
+      "executed_steps": 0,
+      "failed_step": null,
+      "contract_sha256": "37db50d754a0639d6f7e7cfda682293010b9f293695178fb065d63997f095f3d"
+    },
+    "completion_protocol": {
+      "bytes": 6737,
+      "sha256": "8f76577c1465760323777fddc5d4ae2dcbc05729b487b2ad54dd91c9bf030e48"
+    }
+  },
+  "archive": {
+    "path": "logs/state-operator-factorial/completion/pipeline-ledger.pre-abstract-compliance.json",
+    "bytes": 14432,
+    "sha256": "380a82d4a78a5009859b0b185fd7adc47c3fcf0898eb23a2cb0a8aa94a8a2ba5",
+    "byte_for_byte_identity_verified": true
+  },
+  "post_transition": {
+    "controller_pid": 446091,
+    "controller_command": "/usr/bin/python3 -u -m embed_optim.state_operator_factorial_completion --resume",
+    "controller_identity_verified": true,
+    "controller_started_at_utc": "2026-09-04T06:17:59Z",
+    "initial_ledger_snapshot": {
+      "bytes": 14432,
+      "sha256": "a72e6241f7d3708cefbcafb70d78f16d062e7f9356949c79ff114b705cb4d1e8",
+      "status": "waiting_for_main_completion",
+      "executed_steps": 0,
+      "failed_step": null,
+      "contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8"
+    },
+    "completion_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+      "bytes": 7023,
+      "sha256": "9cbd31c61cb4e62c26a9d01f9b880dbdff4bfeafdaa0a732c63ea20f76bd23a0"
+    }
+  },
+  "unaffected_controllers": {
+    "main_corrected_completion": {
+      "pid": 196647,
+      "command": "/usr/bin/python3 -u -m embed_optim.corrected_completion_pipeline --resume",
+      "identity_verified_after_transition": true,
+      "status": "waiting_for_training",
+      "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789"
+    },
+    "sealed_checkpoint_supervisor": {
+      "pid": 54860,
+      "normalized_command": "/usr/bin/python3 -u -m embed_optim.sealed_checkpoint_supervisor --workdir <repository>",
+      "identity_verified_after_transition": true
+    }
+  },
+  "scientific_completion": false,
+  "claim_boundary": "This receipt proves only a zero-step operational contract migration. It creates no training, evaluation, geometry, retrieval, or publication result."
+}

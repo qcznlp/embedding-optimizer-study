@@ -156,7 +156,9 @@ The result-blind abstract-compliance transition is recorded in
 scientific choice while enforcing the ACLPUB 200-word abstract maximum after both result macros
 expand. A pre-transition factorial ledger with zero executed steps must be archived byte-for-byte
 before resuming the controller against the refreshed source contract; never overwrite that ledger
-or treat its waiting state as scientific output.
+or treat its waiting state as scientific output. The completed host transition is recorded in
+`reports/state-operator-factorial/abstract-compliance-runtime-migration.json`; the active contract
+starts with `6605090d` and remains at zero steps until the exact main corrected ledger completes.
 
 Never inspect, read, edit, signal, stop, replace, or otherwise touch `gpu.py` or its processes. It
 is outside this repository and automatically yields to study jobs.

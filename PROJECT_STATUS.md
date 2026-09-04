@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 06:13 UTC
+Last updated: 2026-09-04 06:18 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -40,7 +40,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected paper renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, paper + standalone evidence report |
-| Corrected state-by-operator factorial | Abstract-compliant locks complete; waiting controller deliberately stopped for zero-step contract migration | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started; main training untouched |
+| Corrected state-by-operator factorial | Abstract-compliant locks merged; refreshed automatic controller waits for the full main corrected ledger | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started; contract `6605090d...` |
 | Manuscript narrative | Positive Muon result leads; corrected verdict governs headline locations | 8-page main text; conservative expanded abstract budget 198/200 words; clean outcome remains gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
@@ -320,10 +320,14 @@ maximum of 198 words after both longest branches expand. The exact source and pr
 recorded in `configs/dense_no_packing_state_operator_abstract_compliance_migration.json`.
 At 06:12 UTC the exact waiting factorial controller was verified from its lease and command line,
 then normally terminated without signaling any trainer, main finalizer, or checkpoint supervisor.
-Its ledger remains unmodified at 14,432 bytes with SHA-256 `380a82d4...`, status
-`waiting_for_main_completion`, zero executed steps, and no failed step. After this source transition
-merges, that ledger must be archived byte-for-byte and the refreshed controller resumed before the
-factorial handoff is considered active again.
+PR [#78](https://github.com/qcznlp/embedding-optimizer-study/pull/78) passed CI and merged as
+`918b560`. The 14,432-byte pre-transition ledger was archived byte-for-byte under SHA-256
+`380a82d4...`; it records `waiting_for_main_completion`, zero executed steps, and no failed step.
+At 06:17 UTC the refreshed controller started under source contract `6605090d...`, returned to the
+same waiting state with zero steps, and requested no factorial GPU work. The main corrected
+finalizer and sealed-checkpoint supervisor retained their existing identities. The immutable
+tracked receipt is
+`reports/state-operator-factorial/abstract-compliance-runtime-migration.json`.
 
 ## Historical findings that motivate clean adjudication
 
