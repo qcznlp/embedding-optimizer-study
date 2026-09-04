@@ -138,16 +138,23 @@ def test_checked_in_guard_contract_is_source_bound_and_process_free():
     assert command[command.index("--max-launches") + 1] == "0"
 
 
-def test_checked_in_guard_activation_receipt_binds_implementation_and_protocol():
+def test_checked_in_guard_final_receipt_binds_yield_and_frozen_sources():
     root = Path.cwd()
     receipt = json.loads(
         (root / "reports/dense-no-packing/matrix-handoff-guard.json").read_text(encoding="utf-8")
     )
 
-    assert receipt["status"] == "waiting_for_current_runs"
-    assert receipt["complete"] is False
-    assert receipt["controller_lease"] == "held"
+    assert receipt["status"] == "yielded_to_existing_matrix"
+    assert receipt["complete"] is True
     assert receipt["takeover_launched"] is False
+    assert receipt["complete_current_run_ids"] == [
+        "padded-adamw-1e-5",
+        "padded-adamw-3e-5",
+    ]
+    assert sorted(receipt["successor_artifacts"]) == [
+        "padded-muon-1e-4",
+        "padded-muon-3e-4",
+    ]
     for name in ("implementation", "protocol"):
         identity = receipt[name]
         path = root / identity["path"]

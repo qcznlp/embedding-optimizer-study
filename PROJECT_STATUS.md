@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 01:59 UTC
+Last updated: 2026-09-04 03:30 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -29,19 +29,19 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 3214/3182; 18/60 resumable checkpoints |
-| Corrected completion handoff | Detached controller restored after two audited migrations | Waiting for training under contract `25eefbe5...`; 2/2 full-run backups re-audited with upload commit IDs intact; no failed step |
-| Corrected next-pair handoff | Artifact-only guard active with lease held | Waiting for both current runs; then yield on any Muon successor artifact or take over only after a five-minute absence grace |
-| Sealed-checkpoint durability | Detached CPU/network supervisor active | 18/60 checkpoints covered; 42 not yet generated; 0 cycle failures |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 4/12 complete; first Muon pair running; 20/60 resumable checkpoints |
+| Corrected completion handoff | Detached controller active after four audited migrations | Waiting for training under contract `4152531e...`; 4/4 complete runs uploaded and remotely audited; no failed step |
+| Corrected next-pair handoff | Artifact-only guard completed without takeover | Existing matrix launched both Muon successors; guard yielded with `takeover_launched=false` |
+| Sealed-checkpoint durability | Detached CPU/network supervisor active | 20/60 checkpoints covered; 40 not yet generated; 0 cycle failures |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
-| Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
-| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; corrected snapshot: 338 files, 33,457,786,318 bytes; stage receipts cover 18/60 checkpoints |
+| Corrected W&B provenance | Read-only partial audit complete | 6/12 visible: 4 finished, 2 running, 0 identity/config/state problems |
+| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; all 4 complete corrected runs remotely verified; stage receipts cover 20/60 checkpoints |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected paper renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, paper + standalone evidence report |
 | Corrected state-by-operator factorial | Scientific and source-bound implementation locks complete; waiting for source checkpoints | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started |
-| Manuscript narrative | Rewritten around the positive Muon trajectory result | 8-page main text; clean outcome block remains source-gated |
+| Manuscript narrative | Corrected verdict now governs headline locations | 8-page main text; source-bound finding enters abstract and Conclusion; clean outcome remains gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
@@ -53,9 +53,11 @@ output namespace. Formal training started at 2026-09-03 11:50 UTC (19:50 in the 
 time) with `padded-adamw-1e-6` and `padded-adamw-3e-6` in the two disjoint four-GPU pools. Both runs
 deeply completed at step 3907 with all five scheduled checkpoints, including the model, optimizer,
 scheduler, trainer state, and all four RNG-state payloads. The recovery supervisor then launched
-`padded-adamw-1e-5` and `padded-adamw-3e-5`; at the 01:59 UTC artifact snapshot they were at steps
-3214 and 3182, respectively, and both had deeply valid checkpoints through step 3126. Across
-the corrected phase there is still no CUDA OOM, NCCL data-plane, non-finite, or traceback marker.
+`padded-adamw-1e-5` and `padded-adamw-3e-5`; both deeply completed at step 3907 by 03:27 UTC with
+all five scheduled checkpoints. The existing matrix then immediately launched
+`padded-muon-1e-4` and `padded-muon-3e-4` on the released four-GPU pools. At the 03:29 UTC W&B
+audit they were at steps 60 and 20, respectively. Across the corrected phase there is still no CUDA
+OOM, NCCL data-plane, non-finite, or traceback marker.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
 leaving the eight established training ranks adopted by PID 1. The NCCL data plane continued to
@@ -125,6 +127,14 @@ Its pre-paper-only runtime contract SHA-256 was
 uploaded and remotely size-audited by 19:43 UTC: 202 files and 19,120,907,393 bytes in total, with
 zero missing, extra, or size-mismatched paths. The immutable per-run receipts are under
 `reports/dense-no-packing/checkpoint-backup/`.
+
+The second AdamW pair was uploaded and remotely audited immediately after completion. Each run has
+101 files and approximately 9.56 GB; exact local and remote inventories match with no missing,
+extra, or size-mismatched path. Their immutable Hugging Face commits are
+`2bdb14b41bf1d7762852ead97d55536696d0aa03` for `padded-adamw-1e-5` and
+`9eced7f36ea2865d1086fb68e369475a461e2995` for `padded-adamw-3e-5`. The completion controller
+returned to `waiting_for_training` under contract `4152531e...` with 4/12 runs complete and no
+failed step.
 
 At 00:07 UTC on 2026-09-04 that controller detected the owner-directed paper-only source change and
 failed closed before any new training completion or finalization step. Its lease is free; the
@@ -211,10 +221,10 @@ source, matrix, supervisor, GPU pools, ports, and timing are content-bound; live
 `logs/dense-no-packing-handoff-guard/`.
 
 The guard passed PR [#68](https://github.com/qcznlp/embedding-optimizer-study/pull/68), started at
-01:52 UTC, acquired its dedicated lease, and published `waiting_for_current_runs` with neither
-current run yet marked complete and `takeover_launched=false`. Its distributable activation receipt
-is `reports/dense-no-packing/matrix-handoff-guard.json`; later yield or takeover replaces this
-operational status at the corresponding meaningful transition.
+01:52 UTC, and waited without inspecting or signaling any process. By 03:26 UTC both Muon successor
+log/output artifact sets existed, so it completed as `yielded_to_existing_matrix` with
+`takeover_launched=false`. Its final distributable receipt is
+`reports/dense-no-packing/matrix-handoff-guard.json`.
 
 Because the experiment host may be shut down before an active run reaches all five stages, the two
 sealed step-782 checkpoints from the second AdamW pair were independently uploaded at 21:17--21:18
@@ -242,7 +252,7 @@ lease-protected supervisor so every later sealed checkpoint receives the same di
 backup without an interactive handoff. Its artifact lease remains held; it reads only training
 artifacts, uses CPU/network resources, and neither imports CUDA nor controls training. Its runtime contract
 SHA-256 is `a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7`;
-the current atomic state records 18/60 checkpoints covered, 42 not yet generated, and zero cycle
+the current atomic state records 20/60 checkpoints covered, 40 not yet generated, and zero cycle
 failures. Whole-run receipts cover completed runs, intermediate receipts cover active stages, and
 the final stage yields to the existing whole-run controller before the checkpoint-level fallback.
 The live state and exclusive lease are under `logs/dense-no-packing-sealed-backup/`; none of these

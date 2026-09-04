@@ -1,21 +1,33 @@
 {
   "schema_version": 1,
   "scope": "corrected_dense_no_packing_matrix_handoff_guard",
-  "status": "waiting_for_current_runs",
-  "complete": false,
+  "status": "yielded_to_existing_matrix",
+  "complete": true,
   "activated_at_utc": "2026-09-04T01:52:40Z",
-  "observed_at_utc": "2026-09-04T01:52:40Z",
-  "controller_lease": "held",
+  "observed_at_utc": "2026-09-04T03:26:41Z",
   "takeover_launched": false,
   "current_run_ids": [
     "padded-adamw-1e-5",
     "padded-adamw-3e-5"
   ],
-  "complete_current_run_ids": [],
+  "complete_current_run_ids": [
+    "padded-adamw-1e-5",
+    "padded-adamw-3e-5"
+  ],
   "successor_run_ids": [
     "padded-muon-1e-4",
     "padded-muon-3e-4"
   ],
+  "successor_artifacts": {
+    "padded-muon-1e-4": [
+      "logs/dense-no-packing-v1/dense-padded-muon-1e-4.log",
+      "outputs/dense-no-packing-v1/dense/padded-muon-1e-4"
+    ],
+    "padded-muon-3e-4": [
+      "logs/dense-no-packing-v1/dense-padded-muon-3e-4.log",
+      "outputs/dense-no-packing-v1/dense/padded-muon-3e-4"
+    ]
+  },
   "implementation": {
     "path": "src/embed_optim/matrix_handoff_guard.py",
     "bytes": 10350,
@@ -26,5 +38,5 @@
     "bytes": 2265,
     "sha256": "e511214d3c077b463d0ee3edf566f864a56e10bb7ede76d8a1e694a36564eb30"
   },
-  "claim_boundary": "This active receipt proves only that the artifact-only availability guard started under its frozen contract and held its lease. It is not a training completion or scientific result."
+  "claim_boundary": "This receipt proves only that the artifact-only availability guard observed both declared successor artifact sets and yielded without takeover. It is not a training completion or scientific result."
 }
