@@ -293,11 +293,12 @@ partial tree (4,061,425 bytes) is remotely size- and digest-verified at Hugging 
 This is an incremental computation and durability receipt only: no cross-optimizer geometry
 summary or mechanism interpretation is permitted before the complete 12-run matrix.
 
-The corrected W&B source-run path now has a dedicated read-only audit. Its latest receipt at 06:41
+The corrected W&B source-run path now has a dedicated read-only audit. Its latest receipt at 08:22
 UTC found the four locally complete runs remotely `finished` at step 3907, the two active Muon runs
-remotely `running` at steps 1690 and 1640, and all six future runs absent as expected. All six visible runs match the
-deterministic ID, run name, group, tags, and resolved padded matrix configuration, with zero
-problems. This post-output operational receipt does not modify W&B or add a scientific endpoint.
+remotely `running` at steps 2530 and 2480, and all six future runs absent as expected. All six
+visible runs match the deterministic ID, run name, group, tags, and resolved padded matrix
+configuration, with zero problems. This post-output operational receipt does not modify W&B or add
+a scientific endpoint.
 
 A separate corrected state-by-operator factorial is now scientifically frozen in
 `configs/dense_no_packing_state_operator_factorial_protocol.json`. It was specified before any
