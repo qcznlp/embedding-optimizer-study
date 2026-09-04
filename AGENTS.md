@@ -25,8 +25,9 @@ Read these sources in order before acting:
 6. For the prospective state-by-operator mechanism follow-up, read both
    `configs/dense_no_packing_state_operator_factorial_protocol.json` and
    `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`, plus its
-   publication and completion locks, then follow `docs/state-operator-factorial.md`. Do not execute
-   it from changed source bytes or before the main corrected completion ledger is fully complete.
+   publication and completion locks and the result-blind abstract-compliance migration, then follow
+   `docs/state-operator-factorial.md`. Do not execute it from changed source bytes or before the main
+   corrected completion ledger is fully complete.
 7. `docs/dense-no-packing-retrain.md` — exact corrected-matrix operational commands.
 
 If `logs/dense-no-packing-v1/recovery-supervisor-state.json` exists, read it after
@@ -149,6 +150,13 @@ The state-by-operator follow-up has its own source-bound handoff at
 ledger, then runs the frozen calibration, six training waves, checkpoint backup, probe/BEIR
 evaluation, summary, paper-only renderer, and release gates. Do not launch any factorial command in
 parallel with that controller while its lease is held.
+
+The result-blind abstract-compliance transition is recorded in
+`configs/dense_no_packing_state_operator_abstract_compliance_migration.json`. It preserves every
+scientific choice while enforcing the ACLPUB 200-word abstract maximum after both result macros
+expand. A pre-transition factorial ledger with zero executed steps must be archived byte-for-byte
+before resuming the controller against the refreshed source contract; never overwrite that ledger
+or treat its waiting state as scientific output.
 
 Never inspect, read, edit, signal, stop, replace, or otherwise touch `gpu.py` or its processes. It
 is outside this repository and automatically yields to study jobs.

@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "status": "prospective_state_operator_abstract_compliance_migration",
+  "frozen_at_utc": "2026-09-04T05:36:11Z",
+  "reason": "A result-blind visual audit of the current ACL PDF found that the two already-frozen result macros would expand the abstract beyond the official 200-word limit. This migration compresses only the surrounding abstract prose and adds a conservative word-budget audit before any corrected factorial output exists.",
+  "visibility_at_freeze": {
+    "main_corrected_runs_complete": 4,
+    "main_corrected_runs_expected": 12,
+    "active_main_runs": {
+      "padded-muon-1e-4": 1153,
+      "padded-muon-3e-4": 1109
+    },
+    "main_resumable_checkpoints": 22,
+    "factorial_controller_status": "waiting_for_main_completion",
+    "factorial_steps_started": 0,
+    "factorial_outputs_visible": false,
+    "factorial_summary_visible": false,
+    "factorial_publication_visible": false
+  },
+  "external_requirement": {
+    "authority": "ACLPUB paper formatting guidelines",
+    "url": "https://acl-org.github.io/ACLPUB/formatting.html",
+    "requirement": "The abstract should be no longer than 200 words."
+  },
+  "prior_bindings": {
+    "publication_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
+      "bytes": 5045,
+      "sha256": "6057e42d41eb934d06bc7574fe4d721b0d549b796c235109c4e86a1bdd20eeb2"
+    },
+    "completion_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+      "bytes": 6737,
+      "sha256": "8f76577c1465760323777fddc5d4ae2dcbc05729b487b2ad54dd91c9bf030e48"
+    },
+    "paper_audit": {
+      "path": "src/embed_optim/paper_audit.py",
+      "bytes": 114681,
+      "sha256": "92e2b0793f9fee179e624d7da4bfbfaec8e6389cfa66566222e4f32278cfc030"
+    },
+    "publication_renderer": {
+      "path": "src/embed_optim/state_operator_factorial_publication.py",
+      "bytes": 17828,
+      "sha256": "ea21d0e051c2f1843eddd86adb4010a206636958a03f7a7e16cce69f01a7b25e"
+    },
+    "manuscript_topology": {
+      "path": "paper/main.tex",
+      "bytes": 35737,
+      "sha256": "ab91442f8af5e80264f031a07b5a538c7efaff488a43290dd7ef7e47127ec4c3"
+    }
+  },
+  "new_source_bindings": {
+    "paper_audit": {
+      "path": "src/embed_optim/paper_audit.py",
+      "bytes": 117164,
+      "sha256": "a410a5c150cfb8d369d8c7c1c309aea2109ee1e2a5bb3a3ddb62d7b8a0ccd54f"
+    },
+    "publication_renderer": {
+      "path": "src/embed_optim/state_operator_factorial_publication.py",
+      "bytes": 17869,
+      "sha256": "a0de6d29ea96227976846fa13718bc5c38a83a4b97a405aa9e263520e5502c6b"
+    },
+    "manuscript_topology": {
+      "path": "paper/main.tex",
+      "bytes": 34967,
+      "sha256": "20a087c8796fc2c6b637f6fbe28c38d29070777cf07fe0e71ba9673fe1ad0f81"
+    }
+  },
+  "word_budget": {
+    "limit": 200,
+    "base_abstract_words_conservative": 114,
+    "corrected_result_reserve_words": 30,
+    "state_operator_result_reserve_words": 54,
+    "maximum_words_conservative": 198,
+    "counting_rule": "ASCII alphanumeric tokens with apostrophe compounds; hyphenated terms and decimals are conservatively split."
+  },
+  "allowed_changes": [
+    "Compress the result-independent prose inside the existing abstract environment.",
+    "Add an audit that requires both result macros exactly once, rejects other LaTeX commands in the abstract, and reserves the worst-case renderer word counts.",
+    "Refresh only the source hashes transitively affected by those two changes."
+  ],
+  "scientific_invariants": [
+    "No training run, checkpoint, data row, optimizer, learning rate, seed, evaluation task, metric, or statistical procedure changes.",
+    "The corrected all-rate and state-by-operator result macros remain at their predeclared manuscript positions.",
+    "No point estimate, interval, decision rule, conclusion branch, or mechanism interpretation changes.",
+    "The 8-page main-text boundary and all appendix table placements remain enforced."
+  ],
+  "runtime_transition": "Because the waiting factorial ledger contains zero steps, archive it byte-for-byte after stopping only its own controller, then restart the unchanged handoff against the refreshed source contract. The main corrected trainer, main finalizer, and sealed-checkpoint supervisor remain untouched."
+}

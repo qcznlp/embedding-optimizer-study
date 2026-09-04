@@ -174,6 +174,7 @@ def _state_operator_distribution_problems(
     expected = {
         "configs/dense_no_packing_state_operator_factorial_protocol.json",
         "configs/dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "configs/dense_no_packing_state_operator_abstract_compliance_migration.json",
         "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
         "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
         "paper/generated/state-operator-factorial.tex",

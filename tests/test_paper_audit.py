@@ -14,6 +14,7 @@ from embed_optim.causal_chain_rendering import (
     render_causal_chain_headline_fragment,
 )
 from embed_optim.paper_audit import (
+    ABSTRACT_WORD_LIMIT,
     PAPER_APPENDIX_GENERATED_INPUTS,
     PAPER_DEFINITION_GENERATED_INPUTS,
     PAPER_DISCOVERY_FIGURE_CAPTION,
@@ -23,6 +24,7 @@ from embed_optim.paper_audit import (
     PAPER_MAIN_REQUIRED_ONCE,
     PAPER_RESULT_TABLE_PATHS,
     PAPER_SOURCE_TABLE_PATHS,
+    _abstract_word_budget,
     _causal_chain_evidence,
     _causal_chain_source_complete,
     _causal_evidence_snapshot,
@@ -1062,6 +1064,37 @@ def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_p
         "paper/main.tex: The final analysis will report",
         "paper/main.tex: intentionally left unresolved",
     ]
+
+
+def test_checked_in_abstract_reserves_every_result_branch_within_acl_limit() -> None:
+    budget = _abstract_word_budget(REPOSITORY)
+
+    assert budget["complete"] is True
+    assert budget["limit"] == ABSTRACT_WORD_LIMIT == 200
+    assert budget["maximum_words_conservative"] <= 200
+    assert budget["dynamic_macro_counts"] == {
+        r"\CorrectedAbstractFinding": 1,
+        r"\StateOperatorAbstractFinding": 1,
+    }
+    assert budget["unexpected_commands"] == []
+
+
+def test_abstract_budget_rejects_overlength_and_unexpected_commands(tmp_path: Path) -> None:
+    paper = tmp_path / "paper/main.tex"
+    paper.parent.mkdir(parents=True)
+    paper.write_text(
+        "\\begin{abstract}\n"
+        + " ".join(["word"] * 117)
+        + " \\cite{forbidden} \\CorrectedAbstractFinding{} "
+        + "\\StateOperatorAbstractFinding{}\n\\end{abstract}\n",
+        encoding="utf-8",
+    )
+
+    budget = _abstract_word_budget(tmp_path)
+
+    assert budget["complete"] is False
+    assert budget["maximum_words_conservative"] > 200
+    assert budget["unexpected_commands"] == [r"\cite"]
 
 
 def test_paper_source_table_audit_requires_all_twenty_four_tables_in_declared_order(

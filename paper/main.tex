@@ -27,24 +27,15 @@ What Muon Changes in Dense-Retriever Training}
 \maketitle
 
 \begin{abstract}
-Dense retrievers are usually adapted with AdamW. We ask whether Muon's matrix-aware updates offer a
-better path. On the same 500,000-query DenseOn problem, the best Muon and NorMuon runs raise mean
-decontaminated-BEIR nDCG@10 from AdamW's 0.5899 to 0.5923 and 0.5934 and win on 10 and 11 of 14
-tasks. Three of four Muon-family rates reach the AdamW reference, compared with two of four AdamW
-rates; a good Muon trajectory reaches it in about 0.75 useful hours rather than 1.41 despite lower
-per-step throughput. This creates a paradox. From identical weights and with update norms matched,
-AdamW gives the larger immediate mean margin improvement. After repeated shared-start updates,
-however, Muon finishes with a positive unseen-margin contrast in all three seeds, while Muon-family
-trajectories move roughly twice as far in weight space for nearly the same fixed-probe score drift.
-The advantage therefore emerges along the trajectory rather than from a better isolated step.
-Muon's familiar spectral flattening does not explain this emergence: temporal prediction,
-controlled spectral transplants, and held-run retrieval prediction all fail their frozen tests. We
-also find that a packed validator makes embeddings depend on batch composition and selects a
-damaging ten-times larger Muon rate. A fresh independently padded 12-run matrix is the final
-adjudicator. \CorrectedAbstractFinding{} \StateOperatorAbstractFinding{} Together, the results
-recast Muon's promise for retrieval
-as a question about the sequence of states and gradients produced by repeated matrix-conditioned
-updates.
+Dense-retriever adaptation usually uses AdamW. On 500,000 DenseOn queries, Muon and NorMuon reach
+0.5923 and 0.5934 nDCG@10 versus AdamW's 0.5899. Yet from identical weights with matched update
+norms, AdamW gives the larger immediate margin gain; repeated shared-start Muon updates finish ahead
+in all three seeds. This reversal places the advantage in the trajectory, not one step. Temporal
+prediction, spectral transplants, and held-run prediction reject spectral flattening as its
+explanation. Packed execution makes embeddings batch-dependent and selects a damaging ten-times
+larger Muon rate, motivating an independently padded 12-run correction.
+\CorrectedAbstractFinding{} \StateOperatorAbstractFinding{} Together, Muon's retrieval value
+depends on the evolving optimization path and on invariant model selection.
 \end{abstract}
 
 \section{Introduction}
