@@ -131,6 +131,10 @@ The crossed-factorial renderer is also paper-only and result blind. Its topology
 one abstract finding, one mechanism paragraph, one Conclusion finding, and one three-row appendix
 table. After a complete 12-run/168-BEIR-unit factorial summary appears, the strict paper audit
 requires all four locations to match the source-bound renderer and rejects the pending fixture.
+The abstract audit also enforces the official ACLPUB 200-word maximum before and after both pending
+result macros expand. It counts the checked-in prose conservatively, reserves the longest possible
+corrected and factorial branches, requires each result macro exactly once, and rejects any other
+LaTeX command in the abstract. The current result-blind maximum is 198 words.
 
 The source audit also fixes the post-conclusion submission boundary: the only sections between the
 eight-page endpoint and the references are `Limitations` and `Ethical Considerations`. Artifact and

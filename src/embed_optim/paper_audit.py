@@ -237,6 +237,16 @@ FINAL_DOCUMENT_STALE_PHRASES = {
         "intentionally left unresolved",
     ),
 }
+ABSTRACT_WORD_LIMIT = 200
+ABSTRACT_RESULT_WORD_RESERVE = {
+    "corrected_all_rate_finding": 30,
+    "state_operator_finding": 54,
+}
+ABSTRACT_DYNAMIC_MACROS = (
+    r"\CorrectedAbstractFinding",
+    r"\StateOperatorAbstractFinding",
+)
+ABSTRACT_WORD_PATTERN = re.compile(r"[A-Za-z0-9]+(?:['’][A-Za-z0-9]+)?")
 
 _LATEX_SECTION_COMMAND = re.compile(r"\\section(?![A-Za-z@])")
 _LATEX_FILE_INPUT_COMMAND = re.compile(r"\\(?:input|include)(?![A-Za-z@])")
@@ -2511,6 +2521,54 @@ def _final_document_language_problems(root: Path) -> list[str]:
     return problems
 
 
+def _abstract_word_budget(root: Path) -> dict[str, Any]:
+    """Conservatively reserve room for every result-contingent abstract branch."""
+
+    path = root / "paper/main.tex"
+    try:
+        source = _strip_latex_comments(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError) as error:
+        return {
+            "complete": False,
+            "limit": ABSTRACT_WORD_LIMIT,
+            "error": f"{type(error).__name__}: {error}",
+        }
+    matches = re.findall(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", source, flags=re.DOTALL)
+    if len(matches) != 1:
+        return {
+            "complete": False,
+            "limit": ABSTRACT_WORD_LIMIT,
+            "error": f"expected one abstract environment, observed {len(matches)}",
+        }
+    body = matches[0]
+    macro_counts = {macro: body.count(macro) for macro in ABSTRACT_DYNAMIC_MACROS}
+    stripped = body
+    for macro in ABSTRACT_DYNAMIC_MACROS:
+        stripped = re.sub(re.escape(macro) + r"\s*(?:\{\})?", " ", stripped)
+    unexpected_commands = sorted(set(re.findall(r"\\[A-Za-z@]+", stripped)))
+    base_words = len(ABSTRACT_WORD_PATTERN.findall(stripped))
+    reserved_words = sum(ABSTRACT_RESULT_WORD_RESERVE.values())
+    maximum_words = base_words + reserved_words
+    complete = (
+        all(count == 1 for count in macro_counts.values())
+        and not unexpected_commands
+        and maximum_words <= ABSTRACT_WORD_LIMIT
+    )
+    return {
+        "complete": complete,
+        "limit": ABSTRACT_WORD_LIMIT,
+        "base_words_conservative": base_words,
+        "result_reserve_words": ABSTRACT_RESULT_WORD_RESERVE,
+        "maximum_words_conservative": maximum_words,
+        "dynamic_macro_counts": macro_counts,
+        "unexpected_commands": unexpected_commands,
+        "counting_rule": (
+            "ASCII alphanumeric tokens with apostrophe compounds; hyphenated terms and decimals "
+            "are conservatively split"
+        ),
+    }
+
+
 def _state_operator_publication_status(root: Path) -> dict[str, Any]:
     """Require exact paper rendering once the complete factorial summary exists."""
 
@@ -2683,6 +2741,7 @@ def audit_paper(
         causal_cache=causal_cache,
     )
     document_language_problems = _final_document_language_problems(root)
+    abstract_word_budget = _abstract_word_budget(root)
     causal_chain = _causal_chain_evidence(root, causal_cache)
     snapshot, snapshot_error = causal_cache.get(root, (None, None))
     causal_chain_complete = bool(
@@ -2697,6 +2756,7 @@ def audit_paper(
         and not incomplete_evidence
         and paper_results_complete
         and not document_language_problems
+        and abstract_word_budget["complete"]
         and causal_chain_complete
         and state_operator_publication["complete"]
     )
@@ -2750,6 +2810,7 @@ def audit_paper(
             "sha256": _sha256(paper_results_path) if paper_results_path.is_file() else None,
         },
         "document_language_problems": document_language_problems,
+        "abstract_word_budget": abstract_word_budget,
         "causal_chain": causal_chain,
         "state_operator_publication": state_operator_publication,
         "evidence_mode": evidence_mode,
@@ -2762,7 +2823,8 @@ def audit_paper(
             "Paper is not final: "
             f"pending_headlines={pending}, incomplete_evidence={incomplete_evidence}, "
             f"paper_results_complete={paper_results_complete}, "
-            f"document_language_problems={document_language_problems}"
+            f"document_language_problems={document_language_problems}, "
+            f"abstract_word_budget={abstract_word_budget}"
             f", causal_chain_complete={causal_chain_complete}, "
             f"state_operator_publication={state_operator_publication['status']}"
         )

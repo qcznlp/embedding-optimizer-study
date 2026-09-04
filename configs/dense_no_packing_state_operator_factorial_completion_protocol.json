@@ -2,6 +2,7 @@
   "schema_version": 1,
   "status": "prospective_state_operator_completion_lock",
   "frozen_at_utc": "2026-09-04T04:06:35Z",
+  "amended_at_utc": "2026-09-04T05:36:11Z",
   "purpose": "Bind a resumable, fail-closed handoff that gives the corrected 12-run paper pipeline priority, then executes the prospective state-by-operator factorial, backs up every checkpoint, renders its result into the paper, and reruns release audits.",
   "visibility_at_freeze": {
     "main_corrected_runs_complete": 4,
@@ -25,8 +26,13 @@
     },
     "publication_protocol": {
       "path": "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
-      "bytes": 5045,
-      "sha256": "6057e42d41eb934d06bc7574fe4d721b0d549b796c235109c4e86a1bdd20eeb2"
+      "bytes": 5403,
+      "sha256": "06cf617bcf6024f218c039cd349a24d3b5b4450dda4ee1af63f70ca18538663d"
+    },
+    "abstract_compliance_migration": {
+      "path": "configs/dense_no_packing_state_operator_abstract_compliance_migration.json",
+      "bytes": 4326,
+      "sha256": "e4ef66061165e0632c1ecaf8b0f2b8643ff488ca37118401444bc3dbe6faebe1"
     }
   },
   "source_bindings": {

@@ -79,6 +79,7 @@ def _load_protocol(path: Path, root: Path) -> dict[str, Any]:
     bindings = [
         *protocol.get("parent_bindings", {}).values(),
         *protocol.get("source_bindings", {}).values(),
+        *protocol.get("amendments", []),
     ]
     if not bindings:
         raise ValueError("State-operator publication protocol has no source bindings")

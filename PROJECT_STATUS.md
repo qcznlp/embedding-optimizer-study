@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 04:59 UTC
+Last updated: 2026-09-04 06:13 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -40,8 +40,8 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected paper renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, paper + standalone evidence report |
-| Corrected state-by-operator factorial | Scientific, implementation, paper-rendering, and completion locks complete; automatic controller waits for the full main corrected ledger | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started |
-| Manuscript narrative | Corrected verdict now governs headline locations | 8-page main text; source-bound finding enters abstract and Conclusion; clean outcome remains gated |
+| Corrected state-by-operator factorial | Abstract-compliant locks complete; waiting controller deliberately stopped for zero-step contract migration | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started; main training untouched |
+| Manuscript narrative | Positive Muon result leads; corrected verdict governs headline locations | 8-page main text; conservative expanded abstract budget 198/200 words; clean outcome remains gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
 The 34 historical Dense training runs are finished. No historical checkpoint should be overwritten.
@@ -310,6 +310,20 @@ and interaction estimates in the abstract, mechanism section, Conclusion, and ap
 paper audit permits the visible topology fixture while no factorial summary exists, but fails closed
 if a complete summary exists and the paper remains pending or differs from recomputation. The ACL
 manuscript is the only publication artifact.
+
+A result-blind PDF audit then found that the longest already-frozen corrected and factorial result
+branches would expand the abstract beyond ACLPUB's official 200-word limit. Before any factorial
+step or output existed, the surrounding prose was compressed without changing either result macro,
+scientific choice, decision branch, table, or manuscript location. The source audit now requires
+both macros exactly once, rejects other LaTeX commands in the abstract, and conservatively counts a
+maximum of 198 words after both longest branches expand. The exact source and protocol transition is
+recorded in `configs/dense_no_packing_state_operator_abstract_compliance_migration.json`.
+At 06:12 UTC the exact waiting factorial controller was verified from its lease and command line,
+then normally terminated without signaling any trainer, main finalizer, or checkpoint supervisor.
+Its ledger remains unmodified at 14,432 bytes with SHA-256 `380a82d4...`, status
+`waiting_for_main_completion`, zero executed steps, and no failed step. After this source transition
+merges, that ledger must be archived byte-for-byte and the refreshed controller resumed before the
+factorial handoff is considered active again.
 
 ## Historical findings that motivate clean adjudication
 
