@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 12:49 UTC
+Last updated: 2026-09-04 14:24 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -29,13 +29,13 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate-breadth evaluations | Complete | 12/12 runs, 224 queries, 6 widths |
 | Candidate-breadth frozen decision | Not supported | all three required gates failed |
 | Candidate paper artifact | Complete | Source-addressed manifest and all declared outputs verify |
-| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 6/12 complete; second Muon pair running; 32/60 resumable checkpoints |
+| Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 6/12 complete; second Muon pair running; 34/60 resumable checkpoints |
 | Corrected completion handoff | Detached controller active after four audited migrations | Waiting for training under contract `4152531e...`; 6/6 complete runs uploaded and remotely audited; no failed step |
 | Corrected next-pair handoff | Artifact-only guard completed without takeover | Existing matrix launched both Muon successors; guard yielded with `takeover_launched=false` |
-| Sealed-checkpoint durability | Detached CPU/network supervisor active | 32/60 checkpoints covered; 28 not yet generated; 0 cycle failures |
+| Sealed-checkpoint durability | Detached CPU/network supervisor active | 34/60 checkpoints covered; 26 not yet generated; 0 cycle failures |
 | Corrected weight-space | Incremental frozen analysis active | 6/12 runs and 30/60 stages computed locally; the first 4 runs and 20 stages are remotely digest-verified |
-| Corrected W&B provenance | Read-only partial audit complete | 8/12 visible: 6 finished, 2 running at steps 840/790, 0 identity/config/state problems |
-| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; all 6 complete corrected runs remotely verified; stage receipts cover 32/60 checkpoints |
+| Corrected W&B provenance | Read-only partial audit complete | 8/12 visible: 6 finished, 2 running at steps 1630/1580, 0 identity/config/state problems |
+| Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; all 6 complete corrected runs remotely verified; stage receipts cover 34/60 checkpoints |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
@@ -112,6 +112,18 @@ identical local and remote inventories with empty missing, extra, size-mismatch,
 digest-mismatch sets and retain `scientific_completion=false`. The 12:48 artifact-only snapshot
 observed steps 846 and 793; the concurrent W&B audit observed steps 840 and 790 with all eight
 visible corrected runs provenance-valid and no reported problem.
+
+At 14:15--14:22 UTC both runs remotely sealed checkpoint 1563. The `padded-muon-1e-3` payload
+contains 17 files and 1,350,865,007 bytes at Hugging Face commit
+`dac5102b5184b1deb27709adfb4c5658e2d354a2`; `padded-muon-3e-3` contains 17 files and
+1,350,864,875 bytes at commit `d805592af2d83362b319e1d000768c5723f66378`. Both receipts report
+identical local and remote path, size, and digest inventories with empty missing, extra,
+size-mismatch, and digest-mismatch sets and retain `scientific_completion=false`. The 14:23
+artifact-only snapshot observed steps 1637 and 1581 with 34/60 resumable checkpoints and all fatal
+error counts still zero. The 14:24 W&B audit observed steps 1630 and 1580 with all eight visible
+corrected runs provenance-valid and no reported problem. The finalizer remains at 6/12 complete
+under contract `4152531e...`; the sealed supervisor reports 34/60 covered, 26 pending, and zero
+cycle failures, while the state-by-operator controller continues to wait for the main ledger.
 
 At 2026-09-03 15:28:38 UTC the interactive matrix controller and its torchrun TCPStore disappeared,
 leaving the eight established training ranks adopted by PID 1. The NCCL data plane continued to
