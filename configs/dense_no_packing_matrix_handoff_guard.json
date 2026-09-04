@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_matrix_handoff_guard",
+  "status": "locked_before_current_pair_completion",
+  "created_at_utc": "2026-09-04T01:43:44Z",
+  "reason": "Guarantee artifact-only handoff to the next Muon pair when the legacy recovery state has no code-level controller heartbeat or lease.",
+  "matrix": "configs/dense_no_packing_retrain.yaml",
+  "current_run_ids": [
+    "padded-adamw-1e-5",
+    "padded-adamw-3e-5"
+  ],
+  "successor_run_ids": [
+    "padded-muon-1e-4",
+    "padded-muon-3e-4"
+  ],
+  "process_inspection": false,
+  "signals_processes": false,
+  "runtime": {
+    "python": "/usr/bin/python3",
+    "gpus_a": "0,1,2,3",
+    "gpus_b": "4,5,6,7",
+    "port_a": 29610,
+    "port_b": 29620,
+    "training_log_dir": "logs/dense-no-packing-v1",
+    "recovery_state_file": "logs/dense-no-packing-v1/recovery-supervisor-state.json",
+    "guard_poll_seconds": 30,
+    "successor_grace_seconds": 300,
+    "supervisor_poll_seconds": 30,
+    "restart_delay_seconds": 30
+  },
+  "takeover_gate": "Both current runs must pass the existing deep completion audit. Then wait the full grace period and require both declared successor log/output artifact sets to remain absent. Recheck immediately before takeover; any successor artifact causes the guard to yield or fail closed.",
+  "sources": [
+    {
+      "path": "src/embed_optim/matrix_handoff_guard.py",
+      "bytes": 10350,
+      "sha256": "68e17c2a35b568a7a5442b247f6b6b056e59a09e9d6e47088c680c30d3355758"
+    },
+    {
+      "path": "src/embed_optim/matrix.py",
+      "bytes": 15720,
+      "sha256": "ffea83211823aa9d5f49f615020034cf2c1db4538fe67e6061bf1d6750da6bb7"
+    },
+    {
+      "path": "src/embed_optim/supervisor.py",
+      "bytes": 8638,
+      "sha256": "87faa59824bb20bdc4e383d3b736fea6e10fa2e0f81c8ff6ca7a1215049f85b8"
+    },
+    {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "bytes": 1601,
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  ],
+  "claim_boundary": "This is an operational availability guard. It neither evaluates nor changes a checkpoint and cannot strengthen a scientific claim. It must never inspect, read, edit, signal, stop, replace, or otherwise touch gpu.py or its processes."
+}

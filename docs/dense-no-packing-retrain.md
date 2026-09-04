@@ -68,6 +68,23 @@ python -m json.tool logs/dense-no-packing-v1/recovery-supervisor-state.json
 Do not start another corrected matrix while that receipt says `waiting_for_adopted_training` or
 `matrix_running`.
 
+The original supervisor state cannot publish a heartbeat while its blocking matrix child runs, so
+the mere `matrix_running` value is not sufficient evidence that the parent will launch the next
+pair. A source-bound, artifact-only guard closes that handoff gap without inspecting or signaling
+any process:
+
+```bash
+python -m embed_optim.matrix_handoff_guard
+```
+
+Its contract is `configs/dense_no_packing_matrix_handoff_guard.json` and its live state is
+`logs/dense-no-packing-handoff-guard/state.json`. It first requires both active AdamW runs to pass
+the existing deep completion gate. It then waits five minutes for either declared Muon successor
+log/output to appear. Any successor artifact proves that the existing matrix advanced and makes
+the guard yield. Only a full absence grace plus one final race check permits the guard to invoke
+the unchanged recovery supervisor. The guard has its own exclusive lease and contains no process
+inspection, signaling, evaluation, or checkpoint mutation.
+
 ## Training and resume
 
 ```bash
