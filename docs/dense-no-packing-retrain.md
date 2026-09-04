@@ -232,6 +232,23 @@ receipts created by the independent sealed-backup supervisor during the brief nu
 remain valid durability evidence but do not replace the full-run receipts or change scientific
 completion.
 
+A later result-blind paper preflight reserved the final corrected table topology before corrected
+outcomes existed. It keeps the all-rate optimizer contrast in the main paper and invokes the full
+geometry bridge and execution-sensitivity tables after the appendix boundary. The exact
+publication-only transition is frozen in
+`configs/dense_no_packing_publication_layout_migration.json` and runs only as:
+
+```bash
+python -m embed_optim.completion_contract_migration \
+  --protocol configs/dense_no_packing_publication_layout_migration.json
+/usr/bin/python3 -m embed_optim.corrected_completion_pipeline --resume
+```
+
+This migration was executed once at 02:36 UTC on 2026-09-04. The controller returned to
+`waiting_for_training` at 02:38 UTC with 2/12 runs complete; its distributable receipt is
+`reports/dense-no-packing/publication-layout-migration.json`. Do not reuse the migration for a
+future source change.
+
 ## Corrected weight-space analysis
 
 The weight-space definitions and retrieval-bridge scientific plan were frozen before the first

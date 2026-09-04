@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_publication_layout_contract_migration",
+  "status": "complete",
+  "complete": true,
+  "scientific_completion": false,
+  "preflight": {
+    "performed_before_corrected_results": true,
+    "corrected_complete_runs": 2,
+    "corrected_beir_outputs_visible": false,
+    "corrected_geometry_outputs_visible": false,
+    "corrected_bridge_outputs_visible": false,
+    "corrected_sensitivity_outputs_visible": false,
+    "finding": "A renderer-shaped result-blind fixture put the paper endpoint on page 9 and made the primary corrected table over-wide.",
+    "resolution": "Keep the three-contrast all-rate retrieval table in the main narrative and invoke the complete nine-feature bridge plus execution-sensitivity tables only after the appendix boundary."
+  },
+  "migration": {
+    "executed_at_utc": "2026-09-04T02:36:14Z",
+    "from_contract_sha256": "25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13",
+    "to_contract_sha256": "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67",
+    "scientific_contract_changed": false,
+    "implementation": {
+      "path": "src/embed_optim/completion_contract_migration.py",
+      "bytes": 10130,
+      "sha256": "83bc97699336265efe26b258a19eb8604a9d41ee4a334909ea0702f5d364e76c"
+    },
+    "protocol": {
+      "path": "configs/dense_no_packing_publication_layout_migration.json",
+      "bytes": 2357,
+      "sha256": "bdd13a73c26d41228c6cbe1452ce1f750b5e682d2900269df23b4e7149017d64"
+    },
+    "source_ledger_archive": {
+      "host_path": "logs/dense-no-packing-finalization/pipeline-ledger.pre-publication-layout-25eefbe5.json",
+      "bytes": 14285,
+      "sha256": "0f74200bcca801721b80a283ee706523fe091c9076acc79e779c075121570e6e"
+    },
+    "paper_topology": [
+      {
+        "path": "paper/main.tex",
+        "bytes": 34196,
+        "sha256": "8577007323e823f53ec674e6f78a3f6227a72f85e2566ba7cf91825a67603cd5"
+      },
+      {
+        "path": "paper/generated/corrected-no-packing.tex",
+        "bytes": 2622,
+        "sha256": "35e18a3c586d573ccbd7f8b67da866b5fb4d335494e04a24e3897facf85ddc39"
+      }
+    ]
+  },
+  "resume": {
+    "preflight_rejection": {
+      "reason": "The shell default /usr/bin/python did not match the frozen /usr/bin/python3 command contract.",
+      "ledger_changed": false,
+      "training_affected": false
+    },
+    "resumed_at_utc": "2026-09-04T02:37:35Z",
+    "verified_at_utc": "2026-09-04T02:38:39Z",
+    "interpreter": "/usr/bin/python3",
+    "controller_lease": "held",
+    "status": "waiting_for_training",
+    "failed_step": null,
+    "training_runs_complete": 2,
+    "training_runs_expected": 12,
+    "remote_backup_reaudits": [
+      {
+        "run_id": "padded-adamw-1e-6",
+        "return_code": 0,
+        "upload_commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+        "audit_log_bytes": 79,
+        "audit_log_sha256": "b0e49ac36a7fe138ac59f3485804ad14e26a50011caafc9bd35b42434382a7b4",
+        "receipt_bytes": 861,
+        "receipt_sha256": "664901fe21658cf33be96f2a31495fc82bc35f015089db4d7ee7cff13de710cf"
+      },
+      {
+        "run_id": "padded-adamw-3e-6",
+        "return_code": 0,
+        "upload_commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+        "audit_log_bytes": 79,
+        "audit_log_sha256": "7a4bd4e4693baf5dadb2c41bbf5a0a49ebc6bbf440e3127159432a6a30c97ddb",
+        "receipt_bytes": 861,
+        "receipt_sha256": "2dce8c584a0903b1c04d70a55215648eb6ec7ca64c95fcce598867d566c5f8b9"
+      }
+    ]
+  },
+  "layout_verification": {
+    "main_end_page": 8,
+    "corrected_primary_page": 6,
+    "corrected_bridge_page": 11,
+    "corrected_sensitivity_page": 11,
+    "overfull_boxes": 0
+  },
+  "claim_boundary": "This result-blind operational amendment changes only manuscript placement and compact typography. It does not change a training run, checkpoint, evaluation, geometry feature, estimand, interval, support rule, decision threshold, conclusion branch, or standalone evidence output."
+}

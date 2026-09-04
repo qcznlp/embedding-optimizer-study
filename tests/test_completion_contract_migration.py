@@ -162,3 +162,60 @@ def test_checked_in_migration_receipt_binds_implementation_and_protocol():
         path = root / identity["path"]
         assert path.stat().st_size == identity["bytes"]
         assert _sha256(path) == identity["sha256"]
+
+
+def test_checked_in_publication_layout_migration_receipt_binds_exact_transition():
+    root = Path.cwd()
+    receipt = json.loads(
+        (root / "reports/dense-no-packing/publication-layout-migration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert receipt["complete"] is True
+    assert receipt["scientific_completion"] is False
+    assert receipt["preflight"]["performed_before_corrected_results"] is True
+    assert receipt["migration"]["scientific_contract_changed"] is False
+    assert receipt["migration"]["from_contract_sha256"] == (
+        "25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13"
+    )
+    assert receipt["migration"]["to_contract_sha256"] == (
+        "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67"
+    )
+    assert receipt["resume"]["controller_lease"] == "held"
+    assert receipt["resume"]["status"] == "waiting_for_training"
+    assert receipt["resume"]["failed_step"] is None
+    assert receipt["resume"]["preflight_rejection"]["ledger_changed"] is False
+    assert receipt["layout_verification"] == {
+        "main_end_page": 8,
+        "corrected_primary_page": 6,
+        "corrected_bridge_page": 11,
+        "corrected_sensitivity_page": 11,
+        "overfull_boxes": 0,
+    }
+    identities = [
+        receipt["migration"]["implementation"],
+        receipt["migration"]["protocol"],
+        *receipt["migration"]["paper_topology"],
+    ]
+    for identity in identities:
+        path = root / identity["path"]
+        assert path.stat().st_size == identity["bytes"]
+        assert _sha256(path) == identity["sha256"]
+    expected_commits = {
+        "padded-adamw-1e-6": "71c58f98367eea5a15464163600a22c2005f7c76",
+        "padded-adamw-3e-6": "fd47604c588deae679e17411a6acfc0d455613f9",
+    }
+    assert {
+        row["run_id"]: row["upload_commit_oid"]
+        for row in receipt["resume"]["remote_backup_reaudits"]
+    } == expected_commits
+    for row in receipt["resume"]["remote_backup_reaudits"]:
+        backup_receipt = (
+            root / "reports/dense-no-packing/checkpoint-backup" / f"{row['run_id']}.json"
+        )
+        payload = json.loads(backup_receipt.read_text(encoding="utf-8"))
+        assert payload["status"] == "complete"
+        assert payload["commit_oid"] == row["upload_commit_oid"]
+        assert backup_receipt.stat().st_size == row["receipt_bytes"]
+        assert _sha256(backup_receipt) == row["receipt_sha256"]
