@@ -1,1 +1,66 @@
-% Generated only after the complete corrected no-packing evidence grid passes its frozen audits.
+% Development-only topology fixture. The source-bound corrected publication renderer replaces this
+% entire file after all 12 runs, 60 checkpoints, and 840 BEIR task units pass their frozen audits.
+\section{Corrected Independently Padded Replication}
+\label{sec:corrected-no-packing}
+The corrective matrix disables flattened input execution during training and every checkpoint
+reload. The primary estimand averages all four frozen rates within optimizer.
+\ResultPending{corrected 12-run retrieval, geometry, and execution-sensitivity results}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrrl}
+\toprule
+Contrast & Mean & Simultaneous 95\% CI & Decision \\
+\midrule
+Muon -- AdamW & -- & -- & pending \\
+NorMuon -- AdamW & -- & -- & pending \\
+NorMuon -- Muon & -- & -- & pending \\
+\bottomrule
+\end{tabular}
+\caption{Corrected final-stage retrieval inference over 14 decontaminated BEIR tasks. Values remain
+pending until the complete source-bound matrix passes audit.}
+\label{tab:corrected-primary}
+\end{table}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lrrrl}
+\toprule
+Frozen geometry feature & $\Delta$RMSE & Folds & Supported & Residual $\rho$ \\
+\midrule
+log segment/weight norm & -- & --/4 & pending & -- \\
+segment stable-rank fraction & -- & --/4 & pending & -- \\
+segment effective-rank fraction & -- & --/4 & pending & -- \\
+segment row-norm CV & -- & --/4 & pending & -- \\
+segment top-1\% row energy & -- & --/4 & pending & -- \\
+cumulative/weight norm & -- & --/4 & pending & -- \\
+cumulative stable-rank fraction & -- & --/4 & pending & -- \\
+segment subspace overlap to AdamW & -- & --/4 & pending & -- \\
+cumulative subspace overlap to AdamW & -- & --/4 & pending & -- \\
+\bottomrule
+\end{tabular}
+\caption{Four-fold leave-dose-index-out geometry-to-retrieval bridge. Positive $\Delta$RMSE means
+the feature lowers pooled held-out error. Values remain pending.}
+\label{tab:corrected-bridge}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Contrast & Historical & Corrected & Shift \\
+\midrule
+Muon -- AdamW & -- & -- & -- \\
+NorMuon -- AdamW & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\caption{Final-stage execution-path sensitivity. The executions are not pooled and the shift is
+not a causal packing estimate. Values remain pending.}
+\label{tab:corrected-sensitivity}
+\end{table}
+
+\paragraph{Corrected conclusion.}
+\ResultPending{the corrected all-rate contrast governs the final optimizer recommendation}

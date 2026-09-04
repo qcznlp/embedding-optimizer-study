@@ -8,6 +8,7 @@ STYLE_FILES := $(VENDOR)/acl.sty $(VENDOR)/acl_natbib.bst
 RESULT_TABLES := generated/discovery.tex generated/per-task.tex generated/common-state.tex \
 	generated/representation.tex generated/intervention.tex generated/confirmation.tex \
 	generated/diagnostics.tex generated/causal-chain.tex generated/candidate-breadth.tex \
+	generated/corrected-no-packing.tex \
 	generated/corpus-size-diagnostic-appendix.tex \
 	generated/retrieval-dynamics-extension.tex
 RESULT_FIGURES := ../reports/dense-discovery/figures/dense-training-dynamics-by-run.png \
