@@ -20,12 +20,12 @@
   "matrix": "configs/dense_no_packing_retrain.yaml",
   "objective": "Compare AdamW, Muon, and NorMuon for corrected independently padded DenseOn retriever adaptation.",
   "observation": "artifact_only_no_process_inspection",
-  "observed_at_utc": "2026-09-04T12:48:40+00:00",
+  "observed_at_utc": "2026-09-04T14:23:53+00:00",
   "pending_runs": 4,
   "planned_beir_task_units": 840,
   "planned_checkpoints": 60,
   "planned_runs": 12,
-  "resumable_checkpoints": 32,
+  "resumable_checkpoints": 34,
   "runs": [
     {
       "control_plane_warning_markers": {
@@ -182,11 +182,12 @@
         "non_finite": 0,
         "traceback": 0
       },
-      "latest_log_step": 846,
+      "latest_log_step": 1637,
       "learning_rate": 0.001,
       "optimizer": "muon",
       "resumable_checkpoint_steps": [
-        782
+        782,
+        1563
       ],
       "run_id": "padded-muon-1e-3",
       "state": "started_artifacts_present"
@@ -202,11 +203,12 @@
         "non_finite": 0,
         "traceback": 0
       },
-      "latest_log_step": 793,
+      "latest_log_step": 1581,
       "learning_rate": 0.003,
       "optimizer": "muon",
       "resumable_checkpoint_steps": [
-        782
+        782,
+        1563
       ],
       "run_id": "padded-muon-3e-3",
       "state": "started_artifacts_present"
