@@ -10,13 +10,10 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from .aggregate import DECONTAMINATED_TASK_NAMES, collect_evaluations
-from .candidate_breadth_release import (
-    RELEASE_STEP_NAMES,
-    UPSTREAM_FINALIZATION_STEP_NAMES,
-)
+from .candidate_breadth_release import UPSTREAM_FINALIZATION_STEP_NAMES
 from .config import RunConfig, load_matrix
 from .dense_completion_pipeline import CORE_STEP_NAMES
-from .geometry import _atomic_json
+from .geometry import _atomic_json, _sha256
 
 SCHEMA_VERSION = 1
 CONFIRMATORY_SEEDS = (314159, 271828, 161803)
@@ -188,6 +185,77 @@ def _ledger_progress(path: Path, expected_names: Sequence[str]) -> dict[str, Any
     }
 
 
+def _candidate_publication_progress(path: Path, repository: Path) -> dict[str, Any]:
+    """Verify the current paper-only candidate-breadth publication artifact."""
+
+    if not path.is_file():
+        return {
+            "status": "pending",
+            "complete": False,
+            "verified_records": 0,
+            "path": str(path),
+            "problems": ["publication manifest is missing"],
+        }
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        return {
+            "status": "invalid",
+            "complete": False,
+            "verified_records": 0,
+            "path": str(path),
+            "problems": [f"{type(error).__name__}: {error}"],
+        }
+
+    problems: list[str] = []
+    if payload.get("schema_version") != 1:
+        problems.append("unexpected schema version")
+    if payload.get("status") != "complete":
+        problems.append("publication status is not complete")
+
+    records: list[tuple[str, Any]] = [
+        ("protocol", payload.get("protocol")),
+        ("summary", payload.get("summary")),
+    ]
+    for group_name in ("outputs", "summary_outputs"):
+        group = payload.get(group_name)
+        if not isinstance(group, dict) or not group:
+            problems.append(f"{group_name} is missing or empty")
+            continue
+        records.extend((f"{group_name}.{name}", record) for name, record in group.items())
+
+    verified = 0
+    for label, record in records:
+        if (
+            not isinstance(record, dict)
+            or not isinstance(record.get("path"), str)
+            or not isinstance(record.get("bytes"), int)
+            or not isinstance(record.get("sha256"), str)
+        ):
+            problems.append(f"{label} source record is malformed")
+            continue
+        source = (repository / record["path"]).resolve()
+        if not source.is_file():
+            problems.append(f"{label} source is missing: {record['path']}")
+            continue
+        if source.stat().st_size != record["bytes"]:
+            problems.append(f"{label} byte count differs: {record['path']}")
+            continue
+        if _sha256(source) != record["sha256"]:
+            problems.append(f"{label} SHA-256 differs: {record['path']}")
+            continue
+        verified += 1
+
+    complete = not problems
+    return {
+        "status": "complete" if complete else "invalid",
+        "complete": complete,
+        "verified_records": verified,
+        "path": str(path),
+        "problems": problems,
+    }
+
+
 def study_evaluation_progress(repository: str | Path) -> dict[str, Any]:
     """Audit the exact Dense-only 1,750-unit BEIR design and publication controllers."""
 
@@ -247,17 +315,19 @@ def study_evaluation_progress(repository: str | Path) -> dict[str, Any]:
             root / "logs/dense-finalization-pipeline/pipeline-ledger.json",
             UPSTREAM_FINALIZATION_STEP_NAMES,
         ),
-        "candidate_breadth_release": _ledger_progress(
-            root / "logs/candidate-breadth-release/pipeline-ledger.json",
-            RELEASE_STEP_NAMES,
-        ),
+    }
+    publications = {
+        "candidate_breadth": _candidate_publication_progress(
+            root / "reports/candidate-breadth/publication_manifest.json", root
+        )
     }
     beir_complete = all(suite["complete"] for suite in suites.values())
     controllers_complete = all(controller["complete"] for controller in controllers.values())
+    publications_complete = all(item["complete"] for item in publications.values())
     return {
         "schema_version": SCHEMA_VERSION,
         "audited_at": _timestamp(),
-        "complete": beir_complete and controllers_complete,
+        "complete": beir_complete and controllers_complete and publications_complete,
         "error": None,
         "beir": {
             "complete": beir_complete,
@@ -279,9 +349,10 @@ def study_evaluation_progress(repository: str | Path) -> dict[str, Any]:
             ),
         },
         "controllers": controllers,
+        "publications": publications,
         "status_boundary": (
-            "Controller counts are progress indicators only; each canonical controller's own "
-            "content-addressed audits remain the publication authority."
+            "Controller counts are progress indicators only. Current paper publication status "
+            "is established from source-addressed manifests and their verified outputs."
         ),
     }
 

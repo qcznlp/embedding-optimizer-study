@@ -28,7 +28,7 @@ identity.
 | Confirmatory training | generated matrices and deep checkpoint audits | 3 seeds × 3 optimizers = 9 terminal runs and 45 checkpoints |
 | Confirmatory evaluation | reports/confirmatory/summary_manifest.json | 9 × 14 = 126 units; seed-by-task bootstrap and the original six-comparison Bonferroni family remain valid while only Dense rows are shown |
 | Extended Dense retrieval dynamics | reports/dense-retrieval-dynamics/summary_manifest.json | 13 runs × 5 stages = 65 rows and 910 task units: 728 isolated stage-1–4 units plus 182 formal stage-5 units; stages 1–4 are descriptive only |
-| Candidate breadth | configs/candidate_breadth_probe.json, results/candidate-breadth/matrix-receipt.json, reports/candidate-breadth/summary.json, publication_manifest.json, and logs/candidate-breadth-release/pipeline-ledger.json | 12 discovery final checkpoints × 6 nested widths = 72 run-width cells over the same 224 queries; all width-7 baselines reproduce within 1e-5; 50,000-resample source-stratified paired 95% intervals are present for loss/margin deltas; the frozen supported/partial/not-supported rule is reported without promoting this post-hoc diagnostic to confirmation; all 21 release steps and their hashed logs are complete |
+| Candidate breadth | configs/candidate_breadth_probe.json, results/candidate-breadth/matrix-receipt.json, reports/candidate-breadth/summary.json, and reports/candidate-breadth/publication_manifest.json | 12 discovery final checkpoints × 6 nested widths = 72 run-width cells over the same 224 queries; all width-7 baselines reproduce within 1e-5; 50,000-resample source-stratified paired 95% intervals are present for loss/margin deltas; the frozen supported/partial/not-supported rule is reported without promoting this post-hoc diagnostic to confirmation; the current paper include and supporting outputs are byte- and SHA-256-verified from the publication manifest |
 | Shared-start training | generated matrices and deep checkpoint audits | 3 seeds × 3 operators = 9 runs and 45 checkpoints from one frozen AdamW start |
 | Shared-start probes | reports/short-branch/summary_manifest.json | 45 query-disjoint checkpoint rows plus 46 unseen-probe jobs (45 checkpoints and one pretrained reference), with the three-seed endpoint decision |
 | Temporal shared-start mechanism | reports/short-branch/temporal_mechanism_predictors.manifest.json and reports/temporal-short-branch/summary_manifest.json | Predictor extraction and the scope-bound temporal analysis are each complete; both strict `--audit` steps rehash every declared input and output, and tail-stability outcomes are built before the temporal join |
@@ -234,8 +234,8 @@ Finally verify:
 
 - the GitHub repository is still private;
 - CI belongs to the final commit;
-- `logs/candidate-breadth-release/pipeline-ledger.json` is complete, contains exactly 21 successful
-  steps, and still hashes the complete upstream finalization ledger and frozen candidate protocol;
+- `reports/candidate-breadth/publication_manifest.json` is complete and its protocol, summary,
+  paper include, figure, and supporting tables still match their declared byte counts and SHA-256;
 - the paper, manifests, built archives, and W&B histories all identify the same Dense scope;
 - third-party notices name every adapted implementation and build input, and the modified upstream
   files retain their file-level source notice in both the tracked tree and built archives;
