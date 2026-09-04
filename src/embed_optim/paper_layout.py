@@ -44,6 +44,7 @@ APPENDIX_FLOAT_LABELS = (
     "tab:task-delta-stability",
     "tab:corrected-bridge",
     "tab:corrected-sensitivity",
+    "tab:state-operator-factorial",
 )
 FLOAT_LABELS = MAIN_TEXT_FLOAT_LABELS + APPENDIX_FLOAT_LABELS
 

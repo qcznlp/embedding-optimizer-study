@@ -24,8 +24,9 @@ Read these sources in order before acting:
    must follow `configs/dense_no_packing_publication_protocol.json`.
 6. For the prospective state-by-operator mechanism follow-up, read both
    `configs/dense_no_packing_state_operator_factorial_protocol.json` and
-   `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`, then follow
-   `docs/state-operator-factorial.md`. Do not execute it from changed source bytes.
+   `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`, plus its
+   publication and completion locks, then follow `docs/state-operator-factorial.md`. Do not execute
+   it from changed source bytes or before the main corrected completion ledger is fully complete.
 7. `docs/dense-no-packing-retrain.md` — exact corrected-matrix operational commands.
 
 If `logs/dense-no-packing-v1/recovery-supervisor-state.json` exists, read it after
@@ -141,6 +142,13 @@ preserves a resumable state; it must never promote a partial run into a complete
 For unattended coverage use `python -m embed_optim.sealed_checkpoint_supervisor`; it reuses the
 same sealed-checkpoint uploader, fails closed on invalid receipts or a changed source contract,
 and yields the final checkpoint to an active whole-run backup before applying its own fallback.
+
+The state-by-operator follow-up has its own source-bound handoff at
+`python -m embed_optim.state_operator_factorial_completion --resume`. Its ledger is under
+`logs/state-operator-factorial/completion/`. It must wait for the exact completed main corrected
+ledger, then runs the frozen calibration, six training waves, checkpoint backup, probe/BEIR
+evaluation, summary, paper-only renderer, and release gates. Do not launch any factorial command in
+parallel with that controller while its lease is held.
 
 Never inspect, read, edit, signal, stop, replace, or otherwise touch `gpu.py` or its processes. It
 is outside this repository and automatically yields to study jobs.

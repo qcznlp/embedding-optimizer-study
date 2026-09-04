@@ -45,7 +45,8 @@ is tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/is
 - Historical/corrected sensitivity implementation: [configs/dense_no_packing_sensitivity_implementation_protocol.json](configs/dense_no_packing_sensitivity_implementation_protocol.json)
 - Source-bound paper renderer: [configs/dense_no_packing_publication_protocol.json](configs/dense_no_packing_publication_protocol.json)
 - Prospective state×operator mechanism follow-up: [docs/state-operator-factorial.md](docs/state-operator-factorial.md)
-- Its frozen contracts: [scientific](configs/dense_no_packing_state_operator_factorial_protocol.json), [implementation](configs/dense_no_packing_state_operator_factorial_implementation_protocol.json)
+- Its frozen contracts: [scientific](configs/dense_no_packing_state_operator_factorial_protocol.json), [implementation](configs/dense_no_packing_state_operator_factorial_implementation_protocol.json), [paper rendering](configs/dense_no_packing_state_operator_factorial_publication_protocol.json), and [completion handoff](configs/dense_no_packing_state_operator_factorial_completion_protocol.json)
+- Resume-safe mechanism handoff: `python -m embed_optim.state_operator_factorial_completion --resume`
 - Active control-plane recovery receipt: [configs/dense_no_packing_control_plane_recovery.json](configs/dense_no_packing_control_plane_recovery.json)
 - Read-only corrected W&B audit: `python -m embed_optim.corrected_wandb_audit --allow-partial`
 

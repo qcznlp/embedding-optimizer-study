@@ -166,6 +166,9 @@ Its exact calibration, reset-continuation training, padded probe, final-BEIR, an
 implementation is independently source-bound in
 `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`; execution and
 interpretation commands are documented in `docs/state-operator-factorial.md`.
+The result-independent paper branches and automatic post-main handoff are separately bound in the
+factorial publication and completion protocols. Once its summary exists, the strict paper audit
+rejects a pending or hand-edited mechanism conclusion.
 
 This factorial decides what the mechanism section is allowed to say:
 

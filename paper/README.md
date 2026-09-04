@@ -58,9 +58,12 @@ The central narrative and evidence sequence is deliberately gated:
    explanation, rather than presenting an intrinsic Muon property as novelty;
 5. hybrid AdamW rules out parameter routing as a sufficient recipe explanation;
 6. the packed validator selects a damaging rate outside the useful Muon region, and its failed
-   width-7 reproduction exposes batch-dependent execution; and
+   width-7 reproduction exposes batch-dependent execution;
 7. the independently padded 12-run matrix decides whether the positive retrieval result survives
-   clean execution and which geometry, if any, predicts it out of dose.
+   clean execution and which geometry, if any, predicts it out of dose; and
+8. a prospective reset-state 2x2 factorial separates the carried Muon weight state, the next Muon
+   operator, and their interaction, deciding whether the final story supports state--operator
+   feedback or retains the retrieval result without a positive mechanism claim.
 
 Exact state-feedback cosines, shared-start outcomes, hybrid results, confirmatory intervals, and the
 temporal and dose/band causal-chain estimates must enter through audited macros or generated tables.
@@ -123,6 +126,11 @@ three tables in the main paper moved the endpoint to page 9 and made the primary
 The generated include is loaded in the preamble and also defines one identical all-rate finding for
 the abstract and main Conclusion. The full historical packed-selector claim is retained after the
 appendix boundary so it cannot displace the corrected verdict from the paper's headline locations.
+
+The crossed-factorial renderer is also paper-only and result blind. Its topology fixture reserves
+one abstract finding, one mechanism paragraph, one Conclusion finding, and one three-row appendix
+table. After a complete 12-run/168-BEIR-unit factorial summary appears, the strict paper audit
+requires all four locations to match the source-bound renderer and rejects the pending fixture.
 
 The source audit also fixes the post-conclusion submission boundary: the only sections between the
 eight-page endpoint and the references are `Limitations` and `Ethical Considerations`. Artifact and

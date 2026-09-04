@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "status": "prospective_state_operator_publication_lock",
+  "frozen_at_utc": "2026-09-04T04:06:35Z",
+  "purpose": "Bind the result-independent validation, decision mapping, manuscript topology, and paper-only rendering for the prospective corrected DenseOn state-by-operator factorial before any factorial output exists.",
+  "visibility_at_freeze": {
+    "historical_mechanism_outputs_visible": true,
+    "corrected_factorial_calibration_visible": false,
+    "corrected_factorial_matrices_visible": false,
+    "corrected_factorial_training_visible": false,
+    "corrected_factorial_probe_visible": false,
+    "corrected_factorial_beir_visible": false,
+    "corrected_factorial_summary_visible": false,
+    "corrected_factorial_publication_visible": false,
+    "note": "The paper positions and every sign/interval branch were fixed before the Muon source checkpoint and before any factorial outcome."
+  },
+  "parent_bindings": {
+    "scientific_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_protocol.json",
+      "bytes": 10347,
+      "sha256": "5773943a3ae9b581021a0f7b85b162c74d5c497eeca1386578ff9d2c3bcafe76"
+    },
+    "implementation_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_implementation_protocol.json",
+      "bytes": 14622,
+      "sha256": "7573a28781735782ec1ec527cfd5d70b01a97ba14e081df77a91104a3a066d97"
+    }
+  },
+  "source_bindings": {
+    "publication_renderer": {
+      "path": "src/embed_optim/state_operator_factorial_publication.py",
+      "bytes": 17828,
+      "sha256": "ea21d0e051c2f1843eddd86adb4010a206636958a03f7a7e16cce69f01a7b25e"
+    },
+    "paper_audit": {
+      "path": "src/embed_optim/paper_audit.py",
+      "bytes": 114681,
+      "sha256": "92e2b0793f9fee179e624d7da4bfbfaec8e6389cfa66566222e4f32278cfc030"
+    },
+    "manuscript_topology": {
+      "path": "paper/main.tex",
+      "bytes": 35737,
+      "sha256": "ab91442f8af5e80264f031a07b5a538c7efaff488a43290dd7ef7e47127ec4c3"
+    },
+    "paper_build": {
+      "path": "paper/Makefile",
+      "bytes": 2659,
+      "sha256": "5bc46626f586c92658b76db4cd456e54f207e041f28debdf317a9748b6ad5bc9"
+    },
+    "paper_layout_audit": {
+      "path": "src/embed_optim/paper_layout.py",
+      "bytes": 5852,
+      "sha256": "298e19924ed85d9ac78a01216721356fb8ee5e3631f6507a5e7451478dbc8897"
+    }
+  },
+  "input_contract": {
+    "summary_manifest": "Require status complete and exact scientific/implementation identities.",
+    "coverage": {
+      "training_runs": 12,
+      "beir_seed_task_scores": 168,
+      "estimand_seed_task_contrasts": 126,
+      "estimands": 3,
+      "probe_checkpoints": 60,
+      "probe_task_rows": 840
+    },
+    "inference": "Recheck every point estimate and interval as finite, every interval as ordered, and every positive/negative/inconclusive decision from the frozen zero-exclusion rule.",
+    "source_addressing": "Verify the byte count and SHA-256 of every consumed summary table before rendering."
+  },
+  "rendering_contract": {
+    "abstract": "Report all three crossed effects and the predeclared interpretation rather than leaving the mechanism conclusion at the historical spectral negative.",
+    "main_mechanism": "After the local-to-global and failed-spectral evidence, state the carried weight-state effect, averaged continuation-operator effect, and interaction with exact 95% intervals and decisions.",
+    "main_conclusion": "Propagate the same source-bound crossed result into the main Conclusion.",
+    "appendix": "Show all three co-primary estimates and decisions in one compact table and point to the exact 126 seed-task contrasts and five-stage probe tables.",
+    "result_blind_branching": {
+      "positive_interaction": "Support the closed-loop state-operator feedback account, while separately naming any supported state or operator main effects.",
+      "weight_state_only": "Attribute the practical gain primarily to the reached weight state, not a universally better local direction.",
+      "operator_only": "Attribute the supported branch-horizon contribution to the continuation transform.",
+      "weight_and_operator_without_interaction": "Report additive carried-state and operator benefits without claiming state-specific complementarity.",
+      "no_positive_effect": "Retain the retrieval result without a positive mechanism claim and disclose any supported negative estimand."
+    }
+  },
+  "expected_outputs": {
+    "paper_latex": "paper/generated/state-operator-factorial.tex",
+    "publication_manifest": "reports/state-operator-factorial/publication_manifest.json"
+  },
+  "paper_scope": "The ACL manuscript is the sole publication deliverable. Summary CSVs and manifests are audit evidence rather than independent publication artifacts.",
+  "claim_boundary": "The crossed branch can distinguish a carried state effect, an averaged continuation effect, and their interaction for one source-checkpoint pair and one 50K branch horizon. It cannot identify universal mediation of the full 500K trajectory."
+}
