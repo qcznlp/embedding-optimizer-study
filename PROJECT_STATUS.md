@@ -181,6 +181,17 @@ complete remote runs with their original commit identities intact, and returned 
 receipt is `reports/dense-no-packing/publication-layout-migration.json`; scientific completion
 remains false at 2/12 runs.
 
+A subsequent result-blind narrative audit found one remaining final-paper hazard: the source-bound
+corrected renderer would replace the result section, but its all-rate verdict would not reach the
+abstract or main Conclusion, where the historical packed-selector claim could remain visually
+dominant. The pending amendment defines one identical corrected all-rate finding for the abstract
+and Conclusion, retains the full corrected analysis in the main results section, and moves the
+complete historical selector claim string to the appendix. No corrected validation, BEIR,
+geometry, outcome, bridge, sensitivity, or publication output was visible; only 2/12 training runs
+were complete. The exact non-scientific transition is frozen in
+`configs/dense_no_packing_publication_narrative_migration.json` and must be executed only after its
+source PR merges and the current controller lease is released.
+
 The legacy training recovery state remains `matrix_running` while the current pair advances, but
 the supervisor implementation predates a code-level lease or heartbeat during its blocking matrix
 child. That state alone therefore cannot prove that a parent will remain available to launch the

@@ -115,14 +115,16 @@ The consequence is specific:
    execution audit, ending in the clean replication.
 6. **Corrected independently padded replication:** generated primary all-rate result, secondary
    selected-recipe result, five-stage dynamics, and the compact systems summary. The three-contrast
-   all-rate table stays in the main narrative; the complete nine-feature bridge and execution-path
+   all-rate table stays in the main narrative; the same source-bound all-rate finding is injected
+   into the abstract and Conclusion; the complete nine-feature bridge and execution-path
    sensitivity tables are reported in the appendix.
 7. **A trajectory effect, but not a spectral explanation:** same-state step, shared-start
    accumulation, weight/function distance, failed spectral chain, and corrected predictive bridge.
 8. **Discussion:** optimizer quality versus optimizer selection; time-to-quality versus throughput;
    geometry fingerprints versus explanations.
-9. **Conclusion:** one positive optimizer statement, one mechanism statement, and one selection
-   statement, all bounded by the corrected result.
+9. **Conclusion:** the source-bound corrected optimizer verdict first, then one mechanism statement
+   and one selection statement. The complete historical packed-selector claim is an audited
+   appendix record, not the main conclusion.
 
 Protocol inventories, source hashes, scope history, full numerical diagnostics, all learning-rate
 cells, all per-task cells, and LateOn provenance belong in the appendix or repository. They should
@@ -204,7 +206,8 @@ headline wording. Its complete provenance remains auditable. The dated authorita
 
 - Replace the outcome-neutral corrected paragraph only through the source-bound publication
   renderer after all corrected audits pass.
-- Update the abstract's last two sentences to the correct positive/inconclusive/negative branch.
+- Verify that the renderer has inserted the same all-rate Muon-versus-AdamW and
+  NorMuon-versus-AdamW finding into both the abstract and main Conclusion.
 - Confirm that main-text figures show the positive retrieval surface and the local-to-global
   paradox, not a wall of protocol tables.
 - Keep only one compact causal-chain decision table in the main paper; full estimates remain in the

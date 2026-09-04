@@ -15,6 +15,7 @@ from embed_optim.corrected_publication import (
     _load_publication_protocol,
     _validate_contrasts,
     build_conclusion,
+    build_corrected_finding,
     load_publication_evidence,
     render_latex,
     render_markdown,
@@ -161,8 +162,17 @@ def test_rendered_publication_contains_every_frozen_feature_and_claim_boundary()
     assert "Muon versus AdamW is positive" in markdown
     assert "NorMuon versus AdamW is negative" in markdown
     assert "not causal mediation" in markdown
+    finding = build_corrected_finding(evidence)
+    assert finding == (
+        "In the corrected all-rate comparison, Muon versus AdamW is positive at "
+        "+0.0200 [+0.0100, +0.0300] nDCG@10, and NorMuon versus AdamW is negative "
+        "at -0.0300 [-0.0400, -0.0200]."
+    )
     assert "Corrected Independently Padded Replication" in latex
     assert "Final-stage execution-path sensitivity" in latex
+    assert r"\newcommand{\CorrectedAbstractFinding}" in latex
+    assert r"\newcommand{\CorrectedConclusionFinding}" in latex
+    assert r"\newcommand{\CorrectedMainSection}" in latex
     assert r"\newcommand{\CorrectedGeometryBridgeTable}" in latex
     assert r"\newcommand{\CorrectedExecutionSensitivityTable}" in latex
     assert latex.index(r"\newcommand{\CorrectedGeometryBridgeTable}") < latex.index(
@@ -173,12 +183,23 @@ def test_rendered_publication_contains_every_frozen_feature_and_claim_boundary()
 
 def test_corrected_detail_tables_are_called_only_after_the_appendix_boundary() -> None:
     manuscript = (REPOSITORY / "paper/main.tex").read_text(encoding="utf-8")
+    document = manuscript.index(r"\begin{document}")
+    abstract_start = manuscript.index(r"\begin{abstract}")
+    abstract_end = manuscript.index(r"\end{abstract}")
+    main_end = manuscript.index(r"\label{paper-main-end}")
+    conclusion = manuscript.index(r"\section{Conclusion}")
     appendix = manuscript.index(r"\appendix")
     corrected_input = manuscript.index(r"\input{generated/corrected-no-packing}")
+    corrected_abstract = manuscript.index(r"\CorrectedAbstractFinding")
+    corrected_main = manuscript.index(r"\CorrectedMainSection")
+    corrected_conclusion = manuscript.index(r"\CorrectedConclusionFinding")
     bridge_call = manuscript.index(r"\CorrectedGeometryBridgeTable")
     sensitivity_call = manuscript.index(r"\CorrectedExecutionSensitivityTable")
+    historical_conclusion = manuscript.index(r"\ResultConclusion")
 
-    assert corrected_input < appendix < bridge_call < sensitivity_call
+    assert corrected_input < document < abstract_start < corrected_abstract < abstract_end
+    assert abstract_end < corrected_main < conclusion < corrected_conclusion < main_end
+    assert main_end < appendix < bridge_call < sensitivity_call < historical_conclusion
     makefile = (REPOSITORY / "paper/Makefile").read_text(encoding="utf-8")
     assert "generated/corrected-no-packing.tex" in makefile
 
@@ -269,6 +290,13 @@ def test_checked_in_publication_protocol_binds_current_sources_before_results() 
     assert layout["scientific_claims_changed"] is False
     assert layout["main_text_tables"] == ["corrected all-rate retrieval inference"]
     assert len(layout["appendix_tables"]) == 2
+    narrative = protocol["narrative_outcome_amendment"]
+    assert narrative["visibility_at_amendment"]["corrected_complete_runs"] == 2
+    assert narrative["visibility_at_amendment"]["corrected_beir_outputs_visible"] is False
+    assert narrative["visibility_at_amendment"]["corrected_outcome_outputs_visible"] is False
+    assert narrative["visibility_at_amendment"]["corrected_publication_outputs_visible"] is False
+    assert narrative["historical_selector_location"] == "appendix"
+    assert narrative["scientific_claims_changed"] is False
     assert protocol["expected_outputs"] == {
         "standalone_markdown": ("reports/dense-no-packing-publication/corrected_dense_results.md"),
         "summary_manifest": "reports/dense-no-packing-publication/summary_manifest.json",
@@ -294,6 +322,26 @@ def test_publication_layout_migration_is_exact_and_non_scientific() -> None:
     )
     assert migration["to_contract_sha256"] == (
         "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67"
+    )
+    assert migration["scientific_contract_changed"] is False
+    assert migration["allowed_changed_sources"] == [
+        "configs/dense_no_packing_publication_protocol.json"
+    ]
+    assert len(migration["required_unchanged_sources"]) == 9
+
+
+def test_publication_narrative_migration_is_exact_and_non_scientific() -> None:
+    migration = json.loads(
+        (REPOSITORY / "configs/dense_no_packing_publication_narrative_migration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert migration["from_contract_sha256"] == (
+        "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67"
+    )
+    assert migration["to_contract_sha256"] == (
+        "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789"
     )
     assert migration["scientific_contract_changed"] is False
     assert migration["allowed_changed_sources"] == [

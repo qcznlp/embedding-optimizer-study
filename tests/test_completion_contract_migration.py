@@ -193,10 +193,21 @@ def test_checked_in_publication_layout_migration_receipt_binds_exact_transition(
         "corrected_sensitivity_page": 11,
         "overfull_boxes": 0,
     }
+    assert receipt["migration"]["paper_topology"] == [
+        {
+            "path": "paper/main.tex",
+            "bytes": 34196,
+            "sha256": "8577007323e823f53ec674e6f78a3f6227a72f85e2566ba7cf91825a67603cd5",
+        },
+        {
+            "path": "paper/generated/corrected-no-packing.tex",
+            "bytes": 2622,
+            "sha256": "35e18a3c586d573ccbd7f8b67da866b5fb4d335494e04a24e3897facf85ddc39",
+        },
+    ]
     identities = [
         receipt["migration"]["implementation"],
         receipt["migration"]["protocol"],
-        *receipt["migration"]["paper_topology"],
     ]
     for identity in identities:
         path = root / identity["path"]

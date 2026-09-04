@@ -120,6 +120,9 @@ execution-sensitivity table before any corrected outcome exists. Only the primar
 is invoked in the main narrative; the complete bridge and sensitivity tables are invoked after
 `\appendix`. This placement was fixed after a result-blind topology build showed that putting all
 three tables in the main paper moved the endpoint to page 9 and made the primary table over-wide.
+The generated include is loaded in the preamble and also defines one identical all-rate finding for
+the abstract and main Conclusion. The full historical packed-selector claim is retained after the
+appendix boundary so it cannot displace the corrected verdict from the paper's headline locations.
 
 The source audit also fixes the post-conclusion submission boundary: the only sections between the
 eight-page endpoint and the references are `Limitations` and `Ethical Considerations`. Artifact and

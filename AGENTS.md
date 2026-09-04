@@ -75,6 +75,16 @@ controller releases its lease, migrate with
 configs/dense_no_packing_publication_layout_migration.json`, then resume the ordinary controller.
 Do not use that migration for any other source drift.
 
+A second result-blind narrative audit found that the frozen corrected renderer would update its
+results section but not the abstract or main Conclusion. The exact publication-only transition is
+frozen in `configs/dense_no_packing_publication_narrative_migration.json`: the same primary
+all-rate finding is rendered into the abstract and main Conclusion, while the full historical
+packed-selector claim moves to the appendix. After this change reaches the experiment checkout and
+the controller releases its lease, migrate with
+`/usr/bin/python3 -m embed_optim.completion_contract_migration --protocol
+configs/dense_no_packing_publication_narrative_migration.json`, then resume the ordinary controller
+with `/usr/bin/python3`. Do not use that migration for any other source drift.
+
 If `logs/dense-no-packing-sealed-backup/state.json` exists, it is the independent per-checkpoint
 durability state. Its supervisor only reads training artifacts and uses CPU/network resources. Do
 not launch a duplicate while `logs/dense-no-packing-sealed-backup/supervisor.lease` is held. A
