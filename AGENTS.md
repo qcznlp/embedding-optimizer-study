@@ -39,6 +39,15 @@ chain. Do not launch a competing corrected finalizer while its controller lease 
 only with `python -m embed_optim.corrected_completion_pipeline --resume`; the exact operational
 source/protocol/command contract must still match.
 
+The owner-directed paper-only amendment caused the pre-amendment controller to fail closed at
+2026-09-04 00:07 UTC. Its sole authorized contract transition is frozen in
+`configs/dense_no_packing_completion_contract_migration.json`. If the ledger still has the exact
+source contract named there and the controller lease is free, run
+`python -m embed_optim.completion_contract_migration` once, then resume the controller normally.
+The migration archives the original ledger byte-for-byte and verifies that the matrix, execution
+protocol, controller, arguments, and command order did not change. Never generalize this path to
+accept arbitrary contract drift.
+
 If `logs/dense-no-packing-sealed-backup/state.json` exists, it is the independent per-checkpoint
 durability state. Its supervisor only reads training artifacts and uses CPU/network resources. Do
 not launch a duplicate while `logs/dense-no-packing-sealed-backup/supervisor.lease` is held. A

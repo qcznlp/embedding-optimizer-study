@@ -183,6 +183,21 @@ from merely partial checkpoints. Resume an interrupted controller only with `--r
 contract mismatch fails closed. This is an operational handoff controller, not a new scientific
 protocol, and it does not alter the frozen training, evaluation, or analysis definitions.
 
+The owner-directed removal of the parallel Markdown article changed only publication-bound source
+hashes and therefore intentionally stopped the already running controller. The one-time transition
+is frozen in `configs/dense_no_packing_completion_contract_migration.json`. After confirming that
+the controller lease is free, migrate and resume with:
+
+```bash
+python -m embed_optim.completion_contract_migration
+python -m embed_optim.corrected_completion_pipeline --resume
+```
+
+The first command accepts only the exact old and new contract hashes, unchanged controller,
+matrix, execution protocol, arguments, and step order, plus the six explicit non-scientific
+paper-only amendments. It archives the original ledger byte-for-byte before updating the live
+binding. It must not be reused for later source drift.
+
 ## Corrected weight-space analysis
 
 The weight-space definitions and retrieval-bridge scientific plan were frozen before the first

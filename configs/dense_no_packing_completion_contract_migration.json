@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_completion_contract_migration",
+  "created_at_utc": "2026-09-04T01:07:39Z",
+  "reason": "Resume the operational completion controller after the owner retired the parallel Markdown article. The completed checkpoint backups and all scientific training, evaluation, analysis, and inference definitions are preserved.",
+  "from_contract_sha256": "55fdd9d6eb159d7784bbb4f9c53e1f0baba99440ab44203e2bcdb3888d3a1e05",
+  "to_contract_sha256": "8687929d22adf4a6a07593b5aa67669f816aef0b902f2d035522802fd94b4c96",
+  "scientific_contract_changed": false,
+  "required_unchanged_sources": [
+    "src/embed_optim/corrected_completion_pipeline.py",
+    "configs/dense_no_packing_retrain.yaml",
+    "configs/dense_no_packing_execution_protocol.json"
+  ],
+  "allowed_changed_sources": [
+    "configs/dense_no_packing_evaluation_protocol.json",
+    "configs/dense_no_packing_analysis_protocol.json",
+    "configs/dense_no_packing_outcome_protocol.json",
+    "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+    "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+    "configs/dense_no_packing_publication_protocol.json"
+  ],
+  "amendment_assertions": [
+    {
+      "path": "configs/dense_no_packing_evaluation_protocol.json",
+      "field": "publication_only_amendment.scientific_contract_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "field": "publication_only_amendment.scientific_contract_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "field": "publication_only_amendment.estimands_or_thresholds_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+      "field": "paper_only_amendment.scientific_or_executable_behavior_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+      "field": "paper_only_amendment.scientific_or_executable_behavior_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "field": "paper_only_amendment.scientific_claims_changed",
+      "expected": false
+    }
+  ],
+  "archive_basename": "pipeline-ledger.pre-paper-only-contract-55fdd9d6.json",
+  "claim_boundary": "This one-time migration changes only the operational ledger binding needed to continue the already running completion handoff. It does not grandfather arbitrary source drift, alter completed backup receipts, or change a scientific estimand, threshold, training run, checkpoint, evaluation, or analysis definition."
+}
