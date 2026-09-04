@@ -15,6 +15,7 @@
 
 \input{results}
 \input{generated/causal-chain}
+\input{generated/corrected-no-packing}
 
 \title{Better Retrievers from Worse First Steps:\\
 What Muon Changes in Dense-Retriever Training}
@@ -39,8 +40,9 @@ Muon's familiar spectral flattening does not explain this emergence: temporal pr
 controlled spectral transplants, and held-run retrieval prediction all fail their frozen tests. We
 also find that a packed validator makes embeddings depend on batch composition and selects a
 damaging ten-times larger Muon rate. A fresh independently padded 12-run matrix is the final
-adjudicator. Together, the results recast Muon's promise for retrieval as a question about the
-sequence of states and gradients produced by repeated matrix-conditioned updates.
+adjudicator. \CorrectedAbstractFinding{} Together, the results recast Muon's promise for retrieval
+as a question about the sequence of states and gradients produced by repeated matrix-conditioned
+updates.
 \end{abstract}
 
 \section{Introduction}
@@ -298,7 +300,7 @@ comparison averages all four predeclared rates; a clean, independently padded va
 secondary recipe comparison. Five-stage results distinguish a stable optimizer effect from a
 single-checkpoint accident.
 
-\input{generated/corrected-no-packing}
+\CorrectedMainSection
 
 \section{A Trajectory Effect, but Not a Spectral Explanation}
 
@@ -388,6 +390,9 @@ visually distinctive statistic must be the cause.
 
 \section{Conclusion}
 
+\paragraph{Corrected replication.}
+\CorrectedConclusionFinding
+
 The central empirical result is that Muon and NorMuon reach better DenseOn retrievers across a
 coherent learning-rate region, with gains on 10 and 11 of 14 tasks. The central scientific result is
 the local-to-global reversal behind that gain: AdamW takes the better norm-matched immediate step,
@@ -401,12 +406,10 @@ is that explaining a retrieval optimizer requires following its effects from loc
 evolving states to corpus ranking.
 
 \paragraph{Historical selector evidence.}
-The generated result below concerns the recipe chosen by the packed validator, not the full
+The validation-frozen result concerns the recipe chosen by the packed validator, not the full
 optimizer surface. Its negative three-seed contrast coexists with the positive Muon region because
-the selector chose a ten-times larger, batch-dependent rate. The corrected padded matrix adjudicates
-the optimizer claim.
-
-\ResultConclusion
+the selector chose a ten-times larger, batch-dependent rate. Appendix~\ref{sec:historical-selector-record}
+reports the complete audited claim string.
 
 \CandidateBreadthConclusion
 
@@ -478,6 +481,14 @@ versus corrected execution readout; neither is used to select a favorable optimi
 \CorrectedExecutionSensitivityTable
 
 \FloatBarrier
+
+\section{Audited Historical Selector Record}
+\label{sec:historical-selector-record}
+
+The following generated claim records the historical validation-selected comparison and its frozen
+mechanism boundaries. It is retained in full for audit and is not the corrected optimizer verdict.
+
+\ResultConclusion
 
 \CandidateBreadthFigure
 

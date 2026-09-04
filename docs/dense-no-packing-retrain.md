@@ -249,6 +249,22 @@ This migration was executed once at 02:36 UTC on 2026-09-04. The controller retu
 `reports/dense-no-packing/publication-layout-migration.json`. Do not reuse the migration for a
 future source change.
 
+A second result-blind narrative audit found that the final renderer updated the corrected results
+section but did not propagate the corrected all-rate verdict into either the abstract or the main
+Conclusion. The exact publication-only transition is frozen in
+`configs/dense_no_packing_publication_narrative_migration.json`. It defines one source-bound
+all-rate finding used in both locations and moves the full historical packed-selector claim to the
+appendix. After the source change is merged and the controller lease is free, run only:
+
+```bash
+/usr/bin/python3 -m embed_optim.completion_contract_migration \
+  --protocol configs/dense_no_packing_publication_narrative_migration.json
+/usr/bin/python3 -m embed_optim.corrected_completion_pipeline --resume
+```
+
+This migration preserves every training, evaluation, analysis, and inferential setting and may not
+be reused for future source drift.
+
 ## Corrected weight-space analysis
 
 The weight-space definitions and retrieval-bridge scientific plan were frozen before the first
@@ -340,7 +356,9 @@ The renderer verifies every parent protocol and every consumed file by byte coun
 then writes the standalone corrected evidence report, writes
 `paper/generated/corrected-no-packing.tex`, and emits its own source-addressed manifest. It
 publishes every frozen contrast and all nine geometry features, including null or adverse results;
-do not hand edit the generated sections. The complete rendering contract was frozen before any
+the same primary all-rate finding also enters the abstract and main Conclusion automatically, while
+the complete historical packed-selector claim remains in the appendix. Do not hand edit the
+generated sections. The complete rendering contract was frozen before any
 corrected validation, BEIR, geometry, outcome, bridge, or sensitivity output existed in
 `configs/dense_no_packing_publication_protocol.json`.
 

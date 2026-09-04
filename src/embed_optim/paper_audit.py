@@ -103,6 +103,9 @@ PAPER_MAIN_REQUIRED_ONCE = (
     rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}",
     r"\input{generated/candidate-breadth}",
     r"\input{generated/corrected-no-packing}",
+    r"\CorrectedAbstractFinding",
+    r"\CorrectedMainSection",
+    r"\CorrectedConclusionFinding",
     r"\CausalChainSummaryTable",
     r"\CausalChainDiagnostics",
     r"\section{Conclusion}",
@@ -2119,7 +2122,10 @@ def _paper_main_topology_complete(root: Path) -> bool:
     if any(main_text.count(token) != 1 for token in PAPER_MAIN_REQUIRED_ONCE):
         return False
     conclusion = main_text.find(r"\section{Conclusion}")
-    rendered_conclusion = main_text.find(r"\ResultConclusion")
+    corrected_abstract = main_text.find(r"\CorrectedAbstractFinding")
+    corrected_main = main_text.find(r"\CorrectedMainSection")
+    corrected_conclusion = main_text.find(r"\CorrectedConclusionFinding")
+    historical_conclusion = main_text.find(r"\ResultConclusion")
     main_end_label = main_text.find(rf"\label{{{MAIN_END_LABEL}}}")
     limitations = main_text.find(r"\section{Limitations}")
     ethics = main_text.find(r"\section{Ethical Considerations}")
@@ -2130,6 +2136,7 @@ def _paper_main_topology_complete(root: Path) -> bool:
         rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}"
     )
     corrected_input = r"\input{generated/corrected-no-packing}"
+    corrected_input_position = main_text.find(corrected_input)
     corrected_bridge = r"\CorrectedGeometryBridgeTable"
     corrected_sensitivity = r"\CorrectedExecutionSensitivityTable"
     main_inputs = (r"\input{results}", *PAPER_MAIN_GENERATED_INPUTS)
@@ -2142,26 +2149,31 @@ def _paper_main_topology_complete(root: Path) -> bool:
     ]
     return (
         0
-        <= conclusion
-        < rendered_conclusion
+        <= corrected_input_position
+        < corrected_abstract
+        < corrected_main
+        < conclusion
+        < corrected_conclusion
         < main_end_label
         < limitations
         < ethics
         < bibliography
         < appendix
         < artifact
+        < main_text.find(corrected_bridge)
+        < main_text.find(corrected_sensitivity)
+        < historical_conclusion
         and exempt_section_positions == [limitations, ethics]
         and _LATEX_FILE_INPUT_COMMAND.search(exempt_region) is None
         and all(main_text.find(token) < main_end_label for token in main_inputs)
         and all(
             main_text.find(token) < main_end_label for token in PAPER_DEFINITION_GENERATED_INPUTS
         )
-        and main_text.find(corrected_input) < main_end_label
+        and main_text.find(corrected_input) == corrected_input_position
         and main_text.find(r"\CausalChainSummaryTable") < main_end_label
         and all(main_text.find(token) > appendix for token in appendix_inputs)
         and main_text.find(r"\CandidateBreadthFigure") > appendix
         and main_text.find(r"\CausalChainDiagnostics") > appendix
-        and appendix < main_text.find(corrected_bridge) < main_text.find(corrected_sensitivity)
     )
 
 
