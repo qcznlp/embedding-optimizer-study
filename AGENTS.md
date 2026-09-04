@@ -33,6 +33,15 @@ If `logs/dense-no-packing-v1/recovery-supervisor-state.json` exists, read it aft
 `configs/dense_no_packing_control_plane_recovery.json`; do not launch a competing matrix while its
 phase is `waiting_for_adopted_training` or `matrix_running`.
 
+The legacy recovery state has no code-level heartbeat while its blocking matrix child runs. The
+artifact-only next-pair guard is frozen in
+`configs/dense_no_packing_matrix_handoff_guard.json` and publishes
+`logs/dense-no-packing-handoff-guard/state.json`. It waits for both current AdamW runs to become
+deeply complete, then gives the existing matrix five minutes to create a declared Muon successor
+log or output. It yields if any successor artifact appears and invokes the unchanged recovery
+supervisor only after the full absence grace and a final race check. Do not launch a second guard
+while its lease is held, and never replace its artifact gates with process inspection.
+
 If `logs/dense-no-packing-finalization/pipeline-ledger.json` exists, it is the atomic handoff state
 for incremental corrected checkpoint backup and the post-training evaluation/analysis/publication
 chain. Do not launch a competing corrected finalizer while its controller lease is held. Resume it

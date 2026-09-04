@@ -55,6 +55,7 @@ embed-optim-dense-no-packing-progress = "embed_optim.corrected_progress:main"
 embed-optim-backup-dense-no-packing = "embed_optim.corrected_checkpoint_backup:main"
 embed-optim-migrate-dense-no-packing-completion = "embed_optim.completion_contract_migration:main"
 embed-optim-harden-dense-no-packing-backup = "embed_optim.completion_backup_contract_migration:main"
+embed-optim-guard-dense-no-packing-handoff = "embed_optim.matrix_handoff_guard:main"
 embed-optim-backup-sealed-checkpoint = "embed_optim.incremental_checkpoint_backup:main"
 embed-optim-supervise-sealed-checkpoint-backup = "embed_optim.sealed_checkpoint_supervisor:main"
 embed-optim-analyze-dense-no-packing-geometry = "embed_optim.corrected_geometry_matrix:main"
@@ -176,6 +177,7 @@ where = ["src"]
   "configs/dense_no_packing_execution_protocol.json",
   "configs/dense_no_packing_completion_contract_migration.json",
   "configs/dense_no_packing_backup_provenance_migration.json",
+  "configs/dense_no_packing_matrix_handoff_guard.json",
   "configs/dense_no_packing_evaluation_protocol.json",
   "configs/dense_no_packing_analysis_protocol.json",
   "configs/dense_no_packing_state_operator_factorial_protocol.json",

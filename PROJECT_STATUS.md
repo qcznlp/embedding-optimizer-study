@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 01:33 UTC
+Last updated: 2026-09-04 01:43 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -31,6 +31,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Candidate addendum release | Complete | 21/21 current-source steps passed |
 | Corrected Dense no-packing replication | Formal training active in two four-GPU pools | 2/12 complete; second AdamW pair at steps 2997/2967; 16/60 resumable checkpoints |
 | Corrected completion handoff | Detached controller restored after two audited migrations | Waiting for training under contract `25eefbe5...`; 2/2 full-run backups re-audited with upload commit IDs intact; no failed step |
+| Corrected next-pair handoff | Artifact-only guard locked before current-pair completion | Wait for both current runs, then yield on any Muon successor artifact or take over only after a five-minute absence grace |
 | Sealed-checkpoint durability | Detached CPU/network supervisor active | 16/60 checkpoints covered; 44 not yet generated; 0 cycle failures |
 | Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
 | Corrected W&B provenance | Read-only partial audit complete | 4/12 visible: 2 finished, 2 running, 0 identity/config/state problems |
@@ -158,6 +159,17 @@ re-audited both complete runs with the original commit IDs intact, then returned
 `waiting_for_training` at 01:32 UTC with its lease held and no failed step. The distributable
 receipt is `reports/dense-no-packing/backup-provenance-migration.json`. Training and the independent
 sealed backup supervisor were unaffected throughout.
+
+The legacy training recovery state remains `matrix_running` while the current pair advances, but
+the supervisor implementation predates a code-level lease or heartbeat during its blocking matrix
+child. That state alone therefore cannot prove that a parent will remain available to launch the
+next pair. Before either current run reached checkpoint 3126, an artifact-only handoff guard was
+frozen in `configs/dense_no_packing_matrix_handoff_guard.json`. It never inspects or signals a
+process: after both current runs pass deep completion, it waits five minutes for the declared first
+Muon pair's log/output artifacts. It yields immediately if the existing matrix advances, and only
+invokes the unchanged recovery supervisor after the full absence grace and a final race check. Its
+source, matrix, supervisor, GPU pools, ports, and timing are content-bound; live state is under
+`logs/dense-no-packing-handoff-guard/`.
 
 Because the experiment host may be shut down before an active run reaches all five stages, the two
 sealed step-782 checkpoints from the second AdamW pair were independently uploaded at 21:17--21:18
