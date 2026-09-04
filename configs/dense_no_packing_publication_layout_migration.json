@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_publication_layout_contract_migration",
+  "created_at_utc": "2026-09-04T02:16:00Z",
+  "reason": "Adopt the result-blind paper topology preflight: retain the corrected all-rate retrieval answer in the main narrative, move the complete geometry-bridge and execution-sensitivity tables to the appendix, and preserve every frozen scientific input, row, estimand, interval, support rule, and conclusion branch.",
+  "from_contract_sha256": "25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13",
+  "to_contract_sha256": "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67",
+  "scientific_contract_changed": false,
+  "required_unchanged_sources": [
+    "src/embed_optim/corrected_completion_pipeline.py",
+    "src/embed_optim/corrected_checkpoint_backup.py",
+    "configs/dense_no_packing_retrain.yaml",
+    "configs/dense_no_packing_execution_protocol.json",
+    "configs/dense_no_packing_evaluation_protocol.json",
+    "configs/dense_no_packing_analysis_protocol.json",
+    "configs/dense_no_packing_outcome_protocol.json",
+    "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+    "configs/dense_no_packing_sensitivity_implementation_protocol.json"
+  ],
+  "allowed_changed_sources": [
+    "configs/dense_no_packing_publication_protocol.json"
+  ],
+  "amendment_assertions": [
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "field": "layout_only_amendment.scientific_claims_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "field": "layout_only_amendment.visibility_at_amendment.corrected_beir_outputs_visible",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "field": "layout_only_amendment.visibility_at_amendment.corrected_geometry_outputs_visible",
+      "expected": false
+    }
+  ],
+  "archive_basename": "pipeline-ledger.pre-publication-layout-25eefbe5.json",
+  "claim_boundary": "This one-time operational migration changes only the final manuscript placement and typography of already-required corrected result rows. It does not alter a training run, checkpoint, evaluation, geometry feature, statistical contrast, uncertainty procedure, decision threshold, or claim boundary."
+}
