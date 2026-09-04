@@ -188,9 +188,16 @@ dominant. The pending amendment defines one identical corrected all-rate finding
 and Conclusion, retains the full corrected analysis in the main results section, and moves the
 complete historical selector claim string to the appendix. No corrected validation, BEIR,
 geometry, outcome, bridge, sensitivity, or publication output was visible; only 2/12 training runs
-were complete. The exact non-scientific transition is frozen in
-`configs/dense_no_packing_publication_narrative_migration.json` and must be executed only after its
-source PR merges and the current controller lease is released.
+were complete. PR [#72](https://github.com/qcznlp/embedding-optimizer-study/pull/72) passed CI and
+merged. The exact non-scientific transition in
+`configs/dense_no_packing_publication_narrative_migration.json` was executed at 03:12 UTC,
+archiving the prior 16,250-byte ledger under SHA-256
+`7c55a3bf6dc0d0f47920f4f81d6d881859426f680ccbf6dfe90612ad2ebeb0c4` and moving the completion
+contract from `abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67` to
+`4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789`. The controller resumed
+under `/usr/bin/python3`, re-audited the two completed checkpoint uploads without changing their
+commit identities, and returned to `waiting_for_training` with its lease held and no failed step.
+The distributable receipt is `reports/dense-no-packing/publication-narrative-migration.json`.
 
 The legacy training recovery state remains `matrix_running` while the current pair advances, but
 the supervisor implementation predates a code-level lease or heartbeat during its blocking matrix

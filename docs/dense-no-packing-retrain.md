@@ -263,7 +263,9 @@ appendix. After the source change is merged and the controller lease is free, ru
 ```
 
 This migration preserves every training, evaluation, analysis, and inferential setting and may not
-be reused for future source drift.
+be reused for future source drift. It was executed once at 03:12 UTC on 2026-09-04; the controller
+returned to `waiting_for_training` with its lease held and no failed step. The distributable receipt
+is `reports/dense-no-packing/publication-narrative-migration.json`.
 
 ## Corrected weight-space analysis
 

@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "scope": "corrected_dense_no_packing_publication_narrative_contract_migration",
+  "status": "complete",
+  "complete": true,
+  "scientific_completion": false,
+  "preflight": {
+    "performed_before_corrected_results": true,
+    "corrected_complete_runs": 2,
+    "corrected_validation_outputs_visible": false,
+    "corrected_beir_outputs_visible": false,
+    "corrected_geometry_outputs_visible": false,
+    "corrected_outcome_outputs_visible": false,
+    "corrected_bridge_outputs_visible": false,
+    "corrected_sensitivity_outputs_visible": false,
+    "corrected_publication_outputs_visible": false,
+    "finding": "The frozen renderer updated the corrected results section but did not propagate its all-rate verdict into the abstract or main Conclusion, where the full historical packed-selector claim remained visually dominant.",
+    "resolution": "Render one identical source-bound all-rate finding into the abstract and main Conclusion, retain the corrected primary table and full corrected analysis in the main narrative, and move the complete historical packed-selector claim to the appendix."
+  },
+  "migration": {
+    "executed_at_utc": "2026-09-04T03:12:00Z",
+    "from_contract_sha256": "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67",
+    "to_contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+    "scientific_contract_changed": false,
+    "implementation": {
+      "path": "src/embed_optim/completion_contract_migration.py",
+      "bytes": 10130,
+      "sha256": "83bc97699336265efe26b258a19eb8604a9d41ee4a334909ea0702f5d364e76c"
+    },
+    "protocol": {
+      "path": "configs/dense_no_packing_publication_narrative_migration.json",
+      "bytes": 2860,
+      "sha256": "8861ec5e5e4ba4b749233a59aaf4ee5da86a60bcbc7f4b8d93e9edfb954b4ef2"
+    },
+    "source_ledger_archive": {
+      "host_path": "logs/dense-no-packing-finalization/pipeline-ledger.pre-publication-narrative-abb5973a.json",
+      "bytes": 16250,
+      "sha256": "7c55a3bf6dc0d0f47920f4f81d6d881859426f680ccbf6dfe90612ad2ebeb0c4"
+    },
+    "paper_topology": [
+      {
+        "path": "paper/main.tex",
+        "bytes": 34624,
+        "sha256": "b24e00c33224c84cf5368c4e73ebdf0b587821789818216aa373f0a28d8f6643"
+      },
+      {
+        "path": "paper/generated/corrected-no-packing.tex",
+        "bytes": 2823,
+        "sha256": "889f30d1df158cad94a3ff9d6082a39e3c9f83040dada52eb234059e0456aecd"
+      }
+    ]
+  },
+  "resume": {
+    "resumed_at_utc": "2026-09-04T03:12:07Z",
+    "verified_at_utc": "2026-09-04T03:14:11Z",
+    "interpreter": "/usr/bin/python3",
+    "controller_lease": "held",
+    "status": "waiting_for_training",
+    "failed_step": null,
+    "training_runs_complete": 2,
+    "training_runs_expected": 12,
+    "remote_backup_reaudits": [
+      {
+        "run_id": "padded-adamw-1e-6",
+        "audited_at_utc": "2026-09-04T03:12:09.206314Z",
+        "upload_commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+        "point_in_time_receipt_bytes": 861,
+        "point_in_time_receipt_sha256": "8950da3846384a3821342b690d07bdff4098ec293b0ef93256b45f184e890a9b"
+      },
+      {
+        "run_id": "padded-adamw-3e-6",
+        "audited_at_utc": "2026-09-04T03:12:10.954823Z",
+        "upload_commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+        "point_in_time_receipt_bytes": 861,
+        "point_in_time_receipt_sha256": "939115d82e56e98a322950d22529f3d5da15c537a5ec47fc95686b83caa186ff"
+      }
+    ]
+  },
+  "layout_verification": {
+    "main_end_page": 8,
+    "corrected_primary_page": 6,
+    "corrected_bridge_page": 10,
+    "corrected_sensitivity_page": 10,
+    "overfull_boxes": 0
+  },
+  "claim_boundary": "This result-blind operational amendment changes only where already-required corrected and historical claims appear in the manuscript. It does not change a training run, checkpoint, evaluation, geometry feature, estimand, interval, support rule, decision threshold, conclusion branch, or standalone evidence output."
+}

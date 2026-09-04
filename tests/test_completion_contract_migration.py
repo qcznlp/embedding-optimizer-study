@@ -230,3 +230,58 @@ def test_checked_in_publication_layout_migration_receipt_binds_exact_transition(
         assert payload["commit_oid"] == row["upload_commit_oid"]
         assert backup_receipt.stat().st_size == row["receipt_bytes"]
         assert _sha256(backup_receipt) == row["receipt_sha256"]
+
+
+def test_checked_in_publication_narrative_migration_receipt_binds_exact_transition():
+    root = Path.cwd()
+    receipt = json.loads(
+        (root / "reports/dense-no-packing/publication-narrative-migration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert receipt["complete"] is True
+    assert receipt["scientific_completion"] is False
+    assert receipt["preflight"]["performed_before_corrected_results"] is True
+    assert receipt["preflight"]["corrected_complete_runs"] == 2
+    assert receipt["migration"]["scientific_contract_changed"] is False
+    assert receipt["migration"]["from_contract_sha256"] == (
+        "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67"
+    )
+    assert receipt["migration"]["to_contract_sha256"] == (
+        "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789"
+    )
+    assert receipt["resume"]["controller_lease"] == "held"
+    assert receipt["resume"]["status"] == "waiting_for_training"
+    assert receipt["resume"]["failed_step"] is None
+    assert receipt["layout_verification"] == {
+        "main_end_page": 8,
+        "corrected_primary_page": 6,
+        "corrected_bridge_page": 10,
+        "corrected_sensitivity_page": 10,
+        "overfull_boxes": 0,
+    }
+    assert receipt["migration"]["paper_topology"] == [
+        {
+            "path": "paper/main.tex",
+            "bytes": 34624,
+            "sha256": "b24e00c33224c84cf5368c4e73ebdf0b587821789818216aa373f0a28d8f6643",
+        },
+        {
+            "path": "paper/generated/corrected-no-packing.tex",
+            "bytes": 2823,
+            "sha256": "889f30d1df158cad94a3ff9d6082a39e3c9f83040dada52eb234059e0456aecd",
+        },
+    ]
+    for name in ("implementation", "protocol"):
+        identity = receipt["migration"][name]
+        path = root / identity["path"]
+        assert path.stat().st_size == identity["bytes"]
+        assert _sha256(path) == identity["sha256"]
+    assert {
+        row["run_id"]: row["upload_commit_oid"]
+        for row in receipt["resume"]["remote_backup_reaudits"]
+    } == {
+        "padded-adamw-1e-6": "71c58f98367eea5a15464163600a22c2005f7c76",
+        "padded-adamw-3e-6": "fd47604c588deae679e17411a6acfc0d455613f9",
+    }
