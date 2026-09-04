@@ -160,6 +160,27 @@ re-audited both complete runs with the original commit IDs intact, then returned
 receipt is `reports/dense-no-packing/backup-provenance-migration.json`. Training and the independent
 sealed backup supervisor were unaffected throughout.
 
+Before any corrected validation, BEIR, geometry, bridge, sensitivity, or publication output
+existed, a renderer-shaped paper fixture showed that placing all corrected tables in the main text
+would move the NAACL endpoint from page 8 to page 9 and make the primary table over-wide. PR
+[#70](https://github.com/qcznlp/embedding-optimizer-study/pull/70) fixed the result-blind topology:
+the three-contrast all-rate retrieval answer remains in the main narrative, while the complete
+nine-feature geometry bridge and execution-path sensitivity tables are invoked in the appendix.
+The final fixture places the primary table on page 6, ends the main paper on page 8, places both
+detail tables on page 11, and has no overfull boxes. No scientific input, row, estimand, interval,
+support rule, threshold, conclusion branch, or standalone evidence output changed.
+
+That publication-only source transition was frozen in
+`configs/dense_no_packing_publication_layout_migration.json` and executed at 02:36 UTC, moving the
+completion contract from `25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13` to
+`abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67`. Both identities are recorded
+in the migration protocol and receipt. The controller resumed under
+`/usr/bin/python3`, re-audited both
+complete remote runs with their original commit identities intact, and returned to
+`waiting_for_training` at 02:38 UTC with its lease held and no failed step. The distributable
+receipt is `reports/dense-no-packing/publication-layout-migration.json`; scientific completion
+remains false at 2/12 runs.
+
 The legacy training recovery state remains `matrix_running` while the current pair advances, but
 the supervisor implementation predates a code-level lease or heartbeat during its blocking matrix
 child. That state alone therefore cannot prove that a parent will remain available to launch the
