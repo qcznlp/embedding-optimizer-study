@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 03:30 UTC
+Last updated: 2026-09-04 03:47 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -33,7 +33,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | Corrected completion handoff | Detached controller active after four audited migrations | Waiting for training under contract `4152531e...`; 4/4 complete runs uploaded and remotely audited; no failed step |
 | Corrected next-pair handoff | Artifact-only guard completed without takeover | Existing matrix launched both Muon successors; guard yielded with `takeover_launched=false` |
 | Sealed-checkpoint durability | Detached CPU/network supervisor active | 20/60 checkpoints covered; 40 not yet generated; 0 cycle failures |
-| Corrected weight-space | Incremental frozen analysis active | 2/12 runs, 10/60 stages; 12 source-bound files remotely verified |
+| Corrected weight-space | Incremental frozen analysis active | 4/12 runs, 20/60 stages; 24 source-bound files remotely digest-verified |
 | Corrected W&B provenance | Read-only partial audit complete | 6/12 visible: 4 finished, 2 running, 0 identity/config/state problems |
 | Public checkpoint backup | Historical archive complete; corrected archive incremental | Historical: 5,546 files, 416,844,858,513 bytes; all 4 complete corrected runs remotely verified; stage receipts cover 20/60 checkpoints |
 | Public result backup | Complete including candidate addendum | 49 addendum files, 24,378,651 bytes |
@@ -258,17 +258,18 @@ the final stage yields to the existing whole-run controller before the checkpoin
 The live state and exclusive lease are under `logs/dense-no-packing-sealed-backup/`; none of these
 durability states constitute scientific completion.
 
-The frozen corrected geometry implementation has also completed all five stages for both finished
-AdamW runs. Each stage contains exactly 88 hidden-matrix records; every recorded scalar is finite,
-and all ten record files match their manifest byte counts and SHA-256 digests. The 12-file partial
-tree (2,031,870 bytes) is remotely verified under
+The frozen corrected geometry implementation has now completed all five stages for all four
+finished AdamW runs. Each stage contains exactly 88 hidden-matrix records; every recorded scalar is
+finite, and all 20 record files match their manifest byte counts and SHA-256 digests. The 24-file
+partial tree (4,061,425 bytes) is remotely size- and digest-verified at Hugging Face commit
+`54135027f4dec5e48c3822ad43f5f852fdef7d07` under
 `qcz/embedding-optimizer-study-analysis-artifacts/corrected-dense-no-packing-v1/weight-space`.
 This is an incremental computation and durability receipt only: no cross-optimizer geometry
 summary or mechanism interpretation is permitted before the complete 12-run matrix.
 
-The corrected W&B source-run path now has a dedicated read-only audit. Its first receipt at 20:18
-UTC found the two locally complete runs remotely `finished` at step 3907, the two active runs
-remotely `running`, and all eight future runs absent as expected. All four visible runs match the
+The corrected W&B source-run path now has a dedicated read-only audit. Its latest receipt at 03:29
+UTC found the four locally complete runs remotely `finished` at step 3907, the two active Muon runs
+remotely `running`, and all six future runs absent as expected. All six visible runs match the
 deterministic ID, run name, group, tags, and resolved padded matrix configuration, with zero
 problems. This post-output operational receipt does not modify W&B or add a scientific endpoint.
 

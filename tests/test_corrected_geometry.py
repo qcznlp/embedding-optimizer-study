@@ -218,3 +218,33 @@ def test_checked_in_corrected_geometry_protocol_matches_current_sources():
         "run_pair_subspace_rows": 660,
         "optimizer_pair_subspace_rows": 60,
     }
+
+
+def test_checked_in_partial_geometry_backup_covers_complete_adamw_grid():
+    receipt = json.loads(
+        (
+            REPOSITORY / "reports/dense-no-packing-weight-space/partial-backup-20260904.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    assert receipt["status"] == "partial_complete"
+    assert receipt["scientific_completion"] is False
+    assert receipt["commit_oid"] == "54135027f4dec5e48c3822ad43f5f852fdef7d07"
+    assert receipt["run_ids"] == [
+        "padded-adamw-1e-6",
+        "padded-adamw-3e-6",
+        "padded-adamw-1e-5",
+        "padded-adamw-3e-5",
+    ]
+    assert receipt["stages_per_run"] == 5
+    assert receipt["inventory"] == {
+        "complete": True,
+        "local_files": 24,
+        "local_bytes": 4061425,
+        "remote_files": 24,
+        "remote_bytes": 4061425,
+        "missing": [],
+        "extra": [],
+        "size_mismatch": [],
+        "digest_mismatch": [],
+    }
