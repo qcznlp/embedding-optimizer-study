@@ -19,6 +19,7 @@ EXPECTED_FLOAT_ROWS = {
     "tab:intervention-results": 1,
     "tab:causal-chain-summary": 3,
     "tab:confirmation-results": 3,
+    "tab:corrected-primary": 3,
     "tab:claim-firewall": 8,
     "tab:training-systems-results": 3,
     "tab:basis-sensitivity-results": 3,
@@ -36,6 +37,8 @@ EXPECTED_FLOAT_ROWS = {
     "tab:extended-retrieval-dynamics": 4,
     "tab:denseon-per-task-results": 14,
     "tab:task-delta-stability": 8,
+    "tab:corrected-bridge": 9,
+    "tab:corrected-sensitivity": 2,
 }
 
 
@@ -137,6 +140,12 @@ def test_corpus_size_diagnostic_is_frozen_as_appendix_only():
 
     assert label in APPENDIX_FLOAT_LABELS
     assert label not in MAIN_TEXT_FLOAT_LABELS
+
+
+def test_corrected_result_topology_preserves_one_main_answer_and_appendix_detail():
+    assert "tab:corrected-primary" in MAIN_TEXT_FLOAT_LABELS
+    assert "tab:corrected-bridge" in APPENDIX_FLOAT_LABELS
+    assert "tab:corrected-sensitivity" in APPENDIX_FLOAT_LABELS
 
 
 def test_layout_gate_rejects_missing_or_unclassified_float(tmp_path: Path):

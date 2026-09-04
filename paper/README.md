@@ -114,6 +114,13 @@ appendix. Every developer build runs the layout gate. It audits every classified
 only the conclusion page, so a deferred main-text float after the audited endpoint or on page 9
 cannot be hidden by an end label that remained within the limit.
 
+The corrected renderer follows the same rule. Its visible pending fixture reserves the exact
+three-row primary table and defines all nine geometry-bridge rows plus the final-stage
+execution-sensitivity table before any corrected outcome exists. Only the primary all-rate answer
+is invoked in the main narrative; the complete bridge and sensitivity tables are invoked after
+`\appendix`. This placement was fixed after a result-blind topology build showed that putting all
+three tables in the main paper moved the endpoint to page 9 and made the primary table over-wide.
+
 The source audit also fixes the post-conclusion submission boundary: the only sections between the
 eight-page endpoint and the references are `Limitations` and `Ethical Considerations`. Artifact and
 reproducibility details live after `\appendix`, so they cannot be mistaken for page-limit-exempt

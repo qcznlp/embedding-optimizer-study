@@ -19,6 +19,7 @@ MAIN_TEXT_FLOAT_LABELS = (
     "tab:intervention-results",
     "tab:causal-chain-summary",
     "tab:confirmation-results",
+    "tab:corrected-primary",
 )
 APPENDIX_FLOAT_LABELS = (
     "fig:candidate-breadth",
@@ -41,6 +42,8 @@ APPENDIX_FLOAT_LABELS = (
     "tab:extended-retrieval-dynamics",
     "tab:denseon-per-task-results",
     "tab:task-delta-stability",
+    "tab:corrected-bridge",
+    "tab:corrected-sensitivity",
 )
 FLOAT_LABELS = MAIN_TEXT_FLOAT_LABELS + APPENDIX_FLOAT_LABELS
 

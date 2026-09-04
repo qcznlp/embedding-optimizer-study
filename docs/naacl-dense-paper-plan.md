@@ -114,7 +114,9 @@ The consequence is specific:
 5. **Why model selection hides the useful Muon regime:** candidate-breadth falsification and packed
    execution audit, ending in the clean replication.
 6. **Corrected independently padded replication:** generated primary all-rate result, secondary
-   selected-recipe result, five-stage dynamics, systems, and execution sensitivity.
+   selected-recipe result, five-stage dynamics, and the compact systems summary. The three-contrast
+   all-rate table stays in the main narrative; the complete nine-feature bridge and execution-path
+   sensitivity tables are reported in the appendix.
 7. **A trajectory effect, but not a spectral explanation:** same-state step, shared-start
    accumulation, weight/function distance, failed spectral chain, and corrected predictive bridge.
 8. **Discussion:** optimizer quality versus optimizer selection; time-to-quality versus throughput;

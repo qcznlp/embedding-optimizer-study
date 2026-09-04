@@ -65,6 +65,16 @@ If the live ledger still has that protocol's exact source hash and the controlle
 run `python -m embed_optim.completion_backup_contract_migration`, then resume normally. This second
 one-time transition must not be substituted for any future source change.
 
+A later result-blind manuscript topology preflight found that placing every corrected table in the
+main paper pushed its endpoint to page 9. The exact non-scientific transition is frozen in
+`configs/dense_no_packing_publication_layout_migration.json`: the all-rate retrieval answer remains
+in the main narrative, while the complete geometry-bridge and execution-sensitivity tables are
+invoked after the appendix boundary. After this change reaches the experiment checkout and the
+controller releases its lease, migrate with
+`python -m embed_optim.completion_contract_migration --protocol
+configs/dense_no_packing_publication_layout_migration.json`, then resume the ordinary controller.
+Do not use that migration for any other source drift.
+
 If `logs/dense-no-packing-sealed-backup/state.json` exists, it is the independent per-checkpoint
 durability state. Its supervisor only reads training artifacts and uses CPU/network resources. Do
 not launch a duplicate while `logs/dense-no-packing-sealed-backup/supervisor.lease` is held. A

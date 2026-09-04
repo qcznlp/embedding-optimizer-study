@@ -102,6 +102,7 @@ PAPER_MAIN_REQUIRED_ONCE = (
     *PAPER_DEFINITION_GENERATED_INPUTS,
     rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}",
     r"\input{generated/candidate-breadth}",
+    r"\input{generated/corrected-no-packing}",
     r"\CausalChainSummaryTable",
     r"\CausalChainDiagnostics",
     r"\section{Conclusion}",
@@ -115,6 +116,8 @@ PAPER_MAIN_REQUIRED_ONCE = (
     r"\bibliography{references}",
     r"\appendix",
     r"\section{Artifact and Reproducibility}",
+    r"\CorrectedGeometryBridgeTable",
+    r"\CorrectedExecutionSensitivityTable",
 )
 PAPER_DISCOVERY_FIGURE_INCLUDES = (
     r"\centering\includegraphics[width=\linewidth]{../reports/dense-discovery/figures/dense-training-dynamics-by-run.png}",
@@ -2126,6 +2129,9 @@ def _paper_main_topology_complete(root: Path) -> bool:
     dynamics_input = (
         rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}"
     )
+    corrected_input = r"\input{generated/corrected-no-packing}"
+    corrected_bridge = r"\CorrectedGeometryBridgeTable"
+    corrected_sensitivity = r"\CorrectedExecutionSensitivityTable"
     main_inputs = (r"\input{results}", *PAPER_MAIN_GENERATED_INPUTS)
     appendix_inputs = (*PAPER_APPENDIX_GENERATED_INPUTS, dynamics_input)
     exempt_region_start = main_end_label + len(rf"\label{{{MAIN_END_LABEL}}}")
@@ -2150,10 +2156,12 @@ def _paper_main_topology_complete(root: Path) -> bool:
         and all(
             main_text.find(token) < main_end_label for token in PAPER_DEFINITION_GENERATED_INPUTS
         )
+        and main_text.find(corrected_input) < main_end_label
         and main_text.find(r"\CausalChainSummaryTable") < main_end_label
         and all(main_text.find(token) > appendix for token in appendix_inputs)
         and main_text.find(r"\CandidateBreadthFigure") > appendix
         and main_text.find(r"\CausalChainDiagnostics") > appendix
+        and appendix < main_text.find(corrected_bridge) < main_text.find(corrected_sensitivity)
     )
 
 

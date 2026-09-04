@@ -163,6 +163,24 @@ def test_rendered_publication_contains_every_frozen_feature_and_claim_boundary()
     assert "not causal mediation" in markdown
     assert "Corrected Independently Padded Replication" in latex
     assert "Final-stage execution-path sensitivity" in latex
+    assert r"\newcommand{\CorrectedGeometryBridgeTable}" in latex
+    assert r"\newcommand{\CorrectedExecutionSensitivityTable}" in latex
+    assert latex.index(r"\newcommand{\CorrectedGeometryBridgeTable}") < latex.index(
+        r"\section{Corrected Independently Padded Replication}"
+    )
+    assert "Contrast & Mean & 95\\% CI & Decision" in latex
+
+
+def test_corrected_detail_tables_are_called_only_after_the_appendix_boundary() -> None:
+    manuscript = (REPOSITORY / "paper/main.tex").read_text(encoding="utf-8")
+    appendix = manuscript.index(r"\appendix")
+    corrected_input = manuscript.index(r"\input{generated/corrected-no-packing}")
+    bridge_call = manuscript.index(r"\CorrectedGeometryBridgeTable")
+    sensitivity_call = manuscript.index(r"\CorrectedExecutionSensitivityTable")
+
+    assert corrected_input < appendix < bridge_call < sensitivity_call
+    makefile = (REPOSITORY / "paper/Makefile").read_text(encoding="utf-8")
+    assert "generated/corrected-no-packing.tex" in makefile
 
 
 def test_conclusion_reports_supported_features_without_cherry_picking() -> None:
@@ -245,6 +263,12 @@ def test_checked_in_publication_protocol_binds_current_sources_before_results() 
     assert visibility["corrected_complete_runs"] == 0
     assert visibility["corrected_beir_outputs_visible"] is False
     assert visibility["corrected_publication_outputs_visible"] is False
+    layout = protocol["layout_only_amendment"]
+    assert layout["visibility_at_amendment"]["corrected_complete_runs"] == 2
+    assert layout["visibility_at_amendment"]["corrected_beir_outputs_visible"] is False
+    assert layout["scientific_claims_changed"] is False
+    assert layout["main_text_tables"] == ["corrected all-rate retrieval inference"]
+    assert len(layout["appendix_tables"]) == 2
     assert protocol["expected_outputs"] == {
         "standalone_markdown": ("reports/dense-no-packing-publication/corrected_dense_results.md"),
         "summary_manifest": "reports/dense-no-packing-publication/summary_manifest.json",
@@ -256,6 +280,26 @@ def test_checked_in_publication_protocol_binds_current_sources_before_results() 
         "sensitivity_contrasts": 10,
         "sensitivity_rankings": 5,
     }
+
+
+def test_publication_layout_migration_is_exact_and_non_scientific() -> None:
+    migration = json.loads(
+        (REPOSITORY / "configs/dense_no_packing_publication_layout_migration.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert migration["from_contract_sha256"] == (
+        "25eefbe52b4cc275600dae631860d2aa69a0734c1c143813b4e7e4a9190f3c13"
+    )
+    assert migration["to_contract_sha256"] == (
+        "abb5973ab7247ec427195ab9afa6f60add579e9e33829e3cc08a61f4947d5a67"
+    )
+    assert migration["scientific_contract_changed"] is False
+    assert migration["allowed_changed_sources"] == [
+        "configs/dense_no_packing_publication_protocol.json"
+    ]
+    assert len(migration["required_unchanged_sources"]) == 9
 
 
 def _write_csv(directory: Path, filename: str, rows: list[dict]) -> dict:
