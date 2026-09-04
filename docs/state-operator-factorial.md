@@ -20,6 +20,14 @@ in
 [`dense_no_packing_state_operator_factorial_implementation_protocol.json`](../configs/dense_no_packing_state_operator_factorial_implementation_protocol.json).
 Do not execute a changed implementation against this design.
 
+The paper-only decision renderer is frozen in
+[`dense_no_packing_state_operator_factorial_publication_protocol.json`](../configs/dense_no_packing_state_operator_factorial_publication_protocol.json),
+and the resumable operational handoff is frozen in
+[`dense_no_packing_state_operator_factorial_completion_protocol.json`](../configs/dense_no_packing_state_operator_factorial_completion_protocol.json).
+The latter waits for the exact main corrected completion ledger before any factorial GPU work,
+backs up both five-checkpoint runs after every training wave, evaluates the three declared BEIR
+pairs concurrently, and reruns the manuscript release gates.
+
 ## Readiness gate
 
 Do not begin until the requested source checkpoint is both deeply resumable and remotely verified
@@ -33,6 +41,17 @@ checkpoint input by byte count and SHA-256, require `can_flatten_inputs=false` t
 loaded model, and refuse pre-existing untagged artifacts.
 
 ## Execution
+
+For unattended execution, use the source-bound controller from the repository root:
+
+```bash
+python -m embed_optim.state_operator_factorial_completion --resume
+```
+
+It is safe to start this command while the main corrected study is still running: it holds only its
+own control-plane lease while waiting and requests no GPU lease until the main 12-run evaluation,
+analysis, publication, and release ledger is complete. The commands below document the frozen
+manual sequence and are not a second controller.
 
 Audit the frozen contracts and portable data receipt:
 
@@ -98,6 +117,11 @@ After all six evaluation cells and the 61 probe jobs pass their audits:
 ```bash
 uv run embed-optim-summarize-state-operator-factorial
 ```
+
+The completion controller then runs the source-bound paper renderer, rebuilds the ACL PDF, refreshes
+the portable evidence closure, and repeats strict paper, test, and style audits. The rendered result
+enters the abstract, mechanism section, main Conclusion, and an appendix table. The ACL manuscript
+is the only publication artifact.
 
 ## Interpretation
 

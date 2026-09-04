@@ -1,6 +1,6 @@
 # Project status and handoff
 
-Last updated: 2026-09-04 03:47 UTC
+Last updated: 2026-09-04 04:06 UTC
 
 This is the canonical handoff page for humans and coding agents. Read it before launching jobs or
 changing result language. The active study is DenseOn-only; LateOn is retained solely as historical
@@ -40,7 +40,7 @@ execution checklist is [issue #41](https://github.com/qcznlp/embedding-optimizer
 | GitHub visibility | Public | default branch plus auditable work branches |
 | Clean-clone paper audit | Complete locally and in GitHub CI | 2,785 files, 107,442,256 bytes, SHA-256 verified |
 | Corrected paper renderer | Implementation locked before results | four upstream manifests, all 9 bridge features, paper + standalone evidence report |
-| Corrected state-by-operator factorial | Scientific and source-bound implementation locks complete; waiting for source checkpoints | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started |
+| Corrected state-by-operator factorial | Scientific, implementation, paper-rendering, and completion locks complete; automatic controller waits for the full main corrected ledger | 2 source states x 2 reset continuation operators x 3 order seeds; 0/12 runs started |
 | Manuscript narrative | Corrected verdict now governs headline locations | 8-page main text; source-bound finding enters abstract and Conclusion; clean outcome remains gated |
 | GitHub main CI | Green | see the repository Actions history for the current merge |
 
@@ -290,6 +290,18 @@ fails closed if a bound source changes. No factorial output exists yet; each sou
 first pass both deep local validation and sealed remote-backup verification. Exact commands and
 interpretation rules are in `docs/state-operator-factorial.md`.
 
+The missing operational and publication closure is now frozen prospectively as well. The separate
+factorial controller refuses GPU work until the exact main corrected ledger under contract
+`4152531e...` has completed all 12 runs, backups, 840 BEIR units, analyses, paper release, and audits.
+It then runs the four calibrations, six two-operator waves in the declared order, uploads both
+five-checkpoint run directories after every wave with remote digest verification, evaluates the
+three BEIR pairs on disjoint pools, summarizes all three co-primary estimands, and reruns the paper
+release gates. The result-independent renderer places the exact carried-state, continuation-operator,
+and interaction estimates in the abstract, mechanism section, Conclusion, and appendix. The strict
+paper audit permits the visible topology fixture while no factorial summary exists, but fails closed
+if a complete summary exists and the paper remains pending or differs from recomputation. The ACL
+manuscript is the only publication artifact.
+
 ## Historical findings that motivate clean adjudication
 
 The paper's main observation is a coherent positive Muon region in the historical grid, not the
@@ -435,11 +447,11 @@ missing, extra, or size-mismatched files for every refreshed prefix:
     but never pools the executions or labels their difference a causal packing estimate.
 15. Render final corrected prose and tables only through
     `python -m embed_optim.corrected_publication`; do not hand edit its generated paper include.
-16. Run the source-bound state-by-operator factorial only after each checkpoint-2345 source passes
-    its deep local and sealed remote-backup gates. Follow
-    `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json` and
-    `docs/state-operator-factorial.md`; do not reinterpret the historical crossover as
-    confirmatory evidence.
+16. Let `python -m embed_optim.state_operator_factorial_completion --resume` own the source-bound
+    state-by-operator handoff. It waits for the fully complete main ledger before any GPU request,
+    requires both checkpoint-2345 source durability gates, uploads every factorial training wave,
+    and renders the three crossed effects into the paper. Follow all four factorial locks and do
+    not launch a competing manual sequence while its lease is held.
 17. Keep `python -m embed_optim.corrected_completion_pipeline` running as the operational handoff.
     It backs up deeply complete runs during the matrix and starts final evaluation only after all
     12 runs pass the deep completion gate. Read its atomic ledger under

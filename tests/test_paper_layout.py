@@ -39,6 +39,7 @@ EXPECTED_FLOAT_ROWS = {
     "tab:task-delta-stability": 8,
     "tab:corrected-bridge": 9,
     "tab:corrected-sensitivity": 2,
+    "tab:state-operator-factorial": 3,
 }
 
 
@@ -146,6 +147,7 @@ def test_corrected_result_topology_preserves_one_main_answer_and_appendix_detail
     assert "tab:corrected-primary" in MAIN_TEXT_FLOAT_LABELS
     assert "tab:corrected-bridge" in APPENDIX_FLOAT_LABELS
     assert "tab:corrected-sensitivity" in APPENDIX_FLOAT_LABELS
+    assert "tab:state-operator-factorial" in APPENDIX_FLOAT_LABELS
 
 
 def test_layout_gate_rejects_missing_or_unclassified_float(tmp_path: Path):

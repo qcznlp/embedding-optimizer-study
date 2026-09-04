@@ -42,6 +42,16 @@ from .outcome_report import (
 )
 from .paper_layout import MAIN_END_LABEL
 from .scope import ALL_FAMILIES, resolve_scope
+from .state_operator_factorial_publication import (
+    PAPER_LATEX as STATE_OPERATOR_LATEX,
+)
+from .state_operator_factorial_publication import (
+    PUBLICATION_MANIFEST as STATE_OPERATOR_PUBLICATION_MANIFEST,
+)
+from .state_operator_factorial_publication import (
+    SUMMARY_MANIFEST as STATE_OPERATOR_SUMMARY_MANIFEST,
+)
+from .state_operator_factorial_publication import audit_state_operator_publication
 
 FAMILIES = ALL_FAMILIES
 CausalEvidenceCache = dict[Path, tuple[dict[str, Any] | None, Exception | None]]
@@ -103,9 +113,14 @@ PAPER_MAIN_REQUIRED_ONCE = (
     rf"\input{{{DYNAMICS_EXTENSION_TEX.relative_to('paper').with_suffix('').as_posix()}}}",
     r"\input{generated/candidate-breadth}",
     r"\input{generated/corrected-no-packing}",
+    r"\input{generated/state-operator-factorial}",
     r"\CorrectedAbstractFinding",
     r"\CorrectedMainSection",
     r"\CorrectedConclusionFinding",
+    r"\StateOperatorAbstractFinding",
+    r"\StateOperatorMechanismFinding",
+    r"\StateOperatorConclusionFinding",
+    r"\StateOperatorAppendixTable",
     r"\CausalChainSummaryTable",
     r"\CausalChainDiagnostics",
     r"\section{Conclusion}",
@@ -2123,8 +2138,11 @@ def _paper_main_topology_complete(root: Path) -> bool:
         return False
     conclusion = main_text.find(r"\section{Conclusion}")
     corrected_abstract = main_text.find(r"\CorrectedAbstractFinding")
+    state_operator_abstract = main_text.find(r"\StateOperatorAbstractFinding")
     corrected_main = main_text.find(r"\CorrectedMainSection")
+    state_operator_main = main_text.find(r"\StateOperatorMechanismFinding")
     corrected_conclusion = main_text.find(r"\CorrectedConclusionFinding")
+    state_operator_conclusion = main_text.find(r"\StateOperatorConclusionFinding")
     historical_conclusion = main_text.find(r"\ResultConclusion")
     main_end_label = main_text.find(rf"\label{{{MAIN_END_LABEL}}}")
     limitations = main_text.find(r"\section{Limitations}")
@@ -2137,6 +2155,8 @@ def _paper_main_topology_complete(root: Path) -> bool:
     )
     corrected_input = r"\input{generated/corrected-no-packing}"
     corrected_input_position = main_text.find(corrected_input)
+    state_operator_input = r"\input{generated/state-operator-factorial}"
+    state_operator_input_position = main_text.find(state_operator_input)
     corrected_bridge = r"\CorrectedGeometryBridgeTable"
     corrected_sensitivity = r"\CorrectedExecutionSensitivityTable"
     main_inputs = (r"\input{results}", *PAPER_MAIN_GENERATED_INPUTS)
@@ -2150,10 +2170,14 @@ def _paper_main_topology_complete(root: Path) -> bool:
     return (
         0
         <= corrected_input_position
+        < state_operator_input_position
         < corrected_abstract
+        < state_operator_abstract
         < corrected_main
+        < state_operator_main
         < conclusion
         < corrected_conclusion
+        < state_operator_conclusion
         < main_end_label
         < limitations
         < ethics
@@ -2162,6 +2186,7 @@ def _paper_main_topology_complete(root: Path) -> bool:
         < artifact
         < main_text.find(corrected_bridge)
         < main_text.find(corrected_sensitivity)
+        < main_text.find(r"\StateOperatorAppendixTable")
         < historical_conclusion
         and exempt_section_positions == [limitations, ethics]
         and _LATEX_FILE_INPUT_COMMAND.search(exempt_region) is None
@@ -2170,6 +2195,7 @@ def _paper_main_topology_complete(root: Path) -> bool:
             main_text.find(token) < main_end_label for token in PAPER_DEFINITION_GENERATED_INPUTS
         )
         and main_text.find(corrected_input) == corrected_input_position
+        and main_text.find(state_operator_input) == state_operator_input_position
         and main_text.find(r"\CausalChainSummaryTable") < main_end_label
         and all(main_text.find(token) > appendix for token in appendix_inputs)
         and main_text.find(r"\CandidateBreadthFigure") > appendix
@@ -2485,6 +2511,46 @@ def _final_document_language_problems(root: Path) -> list[str]:
     return problems
 
 
+def _state_operator_publication_status(root: Path) -> dict[str, Any]:
+    """Require exact paper rendering once the complete factorial summary exists."""
+
+    summary = root / STATE_OPERATOR_SUMMARY_MANIFEST
+    paper = root / STATE_OPERATOR_LATEX
+    publication = root / STATE_OPERATOR_PUBLICATION_MANIFEST
+    if not summary.is_file():
+        try:
+            fixture = paper.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+            return {
+                "complete": False,
+                "status": "missing_topology_fixture",
+                "error": f"{type(error).__name__}: {error}",
+            }
+        return {
+            "complete": "\\ResultPending" in fixture and not publication.exists(),
+            "status": "prospective_pending",
+            "summary_present": False,
+        }
+    try:
+        manifest = audit_state_operator_publication(root)
+    except (OSError, TypeError, ValueError, json.JSONDecodeError) as error:
+        return {
+            "complete": False,
+            "status": "invalid_or_stale",
+            "summary_present": True,
+            "error": f"{type(error).__name__}: {error}",
+        }
+    return {
+        "complete": True,
+        "status": "complete",
+        "summary_present": True,
+        "summary_sha256": _sha256(summary),
+        "publication_sha256": _sha256(publication),
+        "paper_latex_sha256": _sha256(paper),
+        "interpretation": manifest["interpretation"],
+    }
+
+
 def _causal_chain_evidence(
     root: Path, causal_cache: CausalEvidenceCache | None = None
 ) -> dict[str, dict[str, Any]]:
@@ -2625,12 +2691,14 @@ def audit_paper(
         and snapshot is not None
         and _causal_snapshot_still_current(root, snapshot)
     )
+    state_operator_publication = _state_operator_publication_status(root)
     complete = (
         not pending
         and not incomplete_evidence
         and paper_results_complete
         and not document_language_problems
         and causal_chain_complete
+        and state_operator_publication["complete"]
     )
     portable_manifest_path = root / PORTABLE_EVIDENCE_MANIFEST
     if (root / "outputs").exists():
@@ -2683,6 +2751,7 @@ def audit_paper(
         },
         "document_language_problems": document_language_problems,
         "causal_chain": causal_chain,
+        "state_operator_publication": state_operator_publication,
         "evidence_mode": evidence_mode,
     }
     if scope is not None:
@@ -2694,7 +2763,8 @@ def audit_paper(
             f"pending_headlines={pending}, incomplete_evidence={incomplete_evidence}, "
             f"paper_results_complete={paper_results_complete}, "
             f"document_language_problems={document_language_problems}"
-            f", causal_chain_complete={causal_chain_complete}"
+            f", causal_chain_complete={causal_chain_complete}, "
+            f"state_operator_publication={state_operator_publication['status']}"
         )
     return result
 

@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "status": "prospective_state_operator_completion_lock",
+  "frozen_at_utc": "2026-09-04T04:06:35Z",
+  "purpose": "Bind a resumable, fail-closed handoff that gives the corrected 12-run paper pipeline priority, then executes the prospective state-by-operator factorial, backs up every checkpoint, renders its result into the paper, and reruns release audits.",
+  "visibility_at_freeze": {
+    "main_corrected_runs_complete": 4,
+    "main_corrected_runs_expected": 12,
+    "main_completion_status": "waiting_for_training",
+    "factorial_source_muon_checkpoint_ready": false,
+    "factorial_outputs_visible": false,
+    "factorial_publication_outputs_visible": false,
+    "note": "This operational lock was frozen before the Muon source checkpoint and any crossed-factorial output. It makes no new scientific choice."
+  },
+  "parent_bindings": {
+    "scientific_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_protocol.json",
+      "bytes": 10347,
+      "sha256": "5773943a3ae9b581021a0f7b85b162c74d5c497eeca1386578ff9d2c3bcafe76"
+    },
+    "implementation_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_implementation_protocol.json",
+      "bytes": 14622,
+      "sha256": "7573a28781735782ec1ec527cfd5d70b01a97ba14e081df77a91104a3a066d97"
+    },
+    "publication_protocol": {
+      "path": "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
+      "bytes": 5045,
+      "sha256": "6057e42d41eb934d06bc7574fe4d721b0d549b796c235109c4e86a1bdd20eeb2"
+    }
+  },
+  "source_bindings": {
+    "completion_controller": {
+      "path": "src/embed_optim/state_operator_factorial_completion.py",
+      "bytes": 24712,
+      "sha256": "24d9923956a912753eebe48a605af6f98d9d03fc5315ec9bb4f3181ca0dff498"
+    },
+    "factorial_checkpoint_backup": {
+      "path": "src/embed_optim/state_operator_factorial_backup.py",
+      "bytes": 8151,
+      "sha256": "89d9088e7e63042e6d2795fbae80f6c9312c743dde4ae560da5badedc3cf4f88"
+    },
+    "sealed_source_checkpoint_backup": {
+      "path": "src/embed_optim/incremental_checkpoint_backup.py",
+      "bytes": 14334,
+      "sha256": "8dd0f34e9fa18bd2c0ebff6665f008cf3f388f34550489a51bc84c028bd27b47"
+    },
+    "configuration_loader": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "portable_evidence_builder": {
+      "path": "scripts/portable_evidence.py",
+      "bytes": 7811,
+      "sha256": "85ae3e7ae1c4cc764c158f24132720436fe43b3a9b4a5935850d472d6ea89017"
+    }
+  },
+  "configuration_bindings": {
+    "corrected_source_matrix": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "bytes": 1601,
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  },
+  "main_completion_gate": {
+    "ledger_path": "logs/dense-no-packing-finalization/pipeline-ledger.json",
+    "scope": "corrected_dense_no_packing_completion",
+    "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+    "training_runs_complete": 12,
+    "required_run_ids": [
+      "padded-adamw-1e-6",
+      "padded-adamw-3e-6",
+      "padded-adamw-1e-5",
+      "padded-adamw-3e-5",
+      "padded-muon-1e-4",
+      "padded-muon-3e-4",
+      "padded-muon-1e-3",
+      "padded-muon-3e-3",
+      "padded-normuon-1e-4",
+      "padded-normuon-3e-4",
+      "padded-normuon-1e-3",
+      "padded-normuon-3e-3"
+    ],
+    "required_steps": [
+      "training-progress-receipt",
+      "checkpoint-backup-audit",
+      "padded-validation",
+      "padded-validation-audit",
+      "decontaminated-beir",
+      "decontaminated-beir-audit",
+      "weight-space",
+      "outcome-summary",
+      "retrieval-bridge",
+      "execution-sensitivity",
+      "publication-render",
+      "paper-release",
+      "paper-audit",
+      "portable-evidence-audit",
+      "tests",
+      "ruff-check",
+      "ruff-format-check"
+    ],
+    "scheduling_rule": "Do not request a factorial GPU lease until this exact main ledger is complete. Cooperative GPU leases alone are insufficient because the main corrected trainer predates them."
+  },
+  "source_checkpoint_gate": {
+    "matrix": "configs/dense_no_packing_retrain.yaml",
+    "checkpoint_step": 2345,
+    "states": [
+      {
+        "label": "adamw_state",
+        "run_id": "padded-adamw-3e-5",
+        "checkpoint": "outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-2345"
+      },
+      {
+        "label": "muon_state",
+        "run_id": "padded-muon-3e-4",
+        "checkpoint": "outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-2345"
+      }
+    ],
+    "remote_verification": "Before calibration, upload or audit both sealed checkpoints and require complete remote inventories with no missing, extra, size, or digest mismatch."
+  },
+  "execution_contract": {
+    "controller_ledger": "logs/state-operator-factorial/completion/pipeline-ledger.json",
+    "controller_lease": "logs/state-operator-factorial/completion/controller.lease",
+    "resume": "A completed step is never rerun. A failed step retains every attempt and retries without relaxing its audit. Source or command drift fails closed.",
+    "training": "Execute all six frozen two-operator waves serially in the implementation protocol order; each wave internally uses the two disjoint four-GPU pools.",
+    "checkpoint_backup": "Immediately after each wave, upload both complete five-checkpoint run directories to qcz/embedding-optimizer-study-checkpoints under state-operator-factorial-v1/dense and verify path, size, and digest equality.",
+    "full_beir": "Execute the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.",
+    "publication": "Summarize, render the paper-only state-operator include, rebuild the ACL manuscript, refresh the portable evidence closure, and rerun strict paper, test, and style gates.",
+    "gpu_boundary": "Only the existing factorial calibration, training, probe, and BEIR entry points request cooperative GPU leases. Never inspect, read, edit, signal, stop, replace, or otherwise touch gpu.py or its processes."
+  },
+  "expected_cardinalities": {
+    "calibration_commands": 4,
+    "training_waves": 6,
+    "training_runs": 12,
+    "checkpoints": 60,
+    "checkpoint_backup_runs": 12,
+    "probe_jobs": 61,
+    "beir_cells": 6,
+    "beir_task_units": 168,
+    "estimands": 3
+  },
+  "claim_boundary": "This controller implements the predeclared factorial and publication map. It cannot change source states, continuation operators, calibrated scale, data seeds, branch horizon, estimands, uncertainty, or claim thresholds after outputs appear."
+}

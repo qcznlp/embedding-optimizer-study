@@ -86,6 +86,9 @@ embed-optim-train-state-operator-factorial = "embed_optim.state_operator_factori
 embed-optim-evaluate-state-operator-factorial = "embed_optim.state_operator_factorial_evaluation:main"
 embed-optim-probe-state-operator-factorial = "embed_optim.state_operator_factorial_probe:main"
 embed-optim-summarize-state-operator-factorial = "embed_optim.state_operator_factorial_summary:main"
+embed-optim-render-state-operator-factorial = "embed_optim.state_operator_factorial_publication:main"
+embed-optim-backup-state-operator-factorial = "embed_optim.state_operator_factorial_backup:main"
+embed-optim-complete-state-operator-factorial = "embed_optim.state_operator_factorial_completion:main"
 embed-optim-short-branch-evaluate = "embed_optim.short_branch_evaluation:main"
 embed-optim-summarize-short-branch = "embed_optim.short_branch_summary:main"
 embed-optim-audit-paper = "embed_optim.paper_audit:main"
@@ -184,6 +187,8 @@ where = ["src"]
   "configs/dense_no_packing_analysis_protocol.json",
   "configs/dense_no_packing_state_operator_factorial_protocol.json",
   "configs/dense_no_packing_state_operator_factorial_implementation_protocol.json",
+  "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
+  "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
   "configs/dense_no_packing_outcome_protocol.json",
   "configs/dense_no_packing_bridge_implementation_protocol.json",
   "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
@@ -244,6 +249,7 @@ where = ["src"]
   "docs/dense-no-packing-retrain.md",
   "docs/naacl-dense-paper-plan.md",
   "docs/naacl-paper-plan.md",
+  "docs/state-operator-factorial.md",
 ]
 "share/embedding-optimizer-study/paper" = [
   "paper/Makefile",
@@ -264,6 +270,11 @@ where = ["src"]
   "paper/generated/representation.tex",
   "paper/generated/retrieval-dynamics-extension.tex",
   "paper/generated/corrected-no-packing.tex",
+  "paper/generated/state-operator-factorial.tex",
+]
+"share/embedding-optimizer-study/reports/state-operator-factorial" = [
+  "reports/state-operator-factorial/*.csv",
+  "reports/state-operator-factorial/*.json",
 ]
 "share/embedding-optimizer-study/reports/candidate-breadth" = [
   "reports/candidate-breadth/*.csv",

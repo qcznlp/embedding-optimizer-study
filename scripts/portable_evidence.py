@@ -31,6 +31,18 @@ FIXED_RESULT_FILES = (
     Path("results/representation-space/training/summary/summary_manifest.json"),
     Path("results/representation-space/decontaminated-beir/summary/summary_manifest.json"),
 )
+FACTORIAL_SUMMARY_MANIFEST = Path("reports/state-operator-factorial/summary_manifest.json")
+FACTORIAL_FINAL_FILES = (
+    FACTORIAL_SUMMARY_MANIFEST,
+    Path("reports/state-operator-factorial/beir_seed_task_scores.csv"),
+    Path("reports/state-operator-factorial/factorial_cell_summary.csv"),
+    Path("reports/state-operator-factorial/estimand_seed_task_contrasts.csv"),
+    Path("reports/state-operator-factorial/estimand_summary.csv"),
+    Path("reports/state-operator-factorial/probe_checkpoint_metrics.csv"),
+    Path("reports/state-operator-factorial/probe_task_metrics.csv"),
+    Path("reports/state-operator-factorial/publication_manifest.json"),
+    Path("paper/generated/state-operator-factorial.tex"),
+)
 
 
 def _sha256(path: Path) -> str:
@@ -107,6 +119,12 @@ def _selected_result_paths(root: Path) -> set[Path]:
     selected.update(_nested_result_paths(tail.get("short_branch_sources"), root))
     selected.update(_nested_result_paths(spectral.get("sources"), root))
     selected.update(_nested_result_paths(dynamics.get("sources", {}).get("partitions"), root))
+    factorial_manifest = root / FACTORIAL_SUMMARY_MANIFEST
+    if factorial_manifest.is_file():
+        factorial = _load(factorial_manifest)
+        if factorial.get("status") != "complete":
+            raise ValueError("Present state-operator factorial summary is not complete")
+        selected.update((root / relative).resolve() for relative in FACTORIAL_FINAL_FILES)
     return selected
 
 

@@ -16,6 +16,7 @@
 \input{results}
 \input{generated/causal-chain}
 \input{generated/corrected-no-packing}
+\input{generated/state-operator-factorial}
 
 \title{Better Retrievers from Worse First Steps:\\
 What Muon Changes in Dense-Retriever Training}
@@ -40,7 +41,8 @@ Muon's familiar spectral flattening does not explain this emergence: temporal pr
 controlled spectral transplants, and held-run retrieval prediction all fail their frozen tests. We
 also find that a packed validator makes embeddings depend on batch composition and selects a
 damaging ten-times larger Muon rate. A fresh independently padded 12-run matrix is the final
-adjudicator. \CorrectedAbstractFinding{} Together, the results recast Muon's promise for retrieval
+adjudicator. \CorrectedAbstractFinding{} \StateOperatorAbstractFinding{} Together, the results
+recast Muon's promise for retrieval
 as a question about the sequence of states and gradients produced by repeated matrix-conditioned
 updates.
 \end{abstract}
@@ -353,6 +355,11 @@ frozen geometry features are reported, but only out-of-dose retrieval prediction
 from an optimizer signature to a candidate bridge. This distinction is essential: a feature can
 perfectly identify Muon and still add no information about which Muon rate retrieves well.
 
+\paragraph{Does the benefit reside in the weights or the next optimizer?}
+The decisive mechanism test crosses an AdamW-reached or Muon-reached 60\% checkpoint with a reset
+AdamW or Muon continuation, matching the calibrated first-update scale and repeating every cell
+under three fixed data orders. \StateOperatorMechanismFinding
+
 \section{Discussion}
 
 \paragraph{The phenomenon is Muon's positive retrieval region.}
@@ -392,6 +399,9 @@ visually distinctive statistic must be the cause.
 
 \paragraph{Corrected replication.}
 \CorrectedConclusionFinding
+
+\paragraph{Corrected mechanism.}
+\StateOperatorConclusionFinding
 
 The central empirical result is that Muon and NorMuon reach better DenseOn retrievers across a
 coherent learning-rate region, with gains on 10 and 11 of 14 tasks. The central scientific result is
@@ -437,6 +447,9 @@ evidence, not a causal effect of packing. Historical shared-start and spectral a
 branches, three order seeds, and fixed-state interventions. They can reject the tested mechanism but
 cannot identify formal mediation of a final BEIR contrast. The corrected geometry bridge is
 predictive rather than causal and may miss a useful feature outside the nine frozen candidates.
+The crossed reset-state factorial concerns one 60\% AdamW/Muon checkpoint pair and a 50K-query
+continuation horizon; it separates carried state, continuation operator, and their interaction but
+does not identify universal mediation over the full 500K-query trajectory.
 
 The project originally included LateOn. After exploratory outputs were visible, the project scope
 was narrowed to DenseOn because LateOn was substantially slower and less central to the intended
@@ -479,6 +492,14 @@ versus corrected execution readout; neither is used to select a favorable optimi
 \CorrectedGeometryBridgeTable
 
 \CorrectedExecutionSensitivityTable
+
+\section{Corrected State-by-Operator Mechanism Test}
+
+The crossed experiment resets optimizer state at both source checkpoints, matches the fixed
+calibration-probe update scale, and reports all three co-primary contrasts regardless of sign.
+Exact seed--task contrasts and all five probe stages remain in the source-addressed artifact tables.
+
+\StateOperatorAppendixTable
 
 \FloatBarrier
 

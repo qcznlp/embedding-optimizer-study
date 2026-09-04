@@ -159,6 +159,40 @@ def _candidate_breadth_distribution_problems(
     ]
 
 
+def _state_operator_distribution_problems(
+    root: Path, data_files: dict[str, PurePosixPath]
+) -> list[str]:
+    summary = root / "reports/state-operator-factorial/summary_manifest.json"
+    if not summary.is_file():
+        return []
+    try:
+        payload = json.loads(summary.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return ["State-operator factorial distribution summary is unreadable"]
+    if payload.get("status") != "complete":
+        return []
+    expected = {
+        "configs/dense_no_packing_state_operator_factorial_protocol.json",
+        "configs/dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
+        "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+        "paper/generated/state-operator-factorial.tex",
+        "reports/state-operator-factorial/beir_seed_task_scores.csv",
+        "reports/state-operator-factorial/factorial_cell_summary.csv",
+        "reports/state-operator-factorial/estimand_seed_task_contrasts.csv",
+        "reports/state-operator-factorial/estimand_summary.csv",
+        "reports/state-operator-factorial/probe_checkpoint_metrics.csv",
+        "reports/state-operator-factorial/probe_task_metrics.csv",
+        "reports/state-operator-factorial/publication_manifest.json",
+        "reports/state-operator-factorial/summary_manifest.json",
+    }
+    return [
+        f"completed state-operator factorial distribution missing: {source}"
+        for source in sorted(expected)
+        if source not in data_files or not (root / source).is_file()
+    ]
+
+
 def _wandb_source_receipt_distribution_problems(
     root: Path,
     data_files: dict[str, PurePosixPath],
@@ -458,6 +492,7 @@ def audit_distribution(
     problems: list[str] = []
     problems.extend(_dense_dynamics_distribution_problems(root, data_files))
     problems.extend(_candidate_breadth_distribution_problems(root, data_files))
+    problems.extend(_state_operator_distribution_problems(root, data_files))
     problems.extend(_wandb_source_receipt_distribution_problems(root, data_files))
     package_sources = sorted((root / "src" / "embed_optim").glob("*.py"))
     runtime_configs = _runtime_config_references(package_sources, root)
