@@ -2,7 +2,7 @@
   "active_phase": "corrected_dense_no_packing_training",
   "active_protocol": "configs/dense_no_packing_execution_protocol.json",
   "canonical_handoff": "PROJECT_STATUS.md",
-  "complete_runs": 2,
+  "complete_runs": 4,
   "control_plane_warning_affected_runs": {
     "tcpstore_heartbeat_disconnect": 2
   },
@@ -20,12 +20,12 @@
   "matrix": "configs/dense_no_packing_retrain.yaml",
   "objective": "Compare AdamW, Muon, and NorMuon for corrected independently padded DenseOn retriever adaptation.",
   "observation": "artifact_only_no_process_inspection",
-  "observed_at_utc": "2026-09-04T01:59:03+00:00",
-  "pending_runs": 8,
+  "observed_at_utc": "2026-09-04T03:28:57+00:00",
+  "pending_runs": 6,
   "planned_beir_task_units": 840,
   "planned_checkpoints": 60,
   "planned_runs": 12,
-  "resumable_checkpoints": 18,
+  "resumable_checkpoints": 20,
   "runs": [
     {
       "control_plane_warning_markers": {
@@ -86,16 +86,59 @@
         "non_finite": 0,
         "traceback": 0
       },
-      "latest_log_step": 3214,
+      "latest_log_step": 3907,
       "learning_rate": 1e-05,
       "optimizer": "adamw",
       "resumable_checkpoint_steps": [
         782,
         1563,
         2345,
-        3126
+        3126,
+        3907
       ],
       "run_id": "padded-adamw-1e-5",
+      "state": "complete"
+    },
+    {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
+      "declared_total_steps": 3907,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 3907,
+      "learning_rate": 3e-05,
+      "optimizer": "adamw",
+      "resumable_checkpoint_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "run_id": "padded-adamw-3e-5",
+      "state": "complete"
+    },
+    {
+      "control_plane_warning_markers": {
+        "tcpstore_heartbeat_disconnect": 0
+      },
+      "declared_total_steps": 3907,
+      "error_markers": {
+        "cuda_oom": 0,
+        "nccl_error": 0,
+        "non_finite": 0,
+        "traceback": 0
+      },
+      "latest_log_step": 56,
+      "learning_rate": 0.0001,
+      "optimizer": "muon",
+      "resumable_checkpoint_steps": [],
+      "run_id": "padded-muon-1e-4",
       "state": "started_artifacts_present"
     },
     {
@@ -109,53 +152,12 @@
         "non_finite": 0,
         "traceback": 0
       },
-      "latest_log_step": 3182,
-      "learning_rate": 3e-05,
-      "optimizer": "adamw",
-      "resumable_checkpoint_steps": [
-        782,
-        1563,
-        2345,
-        3126
-      ],
-      "run_id": "padded-adamw-3e-5",
-      "state": "started_artifacts_present"
-    },
-    {
-      "control_plane_warning_markers": {
-        "tcpstore_heartbeat_disconnect": 0
-      },
-      "declared_total_steps": null,
-      "error_markers": {
-        "cuda_oom": 0,
-        "nccl_error": 0,
-        "non_finite": 0,
-        "traceback": 0
-      },
-      "latest_log_step": 0,
-      "learning_rate": 0.0001,
-      "optimizer": "muon",
-      "resumable_checkpoint_steps": [],
-      "run_id": "padded-muon-1e-4",
-      "state": "pending"
-    },
-    {
-      "control_plane_warning_markers": {
-        "tcpstore_heartbeat_disconnect": 0
-      },
-      "declared_total_steps": null,
-      "error_markers": {
-        "cuda_oom": 0,
-        "nccl_error": 0,
-        "non_finite": 0,
-        "traceback": 0
-      },
-      "latest_log_step": 0,
+      "latest_log_step": 17,
       "learning_rate": 0.0003,
       "optimizer": "muon",
       "resumable_checkpoint_steps": [],
       "run_id": "padded-muon-3e-4",
-      "state": "pending"
+      "state": "started_artifacts_present"
     },
     {
       "control_plane_warning_markers": {
