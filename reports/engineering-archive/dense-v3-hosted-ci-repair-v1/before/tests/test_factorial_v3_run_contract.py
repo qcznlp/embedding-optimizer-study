@@ -35,15 +35,7 @@ PARENT = (
 
 def recorded_inputs():
     assert file_identity(PARENT)["sha256"] == contract.CALIBRATION_SOURCE_SHA
-    inputs = copy.deepcopy(read_json(PARENT)["inputs"])
-    # This is an explicitly synthetic identity-wiring fixture, not admission of
-    # the recorded producer path. Read the byte-identical local runtime spec.
-    runtime = REPOSITORY / "configs/formal_runtime.json"
-    assert file_identity(runtime) == {
-        key: inputs["runtime_spec"][key] for key in ("bytes", "sha256")
-    }
-    inputs["runtime_spec"]["path"] = str(runtime)
-    return inputs
+    return copy.deepcopy(read_json(PARENT)["inputs"])
 
 
 def metadata_identity(state="adamw_state", operator="adamw", seed=314159):

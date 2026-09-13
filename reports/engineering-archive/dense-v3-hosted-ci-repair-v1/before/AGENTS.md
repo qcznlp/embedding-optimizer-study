@@ -19,9 +19,8 @@ this short handoff does not waive or replace a frozen contract.
 Deliver a defensible NAACL paper and reproducible repository/model-analysis artifacts
 for **DenseOn only**, comparing AdamW, Muon and NorMuon. No new LateOn or blog work.
 The latest direct owner authority is: “你有权做一切事情，目标是尽快完成任务”.
-Training-first priority and core source/paper publication are fulfilled. Hosted
-CI still needs verified repair; separately safety-denied historical HF cleanup
-remains unresolved.
+Training-first priority and core source/paper publication are fulfilled. Only the
+separately safety-denied historical HF cleanup remains unresolved.
 
 The primary design remains the same revised deterministic 500K queries, seed 42,
 one positive plus seven distinct fixed hard negatives, no in-batch/cross-device negatives,
@@ -70,7 +69,7 @@ See reports/engineering-archive/dense-v3-source-publication-v1/README.md.
   passes, including eight byte-identical shared inputs. Default/all now build
   paper/current; release uses explicit NUMERICAL_BUNDLE and new RELEASE_OUTPUT.
   Original Make rules remain byte-identical in paper/legacy.Makefile.
-- Local tests: all 3,800 cases pass in explicit source roles (2,873 current, 733 original
+- Tests: all 3,800 cases pass in explicit source roles (2,873 current, 733 original
   analysis, 194 original factorial), with no failures/errors/skips. The current
   role was fully rerun after five legacy Make-routing fixes. All failed attempts
   remain preserved; no frozen contract, numerical assertion or tolerance changed.
@@ -88,15 +87,8 @@ and all safety limits remain binding; do not repeat completed work as missing.
 
 ## Next action and boundaries
 
-No scientific or recovery job remains live. GitHub CI run 34756580699 failed:
-its broad developer dependencies did not match the formal runtime; two synthetic
-test fixtures depended on the producer path or an uncommitted checkout. The
-repair installs the genuine hash-locked runtime and makes those fixture
-conditions explicit, without changing scientific source, locks or assertions.
-Hosted success is pending, not implied by the local 3,800-test result. The
-reviewed PDF and 83 other manifest-bound archived files were also published at
-65c584ce11435dc84aec675a6ed733a9a5fc97d1; the PDF was anonymously byte-verified.
-Finish the repaired hosted test and full numerical/paper workflow. Do not autonomously add
+No scientific, recovery or regression job remains live. The verified core paper,
+repository and model/analysis deliverables are complete. Do not autonomously add
 experiments, restart old controllers or keep rerunning completed release checks.
 
 One earlier requested cleanup is unresolved: the safety-denied historical HF

@@ -13,23 +13,13 @@ From the repository root:
 ```bash
 uv sync --extra dev --extra eval --extra analysis
 uv run cffconvert --validate --infile CITATION.cff
-uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 -r requirements-formal.lock
-uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt
-.venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json
 uv build
-uv run --no-sync embed-optim-audit-distribution
-uv run --no-sync python scripts/portable_evidence.py --audit-only
-uv run --no-sync python scripts/test_source_roles.py --output /tmp/dense-source-tests-new
-uv run --no-sync ruff check src tests scripts
-uv run --no-sync ruff format --check src tests scripts
+uv run embed-optim-audit-distribution
+uv run python scripts/portable_evidence.py --audit-only
+uv run python scripts/test_source_roles.py --output /tmp/dense-source-tests-new
+uv run ruff check src tests scripts
+uv run ruff format --check src tests scripts
 ```
-
-Use a separate environment with the CUDA 12.9 compiler available for the genuine
-FlashAttention build; no GPU is needed for these CPU regressions. CI installs
-the compiler packages explicitly. Do not install placeholder package metadata or
-skip the CUDA extension build. After the formal pins are installed,
-`uv run --no-sync` prevents the broader development lock from replacing them.
-Never change the live study environment to prepare contributor checks.
 
 The test output directory must be new and outside the checkout. The runner executes
 every test module exactly once across the current source and two authenticated

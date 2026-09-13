@@ -6,7 +6,6 @@ from copy import deepcopy
 from pathlib import Path
 
 import pytest
-import yaml
 
 from scripts import test_source_roles as runner
 
@@ -25,27 +24,6 @@ def test_real_roles_partition_every_test_without_overlap():
     assert "tests/test_source_roles.py" in roles["current"]["tests"]
     assert len(roles["original-analysis"]["changes"]) == 6
     assert len(roles["original-factorial"]["changes"]) == 1
-    workflow = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
-    steps = workflow["jobs"]["test"]["steps"]
-    formal = next(
-        i
-        for i, step in enumerate(steps)
-        if step.get("name") == "Install the actual hash-locked scientific runtime"
-    )
-    suite = next(
-        i
-        for i, step in enumerate(steps)
-        if step.get("name") == "Run every test in its explicit source version"
-    )
-    assert formal < suite
-    command = steps[formal]["run"]
-    assert "--require-hashes" in command and "--torch-backend cu129" in command
-    assert "--dry-run" not in command and "import flash_attn_2_cuda" in command
-    assert "embed_optim.runtime --spec configs/formal_runtime.json" in command
-    assert steps[formal]["env"]["FLASH_ATTENTION_FORCE_BUILD"] == "TRUE"
-    assert "FLASH_ATTENTION_SKIP_CUDA_BUILD" not in steps[formal]["env"]
-    assert "uv run --no-sync" in steps[suite]["run"]
-    assert all(step.get("continue-on-error", False) is False for step in steps)
 
 
 @pytest.fixture

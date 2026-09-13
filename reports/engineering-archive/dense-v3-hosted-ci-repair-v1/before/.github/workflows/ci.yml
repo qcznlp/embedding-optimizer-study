@@ -25,37 +25,19 @@ jobs:
         run: |
           uv pip sync --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --dry-run requirements-formal.lock
           uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn --dry-run -r requirements-formal-flash.txt
-      - name: Install CUDA compiler for the genuine pinned FlashAttention build
-        run: |
-          curl --fail --location --output "$RUNNER_TEMP/cuda-keyring.deb" https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
-          sudo dpkg -i "$RUNNER_TEMP/cuda-keyring.deb"
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends cuda-nvcc-12-9 cuda-cudart-dev-12-9
-      - name: Install the actual hash-locked scientific runtime
-        env:
-          CUDA_HOME: /usr/local/cuda-12.9
-          FLASH_ATTENTION_FORCE_BUILD: "TRUE"
-          FLASH_ATTN_CUDA_ARCHS: "80;90"
-          MAX_JOBS: "2"
-          NVCC_THREADS: "1"
-        run: |
-          uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 -r requirements-formal.lock
-          uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt
-          .venv/bin/python -c 'import torch; import flash_attn_2_cuda; assert torch.version.cuda == "12.9"'
-          .venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json
       - run: uv build
-      - run: uv run --no-sync embed-optim-audit-distribution
+      - run: uv run embed-optim-audit-distribution
       - name: Audit portable paper evidence closure
-        run: uv run --no-sync python scripts/portable_evidence.py --audit-only
+        run: uv run python scripts/portable_evidence.py --audit-only
       - name: Run every test in its explicit source version
-        run: uv run --no-sync python scripts/test_source_roles.py --output "$RUNNER_TEMP/source-role-tests"
+        run: uv run python scripts/test_source_roles.py --output "$RUNNER_TEMP/source-role-tests"
       - name: Reproduce complete numerical findings and reviewed paper
         run: >-
           make -C paper release PYTHON="$GITHUB_WORKSPACE/.venv/bin/python"
           NUMERICAL_BUNDLE="$GITHUB_WORKSPACE/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed"
           RELEASE_OUTPUT="$RUNNER_TEMP/complete-paper"
-      - run: uv run --no-sync ruff check src tests scripts
-      - run: uv run --no-sync ruff format --check src tests scripts
+      - run: uv run ruff check src tests scripts
+      - run: uv run ruff format --check src tests scripts
       - name: Retain actual test and document receipts
         if: always()
         uses: actions/upload-artifact@v4

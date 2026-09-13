@@ -1,8 +1,7 @@
 # Current DenseOn experiment and delivery
 
 Snapshot: **2026-09-13**. The scientific, paper and reproducible-source deliverables
-are locally verified and publicly available; hosted CI repair remains pending.
-Read [AGENTS.md](AGENTS.md) before acting and
+are complete and publicly available. Read [AGENTS.md](AGENTS.md) before acting and
 [PROJECT_STATUS.md](PROJECT_STATUS.md) for findings and interpretation limits.
 
 The source payload is published on GitHub main at
@@ -30,14 +29,12 @@ No new LateOn or blog work. Never touch gpu.py or its processes.
 | Backups | All 120 scientific checkpoints backed up; required analysis groups anonymously downloaded and verified |
 | Manuscript | Reviewed complete-result paper; 158-word abstract, eight-page main, all 13 pages inspected |
 | Complete reproduction | Original full numerical graph and reviewed paper pass actual version-isolated execution; eight shared inputs match exactly |
-| Local source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips |
-| Hosted CI | Run 34756580699 failed; formal-runtime and synthetic-fixture fixes await actual hosted verification |
+| Source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips |
 | Distribution | Actual wheel/sdist build and unchanged full audit pass; style, portable evidence, credential checks and isolated CFF validation pass |
 | Recovery | Both declared genuine AdamW/Muon 313-to-391 GPU restores pass complete bitwise endpoints; scoped CPU/wheel add-on checks also pass |
 | GitHub | Complete source payload publicly published and anonymously read back |
 
-There are **no live scientific or recovery jobs**. Hosted regression verification
-is still being repaired; local passing results are not remote CI acceptance. All earlier failed
+There are **no live scientific, recovery or regression jobs**. All earlier failed
 attempts and unknown exits are preserved; do not restart completed work as missing.
 The detailed preceding handoffs are retained at the published commit above and
 in the engineering archives. CURRENT_PROGRESS.json is historical accounting,
@@ -59,14 +56,7 @@ remain byte-identical in paper/legacy.Makefile, with explicit legacy targets.
 A passing source-version matrix is not admission of a changed fresh training
 worker or proof of another GPU/physical-host recovery case.
 
-## Remaining delivery verification and prior cleanup request
-
-Finish GitHub CI with the genuine hash-locked scientific runtime. The first
-hosted run used broader developer versions and exposed two producer-dependent
-synthetic fixtures. The repair changes CI and test fixtures, not training source,
-scientific results, frozen hashes or numerical tolerances. The reviewed PDF and
-83 other manifest-bound archived files are now public at commit
-`65c584ce11435dc84aec675a6ed733a9a5fc97d1`; its PDF was anonymously byte-verified.
+## Only unresolved prior request
 
 The historical Hugging Face withdrawal was safety-rejected: **9,629 paths /
 366,252,912,201 logical bytes** were not deleted. Do not retry, split or bypass

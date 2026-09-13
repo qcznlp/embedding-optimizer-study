@@ -187,8 +187,7 @@ Development only, in a **separate environment**:
 ```bash
 uv sync --extra dev --extra eval --extra analysis
 export PYTHONPATH="$PWD/src:$PWD"
-# Install the hash-locked formal runtime first; see CONTRIBUTING.md.
-CUDA_VISIBLE_DEVICES='' uv run --no-sync python -B scripts/test_source_roles.py --output /tmp/dense-source-tests-new
+CUDA_VISIBLE_DEVICES='' uv run python -B scripts/test_source_roles.py --output /tmp/dense-source-tests-new
 ```
 
 Do not install or upgrade packages in the live experiment environment.

@@ -5,17 +5,13 @@ analysis and 194 original factorial cases, with zero failures/errors/skips.
 The first current-role attempt's five legacy-entry routing failures are preserved;
 all current-role cases were then rerun successfully. Historical roles were not restarted.
 
-From a complete Git checkout with the [formal contributor runtime](../CONTRIBUTING.md)
-installed, including the genuine pinned FlashAttention extension:
+From a complete Git checkout with the contributor dependencies installed:
 
 ```bash
-uv run --no-sync python scripts/test_source_roles.py --output /tmp/dense-source-tests-new
+uv run python scripts/test_source_roles.py --output /tmp/dense-source-tests-new
 ```
 
 The output must not exist and must be outside the checkout. No GPU is required.
-The full suite includes actual native-runtime guards: the broad development lock
-alone is not sufficient. Missing FlashAttention or substituted package versions
-must fail, not be mocked into successful native-runtime admission.
 Document integration tests need `pdflatex`, `bibtex` and Poppler's PDF tools.
 The command retains input hashes, source-role assignments, complete logs, JUnit
 case inventories and actual child exits. Any failure, error, skipped case,

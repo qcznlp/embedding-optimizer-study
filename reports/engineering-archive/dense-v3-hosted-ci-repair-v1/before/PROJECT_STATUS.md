@@ -33,7 +33,7 @@ was removed or reclassified by this documentation consolidation.
 | Version-isolated complete paper | Actual wheel entry recomputes the entire original primary/factorial graph, checks eight shared inputs, and builds the reviewed manuscript; 194 integration tests pass | [One-command reproduction](docs/versioned-paper-reproduction.md), [actual execution](reports/engineering-archive/dense-v3-versioned-paper-reproduction-v1/README.md) |
 | Reviewed default/release transition | Default/all select paper/current; actual Make default and complete release both pass; original Make preserved as legacy.Makefile; README conclusion generated from authenticated outputs | [Build instructions](paper/README.md), [all-source test entry](docs/source-version-testing.md) |
 
-All 3,800 local source-version tests pass (current 2,873; original analysis 733;
+All 3,800 source-version tests now pass (current 2,873; original analysis 733;
 original factorial 194), with zero failures/errors/skips. Full distribution,
 style, portable evidence and CFF checks also pass. The complete source payload is
 public on GitHub main at `803c70dcc3a2c195c5f56ee5fc0e3c633d645524`, with successful
@@ -106,7 +106,7 @@ A backup or numerical replay is not proof of bitwise GPU resume or fresh-host ex
 The complete source payload is published and anonymously readable. It includes
 the reviewed manuscript, original complete numerical closure, explicit source-role
 test runner, restoration tools, immutable protocols and retained execution evidence.
-All 3,800 cases pass locally across the three declared source roles; current default/release
+All 3,800 cases pass across the three declared source roles; current default/release
 and original distribution checks pass.
 
 The two declared GPU recovery cases and portable CPU/wheel adapter checks are
@@ -115,15 +115,7 @@ physical second host. No additional experiment or recovery run is required for
 the delivered paper. Original failed attempts, unknown exits and source-role
 refusals remain preserved, not rewritten as successes.
 
-Hosted CI run 34756580699 failed: broad developer dependencies differed from the
-formal runtime, and two synthetic fixtures depended on a producer path or dirty
-checkout. The CI/runtime installation and fixture repair still need actual
-hosted verification. No scientific source, lock or numerical tolerance changes.
-Commit `65c584ce11435dc84aec675a6ed733a9a5fc97d1` additionally publishes the
-reviewed PDF and 83 other unchanged manifest-bound archived members previously
-omitted by ignore rules; the reviewed PDF was anonymously byte-verified.
-
-The previously requested historical HF erasure also remains unexecuted because
+Only the previously requested historical HF erasure remains unexecuted because
 the deletion was safety-rejected. It requires separate exact-scope direction and
 dependency safeguards for current/shared artifacts. Do not retry or subdivide the
 denied deletion. Current scientific backups are not affected.
@@ -144,7 +136,6 @@ succeeded and was independently read back; this does not reopen the denied API s
 The existing access question must not be repeated; no alternate credentials or denial bypass.
 The rejected historical HF erasure remains rejected; nothing was deleted.
 
-The scientific and paper deliverables are complete and the source is public;
-hosted CI repair remains pending. The separately requested historical HF erasure
-remains unresolved; it must not trigger additional
+The scientific, paper and reproducible-source deliverables are complete. The separately
+requested historical HF erasure remains unresolved; it must not trigger additional
 training, repeated release checks or a retry of the denied deletion.

@@ -1,7 +1,6 @@
 import ast
 import copy
 import json
-import subprocess
 from pathlib import Path
 
 import pytest
@@ -10,7 +9,7 @@ from embed_optim import primary_v3_completion as completion
 from embed_optim import primary_v3_io as io
 from embed_optim import primary_v3_training as training
 from embed_optim.primary_contract import PrimaryContract, digest, read_json
-from embed_optim.primary_v3_contract import PARENTS, PATHS, SCOPE, PrimaryV3Contract
+from embed_optim.primary_v3_contract import PATHS, SCOPE, PrimaryV3Contract
 
 ROOT = Path(__file__).resolve().parents[1]
 PROTOCOL = ROOT / "configs/dense_primary_v3_protocol.json"
@@ -146,19 +145,8 @@ def test_status_edit_does_not_authorize_a_split_or_uncommitted_checkout(tmp_path
     path.write_text(json.dumps(payload))
     with pytest.raises(ValueError, match="one assembled committed"):
         PrimaryV3Contract.load(path, ROOT, CANDIDATE, require_released=True)
-    # Make the uncommitted condition explicit. The developer's actual checkout
-    # can now be clean and committed; that must not change this negative test.
-    uncommitted = tmp_path / "uncommitted-repository"
-    uncommitted.mkdir()
-    subprocess.run(["git", "init", "-q", str(uncommitted)], check=True)
-    for name, _ in PARENTS.values():
-        target = uncommitted / name
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes((ROOT / name).read_bytes())
-    inside = uncommitted / "false-release.json"
-    inside.write_bytes(path.read_bytes())
     with pytest.raises(ValueError, match="exact committed"):
-        PrimaryV3Contract.load(inside, uncommitted, uncommitted, require_released=True)
+        PrimaryV3Contract.load(path, ROOT, ROOT, require_released=True)
 
 
 def test_v3_io_retains_every_existing_transfer_and_admission_operation():
