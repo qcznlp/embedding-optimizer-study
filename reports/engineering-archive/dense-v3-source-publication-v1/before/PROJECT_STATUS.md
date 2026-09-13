@@ -1,8 +1,7 @@
 # Project status and evidence
 
 Snapshot: **2026-09-13**. Scientific computation and both declared exact recovery
-checks are complete; the scoped recovery add-on and complete source payload are publicly
-delivered and remotely verified. Read [CURRENT_EXPERIMENT.md](CURRENT_EXPERIMENT.md)
+checks are complete; the scoped recovery add-on is packaged locally, while final source delivery remains. Read [CURRENT_EXPERIMENT.md](CURRENT_EXPERIMENT.md)
 for the next actions and [AGENTS.md](AGENTS.md) for binding safety/integrity limits.
 
 The full 2,380-line predecessor is preserved verbatim in
@@ -35,10 +34,7 @@ was removed or reclassified by this documentation consolidation.
 
 All 3,800 source-version tests now pass (current 2,873; original analysis 733;
 original factorial 194), with zero failures/errors/skips. Full distribution,
-style, portable evidence and CFF checks also pass. The complete source payload is
-public on GitHub main at `803c70dcc3a2c195c5f56ee5fc0e3c633d645524`, with successful
-normal Git push and ten anonymous byte-identical readbacks. See
-[publication evidence](reports/engineering-archive/dense-v3-source-publication-v1/README.md).
+style, portable evidence and CFF checks also pass. Source publication remains.
 `/tmp/dense-v3-release-transition.zFMpOKti/RUNNING.md` records terminal handles
 and preserved failures. No scientific experiment or statistical result changed.
 
@@ -101,24 +97,56 @@ Immutable revisions and manifests, rather than mutable repository HEADs, identif
 artifacts. Do not repeat their completed uploads/downloads merely to restate progress.
 A backup or numerical replay is not proof of bitwise GPU resume or fresh-host execution.
 
-## Delivery status and remaining limitation
+## Remaining delivery work
 
-The complete source payload is published and anonymously readable. It includes
-the reviewed manuscript, original complete numerical closure, explicit source-role
-test runner, restoration tools, immutable protocols and retained execution evidence.
-All 3,800 cases pass across the three declared source roles; current default/release
-and original distribution checks pass.
+1. **Complete final source delivery around the verified versioned consumers.**
+   The new `embed-optim-reproduce-paper` entry now executes the original numerical
+   consumers in an authenticated isolated process and the reviewed manuscript from
+   the current wheel. Actual full execution passes: 82694 / f9d233 / exit 0, with
+   29 current wheel modules, 26 combined and 84 primary original numerical modules.
+   All eight shared inputs match; all 194 integration tests pass. The old 56/60-file
+   publication contracts and their config/optimizer mismatch remain preserved, not
+   relabelled as passing. The original factorial fresh-worker source contract is
+   likewise not admitted by this numerical/document command. Finish curated source,
+   runtime/default-entry and release-parent delivery with these explicit boundaries.
+2. **Preserve passing distribution admission.** The original full audit now passes after
+   authenticated runtime roles/current documentation were separated from historical provenance.
+   Keep the original scanner and all negative controls through source consolidation; see
+   the [actual portable-input checks](reports/engineering-archive/dense-v3-portable-input-roles-v1/README.md).
+3. **Portable training recovery.** Both earlier device-only attempts reach step 391, but both exact
+   endpoint readers fail. All 134 model tensors and optimizer moments differ; scheduler,
+   counters and all-rank RNG match. Those failures remain preserved. See
+   [the complete diagnosis](reports/engineering-archive/dense-v3-resume-endpoint-diagnosis-v1/README.md).
+   Subsequent [CPU boundary checks](reports/engineering-archive/dense-v3-resume-cpu-boundaries-v1/README.md)
+   show exact genuine model/optimizer loading and matching resumed index order. This
+   is now followed by [actual four-rank GPU evidence](reports/engineering-archive/dense-v3-first-gradient-boundary-v1/README.md):
+   both device-loaded states and first four token batches match exactly; all post-DDP
+   gradients agree across ranks. Independent FP64 rank means differ by relative L2
+   2.32e-8 / 2.47e-8 with fitted scale approximately one. No optimizer update was made,
+   no endpoint tolerance was changed.
+   The subsequent [paired GPU boundary](reports/engineering-archive/dense-v3-paired-backward-boundary-v1/README.md)
+   holds actual weights/inputs/RNG fixed and finds all 536 local contributions per rank
+   identical, but 123/134 post-DDP tensors different in both cases. Relative L2 differences
+   are 2.0473483980114333e-8 / 2.1862897063898537e-8; DDP bucket rebuilding is observed.
+   Both coordinators and all eight ranks exit zero without any optimizer update. This
+   localizes the paired difference after local differentiation.
+   Independent CPU comparison artifacts are complete; its original tool exit is unknown.
+   The [subsequent warm-reducer restoration](reports/engineering-archive/dense-v3-warm-reducer-recovery-v1/README.md)
+   now passes both complete original bitwise endpoint comparisons after 78 updates.
+   All eight ranks and both fresh CPU readers exit zero. This resolves the two declared
+   cases. The separate `embed_optim_restore` namespace now packages the original computation
+   with immutable references; its CPU integration and wheel execution pass. The new wrapper
+   itself has not been rerun on GPUs, and native source/resource admission remains mandatory.
+   Do not repeat successful diagnostics
+   as missing, claim all-checkpoint/NorMuon/physical-second-host coverage, or replace science.
+4. **Final reviewed publication.** Finish the assembled-source/runtime/release-parent
+   transition and strict current scientific/manuscript gates before source publication.
+   Local files/builds are not evidence that GitHub has been updated.
 
-The two declared GPU recovery cases and portable CPU/wheel adapter checks are
-complete. Their coverage remains bounded: not every checkpoint, NorMuon or a
-physical second host. No additional experiment or recovery run is required for
-the delivered paper. Original failed attempts, unknown exits and source-role
-refusals remain preserved, not rewritten as successes.
-
-Only the previously requested historical HF erasure remains unexecuted because
-the deletion was safety-rejected. It requires separate exact-scope direction and
-dependency safeguards for current/shared artifacts. Do not retry or subdivide the
-denied deletion. Current scientific backups are not affected.
+The original failed resume attempts, failed outer-CWD numerical replay and successful
+source-identical component-CWD replay are all preserved. The latter uses unchanged
+I/O guards and has no refused reads/network attempts; it does not relabel the first failure.
+No engineering incident belongs in the manuscript.
 
 ## Runtime and access status
 
@@ -131,11 +159,10 @@ Completed/failing earlier sessions must not be polled or restarted as missing wo
 Protected historical stopped controllers remain protected;
 their exact identities and ledger rules are in AGENTS.md and the preserved predecessor.
 
-The GitHub 403 affected issue comment/update writes. The normal Git source push now
-succeeded and was independently read back; this does not reopen the denied API surface.
+The GitHub 403 affected issue comment/update writes, not a tested Git push. Read access and
+account-level admin/push metadata succeeded, but application write recovery remains unverified.
 The existing access question must not be repeated; no alternate credentials or denial bypass.
 The rejected historical HF erasure remains rejected; nothing was deleted.
 
-The scientific, paper and reproducible-source deliverables are complete. The separately
-requested historical HF erasure remains unresolved; it must not trigger additional
-training, repeated release checks or a retry of the denied deletion.
+Keep the goal active: the completed scientific matrix and reviewed paper are substantial
+results, but the remaining release and recovery requirements have not been verified complete.

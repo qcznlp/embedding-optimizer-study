@@ -21,9 +21,8 @@ representation and crossed-continuation findings are in the
 [reviewed paper](paper/current/README.md) and [evidence summary](PROJECT_STATUS.md).
 <!-- FINAL-CONCLUSION:END -->
 
-The complete source payload is **publicly available** on GitHub main, with
-[verified publication and anonymous readback](reports/engineering-archive/dense-v3-source-publication-v1/README.md).
-For completion status and remaining limits, read [CURRENT_EXPERIMENT.md](CURRENT_EXPERIMENT.md);
+This is the **local development checkout**, not a completed source release.
+For current work and exact running handles, read [CURRENT_EXPERIMENT.md](CURRENT_EXPERIMENT.md);
 agents must also follow [AGENTS.md](AGENTS.md). Dated evidence is retained in
 [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
@@ -42,7 +41,7 @@ closest references: eight-page main text, 158-word abstract, all 13 pages
 visually inspected. The default build now selects this paper, and the complete
 Make release-artifact gate has passed. The conclusion above is generated from
 its authenticated numerical outputs. All 3,800 source-version tests now pass;
-the source payload has been published and verified remotely.
+final source publication remains.
 
 The complete manuscript now has a [stable source/build entry](paper/current/README.md):
 
@@ -52,8 +51,7 @@ make -C paper current CURRENT_OUTPUT=/absolute/path/to/new-paper-build
 
 The actual Make target and an extracted-wheel rebuild both pass; the latter
 loads all study modules from the wheel and reproduces the reviewed PDF text.
-See [original package verification](reports/engineering-archive/dense-v3-current-paper-entry-v1/README.md)
-and [completed release transition](reports/engineering-archive/dense-v3-release-transition-v1/README.md).
+See [verification and remaining release findings](reports/engineering-archive/dense-v3-current-paper-entry-v1/README.md).
 
 | Component | Verified state |
 | --- | --- |
@@ -68,11 +66,11 @@ and [completed release transition](reports/engineering-archive/dense-v3-release-
 | Distribution portability | Original full audit passes; real relocated input read is unchanged; historical failures and all negative controls retained |
 | Primary training source | All 33 modules and 56 bindings match the actual training snapshot; all 12 run sources load in this checkout; [inspection instructions](docs/current-training-source.md) |
 | Full source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips; [one-command test entry](docs/source-version-testing.md) |
-| Recovery and source delivery | Both genuine GPU restores pass exact endpoints; scoped recovery add-on and current default/release entries work; complete source payload published and anonymously verified |
+| Recovery and remaining delivery | Both genuine GPU restores pass exact endpoints; scoped recovery add-on and current default/release entries work; actual source publication remains |
 
 All scientific training/evaluation and the statistical, document, numerical/PDF
 reconstruction and result-backup pipelines have finished. Full source-version
-regression and distribution checks pass, and source publication is verified. No scientific training/evaluation is
+regression and distribution checks pass; source publication remains. No scientific training/evaluation is
 running. Both bounded [warm-reducer restoration checks](reports/engineering-archive/dense-v3-warm-reducer-recovery-v1/README.md)
 now pass bitwise endpoint equality and are terminal. Do not restart completed work.
 The [earlier diagnosis](reports/engineering-archive/dense-v3-resume-endpoint-diagnosis-v1/README.md)
@@ -176,8 +174,8 @@ Public data/model repositories are
 [checkpoints](https://huggingface.co/qcz/embedding-optimizer-study-checkpoints)
 and [analysis artifacts](https://huggingface.co/datasets/qcz/embedding-optimizer-study-analysis-artifacts).
 Use the guides' **immutable revisions and digests**, not mixed historical
-namespaces. The complete original numerical closure and versioned source/test
-entries are now included in the verified public GitHub payload. Numerical reconstruction
+namespaces. Some source/replay bundles remain local unpublished WIP; a clean
+remote clone is not yet guaranteed to contain them. Numerical reconstruction
 is not a fresh encoding, GPU-training replay or physical second-host proof.
 
 ## Development and release
@@ -187,7 +185,7 @@ Development only, in a **separate environment**:
 ```bash
 uv sync --extra dev --extra eval --extra analysis
 export PYTHONPATH="$PWD/src:$PWD"
-CUDA_VISIBLE_DEVICES='' uv run python -B scripts/test_source_roles.py --output /tmp/dense-source-tests-new
+CUDA_VISIBLE_DEVICES='' uv run python -B -m pytest -q
 ```
 
 Do not install or upgrade packages in the live experiment environment.

@@ -10,9 +10,8 @@ strict complete-document checker passes the 158-word abstract/eight-page main;
 all thirteen pages were visually reviewed. **The default `make` and `make all`
 now build this reviewed manuscript.** `make release` executes the full original
 numerical reconstruction before joining its results to the reviewed paper.
-Both new Make entry points and all 3,800 source-version tests have passed. The
-complete source payload is now publicly published and anonymously verified;
-see [publication evidence](../reports/engineering-archive/dense-v3-source-publication-v1/README.md).
+Both new Make entry points have actually passed. Remote source publication and
+the remaining source-version test integration are separate delivery requirements.
 
 The complete DenseOn paper for the AdamW/Muon/NorMuon optimizer study is in
 `current/`. The parent `main.tex` is a historical development template, not the

@@ -70,4 +70,6 @@ complete numerical/document command, with explicit `NUMERICAL_BUNDLE` and new
 `RELEASE_OUTPUT` arguments; its actual execution has passed. The original
 historical Make source is preserved in `paper/legacy.Makefile`, and its guards
 remain accessible through `make legacy-release`. Neither target publishes
-remotely or substitutes for the remaining complete source-version test audit.
+remotely or substitutes for the complete source-version test audit. All 3,800
+source-version tests and separate source publication have now passed; see
+[publication evidence](../reports/engineering-archive/dense-v3-source-publication-v1/README.md).

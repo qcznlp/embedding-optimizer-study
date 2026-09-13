@@ -3,9 +3,8 @@
 ## Current v3 completion — 2026-09-13
 
 The scientific matrix is complete. Use [current status](../CURRENT_EXPERIMENT.md)
-and [agent instructions](../AGENTS.md) for verified delivery and the unresolved
-historical HF cleanup. No scientific/recovery jobs remain live.
-**Do not run the historical controllers below.** Their
+and [agent instructions](../AGENTS.md) for live recovery handles and remaining
+source-release work. **Do not run the historical controllers below.** Their
 older namespaces, waiting conditions and missing-result statements are retained
 provenance, not instructions to repeat experiments or restart stopped processes.
 
@@ -17,14 +16,13 @@ provenance, not instructions to repeat experiments or restart stopped processes.
 | Durability and tracking | All 120 checkpoints backed up; required analysis groups downloaded anonymously and verified; all 24 W&B runs/history checked; [restoration guides](checkpoint-restoration.md) | Backup does not establish exact GPU continuation or physical second-host execution |
 | Numerical reconstruction | Complete original primary/factorial graph and generated findings reproduced; [closed replay entry](paper-results-reproduction.md#complete-paper-replay) | Preserve the recorded working-directory requirement and original failed attempt |
 | Reviewed manuscript | Complete result text, eight-page main, 158-word abstract and all 13 pages checked; actual new default/all build passes; [current build](../paper/current/README.md) | Document acceptance is not full source publication; historical Make rules are preserved in legacy.Makefile |
-| Source/distribution | Primary numerics integrated; original distribution audit, complete numerical/current-paper wheel/Make execution and all 3,800 source-version tests pass; public source verified; [composition guide](versioned-paper-reproduction.md) | Preserve original fresh-worker admission boundaries; source publication is not a new GPU or physical-second-host experiment |
+| Source/distribution | Primary numerics integrated; original distribution audit passes; actual version-isolated complete numerical/current-paper wheel execution and new Make release pass, with 194 composition integration tests; [composition guide](versioned-paper-reproduction.md) | Preserve original fresh-worker admission boundaries; finish [full source-version tests](source-version-testing.md), final package/hygiene checks and actual source publication |
 | Exact training recovery | Both genuine warmed restores pass complete bitwise endpoint comparison after 78 updates; [actual recovery](../reports/engineering-archive/dense-v3-warm-reducer-recovery-v1/README.md) | Two tested cases, not all checkpoints, NorMuon, a physical second host or a packaged general recovery entry |
-| Final publication | All 3,800 source-version cases pass; current default/release and distribution gates pass; no pending current results or Type 3 fonts; credential checks complete; source payload published at 803c70dc and anonymously verified | Previously safety-denied historical HF erasure was not executed; it is separate from the current scientific backups and publication |
+| Final publication | Local reviewed paper and content-addressed artifacts exist | Relevant tests/audits, assembled-source transition, no pending result macros, no Type 3 fonts, credential hygiene and actual authorized publication still required |
 
 This table maps current accepted evidence; it does not alter scientific estimands,
 retroactively pass an old source lock, waive a failed test, authorize a stopped
-controller transition. Remote source publication is now independently verified;
-see [publication evidence](../reports/engineering-archive/dense-v3-source-publication-v1/README.md). The historical
+controller transition or claim the remote GitHub source is current. The historical
 checklists and their original command order remain below for audit. The owner has
 authorized public visibility; their older private-only conditions are superseded.
 
