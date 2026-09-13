@@ -124,6 +124,19 @@ including failed child logs, and runs this full gate before the expensive matrix
 No numerical source/guard/tolerance is changed. Both numerical and complete test
 gates remain mandatory. Inspect the next exact terminal artifact before deciding a fix.
 
+Run34768399864's retained passive diagnostic now confirms the CPU cause: AMD EPYC7763
+has AVX2 but no AVX512; NumPy OpenBLAS Haswell reproduces the exact same136 SVD
+diagnostic differences as the local Haswell control. Functional result tables match
+exactly, but the original full gate correctly fails. See docs/cpu-numerical-replay.md
+and the sealed dense-v3-ci-cpu-emulation-v1 evidence. The local forced-Skylake
+Intel SDE probe actually exits zero with exact tables and decisions. Prospective CI
+uses the official SHA-bound unmodified kit for that probe and the full Make release,
+then all3800 tests. Complete emulated/hosted acceptance remains pending; check
+/tmp/ci-sde-runtime.lJfWrfwu and the active /tmp/dense-v3-flash-wheel.L7A0IiP0/RUNNING.md.
+Never force SkylakeX natively on AVX2-only hardware, attach to existing processes,
+disable child following, modify host security settings, redistribute the SDE binary,
+or relax original numeric/source/document comparisons. Its licenses stay with the kit.
+
 One earlier requested cleanup is unresolved: the safety-denied historical HF
 withdrawal was never executed. Do not retry, split or bypass that denial. It
 requires separate exact-scope direction and current/shared-artifact protection,

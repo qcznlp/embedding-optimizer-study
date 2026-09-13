@@ -32,7 +32,7 @@ No new LateOn or blog work. Never touch gpu.py or its processes.
 | Complete reproduction | Original full numerical graph and reviewed paper pass actual version-isolated execution; eight shared inputs match exactly |
 | Local source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips |
 | Hosted CI | Initial tests failed in run 34756580699; repair run 34758294285 exposed a missing installer override; corrected hashed-lock resolution passes locally, hosted verification pending |
-| Latest independent check | Run 34766616352 passed all 3800 cases with no errors/failures/skips, including the exact primary runtime. The full numerical-to-paper step failed; its internal logs were omitted from the artifact list. Complete failure-output retention and early numerical execution are being added for diagnosis |
+| Latest independent check | Run 34766616352 passed all 3800 cases without errors/failures/skips. Run 34768399864 confirms that Haswell-versus-SkylakeX BLAS dispatch changes 136 SVD diagnostic floats, not the functional result tables. A local forced-instruction-emulation probe matches exactly; complete emulated/hosted replay remains pending |
 | Distribution | Actual wheel/sdist build and unchanged full audit pass; style, portable evidence, credential checks and isolated CFF validation pass |
 | Recovery | Both declared genuine AdamW/Muon 313-to-391 GPU restores pass complete bitwise endpoints; scoped CPU/wheel add-on checks also pass |
 | GitHub | Complete source payload publicly published and anonymously read back |

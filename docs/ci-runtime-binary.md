@@ -54,3 +54,8 @@ It reconstructs the recorded primary environment without rewriting either origin
 lock, any source receipt, scientific code, checkpoint or test assertion. CI also
 runs the unchanged actual-source tests immediately after installation to fail fast.
 Full hosted acceptance remains pending until the replacement run completes.
+
+Run 34766616352 subsequently passed all 3,800 tests and the native runtime checks.
+The remaining numerical-to-paper failure was isolated to backend-dependent SVD
+diagnostics. See [the exact CPU replay environment](cpu-numerical-replay.md);
+no scientific source, reference value or comparison is relaxed.

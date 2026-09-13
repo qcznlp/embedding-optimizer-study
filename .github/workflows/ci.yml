@@ -40,10 +40,32 @@ jobs:
       - run: uv run --no-sync embed-optim-audit-distribution
       - name: Audit portable paper evidence closure
         run: uv run --no-sync python scripts/portable_evidence.py --audit-only
+      - name: Prepare authenticated CPU instruction emulation
+        run: |
+          mkdir "$RUNNER_TEMP/sde-runtime" "$RUNNER_TEMP/cpu-replay-diagnostics"
+          curl --fail --location --retry 2 https://downloadmirror.intel.com/924984/sde-external-10.13.1-2026-07-28-lin.tar.xz --output "$RUNNER_TEMP/sde-runtime/intel-sde.tar.xz"
+          printf '94e97d623fec54385686e1e7ba65ebc9941748c05ee451423948334892bf2b50  %s\n' "$RUNNER_TEMP/sde-runtime/intel-sde.tar.xz" | sha256sum --check
+          tar -xJf "$RUNNER_TEMP/sde-runtime/intel-sde.tar.xz" --directory "$RUNNER_TEMP/sde-runtime"
+          lscpu > "$RUNNER_TEMP/cpu-replay-diagnostics/host-cpu.txt"
+      - name: Verify original functional decisions under CPU emulation
+        env:
+          CUDA_VISIBLE_DEVICES: ""
+          PYTHONDONTWRITEBYTECODE: "1"
+          OMP_NUM_THREADS: "1"
+          OPENBLAS_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+          OPENBLAS_CORETYPE: SkylakeX
+        run: |
+          "$RUNNER_TEMP/sde-runtime/sde-external-10.13.1-2026-07-28-lin/sde64" -skx -force_emulate skx -- "$GITHUB_WORKSPACE/.venv/bin/python" -B reports/engineering-archive/dense-v3-ci-functional-diagnostic-v1/inspect_functional.py "$GITHUB_WORKSPACE/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed/primary" "$RUNNER_TEMP/cpu-replay-diagnostics/functional.json" > "$RUNNER_TEMP/cpu-replay-diagnostics/runtime.log" 2>&1
+          .venv/bin/python -c 'import json, os; from pathlib import Path; r=json.loads((Path(os.environ["RUNNER_TEMP"])/"cpu-replay-diagnostics/functional.json").read_text()); assert r["functional_tables_exact"] is True and r["decisions_exact"] is True and r["differences"] == [] and r["acceptance_override"] is False'
       - name: Reproduce complete numerical findings and reviewed paper
         id: numerical
+        env:
+          CUDA_VISIBLE_DEVICES: ""
+          OPENBLAS_CORETYPE: SkylakeX
         run: >-
-          make -C paper release PYTHON="$GITHUB_WORKSPACE/.venv/bin/python"
+          make -C paper release
+          PYTHON="$RUNNER_TEMP/sde-runtime/sde-external-10.13.1-2026-07-28-lin/sde64 -skx -force_emulate skx -- $GITHUB_WORKSPACE/.venv/bin/python"
           NUMERICAL_BUNDLE="$GITHUB_WORKSPACE/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed"
           RELEASE_OUTPUT="$RUNNER_TEMP/complete-paper"
       - name: Capture original functional diagnostics after replay failure
@@ -72,3 +94,4 @@ jobs:
             ${{ runner.temp }}/source-role-tests/*.xml
             ${{ runner.temp }}/source-role-tests/*.log
             ${{ runner.temp }}/complete-paper/
+            ${{ runner.temp }}/cpu-replay-diagnostics/

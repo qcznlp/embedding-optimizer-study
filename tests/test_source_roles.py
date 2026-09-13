@@ -71,6 +71,35 @@ def test_real_roles_partition_every_test_without_overlap():
     assert "FLASH_ATTENTION_SKIP_CUDA_BUILD" not in steps[formal]["env"]
     assert "uv run --no-sync" in steps[suite]["run"]
     assert all(step.get("continue-on-error", False) is False for step in steps)
+    emulator = next(
+        i
+        for i, step in enumerate(steps)
+        if step.get("name") == "Prepare authenticated CPU instruction emulation"
+    )
+    probe = next(
+        i
+        for i, step in enumerate(steps)
+        if step.get("name") == "Verify original functional decisions under CPU emulation"
+    )
+    assert formal < emulator < probe < numerical < suite
+    assert (
+        "94e97d623fec54385686e1e7ba65ebc9941748c05ee451423948334892bf2b50" in steps[emulator]["run"]
+    )
+    assert "sha256sum --check" in steps[emulator]["run"]
+    assert "https://downloadmirror.intel.com/924984/" in steps[emulator]["run"]
+    for index in (probe, numerical):
+        assert "-skx -force_emulate skx --" in steps[index]["run"]
+        assert steps[index]["env"]["OPENBLAS_CORETYPE"] == "SkylakeX"
+        assert steps[index]["env"]["CUDA_VISIBLE_DEVICES"] == ""
+        assert "if" not in steps[index]
+    assert 'r["decisions_exact"] is True' in steps[probe]["run"]
+    assert "make -C paper release" in steps[numerical]["run"]
+    assert "${{ runner.temp }}/cpu-replay-diagnostics/\n" in retained["with"]["path"]
+    assert all(
+        forbidden not in step.get("run", "")
+        for step in steps
+        for forbidden in ("ptrace_scope", "setenforce", "-attach-pid", "-no-follow-child")
+    )
 
 
 @pytest.fixture

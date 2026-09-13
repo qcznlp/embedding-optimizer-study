@@ -148,3 +148,12 @@ The scientific and paper deliverables are complete and the source is public;
 hosted CI repair remains pending. The separately requested historical HF erasure
 remains unresolved; it must not trigger additional
 training, repeated release checks or a retry of the denied deletion.
+
+Latest independent verification: run34766616352 passed every3,800 source-role test.
+Run34768399864 confirms the remaining exact-replay issue is CPU BLAS dispatch:
+functional tables agree exactly, while136 SVD diagnostic values differ at up to
+4.440892098500626e-15. Whole remote decisions match the local Haswell control.
+An actual local forced-Skylake instruction-emulation probe matches all tables and
+diagnostics and exits zero. Full emulated/hosted reconstruction is not yet accepted.
+See [CPU runtime and unchanged gates](docs/cpu-numerical-replay.md) and
+[preserved diagnostic evidence](reports/engineering-archive/dense-v3-ci-cpu-emulation-v1/README.md).
