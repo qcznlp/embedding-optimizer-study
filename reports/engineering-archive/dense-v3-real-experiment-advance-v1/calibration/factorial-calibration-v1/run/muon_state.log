@@ -1,0 +1,17 @@
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in ModernBertModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 13886.02it/s]
+Traceback (most recent call last):
+  File "/root/embedding-optimizer-v3-experiment/launch/factorial-calibration-v1/calibration_dispatch.py", line 421, in <module>
+    print(json.dumps(function(args), sort_keys=True, allow_nan=False), flush=True)
+                     ^^^^^^^^^^^^^^
+  File "/root/embedding-optimizer-v3-experiment/launch/factorial-calibration-v1/calibration_dispatch.py", line 244, in worker
+    calibration.export_gradients(locations, args.worker, root)
+  File "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/factorial_v3_calibration.py", line 164, in export_gradients
+    require_gradient_manifest(manifest, request, output / "gradients")
+  File "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/factorial_v3_inputs.py", line 256, in require_gradient_manifest
+    require_same(
+  File "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/primary_contract.py", line 98, in require_same
+    raise ValueError("Artifact belongs to a different primary identity")
+ValueError: Artifact belongs to a different primary identity

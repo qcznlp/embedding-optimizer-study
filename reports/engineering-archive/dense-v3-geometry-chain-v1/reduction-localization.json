@@ -1,0 +1,170 @@
+{
+  "boundary": "A scalar geometry-reduction precision failure on identical FP32 displacement inputs, not a gradient, optimizer or retrieval finding.",
+  "failed_attempt": "/tmp/dense-v3-geometry.75bnhK",
+  "geometry_protocol": {
+    "bytes": 7591,
+    "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_geometry_protocol.json",
+    "sha256": "9f11cbcdfa8b75593cc3ebd22336e5a34073531426431da88cf904f6e470f358"
+  },
+  "gpu_workers": 0,
+  "inputs_changed": false,
+  "model_updates": 0,
+  "observed_at_utc": "2026-09-06T19:33:46.376530+00:00",
+  "original_atol": 1e-10,
+  "original_rtol": 2e-05,
+  "rows": [
+    {
+      "fp32_relative_error": 2.703791337147285e-06,
+      "fp32_vector_norm": 0.02190246246755123,
+      "fp64_relative_error": 6.969775812334009e-15,
+      "fp64_vector_norm": 0.02190252168739948,
+      "numpy_fp64_norm": 0.021902521687399628,
+      "original_gate_passed": true,
+      "parameters": 589824,
+      "run_id": "diagnostic-natural-adamw",
+      "scalar_fsum_norm": 0.02190252168739963,
+      "tensor": "0.layers.0.attn.Wo.weight"
+    },
+    {
+      "fp32_relative_error": 1.7181380764075333e-05,
+      "fp32_vector_norm": 0.038475047796964645,
+      "fp64_relative_error": 3.5527925007054823e-14,
+      "fp64_vector_norm": 0.03847570886276742,
+      "numpy_fp64_norm": 0.03847570886276877,
+      "original_gate_passed": true,
+      "parameters": 1769472,
+      "run_id": "diagnostic-natural-adamw",
+      "scalar_fsum_norm": 0.038475708862768784,
+      "tensor": "0.layers.0.attn.Wqkv.weight"
+    },
+    {
+      "fp32_relative_error": 1.3420849715131302e-05,
+      "fp32_vector_norm": 0.03763877972960472,
+      "fp64_relative_error": 1.566995716576769e-14,
+      "fp64_vector_norm": 0.0376392848807899,
+      "numpy_fp64_norm": 0.037639284880790484,
+      "original_gate_passed": true,
+      "parameters": 1769472,
+      "run_id": "diagnostic-natural-adamw",
+      "scalar_fsum_norm": 0.03763928488079049,
+      "tensor": "0.layers.0.mlp.Wi.weight"
+    },
+    {
+      "fp32_relative_error": 3.7771584600969998e-06,
+      "fp32_vector_norm": 0.02660340629518032,
+      "fp64_relative_error": 8.476854338593916e-15,
+      "fp64_vector_norm": 0.0266035067808408,
+      "numpy_fp64_norm": 0.026603506780841026,
+      "original_gate_passed": true,
+      "parameters": 884736,
+      "run_id": "diagnostic-natural-adamw",
+      "scalar_fsum_norm": 0.026603506780841026,
+      "tensor": "0.layers.0.mlp.Wo.weight"
+    },
+    {
+      "fp32_relative_error": 4.112112325238626e-06,
+      "fp32_vector_norm": 0.009823174215853214,
+      "fp64_relative_error": 4.5914511863981075e-15,
+      "fp64_vector_norm": 0.00982321461001504,
+      "numpy_fp64_norm": 0.009823214610015084,
+      "original_gate_passed": true,
+      "parameters": 589824,
+      "run_id": "diagnostic-natural-muon",
+      "scalar_fsum_norm": 0.009823214610015086,
+      "tensor": "0.layers.0.attn.Wo.weight"
+    },
+    {
+      "fp32_relative_error": 2.3820648151802597e-05,
+      "fp32_vector_norm": 0.018231220543384552,
+      "fp64_relative_error": 1.807830739725502e-14,
+      "fp64_vector_norm": 0.01823165483321923,
+      "numpy_fp64_norm": 0.018231654833219556,
+      "original_gate_passed": false,
+      "parameters": 1769472,
+      "run_id": "diagnostic-natural-muon",
+      "scalar_fsum_norm": 0.01823165483321956,
+      "tensor": "0.layers.0.attn.Wqkv.weight"
+    },
+    {
+      "fp32_relative_error": 1.9841417684316444e-05,
+      "fp32_vector_norm": 0.017569171264767647,
+      "fp64_relative_error": 8.49119498123896e-15,
+      "fp64_vector_norm": 0.01756951986894973,
+      "numpy_fp64_norm": 0.017569519868949876,
+      "original_gate_passed": true,
+      "parameters": 1769472,
+      "run_id": "diagnostic-natural-muon",
+      "scalar_fsum_norm": 0.01756951986894988,
+      "tensor": "0.layers.0.mlp.Wi.weight"
+    },
+    {
+      "fp32_relative_error": 3.6534771834107226e-06,
+      "fp32_vector_norm": 0.01021608803421259,
+      "fp64_relative_error": 1.6980372603877541e-15,
+      "fp64_vector_norm": 0.010216050710104398,
+      "numpy_fp64_norm": 0.010216050710104415,
+      "original_gate_passed": true,
+      "parameters": 884736,
+      "run_id": "diagnostic-natural-muon",
+      "scalar_fsum_norm": 0.010216050710104415,
+      "tensor": "0.layers.0.mlp.Wo.weight"
+    },
+    {
+      "fp32_relative_error": 3.5750605856205985e-06,
+      "fp32_vector_norm": 0.009830103255808353,
+      "fp64_relative_error": 4.411747336454176e-15,
+      "fp64_vector_norm": 0.009830138399148652,
+      "numpy_fp64_norm": 0.009830138399148695,
+      "original_gate_passed": true,
+      "parameters": 589824,
+      "run_id": "diagnostic-natural-normuon",
+      "scalar_fsum_norm": 0.009830138399148695,
+      "tensor": "0.layers.0.attn.Wo.weight"
+    },
+    {
+      "fp32_relative_error": 2.356035173970292e-05,
+      "fp32_vector_norm": 0.018239617347717285,
+      "fp64_relative_error": 1.94014624721128e-14,
+      "fp64_vector_norm": 0.018240047089642112,
+      "numpy_fp64_norm": 0.018240047089642462,
+      "original_gate_passed": false,
+      "parameters": 1769472,
+      "run_id": "diagnostic-natural-normuon",
+      "scalar_fsum_norm": 0.018240047089642466,
+      "tensor": "0.layers.0.attn.Wqkv.weight"
+    },
+    {
+      "fp32_relative_error": 2.3314454221906297e-05,
+      "fp32_vector_norm": 0.017506925389170647,
+      "fp64_relative_error": 8.521355830476909e-15,
+      "fp64_vector_norm": 0.017507333563097402,
+      "numpy_fp64_norm": 0.01750733356309755,
+      "original_gate_passed": false,
+      "parameters": 1769472,
+      "run_id": "diagnostic-natural-normuon",
+      "scalar_fsum_norm": 0.01750733356309755,
+      "tensor": "0.layers.0.mlp.Wi.weight"
+    },
+    {
+      "fp32_relative_error": 1.9051726155948935e-06,
+      "fp32_vector_norm": 0.010222028940916061,
+      "fp64_relative_error": 2.0364569002314046e-15,
+      "fp64_vector_norm": 0.01022200946622353,
+      "numpy_fp64_norm": 0.01022200946622355,
+      "original_gate_passed": true,
+      "parameters": 884736,
+      "run_id": "diagnostic-natural-normuon",
+      "scalar_fsum_norm": 0.01022200946622355,
+      "tensor": "0.layers.0.mlp.Wo.weight"
+    }
+  ],
+  "scientific_completion": false,
+  "scope": "engineering_global_norm_precision_localization",
+  "selected_cases": 12,
+  "source": {
+    "bytes": 4690,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_geometry_reductions.py",
+    "sha256": "969ff0cc4c28f350bb8818290761829ba023a4393ed9ac9edda9c7bb3338da68"
+  },
+  "tolerance_changed": false
+}

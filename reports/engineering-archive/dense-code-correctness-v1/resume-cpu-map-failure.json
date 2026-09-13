@@ -1,0 +1,65 @@
+{
+  "boundary": "Tiny two-layer ModernBERT; synthetic 288 rows; FP32/SDPA/Gloo; same process group with fresh Trainers, not independent host/process restart; workers=0; non-reentrant gradient checkpointing. Exact saved model, optimizer, scheduler, row order, per-rank CPU/Python/NumPy RNG, losses and raw/clipped gradients. Actual fractional checkpoint callback at steps 1/2/3; resume from 1 and 2 to the 32-query tail. Does not certify GPU/BF16/FA2, maximum length, primary checkpoints or normalization correctness of the live Trainer.",
+  "complete_for_cpu_fixture": false,
+  "failure": {
+    "message": "don't know how to restore data location of torch.storage.UntypedStorage (tagged with cpu:0)",
+    "type": "RuntimeError"
+  },
+  "observed_at_utc": "2026-09-05T17:44:35.788097+00:00",
+  "records": [],
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "scope": "engineering_actual_trainer_four_rank_cpu_save_resume",
+  "source_bindings": [
+    {
+      "bytes": 12425,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_resume.py",
+      "sha256": "794a0cb6fa586ae5c3a86c40b9e3b115091f51639b9097d906a18f9db71e6f2e"
+    },
+    {
+      "bytes": 21023,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_ddp_accumulation.py",
+      "sha256": "55b09ad9cc483334e1d0af9f7c6101448f11a0fc3dd5eae7a65233b72eaaf2f5"
+    },
+    {
+      "bytes": 16943,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_normalization.py",
+      "sha256": "92bb2965f4be570e221cfdf7861bc03c63986195840c4cd4213228783067106f"
+    },
+    {
+      "bytes": 4389,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/dense_trainer_normalization_candidate.py",
+      "sha256": "08d7c58df2e8f8f1d537cc76ee514781f6ceb7a73b1d2eff72e688f383d1a761"
+    },
+    {
+      "bytes": 16750,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/train.py",
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    },
+    {
+      "bytes": 10641,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/callbacks.py",
+      "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+    },
+    {
+      "bytes": 3805,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    {
+      "bytes": 2117,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 7052,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    }
+  ]
+}

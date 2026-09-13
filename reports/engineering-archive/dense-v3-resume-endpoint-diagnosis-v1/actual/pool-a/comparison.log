@@ -1,0 +1,19 @@
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+Traceback (most recent call last):
+  File "/tmp/dense-v3-resume-device-recovery.uQ0ynb0k/resume.py", line 610, in <module>
+    main()
+  File "/tmp/dense-v3-resume-device-recovery.uQ0ynb0k/resume.py", line 605, in main
+    result = globals()[args.mode](args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/dense-v3-resume-device-recovery.uQ0ynb0k/resume.py", line 485, in compare
+    counts = {'model': recursive_equal(load_file(left / 'model.safetensors'), load_file(right / 'model.safetensors'), 'model')}
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/dense-v3-resume-device-recovery.uQ0ynb0k/resume.py", line 347, in recursive_equal
+    for key, value in recursive_equal(a, b, label + '/' + str(name)).items():
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/dense-v3-resume-device-recovery.uQ0ynb0k/resume.py", line 322, in recursive_equal
+    need(left.dtype == right.dtype and left.shape == right.shape
+  File "/tmp/dense-v3-factorial-evaluation.IOV7MK93/evaluate.py", line 53, in need
+    raise ValueError(message)
+ValueError: Tensor mismatch: model/embeddings.norm.weight

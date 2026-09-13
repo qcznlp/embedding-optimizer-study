@@ -1,0 +1,363 @@
+{
+  "plan": {
+    "complete_state_count": 61,
+    "dimension_protocol_sha256": "9246f7d15f141ba270eb4c839948c852ccc503de282f09090f58a0efdafe09f2",
+    "input_admission_sha256": "733413f3aa9cdef3d776f5a201b14d3e16776137e4b0425d05037950ab567673",
+    "numerical_policy": {
+      "array_storage": "Retain task-mean coordinate attributions in float64 without float32 archive rounding",
+      "cosine": "Explicit retained-coordinate FP64 normalization and cosine; no subtraction of a dominant coordinate from a total reduction",
+      "leave_one_out": "Every coordinate is literally deleted; use the same cosine and strict-greater-than positive-rank kernel as random removal",
+      "old_sources_or_outputs_rewritten": false,
+      "relative_margin": "Undefined (null) when the absolute task-mean baseline margin is at most the unchanged 1e-12 boundary; all absolute outcomes remain",
+      "rotation": "Original three seeds and full-score 1e-6 plus exact positive-rank equality guard; no new tolerance",
+      "scientific_estimands_changed": false,
+      "version": 1,
+      "zero_remaining_norm": "Reject the complete state computation; no denominator floor, imputation, row exclusion or partial pooling"
+    },
+    "primary_protocol_sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b",
+    "publication_inference_verified": false,
+    "scientific_completion": false,
+    "scope": "dense_primary_v3_functional_dimensions",
+    "table_counts": {
+      "checkpoint_summary": 61,
+      "random_removal": 68320,
+      "rotation_summary": 546,
+      "task_summary": 854
+    },
+    "trusted_vector_manifest_sha256": "9bf90d652d54ee6b9b571bf9dc88cd919da8c78bb70db0d476e307733e8c23e7"
+  },
+  "states": {
+    "pretrained": {
+      "bytes": 3312,
+      "path": "states/pretrained/manifest.json",
+      "sha256": "a8b9a76be9cb4c583fcf2b18e7034511d48b7dd2009dd18261de9f57a8d5d3fd"
+    },
+    "verified-v3-adamw-1e-5/checkpoint-1563": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-1e-5/checkpoint-1563/manifest.json",
+      "sha256": "6eba49bbf411488f2fcf0afc8e3c1d448e0b9a8fed82e0d84e16fd545ef4c160"
+    },
+    "verified-v3-adamw-1e-5/checkpoint-2345": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-1e-5/checkpoint-2345/manifest.json",
+      "sha256": "cacbd64f868658277008106e926a9e18b00b0cc47316d43ce88f318f1e39c74d"
+    },
+    "verified-v3-adamw-1e-5/checkpoint-3126": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-1e-5/checkpoint-3126/manifest.json",
+      "sha256": "e56f9496cbf5bdc2db0baf4519629fce402b198428444ce060275e9158ee6c34"
+    },
+    "verified-v3-adamw-1e-5/checkpoint-3907": {
+      "bytes": 3379,
+      "path": "states/verified-v3-adamw-1e-5/checkpoint-3907/manifest.json",
+      "sha256": "42689694ef061dafcf1033deab330b0497df991a9c64e81c84c16d3e031c007f"
+    },
+    "verified-v3-adamw-1e-5/checkpoint-782": {
+      "bytes": 3372,
+      "path": "states/verified-v3-adamw-1e-5/checkpoint-782/manifest.json",
+      "sha256": "e364ff88d8d6f8ab7b80b3cc28a6ead9d486d609c04d74235e8300cc4f5227d4"
+    },
+    "verified-v3-adamw-1e-6/checkpoint-1563": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-1e-6/checkpoint-1563/manifest.json",
+      "sha256": "cde3fde8ea2a5397dca13ce6af7a86a7ef9f5565e00525a42b762df482c243cc"
+    },
+    "verified-v3-adamw-1e-6/checkpoint-2345": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-1e-6/checkpoint-2345/manifest.json",
+      "sha256": "398762db5febfcc2e16fdf597f2ec9ad41cd991ee30ba7025ef6557c1e4018fb"
+    },
+    "verified-v3-adamw-1e-6/checkpoint-3126": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-1e-6/checkpoint-3126/manifest.json",
+      "sha256": "af85e327676e8e49f194f1f852061319b166948c0e0fdf9039d0bfadc74e92f1"
+    },
+    "verified-v3-adamw-1e-6/checkpoint-3907": {
+      "bytes": 3379,
+      "path": "states/verified-v3-adamw-1e-6/checkpoint-3907/manifest.json",
+      "sha256": "ca0843b456d7c5cb89f396814a3859b2c15f354e51a9bb886d2a2b28fed48ae9"
+    },
+    "verified-v3-adamw-1e-6/checkpoint-782": {
+      "bytes": 3372,
+      "path": "states/verified-v3-adamw-1e-6/checkpoint-782/manifest.json",
+      "sha256": "d1c49829e3609ab0f22aa7595668a4762cc6305dbdc2c7cfa5c845de2312ac7e"
+    },
+    "verified-v3-adamw-3e-5/checkpoint-1563": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-3e-5/checkpoint-1563/manifest.json",
+      "sha256": "698d5b8675259c36f7923417918e687be68b59d28bb6600122c4f4e53fc7abcf"
+    },
+    "verified-v3-adamw-3e-5/checkpoint-2345": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-3e-5/checkpoint-2345/manifest.json",
+      "sha256": "e9e8d45d94c1cc7d6f79bf97f02aeab8511366953885ac63b6e4e0fdbbfa5e21"
+    },
+    "verified-v3-adamw-3e-5/checkpoint-3126": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-3e-5/checkpoint-3126/manifest.json",
+      "sha256": "aa43df20a1d06446832dc159cc6ba9fe48ed5679c084c36c95cd3f0a0bf9dc4b"
+    },
+    "verified-v3-adamw-3e-5/checkpoint-3907": {
+      "bytes": 3379,
+      "path": "states/verified-v3-adamw-3e-5/checkpoint-3907/manifest.json",
+      "sha256": "33569e2f3376bdaf76414539fe948690c196d1497fdb526e89bc4b1182c8c2da"
+    },
+    "verified-v3-adamw-3e-5/checkpoint-782": {
+      "bytes": 3372,
+      "path": "states/verified-v3-adamw-3e-5/checkpoint-782/manifest.json",
+      "sha256": "8c29b965d5b9841abfe9ba76dfc19ee6da6b57787c8dbb63c6d64f9272103370"
+    },
+    "verified-v3-adamw-3e-6/checkpoint-1563": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-3e-6/checkpoint-1563/manifest.json",
+      "sha256": "0c1bd4e044c29ddcc10ad29d6706d29cb12ff5cea5c1da8714d76171e15fbb0a"
+    },
+    "verified-v3-adamw-3e-6/checkpoint-2345": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-3e-6/checkpoint-2345/manifest.json",
+      "sha256": "111ddae0cf5b4ca8c9147379e0edbc105d1bb441a57edb18b92a4815a4306ef8"
+    },
+    "verified-v3-adamw-3e-6/checkpoint-3126": {
+      "bytes": 3375,
+      "path": "states/verified-v3-adamw-3e-6/checkpoint-3126/manifest.json",
+      "sha256": "661fd6e075d1559fbd01e86c727e5f96eedbca10d7909362454546ff1e78f0f4"
+    },
+    "verified-v3-adamw-3e-6/checkpoint-3907": {
+      "bytes": 3379,
+      "path": "states/verified-v3-adamw-3e-6/checkpoint-3907/manifest.json",
+      "sha256": "ddea1632898edbd917706c4519e942fc83933c1f945d328e94f57125e7060eab"
+    },
+    "verified-v3-adamw-3e-6/checkpoint-782": {
+      "bytes": 3372,
+      "path": "states/verified-v3-adamw-3e-6/checkpoint-782/manifest.json",
+      "sha256": "4003762d36960182f3dde5bbe7682ce69a98dc853bd3e1c81c74c800cb2f2a71"
+    },
+    "verified-v3-muon-1e-3/checkpoint-1563": {
+      "bytes": 3371,
+      "path": "states/verified-v3-muon-1e-3/checkpoint-1563/manifest.json",
+      "sha256": "a4ebe50271a64307221edd18fb0e0f3714e1db8c22d2323db3cf22bfeb14e17d"
+    },
+    "verified-v3-muon-1e-3/checkpoint-2345": {
+      "bytes": 3371,
+      "path": "states/verified-v3-muon-1e-3/checkpoint-2345/manifest.json",
+      "sha256": "047259b6f3ae877e62468907f6ae0b6b8ce46276737fa0408884bb32584ffc2a"
+    },
+    "verified-v3-muon-1e-3/checkpoint-3126": {
+      "bytes": 3371,
+      "path": "states/verified-v3-muon-1e-3/checkpoint-3126/manifest.json",
+      "sha256": "b27c2b11c3c52cea4a095240b56df8a2d25253dcfad39b7287362299eda51d9a"
+    },
+    "verified-v3-muon-1e-3/checkpoint-3907": {
+      "bytes": 3375,
+      "path": "states/verified-v3-muon-1e-3/checkpoint-3907/manifest.json",
+      "sha256": "d4cdc9cbdafed8fcc2a122ac6b2bfb03b6e145e85906e2037be9012981d40242"
+    },
+    "verified-v3-muon-1e-3/checkpoint-782": {
+      "bytes": 3368,
+      "path": "states/verified-v3-muon-1e-3/checkpoint-782/manifest.json",
+      "sha256": "c94f942433b8265c87b918ceadbc9606b007b4c7d6225c28bca3c0bc78aefb66"
+    },
+    "verified-v3-muon-1e-4/checkpoint-1563": {
+      "bytes": 3372,
+      "path": "states/verified-v3-muon-1e-4/checkpoint-1563/manifest.json",
+      "sha256": "761b9f028cf27b98d37807e71f5ba52de5a1ac5bec8cd0a996b50d0d443ede55"
+    },
+    "verified-v3-muon-1e-4/checkpoint-2345": {
+      "bytes": 3372,
+      "path": "states/verified-v3-muon-1e-4/checkpoint-2345/manifest.json",
+      "sha256": "7e56f7852753073de9b913fdbd4d1d44f5ee3755724eeccf95c0855f44830efb"
+    },
+    "verified-v3-muon-1e-4/checkpoint-3126": {
+      "bytes": 3372,
+      "path": "states/verified-v3-muon-1e-4/checkpoint-3126/manifest.json",
+      "sha256": "d0bddaae114ea7204d77d1fb2294e73f67c6ebb4fc1f2b39567f8011314d2ca6"
+    },
+    "verified-v3-muon-1e-4/checkpoint-3907": {
+      "bytes": 3376,
+      "path": "states/verified-v3-muon-1e-4/checkpoint-3907/manifest.json",
+      "sha256": "215226e2900c6e4492d7872f042bb7847fcac7a3c46a957f3e8d95380db297ae"
+    },
+    "verified-v3-muon-1e-4/checkpoint-782": {
+      "bytes": 3369,
+      "path": "states/verified-v3-muon-1e-4/checkpoint-782/manifest.json",
+      "sha256": "399a906c0da511c9b7a80ad70617afa9dea79a3b8b5c49805f58899ae785cc08"
+    },
+    "verified-v3-muon-3e-3/checkpoint-1563": {
+      "bytes": 3371,
+      "path": "states/verified-v3-muon-3e-3/checkpoint-1563/manifest.json",
+      "sha256": "85bfa55d35eea3959f1c86a15f6f8133a87091cb5855675360806e206ea2600f"
+    },
+    "verified-v3-muon-3e-3/checkpoint-2345": {
+      "bytes": 3371,
+      "path": "states/verified-v3-muon-3e-3/checkpoint-2345/manifest.json",
+      "sha256": "ef0f58f33017a214f97f3f7a5b744d5a71b0c8bff2355481263f64893c482c9a"
+    },
+    "verified-v3-muon-3e-3/checkpoint-3126": {
+      "bytes": 3371,
+      "path": "states/verified-v3-muon-3e-3/checkpoint-3126/manifest.json",
+      "sha256": "1d4292ba941c9b0f4f44ac108be8c100e5817b9779de97146b755ec7dff0ca96"
+    },
+    "verified-v3-muon-3e-3/checkpoint-3907": {
+      "bytes": 3375,
+      "path": "states/verified-v3-muon-3e-3/checkpoint-3907/manifest.json",
+      "sha256": "d531ad7537fe8adaafa737be95211e0dbcd174fa9ce28ae9e39db7c99a347c81"
+    },
+    "verified-v3-muon-3e-3/checkpoint-782": {
+      "bytes": 3368,
+      "path": "states/verified-v3-muon-3e-3/checkpoint-782/manifest.json",
+      "sha256": "7a93b72155c567e25ef9ec1698d8949b5adf66e9912ee6278c41eceefd2cca5e"
+    },
+    "verified-v3-muon-3e-4/checkpoint-1563": {
+      "bytes": 3372,
+      "path": "states/verified-v3-muon-3e-4/checkpoint-1563/manifest.json",
+      "sha256": "d28dc2397b62225c70b1f2a8aecd524fa8d112f87a17a11f452dc93a1ed49dce"
+    },
+    "verified-v3-muon-3e-4/checkpoint-2345": {
+      "bytes": 3372,
+      "path": "states/verified-v3-muon-3e-4/checkpoint-2345/manifest.json",
+      "sha256": "102fd47f1ae728db8b0e4172968f7eda12e156a6d07e96fd44ad8b48df7fcaa3"
+    },
+    "verified-v3-muon-3e-4/checkpoint-3126": {
+      "bytes": 3372,
+      "path": "states/verified-v3-muon-3e-4/checkpoint-3126/manifest.json",
+      "sha256": "3c796aadf6e28a7e7469a5ec7b9e051616aea2cae7124ffa193ada8b1c0e6904"
+    },
+    "verified-v3-muon-3e-4/checkpoint-3907": {
+      "bytes": 3376,
+      "path": "states/verified-v3-muon-3e-4/checkpoint-3907/manifest.json",
+      "sha256": "13fd5d6f67919684f9ad13770496f185e7f9ec619a2dc2eded900975795485f0"
+    },
+    "verified-v3-muon-3e-4/checkpoint-782": {
+      "bytes": 3369,
+      "path": "states/verified-v3-muon-3e-4/checkpoint-782/manifest.json",
+      "sha256": "8b6793e38e16f431eaaa3405cb73be9e1b4c6add030a4189925f49dfa46fb820"
+    },
+    "verified-v3-normuon-1e-3/checkpoint-1563": {
+      "bytes": 3383,
+      "path": "states/verified-v3-normuon-1e-3/checkpoint-1563/manifest.json",
+      "sha256": "a99a9c8c59b6c9d22e294e118b0cbdc130d833e4c3390a996394cb14f3297f93"
+    },
+    "verified-v3-normuon-1e-3/checkpoint-2345": {
+      "bytes": 3383,
+      "path": "states/verified-v3-normuon-1e-3/checkpoint-2345/manifest.json",
+      "sha256": "a359be4fb9911b0dd818955e5eedc64c7a0fb86427746fd75fa33e27b6775bee"
+    },
+    "verified-v3-normuon-1e-3/checkpoint-3126": {
+      "bytes": 3383,
+      "path": "states/verified-v3-normuon-1e-3/checkpoint-3126/manifest.json",
+      "sha256": "f912ba630ab2e9f1a93b1c49c4667f5e221faf227313da7bfa1ffbaa5a2414f8"
+    },
+    "verified-v3-normuon-1e-3/checkpoint-3907": {
+      "bytes": 3387,
+      "path": "states/verified-v3-normuon-1e-3/checkpoint-3907/manifest.json",
+      "sha256": "e3021e62f752e9ce7ccca3f23cbe3420920318ee410399603ae7fb27233a0cde"
+    },
+    "verified-v3-normuon-1e-3/checkpoint-782": {
+      "bytes": 3380,
+      "path": "states/verified-v3-normuon-1e-3/checkpoint-782/manifest.json",
+      "sha256": "9bd3f4fc065022b7a6bae9547fbf9932493ae5202c5a0b4bd43a3004c084df43"
+    },
+    "verified-v3-normuon-1e-4/checkpoint-1563": {
+      "bytes": 3384,
+      "path": "states/verified-v3-normuon-1e-4/checkpoint-1563/manifest.json",
+      "sha256": "c596510735245bf4f643ab3ed06c5af440c23bf31f4a71bbbcbefdca13ef4edc"
+    },
+    "verified-v3-normuon-1e-4/checkpoint-2345": {
+      "bytes": 3384,
+      "path": "states/verified-v3-normuon-1e-4/checkpoint-2345/manifest.json",
+      "sha256": "0456aeafefe9326f7fa21cec984c56d0a1c0625bb5ce412f8e0cafa3d73895fe"
+    },
+    "verified-v3-normuon-1e-4/checkpoint-3126": {
+      "bytes": 3384,
+      "path": "states/verified-v3-normuon-1e-4/checkpoint-3126/manifest.json",
+      "sha256": "36b41eff3e4ed9481172bbe47f0429203f073317c6c8e20f92c6c617d342a724"
+    },
+    "verified-v3-normuon-1e-4/checkpoint-3907": {
+      "bytes": 3388,
+      "path": "states/verified-v3-normuon-1e-4/checkpoint-3907/manifest.json",
+      "sha256": "61832d3080fa8c5a68cd7c4f326e9093dc3ddd107f5c4d9a6d95e2d5b517ae90"
+    },
+    "verified-v3-normuon-1e-4/checkpoint-782": {
+      "bytes": 3381,
+      "path": "states/verified-v3-normuon-1e-4/checkpoint-782/manifest.json",
+      "sha256": "072b9ecdec0cb941ffac9f541fbda753121480d36858da7892903a92a80b17d2"
+    },
+    "verified-v3-normuon-3e-3/checkpoint-1563": {
+      "bytes": 3383,
+      "path": "states/verified-v3-normuon-3e-3/checkpoint-1563/manifest.json",
+      "sha256": "9e13cc72356ed9874b441f9c018339a43eaa2d00fe5e5118c1d73eb5cd6ee2fc"
+    },
+    "verified-v3-normuon-3e-3/checkpoint-2345": {
+      "bytes": 3383,
+      "path": "states/verified-v3-normuon-3e-3/checkpoint-2345/manifest.json",
+      "sha256": "4874b03eb431e87e725863588191a3f0205a5ed6fe35f5446ded2a2555ad9f68"
+    },
+    "verified-v3-normuon-3e-3/checkpoint-3126": {
+      "bytes": 3383,
+      "path": "states/verified-v3-normuon-3e-3/checkpoint-3126/manifest.json",
+      "sha256": "56636ff23da87bc61530f177705ea48c618c143c3f4fad418950b5ec308f6eb1"
+    },
+    "verified-v3-normuon-3e-3/checkpoint-3907": {
+      "bytes": 3387,
+      "path": "states/verified-v3-normuon-3e-3/checkpoint-3907/manifest.json",
+      "sha256": "146a1b1fd8b0bc380d404bb2c24de404da5d009e442f864356b0a94cf6d5df8c"
+    },
+    "verified-v3-normuon-3e-3/checkpoint-782": {
+      "bytes": 3380,
+      "path": "states/verified-v3-normuon-3e-3/checkpoint-782/manifest.json",
+      "sha256": "13387b1e39384385ad79551b87561bb84860ff69193df5c7140c135cdd65bb72"
+    },
+    "verified-v3-normuon-3e-4/checkpoint-1563": {
+      "bytes": 3384,
+      "path": "states/verified-v3-normuon-3e-4/checkpoint-1563/manifest.json",
+      "sha256": "a27c82128ecb20d2179b1305d796f2e03ff171c54dc4e2361871beb732ecc07a"
+    },
+    "verified-v3-normuon-3e-4/checkpoint-2345": {
+      "bytes": 3384,
+      "path": "states/verified-v3-normuon-3e-4/checkpoint-2345/manifest.json",
+      "sha256": "24ee534c6c38b7273ba7df3e42824825c12e76acd8ff4ebe917b47e82bae21a8"
+    },
+    "verified-v3-normuon-3e-4/checkpoint-3126": {
+      "bytes": 3384,
+      "path": "states/verified-v3-normuon-3e-4/checkpoint-3126/manifest.json",
+      "sha256": "f7c0fd4453a7871c2ed9108aeacd9d3daf3bda98eae48d82002be5a07a43f7f2"
+    },
+    "verified-v3-normuon-3e-4/checkpoint-3907": {
+      "bytes": 3388,
+      "path": "states/verified-v3-normuon-3e-4/checkpoint-3907/manifest.json",
+      "sha256": "b7f405e7041e8dc84b621fc865c6165e92b0f9e5828cd363a2d33047590b7285"
+    },
+    "verified-v3-normuon-3e-4/checkpoint-782": {
+      "bytes": 3381,
+      "path": "states/verified-v3-normuon-3e-4/checkpoint-782/manifest.json",
+      "sha256": "a4e1eec1e01e6ba6aa9a0dc06c5fcdc775368e2d130c43f55eaaeee99af1352d"
+    }
+  },
+  "status": "complete",
+  "tables": {
+    "checkpoint_summary": {
+      "bytes": 29589,
+      "path": "checkpoint_summary.csv",
+      "rows": 61,
+      "sha256": "a681480e9482ea8fff435ffa21079489c6a0ff802fb44c12737ecd3e7672cf7d"
+    },
+    "random_removal": {
+      "bytes": 7869965,
+      "path": "random_removal.csv",
+      "rows": 68320,
+      "sha256": "9072d9ec319f2b207d78c9679ac200eb9b068292388f83cb48d819750851b024"
+    },
+    "rotation_summary": {
+      "bytes": 134603,
+      "path": "rotation_summary.csv",
+      "rows": 546,
+      "sha256": "ec5f2915b6baabef2eab645958ad1fe489bcaa6a94977305417fc1bddceaa063"
+    },
+    "task_summary": {
+      "bytes": 204866,
+      "path": "task_summary.csv",
+      "rows": 854,
+      "sha256": "0f2b733445750d75867c835d3c27dc5615340edb53af48d4b7223931c8800f13"
+    }
+  }
+}

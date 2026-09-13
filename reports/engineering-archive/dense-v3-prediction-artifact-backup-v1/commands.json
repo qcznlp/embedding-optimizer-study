@@ -1,0 +1,19 @@
+{
+  "scope": "actual-prediction-artifact-backup-call-records",
+  "workdir": "/tmp/dense-v3-prediction-artifact-backup.Aq3Smtuj",
+  "calls": [
+    {"action":"initial selected-data scan", "terminal_chunk":"dbed4f", "exit_code":1, "source":"source/backup-initial.py", "error":"Active or external SVG content refused; actual final heatmap embeds static PNGs", "remote_mutations":false},
+    {"action":"final selected-data scan", "terminal_chunk":"4933cc", "exit_code":0, "selected_files":46, "remote_mutations":false},
+    {"action":"backup.py prepare", "terminal_chunk":"8072fb", "exit_code":0, "files":47, "bytes":12301350},
+    {"action":"initial staged reconstruction", "terminal_chunk":"b7599e", "exit_code":1, "source":"source/verify_recovered-initial.py", "error":"Fold reduction differs; rounded subtraction order"},
+    {"action":"second staged reconstruction", "terminal_chunk":"da1629", "exit_code":1, "source":"source/verify_recovered-before-plot.py", "error":"Plot delta differs; rounded subtraction order"},
+    {"action":"final staged independent reconstruction", "terminal_chunk":"a4fdf4", "exit_code":0, "receipt":"actual/staged-independent.json"},
+    {"action":"test_backup.py", "session_id":10409, "terminal_chunk":"7f05ee", "exit_code":0, "tests":18, "failures":0, "errors":0, "skipped":0},
+    {"action":"backup.py upload", "session_id":63190, "terminal_chunk":"f5424e", "exit_code":0, "revision":"42689be00e1644aaf24721ecc239ec1c4d425a2a", "receipt":"actual/remote-audit.json"},
+    {"action":"backup.py download-verify", "session_id":7017, "terminal_chunk":"71b79e", "exit_code":0, "anonymous":true, "receipt":"actual/download-verified.json"},
+    {"action":"/usr/bin/python -I -B verify_recovered.py with recovered snapshot and external manifest SHA", "cwd":"/tmp/dense-v3-prediction-recovered-reader.vqV0PWBO", "terminal_chunk":"52c06b", "exit_code":0, "receipt":"actual/isolated-reconstruction.json"}
+  ],
+  "new_inference":false,
+  "model_execution":false,
+  "scientific_completion":false
+}

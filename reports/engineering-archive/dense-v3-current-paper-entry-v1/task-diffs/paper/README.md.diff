@@ -1,0 +1,50 @@
+--- before/paper/README.md
++++ after/paper/README.md
+@@ -1,18 +1,23 @@
+ # NAACL manuscript
+ 
+-**Current complete-result candidate, 2026-09-13:**
++**Current complete-result manuscript, 2026-09-13:**
++[stable source and build instructions](current/README.md),
+ [reviewed PDF](../reports/paper-review/dense-v3-complete-manuscript-revision-v1/actual/paper/build/main.pdf),
+ [LaTeX](../reports/paper-review/dense-v3-complete-manuscript-revision-v1/actual/paper/main.tex),
+ and [revision/build evidence](../reports/paper-review/dense-v3-complete-manuscript-revision-v1/README.md).
+ All results, the revised reached-state/continuation story and six closest
+ references are present. The unchanged strict complete-document checker passes
+ the new 158-word abstract/eight-page main; all thirteen pages were visually
+-reviewed. This candidate is not yet installed into the authoritative source
+-below. The source-level consumer/release transition remains required; old
++reviewed. The stable `current/` directory now reproduces that exact reviewed
++snapshot through `make current`; actual execution from an extracted wheel
++produces identical PDF text. The source-level consumer/release transition
++remains required; old
+ `make release` gates are not replaced by this document-only acceptance.
+ 
+-This directory contains the authoritative DenseOn paper for the AdamW/Muon/NorMuon optimizer
+-study. The paper asks one question: starting from the same pretrained retriever, how do the
++The complete DenseOn paper for the AdamW/Muon/NorMuon optimizer study is in
++`current/`. The parent `main.tex` and legacy release target remain preserved
++for the explicit source-transition gate; they are not the current result text.
++The paper asks one question: starting from the same pretrained retriever, how do the
+ optimizers change weight space, and which changes are associated with more useful ranking
+ representations? The distinction is between spreading weight motion and distributing helpful
+ retrieval evidence, not whether Muon has its characteristic update spectrum.
+@@ -47,14 +52,14 @@
+ the generated include, so the publication audit recomputes the plotted values and the exact figure
+ source along with the tables; it does not trust a separately edited image.
+ 
+-Build the review-format PDF with:
++Reproduce the complete review-format PDF with a new absolute output directory:
+ 
+ ```bash
+-cd paper
+-make
++make -C paper current CURRENT_OUTPUT=/absolute/path/to/new-paper-build
+ ```
+ 
+-`\ResultPending{...}` markers are visible development placeholders. The paper is not
++The historical parent build remains available as `make -C paper all`; it does
++not build `current/`. Its `\ResultPending{...}` markers are visible development placeholders. A paper is not
+ submission-ready while any remain. The final result sources are generated, not hand edited:
+ 
+ - `generated/optimizer-primary.tex` supplies the primary optimizer contrasts, weight-state

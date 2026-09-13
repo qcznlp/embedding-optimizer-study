@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "status": "prospective_primary_dimension_export_lock",
+  "frozen_at_utc": "2026-09-04T20:29:48.397561+00:00",
+  "purpose": "Bind all 61 primary DenseOn fixed-probe exports to audited training weights, observed loading behavior, probe identities and the analysis implementation before primary dimension outcomes exist.",
+  "visibility_at_freeze": {
+    "completed_primary_runs": 8,
+    "primary_dimension_exports_visible": false,
+    "primary_beir_results_visible": false,
+    "historical_dimension_results_visible": true
+  },
+  "model": {
+    "repo_id": "lightonai/DenseOn-unsupervised",
+    "revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43"
+  },
+  "encoding": {
+    "batch_size": 8,
+    "model_dtype": "bfloat16",
+    "storage_dtype": "float32",
+    "device": "cuda:0",
+    "flash_attention": true,
+    "compressed": false,
+    "max_length": 8192,
+    "normalized": true,
+    "dense_query_prompt": "query: ",
+    "dense_document_prompt": "document: ",
+    "positive_candidate_index": 0
+  },
+  "input_execution": {
+    "mode": "independently_padded",
+    "sentence_transformers_can_flatten_inputs": false
+  },
+  "numerical_policy": "Encode with the formal BF16 model and retain float32 outputs without an extra float16 archive quantization. Use the unchanged scientific protocol float64 cosine/ablation calculations. Historical float16 exports remain exploratory and are never substituted for primary exports.",
+  "scheduling": "All 12 primary runs and 60 stages must pass deep validation before acquiring one cooperative GPU lease. Run before factorial work or on a lease-approved free device; never inspect unrelated GPU processes.",
+  "recovery": "Reuse only a fully validated matching cache. Seal a completed export from an observed model-verified receipt after interruption. Preserve and reject untagged, changed, or partly-written output pairs; use a new output root for manual recovery.",
+  "source_bindings": {
+    "src/embed_optim/primary_dimension_probe.py": {
+      "path": "src/embed_optim/primary_dimension_probe.py",
+      "bytes": 20005,
+      "sha256": "6ab31633959a9ed6eaf1d67b3cf77b8e7ecd3bd8cbd5c5e12a64d494a0c90f4b"
+    },
+    "src/embed_optim/dimension_utilization.py": {
+      "path": "src/embed_optim/dimension_utilization.py",
+      "bytes": 30424,
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    "src/embed_optim/probe_export.py": {
+      "path": "src/embed_optim/probe_export.py",
+      "bytes": 20602,
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    "src/embed_optim/probes.py": {
+      "path": "src/embed_optim/probes.py",
+      "bytes": 13945,
+      "sha256": "15a8212e3bf58820e0eaaf22aa8e5f4413d5e4d320036b8f29f761552dd70a8c"
+    },
+    "src/embed_optim/geometry.py": {
+      "path": "src/embed_optim/geometry.py",
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "src/embed_optim/aggregate.py": {
+      "path": "src/embed_optim/aggregate.py",
+      "bytes": 111685,
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+    },
+    "src/embed_optim/config.py": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "src/embed_optim/corrected_input_execution.py": {
+      "path": "src/embed_optim/corrected_input_execution.py",
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "src/embed_optim/gpu_lease.py": {
+      "path": "src/embed_optim/gpu_lease.py",
+      "bytes": 7263,
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "src/embed_optim/runtime.py": {
+      "path": "src/embed_optim/runtime.py",
+      "bytes": 6928,
+      "sha256": "6c6d143a0adb61f653bbe9e1143166670b8550e49104e41da5745c4c76d1f311"
+    }
+  },
+  "parent_bindings": {
+    "configs/dense_no_packing_retrain.yaml": {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "bytes": 1601,
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    },
+    "configs/dense_dimension_utilization_protocol.json": {
+      "path": "configs/dense_dimension_utilization_protocol.json",
+      "bytes": 7792,
+      "sha256": "de56772ef84745c074940527d621a932a06a20e865a10bc3faad823bcb0e651e"
+    },
+    "configs/beir_representation_probe.json": {
+      "path": "configs/beir_representation_probe.json",
+      "bytes": 5737,
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    "configs/formal_runtime.json": {
+      "path": "configs/formal_runtime.json",
+      "bytes": 1019,
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    "configs/dense_no_packing_execution_protocol.json": {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "bytes": 6054,
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+    },
+    "configs/dense_no_packing_evaluation_protocol.json": {
+      "path": "configs/dense_no_packing_evaluation_protocol.json",
+      "bytes": 4838,
+      "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98"
+    }
+  },
+  "commands": {
+    "plan": "python -m embed_optim.primary_dimension_probe --dry-run",
+    "export": "python -m embed_optim.primary_dimension_probe --gpu 0",
+    "audit": "python -m embed_optim.primary_dimension_probe --audit-only"
+  },
+  "claim_boundary": "A complete export handoff is input provenance, not evidence of optimizer superiority or whole-study scientific completion.",
+  "replay_kernel_refactor": {
+    "scientific_choices_changed": false,
+    "primary_outputs_visible": false,
+    "description": "Extract the existing numerical loop into a shared kernel. Keep the original full primary authoring gate; archive reconstruction uses a distinct non-primary scope."
+  },
+  "amended_at_utc": "2026-09-04T21:59:36.229339+00:00",
+  "rotation_guard_completion": "Enforce the already frozen rank-invariance requirement as well as the existing 1e-6 score tolerance. No scientific threshold or input selection was changed."
+}

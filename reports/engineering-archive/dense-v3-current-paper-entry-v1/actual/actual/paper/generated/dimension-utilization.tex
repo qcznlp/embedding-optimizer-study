@@ -1,0 +1,80 @@
+% Prepared functional inference output; manuscript installation is separately gated.
+\newcommand{\DimensionUtilizationFigure}{%
+\begin{figure*}[t]
+\centering
+\definecolor{dimensionAdamW}{HTML}{3569A8}
+\definecolor{dimensionMuon}{HTML}{D97721}
+\definecolor{dimensionNorMuon}{HTML}{2E7D61}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 2,horizontal sep=0.15\textwidth,vertical sep=1.6cm},
+width=0.37\textwidth,height=0.25\textwidth,scale only axis,
+tick label style={font=\scriptsize},label style={font=\footnotesize},title style={font=\footnotesize},
+grid=major,grid style={black!8},major tick length=2pt,
+legend style={font=\scriptsize,draw=none,fill=none,cells={anchor=west}},
+every axis plot/.append style={line width=0.9pt,mark size=1.8pt}]
+\nextgroupplot[title={(a) Final-state random removal},xlabel={Coordinates removed (\%)},ylabel={Relative shortlist nDCG},xmin=0,xmax=75,xtick={0,10,25,50,75}]
+\addplot+[black!55,densely dashed,no marks] coordinates {(0,1) (10,0.999510770317) (25,0.998947388941) (50,0.993209242028) (75,0.981092356049)};
+\addlegendentry{Pretrained}
+\addplot+[dimensionAdamW,mark=*,mark options={solid,fill=dimensionAdamW}] coordinates {(0,1) (10,0.999052103793) (25,0.997964817194) (50,0.991638109299) (75,0.980421073342)};
+\addlegendentry{AdamW}
+\addplot+[dimensionMuon,mark=square*,mark options={solid,fill=dimensionMuon}] coordinates {(0,1) (10,1.000171464) (25,0.998628256806) (50,0.993777706921) (75,0.983444760992)};
+\addlegendentry{Muon}
+\addplot+[dimensionNorMuon,mark=triangle*,mark options={solid,fill=dimensionNorMuon}] coordinates {(0,1) (10,0.999679758044) (25,0.998612652274) (50,0.99205612719) (75,0.98182232398)};
+\addlegendentry{NorMuon}
+\draw[black!30,dotted] (axis cs:0,1) -- (axis cs:75,1);
+\nextgroupplot[title={(b) Helpful mass share},xlabel={Training progress (\%)},ylabel={Share},xmin=0,xmax=100,xtick={0,20,40,60,80,100},ymin=0]
+\addplot+[black!55,densely dashed,no marks] coordinates {(0,0.531504346892) (100,0.531504346892)};
+\addplot+[dimensionAdamW,mark=*,mark options={solid,fill=dimensionAdamW}] coordinates {(20,0.522896221249) (40,0.527408567944) (60,0.52022406899) (80,0.521054464293) (100,0.523680802313)};
+\addplot+[dimensionMuon,mark=square*,mark options={solid,fill=dimensionMuon}] coordinates {(20,0.519594266146) (40,0.519120276076) (60,0.520430314276) (80,0.519439446992) (100,0.521879207258)};
+\addplot+[dimensionNorMuon,mark=triangle*,mark options={solid,fill=dimensionNorMuon}] coordinates {(20,0.516764984087) (40,0.518702071027) (60,0.52058425531) (80,0.518706957659) (100,0.52411798844)};
+\nextgroupplot[title={(c) Helpful participation},xlabel={Training progress (\%)},ylabel={Normalized participation},xmin=0,xmax=100,xtick={0,20,40,60,80,100},ymin=0]
+\addplot+[black!55,densely dashed,no marks] coordinates {(0,0.301519604364) (100,0.301519604364)};
+\addplot+[dimensionAdamW,mark=*,mark options={solid,fill=dimensionAdamW}] coordinates {(20,0.304040518766) (40,0.305938891839) (60,0.304385795975) (80,0.305033357249) (100,0.306756399697)};
+\addplot+[dimensionMuon,mark=square*,mark options={solid,fill=dimensionMuon}] coordinates {(20,0.308150447766) (40,0.311402254828) (60,0.310843126362) (80,0.307699252966) (100,0.310340953073)};
+\addplot+[dimensionNorMuon,mark=triangle*,mark options={solid,fill=dimensionNorMuon}] coordinates {(20,0.304852849212) (40,0.309910514275) (60,0.30881925591) (80,0.306550351746) (100,0.309107245292)};
+\nextgroupplot[title={(d) Degrading mass},xlabel={Training progress (\%)},ylabel={Margin attribution mass},xmin=0,xmax=100,xtick={0,20,40,60,80,100},ymin=0]
+\addplot+[black!55,densely dashed,no marks] coordinates {(0,0.102625745478) (100,0.102625745478)};
+\addplot+[dimensionAdamW,mark=*,mark options={solid,fill=dimensionAdamW}] coordinates {(20,0.105970257866) (40,0.105195779808) (60,0.106839207637) (80,0.106596367956) (100,0.105883738838)};
+\addplot+[dimensionMuon,mark=square*,mark options={solid,fill=dimensionMuon}] coordinates {(20,0.1025672095) (40,0.103221338229) (60,0.103243358457) (80,0.104784074873) (100,0.104577944016)};
+\addplot+[dimensionNorMuon,mark=triangle*,mark options={solid,fill=dimensionNorMuon}] coordinates {(20,0.103098776527) (40,0.103335697363) (60,0.102694577173) (80,0.105281871495) (100,0.104047775069)};
+\end{groupplot}
+\end{tikzpicture}
+\caption{Dimension utility over the complete rate grid. (a) Final-state retention after shared random coordinate removal; the zero-removal value is one by definition. (b--d) Native-coordinate margin attribution at all five stages. Each optimizer curve averages all four rates and 14 tasks; (a) additionally averages 20 shared masks per nonzero fraction. The gray curve or horizontal line is the pretrained reference. Lines join measured points, not fitted trajectories. These are descriptive means, not confidence intervals or full-corpus retrieval scores; formal contrasts and rotation controls are reported separately.}
+\label{fig:dimension-utility}
+\end{figure*}%
+}
+\newcommand{\DimensionUtilizationFinding}{Muon does not meet the joint native-coordinate criterion relative to AdamW; this does not establish equivalence. The required mean directions do not hold under every tested shared rotation. NorMuon does not meet the joint native-coordinate criterion relative to AdamW; this does not establish equivalence. The required mean directions do not hold under every tested shared rotation. With 50\% of coordinates removed, relative shortlist nDCG is 0.991638/0.993778/0.992056 for AdamW/Muon/NorMuon. The figure reports all declared rates and stages.}
+\newcommand{\DimensionRetrievalBridgeFinding}{Helpful mass share does not meet the declared held-out-dose predictive criterion. Helpful participation does not meet the declared held-out-dose predictive criterion. Degrading mass meets the declared held-out-dose predictive criterion. 50\% random-removal retention does not meet the declared held-out-dose predictive criterion. This tests prediction outside a learning-rate dose on the same task suite, not causal mediation or generalization to unseen tasks.}
+\newcommand{\DimensionConclusionFinding}{Coordinate-level utility, its tested-basis sensitivity, and held-out-dose prediction are distinct results. Shared-rotation sign stability does not establish arbitrary-basis invariance or semantic independence of dimensions; these measurements alone do not identify a mediator of an optimizer effect.}
+\newcommand{\DimensionUtilizationAppendixTable}{%
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{llrrl}\toprule
+Feature & Contrast & Effect & Simultaneous 95\% CI & Decision \\
+\midrule
+helpful mass share & Muon--AdamW & -0.0018016 & [-0.0095111, +0.00590791] & inconclusive \\
+helpful mass share & NorMuon--AdamW & +0.000437186 & [-0.00522206, +0.00609643] & inconclusive \\
+helpful mass share & NorMuon--Muon & +0.00223878 & [-0.00674053, +0.0112181] & inconclusive \\
+helpful participation & Muon--AdamW & +0.00358455 & [+0.000143587, +0.00702552] & positive \\
+helpful participation & NorMuon--AdamW & +0.00235085 & [-0.00269661, +0.0073983] & inconclusive \\
+helpful participation & NorMuon--Muon & -0.00123371 & [-0.00668711, +0.0042197] & inconclusive \\
+degrading mass & Muon--AdamW & -0.00130579 & [-0.00396615, +0.00135456] & inconclusive \\
+degrading mass & NorMuon--AdamW & -0.00183596 & [-0.00400392, +0.00033199] & inconclusive \\
+degrading mass & NorMuon--Muon & -0.000530169 & [-0.00286867, +0.00180833] & inconclusive \\
+\bottomrule\end{tabular}
+\caption{All nine final-stage co-primary contrasts, averaging every declared rate. One common-resample max-$T$ family covers all entries; task resampling does not estimate training-seed variation.}
+\label{tab:dimension-utilization}
+\end{table*}
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{lrrrl}\toprule
+Feature & RMSE reduction & Improved & Defined & Criterion \\
+\midrule
+helpful mass share & -0.000389109 & 2/4 & 4/4 & not supported \\
+helpful participation & -0.00434356 & 1/4 & 4/4 & not supported \\
+degrading mass & +0.0100691 & 4/4 & 4/4 & supported \\
+50\% random-removal retention & +0.000341663 & 2/4 & 4/4 & not supported \\
+\bottomrule\end{tabular}
+\caption{All four functional predictors beyond optimizer, stage and within-optimizer dose. Decisions use exact MSE comparisons; displayed RMSE is not a significance test. Undefined folds are retained, never pooled as available cases.}
+\end{table*}%
+}

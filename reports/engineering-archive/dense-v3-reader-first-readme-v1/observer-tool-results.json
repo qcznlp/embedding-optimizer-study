@@ -1,0 +1,68 @@
+[
+  {
+    "name": "evaluation",
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python /tmp/dense-v3-factorial-evaluation.IOV7MK93/observe.py --output /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-reader-first-readme-v1/observations/evaluation-after.json",
+    "result": {
+      "chunk_id": "d6da6c",
+      "wall_time_seconds": 0.000001603,
+      "exit_code": 0,
+      "original_token_count": 1081,
+      "output": "{\"observed_at_utc\": \"2026-09-13T02:56:03.813481+00:00\", \"pools\": {\"a\": {\"coordinator\": {\"pid\": 802691, \"start_ticks\": 320351837, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"training_pool_admitted\": true, \"completed_tasks\": 9, \"task_workers\": [{\"job\": [\"factorial-v3-adamw_state-adamw-seed161803\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-adamw-seed161803\", 391, \"FEVER\"], \"observation\": {\"pid\": 898234, \"start_ticks\": 323350977, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-adamw_state-adamw-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-adamw-seed314159\", 391, \"FEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-adamw-seed314159\", 391, \"SciFact\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed271828\", 391, \"FEVER\"], \"observation\": {\"pid\": 892278, \"start_ticks\": 323161648, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed271828\", 391, \"FEVER\"], \"observation\": {\"pid\": 892560, \"start_ticks\": 323163502, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-muon_state-muon-seed161803\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-muon-seed161803\", 391, \"FEVER\"], \"observation\": {\"pid\": 901707, \"start_ticks\": 323429939, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-muon_state-muon-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-muon-seed314159\", 391, \"FEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}], \"failure_receipt\": false, \"complete\": null}, \"b\": {\"coordinator\": {\"pid\": 802714, \"start_ticks\": 320351956, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"training_pool_admitted\": true, \"completed_tasks\": 9, \"task_workers\": [{\"job\": [\"factorial-v3-adamw_state-adamw-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-adamw-seed271828\", 391, \"FEVER\"], \"observation\": {\"pid\": 893133, \"start_ticks\": 323174144, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed161803\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed161803\", 391, \"FEVER\"], \"observation\": {\"pid\": 898490, \"start_ticks\": 323352480, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed314159\", 391, \"FEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed314159\", 391, \"SciFact\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed161803\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed161803\", 391, \"FEVER\"], \"observation\": {\"pid\": 901298, \"start_ticks\": 323423345, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed314159\", 391, \"FEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-muon-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-muon-seed271828\", 391, \"FEVER\"], \"observation\": {\"pid\": 893174, \"start_ticks\": 323175496, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}], \"failure_receipt\": false, \"complete\": null}}, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+    }
+  },
+  {
+    "name": "summary",
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python /tmp/dense-v3-factorial-summary.BQ08HjeP/observe.py --output /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-reader-first-readme-v1/observations/summary-after.json",
+    "result": {
+      "chunk_id": "0200f7",
+      "wall_time_seconds": 0.000001626,
+      "exit_code": 0,
+      "original_token_count": 119,
+      "output": "{\"observed_at_utc\": \"2026-09-13T02:56:03.850623+00:00\", \"coordinator\": {\"pid\": 813139, \"start_ticks\": 320676124, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"collectors\": {\"beir\": {\"started\": false}, \"probe\": {\"started\": false}}, \"failed\": false, \"complete\": false, \"expected\": {\"beir_tasks\": 168, \"checkpoint_probes\": 60, \"probe_task_rows\": 840, \"estimands\": 3}, \"gpu_access\": false, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+    }
+  },
+  {
+    "name": "document",
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python /tmp/dense-v3-document-integration.Xz1qvTME/observe.py --output /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-reader-first-readme-v1/observations/document-after.json",
+    "result": {
+      "chunk_id": "c171bd",
+      "wall_time_seconds": 0.000001955,
+      "exit_code": 0,
+      "original_token_count": 93,
+      "output": "{\"observed_at_utc\": \"2026-09-13T02:56:03.827585+00:00\", \"coordinator\": {\"pid\": 850717, \"start_ticks\": 321699320, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"complete\": false, \"failed\": false, \"factorial_inference_complete\": false, \"document_output_started\": false, \"gpu_access\": false, \"read_only_exact_registered_handle\": true, \"full_goal_complete\": false}\n"
+    }
+  },
+  {
+    "name": "combined",
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python /tmp/dense-v3-combined-paper-replay.URO4uk9L/observe.py --output /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-reader-first-readme-v1/observations/combined-after.json",
+    "result": {
+      "chunk_id": "75911d",
+      "wall_time_seconds": 0.000012424,
+      "exit_code": 0,
+      "original_token_count": 104,
+      "output": "{\"observed_at_utc\": \"2026-09-13T02:56:03.765124+00:00\", \"coordinator\": {\"pid\": 865702, \"start_ticks\": 322276697, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true}, \"native_document_complete\": false, \"closed_combined_bundle_created\": false, \"replay_child\": {\"started\": false}, \"failed\": false, \"completion\": null, \"read_only_exact_registered_handles\": true, \"gpu_access\": false, \"full_goal_complete\": false}\n"
+    }
+  },
+  {
+    "name": "resumes",
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python /tmp/dense-v3-resume-verification.wcsmQnDm/observe.py --source-sha 1746b8a382bb45fefc2ab17beaf7706984fe91802c528bec48c88a2daa038bb2 --authorization-sha 51e95a2adf6cf5acf151a18976c476e275307262b6f94528b313b964e2baf7d0 --output /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-reader-first-readme-v1/observations/resumes-after.json",
+    "result": {
+      "chunk_id": "c461e7",
+      "wall_time_seconds": 0.000003423,
+      "exit_code": 0,
+      "original_token_count": 151,
+      "output": "{\"observed_at_utc\": \"2026-09-13T02:56:03.780678+00:00\", \"pools\": {\"a\": {\"started\": true, \"coordinator\": {\"pid\": 824762, \"start_ticks\": 321051396, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"ranks\": [], \"reader\": null, \"gpu_admission\": false, \"failure\": false, \"completion\": null}, \"b\": {\"started\": true, \"coordinator\": {\"pid\": 824763, \"start_ticks\": 321051398, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"ranks\": [], \"reader\": null, \"gpu_admission\": false, \"failure\": false, \"completion\": null}}, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+    }
+  },
+  {
+    "name": "durability",
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python /tmp/dense-v3-factorial-outcome-durability.cq4oNAJ7/observe.py --output /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-reader-first-readme-v1/observations/durability-after.json",
+    "result": {
+      "chunk_id": "4779a7",
+      "wall_time_seconds": 0.000002637,
+      "exit_code": 0,
+      "original_token_count": 121,
+      "output": "{\"observed_at_utc\": \"2026-09-13T02:56:03.801823+00:00\", \"coordinator\": {\"pid\": 875351, \"start_ticks\": 322559189, \"state\": \"S\", \"command_matches\": true}, \"original_summary_complete\": false, \"manifest_created\": false, \"upload_started\": false, \"upload_returned\": false, \"remote_verification_complete\": false, \"actual_anonymous_download_complete\": false, \"failed\": false, \"completion\": null, \"gpu_access\": false, \"read_only_exact_registered_handle\": true, \"full_goal_complete\": false}\n"
+    }
+  }
+]

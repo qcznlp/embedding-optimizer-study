@@ -1,0 +1,25 @@
+% Generated only from the complete, source-bound state-by-operator summary.
+\newcommand{\StateOperatorAbstractFinding}{%
+At the 50K continuation endpoint, state, operator, and interaction contrasts are -0.0020 [-0.0030, -0.0010], -0.0020 [-0.0030, -0.0010], and -0.0020 [-0.0030, -0.0010] nDCG@10. They do not decompose the primary-training contrast.}
+\newcommand{\StateOperatorMechanismFinding}{%
+Averaged over continuation operators, the Muon-reached versus AdamW-reached state changes final nDCG@10 by -0.0020 [-0.0030, -0.0010] (negative); averaged over source states, Muon versus AdamW continuation changes it by -0.0020 [-0.0030, -0.0010] (negative). The state--operator interaction is -0.0020 [-0.0030, -0.0010] (negative). No averaged contrast supports a Muon benefit; operator effect, state operator interaction, weight state effect is supported in the opposite direction. These are endpoint contrasts, not a decomposition of the primary-training result.}
+\newcommand{\StateOperatorConclusionFinding}{%
+After optimizer-state reset and calibration-probe scale matching, the crossed 50K continuation finds state, operator, and interaction contrasts of -0.0020 [-0.0030, -0.0010], -0.0020 [-0.0030, -0.0010], and -0.0020 [-0.0030, -0.0010]. No averaged contrast supports a Muon benefit; operator effect, state operator interaction, weight state effect is supported in the opposite direction. These are endpoint contrasts, not a decomposition of the primary-training result.}
+\newcommand{\StateOperatorAppendixTable}{%
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrl}
+\toprule
+Factorial contrast & Effect & 95\% CI & Decision \\
+\midrule
+Muon-state $-$ AdamW-state & -0.0020 & [-0.0030, -0.0010] & negative \\
+Muon operator $-$ AdamW operator & -0.0020 & [-0.0030, -0.0010] & negative \\
+State $\times$ operator interaction & -0.0020 & [-0.0030, -0.0010] & negative \\
+\bottomrule
+\end{tabular}
+\caption{Prospective reset-state factorial on final decontaminated-BEIR nDCG@10. Effects average the fixed three order seeds and 14 tasks; intervals use the frozen two-way seed/task cluster bootstrap. These are marginal 95\% intervals, not simultaneous family-wise intervals.}
+\label{tab:state-operator-factorial}
+\end{table*}%
+}

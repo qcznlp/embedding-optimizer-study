@@ -1,0 +1,14 @@
+{
+  "record_type": "terminal_observation_of_existing_verifier_not_new_gpu_worker",
+  "session_id": 3017,
+  "exit_code": 0,
+  "observed_at_utc": "2026-09-06T16:18:58Z",
+  "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_natural_data.py --verify /tmp/dense-natural-readiness.a4xZzR/result.json --receipt-sha256 bf6e893e3b9e244242871227e28a3729acc17477dd3c989f7c647308bf332d36",
+  "observed_result": {
+    "verified": true,
+    "natural_runs": 3,
+    "scientific_completion": false,
+    "receipt": {"bytes": 164821, "sha256": "bf6e893e3b9e244242871227e28a3729acc17477dd3c989f7c647308bf332d36"}
+  },
+  "boundary": "Actual fresh CPU invocation of the unchanged existing file verifier. No second GPU run, natural-data resume, independent numerical oracle or cross-host replication is claimed."
+}

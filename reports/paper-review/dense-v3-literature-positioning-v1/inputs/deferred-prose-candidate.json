@@ -1,0 +1,35 @@
+{
+  "scope": "reviewed_prose_candidates_not_installed_not_a_source_binding_update",
+  "reviewed_development_main_sha256": "36a6b3509d1ad71a0c9609832e37869bde97379daf34bf69832af0f68f7f95fe",
+  "reviewed_bibliography_sha256": "fca6bf5762a2cecab795a1a60c1338ab4eb999acb5d78c437b9df0e5f3553218",
+  "apply_only_after_original_native_document_and_combined_replay_finish": true,
+  "requires_new_full_document_build_and_visual_review": true,
+  "numerical_results_changed": false,
+  "replacements": [
+    {
+      "surface": "bibliography",
+      "old": "Boza, Vlado and Jiacheng, You and Cesista, Franz",
+      "new": "Boza, Vlado and You, Jiacheng and Cesista, Franz"
+    },
+    {
+      "surface": "introduction",
+      "old": "to rank a large corpus. Most adaptation uses AdamW, whose coordinate-wise scaling differs from\nMuon's approximately orthogonalized matrix updates\n\\citep{loshchilov2019decoupled,liu2025muon}.",
+      "new": "to rank a large corpus. DenseOn's published adaptation recipe uses AdamW\n\\citep{sourty2026denseon}, whose coordinate-wise scaling differs from Muon's approximately\northogonalized matrix updates \\citep{loshchilov2019decoupled,liu2025muon}."
+    },
+    {
+      "surface": "discussion",
+      "old": "The all-rate estimand prevents the argument from collapsing onto one fortunate learning rate, while\nfive checkpoint stages reveal whether an advantage emerges early, accumulates gradually, or\ndisappears. The result remains specific to the tested DenseOn adaptation problem; it is stronger\nthan a best-cell comparison and weaker than a universal optimizer ranking.",
+      "new": "The all-rate comparison estimates performance averaged over the specified grids; validation-based\nselection estimates the outcome of choosing a recipe within those grids. These answer different\nquestions, and neither defines a universal optimizer ranking. Five checkpoint stages additionally\nshow when retrieval differences emerge and whether they persist. All conclusions remain specific\nto this DenseOn adaptation problem and the tested learning-rate ranges."
+    },
+    {
+      "surface": "limitations",
+      "old": "comparison does not replace replication across training views.",
+      "new": "comparison does not replace replication across training views. The selected AdamW rate is the\nupper tested boundary, so the grid does not establish where its optimum lies."
+    },
+    {
+      "surface": "methods",
+      "old": "rule and auxiliary parameters through AdamW at $3\\!\\times\\!10^{-6}$. Each run keeps checkpoints at",
+      "new": "rule and auxiliary parameters through AdamW at $3\\!\\times\\!10^{-6}$. Primary AdamW uses its\ngrid rate for all trainable parameters. These cells compare complete optimizer recipes, not only\nthe hidden-matrix update rule. Each run keeps checkpoints at"
+    }
+  ]
+}

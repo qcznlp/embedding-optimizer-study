@@ -1,0 +1,24 @@
+{
+  "scope": "engineering_natural_prefix_attempt_observed_by_terminal",
+  "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_natural_data --repository /root/embedding-optimizer-story-refactor --workdir /tmp/dense-natural-readiness.muZla7",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "exec_session": 83539,
+  "observed_exit_code": 1,
+  "failure": "ValueError: A diagnostic row lacks one of its nine original texts",
+  "failure_location": "scripts/audit_dense_natural_data.py:select_prefix",
+  "workdir": "/tmp/dense-natural-readiness.muZla7",
+  "first_counterexample": {
+    "index": 230,
+    "source": "fiqa",
+    "query_id": 5009,
+    "positive_id": 741,
+    "column": "positive",
+    "text": ""
+  },
+  "gpu_workers_started": 0,
+  "model_updates_executed": 0,
+  "gpu_lease_acquired": false,
+  "natural_data_readiness_passed": false,
+  "scientific_completion": false,
+  "boundary": "Observed terminal failure before dataset materialization, GPU lease, torchrun or model loading. The failed work directory remains empty. No producer result.json was created by this early failure; this is an explicit terminal-observation record, not a successful producer receipt."
+}

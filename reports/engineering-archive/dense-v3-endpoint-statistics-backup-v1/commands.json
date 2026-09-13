@@ -1,0 +1,141 @@
+{
+  "scope": "endpoint-statistics-backup-actual-tool-records",
+  "records": {
+    "endpointStatisticsBackupPrepare": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py prepare --workdir /tmp/dense-v3-endpoint-statistics-backup.9U6tS4tb",
+      "result": {
+        "chunk_id": "a8b7e8",
+        "wall_time_seconds": 0.000004073,
+        "exit_code": 0,
+        "original_token_count": 228,
+        "output": "{\"manifest\": {\"bytes\": 3923, \"git_blob_sha1\": \"05e20b65fc55c82fd6df219fae34d50ead4ccb34\", \"sha256\": \"cf8b574c89cc40ac1ac3dcabdabef5f64881b6fab9f094c7e661fdcc089449ec\"}, \"parent_revision\": \"3883b677f87b1982f06016e9fadb8bb95e0cfc96\", \"parent_transport_sha256\": \"ab565206b22d0138c8227fef3f26eb28e2abeb7653c6f7137b7b532a289ec046\", \"prefix\": \"corrected-dense-correctness-v3/endpoint-statistics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/cf8b574c89cc40ac1ac3dcabdabef5f64881b6fab9f094c7e661fdcc089449ec\", \"remote_mutations\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"scientific_completion\": false, \"scope\": \"complete-v3-final-endpoint-statistics-backup\", \"source\": {\"bytes\": 15513, \"git_blob_sha1\": \"bb22221417e5ec2b986d6cea65dc77181197605f\", \"sha256\": \"cc00cb5fd855be277b79f92add526a3c39ca4c8cc446714692a850f9fb587bf6\"}, \"upload_bytes\": 218466, \"upload_files\": 16}\n"
+      }
+    },
+    "endpointStatisticsBackupUpload": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py upload --workdir /tmp/dense-v3-endpoint-statistics-backup.9U6tS4tb",
+      "result": {
+        "chunk_id": "190962",
+        "wall_time_seconds": 1.000732282,
+        "session_id": 99143,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    "endpointStatisticsBackupUploadTerminal": {
+      "chunk_id": "200e83",
+      "wall_time_seconds": 0.000003723,
+      "exit_code": 1,
+      "original_token_count": 324,
+      "output": "Traceback (most recent call last):\n  File \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py\", line 273, in <module>\n    main()\n  File \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py\", line 267, in main\n    result = {'prepare': prepare, 'upload': upload, 'download-verify': download_verify}[\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py\", line 180, in upload\n    require(t.file_identity(attrs)['sha256'] == ATTR_SHA\n            ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/scripts/restore_primary_v3.py\", line 67, in file_identity\n    require(path.is_file() and not path.is_symlink(), f\"Not an ordinary file: {path}\")\n  File \"/root/embedding-optimizer-story-refactor/scripts/restore_primary_v3.py\", line 59, in require\n    raise ValueError(message)\nValueError: Not an ordinary file: /root/.cache/huggingface/hub/datasets--qcz--embedding-optimizer-study-analysis-artifacts/snapshots/3883b677f87b1982f06016e9fadb8bb95e0cfc96/.gitattributes\n"
+    },
+    "endpointStatisticsBackupTestsV2": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q -p no:cacheprovider /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/test_backup.py --junitxml=/tmp/dense-v3-endpoint-statistics-backup.L93O9iID/transport-tests.xml",
+      "result": {
+        "chunk_id": "d3dc0b",
+        "wall_time_seconds": 0.268646183,
+        "exit_code": 0,
+        "original_token_count": 20,
+        "output": "..................                                                       [100%]\n"
+      }
+    },
+    "endpointStatisticsBackupPrepareV2": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py prepare --workdir /tmp/dense-v3-endpoint-statistics-backup.L93O9iID",
+      "result": {
+        "chunk_id": "d48fe6",
+        "wall_time_seconds": 0.000004982,
+        "exit_code": 0,
+        "original_token_count": 228,
+        "output": "{\"manifest\": {\"bytes\": 3923, \"git_blob_sha1\": \"512f16541b4ad16ed12801ed28808d21a8816835\", \"sha256\": \"cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\"}, \"parent_revision\": \"3883b677f87b1982f06016e9fadb8bb95e0cfc96\", \"parent_transport_sha256\": \"ab565206b22d0138c8227fef3f26eb28e2abeb7653c6f7137b7b532a289ec046\", \"prefix\": \"corrected-dense-correctness-v3/endpoint-statistics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\", \"remote_mutations\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"scientific_completion\": false, \"scope\": \"complete-v3-final-endpoint-statistics-backup\", \"source\": {\"bytes\": 15580, \"git_blob_sha1\": \"cd4468925b09d250de35eb7890967c8a3fba8f5f\", \"sha256\": \"1234b243cb0028d232674ad1a261601f546aace51c37086bdc365aa576accb8e\"}, \"upload_bytes\": 218466, \"upload_files\": 16}\n"
+      }
+    },
+    "endpointStatisticsBackupUploadV2": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py upload --workdir /tmp/dense-v3-endpoint-statistics-backup.L93O9iID",
+      "result": {
+        "chunk_id": "0a722d",
+        "wall_time_seconds": 1.001033929,
+        "session_id": 89991,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    "endpointStatisticsBackupUploadV2Terminal": {
+      "chunk_id": "e87071",
+      "wall_time_seconds": 0.000002629,
+      "exit_code": 0,
+      "original_token_count": 794,
+      "output": "\rProcessing Files (0 / 0)      : |          |  0.00B /  0.00B            \n\rNew Data Upload               : |          |  0.00B /  0.00B            \u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\rProcessing Files (1 / 1)      : 100%|██████████|  112kB /  112kB, 10.9kB/s  \n\rNew Data Upload               : 100%|██████████|  112kB /  112kB, 10.9kB/s  \u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\n\n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \u001b[A\u001b[A\rProcessing Files (1 / 1)      : 100%|██████████|  112kB /  112kB, 9.64kB/s  \n\rNew Data Upload               : 100%|██████████|  112kB /  112kB, 9.64kB/s  \n\r  ...es/endpoint_contrasts.png: 100%|██████████|  112kB /  112kB            \n{\"durability_verified\": true, \"files\": 16, \"manifest\": {\"bytes\": 3923, \"git_blob_sha1\": \"512f16541b4ad16ed12801ed28808d21a8816835\", \"sha256\": \"cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\"}, \"old_corrected_subtrees_unchanged\": 3, \"old_root_entries_unchanged\": 20, \"prefix\": \"corrected-dense-correctness-v3/endpoint-statistics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\", \"remote_paths_deleted_or_overwritten\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"revision\": \"13b110a0d067948ff518a0f720ee84c2e2f8c6b1\", \"root_attributes_unchanged\": true, \"scientific_completion\": false, \"source_code_uploaded\": false, \"uploaded_at_utc\": \"2026-09-10T18:52:34.533242+00:00\", \"verified_at_utc\": \"2026-09-10T18:52:35.322657+00:00\"}\n"
+    },
+    "endpointStatisticsBackupDownload": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/backup.py download-verify --workdir /tmp/dense-v3-endpoint-statistics-backup.L93O9iID",
+      "result": {
+        "chunk_id": "59e499",
+        "wall_time_seconds": 1.001208628,
+        "session_id": 54709,
+        "original_token_count": 35,
+        "output": "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"
+      }
+    },
+    "endpointStatisticsBackupDownloadTerminal": {
+      "chunk_id": "146f94",
+      "wall_time_seconds": 0.000002409,
+      "exit_code": 0,
+      "original_token_count": 243,
+      "output": "{\"all_payload_hashes_match\": true, \"bytes\": 218466, \"downloaded_root\": \"/tmp/dense-v3-endpoint-statistics-backup.L93O9iID/download/corrected-dense-correctness-v3/endpoint-statistics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\", \"files\": 16, \"manifest\": {\"bytes\": 3923, \"git_blob_sha1\": \"512f16541b4ad16ed12801ed28808d21a8816835\", \"sha256\": \"cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\"}, \"new_model_or_statistical_execution\": false, \"observed_at_utc\": \"2026-09-10T18:54:17.219334+00:00\", \"prefix\": \"corrected-dense-correctness-v3/endpoint-statistics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\", \"revision\": \"13b110a0d067948ff518a0f720ee84c2e2f8c6b1\", \"same_physical_host\": true, \"scientific_completion\": false, \"scope\": \"actual-complete-anonymous-endpoint-statistics-recovery\"}\n"
+    },
+    "endpointStatisticsBackupRecoveredIndependent": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/source/verify_recovered.py --root /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/download/corrected-dense-correctness-v3/endpoint-statistics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e --output /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/recovered-independent-verification.json",
+      "result": {
+        "chunk_id": "a401ac",
+        "wall_time_seconds": 0.00000441,
+        "exit_code": 0,
+        "original_token_count": 205,
+        "output": "{\"all_checks_passed\": true, \"bytes\": 218466, \"figure_numeric_fields\": 24, \"figure_rows\": 6, \"files\": 16, \"interval_figure_links\": 6, \"manifest_sha256\": \"cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\", \"native_csv_numeric_fields\": 246, \"native_csv_rows\": 40, \"new_bootstrap_or_model_execution\": false, \"observed_at_utc\": \"2026-09-10T18:55:02.906064+00:00\", \"physical_second_host_experiment\": false, \"relocation_receipts_equal_except_time\": true, \"root\": \"/tmp/dense-v3-endpoint-statistics-backup.L93O9iID/download/corrected-dense-correctness-v3/endpoint-statistics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/cddee2dcfb68c25e42931c82f129c0f57590434cecf2b48bbc106da0dfc38c2e\", \"scientific_completion\": false, \"scope\": \"independent-recovered-byte-and-numeric-table-figure-mapping\"}\n"
+      }
+    },
+    "endpointStatisticsBackupInitialArchival": {
+      "command": "mkdir -p reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/actual/first reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/actual/final\ncp --update=none /tmp/dense-v3-endpoint-statistics-backup.9U6tS4tb/preflight.json /tmp/dense-v3-endpoint-statistics-backup.9U6tS4tb/transport-tests.xml reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/actual/first/\ncp --update=none /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/preflight.json /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/upload-mode-preflight.json /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/upload-started.json /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/upload.json /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/remote-audit.json /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/transport-tests.xml /tmp/dense-v3-endpoint-statistics-backup.L93O9iID/staging/artifact_manifest.json reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/actual/final/",
+      "result": {
+        "chunk_id": "f388d7",
+        "wall_time_seconds": 0.000003722,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      }
+    }
+  },
+  "original_focused_tests": {
+    "tool_chunk": "f1868b",
+    "exit_code": 0,
+    "xml": "actual/first/transport-tests.xml",
+    "cases": 18
+  },
+  "preparation_read_only_inspections": [
+    {
+      "tool_chunk": "07dcfb",
+      "exit_code": 0,
+      "scope": "New temporary root and anonymous parent/subtree inspection"
+    },
+    {
+      "tool_chunk": "4e917c",
+      "exit_code": 0,
+      "scope": "Read-only three-format upload mode probe; no payload or commit"
+    },
+    {
+      "tool_chunk": "f0dd40",
+      "exit_code": 0,
+      "scope": "Read-only immutable root-attribute content and PNG-rule inspection"
+    },
+    {
+      "tool_chunk": "0773bb",
+      "exit_code": 0,
+      "scope": "Current handoff before-copy and manuscript/AGENTS hashes; cp portability warning"
+    },
+    {
+      "tool_chunk": "f5dc3d",
+      "exit_code": 0,
+      "scope": "Exact original source preservation and first-attempt file inspection; cp portability warning"
+    }
+  ],
+  "same_physical_host": true,
+  "scientific_completion": false
+}

@@ -1,0 +1,1585 @@
+{
+  "actual_consumer_protocol_loaders_pass": true,
+  "amendment": {
+    "bytes": 6866,
+    "path": "configs/dense_no_packing_state_operator_claim_wording_amendment.json",
+    "sha256": "929fe6445598b84b546670eb5eefd408c5221cacad6cc8e93a984651dbbe5de7"
+  },
+  "both_prepared_amendment_layers_verified": true,
+  "boundary": "Read-only source validation and exact four-command path relocation. It neither executes a command nor verifies a real deployment. Recompute the contract on the experiment checkout after approved deployment before restarting the zero-step successor.",
+  "claim_wording_dependency_verified": true,
+  "controller_started": false,
+  "exact_path_relocations": {
+    "paper-audit": [
+      7,
+      "configs/dense_scope_amendment.json"
+    ],
+    "paper-release": [
+      2,
+      "paper"
+    ],
+    "portable-evidence-audit": [
+      1,
+      "scripts/portable_evidence.py"
+    ],
+    "portable-evidence-refresh": [
+      1,
+      "scripts/portable_evidence.py"
+    ]
+  },
+  "implementation": {
+    "bytes": 24733,
+    "path": "scripts/audit_successor_contract.py",
+    "sha256": "084729f6f01b00f144d64303c38b7542ca9cf4329c71f7e72e36205c5b35c913"
+  },
+  "live_root": "/root/embedding-optimizer-study",
+  "local_contract": {
+    "arguments": {
+      "beir_gpu_pools": "0,1,2,3;4,5,6,7",
+      "checkpoint_prefix": "state-operator-factorial-v1/dense",
+      "checkpoint_repo": "qcz/embedding-optimizer-study-checkpoints",
+      "main_ledger": "/root/embedding-optimizer-study/logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "python": "/usr/bin/python3"
+    },
+    "protocol": {
+      "bytes": 9013,
+      "path": "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+      "sha256": "1ac4cf144bc5e9dd0fb3485f79a667e1af96c62d2e35fa8d0c20a079ed39f852"
+    },
+    "schema_version": 1,
+    "sha256": "41fdf48c1275dbbb1972cbd2e19aa8b41a5458b0ae55377731f95b8c7792d749",
+    "steps": [
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "audit-protocol",
+          "--portable-data-audit"
+        ],
+        "index": 1,
+        "name": "protocol-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-sealed-checkpoint",
+          "--run-ids",
+          "padded-adamw-3e-5",
+          "padded-muon-3e-4",
+          "--steps",
+          "2345"
+        ],
+        "index": 2,
+        "name": "source-checkpoint-durability",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.corrected_publication"
+        ],
+        "index": 3,
+        "name": "primary-publication-refresh",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.primary_dimension_probe",
+          "--gpu",
+          "0"
+        ],
+        "index": 4,
+        "name": "primary-dimension-export",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.primary_dimension_probe",
+          "--audit-only"
+        ],
+        "index": 5,
+        "name": "primary-dimension-export-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_utilization",
+          "--analysis-scope",
+          "corrected",
+          "--input-root",
+          "results/dense-primary-dimension-probe/exports/dense",
+          "--output-dir",
+          "reports/dimension-utilization-primary"
+        ],
+        "index": 6,
+        "name": "primary-dimension-analysis",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_utilization",
+          "--analysis-scope",
+          "corrected",
+          "--input-root",
+          "results/dense-primary-dimension-probe/exports/dense",
+          "--output-dir",
+          "reports/dimension-utilization-primary",
+          "--audit-only"
+        ],
+        "index": 7,
+        "name": "primary-dimension-analysis-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_publication"
+        ],
+        "index": 8,
+        "name": "primary-dimension-publication",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_publication",
+          "--audit-only"
+        ],
+        "index": 9,
+        "name": "primary-dimension-publication-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_release"
+        ],
+        "index": 10,
+        "name": "primary-dimension-evidence",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_publication",
+          "--portable-audit"
+        ],
+        "index": 11,
+        "name": "primary-dimension-portable-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_archive"
+        ],
+        "index": 12,
+        "name": "primary-dimension-archive",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_archive",
+          "--audit-only"
+        ],
+        "index": 13,
+        "name": "primary-dimension-archive-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-gradients",
+          "--state",
+          "adamw_state",
+          "--gpus",
+          "0",
+          "--device",
+          "cuda:0"
+        ],
+        "index": 14,
+        "name": "calibration-01",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-directions",
+          "--state",
+          "adamw_state",
+          "--gpus",
+          "0",
+          "--operator-device",
+          "cuda:0"
+        ],
+        "index": 15,
+        "name": "calibration-02",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-gradients",
+          "--state",
+          "muon_state",
+          "--gpus",
+          "0",
+          "--device",
+          "cuda:0"
+        ],
+        "index": 16,
+        "name": "calibration-03",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-directions",
+          "--state",
+          "muon_state",
+          "--gpus",
+          "0",
+          "--operator-device",
+          "cuda:0"
+        ],
+        "index": 17,
+        "name": "calibration-04",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "generate"
+        ],
+        "index": 18,
+        "name": "matrix-generate",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "audit"
+        ],
+        "index": 19,
+        "name": "matrix-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "314159",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 20,
+        "name": "training-adamw_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "314159",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 21,
+        "name": "checkpoint-backup-adamw_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "314159",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 22,
+        "name": "training-muon_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "314159",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 23,
+        "name": "checkpoint-backup-muon_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "271828",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 24,
+        "name": "training-adamw_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "271828",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 25,
+        "name": "checkpoint-backup-adamw_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "271828",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 26,
+        "name": "training-muon_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "271828",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 27,
+        "name": "checkpoint-backup-muon_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "161803",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 28,
+        "name": "training-adamw_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "161803",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 29,
+        "name": "checkpoint-backup-adamw_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "161803",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 30,
+        "name": "training-muon_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "161803",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 31,
+        "name": "checkpoint-backup-muon_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-probe-state-operator-factorial"
+        ],
+        "index": 32,
+        "name": "probe",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "314159",
+          "--gpus",
+          "0,1,2,3"
+        ],
+        "index": 33,
+        "name": "full-beir-adamw_state-seed314159",
+        "parallel_group": "full-beir-pair-1"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "314159",
+          "--gpus",
+          "4,5,6,7"
+        ],
+        "index": 34,
+        "name": "full-beir-muon_state-seed314159",
+        "parallel_group": "full-beir-pair-1"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "271828",
+          "--gpus",
+          "0,1,2,3"
+        ],
+        "index": 35,
+        "name": "full-beir-adamw_state-seed271828",
+        "parallel_group": "full-beir-pair-2"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "271828",
+          "--gpus",
+          "4,5,6,7"
+        ],
+        "index": 36,
+        "name": "full-beir-muon_state-seed271828",
+        "parallel_group": "full-beir-pair-2"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "161803",
+          "--gpus",
+          "0,1,2,3"
+        ],
+        "index": 37,
+        "name": "full-beir-adamw_state-seed161803",
+        "parallel_group": "full-beir-pair-3"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "161803",
+          "--gpus",
+          "4,5,6,7"
+        ],
+        "index": 38,
+        "name": "full-beir-muon_state-seed161803",
+        "parallel_group": "full-beir-pair-3"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-summarize-state-operator-factorial"
+        ],
+        "index": 39,
+        "name": "summary",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.state_operator_factorial_publication"
+        ],
+        "index": 40,
+        "name": "publication-render",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "make",
+          "-C",
+          "/root/embedding-optimizer-story-refactor/paper",
+          "release",
+          "PYTHON=/usr/bin/python3"
+        ],
+        "index": 41,
+        "name": "paper-release",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "/root/embedding-optimizer-story-refactor/scripts/portable_evidence.py"
+        ],
+        "index": 42,
+        "name": "portable-evidence-refresh",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.paper_audit",
+          "--strict",
+          "--families",
+          "dense",
+          "--scope-amendment",
+          "/root/embedding-optimizer-story-refactor/configs/dense_scope_amendment.json"
+        ],
+        "index": 43,
+        "name": "paper-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "/root/embedding-optimizer-story-refactor/scripts/portable_evidence.py",
+          "--audit-only"
+        ],
+        "index": 44,
+        "name": "portable-evidence-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "pytest",
+          "-q"
+        ],
+        "index": 45,
+        "name": "tests",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "scripts"
+        ],
+        "index": 46,
+        "name": "ruff-check",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "src",
+          "tests",
+          "scripts"
+        ],
+        "index": 47,
+        "name": "ruff-format-check",
+        "parallel_group": null
+      }
+    ]
+  },
+  "main_recovery_dependency_verified": true,
+  "observed_at_utc": "2026-09-05T05:10:35.363182+00:00",
+  "original_36_commands_and_arguments_preserved": true,
+  "prior_combined_amendment": {
+    "bytes": 8999,
+    "path": "configs/dense_no_packing_state_operator_handoff_repairs_amendment.json",
+    "sha256": "502aeec139ce0cef244b0a6133850d83257938092c68e388b282f5d88ce7b9a9"
+  },
+  "prior_header_amendment": {
+    "bytes": 4610,
+    "path": "configs/dense_no_packing_state_operator_parent_publication_amendment.json",
+    "sha256": "cdbdceeaf551dcbabef3b9b60bd254c9cf22e1c37ee2d4fd0b98b8165dbb03c7"
+  },
+  "projected_live_contract": {
+    "arguments": {
+      "beir_gpu_pools": "0,1,2,3;4,5,6,7",
+      "checkpoint_prefix": "state-operator-factorial-v1/dense",
+      "checkpoint_repo": "qcz/embedding-optimizer-study-checkpoints",
+      "main_ledger": "/root/embedding-optimizer-study/logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "python": "/usr/bin/python3"
+    },
+    "protocol": {
+      "bytes": 9013,
+      "path": "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+      "sha256": "1ac4cf144bc5e9dd0fb3485f79a667e1af96c62d2e35fa8d0c20a079ed39f852"
+    },
+    "schema_version": 1,
+    "sha256": "7aafd7af0c010984cbcf30c07449e68d4d21e7df23e35f499b023d88fc9e71fd",
+    "steps": [
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "audit-protocol",
+          "--portable-data-audit"
+        ],
+        "index": 1,
+        "name": "protocol-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-sealed-checkpoint",
+          "--run-ids",
+          "padded-adamw-3e-5",
+          "padded-muon-3e-4",
+          "--steps",
+          "2345"
+        ],
+        "index": 2,
+        "name": "source-checkpoint-durability",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.corrected_publication"
+        ],
+        "index": 3,
+        "name": "primary-publication-refresh",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.primary_dimension_probe",
+          "--gpu",
+          "0"
+        ],
+        "index": 4,
+        "name": "primary-dimension-export",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.primary_dimension_probe",
+          "--audit-only"
+        ],
+        "index": 5,
+        "name": "primary-dimension-export-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_utilization",
+          "--analysis-scope",
+          "corrected",
+          "--input-root",
+          "results/dense-primary-dimension-probe/exports/dense",
+          "--output-dir",
+          "reports/dimension-utilization-primary"
+        ],
+        "index": 6,
+        "name": "primary-dimension-analysis",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_utilization",
+          "--analysis-scope",
+          "corrected",
+          "--input-root",
+          "results/dense-primary-dimension-probe/exports/dense",
+          "--output-dir",
+          "reports/dimension-utilization-primary",
+          "--audit-only"
+        ],
+        "index": 7,
+        "name": "primary-dimension-analysis-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_publication"
+        ],
+        "index": 8,
+        "name": "primary-dimension-publication",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_publication",
+          "--audit-only"
+        ],
+        "index": 9,
+        "name": "primary-dimension-publication-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_release"
+        ],
+        "index": 10,
+        "name": "primary-dimension-evidence",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_publication",
+          "--portable-audit"
+        ],
+        "index": 11,
+        "name": "primary-dimension-portable-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_archive"
+        ],
+        "index": 12,
+        "name": "primary-dimension-archive",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "env",
+          "CUDA_VISIBLE_DEVICES=",
+          "OPENBLAS_NUM_THREADS=2",
+          "OMP_NUM_THREADS=2",
+          "MKL_NUM_THREADS=2",
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.dimension_archive",
+          "--audit-only"
+        ],
+        "index": 13,
+        "name": "primary-dimension-archive-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-gradients",
+          "--state",
+          "adamw_state",
+          "--gpus",
+          "0",
+          "--device",
+          "cuda:0"
+        ],
+        "index": 14,
+        "name": "calibration-01",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-directions",
+          "--state",
+          "adamw_state",
+          "--gpus",
+          "0",
+          "--operator-device",
+          "cuda:0"
+        ],
+        "index": 15,
+        "name": "calibration-02",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-gradients",
+          "--state",
+          "muon_state",
+          "--gpus",
+          "0",
+          "--device",
+          "cuda:0"
+        ],
+        "index": 16,
+        "name": "calibration-03",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "calibrate-directions",
+          "--state",
+          "muon_state",
+          "--gpus",
+          "0",
+          "--operator-device",
+          "cuda:0"
+        ],
+        "index": 17,
+        "name": "calibration-04",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "generate"
+        ],
+        "index": 18,
+        "name": "matrix-generate",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-state-operator-factorial",
+          "audit"
+        ],
+        "index": 19,
+        "name": "matrix-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "314159",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 20,
+        "name": "training-adamw_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "314159",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 21,
+        "name": "checkpoint-backup-adamw_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "314159",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 22,
+        "name": "training-muon_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "314159",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 23,
+        "name": "checkpoint-backup-muon_state-seed314159",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "271828",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 24,
+        "name": "training-adamw_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "271828",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 25,
+        "name": "checkpoint-backup-adamw_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "271828",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 26,
+        "name": "training-muon_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "271828",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 27,
+        "name": "checkpoint-backup-muon_state-seed271828",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "161803",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 28,
+        "name": "training-adamw_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "161803",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 29,
+        "name": "checkpoint-backup-adamw_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-train-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "161803",
+          "--gpus-a",
+          "0,1,2,3",
+          "--gpus-b",
+          "4,5,6,7",
+          "--port-a",
+          "29710",
+          "--port-b",
+          "29720"
+        ],
+        "index": 30,
+        "name": "training-muon_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-backup-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "161803",
+          "--repo-id",
+          "qcz/embedding-optimizer-study-checkpoints",
+          "--remote-prefix",
+          "state-operator-factorial-v1/dense"
+        ],
+        "index": 31,
+        "name": "checkpoint-backup-muon_state-seed161803",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-probe-state-operator-factorial"
+        ],
+        "index": 32,
+        "name": "probe",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "314159",
+          "--gpus",
+          "0,1,2,3"
+        ],
+        "index": 33,
+        "name": "full-beir-adamw_state-seed314159",
+        "parallel_group": "full-beir-pair-1"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "314159",
+          "--gpus",
+          "4,5,6,7"
+        ],
+        "index": 34,
+        "name": "full-beir-muon_state-seed314159",
+        "parallel_group": "full-beir-pair-1"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "271828",
+          "--gpus",
+          "0,1,2,3"
+        ],
+        "index": 35,
+        "name": "full-beir-adamw_state-seed271828",
+        "parallel_group": "full-beir-pair-2"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "271828",
+          "--gpus",
+          "4,5,6,7"
+        ],
+        "index": 36,
+        "name": "full-beir-muon_state-seed271828",
+        "parallel_group": "full-beir-pair-2"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "adamw_state",
+          "--seed",
+          "161803",
+          "--gpus",
+          "0,1,2,3"
+        ],
+        "index": 37,
+        "name": "full-beir-adamw_state-seed161803",
+        "parallel_group": "full-beir-pair-3"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-evaluate-state-operator-factorial",
+          "--state",
+          "muon_state",
+          "--seed",
+          "161803",
+          "--gpus",
+          "4,5,6,7"
+        ],
+        "index": 38,
+        "name": "full-beir-muon_state-seed161803",
+        "parallel_group": "full-beir-pair-3"
+      },
+      {
+        "command": [
+          "uv",
+          "run",
+          "embed-optim-summarize-state-operator-factorial"
+        ],
+        "index": 39,
+        "name": "summary",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.state_operator_factorial_publication"
+        ],
+        "index": 40,
+        "name": "publication-render",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "make",
+          "-C",
+          "/root/embedding-optimizer-study/paper",
+          "release",
+          "PYTHON=/usr/bin/python3"
+        ],
+        "index": 41,
+        "name": "paper-release",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "/root/embedding-optimizer-study/scripts/portable_evidence.py"
+        ],
+        "index": 42,
+        "name": "portable-evidence-refresh",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "embed_optim.paper_audit",
+          "--strict",
+          "--families",
+          "dense",
+          "--scope-amendment",
+          "/root/embedding-optimizer-study/configs/dense_scope_amendment.json"
+        ],
+        "index": 43,
+        "name": "paper-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "/root/embedding-optimizer-study/scripts/portable_evidence.py",
+          "--audit-only"
+        ],
+        "index": 44,
+        "name": "portable-evidence-audit",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "pytest",
+          "-q"
+        ],
+        "index": 45,
+        "name": "tests",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests",
+          "scripts"
+        ],
+        "index": 46,
+        "name": "ruff-check",
+        "parallel_group": null
+      },
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "src",
+          "tests",
+          "scripts"
+        ],
+        "index": 47,
+        "name": "ruff-format-check",
+        "parallel_group": null
+      }
+    ]
+  },
+  "required_main_contract_sha256": "4380a3631ec196307c775cdf4ca766298075de0312ad9d7158c2795577424a56",
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "scope": "read_only_successor_contract_projection"
+}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="8.763" timestamp="2026-09-10T18:19:50.795725+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_factorial_v3_run_contract" name="test_completion_container_additional_counterexamples[nonintegral_counter_type]" time="0.128"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2016/test_completion_container_addi0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7fb6a1688d40&gt;
+change = 'nonintegral_counter_type'
+
+    @pytest.mark.parametrize(
+        "change", ["nonintegral_counter_type", "hidden_component_file", "wrong_last_checkpoint_epoch"]
+    )
+    def test_completion_container_additional_counterexamples(tmp_path, monkeypatch, change):
+        identity = metadata_identity()
+        value, _ = completion_fixture(tmp_path, identity)
+        if change == "nonintegral_counter_type":
+            value["optimizer_steps"] = 391.0
+        elif change == "hidden_component_file":
+            (tmp_path / "final" / checkpoints.NAME).write_text("synthetic extra file\n")
+        elif change == "wrong_last_checkpoint_epoch":
+            checkpoint = tmp_path / "checkpoint-391"
+            state = read_json(checkpoint / "trainer_state.json")
+            state["epoch"] = 0.99
+            (checkpoint / "trainer_state.json").write_text(json.dumps(state))
+            seal = read_json(checkpoint / checkpoints.NAME)
+            seal["files"] = checkpoints.inventory(checkpoint)
+            (checkpoint / checkpoints.NAME).write_text(json.dumps(seal))
+            value["checkpoints"][-1]["sha256"] = checkpoints.file_digest(checkpoint / checkpoints.NAME)
+        (tmp_path / contract.RUN_COMPLETE).write_text(json.dumps(value))
+        monkeypatch.setattr(contract, "inspect_checkpoint", simulated_tensor_reader)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_factorial_v3_run_contract.py:563: Failed</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_completion_container_additional_counterexamples[hidden_component_file]" time="0.121"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2016/test_completion_container_addi1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7fb6a1689f10&gt;
+change = 'hidden_component_file'
+
+    @pytest.mark.parametrize(
+        "change", ["nonintegral_counter_type", "hidden_component_file", "wrong_last_checkpoint_epoch"]
+    )
+    def test_completion_container_additional_counterexamples(tmp_path, monkeypatch, change):
+        identity = metadata_identity()
+        value, _ = completion_fixture(tmp_path, identity)
+        if change == "nonintegral_counter_type":
+            value["optimizer_steps"] = 391.0
+        elif change == "hidden_component_file":
+            (tmp_path / "final" / checkpoints.NAME).write_text("synthetic extra file\n")
+        elif change == "wrong_last_checkpoint_epoch":
+            checkpoint = tmp_path / "checkpoint-391"
+            state = read_json(checkpoint / "trainer_state.json")
+            state["epoch"] = 0.99
+            (checkpoint / "trainer_state.json").write_text(json.dumps(state))
+            seal = read_json(checkpoint / checkpoints.NAME)
+            seal["files"] = checkpoints.inventory(checkpoint)
+            (checkpoint / checkpoints.NAME).write_text(json.dumps(seal))
+            value["checkpoints"][-1]["sha256"] = checkpoints.file_digest(checkpoint / checkpoints.NAME)
+        (tmp_path / contract.RUN_COMPLETE).write_text(json.dumps(value))
+        monkeypatch.setattr(contract, "inspect_checkpoint", simulated_tensor_reader)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_factorial_v3_run_contract.py:563: Failed</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_completion_container_additional_counterexamples[wrong_last_checkpoint_epoch]" time="0.125"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2016/test_completion_container_addi2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7fb6a168baa0&gt;
+change = 'wrong_last_checkpoint_epoch'
+
+    @pytest.mark.parametrize(
+        "change", ["nonintegral_counter_type", "hidden_component_file", "wrong_last_checkpoint_epoch"]
+    )
+    def test_completion_container_additional_counterexamples(tmp_path, monkeypatch, change):
+        identity = metadata_identity()
+        value, _ = completion_fixture(tmp_path, identity)
+        if change == "nonintegral_counter_type":
+            value["optimizer_steps"] = 391.0
+        elif change == "hidden_component_file":
+            (tmp_path / "final" / checkpoints.NAME).write_text("synthetic extra file\n")
+        elif change == "wrong_last_checkpoint_epoch":
+            checkpoint = tmp_path / "checkpoint-391"
+            state = read_json(checkpoint / "trainer_state.json")
+            state["epoch"] = 0.99
+            (checkpoint / "trainer_state.json").write_text(json.dumps(state))
+            seal = read_json(checkpoint / checkpoints.NAME)
+            seal["files"] = checkpoints.inventory(checkpoint)
+            (checkpoint / checkpoints.NAME).write_text(json.dumps(seal))
+            value["checkpoints"][-1]["sha256"] = checkpoints.file_digest(checkpoint / checkpoints.NAME)
+        (tmp_path / contract.RUN_COMPLETE).write_text(json.dumps(value))
+        monkeypatch.setattr(contract, "inspect_checkpoint", simulated_tensor_reader)
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_factorial_v3_run_contract.py:563: Failed</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python -B /tmp/dense-v3-factorial-summary.BQ08HjeP/observe.py --output /tmp/dense-v3-evaluation-monitor.tljylP9V/summary-after-evaluation-terminal.json",
+    "result": {
+      "chunk_id": "9ac728",
+      "wall_time_seconds": 0.000004382,
+      "exit_code": 0,
+      "original_token_count": 167,
+      "output": "{\"observed_at_utc\": \"2026-09-13T06:41:01.349898+00:00\", \"coordinator\": {\"pid\": 813139, \"start_ticks\": 320676124, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"collectors\": {\"beir\": {\"started\": true, \"terminal\": {\"completed_at_utc\": \"2026-09-13T06:40:59.681196+00:00\", \"exit_code\": 0}}, \"probe\": {\"started\": true, \"process\": {\"pid\": 981654, \"start_ticks\": 325341027, \"ppid\": 813139, \"state\": \"R\", \"command_matches\": true}}}, \"failed\": false, \"complete\": false, \"expected\": {\"beir_tasks\": 168, \"checkpoint_probes\": 60, \"probe_task_rows\": 840, \"estimands\": 3}, \"gpu_access\": false, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+    }
+  },
+  "resume": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH= /usr/bin/python -B /tmp/dense-v3-resume-verification.wcsmQnDm/observe.py --source-sha 1746b8a382bb45fefc2ab17beaf7706984fe91802c528bec48c88a2daa038bb2 --authorization-sha 51e95a2adf6cf5acf151a18976c476e275307262b6f94528b313b964e2baf7d0 --output /tmp/dense-v3-evaluation-monitor.tljylP9V/resume-after-evaluation-terminal.json",
+    "result": {
+      "chunk_id": "f7790a",
+      "wall_time_seconds": 0.000002183,
+      "exit_code": 0,
+      "original_token_count": 401,
+      "output": "{\"observed_at_utc\": \"2026-09-13T06:41:01.362117+00:00\", \"pools\": {\"a\": {\"started\": true, \"coordinator\": {\"pid\": 824762, \"start_ticks\": 321051396, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"ranks\": [{\"rank\": 0, \"observation\": {\"pid\": 980917, \"start_ticks\": 325332549, \"ppid\": 824762, \"state\": \"S\", \"command_matches\": true}}, {\"rank\": 1, \"observation\": {\"pid\": 980918, \"start_ticks\": 325332550, \"ppid\": 824762, \"state\": \"S\", \"command_matches\": true}}, {\"rank\": 2, \"observation\": {\"pid\": 980919, \"start_ticks\": 325332550, \"ppid\": 824762, \"state\": \"S\", \"command_matches\": true}}, {\"rank\": 3, \"observation\": {\"pid\": 980920, \"start_ticks\": 325332550, \"ppid\": 824762, \"state\": \"S\", \"command_matches\": true}}], \"reader\": null, \"gpu_admission\": true, \"failure\": false, \"completion\": null}, \"b\": {\"started\": true, \"coordinator\": {\"pid\": 824763, \"start_ticks\": 321051398, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"ranks\": [{\"rank\": 0, \"observation\": {\"pid\": 981550, \"start_ticks\": 325338550, \"ppid\": 824763, \"state\": \"R\", \"command_matches\": true}}, {\"rank\": 1, \"observation\": {\"pid\": 981551, \"start_ticks\": 325338550, \"ppid\": 824763, \"state\": \"R\", \"command_matches\": true}}, {\"rank\": 2, \"observation\": {\"pid\": 981552, \"start_ticks\": 325338550, \"ppid\": 824763, \"state\": \"R\", \"command_matches\": true}}, {\"rank\": 3, \"observation\": {\"pid\": 981553, \"start_ticks\": 325338550, \"ppid\": 824763, \"state\": \"R\", \"command_matches\": true}}], \"reader\": null, \"gpu_admission\": true, \"failure\": false, \"completion\": null}}, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+    }
+  }
+}

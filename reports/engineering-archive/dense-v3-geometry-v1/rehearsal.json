@@ -1,0 +1,1791 @@
+{
+  "actual_diagnostic_census_passed": true,
+  "actual_missing_primary_cli": {
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "embed_optim.primary_weight_entries",
+      "--primary-protocol",
+      "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_protocol.json",
+      "--amendment",
+      "/root/embedding-optimizer-story-refactor/configs/dense_weight_entry_measurement_amendment.json",
+      "--repository",
+      "/root/embedding-optimizer-story-refactor",
+      "--training-root",
+      "/tmp/dense-identity-source.8rUgLF",
+      "--experiment-root",
+      "/root/embedding-optimizer-study",
+      "--reference",
+      "/tmp/dense-weight-entry-reference.Um8TxW",
+      "--output",
+      "/tmp/dense-weight-entry-census-retry.DgbmCc/must-not-exist.json"
+    ],
+    "returncode": 1,
+    "stderr": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_weight_entries.py\", line 298, in <module>\n    main()\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_weight_entries.py\", line 283, in main\n    result = collect_primary(primary, amendment, args.experiment_root, args.reference)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_weight_entries.py\", line 238, in collect_primary\n    checked.append((path, primary.complete_run(path, row[\"run_id\"])))\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_contract.py\", line 199, in complete_run\n    checked = inspect_complete_run(run_root, self.expected_identity(run_id), list(STEPS))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_completion.py\", line 256, in inspect_complete_run\n    raise ValueError(\"Require an ordinary retained run directory\")\nValueError: Require an ordinary retained run directory\n",
+    "stdout": ""
+  },
+  "artifacts": [
+    {
+      "bytes": 92060,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/adamw-census.json",
+      "sha256": "be1094259ba32fdac963612bffabc11d613af11081b0f9125f9fa2b2cae4f50a"
+    },
+    {
+      "bytes": 386,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/counterexample.json",
+      "sha256": "25121ae98e95d247fd857ffb39106e2d1b50b860e906a9c788257edf72e9e67d"
+    },
+    {
+      "bytes": 3490,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-false_completion.json",
+      "sha256": "24e3024d6530db90f031c5a6a08215747dc3c34ff606a7219ec32be0b5f9e030"
+    },
+    {
+      "bytes": 3423,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-matrix_proxy.json",
+      "sha256": "ec10a5340d2afc727420f75f5117f1a037a5003f32168e414e76094520614689"
+    },
+    {
+      "bytes": 2059,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-no_sources.json",
+      "sha256": "3f9fc64b12e440e86cd066a09b45a9d7cf6c6a8b9bc65755acbb6f4f3f14d070"
+    },
+    {
+      "bytes": 3491,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-old_primary.json",
+      "sha256": "e3904df8cf3ea3ce9c24052e522724e2bc928d98fd3d9dcfeaa12ec3273f9aeb"
+    },
+    {
+      "bytes": 3409,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-tolerance.json",
+      "sha256": "dd8dba8536e1072030a6662e1301fb267ec1c93c1b9921d8172efcf56ea2b759"
+    },
+    {
+      "bytes": 3418,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-wrong_anchor.json",
+      "sha256": "48c0daf23c07029cafcb71f544c5776293448431eef008def48d8c8df5e2c26b"
+    },
+    {
+      "bytes": 92059,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/muon-census.json",
+      "sha256": "0cd5088fcdd8f865ae671c8a7815218c5255b225a9845bcf663176c8cad2d9e8"
+    },
+    {
+      "bytes": 92062,
+      "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/normuon-census.json",
+      "sha256": "ae2d136c2bbc29ee9a04cc1b8282a71724275dac9daa3ad6530a2f365ee2354b"
+    }
+  ],
+  "boundary": "Exact entry census on three short diagnostic trajectories, not primary weight-space evidence, dimension use, retrieval findings or a completed geometry/subspace pipeline. Original matrix-mass proxy/source/artifacts remain unchanged.",
+  "changed_cases": [
+    {
+      "artifact": {
+        "bytes": 3491,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-old_primary.json",
+        "sha256": "e3904df8cf3ea3ce9c24052e522724e2bc928d98fd3d9dcfeaa12ec3273f9aeb"
+      },
+      "case": "old_primary",
+      "error": "Not the prepared v3 changed-entry measurement amendment",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 2059,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-no_sources.json",
+        "sha256": "3f9fc64b12e440e86cd066a09b45a9d7cf6c6a8b9bc65755acbb6f4f3f14d070"
+      },
+      "case": "no_sources",
+      "error": "Incomplete changed-entry source/parent closure",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 3423,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-matrix_proxy.json",
+        "sha256": "ec10a5340d2afc727420f75f5117f1a037a5003f32168e414e76094520614689"
+      },
+      "case": "matrix_proxy",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 3409,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-tolerance.json",
+        "sha256": "dd8dba8536e1072030a6662e1301fb267ec1c93c1b9921d8172efcf56ea2b759"
+      },
+      "case": "tolerance",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 3418,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-wrong_anchor.json",
+        "sha256": "48c0daf23c07029cafcb71f544c5776293448431eef008def48d8c8df5e2c26b"
+      },
+      "case": "wrong_anchor",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 3490,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/invalid-false_completion.json",
+        "sha256": "24e3024d6530db90f031c5a6a08215747dc3c34ff606a7219ec32be0b5f9e030"
+      },
+      "case": "false_completion",
+      "error": "Not the prepared v3 changed-entry measurement amendment",
+      "rejected": true
+    }
+  ],
+  "checkpoints": 9,
+  "counterexample": {
+    "actual_entry_fraction": 0.25,
+    "legacy_fraction": 1.0,
+    "rank_deficient_full_basis_overlap": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "scientific_completion": false,
+    "scope": "engineering_synthetic_measurement_counterexample",
+    "subspace_boundary": "Full fixed-rank bases include null directions when signal rank is smaller; this is not evidence about the actual primary models."
+  },
+  "formal_geometry_produced": false,
+  "formal_replication_ready": false,
+  "full_geometry_integration_complete": false,
+  "gpu_workers": 0,
+  "hidden_matrices_per_checkpoint": 88,
+  "hidden_parameters_per_checkpoint": 110297088,
+  "independent_numpy_count_comparisons": 1584,
+  "model_updates": 0,
+  "models": 3,
+  "network_uploads": 0,
+  "observed_at_utc": "2026-09-06T18:47:11.028463+00:00",
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "records": [
+    {
+      "algorithm": "adamw",
+      "census": {
+        "bytes": 92060,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/adamw-census.json",
+        "sha256": "be1094259ba32fdac963612bffabc11d613af11081b0f9125f9fa2b2cae4f50a"
+      },
+      "independent_numpy_comparisons": 528,
+      "independent_totals": [
+        {
+          "cumulative": {
+            "entry_fraction": 0.0,
+            "individual_entries_changed": 0,
+            "legacy_matrix_mass_fraction": 0.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.0,
+            "individual_entries_changed": 0,
+            "legacy_matrix_mass_fraction": 0.0
+          },
+          "step": 1
+        },
+        {
+          "cumulative": {
+            "entry_fraction": 0.9999242681728823,
+            "individual_entries_changed": 110288735,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.9999242681728823,
+            "individual_entries_changed": 110288735,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "step": 2
+        },
+        {
+          "cumulative": {
+            "entry_fraction": 0.9999415215748941,
+            "individual_entries_changed": 110290638,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.9997606011139659,
+            "individual_entries_changed": 110270683,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "step": 3
+        }
+      ],
+      "run_root": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw"
+    },
+    {
+      "algorithm": "muon",
+      "census": {
+        "bytes": 92059,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/muon-census.json",
+        "sha256": "0cd5088fcdd8f865ae671c8a7815218c5255b225a9845bcf663176c8cad2d9e8"
+      },
+      "independent_numpy_comparisons": 528,
+      "independent_totals": [
+        {
+          "cumulative": {
+            "entry_fraction": 0.0,
+            "individual_entries_changed": 0,
+            "legacy_matrix_mass_fraction": 0.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.0,
+            "individual_entries_changed": 0,
+            "legacy_matrix_mass_fraction": 0.0
+          },
+          "step": 1
+        },
+        {
+          "cumulative": {
+            "entry_fraction": 0.9996425290937871,
+            "individual_entries_changed": 110257660,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.9996425290937871,
+            "individual_entries_changed": 110257660,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "step": 2
+        },
+        {
+          "cumulative": {
+            "entry_fraction": 0.9997412805676248,
+            "individual_entries_changed": 110268552,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.9993162376145416,
+            "individual_entries_changed": 110221671,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "step": 3
+        }
+      ],
+      "run_root": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon"
+    },
+    {
+      "algorithm": "normuon",
+      "census": {
+        "bytes": 92062,
+        "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/normuon-census.json",
+        "sha256": "ae2d136c2bbc29ee9a04cc1b8282a71724275dac9daa3ad6530a2f365ee2354b"
+      },
+      "independent_numpy_comparisons": 528,
+      "independent_totals": [
+        {
+          "cumulative": {
+            "entry_fraction": 0.0,
+            "individual_entries_changed": 0,
+            "legacy_matrix_mass_fraction": 0.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.0,
+            "individual_entries_changed": 0,
+            "legacy_matrix_mass_fraction": 0.0
+          },
+          "step": 1
+        },
+        {
+          "cumulative": {
+            "entry_fraction": 0.9996761564548287,
+            "individual_entries_changed": 110261369,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.9996761564548287,
+            "individual_entries_changed": 110261369,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "step": 2
+        },
+        {
+          "cumulative": {
+            "entry_fraction": 0.9997557596443525,
+            "individual_entries_changed": 110270149,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "parameters": 110297088,
+          "saved_segment": {
+            "entry_fraction": 0.9993649424361956,
+            "individual_entries_changed": 110227043,
+            "legacy_matrix_mass_fraction": 1.0
+          },
+          "step": 3
+        }
+      ],
+      "run_root": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon"
+    }
+  ],
+  "reference_copy": {
+    "all_declared_files_match": true,
+    "immutable_snapshot": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/snapshots/0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+    "ordinary_file_copy": "/tmp/dense-weight-entry-reference.Um8TxW",
+    "symlink_policy_relaxed": false
+  },
+  "scientific_completion": false,
+  "scope": "engineering_dense_changed_entry_measurement_audit",
+  "source_published": false,
+  "unchanged_input_and_source_bindings": [
+    {
+      "bytes": 12687,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_weight_entries.py",
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    {
+      "bytes": 2115,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_weight_entries.py",
+      "sha256": "2f15998ee27a71b26557027e84f396bbde9e45ba22f974bd7b880ca719e7bd75"
+    },
+    {
+      "bytes": 25648,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/geometry.py",
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 23632,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_geometry_summary.py",
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    {
+      "bytes": 12568,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_contract.py",
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    {
+      "bytes": 28342,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_completion.py",
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    {
+      "bytes": 9267,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_contract.py",
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    {
+      "bytes": 11060,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py",
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    {
+      "bytes": 3491,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_weight_entry_measurement_amendment.json",
+      "sha256": "a4b4f6839b185931d2de7f0771487123b971a1e7eb69ef34bb5f9e4350060ec5"
+    },
+    {
+      "bytes": 164821,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/result.json",
+      "sha256": "bf6e893e3b9e244242871227e28a3729acc17477dd3c989f7c647308bf332d36"
+    },
+    {
+      "bytes": 12345,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_weight_entries.py",
+      "sha256": "ff14435d3523eb73f71e0295790429d297865a7dfe63865deda08d3f8d251e81"
+    },
+    {
+      "bytes": 1614992,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/dataset/data-00000-of-00001.arrow",
+      "sha256": "d0f67d1f3e87ef7a1e3ddede7db650b36f6adefb03e9ba4874f510f1afadb36d"
+    },
+    {
+      "bytes": 1664,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/dataset/dataset_info.json",
+      "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+    },
+    {
+      "bytes": 247,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/dataset/state.json",
+      "sha256": "a860705de7e924e6cbaa52f6a772bd259b85afc126b891e3d019d8b98d2965ed"
+    },
+    {
+      "bytes": 1016,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/launcher.json",
+      "sha256": "096f4a9f672387bbecd28451fb8279215e58d637e13e2a1abab1c5650e18b516"
+    },
+    {
+      "bytes": 317,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/launcher.log",
+      "sha256": "fd77b15321a8a152e069054f55d7ed890fdabfabef85a85603af657f90929c66"
+    },
+    {
+      "bytes": 348,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/lease.json",
+      "sha256": "d482e452a0c0c0aa180cdb09d25e974e3f6c984d60b18c5dd6e9e7a1083237a7"
+    },
+    {
+      "bytes": 57196,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/prepared.json",
+      "sha256": "1a196d51408d0d09de44143f457356f5e7ecd5331a523aee9281ff9739cc62e7"
+    },
+    {
+      "bytes": 6846,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/0/stderr.log",
+      "sha256": "de8833f32b0079921d95992330710bfc5c6ba89b5f75368589c8715c1bb177fe"
+    },
+    {
+      "bytes": 1468,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/0/stdout.log",
+      "sha256": "78f893059a1f7aed679e5a1190234c6372aa0ac4948d30f1ec111f5bf022d7f5"
+    },
+    {
+      "bytes": 2433,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/1/stderr.log",
+      "sha256": "b8b1ebdd5d998556dd76443d94f6f1cc2a8de272b134f3870069e0b528a9129f"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/1/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2433,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/2/stderr.log",
+      "sha256": "746f4217b8bd60e6fe586ee1e2ab3bcbe199593a2e2b7389d96524265f5518a9"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/2/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2433,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/3/stderr.log",
+      "sha256": "1ee870d91620af07d18bbeb8933867ce849e8e9ef5b901ddd13b66ec7447cfca"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/3/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 866,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/accepted_timing.json",
+      "sha256": "3fa71470888436f712079bac806c00400ace03f44a99e8287379a070b1d1c272"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70227,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/README.md",
+      "sha256": "85d1329f4ba5c298bba8b91d6a3f414f45b882d9c0ef1a2bb9678aabbb74e8c6"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3060,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/dense_checkpoint_seal.json",
+      "sha256": "fe91c855f9df6f7e87c3c7b656148263363e96d9d4856b8141742b6c05914804"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/dense_numerical_contract.json",
+      "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 1192229323,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/optimizer.pt",
+      "sha256": "e4c26959608a7638d86baef929da65b8de94e6668935bd67fa18d7c1a7e3a463"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/scheduler.pt",
+      "sha256": "23d33cd9dab8d2cc5658362e95ebb9f51d07afb571457a881a076fca77631908"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/trainer_state.json",
+      "sha256": "7edff4031cf8eb858765492dada0cc36f986df77b497ab7c5e8671e352c841ee"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70228,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/README.md",
+      "sha256": "fb2384ccf78da9af7272d3d923f5f49edc0da8dd23694100e6ff717f73113d48"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3060,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/dense_checkpoint_seal.json",
+      "sha256": "f82e9c8a919777b023a1b19e671a467c8a419966b02dc19c70503e9342e220f6"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/dense_numerical_contract.json",
+      "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/model.safetensors",
+      "sha256": "784cbbfbe9438a7c43968e0010d3076967b824621249c3960ad1fda8b8b73812"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 1192229323,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/optimizer.pt",
+      "sha256": "9a5e541eeb8a3f4c51efcf9d5812be329a70f111aa3b6bd4c0c59a7bde323d9a"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/scheduler.pt",
+      "sha256": "41ea0d9ed050da2d083d54e2253da60c2428236e3d01cb1a413d19b71cdb5c59"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/trainer_state.json",
+      "sha256": "fd49dd2af08ad6777922ff035e2cc59cf39b6e3edde203376660efeaa6ca4e82"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70228,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/README.md",
+      "sha256": "2b083d7592a6b1f45cb5f2d336add27d9266d317547af061dc5f53ddf8ae805f"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3060,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "c7c1eef0dba2fdf24ddd2cd63b5cd532aaa7955a30399e91aa5b06dc1d650493"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/model.safetensors",
+      "sha256": "e926322f61461ac2bc06bfb1a6bb26e638554d368dec47076ce0295524a6772d"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 1192229323,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/optimizer.pt",
+      "sha256": "58b03e9bdf683bf79dcb9570c37dc3540a58e22c20b6cd461b530c5cdfb3a57f"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/scheduler.pt",
+      "sha256": "32f2e59210c8e3f86e304a5ce3f92312df3884573302af269d12c6ee366d6682"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 137,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint_schedule.json",
+      "sha256": "f76ba35b5e88dec855f2f2e81e93b9b6bd196f08d91a703fc29c5347e3a25abe"
+    },
+    {
+      "bytes": 2938,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/completed.json",
+      "sha256": "93b6ea15d0655a2708acec28a165d3fd8a8336b9630e3290a556883248ff6ded"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70228,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/README.md",
+      "sha256": "77f50edbd7fca8f084e6dce68e7b52c45a474f5ff3418bad6fca95f0a525b6d1"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/model.safetensors",
+      "sha256": "e926322f61461ac2bc06bfb1a6bb26e638554d368dec47076ce0295524a6772d"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 1184,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/run_config.json",
+      "sha256": "eb2c2d872e297a9b68c6c8c70d192cce92dbda7c75e3bf322b587005aa45e2aa"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/trainer_state_final.json",
+      "sha256": "5cbe42b88d2ca186b8a79962f6ac2851fd4beed4279ebb6c1dad4e018b9be85a"
+    },
+    {
+      "bytes": 868,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/accepted_timing.json",
+      "sha256": "032a117c54334720544dcead1664fcb21fec275dc7299a431ae20c8de2822b2d"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70229,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/README.md",
+      "sha256": "08e9b728b7827933943708c92cbadc56d32c8a63de5aaff8804bf2744301770d"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/dense_checkpoint_seal.json",
+      "sha256": "dfa0646667632106de2036dfeab7f757a96288d1911734a842cb95af129a3d4e"
+    },
+    {
+      "bytes": 1156,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/dense_numerical_contract.json",
+      "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 750992651,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/optimizer.pt",
+      "sha256": "09c439dfecb60544de6ddf3f99db0e462b847243032d3dcea9c2d493a32f4487"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/scheduler.pt",
+      "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/trainer_state.json",
+      "sha256": "7edff4031cf8eb858765492dada0cc36f986df77b497ab7c5e8671e352c841ee"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/README.md",
+      "sha256": "15786dfc9fd819e5284119121a308712ebdcf7d7a50622d267a2a5c0e49343fe"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/dense_checkpoint_seal.json",
+      "sha256": "49a0ed07ce760f05227a0f5fcf0a662451608ace0439b81e1a03688ef5ab9575"
+    },
+    {
+      "bytes": 1156,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/dense_numerical_contract.json",
+      "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/model.safetensors",
+      "sha256": "f2fa1f1130ffe988137e43c3e421291ce0d97eafcd84deca9daf0c56b529cba7"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 750992651,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/optimizer.pt",
+      "sha256": "5587743dae643f7885e1a753d85f955df88e310df97b63c39c5b2d1c0ac45cb9"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/scheduler.pt",
+      "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/trainer_state.json",
+      "sha256": "fd49dd2af08ad6777922ff035e2cc59cf39b6e3edde203376660efeaa6ca4e82"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/README.md",
+      "sha256": "4f891e5fee201a7099b127117e976215f6acbe6ca90cc61a5df1ab7655dea58c"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "9b1fce9ddf307816ef1e11c814c7f5052e250895499b5e0fa31aa318e312b5d4"
+    },
+    {
+      "bytes": 1156,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/model.safetensors",
+      "sha256": "0a130f30db62b1f8dfe12548da1dc9e49f531e4039f888303772f69950a1ef95"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 750992651,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/optimizer.pt",
+      "sha256": "e76fa485ef764d70a9b7f67458b2c0c2843a841b7e8db0ac848d5c90b9ccde88"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/scheduler.pt",
+      "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 137,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint_schedule.json",
+      "sha256": "f76ba35b5e88dec855f2f2e81e93b9b6bd196f08d91a703fc29c5347e3a25abe"
+    },
+    {
+      "bytes": 3004,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/completed.json",
+      "sha256": "b8532072607c040d105e259b1af5332bd014265f7ce2de184452817c0007e934"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/README.md",
+      "sha256": "d78ca39248ee8dd5ff9c8e276caa3adf599a035795a3b3c5459be4bcd204d717"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/model.safetensors",
+      "sha256": "0a130f30db62b1f8dfe12548da1dc9e49f531e4039f888303772f69950a1ef95"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 1231,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/run_config.json",
+      "sha256": "a82ffd03c709dbb17979129687e0fd92539dfb307563a8d229102739ec57e806"
+    },
+    {
+      "bytes": 1141,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/trainer_state_final.json",
+      "sha256": "aad4892c3c66d4fcddcf178c49fb3d3e6b6945a3c6707fbfc5836ca3322fdb4d"
+    },
+    {
+      "bytes": 868,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/accepted_timing.json",
+      "sha256": "bed8821dc533da3f252b873d2f8083a7a20562901e22420bead9cf452b4f3139"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70229,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/README.md",
+      "sha256": "08e9b728b7827933943708c92cbadc56d32c8a63de5aaff8804bf2744301770d"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/dense_checkpoint_seal.json",
+      "sha256": "8095eb1b766666b0e47853cb7e6ec2c911ab11a78936828041525aa7e645cb8a"
+    },
+    {
+      "bytes": 1205,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/dense_numerical_contract.json",
+      "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 751558603,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/optimizer.pt",
+      "sha256": "2c098a378bb70ea4020a924a4dbeb4aef0793d078858ba50edaa9ab34eed2ba4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/scheduler.pt",
+      "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/trainer_state.json",
+      "sha256": "7edff4031cf8eb858765492dada0cc36f986df77b497ab7c5e8671e352c841ee"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/README.md",
+      "sha256": "8a96f3433374965a25108c5798c55623edf8a38b70165d3a42d768ff49c519cb"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/dense_checkpoint_seal.json",
+      "sha256": "6ba6933a53cba0ed99810392f3add3f600155e2504d71981c5c4be434e61b5a1"
+    },
+    {
+      "bytes": 1205,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/dense_numerical_contract.json",
+      "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/model.safetensors",
+      "sha256": "90e49f360e79d1bcc8a0e202552e102eb03c0568d5c1d489858b65d9ce8e5685"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 751558603,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/optimizer.pt",
+      "sha256": "8f22f24773606cfd145755fa1b63c749740343d7022f39f2fdbfac0043a6a17c"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/scheduler.pt",
+      "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/trainer_state.json",
+      "sha256": "fd49dd2af08ad6777922ff035e2cc59cf39b6e3edde203376660efeaa6ca4e82"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/README.md",
+      "sha256": "df6a4709b6c75b252532e8e183671c203edc009ba5747819156c9be776a3a422"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "c4084c766bb2a3e080ef8957ff1b9abf6245627ef186c3ac7bb63e0bf960fc70"
+    },
+    {
+      "bytes": 1205,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/model.safetensors",
+      "sha256": "98a4cb1c5b6b90a877794090eadbae7fd3bb1ac812464a7a52783440432ea8fc"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 751558603,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/optimizer.pt",
+      "sha256": "018fbad2e60b910184736ad1c34d3f04bf302f07a926ed76a35c3ebe53cf9a1a"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/scheduler.pt",
+      "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 137,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint_schedule.json",
+      "sha256": "f76ba35b5e88dec855f2f2e81e93b9b6bd196f08d91a703fc29c5347e3a25abe"
+    },
+    {
+      "bytes": 3069,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/completed.json",
+      "sha256": "1dc7c7fbd17045d29374e3a1dde1c7d622b10eaf7879c89a6ea16e9b1bb26ef2"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/README.md",
+      "sha256": "28ea2b80deb83116c515ab12df11a0aba022b9f073a92f4d20a95094de1531cf"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/model.safetensors",
+      "sha256": "98a4cb1c5b6b90a877794090eadbae7fd3bb1ac812464a7a52783440432ea8fc"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 1250,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/run_config.json",
+      "sha256": "31350580d3bdf95c657105ea68ca98ac6201dacf243ae854bba5c1b636572c40"
+    },
+    {
+      "bytes": 1141,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/trainer_state_final.json",
+      "sha256": "e370d718b1c7ce83555ae5ad1b133174e234afdf2d615a0029e071d3f33a35c5"
+    },
+    {
+      "bytes": 25480,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/selection.json",
+      "sha256": "6bf9c8e2d5462a6a40ed763420e45fc1037f089fdb10495de4a57acf80b21557"
+    },
+    {
+      "bytes": 54338,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/worker-result.json",
+      "sha256": "66432199da62e1c63e5c3a4b0932ab13a6134d7636778ab99424da8df3de33af"
+    },
+    {
+      "bytes": 1519,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/.gitattributes",
+      "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
+    },
+    {
+      "bytes": 312,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/1_Pooling/config.json",
+      "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+    },
+    {
+      "bytes": 15737,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/README.md",
+      "sha256": "27105b9f0e7c4e843a3156bb4cbd527d221256aaabdbe1a452b3afc20a664d7c"
+    },
+    {
+      "bytes": 1208,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/config.json",
+      "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+    },
+    {
+      "bytes": 300,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/config_sentence_transformers.json",
+      "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 229,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/modules.json",
+      "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+    },
+    {
+      "bytes": 57,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/sentence_bert_config.json",
+      "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+    },
+    {
+      "bytes": 694,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/special_tokens_map.json",
+      "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+    },
+    {
+      "bytes": 3583485,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/tokenizer.json",
+      "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+    },
+    {
+      "bytes": 21030,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/tokenizer_config.json",
+      "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+    },
+    {
+      "bytes": 1519,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/a6344aac8c09253b3b630fb776ae94478aa0275b",
+      "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
+    },
+    {
+      "bytes": 312,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/b9abff2db3f2536dcda1e821307805f176a8087d",
+      "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+    },
+    {
+      "bytes": 15737,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/63a4d7a56301350c8dff1f3974912807afa52fe0",
+      "sha256": "27105b9f0e7c4e843a3156bb4cbd527d221256aaabdbe1a452b3afc20a664d7c"
+    },
+    {
+      "bytes": 1208,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/d4a8ff5a8efba181915dd285d33c9eaabac5609b",
+      "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+    },
+    {
+      "bytes": 300,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/8a128545564077a3696e0d738a579075d2fdbed3",
+      "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 229,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/f7640f94e81bb7f4f04daf1668850b38763a13d9",
+      "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+    },
+    {
+      "bytes": 57,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/4eca68d85ecd3034cf4174d8a4033a75344ea62d",
+      "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+    },
+    {
+      "bytes": 694,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/6bf65ea14185a88eef7e24b41c86a953a58dcbad",
+      "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+    },
+    {
+      "bytes": 3583485,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/bafd099d5a9ce6d24f8ef0e4aa66643331b2dcf0",
+      "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+    },
+    {
+      "bytes": 21030,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/75aeeb2bf3f50aeb2ac86925c08e27f8d7f47226",
+      "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+    }
+  ]
+}

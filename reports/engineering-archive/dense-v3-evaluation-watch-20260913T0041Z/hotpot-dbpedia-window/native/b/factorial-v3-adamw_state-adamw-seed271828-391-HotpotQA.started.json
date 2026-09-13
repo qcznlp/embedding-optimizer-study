@@ -1,0 +1,29 @@
+{
+  "both_original_leases_inherited": true,
+  "command": [
+    "/usr/bin/python",
+    "-B",
+    "/root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py",
+    "--worker",
+    "HotpotQA",
+    "--models",
+    "/root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-adamw_state-adamw-seed271828/checkpoint-391",
+    "--results_folder",
+    "/root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-adamw_state-adamw-seed271828/checkpoint-391/dense/factorial-v3-adamw_state-adamw-seed271828__checkpoint-391",
+    "--bf16",
+    "--fa2",
+    "--local",
+    "--decontaminated",
+    "--encode_char_budget",
+    "3000000"
+  ],
+  "gpu_token": "0",
+  "job": [
+    "factorial-v3-adamw_state-adamw-seed271828",
+    391,
+    "HotpotQA"
+  ],
+  "pid": 939341,
+  "start_ticks": 324806719,
+  "started_at_utc": "2026-09-13T05:11:56.598802+00:00"
+}

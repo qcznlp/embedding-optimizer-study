@@ -1,0 +1,445 @@
+# This build configuration substantially modifies lightonai/mdenseon-mlateon at commit
+# b0db47a48f969d825446668b5b17bfc27a359fc1; see THIRD_PARTY_NOTICES.md.
+[project]
+name = "embedding-optimizer-study"
+version = "0.1.0"
+description = "Reproducible AdamW, Muon, and NorMuon experiments for dense retriever adaptation"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+license = "Apache-2.0"
+authors = [
+  { name = "Qingcheng Zeng", email = "stevezenguom@gmail.com" },
+  { name = "LightOn", email = "contact@lighton.ai" },
+]
+dependencies = [
+  "accelerate>=1.10,<2",
+  "datasets>=4.8,<5",
+  "huggingface-hub>=1.2,<2",
+  "late-interaction-kernels>=0.4,<0.5",
+  "numpy>=2,<3",
+  "pyarrow>=22,<24",
+  "pylate==1.6.0",
+  "pyyaml>=6,<7",
+  "safetensors>=0.6,<1",
+  "sentence-transformers>=5.3,<6",
+  "torch>=2.9,<2.10",
+  "tqdm>=4.67,<5",
+  "transformers==5.3.0",
+  "wandb>=0.24,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "cffconvert==2.0.0",
+  "pytest>=8,<10",
+  "pytest-cov>=6,<8",
+  "ruff>=0.12,<1",
+]
+eval = [
+  "fast-plaid==1.6.0.290",
+  "mteb>=2.18,<3",
+  "usearch>=2.19,<3",
+]
+analysis = [
+  "matplotlib>=3.10,<4",
+  "pandas>=2.3,<4",
+]
+flash = ["flash-attn==2.7.4.post1"]
+
+[project.scripts]
+embed-optim-prepare = "embed_optim.data:main"
+embed-optim-prepare-dense-no-packing-preflight = "embed_optim.dense_no_packing_preflight:main"
+embed-optim-validate-dense-no-packing = "embed_optim.corrected_validation_matrix:main"
+embed-optim-evaluate-dense-no-packing = "embed_optim.corrected_beir_evaluation:main"
+embed-optim-dense-no-packing-progress = "embed_optim.corrected_progress:main"
+embed-optim-backup-dense-no-packing = "embed_optim.corrected_checkpoint_backup:main"
+embed-optim-migrate-dense-no-packing-completion = "embed_optim.completion_contract_migration:main"
+embed-optim-harden-dense-no-packing-backup = "embed_optim.completion_backup_contract_migration:main"
+embed-optim-guard-dense-no-packing-handoff = "embed_optim.matrix_handoff_guard:main"
+embed-optim-backup-sealed-checkpoint = "embed_optim.incremental_checkpoint_backup:main"
+embed-optim-supervise-sealed-checkpoint-backup = "embed_optim.sealed_checkpoint_supervisor:main"
+embed-optim-analyze-dense-no-packing-geometry = "embed_optim.corrected_geometry_matrix:main"
+embed-optim-summarize-dense-no-packing = "embed_optim.corrected_outcome_summary:main"
+embed-optim-bridge-dense-no-packing = "embed_optim.corrected_retrieval_bridge:main"
+embed-optim-sensitivity-dense-no-packing = "embed_optim.corrected_execution_sensitivity:main"
+embed-optim-render-dense-no-packing = "embed_optim.corrected_publication:main"
+embed-optim-prepare-probe = "embed_optim.probes:main"
+embed-optim-prepare-beir-probe = "embed_optim.beir_probe:main"
+embed-optim-prepare-validation = "embed_optim.validation_data:main"
+embed-optim-prepare-candidate-breadth = "embed_optim.candidate_breadth_data:main"
+embed-optim-evaluate-candidate-breadth = "embed_optim.candidate_breadth_evaluation:main"
+embed-optim-candidate-breadth-matrix = "embed_optim.candidate_breadth_matrix:main"
+embed-optim-summarize-candidate-breadth = "embed_optim.candidate_breadth_summary:main"
+embed-optim-render-candidate-breadth = "embed_optim.candidate_breadth_publication:main"
+embed-optim-candidate-breadth-release = "embed_optim.candidate_breadth_release:main"
+embed-optim-corpus-size-diagnostic = "embed_optim.corpus_size_diagnostic:main"
+embed-optim-three-regime-diagnostic = "embed_optim.three_regime_diagnostic:main"
+embed-optim-prepare-confirmatory-data = "embed_optim.confirmatory_data:main"
+embed-optim-generate-confirmatory-matrices = "embed_optim.confirmatory_matrix:main"
+embed-optim-evaluate-confirmatory = "embed_optim.confirmatory_evaluation:main"
+embed-optim-evaluate-dense-retrieval-dynamics = "embed_optim.dense_retrieval_dynamics_evaluation:main"
+embed-optim-summarize-dense-retrieval-dynamics = "embed_optim.dense_retrieval_dynamics_summary:main"
+embed-optim-summarize-confirmatory = "embed_optim.confirmatory_summary:main"
+embed-optim-short-branch = "embed_optim.short_branch:main"
+embed-optim-state-operator-factorial = "embed_optim.state_operator_factorial:main"
+embed-optim-train-state-operator-factorial = "embed_optim.state_operator_factorial_training:main"
+embed-optim-evaluate-state-operator-factorial = "embed_optim.state_operator_factorial_evaluation:main"
+embed-optim-probe-state-operator-factorial = "embed_optim.state_operator_factorial_probe:main"
+embed-optim-summarize-state-operator-factorial = "embed_optim.state_operator_factorial_summary:main"
+embed-optim-render-state-operator-factorial = "embed_optim.state_operator_factorial_publication:main"
+embed-optim-backup-state-operator-factorial = "embed_optim.state_operator_factorial_backup:main"
+embed-optim-complete-state-operator-factorial = "embed_optim.state_operator_factorial_completion:main"
+embed-optim-short-branch-evaluate = "embed_optim.short_branch_evaluation:main"
+embed-optim-summarize-short-branch = "embed_optim.short_branch_summary:main"
+embed-optim-audit-paper = "embed_optim.paper_audit:main"
+embed-optim-audit-distribution = "embed_optim.distribution_audit:main"
+embed-optim-summarize-training = "embed_optim.training_dynamics:main"
+embed-optim-plot-training = "embed_optim.training_dynamics_plot:main"
+embed-optim-summarize-retrieval-dynamics = "embed_optim.retrieval_dynamics:main"
+embed-optim-summarize-validation = "embed_optim.validation_summary:main"
+embed-optim-export-probe = "embed_optim.probe_export:main"
+embed-optim-export-gradients = "embed_optim.gradient_probe:main"
+embed-optim-common-state-matrix = "embed_optim.common_state_matrix:main"
+embed-optim-common-state-spectra = "embed_optim.common_state_spectra:main"
+embed-optim-plot-common-state-spectra = "embed_optim.common_state_spectrum_plot:main"
+embed-optim-summarize-common-state = "embed_optim.common_state_summary:main"
+embed-optim-functional-intervention = "embed_optim.functional_intervention:main"
+embed-optim-functional-intervention-matrix = "embed_optim.functional_intervention_matrix:main"
+embed-optim-summarize-functional-interventions = "embed_optim.functional_intervention_summary:main"
+embed-optim-probe-matrix = "embed_optim.probe_matrix:main"
+embed-optim-summarize-probes = "embed_optim.representation_summary:main"
+embed-optim-plot-representation-dynamics = "embed_optim.representation_plot:main"
+embed-optim-build-mechanism-bridge = "embed_optim.mechanism_bridge:main"
+embed-optim-local-global-reversal = "embed_optim.local_global_reversal:main"
+embed-optim-tail-stability = "embed_optim.tail_stability:main"
+embed-optim-spectral-transplant = "embed_optim.spectral_transplant_matrix:main"
+embed-optim-summarize-spectral-transplant = "embed_optim.spectral_transplant_summary:main"
+embed-optim-dose-band-analysis = "embed_optim.dose_band_analysis:main"
+embed-optim-temporal-short-branch-predictors = "embed_optim.temporal_short_branch_predictors:main"
+embed-optim-temporal-short-branch = "embed_optim.temporal_short_branch:main"
+embed-optim-render-mechanism-report = "embed_optim.mechanism_report:main"
+embed-optim-render-outcome-report = "embed_optim.outcome_report:main"
+embed-optim-render-paper-results = "embed_optim.paper_results:main"
+embed-optim-summarize-hybrid-control = "embed_optim.hybrid_control:main"
+embed-optim-evaluate-hybrid = "embed_optim.hybrid_evaluation:main"
+embed-optim-train = "embed_optim.train:main"
+embed-optim-matrix = "embed_optim.matrix:main"
+embed-optim-family-training-queue = "embed_optim.family_training_queue:main"
+embed-optim-dense-completion = "embed_optim.dense_completion_pipeline:main"
+embed-optim-dense-finalize = "embed_optim.dense_finalization_pipeline:main"
+embed-optim-dense-eval-handoff = "embed_optim.dense_eval_handoff:main"
+embed-optim-evaluate = "embed_optim.evaluate_matrix:main"
+embed-optim-evaluation-progress = "embed_optim.evaluation_progress:main"
+embed-optim-aggregate = "embed_optim.aggregate:main"
+embed-optim-sync-wandb = "embed_optim.wandb_sync:main"
+embed-optim-audit-wandb-dense-sources = "embed_optim.wandb_dense_provenance_audit:main"
+embed-optim-watch-checkpoints = "embed_optim.checkpoint_watch:main"
+embed-optim-supervise = "embed_optim.supervisor:main"
+embed-optim-verify-runtime = "embed_optim.runtime:main"
+embed-optim-geometry = "embed_optim.geometry:main"
+embed-optim-summarize-geometry = "embed_optim.geometry_summary:main"
+embed-optim-plot-geometry = "embed_optim.geometry_plot:main"
+embed-optim-plot-geometry-phase = "embed_optim.geometry_plot:phase_main"
+embed-optim-analyze-probe = "embed_optim.representation_geometry:main"
+embed-optim-analyze-updates = "embed_optim.update_geometry:main"
+embed-optim-basis-sensitivity = "embed_optim.basis_sensitivity:main"
+embed-optim-dimension-utilization = "embed_optim.dimension_utilization:main"
+embed-optim-export-primary-dimension-probe = "embed_optim.primary_dimension_probe:main"
+embed-optim-render-dimension-utilization = "embed_optim.dimension_publication:main"
+embed-optim-release-dimension-utilization = "embed_optim.dimension_release:main"
+embed-optim-archive-dimension-utilization = "embed_optim.dimension_archive:main"
+embed-optim-replay-dimension-utilization = "embed_optim.dimension_replay:main"
+embed-optim-build-current-paper = "embed_optim.current_paper:main"
+
+[project.urls]
+Repository = "https://github.com/qcznlp/embedding-optimizer-study"
+Documentation = "https://github.com/qcznlp/embedding-optimizer-study#readme"
+Issues = "https://github.com/qcznlp/embedding-optimizer-study/issues"
+StudyPaper = "https://github.com/qcznlp/embedding-optimizer-study/blob/main/paper/main.tex"
+DenseOnPaper = "https://arxiv.org/abs/2607.27178"
+Muon = "https://kellerjordan.github.io/posts/muon/"
+DenseModel = "https://huggingface.co/lightonai/DenseOn-unsupervised"
+NorMuon = "https://github.com/zichongli5/NorMuon"
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.data-files]
+"share/embedding-optimizer-study/configs" = [
+  "configs/candidate_breadth_probe.json",
+  "configs/corpus_size_diagnostic.json",
+  "configs/three_regime_diagnostic.json",
+  "configs/beir_representation_probe.json",
+  "configs/basis_sensitivity.json",
+  "configs/causal_chain_analysis.json",
+  "configs/experiment.yaml",
+  "configs/common_state_probe.json",
+  "configs/common_state_spectrum_probe.json",
+  "configs/confirmatory_protocol.json",
+  "configs/dense_scope_amendment.json",
+  "configs/dense_primary_v2_protocol.json",
+  "configs/dense_primary_v3_protocol.json",
+  "configs/dense_primary_v3_data_amendment.json",
+  "configs/dense_primary_v3_validation_protocol.json",
+  "configs/dense_primary_v3_outcome_protocol.json",
+  "configs/dense_primary_v3_outcome_protocol_v2.json",
+  "configs/dense_primary_v3_geometry_protocol.json",
+  "configs/dense_primary_v3_geometry_protocol_v2.json",
+  "configs/dense_primary_v3_exact_geometry_protocol.json",
+  "configs/dense_primary_v3_bridge_protocol.json",
+  "configs/dense_primary_v3_exact_bridge_protocol.json",
+  "configs/dense_primary_v3_dimensions_protocol.json",
+  "configs/dense_primary_v3_dimension_inference_protocol.json",
+  "configs/dense_primary_v3_publication_protocol.json",
+  "configs/dense_primary_v3_exact_publication_protocol.json",
+  "configs/dense_weight_entry_measurement_amendment.json",
+  "configs/dense_no_packing_retrain.yaml",
+  "configs/dense_correctness_candidate.yaml",
+  "configs/dense_dimension_utilization_protocol.json",
+  "configs/dense_primary_dimension_export_protocol.json",
+  "configs/dense_primary_dimension_handoff_protocol.json",
+  "configs/dense_primary_dimension_archive_protocol.json",
+  "configs/dense_no_packing_preflight.yaml",
+  "configs/dense_no_packing_preflight_protocol.json",
+  "configs/dense_no_packing_execution_protocol.json",
+  "configs/dense_no_packing_completion_contract_migration.json",
+  "configs/dense_no_packing_backup_provenance_migration.json",
+  "configs/dense_no_packing_publication_layout_migration.json",
+  "configs/dense_no_packing_publication_narrative_migration.json",
+  "configs/dense_no_packing_matrix_handoff_guard.json",
+  "configs/dense_no_packing_evaluation_protocol.json",
+  "configs/dense_no_packing_analysis_protocol.json",
+  "configs/dense_no_packing_state_operator_factorial_protocol.json",
+  "configs/dense_no_packing_state_operator_claim_wording_amendment.json",
+  "configs/dense_no_packing_state_operator_factorial_implementation_protocol.json",
+  "configs/dense_no_packing_state_operator_abstract_compliance_migration.json",
+  "configs/dense_no_packing_state_operator_weight_space_narrative_migration.json",
+  "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
+  "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+  "configs/dense_no_packing_outcome_protocol.json",
+  "configs/dense_no_packing_bridge_implementation_protocol.json",
+  "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+  "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+  "configs/dense_no_packing_publication_protocol.json",
+  "configs/dense_retrieval_dynamics_extension.json",
+  "configs/dense_training_queue.json",
+  "configs/functional_intervention.json",
+  "configs/formal_runtime.json",
+  "configs/formal_runtime_constraints.txt",
+  "configs/hybrid_adamw_control.json",
+  "configs/hybrid_adamw.yaml",
+  "configs/local_global_reversal.json",
+  "configs/loss_retrieval_diagnostic.json",
+  "configs/mechanism_analysis_integration.json",
+  "configs/tail_stability_analysis.json",
+  "configs/spectral_transplant_intervention.json",
+  "configs/paper_claim_protocol.json",
+  "configs/portable_paper_evidence.json",
+  "configs/representation_probe.json",
+  "configs/retrieval_dynamics_protocol.json",
+  "configs/short_branch_protocol.json",
+  "configs/smoke.yaml",
+  "configs/stress.yaml",
+  "configs/training_data_contract.json",
+  "configs/validation_probe.json",
+]
+"share/embedding-optimizer-study/configs/generated/confirmatory" = [
+  "configs/generated/confirmatory/seed161803.yaml",
+  "configs/generated/confirmatory/seed271828.yaml",
+  "configs/generated/confirmatory/seed314159.yaml",
+]
+"share/embedding-optimizer-study/configs/generated/short-branch" = [
+  "configs/generated/short-branch/seed161803.yaml",
+  "configs/generated/short-branch/seed271828.yaml",
+  "configs/generated/short-branch/seed314159.yaml",
+]
+"share/embedding-optimizer-study/scripts/eval" = [
+  "scripts/eval/dense_no_packing_parallel.py",
+  "scripts/eval/dense_parallel.py",
+  "scripts/eval/dense_sequential.py",
+]
+"share/embedding-optimizer-study/scripts" = [
+  "scripts/restore_primary_v3.py",
+  "scripts/restore_functional_analysis.py",
+  "scripts/restore_factorial_probes.py",
+]
+"share/embedding-optimizer-study" = [
+  "AGENTS.md",
+  "CITATION.cff",
+  "CODE_OF_CONDUCT.md",
+  "CONTRIBUTING.md",
+  "CURRENT_EXPERIMENT.md",
+  "CURRENT_PROGRESS.json",
+  "PROJECT_STATUS.md",
+  "requirements-formal.lock",
+  "requirements-formal-flash.txt",
+  "SECURITY.md",
+  "THIRD_PARTY_NOTICES.md",
+]
+"share/embedding-optimizer-study/docs" = [
+  "docs/checkpoint-restoration.md",
+  "docs/continuation-probe-restoration.md",
+  "docs/continuation-outcomes-restoration.md",
+  "docs/current-training-source.md",
+  "docs/endpoint-statistics-restoration.md",
+  "docs/evaluation-analysis-restoration.md",
+  "docs/first-stage-evaluation-restoration.md",
+  "docs/fourth-stage-evaluation-restoration.md",
+  "docs/fourth-stage-pool-b-evaluation-restoration.md",
+  "docs/functional-analysis-restoration.md",
+  "docs/paper-results-reproduction.md",
+  "docs/predictor-analysis-restoration.md",
+  "docs/pretrained-vector-restoration.md",
+  "docs/retrieval-trajectories-restoration.md",
+  "docs/second-stage-evaluation-restoration.md",
+  "docs/second-stage-pool-b-evaluation-restoration.md",
+  "docs/third-stage-evaluation-restoration.md",
+  "docs/third-stage-pool-b-evaluation-restoration.md",
+  "docs/training-analysis-restoration.md",
+  "docs/training-completion-evidence-restoration.md",
+  "docs/weight-analysis-restoration.md",
+  "docs/completion-gates.md",
+  "docs/dense-eval-handoff.md",
+  "docs/dense-no-packing-retrain.md",
+  "docs/naacl-dense-paper-plan.md",
+  "docs/naacl-paper-plan.md",
+  "docs/state-operator-factorial.md",
+]
+"share/embedding-optimizer-study/paper" = [
+  "paper/Makefile",
+  "paper/README.md",
+  "paper/main.tex",
+  "paper/references.bib",
+  "paper/results.tex",
+]
+"share/embedding-optimizer-study/paper/generated" = [
+  "paper/generated/optimizer-primary.tex",
+  "paper/generated/dimension-utilization.tex",
+  "paper/generated/state-operator-factorial.tex",
+]
+"share/embedding-optimizer-study/paper/current" = [
+  "paper/current/README.md",
+  "paper/current/document-snapshot.json",
+  "paper/current/main.tex",
+  "paper/current/references.bib",
+  "paper/current/results.tex",
+]
+"share/embedding-optimizer-study/paper/current/generated" = [
+  "paper/current/generated/optimizer-primary.tex",
+  "paper/current/generated/dimension-utilization.tex",
+  "paper/current/generated/recipe-sensitivity.tex",
+  "paper/current/generated/state-operator-factorial.tex",
+]
+"share/embedding-optimizer-study/paper/current/figures" = [
+  "paper/current/figures/optimizer-weight-dimension-map.pdf",
+  "paper/current/figures/weight-to-retrieval-map.pdf",
+  "paper/current/figures/full-rate-retrieval-trajectories.pdf",
+]
+"share/embedding-optimizer-study/paper/current/vendor" = [
+  "paper/current/vendor/acl.sty",
+  "paper/current/vendor/acl_natbib.bst",
+]
+"share/embedding-optimizer-study/reports/state-operator-factorial" = [
+  "reports/state-operator-factorial/*.csv",
+  "reports/state-operator-factorial/*.json",
+]
+"share/embedding-optimizer-study/reports/candidate-breadth" = [
+  "reports/candidate-breadth/*.csv",
+  "reports/candidate-breadth/*.json",
+  "reports/candidate-breadth/*.pdf",
+  "reports/candidate-breadth/*.svg",
+]
+"share/embedding-optimizer-study/reports/three-regime-diagnostic" = [
+  "reports/three-regime-diagnostic/*.csv",
+  "reports/three-regime-diagnostic/*.json",
+  "reports/three-regime-diagnostic/*.md",
+]
+"share/embedding-optimizer-study/reports/weight-space" = [
+  "reports/weight-space/README.md",
+  "reports/weight-space/checkpoint_trajectory.csv",
+  "reports/weight-space/optimizer_geometry_phase.svg",
+  "reports/weight-space/optimizer_pair_contrasts.csv",
+  "reports/weight-space/optimizer_pair_contrast_trajectory.csv",
+  "reports/weight-space/optimizer_pair_contrast_trajectory.svg",
+  "reports/weight-space/run_trajectory_summary.csv",
+  "reports/weight-space/summary_manifest.json",
+]
+"share/embedding-optimizer-study/reports/training-dynamics" = [
+  "reports/training-dynamics/optimizer_system_summary.csv",
+  "reports/training-dynamics/plot_manifest.json",
+  "reports/training-dynamics/run_summary.csv",
+  "reports/training-dynamics/stage_dynamics.csv",
+  "reports/training-dynamics/summary_manifest.json",
+  "reports/training-dynamics/system_tradeoffs.svg",
+  "reports/training-dynamics/training_loss_dynamics.svg",
+]
+"share/embedding-optimizer-study/reports/dense-discovery" = [
+  "reports/dense-discovery/best_config_dynamics.csv",
+  "reports/dense-discovery/best_config_task_comparison.csv",
+  "reports/dense-discovery/checkpoint_summary.csv",
+  "reports/dense-discovery/coverage.json",
+  "reports/dense-discovery/evaluation_long.csv",
+  "reports/dense-discovery/optimizer_summary.csv",
+  "reports/dense-discovery/paired_comparison.csv",
+  "reports/dense-discovery/system_metrics.csv",
+  "reports/dense-discovery/system_summary.csv",
+  "reports/dense-discovery/training_history.csv",
+]
+"share/embedding-optimizer-study/reports/dense-discovery/figures" = [
+  "reports/dense-discovery/figures/dense-lr-sensitivity.png",
+  "reports/dense-discovery/figures/dense-training-dynamics-by-run.png",
+  "reports/dense-discovery/figures/dense-training-dynamics.png",
+]
+"share/embedding-optimizer-study/reports/retrieval-dynamics-dense" = [
+  "reports/retrieval-dynamics-dense/best_config_task_comparison.csv",
+  "reports/retrieval-dynamics-dense/best_config_task_delta_dynamics.csv",
+  "reports/retrieval-dynamics-dense/checkpoint_dynamics.csv",
+  "reports/retrieval-dynamics-dense/optimizer_first_passage.csv",
+  "reports/retrieval-dynamics-dense/quality_vs_useful_wall_time.svg",
+  "reports/retrieval-dynamics-dense/run_first_passage.csv",
+  "reports/retrieval-dynamics-dense/summary_manifest.json",
+  "reports/retrieval-dynamics-dense/task_delta_stability.csv",
+]
+"share/embedding-optimizer-study/reports/dense-retrieval-dynamics" = [
+  "reports/dense-retrieval-dynamics/*",
+]
+"share/embedding-optimizer-study/reports/wandb" = [
+  "reports/wandb/*.json",
+]
+"share/embedding-optimizer-study/reports/confirmatory-data" = [
+  "reports/confirmatory-data/receipt.json",
+]
+"share/embedding-optimizer-study/reports/short-branch" = [
+  "reports/short-branch/subset-receipt.json",
+]
+"share/embedding-optimizer-study/reports/tail-stability" = [
+  "reports/tail-stability/README.md",
+  "reports/tail-stability/discovery_anchor_tail.csv",
+  "reports/tail-stability/discovery_cross_tail.csv",
+  "reports/tail-stability/discovery_cross_tail_summary.csv",
+  "reports/tail-stability/discovery_family_contrasts.csv",
+  "reports/tail-stability/summary_manifest.json",
+]
+
+[tool.uv]
+no-build-isolation-package = ["flash-attn"]
+override-dependencies = [
+  "fast-plaid==1.6.0.290",
+  "sentence-transformers==5.7.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+exclude = ["scripts/pretrain", "scripts/finetune"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

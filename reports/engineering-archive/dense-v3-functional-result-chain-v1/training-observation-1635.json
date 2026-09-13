@@ -1,0 +1,310 @@
+{
+  "authorization_sha256": "00c52f0bec979fb163a734ad0f9eadcd6ea09f7393133fd35c65bc62878ce11f",
+  "completed_branches": 2,
+  "observed_at_utc": "2026-09-12T16:33:15.748400+00:00",
+  "pools": {
+    "a": {
+      "coordinator": {
+        "command_matches": true,
+        "pid": 776959,
+        "ppid": 1986037,
+        "start_ticks": 319670514,
+        "state": "S"
+      },
+      "gpu_tokens": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "runs": [
+        {
+          "checkpoint_seals_present_not_freshly_read": [
+            79,
+            157,
+            235,
+            313,
+            391
+          ],
+          "complete": {
+            "actual_fresh_reader_exit": 0,
+            "actual_rank_exits": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_five_checkpoints_verified": true,
+            "authorization_sha256": "00c52f0bec979fb163a734ad0f9eadcd6ea09f7393133fd35c65bc62878ce11f",
+            "completed_at_utc": "2026-09-12T15:46:23.398705+00:00",
+            "full_horizon_391_steps_verified": true,
+            "gpu_resume_equivalence_claimed": false,
+            "native_readback_binding": {
+              "bytes": 62185,
+              "sha256": "cebc8b325cfa207c49eeee95739d1e999bfa8b82595f1c5d7a68d0ee642a3f75"
+            },
+            "retrieval_outcomes_complete": false,
+            "run_id": "factorial-v3-adamw_state-adamw-seed314159",
+            "scientific_completion": false,
+            "source_sha256": "d11d3281523b1573ce7fcd650e10c538cfa84022b5db92117559d47213e57e53",
+            "worker_completion": {
+              "bytes": 61892,
+              "sha256": "4e0cd61dc1ec06a363f1cd6d819b0b3ce160a2fec7a0f7020a12517787244f88"
+            }
+          },
+          "native_progress_bar_step": 391,
+          "ranks": [
+            {
+              "exit_code": 0,
+              "rank": 0,
+              "terminal": true
+            },
+            {
+              "exit_code": 0,
+              "rank": 1,
+              "terminal": true
+            },
+            {
+              "exit_code": 0,
+              "rank": 2,
+              "terminal": true
+            },
+            {
+              "exit_code": 0,
+              "rank": 3,
+              "terminal": true
+            }
+          ],
+          "run_id": "factorial-v3-adamw_state-adamw-seed314159",
+          "status": "full_training_and_fresh_readback_complete"
+        },
+        {
+          "checkpoint_seals_present_not_freshly_read": [
+            79,
+            157,
+            235,
+            313
+          ],
+          "native_progress_bar_step": 384,
+          "ranks": [
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786933,
+                "ppid": 776959,
+                "start_ticks": 319973403,
+                "state": "S"
+              },
+              "rank": 0,
+              "terminal": false
+            },
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786934,
+                "ppid": 776959,
+                "start_ticks": 319973403,
+                "state": "R"
+              },
+              "rank": 1,
+              "terminal": false
+            },
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786935,
+                "ppid": 776959,
+                "start_ticks": 319973403,
+                "state": "R"
+              },
+              "rank": 2,
+              "terminal": false
+            },
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786936,
+                "ppid": 776959,
+                "start_ticks": 319973403,
+                "state": "S"
+              },
+              "rank": 3,
+              "terminal": false
+            }
+          ],
+          "run_id": "factorial-v3-muon_state-muon-seed314159",
+          "status": "running_or_finalizing"
+        },
+        {
+          "run_id": "factorial-v3-adamw_state-muon-seed271828",
+          "status": "not_started"
+        },
+        {
+          "run_id": "factorial-v3-muon_state-adamw-seed271828",
+          "status": "not_started"
+        },
+        {
+          "run_id": "factorial-v3-adamw_state-adamw-seed161803",
+          "status": "not_started"
+        },
+        {
+          "run_id": "factorial-v3-muon_state-muon-seed161803",
+          "status": "not_started"
+        }
+      ]
+    },
+    "b": {
+      "coordinator": {
+        "command_matches": true,
+        "pid": 777271,
+        "ppid": 1986037,
+        "start_ticks": 319673599,
+        "state": "S"
+      },
+      "gpu_tokens": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "runs": [
+        {
+          "checkpoint_seals_present_not_freshly_read": [
+            79,
+            157,
+            235,
+            313,
+            391
+          ],
+          "complete": {
+            "actual_fresh_reader_exit": 0,
+            "actual_rank_exits": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "all_five_checkpoints_verified": true,
+            "authorization_sha256": "00c52f0bec979fb163a734ad0f9eadcd6ea09f7393133fd35c65bc62878ce11f",
+            "completed_at_utc": "2026-09-12T15:46:09.451760+00:00",
+            "full_horizon_391_steps_verified": true,
+            "gpu_resume_equivalence_claimed": false,
+            "native_readback_binding": {
+              "bytes": 62222,
+              "sha256": "d89a8f26878b7f334974f67b5778c175ceba97cc5d7e9ec057888ba2099a86b3"
+            },
+            "retrieval_outcomes_complete": false,
+            "run_id": "factorial-v3-adamw_state-muon-seed314159",
+            "scientific_completion": false,
+            "source_sha256": "d11d3281523b1573ce7fcd650e10c538cfa84022b5db92117559d47213e57e53",
+            "worker_completion": {
+              "bytes": 61917,
+              "sha256": "b931a8aa94bdeefd5723240b8d831caabe0ae4a39836882195e6c9f5ec5ad1fc"
+            }
+          },
+          "native_progress_bar_step": 391,
+          "ranks": [
+            {
+              "exit_code": 0,
+              "rank": 0,
+              "terminal": true
+            },
+            {
+              "exit_code": 0,
+              "rank": 1,
+              "terminal": true
+            },
+            {
+              "exit_code": 0,
+              "rank": 2,
+              "terminal": true
+            },
+            {
+              "exit_code": 0,
+              "rank": 3,
+              "terminal": true
+            }
+          ],
+          "run_id": "factorial-v3-adamw_state-muon-seed314159",
+          "status": "full_training_and_fresh_readback_complete"
+        },
+        {
+          "checkpoint_seals_present_not_freshly_read": [
+            79,
+            157,
+            235,
+            313
+          ],
+          "native_progress_bar_step": 382,
+          "ranks": [
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786775,
+                "ppid": 777271,
+                "start_ticks": 319972008,
+                "state": "S"
+              },
+              "rank": 0,
+              "terminal": false
+            },
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786776,
+                "ppid": 777271,
+                "start_ticks": 319972008,
+                "state": "S"
+              },
+              "rank": 1,
+              "terminal": false
+            },
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786777,
+                "ppid": 777271,
+                "start_ticks": 319972008,
+                "state": "S"
+              },
+              "rank": 2,
+              "terminal": false
+            },
+            {
+              "observed": {
+                "command_matches": true,
+                "pid": 786778,
+                "ppid": 777271,
+                "start_ticks": 319972009,
+                "state": "S"
+              },
+              "rank": 3,
+              "terminal": false
+            }
+          ],
+          "run_id": "factorial-v3-muon_state-adamw-seed314159",
+          "status": "running_or_finalizing"
+        },
+        {
+          "run_id": "factorial-v3-adamw_state-adamw-seed271828",
+          "status": "not_started"
+        },
+        {
+          "run_id": "factorial-v3-muon_state-muon-seed271828",
+          "status": "not_started"
+        },
+        {
+          "run_id": "factorial-v3-adamw_state-muon-seed161803",
+          "status": "not_started"
+        },
+        {
+          "run_id": "factorial-v3-muon_state-adamw-seed161803",
+          "status": "not_started"
+        }
+      ]
+    }
+  },
+  "read_only_owned_handles": true,
+  "scientific_completion": false,
+  "source_sha256": "d11d3281523b1573ce7fcd650e10c538cfa84022b5db92117559d47213e57e53"
+}

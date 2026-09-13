@@ -1,0 +1,53 @@
+{
+  "scope": "bounded_backup_adapter_and_recovered_data_reader_checks",
+  "adapter": {
+    "actual_cases": 46,
+    "receipt": "adapter-tests.xml",
+    "execution": {
+      "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q -p no:cacheprovider /tmp/dense-v3-complete-third-stage-artifact-backup.DBKrnTJC/source/test_backup.py --junitxml=/tmp/dense-v3-complete-third-stage-artifact-backup.DBKrnTJC/adapter-tests.xml",
+      "initial_result": {
+        "chunk_id": "6aa8f6",
+        "wall_time_seconds": 0.64762266,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "..............................................                           [100%]\n46 passed in 0.44s\n"
+      },
+      "polls": [],
+      "terminal_result": {
+        "chunk_id": "6aa8f6",
+        "wall_time_seconds": 0.64762266,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "..............................................                           [100%]\n46 passed in 0.44s\n"
+      },
+      "terminal": true
+    }
+  },
+  "reader": {
+    "actual_cases": 18,
+    "receipt": "reader-tests.xml",
+    "execution": {
+      "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q -p no:cacheprovider /tmp/dense-v3-complete-third-stage-artifact-backup.DBKrnTJC/source/test_verify_recovered.py --junitxml=/tmp/dense-v3-complete-third-stage-artifact-backup.DBKrnTJC/reader-tests.xml",
+      "initial_result": {
+        "chunk_id": "f59828",
+        "wall_time_seconds": 1.00096713,
+        "session_id": 85110,
+        "original_token_count": 3,
+        "output": "..........."
+      },
+      "polls": [],
+      "terminal_result": {
+        "chunk_id": "20a800",
+        "wall_time_seconds": 0.000002446,
+        "exit_code": 0,
+        "original_token_count": 22,
+        "output": ".......                                                       [100%]\n18 passed in 1.66s\n"
+      },
+      "terminal": true
+    }
+  },
+  "network_or_gpu_tests": false,
+  "additional_training_or_statistical_experiments": false,
+  "scientific_completion": false
+}
+

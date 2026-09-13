@@ -1,0 +1,61 @@
+% Development-only topology fixture. The source-bound corrected publication renderer replaces this
+% entire file after all 12 runs, 60 checkpoints, and 840 BEIR task units pass their frozen audits.
+\newcommand{\CorrectedAbstractFinding}{%
+\ResultPending{the primary all-rate optimizer result and simultaneous interval}}
+\newcommand{\CorrectedConclusionFinding}{%
+\ResultPending{the primary all-rate optimizer result and simultaneous interval}}
+\newcommand{\CorrectedWeightSpaceFinding}{%
+\ResultPending{the final-stage all-rate hidden-weight displacement and subspace comparison}}
+\newcommand{\CorrectedGeometryBridgeFinding}{%
+\ResultPending{the leave-dose-index-out weight-geometry-to-retrieval bridge}}
+\newcommand{\CorrectedGeometryBridgeTable}{%
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lrrrl}
+\toprule
+Frozen geometry feature & $\Delta$RMSE & Folds & Supported & Residual $\rho$ \\
+\midrule
+log segment/weight norm & -- & --/4 & pending & -- \\
+segment stable-rank fraction & -- & --/4 & pending & -- \\
+segment effective-rank fraction & -- & --/4 & pending & -- \\
+segment row-norm CV & -- & --/4 & pending & -- \\
+segment top-1\% row energy & -- & --/4 & pending & -- \\
+cumulative/weight norm & -- & --/4 & pending & -- \\
+cumulative stable-rank fraction & -- & --/4 & pending & -- \\
+segment subspace overlap to AdamW & -- & --/4 & pending & -- \\
+cumulative subspace overlap to AdamW & -- & --/4 & pending & -- \\
+\bottomrule
+\end{tabular}
+\caption{Four-fold leave-dose-index-out geometry-to-retrieval bridge. Positive $\Delta$RMSE means
+the feature lowers pooled held-out error. Values remain pending.}
+\label{tab:corrected-bridge}
+\end{table*}%
+}
+\newcommand{\CorrectedMainSection}{%
+\section{Optimizer Effects on Dense Retrieval}
+\label{sec:optimizer-retrieval}
+The primary estimand averages all four frozen rates within optimizer from a common model, dataset,
+training schedule, and evaluation suite.
+
+\begin{table}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrl}
+\toprule
+Contrast & Mean & 95\% CI & Decision \\
+\midrule
+Muon -- AdamW & -- & -- & pending \\
+NorMuon -- AdamW & -- & -- & pending \\
+NorMuon -- Muon & -- & -- & pending \\
+\bottomrule
+\end{tabular}
+\caption{Final-stage retrieval inference over 14 decontaminated BEIR tasks with
+simultaneous intervals. Values remain pending until the complete source-bound matrix passes audit.}
+\label{tab:optimizer-primary}
+\end{table}
+
+\paragraph{Primary conclusion.}
+\ResultPending{the all-rate contrast governs the final optimizer recommendation}
+}

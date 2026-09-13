@@ -1,0 +1,2238 @@
+{
+  "boundary": "Actual common data/model/source observed; twelve full-horizon recipe identities derived without training. Revised data and new v3 run IDs differ; model/source/runtime/hyperparameters do not. Old protocols remain unchanged and ineligible for new data. Derived subset values match the revised parents but no scientific consumer is deployed by this receipt.",
+  "candidate_root": "/tmp/dense-identity-source.8rUgLF",
+  "common_identity": {
+    "data": {
+      "files": [
+        {
+          "bytes": 116862192,
+          "path": "data-00000-of-00014.arrow",
+          "sha256": "1d625b18a1db85c15a94e53c298afe65265b0c170db5f657a21e6c3afdebca06"
+        },
+        {
+          "bytes": 105370976,
+          "path": "data-00001-of-00014.arrow",
+          "sha256": "c3ff8aef624bb947c250603603b14c2dff76cd9ba7eade8af21bea81176c2c66"
+        },
+        {
+          "bytes": 105476080,
+          "path": "data-00002-of-00014.arrow",
+          "sha256": "7348990ffc5d5bd35b8eea7a08015d542da88a919f8d2a48b260f0000318f2eb"
+        },
+        {
+          "bytes": 105505264,
+          "path": "data-00003-of-00014.arrow",
+          "sha256": "f8fa58b66df959f9a14f213c7fd8d9e484b197b709e78d0875ce30f8e4c12ffb"
+        },
+        {
+          "bytes": 105263512,
+          "path": "data-00004-of-00014.arrow",
+          "sha256": "bb4b8219c0d6deed4aa1422cd785f38428e0bcd6eebbed3eb2bf116842466a31"
+        },
+        {
+          "bytes": 105418072,
+          "path": "data-00005-of-00014.arrow",
+          "sha256": "db3daf00c744c97e60b51df356c675506ad929339c1a591f10a99a7c7fe6a845"
+        },
+        {
+          "bytes": 105461592,
+          "path": "data-00006-of-00014.arrow",
+          "sha256": "66186892869b62eb596eb79415306b83fc17c76167c7221ee64976261b268f84"
+        },
+        {
+          "bytes": 107274360,
+          "path": "data-00007-of-00014.arrow",
+          "sha256": "803ae34007db2b66a7752e2a4c0988fc8a28abb59af537159974893e973d6681"
+        },
+        {
+          "bytes": 136606616,
+          "path": "data-00008-of-00014.arrow",
+          "sha256": "be5ce6ccb1b95d8766fbf353aa425d6331a0e882a3cde595603090959c1f0de5"
+        },
+        {
+          "bytes": 138910400,
+          "path": "data-00009-of-00014.arrow",
+          "sha256": "15da360d0610d29ba4ffdd6b89a23d417d6ec584b1b70d0b85e890bdd9cdc491"
+        },
+        {
+          "bytes": 314516456,
+          "path": "data-00010-of-00014.arrow",
+          "sha256": "580cae248956c7beefd745a391a508082735b6fa57ca8df517ffb45e81cfb113"
+        },
+        {
+          "bytes": 271418712,
+          "path": "data-00011-of-00014.arrow",
+          "sha256": "037910f4c1758e08a1a6b8ae4674270be75afd697c17ff6e6a13f71cd825e4f2"
+        },
+        {
+          "bytes": 236114328,
+          "path": "data-00012-of-00014.arrow",
+          "sha256": "663a46b9928e665a10a464a7883dc1ccb10a73f6c0ed90281ca455f8c4e0ebf8"
+        },
+        {
+          "bytes": 193643808,
+          "path": "data-00013-of-00014.arrow",
+          "sha256": "f630aac5a2dcc7874090cd7a99012b1c04a82ffda47e41cfa6feb273136219ea"
+        },
+        {
+          "bytes": 1664,
+          "path": "dataset_info.json",
+          "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+        },
+        {
+          "bytes": 1014,
+          "path": "state.json",
+          "sha256": "f376a001360dc5058aff4bca3c28c7f3bf25a93fc359a2416092a626182736c2"
+        }
+      ],
+      "materialization_manifest": {
+        "bytes": 4224,
+        "sha256": "2bf04181f1df401d3c61202daedecd40f53833bafe0152fca514ca09c0c85f40"
+      },
+      "rows": 500000,
+      "selected_columns": [
+        "query",
+        "positive",
+        "negative_0",
+        "negative_1",
+        "negative_2",
+        "negative_3",
+        "negative_4",
+        "negative_5",
+        "negative_6",
+        "length"
+      ]
+    },
+    "model": {
+      "files": [
+        {
+          "bytes": 1519,
+          "path": ".gitattributes",
+          "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
+        },
+        {
+          "bytes": 312,
+          "path": "1_Pooling/config.json",
+          "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+        },
+        {
+          "bytes": 15737,
+          "path": "README.md",
+          "sha256": "27105b9f0e7c4e843a3156bb4cbd527d221256aaabdbe1a452b3afc20a664d7c"
+        },
+        {
+          "bytes": 1208,
+          "path": "config.json",
+          "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+        },
+        {
+          "bytes": 300,
+          "path": "config_sentence_transformers.json",
+          "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+        },
+        {
+          "bytes": 596070136,
+          "path": "model.safetensors",
+          "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+        },
+        {
+          "bytes": 229,
+          "path": "modules.json",
+          "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+        },
+        {
+          "bytes": 57,
+          "path": "sentence_bert_config.json",
+          "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+        },
+        {
+          "bytes": 694,
+          "path": "special_tokens_map.json",
+          "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+        },
+        {
+          "bytes": 3583485,
+          "path": "tokenizer.json",
+          "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+        },
+        {
+          "bytes": 21030,
+          "path": "tokenizer_config.json",
+          "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+        }
+      ]
+    },
+    "schema_version": 1,
+    "scope": "content_bound_corrected_dense_run",
+    "source": {
+      "local_files": [
+        {
+          "bytes": 84,
+          "path": "__init__.py",
+          "sha256": "ddfea072915535be4c693c1263f18e17a47ecc7c25d2f6dbe86ff6d2fad7646e"
+        },
+        {
+          "bytes": 24017,
+          "path": "train.py",
+          "sha256": "af80da12db318dd202b654c97a656c1558abba921e95c5355933d80f3e824d06"
+        },
+        {
+          "bytes": 8925,
+          "path": "config.py",
+          "sha256": "25d85021a0d78918374cb995016e80563c5ede9b8e87499809e336323105436b"
+        },
+        {
+          "bytes": 3805,
+          "path": "losses.py",
+          "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+        },
+        {
+          "bytes": 2117,
+          "path": "collators.py",
+          "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+        },
+        {
+          "bytes": 12765,
+          "path": "optimizers.py",
+          "sha256": "7d7d4f200c410cb1b24e1773ae72811582f43a0c794a5d1b2af269c123e69b1e"
+        },
+        {
+          "bytes": 10641,
+          "path": "callbacks.py",
+          "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+        },
+        {
+          "bytes": 7315,
+          "path": "dense_numerical_contract.py",
+          "sha256": "207d8545f7d329979ebbe0e90317f95f6ca01bb310eeff040fe3de461956d8f4"
+        },
+        {
+          "bytes": 13159,
+          "path": "dense_run_contract.py",
+          "sha256": "185d96536a9ea36b537aa15420687814165ca8fc0b0d784907039561991584fa"
+        }
+      ],
+      "numerical_upstream": {
+        "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+        "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+        "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+      },
+      "packages": {
+        "accelerate": "1.13.0",
+        "datasets": "4.8.4",
+        "flash-attn": "2.7.4.post1",
+        "huggingface-hub": "1.28.0",
+        "numpy": "2.5.2",
+        "safetensors": "0.8.0",
+        "sentence-transformers": "5.7.0",
+        "tokenizers": "0.22.2",
+        "torch": "2.9.1+cu129",
+        "transformers": "5.3.0"
+      }
+    }
+  },
+  "data_acceptance": {
+    "bytes": 77797,
+    "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-data-candidate-v1/validation.json",
+    "sha256": "3b2cd1902e02a43242b16fee41127cea3c8671e389606d9363c8776a0ef6a52c"
+  },
+  "data_linkage_audit": {
+    "complete": true,
+    "dataset_path": "/tmp/dense-partition-candidate.kHXoGW/training",
+    "errors": [],
+    "row_manifest_sha256": "b08cde6c53c9c63d31d3608c6f65618bef098fbd19e0b301f6356e0b568c3b08",
+    "training_view_fingerprint": "5a2cdf9a1ae149bc",
+    "verified_rows": 500000
+  },
+  "data_manifest": {
+    "bytes": 4224,
+    "path": "/tmp/dense-partition-candidate.kHXoGW/training/manifest.json",
+    "sha256": "2bf04181f1df401d3c61202daedecd40f53833bafe0152fca514ca09c0c85f40"
+  },
+  "data_producer": {
+    "bytes": 17956,
+    "path": "/tmp/dense-partition-candidate.kHXoGW/result.json",
+    "sha256": "cec0ccee8c3ebda9bf24690badc50c153c58523373664fcdc79ed270c04fde49"
+  },
+  "derived_subset_revised_parent_checks": [
+    {
+      "affected_parent_sample_ids": [],
+      "every_value_matches_revised_parent": true,
+      "files": [
+        {
+          "bytes": 5552576,
+          "path": "/root/embedding-optimizer-study/data/probes/training-1024-seed1729/dataset/data-00000-of-00001.arrow",
+          "sha256": "f1edee0b47304900328939f201a0d7c08a0610b21664454f3088bd6124aabee8"
+        },
+        {
+          "bytes": 1664,
+          "path": "/root/embedding-optimizer-study/data/probes/training-1024-seed1729/dataset/dataset_info.json",
+          "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+        },
+        {
+          "bytes": 629,
+          "path": "/root/embedding-optimizer-study/data/probes/training-1024-seed1729/dataset/state.json",
+          "sha256": "e90ae8041cfa0968664cdb9aad97a15cab9c39bc736db385482416190c43eb5e"
+        }
+      ],
+      "name": "training_representation_probe",
+      "parent_row_values_exact": true,
+      "rows": 1024
+    },
+    {
+      "affected_parent_sample_ids": [],
+      "every_value_matches_revised_parent": true,
+      "files": [
+        {
+          "bytes": 11752512,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00000-of-00014.arrow",
+          "sha256": "8762a7a792c3cce01a576a9b7a789f28d3e202d148d6325ebcb9243e91dc50f7"
+        },
+        {
+          "bytes": 10551416,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00001-of-00014.arrow",
+          "sha256": "44f869abe4ff46d68d56e2dc5a6c61664fc98926f43ffdb18476e6241f9d9594"
+        },
+        {
+          "bytes": 10522104,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00002-of-00014.arrow",
+          "sha256": "8103ef382690186d31158968efc594723f939fa9e1c015ef6b2c1209b2c13e59"
+        },
+        {
+          "bytes": 10531088,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00003-of-00014.arrow",
+          "sha256": "d8357939eaa489c0b9b922b25296e6b9d7d455e70d679e498eac178b158b5caf"
+        },
+        {
+          "bytes": 10534656,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00004-of-00014.arrow",
+          "sha256": "f1f6e9aa657ba98169e8bc4096e4bfab11f5c34f26b8b3fca855f149c32b9751"
+        },
+        {
+          "bytes": 10527208,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00005-of-00014.arrow",
+          "sha256": "7e8ca77954873ec6735890448818f859fc7ef284ce080f251d0fdcc810207703"
+        },
+        {
+          "bytes": 10512744,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00006-of-00014.arrow",
+          "sha256": "2000e4d483a4d8fb559abc43ceb0e14f85d44c9092ebcbe1c58d79a4131b4748"
+        },
+        {
+          "bytes": 10754080,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00007-of-00014.arrow",
+          "sha256": "a295394d49001e97325c03b8b220133e041d6fd2eca6a00bd9428ee1709dd792"
+        },
+        {
+          "bytes": 13711848,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00008-of-00014.arrow",
+          "sha256": "4a37828dfe0f24607758735b01e3d340a32b8aeccf977200d31a7b7ea0176588"
+        },
+        {
+          "bytes": 13729144,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00009-of-00014.arrow",
+          "sha256": "aac29c35ce2e7e872a2adb70b4eb28a980d4e6bc637f314dbc8daadb68f5a844"
+        },
+        {
+          "bytes": 31596848,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00010-of-00014.arrow",
+          "sha256": "f3d57852a755a438ffb6617b60764d0312321f5252c3ef72f99ef248a848f918"
+        },
+        {
+          "bytes": 27104560,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00011-of-00014.arrow",
+          "sha256": "b5e058fb6564e088d86adf649fa71fba6f2fa3b7150b40e201c300990040752c"
+        },
+        {
+          "bytes": 23658144,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00012-of-00014.arrow",
+          "sha256": "fba9e864b0b1466e0479b92636cbc0bb7e2e54b994c2cd1c8816d46616b26fd5"
+        },
+        {
+          "bytes": 19388280,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/data-00013-of-00014.arrow",
+          "sha256": "9c5441573b8987ae7599d065bd4c893b88672e6fd1d5971d0914b5a28cee685b"
+        },
+        {
+          "bytes": 1664,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/dataset_info.json",
+          "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+        },
+        {
+          "bytes": 1396,
+          "path": "/root/embedding-optimizer-study/data/short-branch-50k-seed20260826/dataset/state.json",
+          "sha256": "26cfdbff493941498117643e0867d064b4b4f282520abe4dd96a2fd2fd1ed493"
+        }
+      ],
+      "name": "factorial_branch_subset",
+      "parent_row_values_exact": true,
+      "rows": 50000
+    },
+    {
+      "affected_parent_sample_ids": [],
+      "every_value_matches_revised_parent": true,
+      "files": [
+        {
+          "bytes": 23000,
+          "path": "/root/embedding-optimizer-study/data/candidate-breadth-224-seed20260901/queries/data-00000-of-00001.arrow",
+          "sha256": "2aac5885534e03709cc104bcf6c7f644264c8998ff5fd7a4707feeb8e31ef0ed"
+        },
+        {
+          "bytes": 457,
+          "path": "/root/embedding-optimizer-study/data/candidate-breadth-224-seed20260901/queries/dataset_info.json",
+          "sha256": "4d617bc4c781518bcd3e863e44da939f1d36dea2b909ef6f26395ad3bba15498"
+        },
+        {
+          "bytes": 247,
+          "path": "/root/embedding-optimizer-study/data/candidate-breadth-224-seed20260901/queries/state.json",
+          "sha256": "65a0b6a4b3859fc96d3693b34b267da43491cd2ed42826ff3058b22658d6ee07"
+        }
+      ],
+      "name": "historical_candidate_breadth_queries",
+      "parent_row_values_exact": true,
+      "rows": 224
+    }
+  ],
+  "initial_model": {
+    "cached_root": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/snapshots/0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+    "independent_hf_digest_checks": [
+      {
+        "bytes": 1519,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "a6344aac8c09253b3b630fb776ae94478aa0275b",
+        "path": ".gitattributes",
+        "remote_digest": "a6344aac8c09253b3b630fb776ae94478aa0275b"
+      },
+      {
+        "bytes": 312,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "b9abff2db3f2536dcda1e821307805f176a8087d",
+        "path": "1_Pooling/config.json",
+        "remote_digest": "b9abff2db3f2536dcda1e821307805f176a8087d"
+      },
+      {
+        "bytes": 15737,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "63a4d7a56301350c8dff1f3974912807afa52fe0",
+        "path": "README.md",
+        "remote_digest": "63a4d7a56301350c8dff1f3974912807afa52fe0"
+      },
+      {
+        "bytes": 1208,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "d4a8ff5a8efba181915dd285d33c9eaabac5609b",
+        "path": "config.json",
+        "remote_digest": "d4a8ff5a8efba181915dd285d33c9eaabac5609b"
+      },
+      {
+        "bytes": 300,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "8a128545564077a3696e0d738a579075d2fdbed3",
+        "path": "config_sentence_transformers.json",
+        "remote_digest": "8a128545564077a3696e0d738a579075d2fdbed3"
+      },
+      {
+        "bytes": 596070136,
+        "digest_kind": "sha256",
+        "local_digest": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2",
+        "path": "model.safetensors",
+        "remote_digest": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+      },
+      {
+        "bytes": 229,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "f7640f94e81bb7f4f04daf1668850b38763a13d9",
+        "path": "modules.json",
+        "remote_digest": "f7640f94e81bb7f4f04daf1668850b38763a13d9"
+      },
+      {
+        "bytes": 57,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "4eca68d85ecd3034cf4174d8a4033a75344ea62d",
+        "path": "sentence_bert_config.json",
+        "remote_digest": "4eca68d85ecd3034cf4174d8a4033a75344ea62d"
+      },
+      {
+        "bytes": 694,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "6bf65ea14185a88eef7e24b41c86a953a58dcbad",
+        "path": "special_tokens_map.json",
+        "remote_digest": "6bf65ea14185a88eef7e24b41c86a953a58dcbad"
+      },
+      {
+        "bytes": 3583485,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "bafd099d5a9ce6d24f8ef0e4aa66643331b2dcf0",
+        "path": "tokenizer.json",
+        "remote_digest": "bafd099d5a9ce6d24f8ef0e4aa66643331b2dcf0"
+      },
+      {
+        "bytes": 21030,
+        "digest_kind": "git_blob_sha1",
+        "local_digest": "75aeeb2bf3f50aeb2ac86925c08e27f8d7f47226",
+        "path": "tokenizer_config.json",
+        "remote_digest": "75aeeb2bf3f50aeb2ac86925c08e27f8d7f47226"
+      }
+    ],
+    "repo": "lightonai/DenseOn-unsupervised",
+    "revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43"
+  },
+  "model_loaded": false,
+  "model_updates_executed": 0,
+  "observed_at_utc": "2026-09-06T15:55:31.599336+00:00",
+  "original_analysis": {
+    "historical_bridge": "Compare corrected and historical rankings/deltas descriptively as an execution-path sensitivity analysis; do not pool their checkpoints into one causal estimate.",
+    "primary_estimand": "At the final checkpoint, average nDCG@10 over the four predeclared learning rates within optimizer for each task, then contrast Muon-AdamW, NorMuon-AdamW, and NorMuon-Muon across the 14 paired tasks.",
+    "primary_support_rule": "An optimizer-family advantage is supported only when its simultaneous 95% interval versus AdamW lies wholly above zero and all four rates completed. An interval wholly below zero supports a disadvantage; otherwise report inconclusive.",
+    "primary_uncertainty": "50,000 paired task bootstraps with seed 20260903; simultaneous max-T 95% intervals over the three optimizer contrasts.",
+    "secondary_estimand": "Compare the validation-selected recipe per optimizer on final-checkpoint mean nDCG@10 using the same paired max-T procedure; label this secondary.",
+    "stability": "Report completion, non-finite values, gradient norms, peak memory, accepted wall time, checkpoint bytes, and optimizer-state bytes for every run.",
+    "training_dynamics": "Report every optimizer-rate-task checkpoint, optimizer-level stage means, and trapezoidal area over normalized progress. Dynamics are descriptive unless an interval procedure is explicitly added without changing the primary rule.",
+    "weight_space": "At all five checkpoints, report update norm, update-to-weight ratio, singular-value effective/stable rank, top-subspace overlap with AdamW, and representation/retrieval bridges. These mechanism analyses are secondary and cannot substitute for the primary retrieval contrast."
+  },
+  "original_evaluation": {
+    "benchmark": "the same 14 pinned decontaminated BEIR tasks used by the historical Dense study",
+    "checkpoints_per_run": 5,
+    "expected_task_units": 840,
+    "metric": "nDCG@10",
+    "retrieval": "exact full-corpus scoring with the existing pinned task revisions and evaluator contract",
+    "tasks": [
+      "ArguAna",
+      "ClimateFEVER",
+      "DBPedia",
+      "FEVER",
+      "FiQA2018",
+      "HotpotQA",
+      "MSMARCO",
+      "NFCorpus",
+      "NQ",
+      "QuoraRetrieval",
+      "SCIDOCS",
+      "SciFact",
+      "TRECCOVID",
+      "Touche2020"
+    ],
+    "validation_selection": {
+      "dataset": "data/validation-4096-seed20260826",
+      "execution": "independently padded",
+      "rule": "Within each optimizer, choose the final-checkpoint learning rate with minimum mean contrastive loss across all 4096 rows; ties choose the lower learning rate. BEIR is not an input."
+    }
+  },
+  "original_training": {
+    "checkpoint_fractions": [
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "completion_rule": "A run is complete only if all five deeply audited checkpoints, the final model, accepted timing ledger, and independently_padded execution receipt agree.",
+    "context_length": 8192,
+    "epochs": 1,
+    "expected_checkpoint_steps": [
+      782,
+      1563,
+      2345,
+      3126,
+      3907
+    ],
+    "expected_optimizer_steps": 3907,
+    "failure_rule": "Never drop or replace a failed high-rate run. Retry only from a deeply valid checkpoint. Persistent numerical failure is an optimizer-stability result and prevents a complete-grid superiority claim.",
+    "global_batch_size": 128,
+    "gradient_accumulation_steps": 4,
+    "in_batch_negatives": false,
+    "input_execution": "SentenceTransformers can_flatten_inputs=false, independently padded within each of the eight explicit text columns",
+    "learning_rates": {
+      "adamw": [
+        1e-06,
+        3e-06,
+        1e-05,
+        3e-05
+      ],
+      "muon": [
+        0.0001,
+        0.0003,
+        0.001,
+        0.003
+      ],
+      "normuon": [
+        0.0001,
+        0.0003,
+        0.001,
+        0.003
+      ]
+    },
+    "log_root": "logs/dense-no-packing-v1",
+    "micro_batch_size": 8,
+    "optimizers": [
+      "adamw",
+      "muon",
+      "normuon"
+    ],
+    "output_root": "outputs/dense-no-packing-v1",
+    "runs": 12,
+    "sampled_random_hard_negatives": 7,
+    "two_parallel_disjoint_pools": true,
+    "world_size": 4
+  },
+  "parent_inputs": {
+    "bytes": 72188,
+    "path": "/root/embedding-optimizer-story-refactor/reports/dense-primary-v2/input-bindings.json",
+    "sha256": "02561536a7ac691290f127dc07ddef41cede4b15e9bfbabb97eee0b569a0fa59"
+  },
+  "preparation_passed": true,
+  "production_deployed": false,
+  "protocol_activated": false,
+  "row_manifest": {
+    "bytes": 105625868,
+    "path": "/tmp/dense-partition-candidate.kHXoGW/training/rows.jsonl",
+    "sha256": "ebe918805da3872a042471d6189178cc2960581e0a13ef3ab6cf1fbba88f281d"
+  },
+  "runs": [
+    {
+      "expected_identity_sha256": "8436e1a7f018a1fd63c0c1ff6ea80e68f11ba6138f7c153725b0a86222e7a541",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 1e-06,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": null,
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "adamw",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 1e-06,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 1e-06,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-adamw-1e-6",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-adamw-1e-6",
+      "run_id": "verified-v3-adamw-1e-6"
+    },
+    {
+      "expected_identity_sha256": "9c11a6404c7da8bc328fab2af2518f5ee3127af74da239a33f794629860f6e1b",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 3e-06,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": null,
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "adamw",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 3e-06,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 3e-06,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-adamw-3e-6",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-adamw-3e-6",
+      "run_id": "verified-v3-adamw-3e-6"
+    },
+    {
+      "expected_identity_sha256": "bfd66f4bec75e3bd05f497df8e6eafe55230c342ba558124521a94bda55e4137",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 1e-05,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": null,
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "adamw",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 1e-05,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 1e-05,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-adamw-1e-5",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-adamw-1e-5",
+      "run_id": "verified-v3-adamw-1e-5"
+    },
+    {
+      "expected_identity_sha256": "796be482357bf902906580209857d13e6e0e4e241ce5e4c8bd63bf82fc257c8f",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 3e-05,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": null,
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "adamw",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 3e-05,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 3e-05,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-adamw-3e-5",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-adamw-3e-5",
+      "run_id": "verified-v3-adamw-3e-5"
+    },
+    {
+      "expected_identity_sha256": "224eae57f298f7b2e1fc09bddd1f5e4f8b254b7ed28f9f8b14692df877a02b23",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-v1",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "muon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0001,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0001,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-muon-1e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-muon-1e-4",
+      "run_id": "verified-v3-muon-1e-4"
+    },
+    {
+      "expected_identity_sha256": "7d987bec851dde1adcd5c87d333370e30b23f59f220858303d144a115102b36f",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-v1",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "muon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0003,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0003,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-muon-3e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-muon-3e-4",
+      "run_id": "verified-v3-muon-3e-4"
+    },
+    {
+      "expected_identity_sha256": "08a4efced2f0bd44b0f05342d4d149200f93677a6d7e3f0b44deb7bcc45edc43",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-v1",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "muon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.001,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.001,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-muon-1e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-muon-1e-3",
+      "run_id": "verified-v3-muon-1e-3"
+    },
+    {
+      "expected_identity_sha256": "67131fd12c57dd05c699ef23e454a556c02693738477a8bf470523cbdb868a01",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-v1",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "muon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.003,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": null,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.003,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-muon-3e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-muon-3e-3",
+      "run_id": "verified-v3-muon-3e-3"
+    },
+    {
+      "expected_identity_sha256": "e40f13f27c036d11dbbe735acc62f4a3923954b2e78a5764af3debb809bed56c",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "normuon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0001,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0001,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-normuon-1e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-normuon-1e-4",
+      "run_id": "verified-v3-normuon-1e-4"
+    },
+    {
+      "expected_identity_sha256": "d2ad8431ed7ad632e052b5a4da4b1144d9ac382335ab4b72e02ad9ca95e2a77c",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "normuon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0003,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0003,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-normuon-3e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-normuon-3e-4",
+      "run_id": "verified-v3-normuon-3e-4"
+    },
+    {
+      "expected_identity_sha256": "4a8820fd94a9d3f932a00aec453233f97ed8e72731b1208981bc14928d257296",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "normuon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.001,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.001,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-normuon-1e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-normuon-1e-3",
+      "run_id": "verified-v3-normuon-1e-3"
+    },
+    {
+      "expected_identity_sha256": "bf7f25acbbf5cb7bf7d375e040e86a36b6fa085aef12d7335b540c7230010ff6",
+      "identity_fields": {
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "numerical_contract": {
+          "accelerator_divisor": 1,
+          "attention_backward_deterministic": true,
+          "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+          "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": "normuon",
+          "optimizer_configuration": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.003,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "schema_version": 1,
+          "trainer_scheduled_accumulation": 4,
+          "upstream_source_hashes": {
+            "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+            "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+            "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+          },
+          "upstream_versions": {
+            "accelerate": "1.13.0",
+            "sentence-transformers": "5.7.0",
+            "transformers": "5.3.0"
+          }
+        },
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.003,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-v3-normuon-3e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        }
+      },
+      "parent_run_id": "verified-normuon-3e-3",
+      "run_id": "verified-v3-normuon-3e-3"
+    }
+  ],
+  "scientific_completion": false,
+  "scope": "prepared_dense_revised_primary_actual_inputs_v3",
+  "source": {
+    "bytes": 9578,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_revised_inputs.py",
+    "sha256": "d5aca4a1fdb1a3bf67b01df557700aaf49807274c76ea68c8896ba6ca83e1b98"
+  },
+  "source_manifest": {
+    "bytes": 6419,
+    "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/prepared-source.json",
+    "sha256": "1c6163c5aeee9d0735a6859c0e2f56a701c59d5111b553de6fb5c758da138dfd"
+  },
+  "validation_inputs": {
+    "files": [
+      {
+        "bytes": 2256568,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00000-of-00014.arrow",
+        "sha256": "8eebbefb7c7090b2e3505145677e0895505df1a17f2917499ce14f4a8ab58163"
+      },
+      {
+        "bytes": 2336624,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00001-of-00014.arrow",
+        "sha256": "4aae5454269d17e5832e49909996434bd7419ba358a5616f67397920cf649e3a"
+      },
+      {
+        "bytes": 870704,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00002-of-00014.arrow",
+        "sha256": "b2f5d8af488d85b53cdbf13a9d9f803b283279fb62bf5d0883fc75e8ae3ce946"
+      },
+      {
+        "bytes": 861640,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00003-of-00014.arrow",
+        "sha256": "8fdd521db8df9425baaa13b9441174ec79f87695aa83c04cbdcfda4f44aad4c9"
+      },
+      {
+        "bytes": 859440,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00004-of-00014.arrow",
+        "sha256": "2dcc50c8735cf4ee78042a2ba4c50fd7f93e5142cf6a98c58de8ab81107823a1"
+      },
+      {
+        "bytes": 887576,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00005-of-00014.arrow",
+        "sha256": "7d60f48884479fade77aa0dfdf14b76bfd3cece1342780c2d7ab9afa59d75283"
+      },
+      {
+        "bytes": 1040752,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00006-of-00014.arrow",
+        "sha256": "5b0e37755188740934ea75ca2f1626bbcff2fafe7399823b69ca4997f476ccfd"
+      },
+      {
+        "bytes": 1056448,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00007-of-00014.arrow",
+        "sha256": "b23b7c20193e0b03797b5788a01c4d2a7322d64588ef9ba8ea0dc522b26ff3c0"
+      },
+      {
+        "bytes": 2587984,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00008-of-00014.arrow",
+        "sha256": "8d2cecacb04c1e3f81056404c22e8102bd82557d5e91bf1266f1ee78e507db9f"
+      },
+      {
+        "bytes": 2605848,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00009-of-00014.arrow",
+        "sha256": "c973fbef01f666772f690673d062cd65757c03c8ab2dc4398609b79814151dfb"
+      },
+      {
+        "bytes": 1936472,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00010-of-00014.arrow",
+        "sha256": "a8840b097f3ec35b644546636d3126a126e9e8bc7039c0aa11ef043963c180e8"
+      },
+      {
+        "bytes": 1914296,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00011-of-00014.arrow",
+        "sha256": "0c64af5dd00627359914952e39406406c228f94f14da0bf64a790a7de4394270"
+      },
+      {
+        "bytes": 1504216,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00012-of-00014.arrow",
+        "sha256": "057d18742c510a9872ef2928422e937dd6f246986ff04fd50870408aa1f0d49c"
+      },
+      {
+        "bytes": 1503080,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00013-of-00014.arrow",
+        "sha256": "88f8781c502e04bfbdf921df990d69b7690926e1951f4589794afe8380acc2c2"
+      },
+      {
+        "bytes": 1664,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/dataset_info.json",
+        "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+      },
+      {
+        "bytes": 1014,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/state.json",
+        "sha256": "11953100689df5ac77bf00107cdffc7cffd0807d320fe2c03da31c0e16ff8673"
+      },
+      {
+        "bytes": 5344,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/manifest.json",
+        "sha256": "f95cdbcb3fb7b17a0d3b4bb0a23ab14d05ce07c663cc178f2838251a0b17f2b9"
+      },
+      {
+        "bytes": 749659,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/rows.jsonl",
+        "sha256": "e906432c173de604207e4fd0194da2f59ceb531081a8cc41bff301dd4f75dc49"
+      },
+      {
+        "bytes": 749659,
+        "path": "/tmp/dense-partition-candidate.kHXoGW/validation/selection.jsonl",
+        "sha256": "e906432c173de604207e4fd0194da2f59ceb531081a8cc41bff301dd4f75dc49"
+      }
+    ],
+    "root": "/tmp/dense-partition-candidate.kHXoGW/validation",
+    "rows": 4096
+  }
+}

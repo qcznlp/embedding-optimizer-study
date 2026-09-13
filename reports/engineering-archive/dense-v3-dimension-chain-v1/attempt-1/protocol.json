@@ -1,0 +1,791 @@
+{
+  "admission": {
+    "legacy_results_adopted": false,
+    "loaded_weights": "Actual state tensors equal the saved checkpoint after declared BF16 conversion; unchanged after encode",
+    "missing": "Reject any missing, extra, historical, unpaired or partially completed state; no available-case substitute",
+    "population": "One immutable pretrained state plus every twelve v3 runs at all five retained stages",
+    "probe": "Every original ordered row and exact relocated five-file inventory matches the accepted 224-row probe",
+    "publication_inference_or_paper_release": false,
+    "readback": "Vector reader authenticates provenance/content without re-encoding; feature reader recomputes every value from those authenticated vectors",
+    "run_gate": "Deep complete-run admission for all twelve runs before any model/vector/feature output",
+    "vector_anchor": "Require the trusted matrix-manifest SHA-256 from verified production, not a hash inferred from the file being read"
+  },
+  "encoding": {
+    "batch_size": 8,
+    "compressed": false,
+    "dense_document_prompt": "document: ",
+    "dense_query_prompt": "query: ",
+    "device": "cuda:0",
+    "flash_attention": true,
+    "max_length": 8192,
+    "model_dtype": "bfloat16",
+    "normalized": true,
+    "positive_candidate_index": 0,
+    "storage_dtype": "float32"
+  },
+  "formal_execution_authorized": false,
+  "input_execution": {
+    "mode": "independently_padded",
+    "sentence_transformers_can_flatten_inputs": false
+  },
+  "numerical_policy": {
+    "array_storage": "Retain task-mean coordinate attributions in float64 without float32 archive rounding",
+    "cosine": "Explicit retained-coordinate FP64 normalization and cosine; no subtraction of a dominant coordinate from a total reduction",
+    "leave_one_out": "Every coordinate is literally deleted; use the same cosine and strict-greater-than positive-rank kernel as random removal",
+    "old_sources_or_outputs_rewritten": false,
+    "relative_margin": "Undefined (null) when the absolute task-mean baseline margin is at most the unchanged 1e-12 boundary; all absolute outcomes remain",
+    "rotation": "Original three seeds and full-score 1e-6 plus exact positive-rank equality guard; no new tolerance",
+    "scientific_estimands_changed": false,
+    "version": 1,
+    "zero_remaining_norm": "Reject the complete state computation; no denominator floor, imputation, row exclusion or partial pooling"
+  },
+  "parents": {
+    "kernel_acceptance": {
+      "bytes": 320435,
+      "path": "reports/engineering-archive/dense-v3-dimension-interventions-v1/validation.json",
+      "sha256": "d09cc7681c3b948390f457df26fd478d67ee3cc9676dc11627b29e5b47d6e631"
+    },
+    "old_export": {
+      "bytes": 6270,
+      "path": "configs/dense_primary_dimension_export_protocol.json",
+      "sha256": "4c7f4a7e0785ff324ae5312ee8d5b4133765d377ceb973f1af05987ecb87ba2f"
+    },
+    "primary": {
+      "bytes": 19832,
+      "path": "configs/dense_primary_v3_protocol.json",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    },
+    "probe_acceptance": {
+      "bytes": 139635,
+      "path": "reports/engineering-archive/dense-v3-dimension-interventions-v1/probe.json",
+      "sha256": "5313b4c969ef89fbc894f1061a2fd644d4c82235030c3492fbebef2eabbfcc42"
+    },
+    "probe_spec": {
+      "bytes": 5737,
+      "path": "configs/beir_representation_probe.json",
+      "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+    },
+    "scientific": {
+      "bytes": 7792,
+      "path": "configs/dense_dimension_utilization_protocol.json",
+      "sha256": "de56772ef84745c074940527d621a932a06a20e865a10bc3faad823bcb0e651e"
+    }
+  },
+  "prepared_at_utc": "2026-09-07T00:08:18.967785+00:00",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "dense_primary_v3_functional_dimensions",
+  "sources": {
+    "configs/formal_runtime.json": {
+      "bytes": 1019,
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    "scripts/prepare_dense_v3_dimensions.py": {
+      "bytes": 2268,
+      "sha256": "9355509de13c7b5d949981aee5df1abde41e4ef89cb18591d88f45f4877982c7"
+    },
+    "src/embed_optim/config.py": {
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "src/embed_optim/corrected_input_execution.py": {
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "src/embed_optim/dimension_intervention_io.py": {
+      "bytes": 4831,
+      "sha256": "e2d3e4ea51857f99937692079c9923eca3da2d80e32d17e03a29d0f3cb33fb13"
+    },
+    "src/embed_optim/dimension_interventions.py": {
+      "bytes": 8825,
+      "sha256": "3728c1cb6155ea3200173c5816098581a787a861ec3598b8a6b49640d37deee4"
+    },
+    "src/embed_optim/dimension_utilization.py": {
+      "bytes": 30424,
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    "src/embed_optim/geometry.py": {
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "src/embed_optim/gpu_lease.py": {
+      "bytes": 7263,
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "src/embed_optim/optimizers.py": {
+      "bytes": 11839,
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_v3_contract.py": {
+      "bytes": 9267,
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "src/embed_optim/primary_v3_dimension_contract.py": {
+      "bytes": 12569,
+      "sha256": "f00c33e3c33a444ebc1b280264fb2d3e4976457f978ec7646e3da2579174b605"
+    },
+    "src/embed_optim/primary_v3_dimension_exports.py": {
+      "bytes": 12136,
+      "sha256": "f3c7fefbb39ff3aa9ee89d6e134b71a8da7a850fb14e9924e0ec8ee2d36224da"
+    },
+    "src/embed_optim/primary_v3_dimension_vector_io.py": {
+      "bytes": 9348,
+      "sha256": "2a21586a70e5f982bd247e9fd7fe128a4ae2235bca52dbbfe66efad8c64add6a"
+    },
+    "src/embed_optim/primary_v3_dimensions.py": {
+      "bytes": 9064,
+      "sha256": "416ec0a8b787a54693886192cc8ae4b9c4d583960b8aef0cd27d85afb1f8e4c5"
+    },
+    "src/embed_optim/primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    "src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    "src/embed_optim/primary_weight_entries.py": {
+      "bytes": 12687,
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    "src/embed_optim/probe_export.py": {
+      "bytes": 20602,
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    "src/embed_optim/probes.py": {
+      "bytes": 13945,
+      "sha256": "15a8212e3bf58820e0eaaf22aa8e5f4413d5e4d320036b8f29f761552dd70a8c"
+    },
+    "src/embed_optim/runtime.py": {
+      "bytes": 6928,
+      "sha256": "6c6d143a0adb61f653bbe9e1143166670b8550e49104e41da5745c4c76d1f311"
+    }
+  },
+  "states": [
+    {
+      "cell": "pretrained",
+      "meta": {
+        "learning_rate": null,
+        "optimizer": "pretrained",
+        "run_id": "pretrained",
+        "step": 0
+      },
+      "stage": 0
+    },
+    {
+      "cell": "verified-v3-adamw-1e-5/checkpoint-782",
+      "meta": {
+        "learning_rate": 1e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-5",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-adamw-1e-5/checkpoint-1563",
+      "meta": {
+        "learning_rate": 1e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-5",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-adamw-1e-5/checkpoint-2345",
+      "meta": {
+        "learning_rate": 1e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-5",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-adamw-1e-5/checkpoint-3126",
+      "meta": {
+        "learning_rate": 1e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-5",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-adamw-1e-5/checkpoint-3907",
+      "meta": {
+        "learning_rate": 1e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-5",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-adamw-1e-6/checkpoint-782",
+      "meta": {
+        "learning_rate": 1e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-6",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-adamw-1e-6/checkpoint-1563",
+      "meta": {
+        "learning_rate": 1e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-6",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-adamw-1e-6/checkpoint-2345",
+      "meta": {
+        "learning_rate": 1e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-6",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-adamw-1e-6/checkpoint-3126",
+      "meta": {
+        "learning_rate": 1e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-6",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-adamw-1e-6/checkpoint-3907",
+      "meta": {
+        "learning_rate": 1e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-1e-6",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-adamw-3e-5/checkpoint-782",
+      "meta": {
+        "learning_rate": 3e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-5",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-adamw-3e-5/checkpoint-1563",
+      "meta": {
+        "learning_rate": 3e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-5",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-adamw-3e-5/checkpoint-2345",
+      "meta": {
+        "learning_rate": 3e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-5",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-adamw-3e-5/checkpoint-3126",
+      "meta": {
+        "learning_rate": 3e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-5",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-adamw-3e-5/checkpoint-3907",
+      "meta": {
+        "learning_rate": 3e-05,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-5",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-adamw-3e-6/checkpoint-782",
+      "meta": {
+        "learning_rate": 3e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-6",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-adamw-3e-6/checkpoint-1563",
+      "meta": {
+        "learning_rate": 3e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-6",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-adamw-3e-6/checkpoint-2345",
+      "meta": {
+        "learning_rate": 3e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-6",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-adamw-3e-6/checkpoint-3126",
+      "meta": {
+        "learning_rate": 3e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-6",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-adamw-3e-6/checkpoint-3907",
+      "meta": {
+        "learning_rate": 3e-06,
+        "optimizer": "adamw",
+        "run_id": "verified-v3-adamw-3e-6",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-muon-1e-3/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-3",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-muon-1e-3/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-3",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-muon-1e-3/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-3",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-muon-1e-3/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-3",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-muon-1e-3/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-3",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-muon-1e-4/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-4",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-muon-1e-4/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-4",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-muon-1e-4/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-4",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-muon-1e-4/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-4",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-muon-1e-4/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-1e-4",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-muon-3e-3/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-3",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-muon-3e-3/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-3",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-muon-3e-3/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-3",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-muon-3e-3/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-3",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-muon-3e-3/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-3",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-muon-3e-4/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-4",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-muon-3e-4/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-4",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-muon-3e-4/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-4",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-muon-3e-4/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-4",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-muon-3e-4/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "muon",
+        "run_id": "verified-v3-muon-3e-4",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-normuon-1e-3/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-3",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-normuon-1e-3/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-3",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-normuon-1e-3/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-3",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-normuon-1e-3/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-3",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-normuon-1e-3/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-3",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-normuon-1e-4/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-4",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-normuon-1e-4/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-4",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-normuon-1e-4/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-4",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-normuon-1e-4/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-4",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-normuon-1e-4/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.0001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-4",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-normuon-3e-3/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-3",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-normuon-3e-3/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-3",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-normuon-3e-3/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-3",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-normuon-3e-3/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-3",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-normuon-3e-3/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-3",
+        "step": 3907
+      },
+      "stage": 5
+    },
+    {
+      "cell": "verified-v3-normuon-3e-4/checkpoint-782",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-4",
+        "step": 782
+      },
+      "stage": 1
+    },
+    {
+      "cell": "verified-v3-normuon-3e-4/checkpoint-1563",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-4",
+        "step": 1563
+      },
+      "stage": 2
+    },
+    {
+      "cell": "verified-v3-normuon-3e-4/checkpoint-2345",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-4",
+        "step": 2345
+      },
+      "stage": 3
+    },
+    {
+      "cell": "verified-v3-normuon-3e-4/checkpoint-3126",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-4",
+        "step": 3126
+      },
+      "stage": 4
+    },
+    {
+      "cell": "verified-v3-normuon-3e-4/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.0003,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-3e-4",
+        "step": 3907
+      },
+      "stage": 5
+    }
+  ],
+  "status": "prepared_not_execution_authorized",
+  "table_counts": {
+    "checkpoint_summary": 61,
+    "random_removal": 68320,
+    "rotation_summary": 546,
+    "task_summary": 854
+  }
+}

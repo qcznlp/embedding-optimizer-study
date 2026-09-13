@@ -1,0 +1,14 @@
+{
+  "scope":"offline-complete-functional-flow-test-calls",
+  "workdir":"/tmp/dense-v3-functional-flow-candidate.TD3eLq4a",
+  "command":"CUDA_VISIBLE_DEVICES='' /usr/bin/python -B source/test_flow.py --attempt ATTEMPT",
+  "attempts":[
+    {"attempt":"first","session_id":6184,"terminal_chunk":"7a10c1","exit_code":1,"tests":15,"failures":4,"errors":8,"source":"source/flow_candidate-initial.py","test_source":"source/test_flow-first.py","reason":"Synthetic manifest reader incorrectly required JSON mapping order"},
+    {"attempt":"second","session_id":66778,"terminal_chunk":"162956","exit_code":0,"tests":15,"failures":0,"errors":0,"source":"source/flow_candidate-initial.py","test_source":"source/test_flow-second.py"},
+    {"attempt":"third","session_id":84850,"terminal_chunk":"41dd47","exit_code":0,"tests":18,"failures":0,"errors":0,"source":"source/flow_candidate.py","test_source":"source/test_flow.py"}
+  ],
+  "actual_gpu_or_model_work":false,
+  "production_recovery_started":false,
+  "recovery_authority_created":false,
+  "scientific_completion":false
+}

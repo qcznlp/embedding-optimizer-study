@@ -1,0 +1,62 @@
+{
+  "audit_execution_complete": false,
+  "boundary": "Same pinned short-input full-model four-rank GPU campaign, fresh candidate optimizers, same process group, three optimizers and resume points 1/2. Capture resume-1 gradients on every rank; replay actual optimizer from identical entry weights/state, check exact next-step reproduction and same-gradient repeatability. Stage traces are measured on rank zero and checked against production helpers. This does not identify the original gradient-difference source, certify historical trajectories, relax any failed replay requirement, or establish optimizer-quality/scientific findings.",
+  "command_arguments": [
+    "--repository",
+    "/root/embedding-optimizer-story-refactor",
+    "--workdir",
+    "/tmp/dense-gpu-resume.9ocXBd",
+    "--handoff",
+    "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "--download-root",
+    "/tmp/dense-checkpoint-restore.Og1kZs/download",
+    "--audit",
+    "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+    "--audit-sha256",
+    "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6"
+  ],
+  "finished_at_utc": "2026-09-06T07:00:37.580345+00:00",
+  "parent_result": {
+    "bytes": 8418,
+    "path": "/tmp/dense-gpu-resume.9ocXBd/result.json",
+    "sha256": "98fcdbe5069d0a6edd3bc67e217d0353728822ea2cd28237551c38d5ea6b3ba7"
+  },
+  "production_deployed": false,
+  "records": [],
+  "scientific_completion": false,
+  "scope": "engineering_gpu_replay_update_localization",
+  "source": {
+    "bytes": 15288,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_replay_update.py",
+    "sha256": "5ffd04305f20fc130038efe41670f28a18f059299673877eb97f8b241b8ea094"
+  },
+  "source_bindings": [
+    {
+      "bytes": 10738,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_resume.py",
+      "sha256": "3149acfe1b476ae1deb4664380df01ef675e3f81696f9f5aa6c72019861907fe"
+    },
+    {
+      "bytes": 21339,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_resume.py",
+      "sha256": "e817284cf849c210c7ebc28ef28b469ed35161e1d63afaf13bdd37288f7d003c"
+    },
+    {
+      "bytes": 22561,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_normalization.py",
+      "sha256": "eb7f84d12bf737e2a97bad76c0cb90610c50b954379beca3ab96ae27d6a4ddd9"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 16750,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/train.py",
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    }
+  ],
+  "started_at_utc": "2026-09-06T06:59:12.106567+00:00",
+  "upstream_strict_replay_passed": false
+}

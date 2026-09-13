@@ -1,0 +1,18 @@
+% Generated exact-measurement sensitivity; no manuscript installation authorized.
+\newcommand{\ExactGeometrySensitivityFinding}{The exact-measurement sensitivity meets the declared predictive criterion for: Segment entropy rank. These checks do not replace the original nine-feature analysis; all five paired comparisons are reported in the appendix.}
+\newcommand{\ExactGeometrySensitivityTable}{%
+\begin{table*}[t]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllrrr}\toprule
+Measurement & Original criterion & Exact criterion & Exact RMSE gain & Defined & Error difference \\
+\midrule
+Segment stable rank & not supported & not supported & -0.00105121 & 4/4 & +7.59091e-05 \\
+Segment entropy rank & supported & supported & +0.00558286 & 4/4 & +0.000373052 \\
+Cumulative stable rank & not supported & not supported & -0.0035408 & 4/4 & -2.72383e-05 \\
+Segment overlap to AdamW & not supported & not supported & -0.00159314 & 4/4 & +0.000790415 \\
+Cumulative overlap to AdamW & not supported & not supported & -0.00406072 & 4/4 & +0.00431528 \\
+\bottomrule\end{tabular}
+\caption{Every original/exact counterpart under the same four held-out learning-rate doses. RMSE gain compares the exact predictor with the nuisance-only baseline; error difference is original-predictor RMSE minus exact-predictor RMSE. Decisions use exact MSE, not rounded display values. Dashes denote undefined comparisons. These are measurement-sensitivity comparisons, not uniformly pure approximation-error tests: entropy uses the full singular spectrum, and rank/entropy averages expose their nonzero-matrix denominators. Every declared correspondence and all four folds are retained. Undefined comparisons are not available-case averages. Predictive support is not causal mediation, statistical significance, equivalence, or evidence of useful embedding dimensions.}
+\label{tab:exact-geometry-sensitivity}
+\end{table*}%
+}

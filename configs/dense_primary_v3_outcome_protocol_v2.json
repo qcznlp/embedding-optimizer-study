@@ -1,0 +1,149 @@
+{
+  "boundary": "Preparation-only outcome consumer. The old statistical kernel and estimands are unchanged. It requires real complete v3 training, validation and BEIR evidence; fixtures and diagnostics are not primary results. Released-source/runtime handoff and downstream mechanism/publication consumers remain separate required work.",
+  "formal_execution_authorized": false,
+  "implementation_revision": {
+    "change": "CSV columns use sorted field names, independent of input dictionary insertion order",
+    "estimands_or_thresholds_changed": false,
+    "previous_failure_overridden": false,
+    "reason": "Fresh JSON readback preserves every value but changes dictionary key order",
+    "statistical_kernel_changed": false,
+    "version": 2
+  },
+  "parents": {
+    "outcome_predecessor": {
+      "bytes": 6697,
+      "path": "configs/dense_primary_v3_outcome_protocol.json",
+      "sha256": "914996b3423ba01329c03844419cca61e2a33452fe026665bb940d5b82e2cffe"
+    },
+    "primary": {
+      "bytes": 19832,
+      "path": "configs/dense_primary_v3_protocol.json",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    },
+    "statistical_parent": {
+      "bytes": 8202,
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+    },
+    "validation": {
+      "bytes": 7020,
+      "path": "configs/dense_primary_v3_validation_protocol.json",
+      "sha256": "96a8aa2fc684d29ec67649c2e637c0cd4c7dcdd0f31f2e354b7d0955a18fb1c3"
+    },
+    "validation_acceptance": {
+      "bytes": 179586,
+      "path": "reports/engineering-archive/dense-v3-validation-v1/validation.json",
+      "sha256": "1967ca78e216df0934e0b379808fd10c98598b8054e936f3f2ae2f3806f363b4"
+    }
+  },
+  "prepared_at_utc": "2026-09-06T18:07:28.927663+00:00",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scientific_rules": {
+    "claim_boundary": "The corrected outcome supports claims about this pinned DenseOn model, deterministic 500k-query seven-negative view, one training seed, optimizer implementations, and declared rate grids. Task bootstrap intervals quantify benchmark-task variation, not training-seed variation. The post-diagnosis origin and single seed preclude universal optimizer claims.",
+    "dynamics": {
+      "claim_boundary": "Dynamics are descriptive; the final-stage primary interval remains the inferential endpoint.",
+      "observed_auc": "Trapezoidal area over retained normalized progress 0.2 through 1.0. Also divide by 0.8 to report the observed-range mean. No unobserved initialization score is imputed.",
+      "reported_units": "All 840 run-by-stage-by-task values, 60 run-stage means, and 15 optimizer-stage summaries."
+    },
+    "expected_outputs": {
+      "optimizer_stage_score_rows": 15,
+      "primary_summary_rows": 3,
+      "primary_task_effects_rows": 14,
+      "run_observed_auc_rows": 12,
+      "run_stage_score_rows": 60,
+      "secondary_summary_rows": 3,
+      "secondary_task_effects_rows": 14,
+      "system_metric_rows": 12,
+      "validation_run_metric_rows": 12
+    },
+    "inference": {
+      "bootstrap_samples": 50000,
+      "bootstrap_seed": 20260903,
+      "common_resample": "Each replicate uses the same 14 sampled task indices for all three contrasts.",
+      "contrasts": [
+        "muon-adamw",
+        "normuon-adamw",
+        "normuon-muon"
+      ],
+      "max_t_definition": "For each contrast compute its observed across-task standard error. In each common paired-task bootstrap replicate, center the bootstrap mean at the observed mean and divide by that fixed observed standard error. The simultaneous critical value is the 95th percentile of the maximum absolute statistic over the three contrasts.",
+      "nominal_interval": "Paired-task bootstrap 2.5th and 97.5th percentiles are reported for context but cannot determine support.",
+      "primary_estimand": "For each task at stage 5, average nDCG@10 over all four predeclared learning rates within optimizer, then average each of Muon-AdamW, NorMuon-AdamW, and NorMuon-Muon over the 14 paired tasks.",
+      "resampling_unit": "task",
+      "secondary_estimand": "At stage 5, contrast the three independently padded validation-selected optimizer recipes over the same 14 paired tasks.",
+      "simultaneous_interval": "observed mean plus or minus the common max-T critical value times the contrast's observed across-task standard error",
+      "support_rule": "A simultaneous interval wholly above zero is positive; wholly below zero is negative; otherwise inconclusive. Primary superiority additionally requires all four rates for every optimizer to have completed."
+    },
+    "systems": {
+      "metrics": [
+        "accepted useful wall time",
+        "samples and optimizer steps per second",
+        "peak allocated and reserved memory",
+        "checkpoint bytes",
+        "optimizer-state bytes"
+      ],
+      "rows": 12,
+      "rule": "Report every run, including a persistent numerical failure if one occurs; do not average away missing high-rate runs."
+    }
+  },
+  "scope": "dense_primary_v3_outcomes",
+  "sources": {
+    "scripts/prepare_dense_v3_outcomes.py": {
+      "bytes": 2621,
+      "sha256": "353d3acf34e7aa0d2c20224431c680a217d6e0be9c7228af2a90a2bac9cc5144"
+    },
+    "src/embed_optim/aggregate.py": {
+      "bytes": 111685,
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+    },
+    "src/embed_optim/config.py": {
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "src/embed_optim/corrected_outcome_summary.py": {
+      "bytes": 19823,
+      "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+    },
+    "src/embed_optim/decontamination.py": {
+      "bytes": 5282,
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_v3_completion.py": {
+      "bytes": 6368,
+      "sha256": "fa9168911a84dd05ead48ff1a497701f88ae99caa16393c9bc3fbc7115fbed9f"
+    },
+    "src/embed_optim/primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    "src/embed_optim/primary_v3_validation.py": {
+      "bytes": 15105,
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    "src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    }
+  },
+  "status": "prepared_not_execution_authorized",
+  "table_counts": {
+    "all_task_scores": 840,
+    "optimizer_stage_scores": 15,
+    "primary_summary": 3,
+    "primary_task_effects": 14,
+    "run_observed_auc": 12,
+    "run_stage_scores": 60,
+    "secondary_summary": 3,
+    "secondary_task_effects": 14,
+    "system_metrics": 12,
+    "validation_run_metrics": 12
+  }
+}

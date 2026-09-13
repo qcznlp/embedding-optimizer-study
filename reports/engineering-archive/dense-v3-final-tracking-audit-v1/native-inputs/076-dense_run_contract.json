@@ -1,0 +1,351 @@
+{
+  "data": {
+    "files": [
+      {
+        "bytes": 116862192,
+        "path": "data-00000-of-00014.arrow",
+        "sha256": "1d625b18a1db85c15a94e53c298afe65265b0c170db5f657a21e6c3afdebca06"
+      },
+      {
+        "bytes": 105370976,
+        "path": "data-00001-of-00014.arrow",
+        "sha256": "c3ff8aef624bb947c250603603b14c2dff76cd9ba7eade8af21bea81176c2c66"
+      },
+      {
+        "bytes": 105476080,
+        "path": "data-00002-of-00014.arrow",
+        "sha256": "7348990ffc5d5bd35b8eea7a08015d542da88a919f8d2a48b260f0000318f2eb"
+      },
+      {
+        "bytes": 105505264,
+        "path": "data-00003-of-00014.arrow",
+        "sha256": "f8fa58b66df959f9a14f213c7fd8d9e484b197b709e78d0875ce30f8e4c12ffb"
+      },
+      {
+        "bytes": 105263512,
+        "path": "data-00004-of-00014.arrow",
+        "sha256": "bb4b8219c0d6deed4aa1422cd785f38428e0bcd6eebbed3eb2bf116842466a31"
+      },
+      {
+        "bytes": 105418072,
+        "path": "data-00005-of-00014.arrow",
+        "sha256": "db3daf00c744c97e60b51df356c675506ad929339c1a591f10a99a7c7fe6a845"
+      },
+      {
+        "bytes": 105461592,
+        "path": "data-00006-of-00014.arrow",
+        "sha256": "66186892869b62eb596eb79415306b83fc17c76167c7221ee64976261b268f84"
+      },
+      {
+        "bytes": 107274360,
+        "path": "data-00007-of-00014.arrow",
+        "sha256": "803ae34007db2b66a7752e2a4c0988fc8a28abb59af537159974893e973d6681"
+      },
+      {
+        "bytes": 136606616,
+        "path": "data-00008-of-00014.arrow",
+        "sha256": "be5ce6ccb1b95d8766fbf353aa425d6331a0e882a3cde595603090959c1f0de5"
+      },
+      {
+        "bytes": 138910400,
+        "path": "data-00009-of-00014.arrow",
+        "sha256": "15da360d0610d29ba4ffdd6b89a23d417d6ec584b1b70d0b85e890bdd9cdc491"
+      },
+      {
+        "bytes": 314516456,
+        "path": "data-00010-of-00014.arrow",
+        "sha256": "580cae248956c7beefd745a391a508082735b6fa57ca8df517ffb45e81cfb113"
+      },
+      {
+        "bytes": 271418712,
+        "path": "data-00011-of-00014.arrow",
+        "sha256": "037910f4c1758e08a1a6b8ae4674270be75afd697c17ff6e6a13f71cd825e4f2"
+      },
+      {
+        "bytes": 236114328,
+        "path": "data-00012-of-00014.arrow",
+        "sha256": "663a46b9928e665a10a464a7883dc1ccb10a73f6c0ed90281ca455f8c4e0ebf8"
+      },
+      {
+        "bytes": 193643808,
+        "path": "data-00013-of-00014.arrow",
+        "sha256": "f630aac5a2dcc7874090cd7a99012b1c04a82ffda47e41cfa6feb273136219ea"
+      },
+      {
+        "bytes": 1664,
+        "path": "dataset_info.json",
+        "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+      },
+      {
+        "bytes": 1014,
+        "path": "state.json",
+        "sha256": "f376a001360dc5058aff4bca3c28c7f3bf25a93fc359a2416092a626182736c2"
+      }
+    ],
+    "materialization_manifest": {
+      "bytes": 4224,
+      "sha256": "2bf04181f1df401d3c61202daedecd40f53833bafe0152fca514ca09c0c85f40"
+    },
+    "rows": 500000,
+    "selected_columns": [
+      "query",
+      "positive",
+      "negative_0",
+      "negative_1",
+      "negative_2",
+      "negative_3",
+      "negative_4",
+      "negative_5",
+      "negative_6",
+      "length"
+    ]
+  },
+  "execution": {
+    "environment": {
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "FLASH_ATTENTION_DETERMINISTIC": null,
+      "NVIDIA_TF32_OVERRIDE": null
+    },
+    "training_arguments": {
+      "bf16": true,
+      "data_seed": 42,
+      "dataloader_drop_last": true,
+      "dataloader_num_workers": 8,
+      "dataloader_persistent_workers": true,
+      "dataloader_pin_memory": true,
+      "dataloader_prefetch_factor": 4,
+      "ddp_find_unused_parameters": false,
+      "fp16": false,
+      "full_determinism": false,
+      "gradient_accumulation_steps": 4,
+      "gradient_checkpointing": true,
+      "gradient_checkpointing_kwargs": {
+        "use_reentrant": false
+      },
+      "learning_rate": 0.0003,
+      "length_column_name": "length",
+      "logging_first_step": true,
+      "logging_steps": 10,
+      "logging_strategy": "steps",
+      "lr_scheduler_type": "linear",
+      "max_grad_norm": 1.0,
+      "max_steps": -1,
+      "num_train_epochs": 1.0,
+      "per_device_train_batch_size": 8,
+      "remove_unused_columns": false,
+      "save_strategy": "no",
+      "seed": 42,
+      "tf32": true,
+      "train_sampling_strategy": "group_by_length",
+      "warmup_steps": 0.1
+    },
+    "world_size": 4
+  },
+  "model": {
+    "files": [
+      {
+        "bytes": 1519,
+        "path": ".gitattributes",
+        "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
+      },
+      {
+        "bytes": 312,
+        "path": "1_Pooling/config.json",
+        "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+      },
+      {
+        "bytes": 15737,
+        "path": "README.md",
+        "sha256": "27105b9f0e7c4e843a3156bb4cbd527d221256aaabdbe1a452b3afc20a664d7c"
+      },
+      {
+        "bytes": 1208,
+        "path": "config.json",
+        "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+      },
+      {
+        "bytes": 300,
+        "path": "config_sentence_transformers.json",
+        "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+      },
+      {
+        "bytes": 596070136,
+        "path": "model.safetensors",
+        "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+      },
+      {
+        "bytes": 229,
+        "path": "modules.json",
+        "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+      },
+      {
+        "bytes": 57,
+        "path": "sentence_bert_config.json",
+        "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+      },
+      {
+        "bytes": 694,
+        "path": "special_tokens_map.json",
+        "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+      },
+      {
+        "bytes": 3583485,
+        "path": "tokenizer.json",
+        "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+      },
+      {
+        "bytes": 21030,
+        "path": "tokenizer_config.json",
+        "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+      }
+    ]
+  },
+  "numerical_contract": {
+    "accelerator_divisor": 1,
+    "attention_backward_deterministic": true,
+    "normalization_owner": "Trainer.training_step/current_gradient_accumulation_steps",
+    "ns_implementation": "unfused-bfloat16-v1",
+    "numerical_policy": "single-normalization-deterministic-backward-v1",
+    "optimizer": "muon",
+    "optimizer_configuration": {
+      "adjust_lr_fn": "original",
+      "aux_beta1": 0.9,
+      "aux_beta2": 0.999,
+      "aux_eps": 1e-08,
+      "aux_lr": 3e-06,
+      "beta1": 0.9,
+      "beta2": 0.999,
+      "eps": 1e-08,
+      "lr": 0.0003,
+      "momentum": 0.95,
+      "name": "muon",
+      "normuon_beta2": 0.95,
+      "ns_implementation": null,
+      "ns_steps": 5,
+      "weight_decay": 0.01
+    },
+    "schema_version": 1,
+    "trainer_scheduled_accumulation": 4,
+    "upstream_source_hashes": {
+      "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+      "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+      "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+    },
+    "upstream_versions": {
+      "accelerate": "1.13.0",
+      "sentence-transformers": "5.7.0",
+      "transformers": "5.3.0"
+    }
+  },
+  "recipe": {
+    "checkpoint_fractions": [
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "dataloader_workers": 8,
+    "dense_can_flatten_inputs": false,
+    "epochs": 1.0,
+    "flash_attention": true,
+    "global_batch_size": 128,
+    "gradient_checkpointing": true,
+    "max_grad_norm": 1.0,
+    "max_length": 8192,
+    "micro_batch_size": 8,
+    "model_family": "dense",
+    "model_name": "lightonai/DenseOn-unsupervised",
+    "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+    "numerical_policy": "single-normalization-deterministic-backward-v1",
+    "optimizer": {
+      "adjust_lr_fn": "original",
+      "aux_beta1": 0.9,
+      "aux_beta2": 0.999,
+      "aux_eps": 1e-08,
+      "aux_lr": 3e-06,
+      "beta1": 0.9,
+      "beta2": 0.999,
+      "eps": 1e-08,
+      "lr": 0.0003,
+      "momentum": 0.95,
+      "name": "muon",
+      "normuon_beta2": 0.95,
+      "ns_implementation": "unfused-bfloat16-v1",
+      "ns_steps": 5,
+      "weight_decay": 0.01
+    },
+    "run_id": "verified-v3-muon-3e-4",
+    "seed": 42,
+    "temperature": 0.02,
+    "warmup_ratio": 0.1
+  },
+  "schema_version": 1,
+  "scope": "content_bound_corrected_dense_run",
+  "source": {
+    "local_files": [
+      {
+        "bytes": 84,
+        "path": "__init__.py",
+        "sha256": "ddfea072915535be4c693c1263f18e17a47ecc7c25d2f6dbe86ff6d2fad7646e"
+      },
+      {
+        "bytes": 24017,
+        "path": "train.py",
+        "sha256": "af80da12db318dd202b654c97a656c1558abba921e95c5355933d80f3e824d06"
+      },
+      {
+        "bytes": 8925,
+        "path": "config.py",
+        "sha256": "25d85021a0d78918374cb995016e80563c5ede9b8e87499809e336323105436b"
+      },
+      {
+        "bytes": 3805,
+        "path": "losses.py",
+        "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+      },
+      {
+        "bytes": 2117,
+        "path": "collators.py",
+        "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+      },
+      {
+        "bytes": 12765,
+        "path": "optimizers.py",
+        "sha256": "7d7d4f200c410cb1b24e1773ae72811582f43a0c794a5d1b2af269c123e69b1e"
+      },
+      {
+        "bytes": 10641,
+        "path": "callbacks.py",
+        "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+      },
+      {
+        "bytes": 7315,
+        "path": "dense_numerical_contract.py",
+        "sha256": "207d8545f7d329979ebbe0e90317f95f6ca01bb310eeff040fe3de461956d8f4"
+      },
+      {
+        "bytes": 13159,
+        "path": "dense_run_contract.py",
+        "sha256": "185d96536a9ea36b537aa15420687814165ca8fc0b0d784907039561991584fa"
+      }
+    ],
+    "numerical_upstream": {
+      "accelerator": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23",
+      "sentence_loss": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+      "trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+    },
+    "packages": {
+      "accelerate": "1.13.0",
+      "datasets": "4.8.4",
+      "flash-attn": "2.7.4.post1",
+      "huggingface-hub": "1.28.0",
+      "numpy": "2.5.2",
+      "safetensors": "0.8.0",
+      "sentence-transformers": "5.7.0",
+      "tokenizers": "0.22.2",
+      "torch": "2.9.1+cu129",
+      "transformers": "5.3.0"
+    }
+  }
+}

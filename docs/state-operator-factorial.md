@@ -1,8 +1,7 @@
 # Corrected DenseOn state-by-operator factorial
 
-This follow-up asks why the historically strong Muon trajectory can finish better even when an
-isolated, norm-matched local step is not universally better than AdamW. It separates two possible
-causes in a crossed experiment:
+This follow-up asks how two fixed reached weight states respond to further optimization. It crosses
+two factors while holding the continuation horizon and calibration rule fixed:
 
 - the **weight state** reached by the source trajectory: AdamW 3e-5 or Muon 3e-4 at 60%; and
 - the **continuation operator** applied after resetting optimizer state: AdamW or Muon.
@@ -28,6 +27,29 @@ The latter waits for the exact main corrected completion ledger before any facto
 backs up both five-checkpoint runs after every training wave, evaluates the three declared BEIR
 pairs concurrently, and reruns the manuscript release gates.
 
+On the isolated narrative branch, the primary-dimension handoff additionally inserts eleven steps
+before calibration: primary-paper refresh; primary export and audit; dimension analysis and audit;
+dimension publication and audit; portable closure; and portable publication recomputation. The
+source-bound order is `configs/dense_primary_dimension_handoff_protocol.json`. The original 36
+factorial steps remain in their original relative order, for 47 total steps. The last two new steps
+archive the 61 primary vector arrays and evidence closure on Hugging Face, then verify their
+immutable commit. This augmented
+controller has not replaced the currently waiting live controller. Its zero-step ledger must be
+archived byte-for-byte under the declared transition before deployment; never migrate after any
+factorial step has begun.
+
+The current prepared recovery amendment requires repaired main contract `4380a363...`.
+It preserves all completion conditions and the live interpreter setting `/usr/bin/python3`.
+The read-only projection in `reports/paper-review/factorial-claims-v2/successor-projection.json`
+reconstructs four preparation layers, verifies all five actual consumer protocol loaders and
+all 36 original commands after mapping the four checkout-local path arguments back to the
+experiment root; eleven primary/dimension steps are still the only additions. The projected
+deployment contract is `7aafd7af...`, distinct from isolated dry-run contract `41fdf48c...`.
+The earlier header-only, six-file and three-layer recovery projections remain archived history.
+This is not an executed migration. First complete the separately audited narrow main repair;
+then perform the approved source deployment and exact zero-step archival, recompute the contract
+on the actual host, and restart only the successor whose predecessor lease has been released.
+
 ## Readiness gate
 
 Do not begin until the requested source checkpoint is both deeply resumable and remotely verified
@@ -42,15 +64,23 @@ loaded model, and refuse pre-existing untagged artifacts.
 
 ## Execution
 
-For unattended execution, use the source-bound controller from the repository root:
+For unattended execution on the experiment host, only after the approved deployment and exclusive
+zero-step handoff, use the source-bound controller from the repository root:
 
 ```bash
-python -m embed_optim.state_operator_factorial_completion --resume
+/usr/bin/python3 -m embed_optim.state_operator_factorial_completion --python /usr/bin/python3 --resume
 ```
 
-It is safe to start this command while the main corrected study is still running: it holds only its
-own control-plane lease while waiting and requests no GPU lease until the main 12-run evaluation,
-analysis, publication, and release ledger is complete. The commands below document the frozen
+Inspect the complete proposed command graph without taking a lease or launching work:
+
+```bash
+/usr/bin/python3 -m embed_optim.state_operator_factorial_completion --python /usr/bin/python3 --dry-run
+```
+
+Only the dry run is appropriate for inspecting this isolated plan while main is still running.
+Do not launch another waiting controller or merge this source into active main. Once properly
+deployed, the controller requests no GPU lease until the exact main 12-run evaluation, analysis,
+publication, and release ledger is complete. The commands below document the frozen
 manual sequence and are not a second controller.
 
 Audit the frozen contracts and portable data receipt:
@@ -136,6 +166,17 @@ bootstrap. A positive or negative effect is supported only if its 95% interval l
 corresponding side of zero; otherwise it is inconclusive. The exact 126 seed–task contrasts remain
 available regardless of the interval result.
 
-This experiment can support a carried-state, continuation-operator, or state-feedback interaction
-account for this checkpoint pair and branch horizon. It cannot prove a universal Muon mechanism or
-retroactively turn the historical crossover into confirmatory evidence.
+These are final post-continuation score contrasts, not changes relative to each starting checkpoint
+or components of the primary 500K-training result. An averaged main effect need not hold within
+both levels. A positive interaction can mean the operator is less harmful in one state; it does not
+by itself establish beneficial co-adaptation. Inconclusive intervals are not equivalence tests, and
+the three separate marginal intervals do not provide simultaneous family-wise coverage.
+
+The [claim review](../reports/paper-review/factorial-claims-v1/README.md) preserves exact synthetic
+counterexamples and the first candidate. The narrower manuscript/renderer is now integrated in the
+isolated checkout through
+[`dense_no_packing_state_operator_claim_wording_amendment.json`](../configs/dense_no_packing_state_operator_claim_wording_amendment.json).
+This fourth preparation layer preserves the original estimands, bootstrap, thresholds, all 47
+commands and main target. The three earlier layers are reconstructed against their exact archived
+publication bytes, not silently rewritten. A changed dependency still fails closed. No runtime
+deployment or real primary/factorial result is implied by this publication-only integration.

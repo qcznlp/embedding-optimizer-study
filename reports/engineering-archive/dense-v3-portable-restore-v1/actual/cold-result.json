@@ -1,0 +1,106 @@
+{
+  "GPU_initialized": false,
+  "actual_cpu_integration_tests": 5,
+  "actual_forbidden_reads": 0,
+  "modules": {
+    "embed_optim_restore": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/__init__.py",
+    "embed_optim_restore.entry": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/entry.py",
+    "embed_optim_restore.equality": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/equality.py",
+    "embed_optim_restore.gate": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/gate.py",
+    "embed_optim_restore.paired": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/paired.py",
+    "embed_optim_restore.reference": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/reference.py",
+    "embed_optim_restore.step_devices": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/step_devices.py",
+    "embed_optim_restore.trace": "/tmp/dense-v3-portable-restore.pQaDj3cr/wheel/embed_optim_restore/trace.py"
+  },
+  "negative_controls": [
+    {
+      "negative_control": true,
+      "path": "/root/embedding-optimizer-story-refactor/forbidden-negative-control"
+    },
+    {
+      "negative_control": true,
+      "path": "/root/embedding-optimizer-primary-v3/forbidden-negative-control"
+    },
+    {
+      "negative_control": true,
+      "path": "/root/embedding-optimizer-v3-experiment/forbidden-negative-control"
+    },
+    {
+      "negative_control": true,
+      "path": "/root/embedding-optimizer-study/forbidden-negative-control"
+    },
+    {
+      "negative_control": true,
+      "path": "/tmp/dense-v3-warm-reducer-recovery.rP4NVV4i/forbidden-negative-control"
+    },
+    {
+      "negative_control": true,
+      "path": "/tmp/dense-v3-paired-backward-fixed.JXOJBril/forbidden-negative-control"
+    },
+    {
+      "negative_control": true,
+      "path": "/tmp/dense-v3-resume-device-recovery.uQ0ynb0k/forbidden-negative-control"
+    }
+  ],
+  "new_GPU_resume": false,
+  "original_training_package_imported": false,
+  "physical_second_host": false,
+  "references": [
+    {
+      "case": "adamw",
+      "cold_sha256": "05716b51d04380d155b5996ad70c7b115613aa7b768946f63c83bf5035294a7c",
+      "component_sha256": "00e0dab0a4aaf52a5783ffb6ae2d5399952d55f2055b65b033fb5c4a0baa400d",
+      "rank": 0,
+      "warm_sha256": "20beef1b0b017b962bea72864b492c6eae8d92817808a8db6b2a3e05656157db"
+    },
+    {
+      "case": "adamw",
+      "cold_sha256": "835dba07d74fb5545ab770434f1ec4c292a67a7535bb98b81766f81f2071ccb5",
+      "component_sha256": "00e0dab0a4aaf52a5783ffb6ae2d5399952d55f2055b65b033fb5c4a0baa400d",
+      "rank": 1,
+      "warm_sha256": "48a715ea3b4b2101db0f8f1a90eda3c15122df9ec42e007abc836ced6630e411"
+    },
+    {
+      "case": "adamw",
+      "cold_sha256": "06913ec3f000da27934a22ec220e488cbb86d146c514bd817d33858ffec3843c",
+      "component_sha256": "00e0dab0a4aaf52a5783ffb6ae2d5399952d55f2055b65b033fb5c4a0baa400d",
+      "rank": 2,
+      "warm_sha256": "e917995154ac012f3f1137318881cbdba82bd4e435fecb7f528da27513b2cd82"
+    },
+    {
+      "case": "adamw",
+      "cold_sha256": "cd0f7add568ec14e4e0a760150ac3b23f07d61fc43b8fd0d47d4939a2ce50665",
+      "component_sha256": "00e0dab0a4aaf52a5783ffb6ae2d5399952d55f2055b65b033fb5c4a0baa400d",
+      "rank": 3,
+      "warm_sha256": "1c3cbfba725ffe9fe7928c613a878e59769aae73c94c5d8503f0939d8a935ad3"
+    },
+    {
+      "case": "muon",
+      "cold_sha256": "9eb4dfc9ee6b26b2d95cbfcb805760a46f581c2666033c7e0d98ab8b75a33cc5",
+      "component_sha256": "dda70c52285f3eb1025b990bd00a46dedf89e54c9a9e65d8fce29aa9f1aa7795",
+      "rank": 0,
+      "warm_sha256": "a552328ced4cb5a180b2658ea62c34d0889f8d62efd32c930e589379fdb47a5a"
+    },
+    {
+      "case": "muon",
+      "cold_sha256": "10d586122e28b75b51f8e73de6c2374e818adbac902f0fa2ba2f601450beb2cb",
+      "component_sha256": "dda70c52285f3eb1025b990bd00a46dedf89e54c9a9e65d8fce29aa9f1aa7795",
+      "rank": 1,
+      "warm_sha256": "4baa714c7388c6cf0eb72b1f14ff038715cad7d63a5b6e6bf2de993714886e78"
+    },
+    {
+      "case": "muon",
+      "cold_sha256": "7633cdb3437eb5d5ef86f98eaef32d9448b1aa6ea92ae2c07ff1df31b4a4ce27",
+      "component_sha256": "dda70c52285f3eb1025b990bd00a46dedf89e54c9a9e65d8fce29aa9f1aa7795",
+      "rank": 2,
+      "warm_sha256": "93b90e593dcc5c8fd7c6e99a29738ec1eeb30669a35c756a1d06c89bc24ee731"
+    },
+    {
+      "case": "muon",
+      "cold_sha256": "57380fc6be3529fd76b47db49d5e2cc975e9040892af11292ddd8753fc094019",
+      "component_sha256": "dda70c52285f3eb1025b990bd00a46dedf89e54c9a9e65d8fce29aa9f1aa7795",
+      "rank": 3,
+      "warm_sha256": "e756a500e396ff843e4bc2affa2a82b9cedef046a4f7274776cce8c3a8b9dd59"
+    }
+  ]
+}

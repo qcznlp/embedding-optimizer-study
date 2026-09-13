@@ -16,30 +16,33 @@ uv run cffconvert --validate --infile CITATION.cff
 uv build
 uv run embed-optim-audit-distribution
 uv run python scripts/portable_evidence.py --audit-only
-uv run pytest
+uv run python scripts/test_source_roles.py --output /tmp/dense-source-tests-new
 uv run ruff check src tests scripts
 uv run ruff format --check src tests scripts
 ```
 
+The test output directory must be new and outside the checkout. The runner executes
+every test module exactly once across the current source and two authenticated
+historical source roles. It does not skip failed cases or replace frozen hashes.
+See [source-version testing](docs/source-version-testing.md). A bare `uv run pytest`
+mixes intentionally different source versions and is not the full-suite entry.
+
 Changes to the manuscript, result renderers, or claim logic must additionally preserve the
-active Dense-only scope and pass the result-safe paper build and audit:
+active Dense-only scope and pass the complete numerical-to-reviewed-paper build.
+Install `pdflatex`, `bibtex`, `pdfinfo`, `pdftotext` and `pdffonts`, then run:
 
 ```bash
-uv run embed-optim-render-paper-results \
-  --if-ready \
-  --families dense \
-  --scope-amendment configs/dense_scope_amendment.json
-make -C paper all PYTHON="$PWD/.venv/bin/python"
-uv run embed-optim-audit-paper \
-  --strict \
-  --families dense \
-  --scope-amendment configs/dense_scope_amendment.json
+make -C paper release PYTHON="$PWD/.venv/bin/python" \
+  NUMERICAL_BUNDLE="$PWD/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed" \
+  RELEASE_OUTPUT=/tmp/dense-complete-paper-new
 ```
 
 Do not hand-edit generated result blocks, tables, figures, manifests, or receipts. Change their
 producer and regenerate them so content hashes and source bindings remain auditable. A strict paper
-audit is required for publication, but it is expected to remain pending while formal experiments
-are incomplete.
+audit is required for publication. The complete numerical graph and reviewed manuscript
+are now available; [the versioned entry](docs/versioned-paper-reproduction.md) preserves
+their distinct source identities. The historical renderer/audit and `make legacy-release`
+remain historical regression interfaces, not substitutes for this current gate.
 
 Changes to data sampling, negatives, loss logits, checkpoint fractions, task definitions, or score
 aggregation alter the experimental contract. Such pull requests must explain whether prior runs remain

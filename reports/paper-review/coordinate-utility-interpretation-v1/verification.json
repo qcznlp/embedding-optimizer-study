@@ -1,0 +1,106 @@
+{
+  "actual_model_scientific_result": false,
+  "archive_files": {
+    "README.md": {
+      "bytes": 8504,
+      "git_blob_sha1": "b2650c69955e534bcb930d86d95442a063b3480c",
+      "sha256": "d6239d1a6db3681df63999fac0dcdc7baa75dbb77e9940c969de41c75955c714"
+    },
+    "before/CURRENT_EXPERIMENT.md": {
+      "bytes": 12877,
+      "git_blob_sha1": "629d347e08acf52d92004a7073f578a862747cf1",
+      "sha256": "c79f6753cfe081e32c3a67943c49d1b55f88258cbda735a5288af1cc6c05f6f9"
+    },
+    "commands.json": {
+      "bytes": 3110,
+      "git_blob_sha1": "742ee5368b1e441c9c03c0817aac50ce085648f1",
+      "sha256": "10cf3aa8c9b0153cac7bc4c429ba01094adde746d1d7b837e7bc7e63bff8a4a3"
+    },
+    "counterexample.json": {
+      "bytes": 7023,
+      "git_blob_sha1": "786a70ce7e826bb5db6944776aa373508fbd8f88",
+      "sha256": "a71c5ec6bc4b1581b8ab9378c6813fd7141a3c3cadd1b64d160807abf4b756f2"
+    },
+    "dense-counterexample.json": {
+      "bytes": 12803,
+      "git_blob_sha1": "c91b26431f9b625ded4b78b4a313133b7116fc5e",
+      "sha256": "7c646de94d9eca956051fbf3132d922aa100f310b67dac2fedf603a49cfa73f3"
+    },
+    "dense-replay.json": {
+      "bytes": 12803,
+      "git_blob_sha1": "0fb6f4ee73ec4fae25d1d822685458ed8d7b18c4",
+      "sha256": "3c722f3fc20f264159b04de1044dba330e7b0510cee6f0431177e3ba993fb0bc"
+    },
+    "initial-aggregate-diagnosis.json": {
+      "bytes": 634,
+      "git_blob_sha1": "64d3ffab8b56fb7bd5ae0b7a2b94237003a2dd58",
+      "sha256": "bbe00a7f8995043cffdbb94170942180601f73303db63f522e8c8add02560689"
+    },
+    "observations.json": {
+      "bytes": 10959,
+      "git_blob_sha1": "e835bf164d98c38afc211fe8c01e2d17edaaae3c",
+      "sha256": "a3d7bd3856c2e2a80c58554b16e0472b44c36a33bfbaee3213e8ea67c60b9d38"
+    },
+    "source/dense_review.initial.py": {
+      "bytes": 8133,
+      "git_blob_sha1": "4484ea95642aad25855aa78dfda7803f327fbe28",
+      "sha256": "295ff2f156839a5d431dc3c7f4eb14dbad4eb9546e01ab36ec43e7dcbbc09764"
+    },
+    "source/dense_review.py": {
+      "bytes": 10217,
+      "git_blob_sha1": "ad1ad96f4b41d3468d93776f3a3a3e732f75b1ab",
+      "sha256": "5cab5c4223aadde3db1e98f5d11a873d229de689f1fe1f4fd85ba73e190f039e"
+    },
+    "source/review.py": {
+      "bytes": 9259,
+      "git_blob_sha1": "75ca8c6b481777c8ad542e9b7a9441f54928c831",
+      "sha256": "b4103b6b29566707e11245e8023494b774a144f75f377a09178163ae19db6e8f"
+    },
+    "sparse-replay.json": {
+      "bytes": 7023,
+      "git_blob_sha1": "f242282a5665993ac87b0ae7f137f0b588305d23",
+      "sha256": "1cd14a07a2219de3e006365dbb5db6f7363338a844ad14528013cb980a25fbd2"
+    }
+  },
+  "archived_entry_replays_verified": 2,
+  "checked_local_links": 31,
+  "constructed_cases_not_models": 2,
+  "dense_full_score_vectors_identical": true,
+  "dense_span_rank": 5,
+  "dispatch_authorization_files_unchanged": 6,
+  "initial_dense_exit_remains_one": true,
+  "live_files": {
+    "CURRENT_EXPERIMENT.md": {
+      "bytes": 13599,
+      "git_blob_sha1": "abdccdba26f4a5e81a8034efb5d5f00994c76029",
+      "sha256": "4b1d7ad7278d077d3b11ca9b478a7924aff67ab85f28bc15c8a4fad1df1ceb9b"
+    }
+  },
+  "manuscript_source_and_pdf_unchanged": true,
+  "new_model_training_or_encoding": false,
+  "observed_at_utc": "2026-09-10T16:21:12.926131+00:00",
+  "original_generated_includes_and_protocols_unchanged": true,
+  "original_inference_rules_changed": false,
+  "original_random_masks_checked_per_dense_case": 80,
+  "passed_in_declared_scope": true,
+  "primary_roots_verified": 2,
+  "primary_source_files_per_root": 56,
+  "prior_live_bindings_preserved_or_routed": 4,
+  "prior_paper_archive_files_preserved": 25,
+  "remote_write": false,
+  "resource_handoff": false,
+  "scientific_completion": false,
+  "scope": "synthetic_coordinate_utility_interpretation_review",
+  "self_link_to_check_after_write": 1,
+  "source_release": false,
+  "statistical_intervals": false,
+  "three_orderings_have_disjoint_propagated_error_bounds": true,
+  "unpropagated_aggregate_checks_still_false": 4,
+  "whole_goal_complete": false,
+  "case_count_interpretation": "Two versions (zero-tail and dense-tail) of one A/B counterexample; replays are not independent experiments.",
+  "actual_verification_call": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nimport hashlib,json,re,subprocess\nfrom decimal import Decimal\nfrom datetime import datetime,timezone\nfrom pathlib import Path\nstory=Path('/root/embedding-optimizer-story-refactor')\narchive=story/'reports/paper-review/coordinate-utility-interpretation-v1'\nprevious_root=story/'reports/paper-review/dense-v3-retrieval-usefulness-v1'\nexperiment=Path('/root/embedding-optimizer-v3-experiment')\nprimary=Path('/root/embedding-optimizer-primary-v3')\ndef identity(path):\n raw=Path(path).read_bytes()\n return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'git_blob_sha1':hashlib.sha1(b'blob '+str(len(raw)).encode()+bytes([0])+raw).hexdigest()}\ndef check(path,expected):\n actual=identity(path)\n assert all(actual[k]==value for k,value in expected.items()),str(path)\n return actual\ncheck(previous_root/'verification.json',{'sha256':'300133970cdae9da812f7e6ea00cbfa2ea9fe57d00812a2e85e82ab79f6a1021'})\nprevious=json.loads((previous_root/'verification.json').read_text())\nfor name,item in previous['archive_files'].items():check(previous_root/name,item)\nfor name,item in previous['live_files'].items():\n check(archive/'before'/name if name=='CURRENT_EXPERIMENT.md' else story/name,item)\ncheck(story/'paper/build/main.pdf',previous['archive_files']['draft/main.pdf'])\ncheck(story/'AGENTS.md',{'sha256':'2ea0ac433747a4406823013f36701f49fb8cd806a5c01bdbad73c88ad93b6946'})\ncheck(primary/'source-assembly.json',{'sha256':'e603ef175c0f691a1dd83c4d8b474d90da2fc67c8c65f5a77f3c3180e78332b8'})\nassembly=json.loads((primary/'source-assembly.json').read_text())\nfor root in (primary,experiment/'launch/source-snapshot'):\n for name,item in assembly['files'].items():check(root/name,item['identity'])\nfreeze={\n 'evaluation-handoff/dispatch.py':'5b8a89bed5e0eaa02a12585ee3f6c883ca3e162b550898d68322321ee41d8427',\n 'evaluation-handoff/authorization.json':'2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c',\n 'validation-handoff/validation.py':'d2fc55c67670ea5b42cacb055f48379ef278a465ce86d95808231ab86049d913',\n 'validation-handoff/authorization.json':'6a8dcdd579bd6c2f6ea82e3f4cd808f88e92e9a28b9e97f41ffa6447eb0e1f6f',\n 'functional-dimensions/dispatch.py':'3b02f1d8486f3c2b41d0403cbf291580d0ca32868b8b29cb05514a22770257f5',\n 'functional-dimensions/authorization.json':'d72527595e2c963eae7fd46b0a1de2bd83d1ea15a863ae467a1065cfc5b2f336'}\nfor name,sha in freeze.items():check(experiment/'launch'/name,{'sha256':sha})\nfor name,item in json.loads((previous_root/'before-bindings.json').read_text()).items():\n if name.startswith('configs/') or name.startswith('paper/generated/'):\n  check(story/name,item)\nfor name in ('review.py','dense_review.py'):\n assert (archive/'source'/name).read_bytes()==(Path('/tmp/dense-coordinate-interpretation.uv2YfVsB')/name).read_bytes()\nsparse=json.loads((archive/'counterexample.json').read_text())\nsparse_replay=json.loads((archive/'sparse-replay.json').read_text())\ndense=json.loads((archive/'dense-counterexample.json').read_text())\ndense_replay=json.loads((archive/'dense-replay.json').read_text())\nfor a,b in ((sparse,sparse_replay),(dense,dense_replay)):\n assert {k:v for k,v in a.items() if k!='observed_at_utc'}=={k:v for k,v in b.items() if k!='observed_at_utc'}\n assert a['scientific_completion'] is False and a['scientific_claim_rule_passed'] is False\nfor name,sha in dense['source_hashes'].items():check(story/name,{'sha256':sha})\nassert dense['full_scores_exactly_equal'] is True and dense['span_rank_equal']==5\nassert dense['a']['actual_full_scores']==dense['b']['actual_full_scores']\nassert dense['a']['decimal']['full_scores']==dense['b']['decimal']['full_scores']\nassert dense['a']['actual_full_margin']==dense['b']['actual_full_margin']\nassert dense['a']['actual_full_ndcg']==dense['b']['actual_full_ndcg']==1.0\nfor name in ('helpful_mass_share','helpful_attribution_participation_ratio'):\n assert Decimal(dense['b']['decimal']['metric_bounds_from_coordinate_error'][name][0])>Decimal(dense['a']['decimal']['metric_bounds_from_coordinate_error'][name][1])\nassert Decimal(dense['b']['decimal']['metric_bounds_from_coordinate_error']['degrading_attribution_mass'][1])<Decimal(dense['a']['decimal']['metric_bounds_from_coordinate_error']['degrading_attribution_mass'][0])\nfailed_aggregate_checks=0\nfor label in ('a','b'):\n case=dense[label]\n assert case['original_shared_random_masks_checked']==80\n assert case['minimum_nonzero_document_coordinates']>=767\n assert case['maximum_decimal_error_all_768']<1e-12\n assert case['inside_propagated_deterministic_bounds'] is True\n failed_aggregate_checks+=sum(not row['original_unpropagated_1e_12_check_passed'] for row in case['original_unpropagated_aggregate_checks'].values())\nassert failed_aggregate_checks==4\ncommands=json.loads((archive/'commands.json').read_text())\nassert commands['dense_initial']['exit_code']==1\nfor key in ('sparse_original','sparse_archived','dense_propagated','dense_archived'):assert commands[key]['exit_code']==0\nassert 'assert abs(summary[name]-float(expected))<1e-12' in (archive/'source/dense_review.initial.py').read_text()\nsubprocess.run(['git','-C',str(story),'diff','--check','--','CURRENT_EXPERIMENT.md'],check=True,capture_output=True,text=True)\nlinks=0;self_links=0\nfor p in (archive/'README.md',story/'CURRENT_EXPERIMENT.md'):\n for target in re.findall(r'\\[[^\\]]+\\]\\(([^)]+)\\)',p.read_text()):\n  target=target.split('#',1)[0].strip('<>')\n  if not target or '://' in target:continue\n  if (p.parent/target).resolve()==archive/'verification.json':\n   self_links+=1;continue\n  assert (p.parent/target).exists(),(str(p),target)\n  links+=1\nresult={'scope':'synthetic_coordinate_utility_interpretation_review','observed_at_utc':datetime.now(timezone.utc).isoformat(),'passed_in_declared_scope':True,\n 'prior_paper_archive_files_preserved':len(previous['archive_files']),'prior_live_bindings_preserved_or_routed':len(previous['live_files']),\n 'manuscript_source_and_pdf_unchanged':True,'original_generated_includes_and_protocols_unchanged':True,\n 'primary_roots_verified':2,'primary_source_files_per_root':len(assembly['files']),'dispatch_authorization_files_unchanged':len(freeze),\n 'constructed_cases_not_models':2,'archived_entry_replays_verified':2,'dense_full_score_vectors_identical':True,'dense_span_rank':5,\n 'original_random_masks_checked_per_dense_case':80,'three_orderings_have_disjoint_propagated_error_bounds':True,'statistical_intervals':False,\n 'initial_dense_exit_remains_one':True,'unpropagated_aggregate_checks_still_false':failed_aggregate_checks,\n 'checked_local_links':links,'self_link_to_check_after_write':self_links,\n 'new_model_training_or_encoding':False,'actual_model_scientific_result':False,'original_inference_rules_changed':False,'remote_write':False,'resource_handoff':False,'source_release':False,'scientific_completion':False,'whole_goal_complete':False,\n 'archive_files':{str(p.relative_to(archive)):identity(p) for p in sorted(archive.rglob('*')) if p.is_file() and p.name!='verification.json'},\n 'live_files':{'CURRENT_EXPERIMENT.md':identity(story/'CURRENT_EXPERIMENT.md')}}\nprint(json.dumps(result,sort_keys=True))\nPY",
+    "tool_chunk": "1f1c05",
+    "exit_code": 0
+  }
+}

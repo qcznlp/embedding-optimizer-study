@@ -1,0 +1,1324 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="27" skipped="0" tests="33" time="11.094" timestamp="2026-09-05T12:11:30.621002+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_only_the_three_publication_text_functions_change" time="0.013" /><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_reproduces_existing_unsupported_additivity" time="1.340" /><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_does_not_turn_negative_interaction_into_additivity" time="0.004" /><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_positive_interaction_can_be_less_harmful_not_beneficial" time="0.000" /><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_inconclusive_operator_does_not_prove_state_dominance" time="0.000" /><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_manuscript_candidate_defines_endpoint_contrasts_and_respects_abstract_budget" time="9.524" /><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions0]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'supported_positive', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions1]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'supported_positive', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions2]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'supported_positive', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions3]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'supported_negative', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions4]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'supported_negative', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions5]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'supported_negative', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions6]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'inconclusive', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions7]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'inconclusive', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions8]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_positive', 'inconclusive', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions9]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'supported_positive', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions10]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'supported_positive', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions11]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'supported_positive', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions12]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'supported_negative', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions13]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'supported_negative', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions14]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'supported_negative', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions15]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'inconclusive', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions16]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'inconclusive', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions17]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('supported_negative', 'inconclusive', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions18]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'supported_positive', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions19]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'supported_positive', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions20]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'supported_positive', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions21]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'supported_negative', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions22]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'supported_negative', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions23]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'supported_negative', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions24]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'inconclusive', 'supported_positive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions25]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'inconclusive', 'supported_negative')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase><testcase classname="reports.paper-review.factorial-claims-v1.test_candidate_wording" name="test_every_decision_combination_retains_estimates_and_bounds[decisions26]" time="0.001"><failure message="KeyError: '\\StateOperatorAbstractFinding'">candidate = &lt;module 'embed_optim._claim_review_after' from '/root/embedding-optimizer-story-refactor/reports/paper-review/factorial-claims-v1/after/state_operator_factorial_publication.py'&gt;
+decisions = ('inconclusive', 'inconclusive', 'inconclusive')
+
+    @pytest.mark.parametrize(
+        "decisions",
+        itertools.product(["supported_positive", "supported_negative", "inconclusive"], repeat=3),
+    )
+    def test_every_decision_combination_retains_estimates_and_bounds(candidate, decisions):
+        from embed_optim.paper_audit import ABSTRACT_RESULT_WORD_RESERVE, ABSTRACT_WORD_PATTERN
+    
+        rows = {}
+        for key, decision in zip(candidate.ESTIMANDS, decisions, strict=True):
+            point, lower, upper = {
+                "supported_positive": (0.02, 0.01, 0.03),
+                "supported_negative": (-0.02, -0.03, -0.01),
+                "inconclusive": (0.0, -0.01, 0.01),
+            }[decision]
+            rows[key] = {
+                "estimand": key,
+                "point_estimate": point,
+                "bootstrap_ci_95_lower": lower,
+                "bootstrap_ci_95_upper": upper,
+                "decision": decision,
+            }
+        original = json.dumps(rows, sort_keys=True)
+        text = candidate._render_latex(rows)
+        assert json.dumps(rows, sort_keys=True) == original
+        for key in candidate.ESTIMANDS:
+            assert candidate._effect(rows[key]) in text
+            assert candidate._decision_label(rows[key]["decision"]) in text
+        for name in ["AbstractFinding", "MechanismFinding", "ConclusionFinding", "AppendixTable"]:
+            assert f"\\newcommand{{\\StateOperator{name}}}" in text
+        assert "separates the gain" not in text
+        assert "first-update scale matching" not in text
+        assert "calibration-probe scale matching" in text
+        assert "marginal 95\\% intervals" in text
+        assert "not simultaneous family-wise intervals" in text
+        assert "They do not decompose the primary-training contrast" in text
+        assert text.count(" \\\\") == 4
+        abstract = text.split("\\newcommand{\\StateOperatorAbstractFinding}{%\n", 1)[1].split(
+            "}\n\\newcommand", 1
+        )[0]
+        assert (
+            len(ABSTRACT_WORD_PATTERN.findall(abstract))
+&gt;           &lt;= ABSTRACT_RESULT_WORD_RESERVE["\\StateOperatorAbstractFinding"]
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        )
+E       KeyError: '\\StateOperatorAbstractFinding'
+
+reports/paper-review/factorial-claims-v1/test_candidate_wording.py:142: KeyError</failure></testcase></testsuite></testsuites>

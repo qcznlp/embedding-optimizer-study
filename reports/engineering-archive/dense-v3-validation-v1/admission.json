@@ -1,0 +1,1339 @@
+{
+  "actual_missing_primary_selection": {
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "embed_optim.primary_v3_validation_io",
+      "select",
+      "--protocol",
+      "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_validation_protocol.json",
+      "--primary-protocol",
+      "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_protocol.json",
+      "--repository",
+      "/root/embedding-optimizer-story-refactor",
+      "--training-root",
+      "/tmp/dense-identity-source.8rUgLF",
+      "--experiment-root",
+      "/root/embedding-optimizer-study",
+      "--data-root",
+      "/tmp/dense-partition-candidate.kHXoGW/validation",
+      "--output-root",
+      "/tmp/dense-v3-validation-admission.dCL5F1/must-remain-absent"
+    ],
+    "returncode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py\", line 263, in <module>\n    main()\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py\", line 253, in main\n    value = collect_selection(contract, args.experiment_root, args.data_root, args.output_root)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py\", line 204, in collect_selection\n    primary.complete_run(root, run_id)\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_contract.py\", line 199, in complete_run\n    checked = inspect_complete_run(run_root, self.expected_identity(run_id), list(STEPS))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_completion.py\", line 256, in inspect_complete_run\n    raise ValueError(\"Require an ordinary retained run directory\")\nValueError: Require an ordinary retained run directory\n"
+  },
+  "all_changed_cases_rejected": true,
+  "boundary": "Three actual saved diagnostic score bundles are reread in a fresh CPU process. Twelve altered contracts and six checksum-consistent but semantically invalid score copies are refused. No formal recipe is selected; the actual CLI rejects missing v3 primary runs. All changed copies are explicitly invalid diagnostic fixtures, never source results.",
+  "changed_cases": [
+    {
+      "artifacts": [
+        {
+          "bytes": 5624,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/missing_source_closure.json",
+          "sha256": "79d34a36efebc4b204c69e46caaf004f7a8ee12e19ef746108d2a4361c03bdca"
+        }
+      ],
+      "case": "missing_source_closure",
+      "error": "Incomplete v3 validation source closure",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7020,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/old_primary.json",
+          "sha256": "00e31cb0027bb05299b40cea8a320988610870fa0d1163ad7f3e3558f4256126"
+        }
+      ],
+      "case": "old_primary",
+      "error": "Validation binds another primary revision",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7011,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/wrong_primary_path.json",
+          "sha256": "06c1115b3f972050a850a07a80c897d7573d141d42055d681a4c549416ccb23d"
+        }
+      ],
+      "case": "wrong_primary_path",
+      "error": "Validation primary path label differs from its actual parent",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7020,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/short_data.json",
+          "sha256": "fec31895cc7cb5875b819fff5a80a000b7c447cda26528eba1c4d2dfde383cbc"
+        }
+      ],
+      "case": "short_data",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 3676,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/missing_files.json",
+          "sha256": "1e4b4ab116143ff3ba21d1137a600f2ecf62e30f0d7440d02c18af6b1b1ea49d"
+        }
+      ],
+      "case": "missing_files",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7019,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/other_temperature.json",
+          "sha256": "3ff5ef759592f54aad84cf4c7eee2b1f710314184dde6e2ff00c41c75cf3d710"
+        }
+      ],
+      "case": "other_temperature",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7019,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/in_batch_negatives.json",
+          "sha256": "a27b4398f138d831da6679cce831913ff9cdd07d37950123926964b0cba36c4e"
+        }
+      ],
+      "case": "in_batch_negatives",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7019,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/margin_tie.json",
+          "sha256": "ddc8236e26e479c892eef293c82183e4ba90d0b6f8d218ed26867937168f085c"
+        }
+      ],
+      "case": "margin_tie",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7019,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/beir_selection.json",
+          "sha256": "da648b4d2fb17a80b57302a72ed324f557401c4539a63809dbcc47e959284540"
+        }
+      ],
+      "case": "beir_selection",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7016,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/relaxed_replay.json",
+          "sha256": "a4e33e5bc17d2409b09ccd7f249023dbd4a9ca33a8eb81a53125cdae1b6fc51b"
+        }
+      ],
+      "case": "relaxed_replay",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7019,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/rewrite_fp32_results.json",
+          "sha256": "a9bd04413412bc88b97dd525426f96eb8886744fa151c9d417fe46890b529fb9"
+        }
+      ],
+      "case": "rewrite_fp32_results",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 7019,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/scientific_completion.json",
+          "sha256": "559827e374fafcfae5964a69bc492628ebe3454760d44075d6d18b6cffc66297"
+        }
+      ],
+      "case": "scientific_completion",
+      "error": "Not the v3 validation contract",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 477,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_loss/admission.json",
+          "sha256": "de08683bd52c9a5e640fa22df989141a309226d188d9a9f2f461276236b60412"
+        },
+        {
+          "bytes": 778,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_loss/manifest.json",
+          "sha256": "f257f93f85921f897a2550b6b60c320be6f1f39f61d02aa3399a33e5e4090003"
+        },
+        {
+          "bytes": 31618,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_loss/sample_scores.jsonl",
+          "sha256": "45ccbf5e71d6be0aeb78b362f2e4e0dab60a8e0e26d6f75e1748b988453c2015"
+        },
+        {
+          "bytes": 2734,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_loss/summary.json",
+          "sha256": "68249959fc5d6d7c940f2def1621e4db0ac25588c45d958f4971b80ece2f961a"
+        }
+      ],
+      "case": "changed_loss",
+      "error": "Stored validation metric disagrees with independent replay: contrastive_loss",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 477,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_query_id/admission.json",
+          "sha256": "de08683bd52c9a5e640fa22df989141a309226d188d9a9f2f461276236b60412"
+        },
+        {
+          "bytes": 778,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_query_id/manifest.json",
+          "sha256": "0e27d7f908b6038039e6735ccd5a7e47b0d495b5014c247203410214e49ebf6f"
+        },
+        {
+          "bytes": 31618,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_query_id/sample_scores.jsonl",
+          "sha256": "7d840311f7dae1bec7760648cb09f3785abaa70dc507d738bc37e4e6ed1e7cf5"
+        },
+        {
+          "bytes": 2734,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_query_id/summary.json",
+          "sha256": "68249959fc5d6d7c940f2def1621e4db0ac25588c45d958f4971b80ece2f961a"
+        }
+      ],
+      "case": "changed_query_id",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 477,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/reversed_rows/admission.json",
+          "sha256": "de08683bd52c9a5e640fa22df989141a309226d188d9a9f2f461276236b60412"
+        },
+        {
+          "bytes": 778,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/reversed_rows/manifest.json",
+          "sha256": "95cb0d34e9296894c7e4a0300cefa534e5f8b6409fc2a9bd7c5e0aa15a7a1c58"
+        },
+        {
+          "bytes": 31618,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/reversed_rows/sample_scores.jsonl",
+          "sha256": "423be213d4926eb7568310b8c11b75eae2bb6b752d52554dc04452f72c261039"
+        },
+        {
+          "bytes": 2734,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/reversed_rows/summary.json",
+          "sha256": "68249959fc5d6d7c940f2def1621e4db0ac25588c45d958f4971b80ece2f961a"
+        }
+      ],
+      "case": "reversed_rows",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 477,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/duplicate_row/admission.json",
+          "sha256": "de08683bd52c9a5e640fa22df989141a309226d188d9a9f2f461276236b60412"
+        },
+        {
+          "bytes": 778,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/duplicate_row/manifest.json",
+          "sha256": "59b56f8d433f9a328a4a0fdd1f0dc26ece0cdebba8f85b731244f4c4762f35e9"
+        },
+        {
+          "bytes": 31581,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/duplicate_row/sample_scores.jsonl",
+          "sha256": "c8c232c8b0308c54407c4f980bbbe5656cc2689923bc8659ad935251a38230cf"
+        },
+        {
+          "bytes": 2734,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/duplicate_row/summary.json",
+          "sha256": "68249959fc5d6d7c940f2def1621e4db0ac25588c45d958f4971b80ece2f961a"
+        }
+      ],
+      "case": "duplicate_row",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 477,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/dropped_row/admission.json",
+          "sha256": "de08683bd52c9a5e640fa22df989141a309226d188d9a9f2f461276236b60412"
+        },
+        {
+          "bytes": 778,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/dropped_row/manifest.json",
+          "sha256": "08fc197deff74ac0d86c6085742ab6809c4a955c08b9fac890dfbb27767ec504"
+        },
+        {
+          "bytes": 31070,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/dropped_row/sample_scores.jsonl",
+          "sha256": "d0eaf49b52f08e64bd59d2b8f45470f346b44cf4c287853c9bb2b4079709ef09"
+        },
+        {
+          "bytes": 2734,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/dropped_row/summary.json",
+          "sha256": "68249959fc5d6d7c940f2def1621e4db0ac25588c45d958f4971b80ece2f961a"
+        }
+      ],
+      "case": "dropped_row",
+      "error": "Validation records do not cover the complete declared view",
+      "rejected": true
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 477,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_summary/admission.json",
+          "sha256": "de08683bd52c9a5e640fa22df989141a309226d188d9a9f2f461276236b60412"
+        },
+        {
+          "bytes": 778,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_summary/manifest.json",
+          "sha256": "edef3c58eb0eb177b60e28d4660db42c3a8b702b3a6499b11eaccb0360d95a34"
+        },
+        {
+          "bytes": 31618,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_summary/sample_scores.jsonl",
+          "sha256": "a99a387d286fc0bdd06b63ac06b04bcafcba341bc4a2aff240b1c281668f57b4"
+        },
+        {
+          "bytes": 2228,
+          "path": "/tmp/dense-v3-validation-admission.dCL5F1/changed_summary/summary.json",
+          "sha256": "27c23d4c6ab60526c87c41b5edee9f1d70c4c010f53ee7c837e49fcb55bb5de9"
+        }
+      ],
+      "case": "changed_summary",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    }
+  ],
+  "fresh_cpu_diagnostic_readbacks": [
+    {
+      "manifest": {
+        "bytes": 882,
+        "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/adamw/manifest.json",
+        "sha256": "cebebffbd0c2b66ac462185e7c9d3efe4e5dd85a0bb78af6acade99897295c31"
+      },
+      "outputs": {
+        "sample_scores": {
+          "bytes": 31618,
+          "path": "sample_scores.jsonl",
+          "sha256": "a99a387d286fc0bdd06b63ac06b04bcafcba341bc4a2aff240b1c281668f57b4"
+        },
+        "summary": {
+          "bytes": 2734,
+          "path": "summary.json",
+          "sha256": "68249959fc5d6d7c940f2def1621e4db0ac25588c45d958f4971b80ece2f961a"
+        }
+      },
+      "plan": {
+        "actual_diagnostic_run_identity_sha256": "0da6c150691aca91e3f2e35a835947dccee71f404ec1ce5b4e0cd0dd072ab7b7",
+        "actual_diagnostic_step": 3,
+        "algorithm": "adamw",
+        "diagnostic_plan_sha256": "a27c625a1a75c833708f2c4864c554193451164b9b9b4b675fad6edd4854616f",
+        "primary_validation": false,
+        "scientific_completion": false,
+        "scope": "engineering_dense_v3_validation_diagnostic",
+        "selection_sha256": "2f34f09402352276e38cf0e1ec8db57a3d14832f982a62e3762f14d9163641ef"
+      },
+      "scientific_completion": false,
+      "summary": {
+        "groups": [
+          {
+            "contrastive_loss": 0.7918421127033369,
+            "group": "__all__",
+            "hardest_negative_score": 0.3667240466101695,
+            "positive_margin": 0.05001158633474576,
+            "positive_score": 0.4167356329449153,
+            "reciprocal_rank": 0.8552259896266259,
+            "samples": 59,
+            "top1_accuracy": 0.7627118644067796
+          },
+          {
+            "contrastive_loss": 0.57977674005195,
+            "group": "fever",
+            "hardest_negative_score": 0.3605907206632653,
+            "positive_margin": 0.06090561224489796,
+            "positive_score": 0.42149633290816324,
+            "reciprocal_rank": 0.8809523816619601,
+            "samples": 49,
+            "top1_accuracy": 0.7959183673469388
+          },
+          {
+            "contrastive_loss": 0.5372062623500824,
+            "group": "fiqa",
+            "hardest_negative_score": 0.3955078125,
+            "positive_margin": 0.0166015625,
+            "positive_score": 0.412109375,
+            "reciprocal_rank": 1.0,
+            "samples": 2,
+            "top1_accuracy": 1.0
+          },
+          {
+            "contrastive_loss": 5.098211407661438,
+            "group": "hotpotqa",
+            "hardest_negative_score": 0.34716796875,
+            "positive_margin": -0.088134765625,
+            "positive_score": 0.259033203125,
+            "reciprocal_rank": 0.2291666716337204,
+            "samples": 2,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 2.4565558433532715,
+            "group": "msmarco",
+            "hardest_negative_score": 0.423828125,
+            "positive_margin": -0.046875,
+            "positive_score": 0.376953125,
+            "reciprocal_rank": 0.5,
+            "samples": 1,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 0.4528767988085747,
+            "group": "nq",
+            "hardest_negative_score": 0.4264322916666667,
+            "positive_margin": 0.031901041666666664,
+            "positive_score": 0.4583333333333333,
+            "reciprocal_rank": 1.0,
+            "samples": 3,
+            "top1_accuracy": 1.0
+          },
+          {
+            "contrastive_loss": 3.2173619270324707,
+            "group": "squadv2",
+            "hardest_negative_score": 0.4765625,
+            "positive_margin": -0.0625,
+            "positive_score": 0.4140625,
+            "reciprocal_rank": 0.3333333432674408,
+            "samples": 1,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 0.006240880116820335,
+            "group": "trivia",
+            "hardest_negative_score": 0.302734375,
+            "positive_margin": 0.123046875,
+            "positive_score": 0.42578125,
+            "reciprocal_rank": 1.0,
+            "samples": 1,
+            "top1_accuracy": 1.0
+          }
+        ],
+        "maximum_scalar_replay_absolute_error": {
+          "contrastive_loss": 1.8195857354186273e-07,
+          "hardest_negative_score": 0.0,
+          "positive_margin": 0.0,
+          "positive_score": 0.0,
+          "reciprocal_rank": 9.934107481068821e-09,
+          "top1_accuracy": 0.0
+        },
+        "raw_metrics_preserved": true,
+        "records": 59
+      }
+    },
+    {
+      "manifest": {
+        "bytes": 881,
+        "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/muon/manifest.json",
+        "sha256": "ff1df73204658d0be3fe42456d6d8ecb01860a358e8fd1ced2271ad228dd3e02"
+      },
+      "outputs": {
+        "sample_scores": {
+          "bytes": 31649,
+          "path": "sample_scores.jsonl",
+          "sha256": "c26c45fbd4ef2d658355b16322154b0bb108a45fe45941c9c82f9145d6442a27"
+        },
+        "summary": {
+          "bytes": 2724,
+          "path": "summary.json",
+          "sha256": "6e70fd677281037c2468e0cd3f0e485f4ec1218ab76ceb23ac7315bd93fb4e15"
+        }
+      },
+      "plan": {
+        "actual_diagnostic_run_identity_sha256": "c2c9df44e32d5fcb3aba368566418243f8123da3627d6c7ece88e8ac8dba9686",
+        "actual_diagnostic_step": 3,
+        "algorithm": "muon",
+        "diagnostic_plan_sha256": "a27c625a1a75c833708f2c4864c554193451164b9b9b4b675fad6edd4854616f",
+        "primary_validation": false,
+        "scientific_completion": false,
+        "scope": "engineering_dense_v3_validation_diagnostic",
+        "selection_sha256": "2f34f09402352276e38cf0e1ec8db57a3d14832f982a62e3762f14d9163641ef"
+      },
+      "scientific_completion": false,
+      "summary": {
+        "groups": [
+          {
+            "contrastive_loss": 0.8651526848824971,
+            "group": "__all__",
+            "hardest_negative_score": 0.365184719279661,
+            "positive_margin": 0.04656051377118644,
+            "positive_score": 0.4117452330508475,
+            "reciprocal_rank": 0.8416666676432399,
+            "samples": 59,
+            "top1_accuracy": 0.7457627118644068
+          },
+          {
+            "contrastive_loss": 0.6350151517741981,
+            "group": "fever",
+            "hardest_negative_score": 0.35873724489795916,
+            "positive_margin": 0.05785634566326531,
+            "positive_score": 0.41659359056122447,
+            "reciprocal_rank": 0.8673469396878262,
+            "samples": 49,
+            "top1_accuracy": 0.7755102040816326
+          },
+          {
+            "contrastive_loss": 0.58268903195858,
+            "group": "fiqa",
+            "hardest_negative_score": 0.3955078125,
+            "positive_margin": 0.0146484375,
+            "positive_score": 0.41015625,
+            "reciprocal_rank": 1.0,
+            "samples": 2,
+            "top1_accuracy": 1.0
+          },
+          {
+            "contrastive_loss": 5.444321870803833,
+            "group": "hotpotqa",
+            "hardest_negative_score": 0.34912109375,
+            "positive_margin": -0.0966796875,
+            "positive_score": 0.25244140625,
+            "reciprocal_rank": 0.16250000149011612,
+            "samples": 2,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 2.544203519821167,
+            "group": "msmarco",
+            "hardest_negative_score": 0.421875,
+            "positive_margin": -0.048828125,
+            "positive_score": 0.373046875,
+            "reciprocal_rank": 0.5,
+            "samples": 1,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 0.5077553739150366,
+            "group": "nq",
+            "hardest_negative_score": 0.42578125,
+            "positive_margin": 0.028645833333333332,
+            "positive_score": 0.4544270833333333,
+            "reciprocal_rank": 1.0,
+            "samples": 3,
+            "top1_accuracy": 1.0
+          },
+          {
+            "contrastive_loss": 3.798691511154175,
+            "group": "squadv2",
+            "hardest_negative_score": 0.4765625,
+            "positive_margin": -0.07421875,
+            "positive_score": 0.40234375,
+            "reciprocal_rank": 0.3333333432674408,
+            "samples": 1,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 0.008083012886345387,
+            "group": "trivia",
+            "hardest_negative_score": 0.302734375,
+            "positive_margin": 0.11328125,
+            "positive_score": 0.416015625,
+            "reciprocal_rank": 1.0,
+            "samples": 1,
+            "top1_accuracy": 1.0
+          }
+        ],
+        "maximum_scalar_replay_absolute_error": {
+          "contrastive_loss": 2.04599092334945e-07,
+          "hardest_negative_score": 0.0,
+          "positive_margin": 0.0,
+          "positive_score": 0.0,
+          "reciprocal_rank": 9.934107481068821e-09,
+          "top1_accuracy": 0.0
+        },
+        "raw_metrics_preserved": true,
+        "records": 59
+      }
+    },
+    {
+      "manifest": {
+        "bytes": 884,
+        "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/normuon/manifest.json",
+        "sha256": "2ea2b89f7fa22bd24c09085afac743f22ec26b09c5130801e8236212626375bd"
+      },
+      "outputs": {
+        "sample_scores": {
+          "bytes": 31701,
+          "path": "sample_scores.jsonl",
+          "sha256": "bdd993e3c06248bd5e4fee24f2d01807e8dc26d64ac0fb31b95c8b4952188822"
+        },
+        "summary": {
+          "bytes": 2736,
+          "path": "summary.json",
+          "sha256": "adc0c286c18b4a70054912a01b9717ff8c075100769001e1f4eadd9aad802168"
+        }
+      },
+      "plan": {
+        "actual_diagnostic_run_identity_sha256": "f62a940486dd6c13d31e516c10c0978dbe49dc9afe850656054cf2d7650ff10a",
+        "actual_diagnostic_step": 3,
+        "algorithm": "normuon",
+        "diagnostic_plan_sha256": "a27c625a1a75c833708f2c4864c554193451164b9b9b4b675fad6edd4854616f",
+        "primary_validation": false,
+        "scientific_completion": false,
+        "scope": "engineering_dense_v3_validation_diagnostic",
+        "selection_sha256": "2f34f09402352276e38cf0e1ec8db57a3d14832f982a62e3762f14d9163641ef"
+      },
+      "scientific_completion": false,
+      "summary": {
+        "groups": [
+          {
+            "contrastive_loss": 0.8655566981141086,
+            "group": "__all__",
+            "hardest_negative_score": 0.3652178230932203,
+            "positive_margin": 0.045948093220338986,
+            "positive_score": 0.4111659163135593,
+            "reciprocal_rank": 0.8416666676432399,
+            "samples": 59,
+            "top1_accuracy": 0.7457627118644068
+          },
+          {
+            "contrastive_loss": 0.63681698569038,
+            "group": "fever",
+            "hardest_negative_score": 0.3589365433673469,
+            "positive_margin": 0.05709901147959184,
+            "positive_score": 0.41603555484693877,
+            "reciprocal_rank": 0.8673469396878262,
+            "samples": 49,
+            "top1_accuracy": 0.7755102040816326
+          },
+          {
+            "contrastive_loss": 0.60428786277771,
+            "group": "fiqa",
+            "hardest_negative_score": 0.39453125,
+            "positive_margin": 0.0146484375,
+            "positive_score": 0.4091796875,
+            "reciprocal_rank": 1.0,
+            "samples": 2,
+            "top1_accuracy": 1.0
+          },
+          {
+            "contrastive_loss": 5.432673692703247,
+            "group": "hotpotqa",
+            "hardest_negative_score": 0.34814453125,
+            "positive_margin": -0.09619140625,
+            "positive_score": 0.251953125,
+            "reciprocal_rank": 0.16250000149011612,
+            "samples": 2,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 2.4566829204559326,
+            "group": "msmarco",
+            "hardest_negative_score": 0.419921875,
+            "positive_margin": -0.046875,
+            "positive_score": 0.373046875,
+            "reciprocal_rank": 0.5,
+            "samples": 1,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 0.5065845722953478,
+            "group": "nq",
+            "hardest_negative_score": 0.4251302083333333,
+            "positive_margin": 0.028645833333333332,
+            "positive_score": 0.4537760416666667,
+            "reciprocal_rank": 1.0,
+            "samples": 3,
+            "top1_accuracy": 1.0
+          },
+          {
+            "contrastive_loss": 3.8049871921539307,
+            "group": "squadv2",
+            "hardest_negative_score": 0.474609375,
+            "positive_margin": -0.07421875,
+            "positive_score": 0.400390625,
+            "reciprocal_rank": 0.3333333432674408,
+            "samples": 1,
+            "top1_accuracy": 0.0
+          },
+          {
+            "contrastive_loss": 0.008465949445962906,
+            "group": "trivia",
+            "hardest_negative_score": 0.3046875,
+            "positive_margin": 0.111328125,
+            "positive_score": 0.416015625,
+            "reciprocal_rank": 1.0,
+            "samples": 1,
+            "top1_accuracy": 1.0
+          }
+        ],
+        "maximum_scalar_replay_absolute_error": {
+          "contrastive_loss": 1.4460655517467558e-07,
+          "hardest_negative_score": 0.0,
+          "positive_margin": 0.0,
+          "positive_score": 0.0,
+          "reciprocal_rank": 9.934107481068821e-09,
+          "top1_accuracy": 0.0
+        },
+        "raw_metrics_preserved": true,
+        "records": 59
+      }
+    }
+  ],
+  "gpu_workers": 0,
+  "model_updates": 0,
+  "observed_at_utc": "2026-09-06T17:30:13.255089+00:00",
+  "primary_recipe_selection_produced": false,
+  "scientific_completion": false,
+  "scope": "engineering_dense_v3_validation_admission",
+  "source": {
+    "bytes": 8660,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_v3_validation_admission.py",
+    "sha256": "e2f298d7c4fa540ec7250524c6747c61c478db09ac927f2b29ab08859b712377"
+  },
+  "unchanged_inputs_and_producer_artifacts": [
+    {
+      "bytes": 15105,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation.py",
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    {
+      "bytes": 11060,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py",
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    {
+      "bytes": 2117,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 1255,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_input_execution.py",
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    {
+      "bytes": 7263,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/gpu_lease.py",
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    {
+      "bytes": 6928,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/runtime.py",
+      "sha256": "6c6d143a0adb61f653bbe9e1143166670b8550e49104e41da5745c4c76d1f311"
+    },
+    {
+      "bytes": 1019,
+      "path": "/root/embedding-optimizer-story-refactor/configs/formal_runtime.json",
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    {
+      "bytes": 5180,
+      "path": "/root/embedding-optimizer-story-refactor/configs/validation_probe.json",
+      "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+    },
+    {
+      "bytes": 3640,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_validation.py",
+      "sha256": "adad644c4257549c19f395ef2e437e0f59e54f2f106c80701ddfb255bb976c63"
+    },
+    {
+      "bytes": 10208,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_v3_validation.py",
+      "sha256": "9b704f28865df3581867ce6482c2196b91f6de7c709ab5b8bee173e451d8a269"
+    },
+    {
+      "bytes": 6884,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/run_dense_v3_validation_diagnostic.py",
+      "sha256": "c0764477987dab5ea98e3d0ec92b71ffc299362a81fa604946f37ffe040f676a"
+    },
+    {
+      "bytes": 24547,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/functional_intervention.py",
+      "sha256": "830248dd2ef82003fcf11ddaec013e2b2f66385c98d7e4913e32a9292016d325"
+    },
+    {
+      "bytes": 25320,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/gradient_probe.py",
+      "sha256": "3e06f35eb3a6a294be0da6b78ca6ae6846357c6ff2aac70a54bd99e4d384ddac"
+    },
+    {
+      "bytes": 20602,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/probe_export.py",
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    {
+      "bytes": 12568,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_contract.py",
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    {
+      "bytes": 15846,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_natural_data.py",
+      "sha256": "cddd19ba7da57781daa237492d80eae757fdca587fc7a6af0bafe0edf74eb896"
+    },
+    {
+      "bytes": 10021,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_revised_natural.py",
+      "sha256": "a3f5eb211697bf616eb6f15ae28c9e172909c94d77f24d6eb547baf6652f113c"
+    },
+    {
+      "bytes": 12409,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/pause_dense_evaluation_for_audit.py",
+      "sha256": "a944aa078e611793038817d0ab02efaf6a95d6275a91a80c08d5b34752bb05f7"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70228,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/README.md",
+      "sha256": "2b083d7592a6b1f45cb5f2d336add27d9266d317547af061dc5f53ddf8ae805f"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/model.safetensors",
+      "sha256": "e926322f61461ac2bc06bfb1a6bb26e638554d368dec47076ce0295524a6772d"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 1192229323,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/optimizer.pt",
+      "sha256": "58b03e9bdf683bf79dcb9570c37dc3540a58e22c20b6cd461b530c5cdfb3a57f"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/scheduler.pt",
+      "sha256": "32f2e59210c8e3f86e304a5ce3f92312df3884573302af269d12c6ee366d6682"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 3060,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "c7c1eef0dba2fdf24ddd2cd63b5cd532aaa7955a30399e91aa5b06dc1d650493"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/README.md",
+      "sha256": "4f891e5fee201a7099b127117e976215f6acbe6ca90cc61a5df1ab7655dea58c"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 1156,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/model.safetensors",
+      "sha256": "0a130f30db62b1f8dfe12548da1dc9e49f531e4039f888303772f69950a1ef95"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 750992651,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/optimizer.pt",
+      "sha256": "e76fa485ef764d70a9b7f67458b2c0c2843a841b7e8db0ac848d5c90b9ccde88"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/scheduler.pt",
+      "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "9b1fce9ddf307816ef1e11c814c7f5052e250895499b5e0fa31aa318e312b5d4"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/README.md",
+      "sha256": "df6a4709b6c75b252532e8e183671c203edc009ba5747819156c9be776a3a422"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 1205,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/model.safetensors",
+      "sha256": "98a4cb1c5b6b90a877794090eadbae7fd3bb1ac812464a7a52783440432ea8fc"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 751558603,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/optimizer.pt",
+      "sha256": "018fbad2e60b910184736ad1c34d3f04bf302f07a926ed76a35c3ebe53cf9a1a"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/scheduler.pt",
+      "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "c4084c766bb2a3e080ef8957ff1b9abf6245627ef186c3ac7bb63e0bf960fc70"
+    },
+    {
+      "bytes": 2256568,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00000-of-00014.arrow",
+      "sha256": "8eebbefb7c7090b2e3505145677e0895505df1a17f2917499ce14f4a8ab58163"
+    },
+    {
+      "bytes": 2336624,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00001-of-00014.arrow",
+      "sha256": "4aae5454269d17e5832e49909996434bd7419ba358a5616f67397920cf649e3a"
+    },
+    {
+      "bytes": 870704,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00002-of-00014.arrow",
+      "sha256": "b2f5d8af488d85b53cdbf13a9d9f803b283279fb62bf5d0883fc75e8ae3ce946"
+    },
+    {
+      "bytes": 861640,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00003-of-00014.arrow",
+      "sha256": "8fdd521db8df9425baaa13b9441174ec79f87695aa83c04cbdcfda4f44aad4c9"
+    },
+    {
+      "bytes": 859440,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00004-of-00014.arrow",
+      "sha256": "2dcc50c8735cf4ee78042a2ba4c50fd7f93e5142cf6a98c58de8ab81107823a1"
+    },
+    {
+      "bytes": 887576,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00005-of-00014.arrow",
+      "sha256": "7d60f48884479fade77aa0dfdf14b76bfd3cece1342780c2d7ab9afa59d75283"
+    },
+    {
+      "bytes": 1040752,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00006-of-00014.arrow",
+      "sha256": "5b0e37755188740934ea75ca2f1626bbcff2fafe7399823b69ca4997f476ccfd"
+    },
+    {
+      "bytes": 1056448,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00007-of-00014.arrow",
+      "sha256": "b23b7c20193e0b03797b5788a01c4d2a7322d64588ef9ba8ea0dc522b26ff3c0"
+    },
+    {
+      "bytes": 2587984,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00008-of-00014.arrow",
+      "sha256": "8d2cecacb04c1e3f81056404c22e8102bd82557d5e91bf1266f1ee78e507db9f"
+    },
+    {
+      "bytes": 2605848,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00009-of-00014.arrow",
+      "sha256": "c973fbef01f666772f690673d062cd65757c03c8ab2dc4398609b79814151dfb"
+    },
+    {
+      "bytes": 1936472,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00010-of-00014.arrow",
+      "sha256": "a8840b097f3ec35b644546636d3126a126e9e8bc7039c0aa11ef043963c180e8"
+    },
+    {
+      "bytes": 1914296,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00011-of-00014.arrow",
+      "sha256": "0c64af5dd00627359914952e39406406c228f94f14da0bf64a790a7de4394270"
+    },
+    {
+      "bytes": 1504216,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00012-of-00014.arrow",
+      "sha256": "057d18742c510a9872ef2928422e937dd6f246986ff04fd50870408aa1f0d49c"
+    },
+    {
+      "bytes": 1503080,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/data-00013-of-00014.arrow",
+      "sha256": "88f8781c502e04bfbdf921df990d69b7690926e1951f4589794afe8380acc2c2"
+    },
+    {
+      "bytes": 1664,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/dataset_info.json",
+      "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+    },
+    {
+      "bytes": 1014,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/dataset/state.json",
+      "sha256": "11953100689df5ac77bf00107cdffc7cffd0807d320fe2c03da31c0e16ff8673"
+    },
+    {
+      "bytes": 5344,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/manifest.json",
+      "sha256": "f95cdbcb3fb7b17a0d3b4bb0a23ab14d05ce07c663cc178f2838251a0b17f2b9"
+    },
+    {
+      "bytes": 749659,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/rows.jsonl",
+      "sha256": "e906432c173de604207e4fd0194da2f59ceb531081a8cc41bff301dd4f75dc49"
+    },
+    {
+      "bytes": 749659,
+      "path": "/tmp/dense-partition-candidate.kHXoGW/validation/selection.jsonl",
+      "sha256": "e906432c173de604207e4fd0194da2f59ceb531081a8cc41bff301dd4f75dc49"
+    },
+    {
+      "bytes": 7020,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_validation_protocol.json",
+      "sha256": "96a8aa2fc684d29ec67649c2e637c0cd4c7dcdd0f31f2e354b7d0955a18fb1c3"
+    },
+    {
+      "bytes": 164821,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-revised-natural-v1/natural-result.json",
+      "sha256": "bf6e893e3b9e244242871227e28a3729acc17477dd3c989f7c647308bf332d36"
+    },
+    {
+      "bytes": 532488,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/dataset/data-00000-of-00001.arrow",
+      "sha256": "d9746d3b15f9ae8fe7d7e0cf26dbb9d35e825e4844322f1102ede6ff8d22d718"
+    },
+    {
+      "bytes": 1664,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/dataset/dataset_info.json",
+      "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+    },
+    {
+      "bytes": 247,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/dataset/state.json",
+      "sha256": "b9bc4026cabb22273667ee977cbe7a96ecb4b2b74dc9b90ec2168ce53b583797"
+    },
+    {
+      "bytes": 532488,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/dataset/data-00000-of-00001.arrow",
+      "sha256": "d9746d3b15f9ae8fe7d7e0cf26dbb9d35e825e4844322f1102ede6ff8d22d718"
+    },
+    {
+      "bytes": 1664,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/dataset/dataset_info.json",
+      "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+    },
+    {
+      "bytes": 247,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/dataset/state.json",
+      "sha256": "b9bc4026cabb22273667ee977cbe7a96ecb4b2b74dc9b90ec2168ce53b583797"
+    },
+    {
+      "bytes": 380,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/launcher.json",
+      "sha256": "7bbb4cf52f948f38189fa91d5ee106fbefbe7f5bbb94b4d88f01adbcd824ebec"
+    },
+    {
+      "bytes": 1501,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/launcher.log",
+      "sha256": "43e711d112f79c9d72b89973656974e006c7088ab1e5c0d3c21d373ea38b4969"
+    },
+    {
+      "bytes": 316,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/lease.json",
+      "sha256": "7220e9f5090fa11b509839a4c46b1b90de7cdd2394452fbb917e11fd28da4f00"
+    },
+    {
+      "bytes": 1740929,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/plan.json",
+      "sha256": "a27c625a1a75c833708f2c4864c554193451164b9b9b4b675fad6edd4854616f"
+    },
+    {
+      "bytes": 477,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/adamw/admission.json",
+      "sha256": "de08683bd52c9a5e640fa22df989141a309226d188d9a9f2f461276236b60412"
+    },
+    {
+      "bytes": 882,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/adamw/manifest.json",
+      "sha256": "cebebffbd0c2b66ac462185e7c9d3efe4e5dd85a0bb78af6acade99897295c31"
+    },
+    {
+      "bytes": 31618,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/adamw/sample_scores.jsonl",
+      "sha256": "a99a387d286fc0bdd06b63ac06b04bcafcba341bc4a2aff240b1c281668f57b4"
+    },
+    {
+      "bytes": 2734,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/adamw/summary.json",
+      "sha256": "68249959fc5d6d7c940f2def1621e4db0ac25588c45d958f4971b80ece2f961a"
+    },
+    {
+      "bytes": 476,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/muon/admission.json",
+      "sha256": "2d074103d0ba8c075e94a76b9188802354a6d4910cd1a570c8e59edd889f84bd"
+    },
+    {
+      "bytes": 881,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/muon/manifest.json",
+      "sha256": "ff1df73204658d0be3fe42456d6d8ecb01860a358e8fd1ced2271ad228dd3e02"
+    },
+    {
+      "bytes": 31649,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/muon/sample_scores.jsonl",
+      "sha256": "c26c45fbd4ef2d658355b16322154b0bb108a45fe45941c9c82f9145d6442a27"
+    },
+    {
+      "bytes": 2724,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/muon/summary.json",
+      "sha256": "6e70fd677281037c2468e0cd3f0e485f4ec1218ab76ceb23ac7315bd93fb4e15"
+    },
+    {
+      "bytes": 479,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/normuon/admission.json",
+      "sha256": "ddb1016415eb9f35037363c4cfd26838c505bf71967e559ab22949058dd74e22"
+    },
+    {
+      "bytes": 884,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/normuon/manifest.json",
+      "sha256": "2ea2b89f7fa22bd24c09085afac743f22ec26b09c5130801e8236212626375bd"
+    },
+    {
+      "bytes": 31701,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/normuon/sample_scores.jsonl",
+      "sha256": "bdd993e3c06248bd5e4fee24f2d01807e8dc26d64ac0fb31b95c8b4952188822"
+    },
+    {
+      "bytes": 2736,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/scores/normuon/summary.json",
+      "sha256": "adc0c286c18b4a70054912a01b9717ff8c075100769001e1f4eadd9aad802168"
+    },
+    {
+      "bytes": 17698,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/worker-result.json",
+      "sha256": "24da7d6f80f900e24874abf20f882753288cad293488678dfe6aa0f9923db687"
+    },
+    {
+      "bytes": 37349,
+      "path": "/tmp/dense-v3-validation.Gf6KJ2/result.json",
+      "sha256": "51936005e30ddd2519fba66e5d6847abaaee25cb0ad3d6eb0d4e2e6294b88200"
+    }
+  ]
+}

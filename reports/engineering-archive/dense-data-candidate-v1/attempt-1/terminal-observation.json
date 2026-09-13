@@ -1,0 +1,21 @@
+{
+  "record_type": "terminal_observation_not_worker_completion_receipt",
+  "session_id": 48432,
+  "observed_exit_code": 1,
+  "observed_at_utc": "2026-09-06T15:30:27Z",
+  "status": "interrupted_owned_cpu_preparation_for_repeated_parquet_io",
+  "termination": "Control-C delivered through its exact tool session; observed KeyboardInterrupt in PyArrow read_row_group and terminal exit",
+  "source_sha256": "c50fcb469a362159e9eff243dfa398451304fbed57e5b18ce45fd5d0a7e2e34d",
+  "partial_decisions": {
+    "path": "/tmp/dense-partition-candidate.m7TVgF/decisions.jsonl",
+    "bytes": 5775404,
+    "sha256": "28e373bacea15af2d8fdc35df45050311bacd3de176f02fee9b38882788154c3",
+    "rows": 50628
+  },
+  "completed_source_traversals": ["training:fiqa", "training:hotpotqa"],
+  "completed_selection_receipt": false,
+  "datasets_materialized": 0,
+  "scientific_completion": false,
+  "gpu_workers_started": 0,
+  "boundary": "This incomplete attempt is preserved, not accepted as a materialized dataset. A bounded score-row-group cache adjustment may accelerate a fresh attempt; the original selection/mining rules remain unchanged. fuser was unavailable and inspected no process; no system-wide process enumeration or other process signal was used."
+}

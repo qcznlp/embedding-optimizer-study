@@ -1,0 +1,39 @@
+{
+  "scope": "engineering_only_predeployment_checks",
+  "fresh_process": {
+    "command": "env CUDA_VISIBLE_DEVICES=0,1,2,3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 torchrun --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-prepared-fresh-logs.hTPNnI --redirects 3 --tee 0 /root/embedding-optimizer-story-refactor/scripts/audit_prepared_dense_fresh_replay.py --candidate-root /tmp/dense-correction-source.0YHywN --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/prepared-source-v2.json --source-sha256 559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f --workdir /tmp/dense-prepared-fresh.3CsA1B --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit /root/embedding-optimizer-story-refactor/reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6 --baseline-control /tmp/dense-prepared-resume.u7zFyu/result.json --baseline-sha256 a74348d5ff480c88ad549d73467c5c28ea2f201bd8de3ff2472b5e7e34642a23 --baseline-torchrun-id 9174d58f-4230-4e1b-add2-3a9f6f76ebcc --handoff /tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "work": "/tmp/dense-prepared-fresh.3CsA1B",
+    "log_root": "/tmp/dense-prepared-fresh-logs.hTPNnI",
+    "torchrun_id": "9bb8a85c-53de-442b-9e96-d8f073435971",
+    "baseline_torchrun_id": "9174d58f-4230-4e1b-add2-3a9f6f76ebcc",
+    "observed_launcher_exit_code": 0
+  },
+  "admission_first": {
+    "command": "env CUDA_VISIBLE_DEVICES= WORLD_SIZE=4 PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B /root/embedding-optimizer-story-refactor/scripts/audit_prepared_resume_identity.py --candidate-root /tmp/dense-correction-source.0YHywN --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/prepared-source-v2.json --source-sha256 559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f --parent-validation /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/validation.json --workdir /tmp/dense-resume-identity.HMsX32",
+    "work": "/tmp/dense-resume-identity.HMsX32",
+    "observed_exit_code": 1,
+    "reason": "The real numerical-only gate lacks complete recipe identity, as explicitly reported."
+  },
+  "admission": {
+    "command": "env CUDA_VISIBLE_DEVICES= WORLD_SIZE=4 PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B /root/embedding-optimizer-story-refactor/scripts/audit_prepared_resume_identity.py --candidate-root /tmp/dense-correction-source.0YHywN --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/prepared-source-v2.json --source-sha256 559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f --parent-validation /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/validation.json --workdir /tmp/dense-resume-identity.XS9qSW",
+    "work": "/tmp/dense-resume-identity.XS9qSW",
+    "observed_exit_code": 1,
+    "reason": "Same confirmed admission boundary; this rerun additionally preserves all 42 proposed identity comparison inputs."
+  },
+  "focused_tests": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_dense_run_identity_proposal.py --junitxml=/tmp/dense-predeployment-tests.KTqqEf/identity-focused.xml",
+    "tests": 26,
+    "observed_exit_code": 0
+  },
+  "full_isolated_tests": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-predeployment-tests.KTqqEf/isolated-full.xml",
+    "working_directory": "/root/embedding-optimizer-story-refactor",
+    "tests": 1415,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "observed_exit_code": 0
+  },
+  "scientific_completion": false,
+  "production_deployed": false
+}

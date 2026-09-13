@@ -1,0 +1,108 @@
+{
+  "auditor": {
+    "bytes": 12979,
+    "sha256": "3fb4216cc0375315382f2a6cec2717e870cc132bb3b43fbc6897b08fbc4c0823"
+  },
+  "boundary": "Actual metadata/tables, not retrieval inference, full source admission or cross-host training replay.",
+  "checks": {
+    "logged_training": {
+      "maximum_rounding_difference": 0.0,
+      "scalar_fields": 42228
+    },
+    "run_summary": {
+      "maximum_rounding_difference": 0.0,
+      "scalar_fields": 168
+    },
+    "stage_training": {
+      "maximum_rounding_difference": 3.469446951953614e-18,
+      "scalar_fields": 900
+    },
+    "systems": {
+      "maximum_rounding_difference": 0.0,
+      "scalar_fields": 168
+    },
+    "timing_segments": {
+      "maximum_rounding_difference": 0.0,
+      "scalar_fields": 780
+    }
+  },
+  "coverage": {
+    "logged_training": 4692,
+    "run_summary": 12,
+    "stage_training": 60,
+    "systems": 12,
+    "timing_segments": 60
+  },
+  "gpu_execution": false,
+  "independent_of_producer_import": true,
+  "manifest": {
+    "bytes": 25227,
+    "sha256": "98e3a7cae491d4bb06ae949a909f9466690e8f5d40edb600a3e5ce1e2ba17205"
+  },
+  "mean_variance_median_reference": "Exact binary-input Fraction arithmetic; square root rounded to float",
+  "native_files_verified": 132,
+  "new_model_or_optimizer_tensor_read": false,
+  "observed_at_utc": "2026-09-10T13:39:37.380456+00:00",
+  "original_system_rows_runs": 12,
+  "original_timing_summary_runs": 12,
+  "output_files": {
+    "logged_training.csv": {
+      "bytes": 603471,
+      "sha256": "5fea1926b0d28a819bb3f2ef84f6122a2d53eed9a0909c70a225efe50ed6d691"
+    },
+    "run_summary.csv": {
+      "bytes": 2354,
+      "sha256": "620911507377dbd9412bd39c30a21ba241acdf54960feecfcf20c0a6154e5f83"
+    },
+    "stage_training.csv": {
+      "bytes": 10286,
+      "sha256": "ae0a143745d0f673960b85dec0790be22d70fa428f04263ce339d9048df3f7b2"
+    },
+    "systems.csv": {
+      "bytes": 2534,
+      "sha256": "872313328b8169d9f3fc62613c2478639f26667531de3c585e389323176d4c73"
+    },
+    "tables.json": {
+      "bytes": 1703497,
+      "sha256": "5f07d775f72e6743690ac266f6f85e993e4fc1999215f22d323d7d4df688265b"
+    },
+    "timing_segments.csv": {
+      "bytes": 10412,
+      "sha256": "111d1457c2723bd17a4fc9d266cbd08917070fc632f1e175f3cf8f090f1ffe79"
+    },
+    "training-trajectories.pdf": {
+      "bytes": 103411,
+      "sha256": "9402337232d5327f273a70728f7679fffae883fafc4b135e337786fa7d9b6948"
+    },
+    "training-trajectories.png": {
+      "bytes": 629587,
+      "sha256": "08550ac83332e22490ced6752cc1d002a77de8141c3cc401ac6d4d8b0b3496f4"
+    },
+    "training-trajectories.svg": {
+      "bytes": 284750,
+      "sha256": "64bf2aa1cd027e158a34c88cee27953b70f06c0f1ff335135bfb8c77c97c48a4"
+    }
+  },
+  "parent": {
+    "bytes": 19515868,
+    "sha256": "be6d92fda2f7f0ba3e86f2c2866fa9dca530f066d29ce92d0887fdad91684067"
+  },
+  "passed": true,
+  "reference_sources": {
+    "primary_completion.py": {
+      "bytes": 28342,
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    }
+  },
+  "saved_log_prefixes_verified": 60,
+  "scientific_completion": false,
+  "scope": "independent-complete-primary-training-telemetry-replay-v1"
+}

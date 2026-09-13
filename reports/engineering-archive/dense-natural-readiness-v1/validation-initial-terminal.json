@@ -1,0 +1,11 @@
+{
+  "scope": "engineering_handoff_validation_terminal_observation",
+  "exec_session": 63660,
+  "observed_exit_code": 1,
+  "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.validate_dense_natural_readiness --repository /root/embedding-optimizer-story-refactor --output undefined/validation-before-handoff.json",
+  "error": "FileNotFoundError: [Errno 2] No such file or directory: 'undefined/validation-before-handoff.json'",
+  "stage": "write_new after validate returned",
+  "receipt_written": false,
+  "scientific_completion": false,
+  "boundary": "The orchestration supplied an invalid relative output parent after transient tool-store state was unavailable. No validation receipt was written and this call is not reported as a pass. The subsequent call uses an explicit existing absolute output parent; no source, input, threshold or failed readiness gate is altered."
+}

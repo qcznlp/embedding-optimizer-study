@@ -1,0 +1,38 @@
+{
+  "audit_execution_complete": false,
+  "boundary": "Actual candidate Trainer/NCCL checkpoint replay with observational leaf tensor hooks returning None and no communication hook. Capture all four first-replay microbatch gradients on all 134 parameters, query actual DDP zero-bucket metadata after backward, and independently replay each observed bucket partition on captured local sums. Explicit Muon-only matched control for the shared first-update fixture, not independent optimizer trials, performance or retrieval evidence. Deterministic mode changes only 22 owned attention flags. Hook allocations may affect timing; compare actual raw gradients with the authenticated prior capture separately.",
+  "command_arguments": [
+    "--repository",
+    "/root/embedding-optimizer-story-refactor",
+    "--workdir",
+    "/tmp/dense-gpu-resume.nbzt97",
+    "--handoff",
+    "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "--download-root",
+    "/tmp/dense-checkpoint-restore.Og1kZs/download",
+    "--audit",
+    "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+    "--audit-sha256",
+    "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6"
+  ],
+  "deterministic_backward_control": false,
+  "model_controls": [],
+  "prior_validation": {
+    "bytes": 95816,
+    "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-gpu-replay-localization-v1/validation.json",
+    "sha256": "829f29f1cc132d15fcbcfebf70c2b6c1fcf23bdb01dd6dda87d1ca95117574ed"
+  },
+  "production_deployed": false,
+  "records": [],
+  "run_ids": [
+    "padded-muon-3e-4"
+  ],
+  "scientific_completion": false,
+  "scope": "engineering_first_gradient_origin_bucket_layout_control",
+  "source": {
+    "bytes": 17877,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_gradient_origin.py",
+    "sha256": "6eaafc34bff7f42cf6b1f8deb331bb949da4b1c77404d6e519f73749283a55aa"
+  },
+  "started_at_utc": "2026-09-06T07:35:04.314860+00:00"
+}

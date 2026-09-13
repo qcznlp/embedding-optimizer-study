@@ -1,0 +1,98 @@
+{
+  "scope": "engineering_gradient_origin_command_receipt",
+  "scientific_completion": false,
+  "repository": "/root/embedding-optimizer-story-refactor",
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "0,1,2,3",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "WANDB_MODE": "disabled",
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "HF_HUB_DISABLE_PROGRESS_BARS": "1",
+    "PYTHONWARNINGS": "ignore",
+    "PYTHONPATH": "/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor"
+  },
+  "launcher_prefix": [
+    "/usr/bin/python3",
+    "-B",
+    "-m",
+    "torch.distributed.run",
+    "--standalone",
+    "--nnodes=1",
+    "--nproc-per-node=4"
+  ],
+  "launcher_suffix_after_log_dir": [
+    "--redirects",
+    "3",
+    "--tee",
+    "3",
+    "scripts/audit_dense_gpu_gradient_origin.py"
+  ],
+  "common_script_arguments": [
+    "--repository",
+    "/root/embedding-optimizer-story-refactor",
+    "--handoff",
+    "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "--download-root",
+    "/tmp/dense-checkpoint-restore.Og1kZs/download",
+    "--audit",
+    "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+    "--audit-sha256",
+    "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6"
+  ],
+  "gpu_runs": [
+    {
+      "variant": "default",
+      "log_dir": "/tmp/dense-gradient-origin-logs.HiA1z2",
+      "origin_output": "/tmp/dense-gradient-origin.VIPdDw",
+      "workdir": "/tmp/dense-gpu-resume.nbzt97",
+      "extra_arguments": [],
+      "exit_code": 1,
+      "audit_execution_complete": true
+    },
+    {
+      "variant": "deterministic",
+      "log_dir": "/tmp/dense-gradient-origin-logs.ntSz5z",
+      "origin_output": "/tmp/dense-gradient-origin.DlSnUG",
+      "workdir": "/tmp/dense-gpu-resume.oq4plk",
+      "extra_arguments": [
+        "--deterministic-backward"
+      ],
+      "exit_code": 1,
+      "audit_execution_complete": true
+    }
+  ],
+  "exit_boundary": "Both campaigns completed and retained the parent's failed strict full-replay gate. Exit 1 is not an incomplete capture or a new runtime failure.",
+  "full_test_run": {
+    "environment": {
+      "OPENBLAS_NUM_THREADS": "2",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "PYTHONPATH": "/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "HF_HUB_OFFLINE": "1",
+      "TRANSFORMERS_OFFLINE": "1",
+      "WANDB_MODE": "disabled",
+      "CUDA_VISIBLE_DEVICES": ""
+    },
+    "arguments": [
+      "python3",
+      "-B",
+      "-m",
+      "pytest",
+      "-q",
+      "--junitxml=/tmp/dense-gradient-origin-logs.HiA1z2/pytest-full.xml"
+    ],
+    "exit_code": 0,
+    "junit_test_cases": 1344,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "duration_seconds": 133.528
+  },
+  "reconstruction": "Insert --log-dir after launcher_prefix, then launcher_suffix_after_log_dir, --origin-output, --workdir, extra_arguments and common_script_arguments. Use the recorded cwd and environment. For a new GPU experiment create fresh mktemp directories and pass the exact resource-ownership guard; never overwrite these receipts."
+}

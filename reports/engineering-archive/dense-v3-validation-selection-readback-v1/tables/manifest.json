@@ -1,0 +1,77 @@
+{
+  "all_validation_rows": 12,
+  "beir": {
+    "bytes": 2537171,
+    "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/actual/all-twelve-final-readback.json",
+    "sha256": "b8c9aff0f580e3fee1d8f239b2943ef649ec154ae5767ee576ee47b38e027fd6"
+  },
+  "beir_used_for_selection": false,
+  "outputs": {
+    "all-validation-metrics.csv": {
+      "bytes": 2004,
+      "path": "/tmp/dense-v3-validation-readback.7hUEt8Si/tables/all-validation-metrics.csv",
+      "sha256": "8cb1442e1c61bce3e2173a4ea9f7a106972d5aa753d62134dde630533870453c"
+    },
+    "selected-endpoints.csv": {
+      "bytes": 442,
+      "path": "/tmp/dense-v3-validation-readback.7hUEt8Si/tables/selected-endpoints.csv",
+      "sha256": "230c15888dc1ec09b17e3c5f9f7c3d8f85de83996c7464994bce316b1938fa06"
+    },
+    "selected-endpoints.md": {
+      "bytes": 976,
+      "path": "/tmp/dense-v3-validation-readback.7hUEt8Si/tables/selected-endpoints.md",
+      "sha256": "b6b1c973049675afad637ef0f12f4c0f7188903b8159d089bd3df2c960a87f38"
+    }
+  },
+  "scientific_completion": false,
+  "scope": "fixed_validation_selection_then_complete_endpoint_join",
+  "selected": {
+    "adamw": "verified-v3-adamw-3e-5",
+    "muon": "verified-v3-muon-3e-4",
+    "normuon": "verified-v3-normuon-3e-4"
+  },
+  "selected_endpoint_rows": [
+    {
+      "beir_complete_tasks": 14,
+      "beir_macro_ndcg_x100": 58.92628571428571,
+      "difference_from_selected_adamw_points": 0.0,
+      "learning_rate": 3e-05,
+      "optimizer": "adamw",
+      "run_id": "verified-v3-adamw-3e-5",
+      "validation_mean_loss": 0.18569335630075162,
+      "validation_rows": 4096
+    },
+    {
+      "beir_complete_tasks": 14,
+      "beir_macro_ndcg_x100": 59.243071428571426,
+      "difference_from_selected_adamw_points": 0.31678571428571445,
+      "learning_rate": 0.0003,
+      "optimizer": "muon",
+      "run_id": "verified-v3-muon-3e-4",
+      "validation_mean_loss": 0.1795032037919868,
+      "validation_rows": 4096
+    },
+    {
+      "beir_complete_tasks": 14,
+      "beir_macro_ndcg_x100": 59.36371428571429,
+      "difference_from_selected_adamw_points": 0.43742857142857616,
+      "learning_rate": 0.0003,
+      "optimizer": "normuon",
+      "run_id": "verified-v3-normuon-3e-4",
+      "validation_mean_loss": 0.17901618652373735,
+      "validation_rows": 4096
+    }
+  ],
+  "significance_test": false,
+  "source": {
+    "bytes": 5988,
+    "path": "/tmp/dense-v3-validation-readback.7hUEt8Si/export_selection_tables.py",
+    "sha256": "ee7ca5a0e0c509dd9cd7123677d47340745285e88b9fe56dee32a4ab6d2e55d7"
+  },
+  "source_release": false,
+  "validation": {
+    "bytes": 427618,
+    "path": "/tmp/dense-v3-validation-readback.7hUEt8Si/all-twelve-validation-readback.json",
+    "sha256": "1bfad0688b108f1e0546af888b508b9a3d5de87350e46f925f57585e04b545c7"
+  }
+}

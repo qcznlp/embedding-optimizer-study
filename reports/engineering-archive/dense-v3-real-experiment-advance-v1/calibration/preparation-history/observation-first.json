@@ -1,0 +1,138 @@
+{
+  "broad_process_or_gpu_enumeration": false,
+  "coordinator": {
+    "terminal_record": "completed"
+  },
+  "observed_at_utc": "2026-09-12T14:37:15.212067+00:00",
+  "scientific_completion": false,
+  "terminal_records": {
+    "completed": {
+      "actual_gpu_worker_exits": {
+        "adamw_state": 0,
+        "muon_state": 0
+      },
+      "authorization_sha256": "f7d29c908fc251a2affcf8c2205992f4f44d61b4b97201a60569e79e5e78081d",
+      "calibrations": {
+        "adamw_state": {
+          "calibration_binding": {
+            "bytes": 42424,
+            "sha256": "6683b94fd49afa971029b2cb0cf90b0ba87ac4fbd8af40bd2c1af89f14ea6ec6"
+          },
+          "path": "/root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-factorial-calibration-v2/adamw_state"
+        },
+        "muon_state": {
+          "calibration_binding": {
+            "bytes": 42418,
+            "sha256": "e7d9c69fa4b7e98213beee246d3c109cf9294a471b54b969af2ada0164b91f6d"
+          },
+          "path": "/root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-factorial-calibration-v2/muon_state"
+        }
+      },
+      "completed_at_utc": "2026-09-12T14:37:13.481518+00:00",
+      "formal_branches_trained": 0,
+      "fresh_process_native_readbacks": 2,
+      "scientific_completion": false,
+      "scope": "owner_authorized_v3_factorial_calibration_20260912",
+      "source_sha256": "3436597f8ac85b1dde1e53d4fa2fef007cf19fbbc97d168b439a61cd2ef6b598"
+    }
+  },
+  "workers": {
+    "adamw_state": {
+      "fresh_reader": {
+        "exit_code": 0,
+        "terminal": true
+      },
+      "gpu_worker": {
+        "exit_code": 0,
+        "terminal": true
+      },
+      "produced": {
+        "calibration": {
+          "fixed_probe_not_first_training_batch": true,
+          "global_direction_to_weight": {
+            "adamw": 3.3246117450362207,
+            "muon": 0.27274879516020495
+          },
+          "hidden_learning_rates": {
+            "adamw": 0.00015039350105964107,
+            "muon": 0.0018331886661728941
+          },
+          "target_global_hidden_update_to_weight": 0.0005,
+          "weight_decay_included": false
+        },
+        "calibration_binding": {
+          "bytes": 42424,
+          "sha256": "6683b94fd49afa971029b2cb0cf90b0ba87ac4fbd8af40bd2c1af89f14ea6ec6"
+        }
+      },
+      "verified": {
+        "calibration": {
+          "fixed_probe_not_first_training_batch": true,
+          "global_direction_to_weight": {
+            "adamw": 3.3246117450362207,
+            "muon": 0.27274879516020495
+          },
+          "hidden_learning_rates": {
+            "adamw": 0.00015039350105964107,
+            "muon": 0.0018331886661728941
+          },
+          "target_global_hidden_update_to_weight": 0.0005,
+          "weight_decay_included": false
+        },
+        "calibration_binding": {
+          "bytes": 42424,
+          "sha256": "6683b94fd49afa971029b2cb0cf90b0ba87ac4fbd8af40bd2c1af89f14ea6ec6"
+        }
+      }
+    },
+    "muon_state": {
+      "fresh_reader": {
+        "exit_code": 0,
+        "terminal": true
+      },
+      "gpu_worker": {
+        "exit_code": 0,
+        "terminal": true
+      },
+      "produced": {
+        "calibration": {
+          "fixed_probe_not_first_training_batch": true,
+          "global_direction_to_weight": {
+            "adamw": 3.3029840087117206,
+            "muon": 0.27328320580977966
+          },
+          "hidden_learning_rates": {
+            "adamw": 0.00015137826846307303,
+            "muon": 0.0018296038299112601
+          },
+          "target_global_hidden_update_to_weight": 0.0005,
+          "weight_decay_included": false
+        },
+        "calibration_binding": {
+          "bytes": 42418,
+          "sha256": "e7d9c69fa4b7e98213beee246d3c109cf9294a471b54b969af2ada0164b91f6d"
+        }
+      },
+      "verified": {
+        "calibration": {
+          "fixed_probe_not_first_training_batch": true,
+          "global_direction_to_weight": {
+            "adamw": 3.3029840087117206,
+            "muon": 0.27328320580977966
+          },
+          "hidden_learning_rates": {
+            "adamw": 0.00015137826846307303,
+            "muon": 0.0018296038299112601
+          },
+          "target_global_hidden_update_to_weight": 0.0005,
+          "weight_decay_included": false
+        },
+        "calibration_binding": {
+          "bytes": 42418,
+          "sha256": "e7d9c69fa4b7e98213beee246d3c109cf9294a471b54b969af2ada0164b91f6d"
+        }
+      }
+    }
+  },
+  "writes_only_this_observation": true
+}

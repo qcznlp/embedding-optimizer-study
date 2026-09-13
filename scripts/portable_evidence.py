@@ -32,6 +32,10 @@ FIXED_RESULT_FILES = (
     Path("results/representation-space/decontaminated-beir/summary/summary_manifest.json"),
 )
 FACTORIAL_SUMMARY_MANIFEST = Path("reports/state-operator-factorial/summary_manifest.json")
+DIMENSION_SUMMARY_MANIFEST = Path("reports/dimension-utilization-publication/summary_manifest.json")
+DIMENSION_CLOSURE_MANIFEST = Path(
+    "reports/dimension-utilization-publication/portable_manifest.json"
+)
 FACTORIAL_FINAL_FILES = (
     FACTORIAL_SUMMARY_MANIFEST,
     Path("reports/state-operator-factorial/beir_seed_task_scores.csv"),
@@ -125,6 +129,20 @@ def _selected_result_paths(root: Path) -> set[Path]:
         if factorial.get("status") != "complete":
             raise ValueError("Present state-operator factorial summary is not complete")
         selected.update((root / relative).resolve() for relative in FACTORIAL_FINAL_FILES)
+    if (root / DIMENSION_SUMMARY_MANIFEST).is_file():
+        closure = _load(root / DIMENSION_CLOSURE_MANIFEST)
+        if (
+            closure.get("status") != "portable_dimension_publication_closure"
+            or closure.get("scientific_completion") is not False
+            or not closure.get("files")
+        ):
+            raise ValueError("Present dimension publication lacks its portable closure")
+        selected.add((root / DIMENSION_CLOSURE_MANIFEST).resolve())
+        for record in closure["files"]:
+            path = (root / record["path"]).resolve()
+            if not path.is_relative_to(root) or _identity(path, root) != record:
+                raise ValueError("Dimension portable evidence identity differs")
+            selected.add(path)
     return selected
 
 

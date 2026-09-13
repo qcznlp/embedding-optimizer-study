@@ -1,0 +1,79 @@
+{
+  "outputs": {
+    "checkpoint_summary.csv": {
+      "bytes": 1233,
+      "path": "checkpoint_summary.csv",
+      "sha256": "5ae73d0448de699d51ca8076ffc1d1563d0974f2f8304a5168d23a82fead567b"
+    },
+    "coordinate_attribution.npz": {
+      "bytes": 327964,
+      "path": "coordinate_attribution.npz",
+      "sha256": "b3092c2f6400b4397fb42527cceae4106d4dfa0ce526d6af90c149edd863e648"
+    },
+    "numerical_evidence.json": {
+      "bytes": 1236,
+      "path": "numerical_evidence.json",
+      "sha256": "6663f368a4cd95a18d666054c737b178a24c35f1b35a1b545721bbbd127115e6"
+    },
+    "random_removal.csv": {
+      "bytes": 132453,
+      "path": "random_removal.csv",
+      "sha256": "7bb3cfcaf26f3e389e3e0541f7657f478802846263d5501c09d4836560caddd6"
+    },
+    "rotation_summary.csv": {
+      "bytes": 11130,
+      "path": "rotation_summary.csv",
+      "sha256": "badb9e4057d26674195c86f570efe44c327f37d966bed865d05710a7dc6319c4"
+    },
+    "task_summary.csv": {
+      "bytes": 3956,
+      "path": "task_summary.csv",
+      "sha256": "757c5a6043614f20208a7e764fdf5bdfe0e84a466d148655dd7fc3e139979312"
+    }
+  },
+  "plan": {
+    "matrix_plan": {
+      "complete_state_count": 61,
+      "dimension_protocol_sha256": "9246f7d15f141ba270eb4c839948c852ccc503de282f09090f58a0efdafe09f2",
+      "input_admission_sha256": "733413f3aa9cdef3d776f5a201b14d3e16776137e4b0425d05037950ab567673",
+      "numerical_policy": {
+        "array_storage": "Retain task-mean coordinate attributions in float64 without float32 archive rounding",
+        "cosine": "Explicit retained-coordinate FP64 normalization and cosine; no subtraction of a dominant coordinate from a total reduction",
+        "leave_one_out": "Every coordinate is literally deleted; use the same cosine and strict-greater-than positive-rank kernel as random removal",
+        "old_sources_or_outputs_rewritten": false,
+        "relative_margin": "Undefined (null) when the absolute task-mean baseline margin is at most the unchanged 1e-12 boundary; all absolute outcomes remain",
+        "rotation": "Original three seeds and full-score 1e-6 plus exact positive-rank equality guard; no new tolerance",
+        "scientific_estimands_changed": false,
+        "version": 1,
+        "zero_remaining_norm": "Reject the complete state computation; no denominator floor, imputation, row exclusion or partial pooling"
+      },
+      "primary_protocol_sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b",
+      "publication_inference_verified": false,
+      "scientific_completion": false,
+      "scope": "dense_primary_v3_functional_dimensions",
+      "table_counts": {
+        "checkpoint_summary": 61,
+        "random_removal": 68320,
+        "rotation_summary": 546,
+        "task_summary": 854
+      },
+      "trusted_vector_manifest_sha256": "9bf90d652d54ee6b9b571bf9dc88cd919da8c78bb70db0d476e307733e8c23e7"
+    },
+    "raw_vector_manifest": {
+      "bytes": 200730,
+      "path": "states/verified-v3-normuon-1e-3/checkpoint-3907/manifest.json",
+      "sha256": "462431cf747f396dd8a55b82a5701b8151e59aafa090e6b1cbf5e8b5711e7552"
+    },
+    "state": {
+      "cell": "verified-v3-normuon-1e-3/checkpoint-3907",
+      "meta": {
+        "learning_rate": 0.001,
+        "optimizer": "normuon",
+        "run_id": "verified-v3-normuon-1e-3",
+        "step": 3907
+      },
+      "stage": 5
+    }
+  },
+  "status": "complete"
+}

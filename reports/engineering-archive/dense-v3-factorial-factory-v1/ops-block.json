@@ -1,0 +1,9 @@
+{
+  "block": "**Factorial model/argument factory checked; GPU continuation still pending — 2026-09-10.**\n\nThe new internal `factorial_v3_factory.py` generates all twelve fixed recipes,\nuses the unchanged primary model/loss loader and constructs the separate bound\nfactorial Trainer only inside an existing four-rank NCCL worker. Its 68 parent\nfiles remain unchanged. Final tests are **137 passing cases** (30 new factory\nplus 107 existing run-component cases), not independent training experiments.\nBoth genuine sources load on CPU with all 134 FP32 tensors unchanged; the final\ncall rejects 20 configuration/tokenizer counterexamples. Its receipt SHA is\n**10516d79cb814d44fc6fda8904a7349f194228f54e3094a857fa5aa27cb21fe8**.\nThe recipe metadata uses explicitly synthetic rates; no genuine GPU calibration,\nforward/backward, formal Trainer or branch was executed. Read\n`reports/engineering-archive/dense-v3-factorial-factory-v1/README.md` in the story\ntree. All five owned CPU handles are terminal. Do not repeat these completed\nchecks as missing work. Real GPU calibration/admission, worker/source/resource\nhandoff, complete branches/outcomes, portability and scientific release remain.\n\nAt 11:03:02 UTC primary BEIR is **16 / 840**, baseline **14 / 14**, with eight\nexact live/R workers and no failure receipt. At 11:03:59 validation is **7 / 12**\nand functional is **0 / 61**, both live/S. The one-GPU priority request remains\nunanswered. All 12 primary runs and 60 backups remain complete. No GPU task,\nfrozen numerical/dispatch source, historical controller or manuscript changed.\n\n",
+  "targets": [
+    "/root/embedding-optimizer-story-refactor/AGENTS.md",
+    "/root/embedding-optimizer-story-refactor/PROJECT_STATUS.md",
+    "/root/embedding-optimizer-v3-experiment/launch/RUNNING.md",
+    "/root/embedding-optimizer-v3-experiment/launch/view-history-continuation/RUNNING.md"
+  ]
+}

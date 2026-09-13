@@ -1,0 +1,280 @@
+{
+  "formal_execution_authorized": false,
+  "manuscript_installation_authorized": false,
+  "outputs": [
+    "evidence.json",
+    "tables.json",
+    "primary-summary.json",
+    "findings.json",
+    "optimizer-primary.tex",
+    "dimension-utilization.tex",
+    "functional-inference.tex"
+  ],
+  "parents": {
+    "functional_inference": {
+      "bytes": 17381,
+      "path": "configs/dense_primary_v3_dimension_inference_protocol.json",
+      "sha256": "d66274878d90e463b74a03cf6e09518ae01dcddfe76584542e3bece435713545"
+    },
+    "joint_reconstruction_acceptance": {
+      "bytes": 27713152,
+      "path": "reports/engineering-archive/dense-v3-joint-reconstruction-v1/validation.json",
+      "sha256": "e6fd1dd99d14d8eec86937f63352a7e5b75083c4ef519d2b07fd56e8b8e85073"
+    },
+    "original_publication_rules": {
+      "bytes": 11337,
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "sha256": "39dfd12e6e59b55c2496474221e0d52993a336986e687c32a28cf05586476761"
+    },
+    "primary": {
+      "bytes": 19832,
+      "path": "configs/dense_primary_v3_protocol.json",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    }
+  },
+  "prepared_at_utc": "2026-09-07T09:04:52.985015+00:00",
+  "rules": {
+    "admission": "Complete existing checkpoint-backed functional gather before later publication inputs or output creation",
+    "authority": "Preparation-only output in a new directory; no manuscript installation, training, parent release, deployment or remote publication",
+    "csv_types": "Preserve declared exact rational fields as canonical strings, including integer-valued rationals and exact zero; undefined remains null",
+    "functional": "Unchanged complete task family, three sampled rotations and all four named predictors; no mediation or arbitrary-basis-invariance claim",
+    "functional_table_binding": "Keep original functional-inference.tex exact; add only the required dimension-utilization label to the actual co-primary table in the manuscript-specific include",
+    "geometry": "All sixty states and 660 pairs; retain every original feature and undefined prediction; this renderer does not remeasure spectra",
+    "outcomes": "Recompute all ten tables from all 840 scores, validation-only selection and all twelve admitted run metadata records",
+    "primary": "All three four-rate paired-task simultaneous contrasts; rates are not independent training seeds",
+    "rendering": "Exact reconstruction of both includes and complete structured evidence; displayed precision never decides predictive support",
+    "scope": "No implementation incidents in manuscript text, no historical evidence adoption and no separate article",
+    "secondary": "All three validation-selected contrasts, all twelve recipe rows and the exact v3 selection identity",
+    "systems": "Four-rate means; seconds and per-run maximum checkpoint/optimizer-state sizes retain their explicit v3 definitions"
+  },
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "dense_primary_v3_publication_preparation",
+  "sources": {
+    "configs/formal_runtime.json": {
+      "bytes": 1019,
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    "scripts/prepare_dense_v3_bridge.py": {
+      "bytes": 2162,
+      "sha256": "1831fb88d487071c9546a0eec90c19f9a801a174530d138327d05ae50090c51d"
+    },
+    "scripts/prepare_dense_v3_dimension_inference.py": {
+      "bytes": 2537,
+      "sha256": "329a9910be55d23aa3f27a8dcbb82fa8f2545ad96a5a796a9d8d7e9380d327db"
+    },
+    "scripts/prepare_dense_v3_dimensions.py": {
+      "bytes": 2268,
+      "sha256": "9355509de13c7b5d949981aee5df1abde41e4ef89cb18591d88f45f4877982c7"
+    },
+    "scripts/prepare_dense_v3_exact_bridge.py": {
+      "bytes": 2406,
+      "sha256": "f1617a3b510913ccf3fd0e0d517e0da0a1e3f6ec8699b919c80819203db3889d"
+    },
+    "scripts/prepare_dense_v3_exact_geometry.py": {
+      "bytes": 1711,
+      "sha256": "7dc43ef867f1029971af759ab63775f63457fc17460e2642becc123df0ebc00f"
+    },
+    "scripts/prepare_dense_v3_geometry.py": {
+      "bytes": 2603,
+      "sha256": "3d3ba3b480c1c01ecdff40b6292f7011312eedb95f5b51f1a8579683e4adf97d"
+    },
+    "scripts/prepare_dense_v3_publication.py": {
+      "bytes": 1853,
+      "sha256": "8216ddab10421c5946c723d89f24750b6a2f221f36185ba394c50a9be24c0bed"
+    },
+    "src/embed_optim/bridge_exact_arithmetic.py": {
+      "bytes": 7560,
+      "sha256": "0d66ce6e99aa42b8d93c8295cb0f5f3015ea7b7907a9f10fb095d95be2d646b4"
+    },
+    "src/embed_optim/bridge_named_features.py": {
+      "bytes": 8855,
+      "sha256": "c3106b8b118084b74b1fd9d3fffe6b25252de18ff3cd4ae5aef836c7ec7e564c"
+    },
+    "src/embed_optim/bridge_numerics.py": {
+      "bytes": 10557,
+      "sha256": "ff6c5b5019673d105a6f87cc7241a7b65b7199c2b5ad2cdaf37c5e55c1364c2c"
+    },
+    "src/embed_optim/config.py": {
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "src/embed_optim/corrected_geometry_summary.py": {
+      "bytes": 23632,
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    "src/embed_optim/corrected_input_execution.py": {
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "src/embed_optim/corrected_publication.py": {
+      "bytes": 40493,
+      "sha256": "fd69b84b2440ce5277f1952e42fda28fc22cf46f8451e68a2026f205207e82df"
+    },
+    "src/embed_optim/corrected_retrieval_bridge.py": {
+      "bytes": 26258,
+      "sha256": "347331a3c35d12a95188c0927a327b06bd30dd4ffa11b161c432117b4299eb10"
+    },
+    "src/embed_optim/dimension_inference.py": {
+      "bytes": 12992,
+      "sha256": "2ab97f49be1bc0fa57de12917da33553621d48193684848386ed0ab3e00c101c"
+    },
+    "src/embed_optim/dimension_inference_render.py": {
+      "bytes": 4963,
+      "sha256": "ba227baa25fed40c05f1bcb1ae2fb8969822c9593d54182a332ffd65c7bdbc5b"
+    },
+    "src/embed_optim/dimension_intervention_io.py": {
+      "bytes": 4831,
+      "sha256": "e2d3e4ea51857f99937692079c9923eca3da2d80e32d17e03a29d0f3cb33fb13"
+    },
+    "src/embed_optim/dimension_interventions.py": {
+      "bytes": 8825,
+      "sha256": "3728c1cb6155ea3200173c5816098581a787a861ec3598b8a6b49640d37deee4"
+    },
+    "src/embed_optim/dimension_publication.py": {
+      "bytes": 45170,
+      "sha256": "1120d125843789ef7a6aa32fff86d1845eddee16e7ff7d4e3410cd7d8e80761c"
+    },
+    "src/embed_optim/dimension_utilization.py": {
+      "bytes": 30424,
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    "src/embed_optim/exact_bridge_measurements.py": {
+      "bytes": 11728,
+      "sha256": "3060c7dd2a6b135b26d1ca76cd775dcbb33872b8fd2187868ff7d501bdbda50f"
+    },
+    "src/embed_optim/geometry.py": {
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "src/embed_optim/geometry_robustness.py": {
+      "bytes": 7184,
+      "sha256": "8816dd6340154cee0375357276f1a872da40fee758dd634f984a08a1ad78b04b"
+    },
+    "src/embed_optim/gpu_lease.py": {
+      "bytes": 7263,
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "src/embed_optim/optimizers.py": {
+      "bytes": 11839,
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_exact_geometry_kernels.py": {
+      "bytes": 11851,
+      "sha256": "0f2263493a86b44f72ddb7b0564a1f9089f300a5767ffcb5d42eec90c001fed4"
+    },
+    "src/embed_optim/primary_geometry_kernels.py": {
+      "bytes": 7418,
+      "sha256": "8c26a9c78b7b10b36aacbbe3e7c52b0fae8ae4c0baed96299a5a11975e1f9e5f"
+    },
+    "src/embed_optim/primary_geometry_reductions.py": {
+      "bytes": 960,
+      "sha256": "8e47b5eaf10979692a764776bc9c3e6b380cbc0d6b3dfc825e39b88aaa5ee443"
+    },
+    "src/embed_optim/primary_v3_bridge.py": {
+      "bytes": 10965,
+      "sha256": "bea3740f1bde59706b4309e7154a7de1dcc7ba8e3358688011fc4a523010878e"
+    },
+    "src/embed_optim/primary_v3_contract.py": {
+      "bytes": 9267,
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "src/embed_optim/primary_v3_dimension_contract.py": {
+      "bytes": 12569,
+      "sha256": "f00c33e3c33a444ebc1b280264fb2d3e4976457f978ec7646e3da2579174b605"
+    },
+    "src/embed_optim/primary_v3_dimension_exports.py": {
+      "bytes": 12136,
+      "sha256": "f3c7fefbb39ff3aa9ee89d6e134b71a8da7a850fb14e9924e0ec8ee2d36224da"
+    },
+    "src/embed_optim/primary_v3_dimension_inference.py": {
+      "bytes": 9441,
+      "sha256": "6961a5754243dc11bcbcf1462869e791559ff72d79db2456f3b4036d692e7f4e"
+    },
+    "src/embed_optim/primary_v3_dimension_vector_io.py": {
+      "bytes": 9563,
+      "sha256": "ea33869f8cf677ad0c15e8747b6d91045ba55a39301a8bf2c52f09bf642ed858"
+    },
+    "src/embed_optim/primary_v3_dimensions.py": {
+      "bytes": 9064,
+      "sha256": "416ec0a8b787a54693886192cc8ae4b9c4d583960b8aef0cd27d85afb1f8e4c5"
+    },
+    "src/embed_optim/primary_v3_exact_bridge.py": {
+      "bytes": 12426,
+      "sha256": "09fe7e4915d46806ab34bdc225c04ee579cfb2df115711b811538221c0adb140"
+    },
+    "src/embed_optim/primary_v3_exact_geometry.py": {
+      "bytes": 14434,
+      "sha256": "8dd9ee230426664bfd87ab690dd4590dda35564f51960b283fbe1a46a10a0b31"
+    },
+    "src/embed_optim/primary_v3_exact_geometry_io.py": {
+      "bytes": 9666,
+      "sha256": "53c5278380a95de3a706d803668ad4dac4f108763b05f981c4847b537f22e8f6"
+    },
+    "src/embed_optim/primary_v3_geometry.py": {
+      "bytes": 14429,
+      "sha256": "e5bb4ed03f36193391a5f9f088bd0fe04e774ee67081cf0eb2d2d79a18488159"
+    },
+    "src/embed_optim/primary_v3_geometry_io.py": {
+      "bytes": 11657,
+      "sha256": "3008e45e714fe6a599d77197e86c74db80c664f08155568369af95e308d16696"
+    },
+    "src/embed_optim/primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    "src/embed_optim/primary_v3_publication.py": {
+      "bytes": 10453,
+      "sha256": "c16e102c6ac8df22fd3e9a38dc81bf9d574e7628febabeda37e10f1b4c67e1a8"
+    },
+    "src/embed_optim/primary_v3_publication_bridge.py": {
+      "bytes": 4926,
+      "sha256": "ae687d602b77421a25d25550c159fdb34f0e45a8364f35cd6378e0a2dc099ea4"
+    },
+    "src/embed_optim/primary_v3_publication_contract.py": {
+      "bytes": 6375,
+      "sha256": "9e69f3ccbbe0f376da64136c993a31735ad9051e45b0c1560a884f2a1a0398a9"
+    },
+    "src/embed_optim/primary_v3_publication_render.py": {
+      "bytes": 3879,
+      "sha256": "3cf00b88afc7cbaec8687ef1edd48a8d9d0e1f8cd93a4575f60aaa0992417891"
+    },
+    "src/embed_optim/primary_v3_publication_tables.py": {
+      "bytes": 5230,
+      "sha256": "07da505f721646a34a9f0c9e998cd33e672e6db9756c44c143547a434e3798ad"
+    },
+    "src/embed_optim/primary_v3_validation.py": {
+      "bytes": 15105,
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    "src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    "src/embed_optim/primary_weight_entries.py": {
+      "bytes": 12687,
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    "src/embed_optim/probe_export.py": {
+      "bytes": 20602,
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    "src/embed_optim/probes.py": {
+      "bytes": 13945,
+      "sha256": "15a8212e3bf58820e0eaaf22aa8e5f4413d5e4d320036b8f29f761552dd70a8c"
+    },
+    "src/embed_optim/runtime.py": {
+      "bytes": 6928,
+      "sha256": "6c6d143a0adb61f653bbe9e1143166670b8550e49104e41da5745c4c76d1f311"
+    }
+  },
+  "status": "prepared_not_execution_authorized"
+}

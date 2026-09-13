@@ -1,0 +1,309 @@
+{
+  "bootstrap_rerun": false,
+  "endpoint_manifest_sha256": "bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f",
+  "endpoint_readout": {
+    "bytes": 20319,
+    "sha256": "592c902f94b8f190f3165f4075dfddc1e8c3f52add760805da639b541d27716f"
+  },
+  "evaluation_root": "/tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/download/corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f",
+  "full_840_cell_admission": false,
+  "hf_cache": "/root/.cache/huggingface/hub",
+  "manuscript_installation": false,
+  "model_execution": false,
+  "native_result_revisions_checked": 168,
+  "new_inference": false,
+  "observed_at_utc": "2026-09-10T22:25:02.128937+00:00",
+  "original_table_bindings": {
+    "primary_summary.csv": {
+      "bytes": 827,
+      "git_blob_sha1": "22ba1cca6d179d14934912c4a80bc467ec7ca027",
+      "sha256": "023b58de2fd9b099a77f43079fa354b827a2c345a74d35e3752de69a3af5df2b"
+    },
+    "primary_task_effects.csv": {
+      "bytes": 1608,
+      "git_blob_sha1": "ec1c46a9f25903b9327a8218d480d10895517724",
+      "sha256": "99da04887175229df2780b43db4909ac36af89676c0426097d829a88d77de271"
+    },
+    "secondary_summary.csv": {
+      "bytes": 823,
+      "git_blob_sha1": "7cfe0f33282d36073abd9ee48ccfd3e0df20fccd",
+      "sha256": "82eb1c1afab0159c575e6d599a96ae96e9745d8e92e8163d850aac133b93e664"
+    },
+    "secondary_task_effects.csv": {
+      "bytes": 1483,
+      "git_blob_sha1": "43e9d88e5ffa0a6e9dee1decdb04e02f0e1046f6",
+      "sha256": "d546df45330ae45c1f674696084440507ccddc8c2d4521570b8186c1ae11006f"
+    }
+  },
+  "outputs": {
+    "benchmark_sizes.csv": {
+      "bytes": 1174,
+      "sha256": "62b1c3a6e873759a2494aa8d2b0c8c7b5bc77d0ec12c4dc32581d9d4fd3b798f"
+    },
+    "contrast_summary.csv": {
+      "bytes": 848,
+      "sha256": "318a2399dd772d3d2519ac6bad781c201f61e045221fca4667526dcb923aece0"
+    },
+    "task_contributions.csv": {
+      "bytes": 8468,
+      "sha256": "088f2c18091416c59598af24cd9824af9c3eb5e982173f129584990af1975dd7"
+    }
+  },
+  "per_query_ranks_available": false,
+  "primary_protocol": {
+    "bytes": 19832,
+    "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+  },
+  "protected_query_audit": {
+    "bytes": 3631940,
+    "sha256": "f20353ce500807a7bfe4ddf30169560bfe6ef415b082d2291060102946e37f66"
+  },
+  "pyarrow_version": "23.0.1",
+  "qrel_covered_queries": 19385,
+  "query_qrel_file_bindings": [
+    {
+      "bytes": 945508,
+      "repo": "lightonai/arguana-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "c19c66cb43fb9b090cc55e81c10d9b5dc70b47a7",
+      "sha256": "d5388319b807bb090e0bdc454336637da2a5caedbe534509d8baea5cfd4f91c3",
+      "task": "ArguAna"
+    },
+    {
+      "bytes": 24868,
+      "repo": "lightonai/arguana-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "c19c66cb43fb9b090cc55e81c10d9b5dc70b47a7",
+      "sha256": "f14310e9664ff05a99ffff8b6e0eb805f23687e5a0baed605da5e76f71696a6d",
+      "task": "ArguAna"
+    },
+    {
+      "bytes": 78977,
+      "repo": "lightonai/climate-fever-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "1e73a88ba467a00e22ae814873edc3a9bb63b441",
+      "sha256": "9e5c25966669de12c86738070445e03c032cd5647799d91509c9432b8113389c",
+      "task": "ClimateFEVER"
+    },
+    {
+      "bytes": 26721,
+      "repo": "lightonai/climate-fever-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "1e73a88ba467a00e22ae814873edc3a9bb63b441",
+      "sha256": "5621df066621af0bf8cc3adce273df114b7a8cd80f5c60e81095dddc0dd16998",
+      "task": "ClimateFEVER"
+    },
+    {
+      "bytes": 17213,
+      "repo": "lightonai/dbpedia-entity-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "7689f39462841132f3345798c946481418a8b77c",
+      "sha256": "28a6961c2880795e935403b55e41c8985cb503f48bba296b560f9c52ef43a157",
+      "task": "DBPedia"
+    },
+    {
+      "bytes": 168391,
+      "repo": "lightonai/dbpedia-entity-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "7689f39462841132f3345798c946481418a8b77c",
+      "sha256": "192588a347ab0d7ed21323736a70fb4fefe9f8e5d62e22394218285ca74f20e1",
+      "task": "DBPedia"
+    },
+    {
+      "bytes": 5119739,
+      "repo": "lightonai/fever-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "c39d8922d4bd04bc690a4331800018c1c44d41bd",
+      "sha256": "f6636ba407f2c408eefa5ff77ef9c6434547814c710567e1f6727c41302d3204",
+      "task": "FEVER"
+    },
+    {
+      "bytes": 78777,
+      "repo": "lightonai/fever-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "c39d8922d4bd04bc690a4331800018c1c44d41bd",
+      "sha256": "602c09448fde8b7422ae37463bba30c56fa762900563f378bbcf1af84b2134d1",
+      "task": "FEVER"
+    },
+    {
+      "bytes": 40392,
+      "repo": "lightonai/fiqa-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "6d053f042b0a58763f0463d4591521725c8eb1b9",
+      "sha256": "4003e94ef90a624ee1cd1856d891c0845f1c0105d73a8e282b64fcfe4715b620",
+      "task": "FiQA2018"
+    },
+    {
+      "bytes": 3933,
+      "repo": "lightonai/fiqa-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "6d053f042b0a58763f0463d4591521725c8eb1b9",
+      "sha256": "06a8f7c40cb0cf5141dff0a4819c9ea7f81899be072dde0f8d30c970dd0a6d10",
+      "task": "FiQA2018"
+    },
+    {
+      "bytes": 1105402,
+      "repo": "lightonai/hotpotqa-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "2a3899c49545c56f84d5e884a1723c34ed96ae61",
+      "sha256": "70b6e881789842730e72496c1c35583e04397ef948a3dfce894bef76ebf75e68",
+      "task": "HotpotQA"
+    },
+    {
+      "bytes": 53516,
+      "repo": "lightonai/hotpotqa-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "2a3899c49545c56f84d5e884a1723c34ed96ae61",
+      "sha256": "4d8fa3cef2e42d323a526216f9afb26fd9367780b5442527ec13a1a33d927fe4",
+      "task": "HotpotQA"
+    },
+    {
+      "bytes": 10176734,
+      "repo": "lightonai/msmarco-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "7e98709a5db3f95bbd50a7b9b53f3a2c5d69f837",
+      "sha256": "c8aa758d71614a6d55ce7f225e34520c689289b16a4fb6eebc59ec7928c1b5d2",
+      "task": "MSMARCO"
+    },
+    {
+      "bytes": 62992,
+      "repo": "lightonai/msmarco-decontaminated",
+      "repo_path": "qrels_validation.parquet",
+      "revision": "7e98709a5db3f95bbd50a7b9b53f3a2c5d69f837",
+      "sha256": "0c4ffae0b3f390971cd6e47a3b0fc1238e72a31f8392a3efc84a36b4215a9e08",
+      "task": "MSMARCO"
+    },
+    {
+      "bytes": 57012,
+      "repo": "lightonai/nfcorpus-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "de914702862784c9d5c937cf4736bf37bc7bbac9",
+      "sha256": "afc3ca0db344bcd472e1d502acd60f08a2041a89432ce9f6f53ffef8dea1c89c",
+      "task": "NFCorpus"
+    },
+    {
+      "bytes": 8792,
+      "repo": "lightonai/nfcorpus-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "de914702862784c9d5c937cf4736bf37bc7bbac9",
+      "sha256": "0dbd82863713467d5bf49f6c6ce9f95a39146bedbf6c8e3f029078dc3564437e",
+      "task": "NFCorpus"
+    },
+    {
+      "bytes": 129406,
+      "repo": "lightonai/nq-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "8d4418d0bab92c5887e0f330fe9bea1e692e173f",
+      "sha256": "ccda6f29ee57ec7ed4f6917b20cbc8581de7b2fdcfb929a16a07a96c58018dcd",
+      "task": "NQ"
+    },
+    {
+      "bytes": 3007,
+      "repo": "lightonai/nq-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "8d4418d0bab92c5887e0f330fe9bea1e692e173f",
+      "sha256": "d70e912386e863e7eec94ba7de99c1bf0bc0a89542f9aaf0e402d1ed8acb6d3a",
+      "task": "NQ"
+    },
+    {
+      "bytes": 196390,
+      "repo": "lightonai/quora-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "a303966cc5dc0dcfb77761202d10e02c2fc67be2",
+      "sha256": "792243370b63cf7636719d08a0aec16b946f022ed89b895416ac91c7df46bbb1",
+      "task": "QuoraRetrieval"
+    },
+    {
+      "bytes": 49857,
+      "repo": "lightonai/quora-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "a303966cc5dc0dcfb77761202d10e02c2fc67be2",
+      "sha256": "1baee05bc217c5672ecffc715fa2a7c66a928941d7d1a923b133c3137eba10c6",
+      "task": "QuoraRetrieval"
+    },
+    {
+      "bytes": 22689,
+      "repo": "lightonai/scidocs-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "a5f62cf5006386ed1f069b79c56fbbe18e4e778a",
+      "sha256": "d4a8b6feb91544d7e20ba74e6b7451c6893f15d5d7849b7efcfb28f532a8fc50",
+      "task": "SCIDOCS"
+    },
+    {
+      "bytes": 67822,
+      "repo": "lightonai/scidocs-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "a5f62cf5006386ed1f069b79c56fbbe18e4e778a",
+      "sha256": "9523c90d8c6006f6603bf1ae44ab57ed6a4627e7dd757d000094fc906770a21a",
+      "task": "SCIDOCS"
+    },
+    {
+      "bytes": 25977,
+      "repo": "lightonai/scifact-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "0729fa34af49875724d18ace64ce07f3e1dc0587",
+      "sha256": "be7b0571591aa65ac7775ce74ea6b57f06a215e3a9c72774ba96097e7a62b453",
+      "task": "SciFact"
+    },
+    {
+      "bytes": 3129,
+      "repo": "lightonai/scifact-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "0729fa34af49875724d18ace64ce07f3e1dc0587",
+      "sha256": "780774da47541d8f0d83bd14591874a27dd05deb6e2bf4d7ea2e1a9668d73d84",
+      "task": "SciFact"
+    },
+    {
+      "bytes": 5261,
+      "repo": "lightonai/trec-covid-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "9e28c1e95c3e04a8f12ea2053822d80312f15794",
+      "sha256": "d25b23727b92025a462d98f6010fd7dcc9ebb3f72bfd85965b88d9d270a0c898",
+      "task": "TRECCOVID"
+    },
+    {
+      "bytes": 306080,
+      "repo": "lightonai/trec-covid-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "9e28c1e95c3e04a8f12ea2053822d80312f15794",
+      "sha256": "309c94d66b04e721cb2f7621188916e8a90cd3c09feeaa730f46ef68c0902206",
+      "task": "TRECCOVID"
+    },
+    {
+      "bytes": 3979,
+      "repo": "lightonai/webis-touche2020-decontaminated",
+      "repo_path": "queries.parquet",
+      "revision": "84c6c1ff39a87ee1e1d4356fc6f43df6d49431b3",
+      "sha256": "d99e7bc3b8672dace963fd23eccf6a91cde819dbcf46e0ba65f71976da00bc43",
+      "task": "Touche2020"
+    },
+    {
+      "bytes": 25007,
+      "repo": "lightonai/webis-touche2020-decontaminated",
+      "repo_path": "qrels_test.parquet",
+      "revision": "84c6c1ff39a87ee1e1d4356fc6f43df6d49431b3",
+      "sha256": "cb8cb1327e38f4c472fead5537b0a8f67becde8ac6471c84f729bb79d698b53c",
+      "task": "Touche2020"
+    }
+  ],
+  "query_qrel_files_checked": 28,
+  "recovered_endpoint_files_authenticated": 660,
+  "scientific_completion": false,
+  "scope": "posthoc_descriptive_benchmark_support_and_endpoint_decomposition",
+  "selected": {
+    "adamw": "verified-v3-adamw-3e-5",
+    "muon": "verified-v3-muon-3e-4",
+    "normuon": "verified-v3-normuon-3e-4"
+  },
+  "source": {
+    "bytes": 12756,
+    "sha256": "a3dbbc872010dff123add98e03b08a46a290af7bd8062c3bc14ff2fc1feae596"
+  },
+  "source_release": false,
+  "task_exclusion": false,
+  "task_reweighting": false,
+  "unchanged_input_reader": {
+    "bytes": 16160,
+    "sha256": "52baa3d3fca7ff9b31574e48d2817d2b9c81a5642fa8822426b73e815fa82ab5"
+  }
+}

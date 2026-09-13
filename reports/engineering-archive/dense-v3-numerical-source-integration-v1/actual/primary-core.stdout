@@ -1,0 +1,1665 @@
+..............................................EEEEEEEEEEEEEEEEEEEEEEEEEE [ 57%]
+E.EEEEE....E.E....................F..................                    [100%]
+==================================== ERRORS ====================================
+___ ERROR at setup of test_actual_admission_and_content_identical_relocation ___
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_actual_admission_and_cont0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f10a870>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 76226.39 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 72724.84 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[seed] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f1ff3b0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 87009.98 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 83084.09 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[epochs] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f1fd250>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90072.30 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85871.87 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[max_length] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f18da60>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90463.53 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86474.30 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[temperature] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f18fce0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89944.87 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85670.89 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[max_grad_norm] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f18fd40>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 91208.06 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 87160.66 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[warmup_ratio] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0104a0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90018.60 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85975.77 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[checkpoint_fractions] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in6')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f013260>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89971.66 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85920.73 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[global_and_micro] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0548f0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89346.12 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85489.00 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[dataloader_workers] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in8')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f010170>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89777.74 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85871.87 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[model_revision] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in9')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f013aa0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 88781.39 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 84804.80 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[max_steps] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in10')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0fa1b0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90011.89 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86000.25 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[optimizer_lr] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in11')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0fd430>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90280.98 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86282.83 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[data_content] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in12')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0f83e0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90708.08 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86610.71 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[model_content] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in13')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0fffe0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89724.40 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85640.52 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[source] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in14')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0f1f70>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89611.24 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85695.20 examples/s]
+_ ERROR at setup of test_changed_identity_fails_in_actual_entry_before_setup[environment] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_changed_identity_fails_in15')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0f03b0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90389.07 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86424.81 examples/s]
+_ ERROR at setup of test_payload_replacement_rejected_before_parent_restore[model.safetensors] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_payload_replacement_rejec0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0faff0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89491.74 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85622.31 examples/s]
+_ ERROR at setup of test_payload_replacement_rejected_before_parent_restore[optimizer.pt] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_payload_replacement_rejec1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f010f80>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90490.64 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86499.07 examples/s]
+_ ERROR at setup of test_payload_replacement_rejected_before_parent_restore[scheduler.pt] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_payload_replacement_rejec2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0e3140>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 91022.50 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 87022.52 examples/s]
+_ ERROR at setup of test_payload_replacement_rejected_before_parent_restore[rng_state_3.pth] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_payload_replacement_rejec3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f08d4c0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90005.18 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86037.01 examples/s]
+_ ERROR at setup of test_payload_replacement_rejected_before_parent_restore[training_args.bin] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_payload_replacement_rejec4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0e28d0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89346.12 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85482.95 examples/s]
+_ ERROR at setup of test_payload_replacement_rejected_before_parent_restore[trainer_state.json] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_payload_replacement_rejec5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f08fb00>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89036.60 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85121.52 examples/s]
+_ ERROR at setup of test_missing_full_receipt_or_rank_state_rejected[dense_run_contract.json] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_missing_full_receipt_or_r0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0a51f0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89918.08 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86000.25 examples/s]
+_ ERROR at setup of test_missing_full_receipt_or_rank_state_rejected[dense_checkpoint_seal.json] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_missing_full_receipt_or_r1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0a4c20>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90988.22 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 87028.79 examples/s]
+_ ERROR at setup of test_missing_full_receipt_or_rank_state_rejected[rng_state_0.pth] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_missing_full_receipt_or_r2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f08fc20>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89524.91 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85640.52 examples/s]
+________ ERROR at setup of test_incomplete_rank_state_cannot_be_sealed _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_incomplete_rank_state_can0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0e1a90>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86616.92 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 82482.73 examples/s]
+_ ERROR at setup of test_existing_contract_is_preserved_and_different_identity_rejected _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_existing_contract_is_pres0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0e1190>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89764.40 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85804.77 examples/s]
+___ ERROR at setup of test_existing_output_is_not_silently_adopted[unknown] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_existing_output_is_not_si0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0f1b50>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90755.79 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86741.31 examples/s]
+____ ERROR at setup of test_existing_output_is_not_silently_adopted[final] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_existing_output_is_not_si1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0e1190>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 84478.60 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 80924.47 examples/s]
+____ ERROR at setup of test_existing_output_is_not_silently_adopted[later] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_existing_output_is_not_si2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0f9340>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89924.78 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86024.75 examples/s]
+____ ERROR at setup of test_in_place_incomplete_run_keeps_original_metadata ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_in_place_incomplete_run_k0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0feba0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 90694.46 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86616.92 examples/s]
+______ ERROR at setup of test_contract_and_payload_symlinks_are_rejected _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_contract_and_payload_syml0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0125d0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 86984.92 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 83324.79 examples/s]
+_____ ERROR at setup of test_actual_arguments_cannot_mutate_bound_runtime ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2051/test_actual_arguments_cannot_m0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f9a9f0f83e0>
+
+    @pytest.fixture
+    def fixture(tmp_path, monkeypatch):
+        monkeypatch.setenv("WORLD_SIZE", "4")
+        monkeypatch.setenv("EMBED_OPTIM_MAX_STEPS", "3")
+        base = tmp_path / "initial-model"
+        base.mkdir()
+        (base / "config.json").write_text('{"diagnostic_fixture":true}')
+        (base / "model.safetensors").write_bytes(b"no deserialization in this unit fixture")
+        data = tmp_path / "dataset"
+        row = {**{column: "fixed text" for column in TEXT_COLUMNS}, "length": 10}
+        Dataset.from_list([row] * 288).save_to_disk(str(data))
+>       configs = load_matrix(Path(__file__).parents[1] / "configs/dense_correctness_candidate.yaml")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dense_run_contract.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/config.py:156: in load_matrix
+    raw = yaml.safe_load(path.read_text())
+                         ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml')
+mode = 'r', buffering = -1, encoding = 'locale', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-story-refactor/configs/dense_correctness_candidate.yaml'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+---------------------------- Captured stderr setup -----------------------------
+Saving the dataset (0/1 shards):   0%|          | 0/288 [00:00<?, ? examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 89677.77 examples/s]Saving the dataset (1/1 shards): 100%|██████████| 288/288 [00:00<00:00, 85133.52 examples/s]
+=================================== FAILURES ===================================
+__________ test_public_docs_record_compute_and_acceleration_contract ___________
+
+    def test_public_docs_record_compute_and_acceleration_contract() -> None:
+        root = Path(__file__).parents[1]
+        readme = (root / "README.md").read_text(encoding="utf-8")
+        paper = (root / "paper/main.tex").read_text(encoding="utf-8")
+        gates = (root / "docs/completion-gates.md").read_text(encoding="utf-8")
+    
+        for document in (readme, paper, gates):
+            normalized = document.lower()
+            assert "eight nvidia l20z gpus" in normalized
+>           assert "two disjoint four-gpu" in normalized
+E           AssertionError: assert 'two disjoint four-gpu' in '<!--\nthis readme substantially modifies the lightonai/mdenseon-mlateon readme at commit\nb0db47a48f969d825446668b5b1....cff), [contributing.md](contributing.md),\n[code_of_conduct.md](code_of_conduct.md) and [security.md](security.md).\n'
+
+tests/test_config.py:135: AssertionError
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63
+  /usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+    import pynvml  # type: ignore[import]
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_config.py::test_public_docs_record_compute_and_acceleration_contract
+ERROR tests/test_dense_run_contract.py::test_actual_admission_and_content_identical_relocation
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[seed]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[epochs]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[max_length]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[temperature]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[max_grad_norm]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[warmup_ratio]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[checkpoint_fractions]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[global_and_micro]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[dataloader_workers]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[model_revision]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[max_steps]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[optimizer_lr]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[data_content]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[model_content]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[source]
+ERROR tests/test_dense_run_contract.py::test_changed_identity_fails_in_actual_entry_before_setup[environment]
+ERROR tests/test_dense_run_contract.py::test_payload_replacement_rejected_before_parent_restore[model.safetensors]
+ERROR tests/test_dense_run_contract.py::test_payload_replacement_rejected_before_parent_restore[optimizer.pt]
+ERROR tests/test_dense_run_contract.py::test_payload_replacement_rejected_before_parent_restore[scheduler.pt]
+ERROR tests/test_dense_run_contract.py::test_payload_replacement_rejected_before_parent_restore[rng_state_3.pth]
+ERROR tests/test_dense_run_contract.py::test_payload_replacement_rejected_before_parent_restore[training_args.bin]
+ERROR tests/test_dense_run_contract.py::test_payload_replacement_rejected_before_parent_restore[trainer_state.json]
+ERROR tests/test_dense_run_contract.py::test_missing_full_receipt_or_rank_state_rejected[dense_run_contract.json]
+ERROR tests/test_dense_run_contract.py::test_missing_full_receipt_or_rank_state_rejected[dense_checkpoint_seal.json]
+ERROR tests/test_dense_run_contract.py::test_missing_full_receipt_or_rank_state_rejected[rng_state_0.pth]
+ERROR tests/test_dense_run_contract.py::test_incomplete_rank_state_cannot_be_sealed
+ERROR tests/test_dense_run_contract.py::test_existing_contract_is_preserved_and_different_identity_rejected
+ERROR tests/test_dense_run_contract.py::test_existing_output_is_not_silently_adopted[unknown]
+ERROR tests/test_dense_run_contract.py::test_existing_output_is_not_silently_adopted[final]
+ERROR tests/test_dense_run_contract.py::test_existing_output_is_not_silently_adopted[later]
+ERROR tests/test_dense_run_contract.py::test_in_place_incomplete_run_keeps_original_metadata
+ERROR tests/test_dense_run_contract.py::test_contract_and_payload_symlinks_are_rejected
+ERROR tests/test_dense_run_contract.py::test_actual_arguments_cannot_mutate_bound_runtime

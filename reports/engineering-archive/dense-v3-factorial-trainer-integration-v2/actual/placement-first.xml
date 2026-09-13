@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="18" time="4.074" timestamp="2026-09-10T16:22:27.724245+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_actual_accelerate_pristine_placement_is_an_exact_no_op[hybrid_adamw]" time="2.526"><failure message="ValueError: Externally admitted resume step is required before state loading">name = 'hybrid_adamw'
+
+    @pytest.mark.parametrize('name', ('hybrid_adamw', 'muon'))
+    def test_actual_accelerate_pristine_placement_is_an_exact_no_op(name):
+        accelerator = Accelerator(cpu=True)
+        model, optimizer, scheduler = fresh(name)
+        before = copy.deepcopy(optimizer.state_dict())
+        parameters = [id(p) for g in optimizer.param_groups for p in g['params']]
+&gt;       wrapped = accelerator.prepare_optimizer(optimizer, device_placement=True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/test_pristine_placement.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.12/dist-packages/accelerate/accelerator.py:2761: in prepare_optimizer
+    optimizer = AcceleratedOptimizer(optimizer, device_placement=device_placement, scaler=scaler)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/accelerate/optimizer.py:75: in __init__
+    self.optimizer.load_state_dict(state_dict)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = FactorialOptimizer (
+Parameter Group 0
+    algorithm: adamw
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    initial_lr: 0.0...
+    eps: 1e-08
+    initial_lr: 3e-06
+    lr: 0.0
+    param_names: ['norm.weight', 'norm.bias']
+    weight_decay: 0.0
+)
+state_dict = {'factorial_v3': {'layout': [{'members': [{'dtype': 'torch.float32', 'name': 'layers.0.weight', 'shape': [...]}, {'dty..._lr': 3e-06, ...}, {'algorithm': 'adamw', 'betas': (0.9, 0.999), 'eps': 1e-08, 'initial_lr': 3e-06, ...}], 'state': {}}
+
+    def load_state_dict(self, state_dict):
+        if self._resume_step is None or self._steps or self.state:
+&gt;           raise ValueError("Externally admitted resume step is required before state loading")
+E           ValueError: Externally admitted resume step is required before state loading
+
+/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/source-second/src/embed_optim/factorial_v3_optimizer.py:314: ValueError</failure></testcase><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_actual_accelerate_pristine_placement_is_an_exact_no_op[muon]" time="0.004"><failure message="ValueError: Externally admitted resume step is required before state loading">name = 'muon'
+
+    @pytest.mark.parametrize('name', ('hybrid_adamw', 'muon'))
+    def test_actual_accelerate_pristine_placement_is_an_exact_no_op(name):
+        accelerator = Accelerator(cpu=True)
+        model, optimizer, scheduler = fresh(name)
+        before = copy.deepcopy(optimizer.state_dict())
+        parameters = [id(p) for g in optimizer.param_groups for p in g['params']]
+&gt;       wrapped = accelerator.prepare_optimizer(optimizer, device_placement=True)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/test_pristine_placement.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/local/lib/python3.12/dist-packages/accelerate/accelerator.py:2761: in prepare_optimizer
+    optimizer = AcceleratedOptimizer(optimizer, device_placement=device_placement, scaler=scaler)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.12/dist-packages/accelerate/optimizer.py:75: in __init__
+    self.optimizer.load_state_dict(state_dict)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = FactorialOptimizer (
+Parameter Group 0
+    adjust_lr_fn: original
+    algorithm: muon
+    beta2: 0.95
+    initial_lr: ...
+    eps: 1e-08
+    initial_lr: 3e-06
+    lr: 0.0
+    param_names: ['norm.weight', 'norm.bias']
+    weight_decay: 0.0
+)
+state_dict = {'factorial_v3': {'layout': [{'members': [{'dtype': 'torch.float32', 'name': 'layers.0.weight', 'shape': [...]}, {'dty..._lr': 3e-06, ...}, {'algorithm': 'adamw', 'betas': (0.9, 0.999), 'eps': 1e-08, 'initial_lr': 3e-06, ...}], 'state': {}}
+
+    def load_state_dict(self, state_dict):
+        if self._resume_step is None or self._steps or self.state:
+&gt;           raise ValueError("Externally admitted resume step is required before state loading")
+E           ValueError: Externally admitted resume step is required before state loading
+
+/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/source-second/src/embed_optim/factorial_v3_optimizer.py:314: ValueError</failure></testcase><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[lr-hybrid_adamw]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[lr-muon]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[initial_lr-hybrid_adamw]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[initial_lr-muon]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[extra-hybrid_adamw]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[extra-muon]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[names-hybrid_adamw]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[names-muon]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[ids-hybrid_adamw]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[ids-muon]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[moment-hybrid_adamw]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[moment-muon]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[step-hybrid_adamw]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_empty_round_trip_cannot_change_state_or_routing[step-muon]" time="0.002" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_existing_optimizer_cannot_rewind_to_empty_via_placement[hybrid_adamw]" time="0.003" /><testcase classname="reports.engineering-archive.dense-v3-factorial-trainer-integration-v2.test_pristine_placement" name="test_existing_optimizer_cannot_rewind_to_empty_via_placement[muon]" time="0.003" /></testsuite></testsuites>

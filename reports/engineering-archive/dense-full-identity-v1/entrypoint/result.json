@@ -1,0 +1,1543 @@
+{
+  "audit_execution_complete": true,
+  "boundary": "Actual unpatched prepared run_training including dataset loading/column selection, model/loss/collator construction, distributed output setup, optimizer, callbacks, checkpoint contracts, native restore, final save and completed.json. Three algorithms each run a three-step synthetic epoch and continue from step 2 with byte-identical relocated data and initial model in a separate output namespace. Actual full run identities and all-rank checkpoint payload seals are checked before native model/optimizer resume. Default DDP communication; no bitwise trajectory equivalence claim, CLI/frozen-protocol bypass, formal data run, independent restart or scientific result. W&B disabled; short fixture only.",
+  "device_name": "NVIDIA L20Z",
+  "entrypoint_acceptance_passed": true,
+  "handoff": {
+    "path": "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "sha256": "444f7bacf2d1f7109e6331c43c10d17c340e18bf694f944d7eee86f28036339e"
+  },
+  "observed_at_utc": "2026-09-06T10:47:01.197654+00:00",
+  "production_deployed": false,
+  "records": [
+    {
+      "completion": {
+        "all_checkpoint_payload_seals_passed": true,
+        "checkpoint_files": {
+          "1": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18251,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/README.md",
+              "sha256": "80d798572d479a2c9962c809df9af60c50c973ac4ac84f0a7a09cad69bc161f3"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3060,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/dense_checkpoint_seal.json",
+              "sha256": "f17568d89afd6ef551e61bd1dd36d7e11f2f30c6c694f83391bd7d8abc1d6cd5"
+            },
+            {
+              "bytes": 1140,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/dense_numerical_contract.json",
+              "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+            },
+            {
+              "bytes": 9241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/dense_run_contract.json",
+              "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/model.safetensors",
+              "sha256": "9e5300a46d2a84dc8f3441b3f427083f72430ac4e8f23578110c17641435b217"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 1192229323,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/optimizer.pt",
+              "sha256": "aa618915bdf591d7254e653ef9c46474a187bbcc472f0712d7ef94fa578cd74e"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/scheduler.pt",
+              "sha256": "23d33cd9dab8d2cc5658362e95ebb9f51d07afb571457a881a076fca77631908"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 932,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/trainer_state.json",
+              "sha256": "8a5a2adcf12ecb78e7da78797b28401c535c563aae33863a7dcf9afa21259f4b"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1/training_args.bin",
+              "sha256": "0149d8b89ef859e61fcf0089d6b4ea65a9c9c1259db7804c6e85e9f94ee0dc62"
+            }
+          ],
+          "2": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18252,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/README.md",
+              "sha256": "27bda09399d4a05c8959331f9f26eabc6ba31807e3c1b07f980889dbbe1d525c"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3060,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/dense_checkpoint_seal.json",
+              "sha256": "58c141c2f780b082d85fd0b59f27e3d901aaaf8cce36fd197ae993c2ff89edde"
+            },
+            {
+              "bytes": 1140,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/dense_numerical_contract.json",
+              "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+            },
+            {
+              "bytes": 9241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/dense_run_contract.json",
+              "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/model.safetensors",
+              "sha256": "d2a911f3b7ed33de0e84dc3aed7be684471cb182f6580bfd383a6ed29d64e250"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 1192229323,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/optimizer.pt",
+              "sha256": "d6fd206e0bbfba976c5fe2a9d59e41411957589ad90df065bbb9dbd3a09b8c17"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/scheduler.pt",
+              "sha256": "41ea0d9ed050da2d083d54e2253da60c2428236e3d01cb1a413d19b71cdb5c59"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 932,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/trainer_state.json",
+              "sha256": "3557bf0ae11f41e68514577af0f67521b3344c6bbad34802bc3c60b9d9750717"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2/training_args.bin",
+              "sha256": "0149d8b89ef859e61fcf0089d6b4ea65a9c9c1259db7804c6e85e9f94ee0dc62"
+            }
+          ],
+          "3": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18252,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/README.md",
+              "sha256": "3c03ee9c4ad86e8d6629b6087868804192293f78766e6d441fb6bf78dbc95b8d"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3060,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/dense_checkpoint_seal.json",
+              "sha256": "a5a8bfd381ae076bbcfbef137eac57a2c1e8dc8c1678cee384c5d328b9fd3263"
+            },
+            {
+              "bytes": 1140,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/dense_numerical_contract.json",
+              "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+            },
+            {
+              "bytes": 9241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/dense_run_contract.json",
+              "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/model.safetensors",
+              "sha256": "7e972573dcb3aacaedae02c2a1a04a1bc6e9f93913b6ec7661dfc931ba8c93e4"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 1192229323,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/optimizer.pt",
+              "sha256": "b9162d9db1a92dc78eb4f75e56e8347abe0b3f178d5377f31e6208ed127e9db4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/scheduler.pt",
+              "sha256": "32f2e59210c8e3f86e304a5ce3f92312df3884573302af269d12c6ee366d6682"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 916,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/trainer_state.json",
+              "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3/training_args.bin",
+              "sha256": "0149d8b89ef859e61fcf0089d6b4ea65a9c9c1259db7804c6e85e9f94ee0dc62"
+            }
+          ]
+        },
+        "completion": {
+          "bytes": 2934,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/completed.json",
+          "sha256": "771d705e57a9d71de47fab1d12d6ea78948a67f67841e1f655049d8a6fa4f935"
+        },
+        "final_equals_scheduled_checkpoint": true,
+        "full_identity_sha256": "cdb6e793d93b40faf1fc6cbf5d5b02fbd55f7a6ffc07e21405b0d4dd95127e92",
+        "full_run_identity": {
+          "bytes": 9241,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/dense_run_contract.json",
+          "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+        },
+        "resolved_config": {
+          "bytes": 1237,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/run_config.json",
+          "sha256": "0eb5dbcc9c362ddef6f3f5df2fabb8cb435fcbdb2096c2058a065136c8234225"
+        }
+      },
+      "resume_step": 0,
+      "run_id": "verified-adamw-3e-5"
+    },
+    {
+      "completion": {
+        "all_checkpoint_payload_seals_passed": true,
+        "checkpoint_files": {
+          "3": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18129,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/README.md",
+              "sha256": "896c880fed1c3d347ff7b5006f723742caffa00814f1aceec0ca01810ab66eba"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3060,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/dense_checkpoint_seal.json",
+              "sha256": "5f7c586e8897816b1c86e27f0a900e7ce8916b2e39c070534126073d57dd7a2d"
+            },
+            {
+              "bytes": 1140,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/dense_numerical_contract.json",
+              "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+            },
+            {
+              "bytes": 9241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/dense_run_contract.json",
+              "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/model.safetensors",
+              "sha256": "7e972573dcb3aacaedae02c2a1a04a1bc6e9f93913b6ec7661dfc931ba8c93e4"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 1192229323,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/optimizer.pt",
+              "sha256": "a17819f09b6f713a53b0dd4e91f8b612e5a9e5069a76db69ead0e4435ddba002"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/scheduler.pt",
+              "sha256": "32f2e59210c8e3f86e304a5ce3f92312df3884573302af269d12c6ee366d6682"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 916,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/trainer_state.json",
+              "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3/training_args.bin",
+              "sha256": "24d16543e2849d5a599b1d391ee0f07514e6d595e3ae4a64bd0a814d9b286846"
+            }
+          ]
+        },
+        "completion": {
+          "bytes": 2797,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/completed.json",
+          "sha256": "fe6f43b4f5044ad19b36d9c4ed4cdeed09b8c2d26d5435b189ecf2ca47af5841"
+        },
+        "final_equals_scheduled_checkpoint": true,
+        "full_identity_sha256": "cdb6e793d93b40faf1fc6cbf5d5b02fbd55f7a6ffc07e21405b0d4dd95127e92",
+        "full_run_identity": {
+          "bytes": 9241,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/dense_run_contract.json",
+          "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+        },
+        "resolved_config": {
+          "bytes": 1167,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/run_config.json",
+          "sha256": "14d82becdfca8215193c8368d6bac7a699b287624a579648c05b00f256e2fdb2"
+        }
+      },
+      "resume_step": 2,
+      "run_id": "verified-adamw-3e-5"
+    },
+    {
+      "completion": {
+        "all_checkpoint_payload_seals_passed": true,
+        "checkpoint_files": {
+          "1": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18253,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/README.md",
+              "sha256": "e3913d4af52c9495e1fe334b18faa38a982d18275207964fbcfe18acfe592706"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/dense_checkpoint_seal.json",
+              "sha256": "98dd9d6c7227c51e788061ae56ab857cba3b0138c97ee74833f50162235487f7"
+            },
+            {
+              "bytes": 1156,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/dense_numerical_contract.json",
+              "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+            },
+            {
+              "bytes": 9307,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/dense_run_contract.json",
+              "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/model.safetensors",
+              "sha256": "9e5300a46d2a84dc8f3441b3f427083f72430ac4e8f23578110c17641435b217"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 750992651,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/optimizer.pt",
+              "sha256": "1ae328da34e0c323d93d66c5024c157e82774f2490fd7961bc6da1636a14b1e0"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/scheduler.pt",
+              "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 932,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/trainer_state.json",
+              "sha256": "8a5a2adcf12ecb78e7da78797b28401c535c563aae33863a7dcf9afa21259f4b"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1/training_args.bin",
+              "sha256": "c17c3aee297ec2b76637d554139b1517b52bc9413f339f39a87837b3a43d3860"
+            }
+          ],
+          "2": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18254,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/README.md",
+              "sha256": "f7b135686179c82128b07d385b3a389b49012f7510edab1d1cd430d862318fde"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/dense_checkpoint_seal.json",
+              "sha256": "f50b6ab1dc6a9f4adec7a2f12deeaf62b5fe9612e3d1cb4b41879550d9c21b14"
+            },
+            {
+              "bytes": 1156,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/dense_numerical_contract.json",
+              "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+            },
+            {
+              "bytes": 9307,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/dense_run_contract.json",
+              "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/model.safetensors",
+              "sha256": "d9ef9c195dc0453a704a8d53cd7f9c196a84ccc26f18048695627ac32accceb5"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 750992651,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/optimizer.pt",
+              "sha256": "470d3b2baed3c71f9f3d2a0e62e896a00f6b3f9d5d873d719dfa53e8731581a5"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/scheduler.pt",
+              "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 932,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/trainer_state.json",
+              "sha256": "3557bf0ae11f41e68514577af0f67521b3344c6bbad34802bc3c60b9d9750717"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2/training_args.bin",
+              "sha256": "c17c3aee297ec2b76637d554139b1517b52bc9413f339f39a87837b3a43d3860"
+            }
+          ],
+          "3": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18254,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/README.md",
+              "sha256": "72f80aa41961b79c5accb72e4b8e8cc4f22a28204ae0dfbc0f8d855e61421a9d"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/dense_checkpoint_seal.json",
+              "sha256": "b4176f0605d43225b0674632ac99d22febfbf9e8f3cbc35576c2c569e1ac4e02"
+            },
+            {
+              "bytes": 1156,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/dense_numerical_contract.json",
+              "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+            },
+            {
+              "bytes": 9307,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/dense_run_contract.json",
+              "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/model.safetensors",
+              "sha256": "2c41d79d614304a33f38662d6cc01c322dacc2844230d6d12ceafc3fe8c4dcc7"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 750992651,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/optimizer.pt",
+              "sha256": "6339ad70e96013efd139cefa12d9d0078fcaccc281d2c71c3de98dc7e6687f97"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/scheduler.pt",
+              "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 916,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/trainer_state.json",
+              "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3/training_args.bin",
+              "sha256": "c17c3aee297ec2b76637d554139b1517b52bc9413f339f39a87837b3a43d3860"
+            }
+          ]
+        },
+        "completion": {
+          "bytes": 2999,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/completed.json",
+          "sha256": "abaef2b01397bc1deca8df2c3dd8f3c6b870e70d1f790e61d2cb0ae842a0874a"
+        },
+        "final_equals_scheduled_checkpoint": true,
+        "full_identity_sha256": "ac0df7a873754755d4768b78bf222fc3a2a02a5255c617329370ab4c4a8295c0",
+        "full_run_identity": {
+          "bytes": 9307,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/dense_run_contract.json",
+          "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+        },
+        "resolved_config": {
+          "bytes": 1284,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/run_config.json",
+          "sha256": "f39258895acd0e64cd3723e8b1ae48e6ff78ddf08300e6a4b52e4bd9a2ebd723"
+        }
+      },
+      "resume_step": 0,
+      "run_id": "verified-muon-3e-4"
+    },
+    {
+      "completion": {
+        "all_checkpoint_payload_seals_passed": true,
+        "checkpoint_files": {
+          "3": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18131,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/README.md",
+              "sha256": "63e224fb11b94785d62132b13137472658c20d903aa4733f10687ba4181e227d"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/dense_checkpoint_seal.json",
+              "sha256": "d01571a7506884a6fb1d0eb6149b62f926f2b264397fe8b469bf8374f6977c3e"
+            },
+            {
+              "bytes": 1156,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/dense_numerical_contract.json",
+              "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+            },
+            {
+              "bytes": 9307,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/dense_run_contract.json",
+              "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/model.safetensors",
+              "sha256": "d49d1fd2865ce7d4d997b3a366a6fbbf7ad0434631e0e638a68d55e23a38aedb"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 750992651,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/optimizer.pt",
+              "sha256": "52d7dc1c3342b0e626b473dc45cd63f626142e6cdeb8d3ca50b9a918cc75d130"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/scheduler.pt",
+              "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 916,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/trainer_state.json",
+              "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3/training_args.bin",
+              "sha256": "9abf4c8dda0c5323e6dd69b42e9d2a92f7a6e3d5d4d757ddb98a9c1063727d4c"
+            }
+          ]
+        },
+        "completion": {
+          "bytes": 2864,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/completed.json",
+          "sha256": "fc99dcc65a106285d605b273e2dba9ba37257b7ca3635f534cb40960587ef625"
+        },
+        "final_equals_scheduled_checkpoint": true,
+        "full_identity_sha256": "ac0df7a873754755d4768b78bf222fc3a2a02a5255c617329370ab4c4a8295c0",
+        "full_run_identity": {
+          "bytes": 9307,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/dense_run_contract.json",
+          "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+        },
+        "resolved_config": {
+          "bytes": 1214,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/run_config.json",
+          "sha256": "84c52878dee6d204049d39ecc7430b570de782d9aa9a3f7c47d198a6328b2ebb"
+        }
+      },
+      "resume_step": 2,
+      "run_id": "verified-muon-3e-4"
+    },
+    {
+      "completion": {
+        "all_checkpoint_payload_seals_passed": true,
+        "checkpoint_files": {
+          "1": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18253,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/README.md",
+              "sha256": "eb5ef1a11600dbd5751fe0677f02932d073e6e5ec0d76023f3ce58537c082280"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/dense_checkpoint_seal.json",
+              "sha256": "d2b0123b474d6dbc8420710b8f2c17bede02aa53d362904ced170b2fcf7d8f7a"
+            },
+            {
+              "bytes": 1205,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/dense_numerical_contract.json",
+              "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+            },
+            {
+              "bytes": 9375,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/dense_run_contract.json",
+              "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/model.safetensors",
+              "sha256": "9e5300a46d2a84dc8f3441b3f427083f72430ac4e8f23578110c17641435b217"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 751558603,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/optimizer.pt",
+              "sha256": "9171e50bc12dfcdbc1e6e6af1c5afe8e81aa095891a6e5d9f804b4a18d03b090"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/scheduler.pt",
+              "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 932,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/trainer_state.json",
+              "sha256": "8a5a2adcf12ecb78e7da78797b28401c535c563aae33863a7dcf9afa21259f4b"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1/training_args.bin",
+              "sha256": "9cd50a8e9c67e6b744edaa46507397a8d1b346494ddd92240f39f47e9163cc70"
+            }
+          ],
+          "2": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18254,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/README.md",
+              "sha256": "fea10389eaa89ca63fbabf22bff775881c0920cec5cd886cea9600cd8a0fe2b5"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/dense_checkpoint_seal.json",
+              "sha256": "c7bf855edf7e98e10b30e4d22dea86628d6b24c79faf8edcaeccaa386d24c2cd"
+            },
+            {
+              "bytes": 1205,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/dense_numerical_contract.json",
+              "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+            },
+            {
+              "bytes": 9375,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/dense_run_contract.json",
+              "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/model.safetensors",
+              "sha256": "4f26d30790d70c616b752198047d7e23ae2684553bae5a5b1ed02220015b522f"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 751558603,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/optimizer.pt",
+              "sha256": "8402090b2e1bcb74086f73abb4d5d76854b7904f6aef22d2779ccc1ec7746725"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/scheduler.pt",
+              "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 932,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/trainer_state.json",
+              "sha256": "3557bf0ae11f41e68514577af0f67521b3344c6bbad34802bc3c60b9d9750717"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2/training_args.bin",
+              "sha256": "9cd50a8e9c67e6b744edaa46507397a8d1b346494ddd92240f39f47e9163cc70"
+            }
+          ],
+          "3": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18254,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/README.md",
+              "sha256": "f31cb7cb4222d185367d67b8022e92fd970ee9212d22c172faf44e28b479b65d"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/dense_checkpoint_seal.json",
+              "sha256": "0d98f55c60198ef4fac17a41b184251de7ff7e54849582f211d1f7d7df8d7422"
+            },
+            {
+              "bytes": 1205,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/dense_numerical_contract.json",
+              "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+            },
+            {
+              "bytes": 9375,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/dense_run_contract.json",
+              "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/model.safetensors",
+              "sha256": "49d011f079683b419fb570dc5432feb1ae2a0616e0ae679e8b94af30977a0c33"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 751558603,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/optimizer.pt",
+              "sha256": "812c10416dd0341ea6802dde2857214665390a940303fb1ff76b41a1e886d206"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/scheduler.pt",
+              "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 916,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/trainer_state.json",
+              "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3/training_args.bin",
+              "sha256": "9cd50a8e9c67e6b744edaa46507397a8d1b346494ddd92240f39f47e9163cc70"
+            }
+          ]
+        },
+        "completion": {
+          "bytes": 3064,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/completed.json",
+          "sha256": "5987f58f22bfb5c55e0fa63022e28c64ef952875358db734e00b268e6a62e8df"
+        },
+        "final_equals_scheduled_checkpoint": true,
+        "full_identity_sha256": "f57e9197a54c99e59a515299afe245e7f03b8b58bd6a4efa825c077570a62ade",
+        "full_run_identity": {
+          "bytes": 9375,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/dense_run_contract.json",
+          "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+        },
+        "resolved_config": {
+          "bytes": 1303,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/run_config.json",
+          "sha256": "7bedaab4d4bc95ba7c1142488921bd6b56510b046b156b1ace100609c85373bd"
+        }
+      },
+      "resume_step": 0,
+      "run_id": "verified-normuon-3e-4"
+    },
+    {
+      "completion": {
+        "all_checkpoint_payload_seals_passed": true,
+        "checkpoint_files": {
+          "3": [
+            {
+              "bytes": 89,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/1_Pooling/config.json",
+              "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+            },
+            {
+              "bytes": 18131,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/README.md",
+              "sha256": "2bdd323ea8de3dd8652c37111f82590a7228728685171b7a52bda5d9dea0bc3c"
+            },
+            {
+              "bytes": 1951,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/config.json",
+              "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+            },
+            {
+              "bytes": 299,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/config_sentence_transformers.json",
+              "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+            },
+            {
+              "bytes": 3059,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/dense_checkpoint_seal.json",
+              "sha256": "c66c18e80e96a6825f4fa70d6e7ab0f21403b856131fcd37bc7d292930eb24ef"
+            },
+            {
+              "bytes": 1205,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/dense_numerical_contract.json",
+              "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+            },
+            {
+              "bytes": 9375,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/dense_run_contract.json",
+              "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+            },
+            {
+              "bytes": 596070136,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/model.safetensors",
+              "sha256": "49d011f079683b419fb570dc5432feb1ae2a0616e0ae679e8b94af30977a0c33"
+            },
+            {
+              "bytes": 277,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/modules.json",
+              "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+            },
+            {
+              "bytes": 751558603,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/optimizer.pt",
+              "sha256": "9709509a2b698a2792c392290254ec7adb7fb2dbe28e9a0348b5c0978e9c13b7"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/rng_state_0.pth",
+              "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/rng_state_1.pth",
+              "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/rng_state_2.pth",
+              "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+            },
+            {
+              "bytes": 15365,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/rng_state_3.pth",
+              "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+            },
+            {
+              "bytes": 1465,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/scheduler.pt",
+              "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+            },
+            {
+              "bytes": 241,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/sentence_bert_config.json",
+              "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+            },
+            {
+              "bytes": 3583486,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/tokenizer.json",
+              "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+            },
+            {
+              "bytes": 541,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/tokenizer_config.json",
+              "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+            },
+            {
+              "bytes": 916,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/trainer_state.json",
+              "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+            },
+            {
+              "bytes": 5649,
+              "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3/training_args.bin",
+              "sha256": "61408a080034f40749790a4bc5663d6850b6ac39de50af28b50aa80237f6e8d6"
+            }
+          ]
+        },
+        "completion": {
+          "bytes": 2929,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/completed.json",
+          "sha256": "6dc1ac488e5fdc26a58f782a4ad9a48c3dd749bfe32ca74cd3b67aac25f91d33"
+        },
+        "final_equals_scheduled_checkpoint": true,
+        "full_identity_sha256": "f57e9197a54c99e59a515299afe245e7f03b8b58bd6a4efa825c077570a62ade",
+        "full_run_identity": {
+          "bytes": 9375,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/dense_run_contract.json",
+          "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+        },
+        "resolved_config": {
+          "bytes": 1233,
+          "path": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/run_config.json",
+          "sha256": "4360935265a7cd24b9bf08337b8150c7739e8d1e43d6909164857917820e0d6e"
+        }
+      },
+      "resume_step": 2,
+      "run_id": "verified-normuon-3e-4"
+    }
+  ],
+  "scientific_completion": false,
+  "scope": "engineering_full_identity_actual_run_training_entrypoint",
+  "source_bindings": [
+    {
+      "bytes": 24017,
+      "path": "/tmp/dense-identity-source.8rUgLF/src/embed_optim/train.py",
+      "sha256": "af80da12db318dd202b654c97a656c1558abba921e95c5355933d80f3e824d06"
+    },
+    {
+      "bytes": 7315,
+      "path": "/tmp/dense-identity-source.8rUgLF/src/embed_optim/dense_numerical_contract.py",
+      "sha256": "207d8545f7d329979ebbe0e90317f95f6ca01bb310eeff040fe3de461956d8f4"
+    },
+    {
+      "bytes": 13159,
+      "path": "/tmp/dense-identity-source.8rUgLF/src/embed_optim/dense_run_contract.py",
+      "sha256": "185d96536a9ea36b537aa15420687814165ca8fc0b0d784907039561991584fa"
+    },
+    {
+      "bytes": 22561,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_normalization.py",
+      "sha256": "eb7f84d12bf737e2a97bad76c0cb90610c50b954379beca3ab96ae27d6a4ddd9"
+    },
+    {
+      "bytes": 21023,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_ddp_accumulation.py",
+      "sha256": "55b09ad9cc483334e1d0af9f7c6101448f11a0fc3dd5eae7a65233b72eaaf2f5"
+    },
+    {
+      "bytes": 11155,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_canonical_replay.py",
+      "sha256": "9f0e83cb069d79b8b18f82e9af5aeaa103bb94067a66c6585a6fd453abd60170"
+    },
+    {
+      "bytes": 9648,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_prepared_dense_gpu.py",
+      "sha256": "18554710b55477530feff9a59e7af7af1aebd28e3c20cfae50c7bcc6aec25873"
+    },
+    {
+      "bytes": 11997,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_identity_entrypoint.py",
+      "sha256": "de27d7fb94df7fda219adadcd835ba9edfa51f5e8e927c5844878e40db45da62"
+    }
+  ],
+  "source_checkpoint": {
+    "bytes": 1351464827,
+    "checkpoint_root": "/tmp/dense-checkpoint-restore.Og1kZs/download/corrected-dense-no-packing-v1/dense/padded-normuon-3e-4/checkpoint-3126",
+    "complete_for_selected_download": true,
+    "files": 18,
+    "inventory": {
+      "checkpoint-3126/1_Pooling/config.json": {
+        "git_blob_sha1": "2236c262f1f83c50f7c304e98a8d1413980280df",
+        "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc",
+        "size": 89
+      },
+      "checkpoint-3126/README.md": {
+        "git_blob_sha1": "0cd0f746b1cf7dcd00615f0d1b726e2fe52a1e6e",
+        "sha256": "c890f990eaae76a2785db6ab356729dfb3c865811fcce98d590af2d565f0b6cd",
+        "size": 124098
+      },
+      "checkpoint-3126/config.json": {
+        "git_blob_sha1": "900c0704284dba27ce63f1740645b3e713931189",
+        "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f",
+        "size": 1952
+      },
+      "checkpoint-3126/config_sentence_transformers.json": {
+        "git_blob_sha1": "465abf9518413ffa3a3d4d2ef6c5ccedc3f66fc7",
+        "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9",
+        "size": 299
+      },
+      "checkpoint-3126/model.safetensors": {
+        "git_blob_sha1": "ad38c7632a3ef3ac530ad332c352468cb6555ce0",
+        "sha256": "9e5300a46d2a84dc8f3441b3f427083f72430ac4e8f23578110c17641435b217",
+        "size": 596070136
+      },
+      "checkpoint-3126/modules.json": {
+        "git_blob_sha1": "45d2436b717b3a70d63c0df4ab2c49d5cdb02c5b",
+        "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645",
+        "size": 277
+      },
+      "checkpoint-3126/optimizer.pt": {
+        "git_blob_sha1": "367205d3efa512d79667c9e30543eac790b5ff22",
+        "sha256": "45da52d524b35c1e023a314cdd3bfa93aab8b7f68cbee2d3a219cce833de356a",
+        "size": 751558475
+      },
+      "checkpoint-3126/rng_state_0.pth": {
+        "git_blob_sha1": "ff682b0941116b1521516254fea722443b502c7e",
+        "sha256": "9ec321849313daa7abe8e7f786d8e00569f60493cc516c1b01bb8fe04af46b49",
+        "size": 15365
+      },
+      "checkpoint-3126/rng_state_1.pth": {
+        "git_blob_sha1": "c7c361360c832a5c9fa70c6ba7256c0fb12f3099",
+        "sha256": "761ca4d004707b8a5198304587576e8a1af0d9e76d98047dda744baa714553fd",
+        "size": 15365
+      },
+      "checkpoint-3126/rng_state_2.pth": {
+        "git_blob_sha1": "aac3e29a632af0b33f41953d39c79ba70c7d2827",
+        "sha256": "a16ce4e8eb4433051d6a30c046c098bb2df5899185766aff1882f857e9f81925",
+        "size": 15365
+      },
+      "checkpoint-3126/rng_state_3.pth": {
+        "git_blob_sha1": "a53d83ce1a71d22c8c7b14e4189dace083fb4dc9",
+        "sha256": "a61904aee1e841b24c14ee1f0c686f68219ebbd219bd9b0809cc954d2efa2b1c",
+        "size": 15365
+      },
+      "checkpoint-3126/scheduler.pt": {
+        "git_blob_sha1": "fc46202d07bfb5a506415a44ec27ee307dca4b4c",
+        "sha256": "f6d0b0b4b9e3d68546587bf379cf1eb69f243878811055338c85c13a086d4fb3",
+        "size": 1465
+      },
+      "checkpoint-3126/sentence_bert_config.json": {
+        "git_blob_sha1": "d2cd15826913bba6e43310063d75883bb0b7b842",
+        "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8",
+        "size": 241
+      },
+      "checkpoint-3126/tokenizer.json": {
+        "git_blob_sha1": "31e99eddb04ca32c7c1f66cde30dc3e54099402f",
+        "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d",
+        "size": 3583486
+      },
+      "checkpoint-3126/tokenizer_config.json": {
+        "git_blob_sha1": "5f39ad215a937472d4c0c4a0a925a8b6406236c0",
+        "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff",
+        "size": 542
+      },
+      "checkpoint-3126/trainer_state.json": {
+        "git_blob_sha1": "74939d2472cb5bd79c2a8312c3599e953799f398",
+        "sha256": "f62c961fda26e853d78ebe875128b4d8d4d0145ec7e9c81593cb2713dc536146",
+        "size": 55540
+      },
+      "checkpoint-3126/training_args.bin": {
+        "git_blob_sha1": "2a7d7402578edeacb5a01f47f1605d33a8b86dd7",
+        "sha256": "06d978cf46b4e9483f0bfe31c24eb517cd22aab49e83955d497f7932fb0c0cbd",
+        "size": 5649
+      },
+      "run_config.json": {
+        "git_blob_sha1": "8a41413bf444c46e58359384692b7d28f3de493a",
+        "sha256": "30c1e03bf218a89d399953cbdaf341b7c6952f4c3acacf18d84f4f3bd09067e7",
+        "size": 1118
+      }
+    }
+  },
+  "source_checkpoint_unchanged": true,
+  "source_manifest": {
+    "bytes": 6419,
+    "path": "/tmp/dense-identity-tests.gD04cY/source-v1.json",
+    "sha256": "1c6163c5aeee9d0735a6859c0e2f56a701c59d5111b553de6fb5c758da138dfd"
+  },
+  "world_size": 4
+}

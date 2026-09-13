@@ -1,0 +1,45 @@
+{
+  "scope": "engineering_public_progress_publication_attempt",
+  "observed_at_utc": "2026-09-06 08:43:33 UTC",
+  "scientific_completion": false,
+  "source_published": false,
+  "new_issue_body_published": false,
+  "status": "blocked_by_github_integration_403",
+  "issue_url": "https://github.com/qcznlp/embedding-optimizer-study/issues/41",
+  "unchanged_remote_updated_at": "2026-09-06T07:55:48Z",
+  "remote_body_unchanged_from_before": true,
+  "previous_body_preserved_verbatim_in_draft": true,
+  "draft_path": "reports/engineering-archive/dense-canonical-replay-v1/issue-body-after.md",
+  "draft_filename_boundary": "The after file is the prepared post-update body only; both writes failed, so it was never published.",
+  "validation": {
+    "path": "reports/engineering-archive/dense-canonical-replay-v1/validation.json",
+    "sha256": "a1e561251e0fc424a0d2674056b71435b4800573961971a3d0e5958e30195583"
+  },
+  "attempts": [
+    {
+      "operation": "archive_previous_issue_body_as_comment",
+      "result": {
+        "error": "GitHub API error 403: {\"message\":\"Resource not accessible by integration\",\"documentation_url\":\"https://docs.github.com/rest/issues/comments#create-an-issue-comment\",\"status\":\"403\"}",
+        "error_code": "FORBIDDEN",
+        "error_data": {
+          "message": "Resource not accessible by integration",
+          "documentation_url": "https://docs.github.com/rest/issues/comments#create-an-issue-comment",
+          "status": "403"
+        }
+      }
+    },
+    {
+      "operation": "update_issue_body_preserving_previous_body_verbatim",
+      "result": {
+        "error": "GitHub API error 403: {\"message\":\"Resource not accessible by integration\",\"documentation_url\":\"https://docs.github.com/rest/issues/issues#update-an-issue\",\"status\":\"403\"}",
+        "error_code": "FORBIDDEN",
+        "error_data": {
+          "message": "Resource not accessible by integration",
+          "documentation_url": "https://docs.github.com/rest/issues/issues#update-an-issue",
+          "status": "403"
+        }
+      }
+    }
+  ],
+  "boundary": "Read-back confirms no remote mutation. No retry, alternate credential, permission bypass, branch push or pull-request change was attempted. All local validated scientific/engineering source remains unchanged; GitHub issue #41 is still at the preceding public milestone, not the current local one."
+}

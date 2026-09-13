@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-09-04T20:18:55.490690+00:00",
+  "scientific_completion": false,
+  "analysis_role": "exploratory_method_development",
+  "scope": "historical_dense_dimension_utilization",
+  "new_manifest": {
+    "path": "reports/dimension-utilization-historical-validated/summary_manifest.json",
+    "bytes": 38575,
+    "sha256": "343ca0519e6391ba8796386f93b6c4dc8d37b487cadfab534eedee31558925f6"
+  },
+  "implementation": {
+    "bytes": 28097,
+    "path": "src/embed_optim/dimension_utilization.py",
+    "sha256": "3b3cecca660c7487eee341135e9b55502f1962ae663c16e0f733d17ca1e9fef5"
+  },
+  "coverage": {
+    "checkpoint_exports": 60,
+    "dimensions": 768,
+    "pretrained_exports": 1,
+    "random_removal_rows": 68320,
+    "rotation_rows": 546,
+    "task_checkpoint_rows": 854,
+    "tasks": 14
+  },
+  "validation": {
+    "audit_only_exit_code": 0,
+    "rows_old": 61,
+    "rows_new": 61,
+    "changed_common_checkpoint_cells": 0,
+    "new_checkpoint_columns": [
+      "document_entropy_effective_rank",
+      "document_leading_variance_fraction",
+      "document_normalized_effective_rank",
+      "document_stable_rank",
+      "query_entropy_effective_rank",
+      "query_leading_variance_fraction",
+      "query_normalized_effective_rank",
+      "query_stable_rank"
+    ],
+    "removed_checkpoint_columns": []
+  },
+  "outputs": [
+    {
+      "old": {
+        "path": "reports/dimension-utilization-historical-full/checkpoint_summary.csv",
+        "bytes": 19457,
+        "sha256": "59ef0614a68158365e4e0b6bdcc6d3c06bf0f28996aefc829f64ac8e5017888c"
+      },
+      "new": {
+        "path": "reports/dimension-utilization-historical-validated/checkpoint_summary.csv",
+        "bytes": 29043,
+        "sha256": "569ae22fcd604efdae0fa800a6f3940a1b82fbbd07153a37251611c2590b792e"
+      },
+      "identical_bytes": false
+    },
+    {
+      "old": {
+        "path": "reports/dimension-utilization-historical-full/coordinate_attribution.npz",
+        "bytes": 2492252,
+        "sha256": "97942a015331277ac1115c08f1585335c797d63f07a6ee53d549f7870105ecfa"
+      },
+      "new": {
+        "path": "reports/dimension-utilization-historical-validated/coordinate_attribution.npz",
+        "bytes": 2492252,
+        "sha256": "97942a015331277ac1115c08f1585335c797d63f07a6ee53d549f7870105ecfa"
+      },
+      "identical_bytes": true
+    },
+    {
+      "old": {
+        "path": "reports/dimension-utilization-historical-full/random_removal.csv",
+        "bytes": 7265426,
+        "sha256": "8781a05ca7994695e89447eece5c5838aad88a3a887dbdc73ad31ff97b3574b0"
+      },
+      "new": {
+        "path": "reports/dimension-utilization-historical-validated/random_removal.csv",
+        "bytes": 7265426,
+        "sha256": "8781a05ca7994695e89447eece5c5838aad88a3a887dbdc73ad31ff97b3574b0"
+      },
+      "identical_bytes": true
+    },
+    {
+      "old": {
+        "path": "reports/dimension-utilization-historical-full/rotation_summary.csv",
+        "bytes": 130340,
+        "sha256": "ae960ee2fb60566bfff23d87778de997590aa1b66768c058a33864ca94040ca1"
+      },
+      "new": {
+        "path": "reports/dimension-utilization-historical-validated/rotation_summary.csv",
+        "bytes": 130340,
+        "sha256": "ae960ee2fb60566bfff23d87778de997590aa1b66768c058a33864ca94040ca1"
+      },
+      "identical_bytes": true
+    },
+    {
+      "old": {
+        "path": "reports/dimension-utilization-historical-full/task_summary.csv",
+        "bytes": 196692,
+        "sha256": "13aa3f8c6d521d279952467a75160093067f011da75540fd9dc06e285ed02e0a"
+      },
+      "new": {
+        "path": "reports/dimension-utilization-historical-validated/task_summary.csv",
+        "bytes": 196692,
+        "sha256": "13aa3f8c6d521d279952467a75160093067f011da75540fd9dc06e285ed02e0a"
+      },
+      "identical_bytes": true
+    }
+  ],
+  "boundary": "Historical exploratory regeneration only; no primary checkpoint dimension result. Original reports preserved."
+}

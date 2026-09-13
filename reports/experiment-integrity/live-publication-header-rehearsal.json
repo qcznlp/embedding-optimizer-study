@@ -1,0 +1,91 @@
+{
+  "observed_at_utc": "2026-09-04T23:33:10.566221+00:00",
+  "scope": "offline_exact_publication_header_rehearsal",
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "9",
+    "time": "2.018",
+    "timestamp": "2026-09-05T07:31:36.131577+08:00",
+    "hostname": "mlflow-training-zl8wuc-496809-n3-master-0"
+  },
+  "bindings": [
+    {
+      "path": "reports/engineering-archive/publication-header/factorial-main-gate.json",
+      "bytes": 1238,
+      "sha256": "4a8d6aa8d70a438835d99e532598a330891781ba8d4e4131cd0c7d987f7513de"
+    },
+    {
+      "path": "reports/engineering-archive/publication-header/main-ledger.json",
+      "bytes": 24577,
+      "sha256": "ff679aa65f8d9625d51b7134703c55a4d95e2d2d725fca2c0dd404d109fa5092"
+    },
+    {
+      "path": "reports/engineering-archive/publication-header/publication-protocol.json",
+      "bytes": 9404,
+      "sha256": "c815e8dfb52ac71350d8c1e7384bdf122ce549ec92fbc2fe883a9a4866e6d71c"
+    },
+    {
+      "path": "reports/engineering-archive/publication-header/renderer-source.py",
+      "bytes": 38709,
+      "sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6"
+    },
+    {
+      "path": "tests/test_live_publication_header_hotfix.py",
+      "bytes": 9422,
+      "sha256": "0a152056d85cdf6c341c67893416818e2cc4d603bedc21a817621dc3c18dd650"
+    },
+    {
+      "path": "reports/experiment-integrity/live-publication-header-rehearsal-tests-v2.xml",
+      "bytes": 1637,
+      "sha256": "f59ab192004de2bf656993dcebd733bd3cd91892402f9b06d33853db10ec3093"
+    },
+    {
+      "path": "reports/experiment-integrity/live-publication-header-hotfix.patch",
+      "bytes": 3764,
+      "sha256": "4ecf94dacaa35a99885f8ee9b83a07a9c9d9d9b1b13b9e434e392bb242e4fc5d"
+    },
+    {
+      "path": "reports/experiment-integrity/live-publication-header-migration-draft.json",
+      "bytes": 1922,
+      "sha256": "ca5536af33675a30478b47c05db57bb237c23963d2e1a6f0da0e9f84fc77d309"
+    }
+  ],
+  "assertions": {
+    "exact_two_file_patch_reconstructed": true,
+    "changed_renderer_bytes": 3,
+    "affected_headers": 3,
+    "original_renderer_compile": "Misplaced noalign; expected failure",
+    "patched_renderer_compile": "success on synthetic evidence",
+    "rendered_output_difference": "only three literal backslash-n header separators",
+    "command_order_and_arguments_unchanged": true,
+    "original_ledger_archive_byte_identical": true,
+    "existing_backup_records_preserved": true,
+    "migration_idempotent_in_temporary_copy": true,
+    "undeclared_drift_rejected": true,
+    "successor_rejects_migrated_main_with_old_gate": true,
+    "proposed_exact_successor_gate_accepts_only_complete_grid": true
+  },
+  "original_ledger_backup_count": 8,
+  "live_state_after_rehearsal": {
+    "main": {
+      "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+      "status": "waiting_for_training",
+      "complete": false,
+      "executed_steps": 0
+    },
+    "factorial": {
+      "contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8",
+      "status": "waiting_for_main_completion",
+      "complete": false,
+      "executed_steps": 0
+    }
+  },
+  "runtime_deployed": false,
+  "real_controller_lease_acquired": false,
+  "scientific_completion": false,
+  "hf_mutations": false,
+  "boundary": "Temporary copies and projected host-path contracts only. No real runtime transition, final-layout claim for the old main manuscript, scientific outcome, or HF deletion. Existing 1005-test full suite is a separate earlier receipt; these nine are additional focused tests."
+}

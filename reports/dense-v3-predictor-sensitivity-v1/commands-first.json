@@ -1,0 +1,18 @@
+[
+  {
+    "cmd": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-predictor-sensitivity.wIhgwqvS/sensitivity.py --parent /root/embedding-optimizer-story-refactor/reports/dense-v3-weight-retrieval-v1 --output /tmp/dense-v3-predictor-sensitivity.wIhgwqvS/actual",
+    "chunk_id": "905196",
+    "wall_time_seconds": 1.000513605,
+    "session_id": 88008,
+    "original_token_count": 40,
+    "output": "{\"baseline\": \"B0_original\", \"conditioned\": false, \"completed_comparisons\": 14}\n{\"baseline\": \"B0_original\", \"conditioned\": true, \"completed_comparisons\": 28}\n"
+  },
+  {
+    "session_id": 88008,
+    "chunk_id": "dc5626",
+    "wall_time_seconds": 0.000002323,
+    "exit_code": 0,
+    "original_token_count": 257,
+    "output": "{\"baseline\": \"B1_raw_rate\", \"conditioned\": false, \"completed_comparisons\": 42}\n{\"baseline\": \"B2_optimizer_stage_rate\", \"conditioned\": false, \"completed_comparisons\": 56}\n{\"baseline\": \"B3_nominal_schedule\", \"conditioned\": false, \"completed_comparisons\": 70}\n{\"baseline\": \"B3_nominal_schedule\", \"conditioned\": true, \"completed_comparisons\": 84}\n{\"scope\": \"post-result-recipe-baseline-and-conditional-predictor-sensitivity\", \"completed_at_utc\": \"2026-09-12T12:33:52.066671+00:00\", \"parent_verification_sha256\": \"243b001980feca61e6cca4852f544e9922fa7ca90b2a157981836d47b16d8621\", \"source\": {\"bytes\": 17180, \"sha256\": \"6a87b441917c95d1fb0355c340beb8715acee89e66c102b51ecdfce6265d9141\"}, \"comparisons\": 84, \"folds\": 336, \"heldout_prediction_rows\": 5040, \"original_prediction_rows_exactly_reproduced\": 840, \"exploratory_post_result\": true, \"original_protocol_or_result_modified\": false, \"model_or_retrieval_execution\": false, \"functional_or_causal_evidence\": false, \"formal_primary_admission\": false, \"scientific_completion\": false}\n"
+  }
+]

@@ -1,0 +1,165 @@
+{
+  "scope": "preparation_only_dense_numerical_correction",
+  "candidate_root": "/tmp/dense-correction-source.0YHywN",
+  "base_commit": "f231a6430712388778f32ad1736a4cb6de3bec3e",
+  "scientific_completion": false,
+  "production_deployed": false,
+  "candidate_sources": [
+    {
+      "relative_path": "src/embed_optim/config.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/config.py",
+        "bytes": 8925,
+        "sha256": "25d85021a0d78918374cb995016e80563c5ede9b8e87499809e336323105436b"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/optimizers.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/optimizers.py",
+        "bytes": 12765,
+        "sha256": "7d7d4f200c410cb1b24e1773ae72811582f43a0c794a5d1b2af269c123e69b1e"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/train.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/train.py",
+        "bytes": 21240,
+        "sha256": "51c5a4ceced64ba8cc69e73b5a8c0929395e7584129d82834e36f6aa18e46a90"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/dense_numerical_contract.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/dense_numerical_contract.py",
+        "bytes": 7315,
+        "sha256": "207d8545f7d329979ebbe0e90317f95f6ca01bb310eeff040fe3de461956d8f4"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/artifact_inventory.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/artifact_inventory.py",
+        "bytes": 1971,
+        "sha256": "856f9fcfaf1a4f0c89062a22d8771eef0e3543995881ac89097e688e82fd2e6b"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/short_branch.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/short_branch.py",
+        "bytes": 26794,
+        "sha256": "e4c8c0c5e5cc24fcb69fa9beff86135ff47e1e36769d3026856b313b66185613"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/losses.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/losses.py",
+        "bytes": 3805,
+        "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/collators.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/collators.py",
+        "bytes": 2117,
+        "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/callbacks.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/callbacks.py",
+        "bytes": 10641,
+        "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+      }
+    },
+    {
+      "relative_path": "configs/dense_correctness_candidate.yaml",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/configs/dense_correctness_candidate.yaml",
+        "bytes": 2009,
+        "sha256": "6a2183f20d6110f09d0d3df125cea2ae95174f08f9eefdc75a5544fefbf251ae"
+      }
+    },
+    {
+      "relative_path": "tests/test_dense_numerical_contract.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/tests/test_dense_numerical_contract.py",
+        "bytes": 10025,
+        "sha256": "01b8d051e40bcb4a6dfeb49c74b31dd2d0935d1e8a4e2548515df1d28b098c1f"
+      }
+    }
+  ],
+  "matrix_source": {
+    "path": "/tmp/dense-correction-source.0YHywN/configs/dense_no_packing_retrain.yaml",
+    "bytes": 1601,
+    "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+  },
+  "matrix_field_checks": [
+    {
+      "old": "padded-adamw-1e-6",
+      "new": "verified-adamw-1e-6",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-adamw-3e-6",
+      "new": "verified-adamw-3e-6",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-adamw-1e-5",
+      "new": "verified-adamw-1e-5",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-adamw-3e-5",
+      "new": "verified-adamw-3e-5",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-1e-4",
+      "new": "verified-muon-1e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-3e-4",
+      "new": "verified-muon-3e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-1e-3",
+      "new": "verified-muon-1e-3",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-3e-3",
+      "new": "verified-muon-3e-3",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-1e-4",
+      "new": "verified-normuon-1e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-3e-4",
+      "new": "verified-normuon-3e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-1e-3",
+      "new": "verified-normuon-1e-3",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-3e-3",
+      "new": "verified-normuon-3e-3",
+      "all_other_scientific_fields_equal": true
+    }
+  ],
+  "proposal_boundary": "Explicit numerical-policy and NorMuon denominator correction, new output/run/WandB namespaces; unchanged seed, data, positive/negative groups, base model revision, optimizer hyperparameter grid, context, batch, clipping and five checkpoint fractions. Not a frozen formal execution authorization."
+}

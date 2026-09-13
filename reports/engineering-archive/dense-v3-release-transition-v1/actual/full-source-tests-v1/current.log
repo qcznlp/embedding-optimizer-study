@@ -1,0 +1,283 @@
+........................................................................ [  2%]
+........................................................................ [  5%]
+........................................................................ [  7%]
+.........................................................F.............. [ 10%]
+........................................................................ [ 12%]
+........................................................................ [ 15%]
+............................FF.......................................... [ 17%]
+............................................................... [ 19%]
+........................................................................ [ 22%]
+........................................................................ [ 24%]
+........................................................................ [ 27%]
+........................................................................ [ 29%]
+........................................................................ [ 32%]
+...F.................................................................... [ 34%]
+........................................................................ [ 37%]
+........................................................................ [ 39%]
+........................................................................ [ 42%]
+........................................................................ [ 44%]
+........................................................................ [ 47%]
+........................................................................ [ 49%]
+........................................................................ [ 52%]
+........................................................................ [ 54%]
+........................................................................ [ 57%]
+................F....................................................... [ 59%]
+........................................................................ [ 62%]
+........................................................................ [ 64%]
+........................................................................ [ 67%]
+........................................................................ [ 69%]
+........................................................................ [ 72%]
+........................................................................ [ 74%]
+........................................................................ [ 77%]
+........................................................................ [ 79%]
+........................................................................ [ 82%]
+........................................................................ [ 84%]
+........................................................................ [ 87%]
+........................................................................ [ 89%]
+........................................................................ [ 92%]
+........................................................................ [ 94%]
+........................................................................ [ 97%]
+........................................................................ [ 99%]
+..                                                                       [100%]
+=================================== FAILURES ===================================
+____ test_corrected_detail_table_is_called_only_after_the_appendix_boundary ____
+
+    def test_corrected_detail_table_is_called_only_after_the_appendix_boundary() -> None:
+        manuscript = (REPOSITORY / "paper/main.tex").read_text(encoding="utf-8")
+        document = manuscript.index(r"\begin{document}")
+        abstract_start = manuscript.index(r"\begin{abstract}")
+        abstract_end = manuscript.index(r"\end{abstract}")
+        main_end = manuscript.index(r"\label{paper-main-end}")
+        conclusion = manuscript.index(r"\section{Conclusion}")
+        appendix = manuscript.index(r"\appendix")
+        corrected_input = manuscript.index(r"\input{generated/optimizer-primary}")
+        corrected_abstract = manuscript.index(r"\CorrectedAbstractFinding")
+        corrected_main = manuscript.index(r"\CorrectedMainSection")
+        corrected_conclusion = manuscript.index(r"\CorrectedConclusionFinding")
+        bridge_call = manuscript.index(r"\CorrectedGeometryBridgeTable")
+    
+        assert corrected_input < document < abstract_start < corrected_abstract < abstract_end
+        assert abstract_end < corrected_main < conclusion < corrected_conclusion < main_end
+        assert main_end < appendix < bridge_call
+        makefile = (REPOSITORY / "paper/Makefile").read_text(encoding="utf-8")
+>       assert "generated/optimizer-primary.tex" in makefile
+E       assert 'generated/optimizer-primary.tex' in "SHELL := /bin/bash\n.DEFAULT_GOAL := current\n\nPYTHON ?= python3\nexport PYTHONPATH := $(abspath ../src)$(if $(PYTHO...) -f legacy.Makefile' all\n\nlegacy-release:\n\t$(MAKE) -f legacy.Makefile MAKE='$(MAKE) -f legacy.Makefile' release\n"
+
+tests/test_corrected_publication.py:254: AssertionError
+_____ test_release_rechecks_primary_source_removed_after_an_earlier_audit ______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2076/test_release_rechecks_primary_0')
+
+    def test_release_rechecks_primary_source_removed_after_an_earlier_audit(tmp_path: Path):
+        paper = tmp_path / "paper"
+        paper.mkdir()
+        (paper / "Makefile").write_bytes((ROOT / "paper/Makefile").read_bytes())
+        causal_source = tmp_path / "reports/dense-no-packing-outcomes/primary_summary.csv"
+        causal_source.parent.mkdir(parents=True)
+        causal_source.write_text("held_out_prediction\nvalid\n", encoding="utf-8")
+        fake_cli = tmp_path / "fake_paper_cli.py"
+        fake_cli.write_text(
+            """\
+    import os
+    import sys
+    from pathlib import Path
+    
+    arguments = sys.argv[1:]
+    module = arguments[arguments.index("-m") + 1]
+    source = Path(os.environ["CAUSAL_SOURCE"])
+    if module == "embed_optim.paper_audit":
+        if "--strict" not in arguments or not source.is_file():
+            print("strict audit rejected missing primary source")
+            raise SystemExit(40)
+    elif module == "embed_optim.paper_layout":
+        print("synthetic layout check passed")
+    else:
+        raise SystemExit(42)
+    """,
+            encoding="utf-8",
+        )
+        environment = {**os.environ, "CAUSAL_SOURCE": str(causal_source)}
+        subprocess.run(
+            [sys.executable, str(fake_cli), "-m", "embed_optim.paper_audit", "--strict"],
+            check=True,
+            env=environment,
+        )
+        causal_source.unlink()
+    
+        result = subprocess.run(
+            [
+                "make",
+                "-C",
+                str(paper),
+                "release",
+                # This test isolates the post-build audit; the full synthetic paper test
+                # separately executes the actual Makefile, LaTeX compiler and layout gate.
+                "MAKE=true",
+                f"PYTHON={sys.executable} {fake_cli}",
+            ],
+            check=False,
+            capture_output=True,
+            env=environment,
+            text=True,
+        )
+    
+        output = result.stdout + result.stderr
+        assert result.returncode != 0
+>       assert "strict audit rejected missing primary source" in output
+E       assert 'strict audit rejected missing primary source' in "make: Entering directory '/tmp/pytest-of-root/pytest-2076/test_release_rechecks_primary_0/paper'\nmake: Leaving direc...ry_0/paper'\nSet NUMERICAL_BUNDLE to the accepted closed numerical bundle.\nmake: *** [Makefile:23: release] Error 2\n"
+
+tests/test_dense_finalization_pipeline.py:328: AssertionError
+__ test_makefile_draft_build_is_independent_of_historical_headline_generation __
+
+    def test_makefile_draft_build_is_independent_of_historical_headline_generation():
+        makefile = (ROOT / "paper/Makefile").read_text(encoding="utf-8")
+        release_recipe = makefile.split("\nrelease:\n", 1)[1].split("\n\n", 1)[0]
+        developer_recipe = makefile.split("\nall:", 1)[1].split("\n\n", 1)[0]
+    
+        assert "--if-ready" not in release_recipe
+>       assert "--strict" in release_recipe
+E       assert '--strict' in '\t@test -n "$(NUMERICAL_BUNDLE)" || { echo \'Set NUMERICAL_BUNDLE to the accepted closed numerical bundle.\' >&2; exi...\\\n\t\t--numerical-bundle "$(NUMERICAL_BUNDLE)" \\\n\t\t--paper-dir "$(abspath current)" --output "$(RELEASE_OUTPUT)"'
+
+tests/test_dense_finalization_pipeline.py:339: AssertionError
+_________ test_complete_synthetic_findings_fit_the_naacl_paper_layout __________
+
+paper_dir = PosixPath('/tmp/pytest-of-root/pytest-2076/test_complete_synthetic_findin0/synthetic-layout-only/paper')
+
+    def audit_paper_layout(
+        paper_dir: str | Path = "paper",
+        *,
+        max_main_page: int = DEFAULT_MAX_MAIN_PAGE,
+        label: str = MAIN_END_LABEL,
+    ) -> dict[str, Any]:
+        if isinstance(max_main_page, bool) or max_main_page < 1:
+            raise ValueError("Maximum main-text page must be a positive integer")
+        paper = Path(paper_dir).resolve()
+        aux_path = paper / "build/main.aux"
+        try:
+>           aux_text = aux_path.read_text(encoding="utf-8")
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/embed_optim/paper_layout.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-root/pytest-2076/test_complete_synthetic_findin0/synthetic-layout-only/paper/build/main.aux')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-root/pytest-2076/test_complete_synthetic_findin0/synthetic-layout-only/paper/build/main.aux'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+synthetic_publication = (Namespace(repository=PosixPath('/root/embedding-optimizer-story-refactor'), protocol=PosixPath('/root/embedding-optim...ed-adamw-1e-6', 'stage': 5}, {'mean_ndcg_at_10': 0.39661753505403224, 'run_id': 'padded-adamw-3e-6', 'stage': 1}, ...])
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2076/test_complete_synthetic_findin0')
+
+    def test_complete_synthetic_findings_fit_the_naacl_paper_layout(synthetic_publication, tmp_path):
+        """Render every primary include; a pending box is not a final-layout test."""
+        from test_corrected_publication import _evidence
+        from test_state_operator_factorial_completion import _estimands
+    
+        from embed_optim.corrected_publication import render_latex
+        from embed_optim.paper_layout import audit_paper_layout
+        from embed_optim.state_operator_factorial_publication import _render_latex
+    
+        if shutil.which("latexmk") is None or shutil.which("make") is None:
+            pytest.skip("latexmk/make is not installed")
+        args, _, _, _ = synthetic_publication
+        paper = tmp_path / "synthetic-layout-only" / "paper"
+        shutil.copytree(ROOT / "paper", paper, ignore=shutil.ignore_patterns("build"))
+        (paper / "generated/dimension-utilization.tex").write_text(args.paper_output.read_text())
+        (paper / "generated/optimizer-primary.tex").write_text(render_latex(_evidence()))
+        (paper / "generated/state-operator-factorial.tex").write_text(
+            _render_latex(_estimands("supported_positive", "supported_positive", "supported_positive"))
+        )
+        manuscript = (paper / "main.tex").read_text()
+        manuscript = manuscript.replace(
+            r"\maketitle",
+            r"\maketitle\begin{center}\textbf{SYNTHETIC LAYOUT TEST -- NOT EXPERIMENT RESULTS}\end{center}",
+        )
+        (paper / "main.tex").write_text(manuscript)
+        result = subprocess.run(
+            ["make", "all", f"PYTHON={sys.executable}"],
+            cwd=paper,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            env={
+                **os.environ,
+                "TEXINPUTS": f"{paper / 'vendor'}//:",
+                "BSTINPUTS": f"{paper / 'vendor'}//:",
+            },
+        )
+        assert result.returncode == 0, result.stdout[-6000:]
+>       layout = audit_paper_layout(paper)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_dimension_publication.py:296: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+paper_dir = PosixPath('/tmp/pytest-of-root/pytest-2076/test_complete_synthetic_findin0/synthetic-layout-only/paper')
+
+    def audit_paper_layout(
+        paper_dir: str | Path = "paper",
+        *,
+        max_main_page: int = DEFAULT_MAX_MAIN_PAGE,
+        label: str = MAIN_END_LABEL,
+    ) -> dict[str, Any]:
+        if isinstance(max_main_page, bool) or max_main_page < 1:
+            raise ValueError("Maximum main-text page must be a positive integer")
+        paper = Path(paper_dir).resolve()
+        aux_path = paper / "build/main.aux"
+        try:
+            aux_text = aux_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+>           raise ValueError(f"Paper layout audit cannot read {aux_path}") from error
+E           ValueError: Paper layout audit cannot read /tmp/pytest-of-root/pytest-2076/test_complete_synthetic_findin0/synthetic-layout-only/paper/build/main.aux
+
+src/embed_optim/paper_layout.py:70: ValueError
+______________ test_release_runs_layout_gate_only_after_pdf_build ______________
+
+    def test_release_runs_layout_gate_only_after_pdf_build():
+        makefile = (ROOT / "paper/Makefile").read_text(encoding="utf-8")
+        all_target = makefile.split("\nall:", 1)[1].split("\n\nrelease:", 1)[0]
+>       assert "$(BUILD)/main.pdf" in all_target
+E       assert '$(BUILD)/main.pdf' in ' current\n\ncurrent:\n\tmkdir -p "$(dir $(CURRENT_OUTPUT))"\n\tCUDA_VISIBLE_DEVICES=\'\' $(PYTHON) -m embed_optim.cur...f legacy.Makefile\' all\n\nlegacy-release:\n\t$(MAKE) -f legacy.Makefile MAKE=\'$(MAKE) -f legacy.Makefile\' release\n'
+
+tests/test_paper_layout.py:214: AssertionError
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63
+  /usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+    import pynvml  # type: ignore[import]
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+../../usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7
+  /usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7: DeprecationWarning: Importing from 'sentence_transformers.models' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.modules' instead.
+    from sentence_transformers.models import Pooling, Transformer
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_corrected_publication.py::test_corrected_detail_table_is_called_only_after_the_appendix_boundary
+FAILED tests/test_dense_finalization_pipeline.py::test_release_rechecks_primary_source_removed_after_an_earlier_audit
+FAILED tests/test_dense_finalization_pipeline.py::test_makefile_draft_build_is_independent_of_historical_headline_generation
+FAILED tests/test_dimension_publication.py::test_complete_synthetic_findings_fit_the_naacl_paper_layout
+FAILED tests/test_paper_layout.py::test_release_runs_layout_gate_only_after_pdf_build
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

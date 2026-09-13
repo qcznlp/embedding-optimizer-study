@@ -1,0 +1,160 @@
+{
+  "passed": true,
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "reconstruction": {
+    "beir_task_results_reparsed": 840,
+    "checkpoint_tensors_revalidated": false,
+    "comparison": "Exact original evidence and outcome table bytes",
+    "external_archive_sha256": "6bf1786464661fb83c03dcd5aadd4fc1439e08c91b0a5ddf3dc5091ea9f84ef6",
+    "functional_inference_recomputed": false,
+    "geometry_primitives_recomputed": false,
+    "manuscript_installed": false,
+    "model_encoding_repeated": false,
+    "original_outcome_numerics_verified": true,
+    "outputs": {
+      "local_addresses.json": {
+        "bytes": 812043,
+        "sha256": "56a081e10383a3e644ee234deb2937fefa3ee647780e3334d5eb70dfabd4f479"
+      },
+      "outcomes/all_task_scores.csv": {
+        "bytes": 60904,
+        "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+      },
+      "outcomes/evidence.json": {
+        "bytes": 1395790,
+        "sha256": "5bd445c186a4f5be9a25aefcf8117ba56a95771ad2f8329c2cc5323e8faa403e"
+      },
+      "outcomes/manifest.json": {
+        "bytes": 6205,
+        "sha256": "c55ad3c725b23ceb9fceeebab4c5fb0f5e4d49e532452e5679dcb95683fd1870"
+      },
+      "outcomes/optimizer_stage_scores.csv": {
+        "bytes": 780,
+        "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+      },
+      "outcomes/primary_summary.csv": {
+        "bytes": 809,
+        "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+      },
+      "outcomes/primary_task_effects.csv": {
+        "bytes": 1584,
+        "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+      },
+      "outcomes/run_observed_auc.csv": {
+        "bytes": 818,
+        "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+      },
+      "outcomes/run_stage_scores.csv": {
+        "bytes": 4261,
+        "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+      },
+      "outcomes/secondary_summary.csv": {
+        "bytes": 970,
+        "sha256": "e65617e81060d91b1e381fdbab80226598a32ba773126dbc5067460878e46310"
+      },
+      "outcomes/secondary_task_effects.csv": {
+        "bytes": 1412,
+        "sha256": "36a9ad86ef51df29c1cede9ee1782500a10e4e86c94c478c200e1d70d4342af6"
+      },
+      "outcomes/system_metrics.csv": {
+        "bytes": 2219,
+        "sha256": "746913d978f458c29c47481a5630c06685c29a6a8290c022c47062c4b3f76928"
+      },
+      "outcomes/validation_run_metrics.csv": {
+        "bytes": 1911,
+        "sha256": "6d4f57688ecd87d28a01ecab7e0837cfffc9997f274f66f565a8232a5718d82f"
+      },
+      "reconstruction_plan.json": {
+        "bytes": 4371,
+        "sha256": "50ed7e149d18fc2ea1682898d30119261d2262d6ec593689c10c6171ef20fcde"
+      }
+    },
+    "primary_scientific_admission": false,
+    "raw_validation_text_revalidated": false,
+    "raw_vector_features_recomputed": false,
+    "retrieval_repeated": false,
+    "scientific_completion": false,
+    "scope": "dense_primary_v3_outcome_reconstruction",
+    "table_counts": {
+      "all_task_scores": 840,
+      "optimizer_stage_scores": 15,
+      "primary_summary": 3,
+      "primary_task_effects": 14,
+      "run_observed_auc": 12,
+      "run_stage_scores": 60,
+      "secondary_summary": 3,
+      "secondary_task_effects": 14,
+      "system_metrics": 12,
+      "validation_run_metrics": 12
+    },
+    "timing_remeasured": false,
+    "upstream_admission_simulated": true,
+    "validation_jobs": 12,
+    "validation_records_replayed": 49152,
+    "validation_replay_changes_recorded_metrics": false,
+    "validation_selection_recomputed": true
+  },
+  "scientific_completion": false,
+  "scope": "engineering_synthetic_outcome_reader_smoke",
+  "sources": [
+    {
+      "bytes": 15765,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcome_primitives.py",
+      "sha256": "4abb30de9d51557c6e826806f16dab20cceccca5a77cb7eb9f01750ecbdf1398"
+    },
+    {
+      "bytes": 5597,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcome_reconstruction.py",
+      "sha256": "22cce7d20283527c54a6c8c96efb5fd26d03476cecb7d2892842a608db3bd209"
+    },
+    {
+      "bytes": 13091,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/outcome_reconstruction_fixture.py",
+      "sha256": "87831bd8f9122f66239f2df6857b492433aedd7566b0ae085581c3dfae880963"
+    },
+    {
+      "bytes": 2306,
+      "path": "/tmp/dense-v3-outcome-reader-smoke.Da7VW6/run.py",
+      "sha256": "a92f25dc30c934ff34538b0cd275c44ed1a713fac1d1f11db0fa5a29b6e34473"
+    }
+  ],
+  "upstream_admission_simulated": true
+}

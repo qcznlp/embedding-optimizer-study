@@ -1,0 +1,2975 @@
+{
+  "boundary": "Actual four-rank CPU/Gloo OptimizerTrainer, production collator/loss/optimizer builder, microbatch 8 and four accumulation steps. Tiny randomly initialized two-layer ModernBERT, short synthetic texts, FP32/SDPA and zero dropout with non-reentrant gradient checkpointing. Checks raw and clipped gradients against an independent float64 row-wise 128-query/eight-candidate reference and rank consistency over two steps per optimizer. Does not certify full DenseOn, GPU/NCCL, BF16/FlashAttention, 8192-token execution, rank-RNG resume, the 500K data loader or any optimizer-quality/scientific result.",
+  "complete_for_cpu_fixture": true,
+  "cpu_only_backward_compensation": true,
+  "observed_at_utc": "2026-09-05T05:58:54.846142+00:00",
+  "records": [
+    {
+      "accelerator_backward_divisor": 4,
+      "checks": [
+        {
+          "actual_raw_gradient_norm": 11.08727741241455,
+          "candidates_per_query": 8,
+          "clipped_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 5.960464477539063e-08,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 2.764863893389702e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-10,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.3874235921539366e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.2741809263825417e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.1827872842550278e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.637978807091713e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.693881005048752e-10,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.320099833421409e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.523847797419876e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.841705620288849e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            102,
+            168,
+            150,
+            116,
+            22,
+            218,
+            126,
+            1,
+            235,
+            47,
+            57,
+            111,
+            175,
+            246,
+            8,
+            236,
+            48,
+            191,
+            219,
+            104,
+            14,
+            10,
+            195,
+            220,
+            137,
+            50,
+            121,
+            64,
+            170,
+            93,
+            241,
+            58,
+            198,
+            250,
+            56,
+            65,
+            158,
+            4,
+            247,
+            99,
+            42,
+            178,
+            20,
+            100,
+            71,
+            77,
+            23,
+            35,
+            200,
+            134,
+            88,
+            222,
+            59,
+            204,
+            180,
+            26,
+            225,
+            174,
+            211,
+            5,
+            67,
+            226,
+            253,
+            140,
+            51,
+            190,
+            55,
+            86,
+            157,
+            192,
+            149,
+            249,
+            31,
+            213,
+            248,
+            2,
+            19,
+            205,
+            216,
+            80,
+            118,
+            29,
+            6,
+            196,
+            234,
+            186,
+            185,
+            142,
+            101,
+            172,
+            113,
+            82,
+            3,
+            124,
+            34,
+            233,
+            203,
+            212,
+            237,
+            251,
+            167,
+            75,
+            182,
+            61,
+            44,
+            68,
+            54,
+            79,
+            52,
+            166,
+            206,
+            197,
+            15,
+            184,
+            207,
+            38,
+            49,
+            199,
+            119,
+            159,
+            151,
+            242,
+            221,
+            115,
+            164,
+            53,
+            161,
+            7
+          ],
+          "global_step_before_update": 0,
+          "identical_raw_gradients_across_four_ranks": true,
+          "passed": true,
+          "rank_microbatch_ids": [
+            [
+              [
+                102,
+                168,
+                150,
+                116,
+                22,
+                218,
+                126,
+                1
+              ],
+              [
+                235,
+                47,
+                57,
+                111,
+                175,
+                246,
+                8,
+                236
+              ],
+              [
+                48,
+                191,
+                219,
+                104,
+                14,
+                10,
+                195,
+                220
+              ],
+              [
+                137,
+                50,
+                121,
+                64,
+                170,
+                93,
+                241,
+                58
+              ]
+            ],
+            [
+              [
+                198,
+                250,
+                56,
+                65,
+                158,
+                4,
+                247,
+                99
+              ],
+              [
+                42,
+                178,
+                20,
+                100,
+                71,
+                77,
+                23,
+                35
+              ],
+              [
+                200,
+                134,
+                88,
+                222,
+                59,
+                204,
+                180,
+                26
+              ],
+              [
+                225,
+                174,
+                211,
+                5,
+                67,
+                226,
+                253,
+                140
+              ]
+            ],
+            [
+              [
+                51,
+                190,
+                55,
+                86,
+                157,
+                192,
+                149,
+                249
+              ],
+              [
+                31,
+                213,
+                248,
+                2,
+                19,
+                205,
+                216,
+                80
+              ],
+              [
+                118,
+                29,
+                6,
+                196,
+                234,
+                186,
+                185,
+                142
+              ],
+              [
+                101,
+                172,
+                113,
+                82,
+                3,
+                124,
+                34,
+                233
+              ]
+            ],
+            [
+              [
+                203,
+                212,
+                237,
+                251,
+                167,
+                75,
+                182,
+                61
+              ],
+              [
+                44,
+                68,
+                54,
+                79,
+                52,
+                166,
+                206,
+                197
+              ],
+              [
+                15,
+                184,
+                207,
+                38,
+                49,
+                199,
+                119,
+                159
+              ],
+              [
+                151,
+                242,
+                221,
+                115,
+                164,
+                53,
+                161,
+                7
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.1920928955078125e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.3527612686157227e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 2.561137080192566e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 9.313225746154785e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.2741809263825417e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 4.3655745685100555e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.6193447411060333e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 4.190951585769653e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 7.450580596923828e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.874003257602453e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 4.94765117764473e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.470348358154297e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 11.087275505065918
+        },
+        {
+          "actual_raw_gradient_norm": 7.672708511352539,
+          "candidates_per_query": 8,
+          "clipped_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.6391277313232422e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.799826562404633e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 5.238689482212067e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 8.294591680169106e-10,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.661160346586257e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.718003765447065e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 8.503775461576879e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.18367562815547e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 4.656612873077393e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 8.731149137020111e-10,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.410605131648481e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.637978807091713e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.035118657455314e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            27,
+            39,
+            173,
+            224,
+            129,
+            215,
+            254,
+            32,
+            91,
+            231,
+            76,
+            69,
+            229,
+            210,
+            147,
+            45,
+            72,
+            95,
+            17,
+            223,
+            46,
+            252,
+            89,
+            183,
+            90,
+            138,
+            193,
+            94,
+            36,
+            141,
+            60,
+            28,
+            21,
+            103,
+            117,
+            24,
+            66,
+            37,
+            70,
+            143,
+            105,
+            84,
+            209,
+            40,
+            154,
+            62,
+            177,
+            63,
+            73,
+            125,
+            97,
+            112,
+            33,
+            194,
+            128,
+            30,
+            135,
+            127,
+            146,
+            238,
+            245,
+            169,
+            165,
+            13,
+            18,
+            171,
+            109,
+            108,
+            176,
+            189,
+            152,
+            153,
+            107,
+            122,
+            9,
+            181,
+            232,
+            243,
+            74,
+            156,
+            110,
+            87,
+            85,
+            132,
+            188,
+            155,
+            228,
+            145,
+            83,
+            139,
+            162,
+            239,
+            25,
+            98,
+            96,
+            202,
+            136,
+            201,
+            214,
+            217,
+            81,
+            133,
+            12,
+            230,
+            131,
+            0,
+            120,
+            106,
+            160,
+            11,
+            41,
+            255,
+            227,
+            148,
+            179,
+            78,
+            16,
+            163,
+            144,
+            244,
+            187,
+            130,
+            92,
+            240,
+            123,
+            114,
+            43,
+            208
+          ],
+          "global_step_before_update": 1,
+          "identical_raw_gradients_across_four_ranks": true,
+          "passed": true,
+          "rank_microbatch_ids": [
+            [
+              [
+                27,
+                39,
+                173,
+                224,
+                129,
+                215,
+                254,
+                32
+              ],
+              [
+                91,
+                231,
+                76,
+                69,
+                229,
+                210,
+                147,
+                45
+              ],
+              [
+                72,
+                95,
+                17,
+                223,
+                46,
+                252,
+                89,
+                183
+              ],
+              [
+                90,
+                138,
+                193,
+                94,
+                36,
+                141,
+                60,
+                28
+              ]
+            ],
+            [
+              [
+                21,
+                103,
+                117,
+                24,
+                66,
+                37,
+                70,
+                143
+              ],
+              [
+                105,
+                84,
+                209,
+                40,
+                154,
+                62,
+                177,
+                63
+              ],
+              [
+                73,
+                125,
+                97,
+                112,
+                33,
+                194,
+                128,
+                30
+              ],
+              [
+                135,
+                127,
+                146,
+                238,
+                245,
+                169,
+                165,
+                13
+              ]
+            ],
+            [
+              [
+                18,
+                171,
+                109,
+                108,
+                176,
+                189,
+                152,
+                153
+              ],
+              [
+                107,
+                122,
+                9,
+                181,
+                232,
+                243,
+                74,
+                156
+              ],
+              [
+                110,
+                87,
+                85,
+                132,
+                188,
+                155,
+                228,
+                145
+              ],
+              [
+                83,
+                139,
+                162,
+                239,
+                25,
+                98,
+                96,
+                202
+              ]
+            ],
+            [
+              [
+                136,
+                201,
+                214,
+                217,
+                81,
+                133,
+                12,
+                230
+              ],
+              [
+                131,
+                0,
+                120,
+                106,
+                160,
+                11,
+                41,
+                255
+              ],
+              [
+                227,
+                148,
+                179,
+                78,
+                16,
+                163,
+                144,
+                244
+              ],
+              [
+                187,
+                130,
+                92,
+                240,
+                123,
+                114,
+                43,
+                208
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.1324882507324219e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 6.146728992462158e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.725290298461914e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.456079866737127e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.601599019020796e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 6.584741640836e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.2741809263825417e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.725290298461914e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.837623469531536e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 7.948983693495393e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.587935447692871e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 7.672707557678223
+        }
+      ],
+      "cpu_fixture_argument_overrides": {
+        "bf16": false,
+        "dataloader_num_workers": 0,
+        "dataloader_persistent_workers": false,
+        "dataloader_pin_memory": false,
+        "dataloader_prefetch_factor": null,
+        "ddp_backend": "gloo",
+        "ddp_timeout": 90,
+        "disable_tqdm": true,
+        "logging_strategy": "no",
+        "max_steps": 2,
+        "output_dir": "/tmp/dense-ddp-audit.TttMXN/padded-adamw-3e-5",
+        "report_to": [],
+        "tf32": false,
+        "use_cpu": true
+      },
+      "cpu_only_backward_compensation": true,
+      "gradient_accumulation_steps": 4,
+      "gradient_checkpointing": true,
+      "identical_final_weights_across_ranks": true,
+      "model_accepts_loss_kwargs": true,
+      "optimizer": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 3e-05,
+        "momentum": 0.95,
+        "name": "adamw",
+        "normuon_beta2": 0.95,
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "optimizer_partition": {
+        "aux_decay": {
+          "parameters": 9024,
+          "tensors": 1
+        },
+        "aux_no_decay": {
+          "parameters": 160,
+          "tensors": 5
+        },
+        "hidden": {
+          "parameters": 20480,
+          "tensors": 8
+        }
+      },
+      "optimizer_steps": 2,
+      "run_id": "padded-adamw-3e-5",
+      "world_size": 4
+    },
+    {
+      "accelerator_backward_divisor": 4,
+      "checks": [
+        {
+          "actual_raw_gradient_norm": 11.08727741241455,
+          "candidates_per_query": 8,
+          "clipped_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 5.960464477539063e-08,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 2.764863893389702e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-10,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.3874235921539366e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.2741809263825417e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.1827872842550278e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.637978807091713e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.693881005048752e-10,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.320099833421409e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.523847797419876e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.841705620288849e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            102,
+            168,
+            150,
+            116,
+            22,
+            218,
+            126,
+            1,
+            235,
+            47,
+            57,
+            111,
+            175,
+            246,
+            8,
+            236,
+            48,
+            191,
+            219,
+            104,
+            14,
+            10,
+            195,
+            220,
+            137,
+            50,
+            121,
+            64,
+            170,
+            93,
+            241,
+            58,
+            198,
+            250,
+            56,
+            65,
+            158,
+            4,
+            247,
+            99,
+            42,
+            178,
+            20,
+            100,
+            71,
+            77,
+            23,
+            35,
+            200,
+            134,
+            88,
+            222,
+            59,
+            204,
+            180,
+            26,
+            225,
+            174,
+            211,
+            5,
+            67,
+            226,
+            253,
+            140,
+            51,
+            190,
+            55,
+            86,
+            157,
+            192,
+            149,
+            249,
+            31,
+            213,
+            248,
+            2,
+            19,
+            205,
+            216,
+            80,
+            118,
+            29,
+            6,
+            196,
+            234,
+            186,
+            185,
+            142,
+            101,
+            172,
+            113,
+            82,
+            3,
+            124,
+            34,
+            233,
+            203,
+            212,
+            237,
+            251,
+            167,
+            75,
+            182,
+            61,
+            44,
+            68,
+            54,
+            79,
+            52,
+            166,
+            206,
+            197,
+            15,
+            184,
+            207,
+            38,
+            49,
+            199,
+            119,
+            159,
+            151,
+            242,
+            221,
+            115,
+            164,
+            53,
+            161,
+            7
+          ],
+          "global_step_before_update": 0,
+          "identical_raw_gradients_across_four_ranks": true,
+          "passed": true,
+          "rank_microbatch_ids": [
+            [
+              [
+                102,
+                168,
+                150,
+                116,
+                22,
+                218,
+                126,
+                1
+              ],
+              [
+                235,
+                47,
+                57,
+                111,
+                175,
+                246,
+                8,
+                236
+              ],
+              [
+                48,
+                191,
+                219,
+                104,
+                14,
+                10,
+                195,
+                220
+              ],
+              [
+                137,
+                50,
+                121,
+                64,
+                170,
+                93,
+                241,
+                58
+              ]
+            ],
+            [
+              [
+                198,
+                250,
+                56,
+                65,
+                158,
+                4,
+                247,
+                99
+              ],
+              [
+                42,
+                178,
+                20,
+                100,
+                71,
+                77,
+                23,
+                35
+              ],
+              [
+                200,
+                134,
+                88,
+                222,
+                59,
+                204,
+                180,
+                26
+              ],
+              [
+                225,
+                174,
+                211,
+                5,
+                67,
+                226,
+                253,
+                140
+              ]
+            ],
+            [
+              [
+                51,
+                190,
+                55,
+                86,
+                157,
+                192,
+                149,
+                249
+              ],
+              [
+                31,
+                213,
+                248,
+                2,
+                19,
+                205,
+                216,
+                80
+              ],
+              [
+                118,
+                29,
+                6,
+                196,
+                234,
+                186,
+                185,
+                142
+              ],
+              [
+                101,
+                172,
+                113,
+                82,
+                3,
+                124,
+                34,
+                233
+              ]
+            ],
+            [
+              [
+                203,
+                212,
+                237,
+                251,
+                167,
+                75,
+                182,
+                61
+              ],
+              [
+                44,
+                68,
+                54,
+                79,
+                52,
+                166,
+                206,
+                197
+              ],
+              [
+                15,
+                184,
+                207,
+                38,
+                49,
+                199,
+                119,
+                159
+              ],
+              [
+                151,
+                242,
+                221,
+                115,
+                164,
+                53,
+                161,
+                7
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.1920928955078125e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.3527612686157227e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 2.561137080192566e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 9.313225746154785e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.2741809263825417e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 4.3655745685100555e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.6193447411060333e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 4.190951585769653e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 7.450580596923828e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.874003257602453e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 4.94765117764473e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.470348358154297e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 11.087275505065918
+        },
+        {
+          "actual_raw_gradient_norm": 7.672708511352539,
+          "candidates_per_query": 8,
+          "clipped_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.6391277313232422e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.799826562404633e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 5.238689482212067e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 8.294591680169106e-10,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.661160346586257e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.718003765447065e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 8.503775461576879e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.18367562815547e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 4.656612873077393e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 8.731149137020111e-10,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.410605131648481e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.637978807091713e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.035118657455314e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            27,
+            39,
+            173,
+            224,
+            129,
+            215,
+            254,
+            32,
+            91,
+            231,
+            76,
+            69,
+            229,
+            210,
+            147,
+            45,
+            72,
+            95,
+            17,
+            223,
+            46,
+            252,
+            89,
+            183,
+            90,
+            138,
+            193,
+            94,
+            36,
+            141,
+            60,
+            28,
+            21,
+            103,
+            117,
+            24,
+            66,
+            37,
+            70,
+            143,
+            105,
+            84,
+            209,
+            40,
+            154,
+            62,
+            177,
+            63,
+            73,
+            125,
+            97,
+            112,
+            33,
+            194,
+            128,
+            30,
+            135,
+            127,
+            146,
+            238,
+            245,
+            169,
+            165,
+            13,
+            18,
+            171,
+            109,
+            108,
+            176,
+            189,
+            152,
+            153,
+            107,
+            122,
+            9,
+            181,
+            232,
+            243,
+            74,
+            156,
+            110,
+            87,
+            85,
+            132,
+            188,
+            155,
+            228,
+            145,
+            83,
+            139,
+            162,
+            239,
+            25,
+            98,
+            96,
+            202,
+            136,
+            201,
+            214,
+            217,
+            81,
+            133,
+            12,
+            230,
+            131,
+            0,
+            120,
+            106,
+            160,
+            11,
+            41,
+            255,
+            227,
+            148,
+            179,
+            78,
+            16,
+            163,
+            144,
+            244,
+            187,
+            130,
+            92,
+            240,
+            123,
+            114,
+            43,
+            208
+          ],
+          "global_step_before_update": 1,
+          "identical_raw_gradients_across_four_ranks": true,
+          "passed": true,
+          "rank_microbatch_ids": [
+            [
+              [
+                27,
+                39,
+                173,
+                224,
+                129,
+                215,
+                254,
+                32
+              ],
+              [
+                91,
+                231,
+                76,
+                69,
+                229,
+                210,
+                147,
+                45
+              ],
+              [
+                72,
+                95,
+                17,
+                223,
+                46,
+                252,
+                89,
+                183
+              ],
+              [
+                90,
+                138,
+                193,
+                94,
+                36,
+                141,
+                60,
+                28
+              ]
+            ],
+            [
+              [
+                21,
+                103,
+                117,
+                24,
+                66,
+                37,
+                70,
+                143
+              ],
+              [
+                105,
+                84,
+                209,
+                40,
+                154,
+                62,
+                177,
+                63
+              ],
+              [
+                73,
+                125,
+                97,
+                112,
+                33,
+                194,
+                128,
+                30
+              ],
+              [
+                135,
+                127,
+                146,
+                238,
+                245,
+                169,
+                165,
+                13
+              ]
+            ],
+            [
+              [
+                18,
+                171,
+                109,
+                108,
+                176,
+                189,
+                152,
+                153
+              ],
+              [
+                107,
+                122,
+                9,
+                181,
+                232,
+                243,
+                74,
+                156
+              ],
+              [
+                110,
+                87,
+                85,
+                132,
+                188,
+                155,
+                228,
+                145
+              ],
+              [
+                83,
+                139,
+                162,
+                239,
+                25,
+                98,
+                96,
+                202
+              ]
+            ],
+            [
+              [
+                136,
+                201,
+                214,
+                217,
+                81,
+                133,
+                12,
+                230
+              ],
+              [
+                131,
+                0,
+                120,
+                106,
+                160,
+                11,
+                41,
+                255
+              ],
+              [
+                227,
+                148,
+                179,
+                78,
+                16,
+                163,
+                144,
+                244
+              ],
+              [
+                187,
+                130,
+                92,
+                240,
+                123,
+                114,
+                43,
+                208
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.1324882507324219e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 6.146728992462158e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.725290298461914e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.456079866737127e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.601599019020796e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 6.584741640836e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.2741809263825417e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.725290298461914e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.837623469531536e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 7.948983693495393e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.587935447692871e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 7.672707557678223
+        }
+      ],
+      "cpu_fixture_argument_overrides": {
+        "bf16": false,
+        "dataloader_num_workers": 0,
+        "dataloader_persistent_workers": false,
+        "dataloader_pin_memory": false,
+        "dataloader_prefetch_factor": null,
+        "ddp_backend": "gloo",
+        "ddp_timeout": 90,
+        "disable_tqdm": true,
+        "logging_strategy": "no",
+        "max_steps": 2,
+        "output_dir": "/tmp/dense-ddp-audit.TttMXN/padded-muon-3e-4",
+        "report_to": [],
+        "tf32": false,
+        "use_cpu": true
+      },
+      "cpu_only_backward_compensation": true,
+      "gradient_accumulation_steps": 4,
+      "gradient_checkpointing": true,
+      "identical_final_weights_across_ranks": true,
+      "model_accepts_loss_kwargs": true,
+      "optimizer": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 0.0003,
+        "momentum": 0.95,
+        "name": "muon",
+        "normuon_beta2": 0.95,
+        "ns_implementation": "unfused-bfloat16-v1",
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "optimizer_partition": {
+        "aux_decay": {
+          "parameters": 9024,
+          "tensors": 1
+        },
+        "aux_no_decay": {
+          "parameters": 160,
+          "tensors": 5
+        },
+        "hidden": {
+          "parameters": 20480,
+          "tensors": 8
+        }
+      },
+      "optimizer_steps": 2,
+      "run_id": "padded-muon-3e-4",
+      "world_size": 4
+    },
+    {
+      "accelerator_backward_divisor": 4,
+      "checks": [
+        {
+          "actual_raw_gradient_norm": 11.08727741241455,
+          "candidates_per_query": 8,
+          "clipped_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 5.960464477539063e-08,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 2.764863893389702e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-10,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.3874235921539366e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.2741809263825417e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.1827872842550278e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.637978807091713e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.693881005048752e-10,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.320099833421409e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.523847797419876e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.841705620288849e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            102,
+            168,
+            150,
+            116,
+            22,
+            218,
+            126,
+            1,
+            235,
+            47,
+            57,
+            111,
+            175,
+            246,
+            8,
+            236,
+            48,
+            191,
+            219,
+            104,
+            14,
+            10,
+            195,
+            220,
+            137,
+            50,
+            121,
+            64,
+            170,
+            93,
+            241,
+            58,
+            198,
+            250,
+            56,
+            65,
+            158,
+            4,
+            247,
+            99,
+            42,
+            178,
+            20,
+            100,
+            71,
+            77,
+            23,
+            35,
+            200,
+            134,
+            88,
+            222,
+            59,
+            204,
+            180,
+            26,
+            225,
+            174,
+            211,
+            5,
+            67,
+            226,
+            253,
+            140,
+            51,
+            190,
+            55,
+            86,
+            157,
+            192,
+            149,
+            249,
+            31,
+            213,
+            248,
+            2,
+            19,
+            205,
+            216,
+            80,
+            118,
+            29,
+            6,
+            196,
+            234,
+            186,
+            185,
+            142,
+            101,
+            172,
+            113,
+            82,
+            3,
+            124,
+            34,
+            233,
+            203,
+            212,
+            237,
+            251,
+            167,
+            75,
+            182,
+            61,
+            44,
+            68,
+            54,
+            79,
+            52,
+            166,
+            206,
+            197,
+            15,
+            184,
+            207,
+            38,
+            49,
+            199,
+            119,
+            159,
+            151,
+            242,
+            221,
+            115,
+            164,
+            53,
+            161,
+            7
+          ],
+          "global_step_before_update": 0,
+          "identical_raw_gradients_across_four_ranks": true,
+          "passed": true,
+          "rank_microbatch_ids": [
+            [
+              [
+                102,
+                168,
+                150,
+                116,
+                22,
+                218,
+                126,
+                1
+              ],
+              [
+                235,
+                47,
+                57,
+                111,
+                175,
+                246,
+                8,
+                236
+              ],
+              [
+                48,
+                191,
+                219,
+                104,
+                14,
+                10,
+                195,
+                220
+              ],
+              [
+                137,
+                50,
+                121,
+                64,
+                170,
+                93,
+                241,
+                58
+              ]
+            ],
+            [
+              [
+                198,
+                250,
+                56,
+                65,
+                158,
+                4,
+                247,
+                99
+              ],
+              [
+                42,
+                178,
+                20,
+                100,
+                71,
+                77,
+                23,
+                35
+              ],
+              [
+                200,
+                134,
+                88,
+                222,
+                59,
+                204,
+                180,
+                26
+              ],
+              [
+                225,
+                174,
+                211,
+                5,
+                67,
+                226,
+                253,
+                140
+              ]
+            ],
+            [
+              [
+                51,
+                190,
+                55,
+                86,
+                157,
+                192,
+                149,
+                249
+              ],
+              [
+                31,
+                213,
+                248,
+                2,
+                19,
+                205,
+                216,
+                80
+              ],
+              [
+                118,
+                29,
+                6,
+                196,
+                234,
+                186,
+                185,
+                142
+              ],
+              [
+                101,
+                172,
+                113,
+                82,
+                3,
+                124,
+                34,
+                233
+              ]
+            ],
+            [
+              [
+                203,
+                212,
+                237,
+                251,
+                167,
+                75,
+                182,
+                61
+              ],
+              [
+                44,
+                68,
+                54,
+                79,
+                52,
+                166,
+                206,
+                197
+              ],
+              [
+                15,
+                184,
+                207,
+                38,
+                49,
+                199,
+                119,
+                159
+              ],
+              [
+                151,
+                242,
+                221,
+                115,
+                164,
+                53,
+                161,
+                7
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.1920928955078125e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.3527612686157227e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 2.561137080192566e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 9.313225746154785e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.2741809263825417e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 4.3655745685100555e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.6193447411060333e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 4.190951585769653e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 7.450580596923828e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.093170329928398e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.874003257602453e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 4.94765117764473e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.470348358154297e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 11.087275505065918
+        },
+        {
+          "actual_raw_gradient_norm": 7.672708511352539,
+          "candidates_per_query": 8,
+          "clipped_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.6391277313232422e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.799826562404633e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 5.238689482212067e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 8.294591680169106e-10,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.661160346586257e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.718003765447065e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 8.503775461576879e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.18367562815547e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 4.656612873077393e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 8.731149137020111e-10,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.410605131648481e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.637978807091713e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.035118657455314e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            27,
+            39,
+            173,
+            224,
+            129,
+            215,
+            254,
+            32,
+            91,
+            231,
+            76,
+            69,
+            229,
+            210,
+            147,
+            45,
+            72,
+            95,
+            17,
+            223,
+            46,
+            252,
+            89,
+            183,
+            90,
+            138,
+            193,
+            94,
+            36,
+            141,
+            60,
+            28,
+            21,
+            103,
+            117,
+            24,
+            66,
+            37,
+            70,
+            143,
+            105,
+            84,
+            209,
+            40,
+            154,
+            62,
+            177,
+            63,
+            73,
+            125,
+            97,
+            112,
+            33,
+            194,
+            128,
+            30,
+            135,
+            127,
+            146,
+            238,
+            245,
+            169,
+            165,
+            13,
+            18,
+            171,
+            109,
+            108,
+            176,
+            189,
+            152,
+            153,
+            107,
+            122,
+            9,
+            181,
+            232,
+            243,
+            74,
+            156,
+            110,
+            87,
+            85,
+            132,
+            188,
+            155,
+            228,
+            145,
+            83,
+            139,
+            162,
+            239,
+            25,
+            98,
+            96,
+            202,
+            136,
+            201,
+            214,
+            217,
+            81,
+            133,
+            12,
+            230,
+            131,
+            0,
+            120,
+            106,
+            160,
+            11,
+            41,
+            255,
+            227,
+            148,
+            179,
+            78,
+            16,
+            163,
+            144,
+            244,
+            187,
+            130,
+            92,
+            240,
+            123,
+            114,
+            43,
+            208
+          ],
+          "global_step_before_update": 1,
+          "identical_raw_gradients_across_four_ranks": true,
+          "passed": true,
+          "rank_microbatch_ids": [
+            [
+              [
+                27,
+                39,
+                173,
+                224,
+                129,
+                215,
+                254,
+                32
+              ],
+              [
+                91,
+                231,
+                76,
+                69,
+                229,
+                210,
+                147,
+                45
+              ],
+              [
+                72,
+                95,
+                17,
+                223,
+                46,
+                252,
+                89,
+                183
+              ],
+              [
+                90,
+                138,
+                193,
+                94,
+                36,
+                141,
+                60,
+                28
+              ]
+            ],
+            [
+              [
+                21,
+                103,
+                117,
+                24,
+                66,
+                37,
+                70,
+                143
+              ],
+              [
+                105,
+                84,
+                209,
+                40,
+                154,
+                62,
+                177,
+                63
+              ],
+              [
+                73,
+                125,
+                97,
+                112,
+                33,
+                194,
+                128,
+                30
+              ],
+              [
+                135,
+                127,
+                146,
+                238,
+                245,
+                169,
+                165,
+                13
+              ]
+            ],
+            [
+              [
+                18,
+                171,
+                109,
+                108,
+                176,
+                189,
+                152,
+                153
+              ],
+              [
+                107,
+                122,
+                9,
+                181,
+                232,
+                243,
+                74,
+                156
+              ],
+              [
+                110,
+                87,
+                85,
+                132,
+                188,
+                155,
+                228,
+                145
+              ],
+              [
+                83,
+                139,
+                162,
+                239,
+                25,
+                98,
+                96,
+                202
+              ]
+            ],
+            [
+              [
+                136,
+                201,
+                214,
+                217,
+                81,
+                133,
+                12,
+                230
+              ],
+              [
+                131,
+                0,
+                120,
+                106,
+                160,
+                11,
+                41,
+                255
+              ],
+              [
+                227,
+                148,
+                179,
+                78,
+                16,
+                163,
+                144,
+                244
+              ],
+              [
+                187,
+                130,
+                92,
+                240,
+                123,
+                114,
+                43,
+                208
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 9024,
+              "max_absolute_error": 1.1324882507324219e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 6.146728992462158e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.725290298461914e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.456079866737127e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 3.601599019020796e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 6.584741640836e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.2741809263825417e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 3.725290298461914e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 6.984919309616089e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 2.837623469531536e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 7.948983693495393e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.587935447692871e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 7.672707557678223
+        }
+      ],
+      "cpu_fixture_argument_overrides": {
+        "bf16": false,
+        "dataloader_num_workers": 0,
+        "dataloader_persistent_workers": false,
+        "dataloader_pin_memory": false,
+        "dataloader_prefetch_factor": null,
+        "ddp_backend": "gloo",
+        "ddp_timeout": 90,
+        "disable_tqdm": true,
+        "logging_strategy": "no",
+        "max_steps": 2,
+        "output_dir": "/tmp/dense-ddp-audit.TttMXN/padded-normuon-3e-4",
+        "report_to": [],
+        "tf32": false,
+        "use_cpu": true
+      },
+      "cpu_only_backward_compensation": true,
+      "gradient_accumulation_steps": 4,
+      "gradient_checkpointing": true,
+      "identical_final_weights_across_ranks": true,
+      "model_accepts_loss_kwargs": true,
+      "optimizer": {
+        "adjust_lr_fn": "original",
+        "aux_beta1": 0.9,
+        "aux_beta2": 0.999,
+        "aux_eps": 1e-08,
+        "aux_lr": 3e-06,
+        "beta1": 0.9,
+        "beta2": 0.999,
+        "eps": 1e-08,
+        "lr": 0.0003,
+        "momentum": 0.95,
+        "name": "normuon",
+        "normuon_beta2": 0.95,
+        "ns_implementation": "unfused-bfloat16-v1",
+        "ns_steps": 5,
+        "weight_decay": 0.01
+      },
+      "optimizer_partition": {
+        "aux_decay": {
+          "parameters": 9024,
+          "tensors": 1
+        },
+        "aux_no_decay": {
+          "parameters": 160,
+          "tensors": 5
+        },
+        "hidden": {
+          "parameters": 20480,
+          "tensors": 8
+        }
+      },
+      "optimizer_steps": 2,
+      "run_id": "padded-normuon-3e-4",
+      "world_size": 4
+    }
+  ],
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "scope": "engineering_four_rank_cpu_dense_trainer_accumulation",
+  "source_bindings": [
+    {
+      "bytes": 21023,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_ddp_accumulation.py",
+      "sha256": "55b09ad9cc483334e1d0af9f7c6101448f11a0fc3dd5eae7a65233b72eaaf2f5"
+    },
+    {
+      "bytes": 16750,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/train.py",
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    },
+    {
+      "bytes": 3805,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    {
+      "bytes": 2117,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 7052,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 1601,
+      "path": "/root/embedding-optimizer-study/configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    },
+    {
+      "bytes": 14125,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_loss_contract.py",
+      "sha256": "6373e1c5987c858f19bc3503a6ad7db47bd00ab5d279ff959b341e919e6ab55f"
+    },
+    {
+      "bytes": 215309,
+      "path": "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py",
+      "sha256": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+    },
+    {
+      "bytes": 11262,
+      "path": "/usr/local/lib/python3.12/dist-packages/sentence_transformers/sentence_transformer/trainer.py",
+      "sha256": "44e1847fab2b99e9c997f85c64fc6736352902fa721a05b412caa2f1470009aa"
+    },
+    {
+      "bytes": 196722,
+      "path": "/usr/local/lib/python3.12/dist-packages/accelerate/accelerator.py",
+      "sha256": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23"
+    },
+    {
+      "bytes": 36771,
+      "path": "/usr/local/lib/python3.12/dist-packages/transformers/models/modernbert/modeling_modernbert.py",
+      "sha256": "d657e768ab419cb4101d3564d346cfe95b69149dd45e1d2f3e0b2fb138c6700b"
+    }
+  ],
+  "tolerances": {
+    "gradient_atol": 5e-06,
+    "gradient_rtol": 0.0005
+  },
+  "versions": {
+    "accelerate": "1.13.0",
+    "datasets": "4.8.4",
+    "sentence-transformers": "5.7.0",
+    "torch": "2.9.1+cu129",
+    "transformers": "5.3.0"
+  }
+}

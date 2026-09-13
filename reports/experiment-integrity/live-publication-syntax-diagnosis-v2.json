@@ -1,0 +1,57 @@
+{
+  "observed_at_utc": "2026-09-04T23:10:17.910538+00:00",
+  "scope": "read_only_publication_syntax_diagnosis",
+  "live_renderer": {
+    "path": "/root/embedding-optimizer-study/src/embed_optim/corrected_publication.py",
+    "bytes": 38709,
+    "sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6",
+    "headers": [
+      {
+        "ast_start_line": 865,
+        "decoded_header": "Contrast & Mean & 95\\% CI & Decision \\\\n\\midrule",
+        "literal_backslash_n": true
+      },
+      {
+        "ast_start_line": 857,
+        "decoded_header": "Contrast & Historical & Corrected & Shift \\\\n\\midrule",
+        "literal_backslash_n": true
+      },
+      {
+        "ast_start_line": 852,
+        "decoded_header": "Frozen geometry feature & $\\Delta$RMSE & Folds & Supported & Residual $\\rho$ \\\\n\\midrule",
+        "literal_backslash_n": true
+      }
+    ],
+    "source_sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6",
+    "affected_headers": 3,
+    "scope": "AST syntax proof, not a training/metric defect",
+    "runtime_changed": false
+  },
+  "live_ledgers": {
+    "main": {
+      "path": "logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "sha256": "1d8ba9091e6217dad8f8ac1060b1b9903614b7208b22429e5fa7d93ebcbb075a",
+      "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+      "status": "waiting_for_training",
+      "complete": false,
+      "executed_steps": 0
+    },
+    "factorial": {
+      "path": "logs/state-operator-factorial/completion/pipeline-ledger.json",
+      "sha256": "3ba341b4164890c1b18a4350ff5c7f769075152ac1b5d451e94ed65de71baddb",
+      "contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8",
+      "status": "waiting_for_main_completion",
+      "complete": false,
+      "executed_steps": 0
+    }
+  },
+  "primary_outputs_present": {
+    "reports/dense-no-packing-publication/summary_manifest.json": false,
+    "reports/state-operator-factorial/summary_manifest.json": false,
+    "reports/dimension-utilization-primary": false
+  },
+  "training_or_scientific_numbers_changed": false,
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "correction": "The initial startswith-only AST query missed concatenated literals. The complete decoded-string scan finds three malformed headers on live main; two remain in the rewritten paper because its engineering-only sensitivity table was removed."
+}

@@ -1,0 +1,17 @@
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+Traceback (most recent call last):
+  File "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-portable-factorial-checkpoint-v1/actual_read.py", line 43, in <module>
+  File "/tmp/dense-v3-portable-factorial.KUvkU0gR/wheel/embed_optim/saved_factorial_checkpoint.py", line 103, in read_checkpoint
+    binding, identity, component, local_runtime = authenticated_component(
+                                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/dense-v3-portable-factorial.KUvkU0gR/wheel/embed_optim/saved_factorial_checkpoint.py", line 93, in authenticated_component
+    require_component(component, identity, runtime_spec_path=runtime_spec)
+  File "/tmp/dense-v3-portable-factorial.KUvkU0gR/wheel/embed_optim/saved_factorial_checkpoint.py", line 173, in require_component
+    if runtime_problems(load_runtime_spec(runtime_spec_path), component["runtime"]):
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/dense-v3-portable-factorial.KUvkU0gR/wheel/embed_optim/runtime.py", line 116, in load_runtime_spec
+    _validate_reconstruction(spec, resolved)
+  File "/tmp/dense-v3-portable-factorial.KUvkU0gR/wheel/embed_optim/runtime.py", line 72, in _validate_reconstruction
+    raise RuntimeError(f"Formal runtime reconstruction input is missing: {path}")
+RuntimeError: Formal runtime reconstruction input is missing: /tmp/dense-v3-portable-factorial.KUvkU0gR/formal_runtime_constraints.txt

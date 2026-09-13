@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "scope": "actual execution records for the two native GPU-resume verification waiters",
+  "tests": {
+    "chunk_id": "97157e",
+    "wall_time_seconds": 0.000002441,
+    "exit_code": 0,
+    "original_token_count": 756,
+    "output": "test_array_byte_mismatch (test_resume.OperationalControls.test_array_byte_mismatch) ... ok\ntest_bf16_scalar_and_noncontiguous (test_resume.OperationalControls.test_bf16_scalar_and_noncontiguous) ... ok\ntest_complete_pool_a (test_resume.OperationalControls.test_complete_pool_a) ... ok\ntest_complete_pool_b (test_resume.OperationalControls.test_complete_pool_b) ... ok\ntest_container_type_mismatch (test_resume.OperationalControls.test_container_type_mismatch) ... ok\ntest_duplicate_probe_rejected (test_resume.OperationalControls.test_duplicate_probe_rejected) ... ok\ntest_existing_output_rejected (test_resume.OperationalControls.test_existing_output_rejected) ... ok\ntest_explicit_command_source_and_authority (test_resume.OperationalControls.test_explicit_command_source_and_authority) ... ok\ntest_failed_rank_rejected (test_resume.OperationalControls.test_failed_rank_rejected) ... ok\ntest_full_named_tree_comparison (test_resume.OperationalControls.test_full_named_tree_comparison) ... ok\ntest_length_mismatch (test_resume.OperationalControls.test_length_mismatch) ... ok\ntest_model_tensor_mismatch (test_resume.OperationalControls.test_model_tensor_mismatch) ... ok\ntest_native_resume_not_fresh_worker (test_resume.OperationalControls.test_native_resume_not_fresh_worker) ... ok\ntest_no_duplicate_dynamic_dict_keywords (test_resume.OperationalControls.test_no_duplicate_dynamic_dict_keywords) ... ok\ntest_nonfinite_scalar_rejected (test_resume.OperationalControls.test_nonfinite_scalar_rejected) ... ok\ntest_optimizer_key_mismatch (test_resume.OperationalControls.test_optimizer_key_mismatch) ... ok\ntest_partial_beir_rejected (test_resume.OperationalControls.test_partial_beir_rejected) ... ok\ntest_partial_probe_rejected (test_resume.OperationalControls.test_partial_probe_rejected) ... ok\ntest_relative_output_rejected (test_resume.OperationalControls.test_relative_output_rejected) ... ok\ntest_signed_scalar_zero_mismatch (test_resume.OperationalControls.test_signed_scalar_zero_mismatch) ... ok\ntest_signed_tensor_zero_mismatch (test_resume.OperationalControls.test_signed_tensor_zero_mismatch) ... ok\ntest_symlink_output_rejected (test_resume.OperationalControls.test_symlink_output_rejected) ... ok\ntest_tensor_dtype_mismatch (test_resume.OperationalControls.test_tensor_dtype_mismatch) ... ok\ntest_training_gap_rejected (test_resume.OperationalControls.test_training_gap_rejected) ... ok\ntest_unread_training_rejected (test_resume.OperationalControls.test_unread_training_rejected) ... ok\ntest_wrong_beir_run_rejected (test_resume.OperationalControls.test_wrong_beir_run_rejected) ... ok\ntest_wrong_beir_source_rejected (test_resume.OperationalControls.test_wrong_beir_source_rejected) ... ok\ntest_wrong_probe_authority_rejected (test_resume.OperationalControls.test_wrong_probe_authority_rejected) ... ok\ntest_wrong_probe_step_rejected (test_resume.OperationalControls.test_wrong_probe_step_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 29 tests in 0.026s\n\nOK\n"
+  },
+  "prepare": {
+    "chunk_id": "cb3058",
+    "wall_time_seconds": 0.000002288,
+    "exit_code": 0,
+    "original_token_count": 48,
+    "output": "{\"actual_original_whole_run_reads\": 2, \"authorization\": {\"bytes\": 216923, \"sha256\": \"51e95a2adf6cf5acf151a18976c476e275307262b6f94528b313b964e2baf7d0\"}, \"cases\": 2, \"gpu_requested\": false}\n"
+  },
+  "download": {
+    "chunk_id": "685a0b",
+    "wall_time_seconds": 0.000002414,
+    "exit_code": 0,
+    "original_token_count": 37,
+    "output": "{\"downloaded\": {\"bytes\": 8468, \"sha256\": \"3c48d5c7d10434fe48925ec223e55c85df59e23ee6767a9d4bffbf1f5901f332\"}, \"files\": 36, \"native_cpu_checks\": 2}\n"
+  },
+  "waiters": {
+    "a": {
+      "pool": "a",
+      "chunk_id": "7d7835",
+      "wall_time_seconds": 1.0007987,
+      "session_id": 6666,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "b": {
+      "pool": "b",
+      "chunk_id": "36ddac",
+      "wall_time_seconds": 1.001536078,
+      "session_id": 9153,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "live_entry": "/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py",
+  "source_sha256": "1746b8a382bb45fefc2ab17beaf7706984fe91802c528bec48c88a2daa038bb2",
+  "authorization_sha256": "51e95a2adf6cf5acf151a18976c476e275307262b6f94528b313b964e2baf7d0",
+  "downloaded_sha256": "3c48d5c7d10434fe48925ec223e55c85df59e23ee6767a9d4bffbf1f5901f332",
+  "gpu_resume_success_claimed": false,
+  "scientific_completion": false,
+  "initial_pre_auth_review": "Before any test or execution, own-source review removed a potential duplicate dict keyword and made signed scalar zero comparison exact. No frozen/live/original source or run was edited."
+}

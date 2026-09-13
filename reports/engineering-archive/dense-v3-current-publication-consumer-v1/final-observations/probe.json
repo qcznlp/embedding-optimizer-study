@@ -1,0 +1,50 @@
+{
+  "expected_checkpoint_probes": 60,
+  "observed_at_utc": "2026-09-12T20:02:49.072322+00:00",
+  "pools": {
+    "a": {
+      "active_workers": [
+        {
+          "process": {
+            "command_matches": true,
+            "pid": 841124,
+            "ppid": 809602,
+            "start_ticks": 321509789,
+            "state": "R"
+          },
+          "run_id": "factorial-v3-muon_state-muon-seed314159",
+          "step": 157
+        }
+      ],
+      "complete": false,
+      "completed_checkpoint_probes": 6,
+      "coordinator": {
+        "command_matches": true,
+        "pid": 809602,
+        "ppid": 1986037,
+        "start_ticks": 320566873,
+        "state": "S"
+      },
+      "failure_receipt": false,
+      "whole_training_pool_admitted": true
+    },
+    "b": {
+      "active_workers": [],
+      "complete": false,
+      "completed_checkpoint_probes": 5,
+      "coordinator": {
+        "command_matches": true,
+        "pid": 809603,
+        "ppid": 1986037,
+        "start_ticks": 320566875,
+        "state": "R"
+      },
+      "failure_receipt": false,
+      "whole_training_pool_admitted": true
+    }
+  },
+  "pretrained_reference_complete": true,
+  "read_only_exact_registered_handles": true,
+  "reference_newly_encoded": false,
+  "scientific_completion": false
+}

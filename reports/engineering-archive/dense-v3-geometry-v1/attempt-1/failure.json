@@ -1,0 +1,19 @@
+{
+  "scope": "engineering_weight_entry_audit_preflight_failure",
+  "recorded_at_utc": "2026-09-06T18:49:08Z",
+  "failure_timestamp": "Not separately captured; terminal output was read before this record was written.",
+  "workdir": "/tmp/dense-weight-entry-census.zSu9CA",
+  "source_sha256": "f86747f49a8a9805af2e9d69f022d0216626dd71d706ba7656df41411d449e03",
+  "observed_terminal_session": 94741,
+  "exit_code": 1,
+  "error": "ValueError: Require an ordinary source/payload file",
+  "location": "reference_identity -> verify_file -> file_identity, before stream_run_census",
+  "cause": "The immutable HF snapshot consists of symlinks to blobs; the strict census reader requires ordinary files.",
+  "original_workdir_is_empty": true,
+  "model_census_started": false,
+  "model_updates": 0,
+  "failure_overridden": false,
+  "proposed_remedy": "Use an explicitly supplied ordinary-file byte copy of the same eleven immutable model files; recheck copy and original resolved blobs against existing digests.",
+  "additional_wrapper_review": "A later binding construction also put a relative path after its absolute path. Fix dictionary precedence and add an independent regression; this later bug was not reached by the failed execution.",
+  "scientific_completion": false
+}

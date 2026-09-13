@@ -2,7 +2,7 @@
   "schema_version": 1,
   "status": "prospective_state_operator_completion_lock",
   "frozen_at_utc": "2026-09-04T04:06:35Z",
-  "amended_at_utc": "2026-09-04T05:36:11Z",
+  "amended_at_utc": "2026-09-05T04:49:16.559615+00:00",
   "purpose": "Bind a resumable, fail-closed handoff that gives the corrected 12-run paper pipeline priority, then executes the prospective state-by-operator factorial, backs up every checkpoint, renders its result into the paper, and reruns release audits.",
   "visibility_at_freeze": {
     "main_corrected_runs_complete": 4,
@@ -26,20 +26,50 @@
     },
     "publication_protocol": {
       "path": "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
-      "bytes": 5403,
-      "sha256": "06cf617bcf6024f218c039cd349a24d3b5b4450dda4ee1af63f70ca18538663d"
+      "bytes": 7232,
+      "sha256": "405166720a021e6173e66d2b549bccda3e0e67a35b69ffe50f4f0db043f5ba0d"
     },
     "abstract_compliance_migration": {
       "path": "configs/dense_no_packing_state_operator_abstract_compliance_migration.json",
       "bytes": 4326,
       "sha256": "e4ef66061165e0632c1ecaf8b0f2b8643ff488ca37118401444bc3dbe6faebe1"
+    },
+    "weight_space_narrative_migration": {
+      "path": "configs/dense_no_packing_state_operator_weight_space_narrative_migration.json",
+      "bytes": 4427,
+      "sha256": "ea9471e1b67fca3f45e2a74432c5516c282167bcf1a1acb2aaf735444cc88d8e"
+    },
+    "primary_dimension_handoff": {
+      "path": "configs/dense_primary_dimension_handoff_protocol.json",
+      "bytes": 8436,
+      "sha256": "a5d7567020980bb6fe0fa8b967bbe908cff1c936a8cb5b5f75eb9c9749197049"
+    },
+    "main_publication_header_dependency": {
+      "path": "configs/dense_no_packing_state_operator_parent_publication_amendment.json",
+      "bytes": 4610,
+      "sha256": "cdbdceeaf551dcbabef3b9b60bd254c9cf22e1c37ee2d4fd0b98b8165dbb03c7"
+    },
+    "main_resume_recovery": {
+      "path": "configs/dense_no_packing_state_operator_main_recovery_amendment.json",
+      "bytes": 3622,
+      "sha256": "3658f9e4e5ac6bc595a515dd0d16296748139cb7ce05380586f3d185e54a7651"
+    },
+    "main_handoff_repairs": {
+      "path": "configs/dense_no_packing_state_operator_handoff_repairs_amendment.json",
+      "bytes": 8999,
+      "sha256": "502aeec139ce0cef244b0a6133850d83257938092c68e388b282f5d88ce7b9a9"
+    },
+    "claim_wording": {
+      "path": "configs/dense_no_packing_state_operator_claim_wording_amendment.json",
+      "bytes": 6866,
+      "sha256": "929fe6445598b84b546670eb5eefd408c5221cacad6cc8e93a984651dbbe5de7"
     }
   },
   "source_bindings": {
     "completion_controller": {
       "path": "src/embed_optim/state_operator_factorial_completion.py",
-      "bytes": 24712,
-      "sha256": "24d9923956a912753eebe48a605af6f98d9d03fc5315ec9bb4f3181ca0dff498"
+      "bytes": 27658,
+      "sha256": "6a9702eca542f67ece7f7a39ed2c58d7444635ee5d5fe6df6c49bb976c3cb2f4"
     },
     "factorial_checkpoint_backup": {
       "path": "src/embed_optim/state_operator_factorial_backup.py",
@@ -58,8 +88,8 @@
     },
     "portable_evidence_builder": {
       "path": "scripts/portable_evidence.py",
-      "bytes": 7811,
-      "sha256": "85ae3e7ae1c4cc764c158f24132720436fe43b3a9b4a5935850d472d6ea89017"
+      "bytes": 8783,
+      "sha256": "fff59611cb2d307367763a676c75f6dd5117e4e7589a970bf1743635e4fb6bec"
     }
   },
   "configuration_bindings": {
@@ -72,7 +102,7 @@
   "main_completion_gate": {
     "ledger_path": "logs/dense-no-packing-finalization/pipeline-ledger.json",
     "scope": "corrected_dense_no_packing_completion",
-    "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+    "contract_sha256": "4380a3631ec196307c775cdf4ca766298075de0312ad9d7158c2795577424a56",
     "training_runs_complete": 12,
     "required_run_ids": [
       "padded-adamw-1e-6",
@@ -134,7 +164,8 @@
     "checkpoint_backup": "Immediately after each wave, upload both complete five-checkpoint run directories to qcz/embedding-optimizer-study-checkpoints under state-operator-factorial-v1/dense and verify path, size, and digest equality.",
     "full_beir": "Execute the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.",
     "publication": "Summarize, render the paper-only state-operator include, rebuild the ACL manuscript, refresh the portable evidence closure, and rerun strict paper, test, and style gates.",
-    "gpu_boundary": "Only the existing factorial calibration, training, probe, and BEIR entry points request cooperative GPU leases. Never inspect, read, edit, signal, stop, replace, or otherwise touch gpu.py or its processes."
+    "gpu_boundary": "Only the primary fixed-probe exporter and the existing factorial calibration, training, probe, and BEIR entry points request cooperative GPU leases. Archive steps use CPU/network only. Never inspect, read, edit, signal, stop, replace, or otherwise touch gpu.py or its processes.",
+    "primary_dimension": "After the exact main ledger completes and before calibration, refresh the primary paper include, export/audit all 61 primary probe states, analyze/audit dimensions, render/recompute findings, then create and independently audit the portable publication closure under the separate pre-output locks. Then archive all 61 raw vector exports and the source-derived closure atomically at a content-addressed HF dataset prefix and re-audit its immutable commit."
   },
   "expected_cardinalities": {
     "calibration_commands": 4,
@@ -145,7 +176,8 @@
     "probe_jobs": 61,
     "beir_cells": 6,
     "beir_task_units": 168,
-    "estimands": 3
+    "estimands": 3,
+    "primary_dimension_steps": 11
   },
   "claim_boundary": "This controller implements the predeclared factorial and publication map. It cannot change source states, continuation operators, calibrated scale, data seeds, branch horizon, estimands, uncertainty, or claim thresholds after outputs appear."
 }

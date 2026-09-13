@@ -1,0 +1,90 @@
+{
+  "scope": "engineering_command_receipt_no_primary_execution",
+  "repository": "/root/embedding-optimizer-story-refactor",
+  "scientific_completion": false,
+  "gpu_environment": {
+    "CUDA_VISIBLE_DEVICES": "0,1,2,3",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "WANDB_MODE": "disabled",
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "HF_HUB_DISABLE_PROGRESS_BARS": "1",
+    "PYTHONWARNINGS": "ignore",
+    "PYTHONPATH": "/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor"
+  },
+  "launcher_prefix": ["/usr/bin/python3", "-B", "-m", "torch.distributed.run", "--standalone", "--nnodes=1", "--nproc-per-node=4"],
+  "launcher_suffix_after_log_dir": ["--redirects", "3", "--tee", "3", "scripts/audit_dense_gpu_replay_update.py"],
+  "common_script_arguments": [
+    "--repository", "/root/embedding-optimizer-story-refactor",
+    "--handoff", "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "--download-root", "/tmp/dense-checkpoint-restore.Og1kZs/download",
+    "--audit", "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+    "--audit-sha256", "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6"
+  ],
+  "gpu_attempts": [
+    {
+      "log_dir": "/tmp/dense-replay-update-logs.96zDGq",
+      "probe_output": "/tmp/dense-replay-update-probe.oQNg48",
+      "workdir": "/tmp/dense-gpu-resume.9ocXBd",
+      "exit_code": 1,
+      "execution_complete": false,
+      "source_copy": "attempt-1/failed-source.py",
+      "reason": "New wrapper returned dict instead of the observed OrderedDict; strict type guard failed."
+    },
+    {
+      "log_dir": "/tmp/dense-replay-update-logs.g0V9Gd",
+      "probe_output": "/tmp/dense-replay-update-probe.zMWznt",
+      "workdir": "/tmp/dense-gpu-resume.YUAWAi",
+      "exit_code": 1,
+      "execution_complete": false,
+      "source_copy": "attempt-2/failed-source.py",
+      "reason": "New wrapper omitted the scheduler step; exact next-entry learning-rate check failed."
+    },
+    {
+      "log_dir": "/tmp/dense-replay-update-logs.bBSMvY",
+      "probe_output": "/tmp/dense-replay-update-probe.LY5GmY",
+      "workdir": "/tmp/dense-gpu-resume.36BUfj",
+      "exit_code": 1,
+      "execution_complete": true,
+      "source_copy": "observed-source/audit_dense_gpu_replay_update.py",
+      "reason": "All localization cases complete and exact; parent intentionally exits 1 for retained strict full-replay failure."
+    }
+  ],
+  "test_common_environment": {
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "WANDB_MODE": "disabled",
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "full_test_runs": [
+    {
+      "PYTHONPATH": "src:.",
+      "arguments": ["python3", "-B", "-m", "pytest", "-q", "--junitxml=/tmp/dense-replay-update-logs.bBSMvY/pytest-full.xml"],
+      "exit_code": 1,
+      "junit_test_cases": 1337,
+      "failures": 2,
+      "errors": 0,
+      "skips": 0,
+      "reason": "Temporary-paper subprocesses changed cwd and imported the live editable checkout through relative PYTHONPATH."
+    },
+    {
+      "PYTHONPATH": "/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor",
+      "arguments": ["python3", "-B", "-m", "pytest", "-q", "--junitxml=/tmp/dense-replay-update-logs.bBSMvY/pytest-full-absolute-path.xml"],
+      "exit_code": 0,
+      "junit_test_cases": 1337,
+      "failures": 0,
+      "errors": 0,
+      "skips": 0,
+      "duration_seconds": 133.570
+    }
+  ],
+  "reconstruction": "Insert each attempt's --log-dir after launcher_prefix; append launcher_suffix_after_log_dir, --probe-output, --workdir and common_script_arguments. Use the recorded cwd/environment and exact attempt source. For a new GPU experiment choose fresh mktemp directories; never overwrite these outputs."
+}

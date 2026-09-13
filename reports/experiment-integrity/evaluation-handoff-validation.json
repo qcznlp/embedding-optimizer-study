@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "scope": "engineering_evaluation_handoff_preflight",
+  "observed_at_utc": "2026-09-05 00:48:06 UTC",
+  "scientific_completion": false,
+  "training_or_retrieval_algorithm_changed": false,
+  "live_deployment": false,
+  "audited_repository": "/root/embedding-optimizer-study",
+  "audited_git_head": "f231a6430712388778f32ad1736a4cb6de3bec3e",
+  "writer_preflight": {
+    "entrypoint": "embed_optim.corrected_beir_evaluation",
+    "mode": "dry_run",
+    "return_code": 0,
+    "run_ids": [
+      "padded-adamw-1e-5",
+      "padded-adamw-1e-6",
+      "padded-adamw-3e-5",
+      "padded-adamw-3e-6",
+      "padded-muon-1e-3",
+      "padded-muon-1e-4",
+      "padded-muon-3e-3",
+      "padded-muon-3e-4"
+    ],
+    "stages": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "checkpoints": 40,
+    "tasks": [
+      "ArguAna",
+      "ClimateFEVER",
+      "DBPedia",
+      "FEVER",
+      "FiQA2018",
+      "HotpotQA",
+      "MSMARCO",
+      "NFCorpus",
+      "NQ",
+      "QuoraRetrieval",
+      "SCIDOCS",
+      "SciFact",
+      "TRECCOVID",
+      "Touche2020"
+    ],
+    "planned_task_units": 560,
+    "evaluator_workers_started": 0,
+    "actual_task_results": 0,
+    "output_root": "reports/experiment-integrity/beir-completed-subset-preflight",
+    "python": "/usr/bin/python3.12",
+    "versions": {
+      "fast-plaid": "1.6.0.290",
+      "flash-attn": "2.7.4.post1",
+      "late-interaction-kernels": "0.4.5",
+      "mteb": "2.18.16",
+      "pylate": "1.6.0",
+      "sentence-transformers": "5.7.0",
+      "torch": "2.9.1+cu129",
+      "transformers": "5.3.0"
+    },
+    "source_files": {
+      "scripts/eval/dense_no_packing_parallel.py": {
+        "bytes": 1104,
+        "sha256": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a"
+      },
+      "scripts/eval/dense_parallel.py": {
+        "bytes": 11179,
+        "sha256": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72"
+      },
+      "scripts/eval/dense_sequential.py": {
+        "bytes": 26739,
+        "sha256": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906"
+      },
+      "src/embed_optim/aggregate.py": {
+        "bytes": 111685,
+        "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+      },
+      "src/embed_optim/config.py": {
+        "bytes": 7052,
+        "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+      },
+      "src/embed_optim/corrected_beir_evaluation.py": {
+        "bytes": 9893,
+        "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+      },
+      "src/embed_optim/corrected_input_execution.py": {
+        "bytes": 1255,
+        "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+      },
+      "src/embed_optim/decontamination.py": {
+        "bytes": 5282,
+        "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+      },
+      "src/embed_optim/evaluate_matrix.py": {
+        "bytes": 27491,
+        "sha256": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2"
+      },
+      "src/embed_optim/evaluation_utils.py": {
+        "bytes": 6170,
+        "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+      }
+    },
+    "data_and_deep_checkpoint_checks_passed": true
+  },
+  "handoff_consumer": {
+    "call_chain": [
+      "corrected_outcome_summary.build_report",
+      "aggregate.collect_evaluations",
+      "aggregate._evaluation_runtime",
+      "evaluation_source_provenance.verify_evaluation_source_manifest"
+    ],
+    "targeted_gate_reproduction": true,
+    "whole_840_result_summary_executed": false,
+    "original_gate_return_code": 1,
+    "original_error": "Unauthenticated evaluation source files in runtime manifest: source manifest has no authenticated exact label mapping",
+    "original_missing_labels": [
+      "scripts/eval/late_interaction.py",
+      "src/embed_optim/gpu_lease.py",
+      "src/embed_optim/pylate_compat.py"
+    ],
+    "original_unexpected_labels": [
+      "scripts/eval/dense_no_packing_parallel.py",
+      "src/embed_optim/config.py",
+      "src/embed_optim/corrected_beir_evaluation.py",
+      "src/embed_optim/corrected_input_execution.py"
+    ],
+    "original_helper_sha256": "fec4c185af25e973894f69626fe6361ba59a211a2044986e2edad69862125f6d",
+    "isolated_gate_return_code": 0,
+    "isolated_helper": {
+      "path": "src/embed_optim/evaluation_source_provenance.py",
+      "bytes": 13809,
+      "sha256": "235a9c1cf78597b11e41436003dba5a19eca689b1c4d8394c3da4e0a307f3cba"
+    },
+    "isolated_rehashed_checkpoints": 40,
+    "accepted_source_topology": "exact corrected Dense 10-file mapping",
+    "unchanged_authentication": "Every source still requires exact byte count and SHA-256 agreement with a locally reachable Git blob at its declared path. The historical archive and general evaluator mappings are unchanged.",
+    "mutations_rejected": [
+      "missing source",
+      "mixed historical/corrected topology",
+      "unknown source",
+      "changed source bytes"
+    ],
+    "metadata_rewritten": false
+  },
+  "evidence": [
+    {
+      "path": "reports/experiment-integrity/beir-completed-subset-preflight/corrected_execution.json",
+      "bytes": 2311,
+      "sha256": "96b2ff98775198346513a378f6a1bf34752b76863aaf1af580834248d14d2cef"
+    },
+    {
+      "path": "reports/experiment-integrity/beir-completed-subset-preflight/evaluation_inputs.json",
+      "bytes": 18765,
+      "sha256": "d6be607ebf75eb9a142a2a72af9aea67de31fc4664cbe9123c35c58ed1cba45f"
+    },
+    {
+      "path": "reports/experiment-integrity/beir-completed-subset-preflight/evaluation_runtime.json",
+      "bytes": 1913,
+      "sha256": "f626fea9dd2854f5c9589a792b7348d0499d73477ba43ff17d67311ed74630d0"
+    },
+    {
+      "path": "reports/experiment-integrity/evaluation-handoff-full-tests.xml",
+      "bytes": 144685,
+      "sha256": "8dea9effb0f94df9c0b2e7b197b3ea4cf7320c9e6d49ad36f8d7db5bd9552684"
+    }
+  ],
+  "tests": {
+    "full_suite": {
+      "passed": 1052,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "excluded": 0,
+      "return_code": 0,
+      "seconds": 147.571
+    },
+    "focused_suite": {
+      "path": "reports/experiment-integrity/evaluation-handoff-tests-v3.xml",
+      "passed": 65,
+      "return_code": 0
+    },
+    "final_source_check": {
+      "path": "reports/experiment-integrity/evaluation-handoff-final-source-tests.xml",
+      "passed": 22,
+      "return_code": 0
+    },
+    "lint_format_and_diff_check": "passed"
+  },
+  "scheduling": {
+    "owner_request": "Start evaluation on the idle pool when only one training run remains",
+    "current_condition_met": false,
+    "remaining_training_runs": 4,
+    "existing_main_requests_all_eight_gpus_after_12_runs": true,
+    "manual_and_main_evaluators_share_gpu_lease": false,
+    "metadata_locks_are_not_gpu_leases": true,
+    "coordination_performed": false,
+    "controller_or_training_signalled": false,
+    "runbook": "docs/dense-no-packing-retrain.md",
+    "required_action": "Verified single-owner handoff before any early evaluator; early workers must exit before the main finalizer can reuse their GPUs."
+  },
+  "live_contracts_unchanged": {
+    "main": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+    "factorial": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8"
+  },
+  "remaining_release_requirements": [
+    "Explicitly bind the repaired source-provenance helper in the controlled completion transition; current frozen source lists do not name this transitive helper.",
+    "Deploy only under a reviewed, exact non-scientific runtime transition, consistently with the separately prepared publication header fix and successor dependency.",
+    "Complete remaining primary training, all 840 BEIR units, real outcome reconstruction, primary dimension/bridge analysis and crossed intervention.",
+    "Keep all engineering findings out of the manuscript; no new optimizer result is established."
+  ]
+}

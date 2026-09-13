@@ -1,0 +1,174 @@
+{
+  "scope": "actual-CPU-calibration-component-attempts-not-GPU-execution",
+  "work_root": "/tmp/dense-v3-factorial-calibration.U5gTyB",
+  "first_input_failure": {
+    "tool_session": 65567,
+    "observed_exit_code": 1,
+    "error": "KeyError: 'bytes'",
+    "stage": "new wrapper source-inventory lookup before input admission",
+    "original_stderr_separately_saved": false,
+    "source": "actual/audit_actual_inputs-first.py"
+  },
+  "input_reads": [
+    {
+      "source": "source-second",
+      "tool_session": 22048,
+      "observed_exit_code": 0,
+      "output": "actual/actual-inputs-second.json"
+    },
+    {
+      "source": "source-third",
+      "tool_session": 11101,
+      "observed_exit_code": 0,
+      "output": "actual/actual-inputs-third.json"
+    }
+  ],
+  "focused_tests": [
+    {
+      "source": "source-first",
+      "tool_session": 13826,
+      "observed_exit_code": 0,
+      "serialized_cases": 45,
+      "xml": "actual/tests-first.xml"
+    },
+    {
+      "source": "source-second",
+      "tool_session": 54673,
+      "observed_exit_code": 0,
+      "serialized_cases": 56,
+      "xml": "actual/tests-second.xml"
+    },
+    {
+      "source": "source-third",
+      "tool_session": 74887,
+      "observed_exit_code": 0,
+      "serialized_cases": 57,
+      "xml": "actual/tests-third.xml"
+    }
+  ],
+  "original_source_require_call": {
+    "tool_session": 65790,
+    "observed_exit_code": 0
+  },
+  "reproduce_current_focus": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/dense-v3-factorial-calibration.U5gTyB/source-third/src:/tmp/dense-v3-factorial-calibration.U5gTyB/source-third /usr/bin/python -B -m pytest tests/test_factorial_v3_calibration.py -q",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "terminal_task_observer_read": {
+    "scope": "exact_existing_native_task_observer_status",
+    "observed_at_utc": "2026-09-10T09:27:32.420037+00:00",
+    "observer": {
+      "pid": 60083,
+      "start_ticks": 299816818,
+      "state": "S",
+      "ppid": 1986037,
+      "command_matches": true,
+      "live": true
+    },
+    "task_snapshot_at_utc": "2026-09-10T09:27:30.251950+00:00",
+    "primary_tasks": [
+      12,
+      840
+    ],
+    "baseline_tasks": [
+      14,
+      14
+    ],
+    "worker_observations_from_that_snapshot": [
+      {
+        "command_matches": true,
+        "gpu_token": "2",
+        "group": "primary_a",
+        "job": "verified-v3-adamw-3e-5-3907-FEVER",
+        "live": true,
+        "pid": 73253,
+        "ppid": 597,
+        "start_ticks": 300248251,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "0",
+        "group": "primary_a",
+        "job": "verified-v3-muon-1e-4-3907-ClimateFEVER",
+        "live": true,
+        "pid": 62479,
+        "ppid": 597,
+        "start_ticks": 299871386,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "1",
+        "group": "primary_a",
+        "job": "verified-v3-normuon-1e-4-3907-ClimateFEVER",
+        "live": true,
+        "pid": 62755,
+        "ppid": 597,
+        "start_ticks": 299872603,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "3",
+        "group": "primary_a",
+        "job": "verified-v3-normuon-3e-4-3907-FEVER",
+        "live": true,
+        "pid": 78181,
+        "ppid": 597,
+        "start_ticks": 300361667,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "7",
+        "group": "primary_b",
+        "job": "verified-v3-adamw-1e-5-3907-FEVER",
+        "live": true,
+        "pid": 50420,
+        "ppid": 598,
+        "start_ticks": 299447599,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "4",
+        "group": "primary_b",
+        "job": "verified-v3-adamw-3e-6-3907-FEVER",
+        "live": true,
+        "pid": 74296,
+        "ppid": 598,
+        "start_ticks": 300263202,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "6",
+        "group": "primary_b",
+        "job": "verified-v3-muon-3e-4-3907-FEVER",
+        "live": true,
+        "pid": 50134,
+        "ppid": 598,
+        "start_ticks": 299442397,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "5",
+        "group": "primary_b",
+        "job": "verified-v3-normuon-1e-3-3907-FEVER",
+        "live": true,
+        "pid": 73862,
+        "ppid": 598,
+        "start_ticks": 300257700,
+        "state": "R"
+      }
+    ],
+    "completed_receipt_present": false,
+    "failed_receipt_present": false,
+    "task_snapshot_is_a_separate_timestamped_observation": true,
+    "fresh_native_task_or_model_replay": false,
+    "scientific_completion": false
+  },
+  "goal_turn_classification": "progress: new actual input/calibration consumers, real native input readback, bounded numerical/semantic tests and preserved handoff; original evaluation remains live",
+  "formal_calibration_or_branch_execution": false,
+  "scientific_completion": false
+}

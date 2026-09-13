@@ -1,0 +1,46 @@
+{
+  "scope": "engineering_terminal_command_handoff",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "preparation": {
+    "exit_code": 0,
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/prepare_dense_v3_protocol.py --repository /root/embedding-optimizer-story-refactor --training-root /tmp/dense-identity-source.8rUgLF --output /root/embedding-optimizer-story-refactor/configs/dense_primary_v3_protocol.json"
+  },
+  "completed_sessions": [
+    {
+      "session_id": 28733,
+      "exit_code": 0,
+      "entrypoint": "pytest -q tests/test_primary_v3_chain.py",
+      "junit": "focused-tests.xml",
+      "passed_cases": 48,
+      "boundary": "Before a lint-only lambda-to-def rewrite; retained, not overwritten."
+    },
+    {
+      "session_id": 53518,
+      "exit_code": 0,
+      "entrypoint": "pytest -q tests/test_primary_v3_chain.py",
+      "junit": "focused-tests-final.xml",
+      "passed_cases": 48
+    },
+    {
+      "session_id": 95449,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B -m pytest -q --junitxml=/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-primary-v3-chain-v1/full-tests.xml",
+      "passed_cases": 1710
+    },
+    {
+      "session_id": 93218,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_v3_chain.py --repository /root/embedding-optimizer-story-refactor --training-root /tmp/dense-identity-source.8rUgLF --workdir /tmp/dense-v3-chain.YqdVZP",
+      "result": "/tmp/dense-v3-chain.YqdVZP/result.json",
+      "actual_rejected_cases": 68,
+      "actual_inspection_cli_passes": 12
+    }
+  ],
+  "recording_boundary": "Terminal-observation handoff, not an independently worker-signed execution log. The actual rehearsal records each of its thirteen subprocess argv lists and observed output.",
+  "model_updates": 0,
+  "gpu_workers": 0,
+  "network_uploads": 0,
+  "scientific_completion": false,
+  "formal_replication_ready": false,
+  "source_published": false
+}

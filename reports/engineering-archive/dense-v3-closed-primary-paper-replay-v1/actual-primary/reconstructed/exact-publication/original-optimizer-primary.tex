@@ -1,0 +1,45 @@
+% Generated v3 primary evidence; no manuscript installation authorized.
+\newcommand{\CorrectedAbstractFinding}{Across the four-rate surface, Muon versus AdamW is inconclusive at +0.0016 [-0.0108, +0.0139] nDCG@10, and NorMuon versus AdamW is inconclusive at +0.0021 [-0.0089, +0.0130].}
+\newcommand{\CorrectedConclusionFinding}{Across the four-rate surface, Muon versus AdamW is inconclusive at +0.0016 [-0.0108, +0.0139] nDCG@10, and NorMuon versus AdamW is inconclusive at +0.0021 [-0.0089, +0.0130].}
+\newcommand{\CorrectedWeightSpaceFinding}{At the final stage, all-rate mean cumulative hidden-weight displacement relative to weight norm is AdamW 0.004716, Muon 0.063037, NorMuon 0.063103; the corresponding last-segment ratios are AdamW 0.000355, Muon 0.006221, NorMuon 0.006190.}
+% Generated v3 original-bridge evidence; no manuscript installation authorized.
+\newcommand{\CorrectedGeometryBridgeFinding}{The declared out-of-dose predictive criterion supports: log segment/weight norm, segment effective-rank fraction, segment row-norm CV, segment top-1\% row energy, cumulative/weight norm. All nine features and all four folds are retained. Undefined folds are not pooled as available cases. This is prediction outside a learning-rate dose on the same task suite, not causal mediation, statistical significance or evidence of equivalence.}
+\newcommand{\CorrectedGeometryBridgeTable}{%
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{lrrrll}\toprule
+Geometry feature & RMSE reduction & Improved & Defined & Criterion & Residual $\rho$ \\
+\midrule
+log segment/weight norm & +0.00594915 & 3/4 & 4/4 & supported & -0.589 \\
+segment stable-rank fraction & -0.00112712 & 0/4 & 4/4 & not supported & -0.097 \\
+segment effective-rank fraction & +0.0052098 & 3/4 & 4/4 & supported & +0.608 \\
+segment row-norm CV & +0.00529116 & 3/4 & 4/4 & supported & -0.597 \\
+segment top-1\% row energy & +0.00488877 & 3/4 & 4/4 & supported & -0.579 \\
+cumulative/weight norm & +0.0190137 & 4/4 & 4/4 & supported & -0.853 \\
+cumulative stable-rank fraction & -0.00351357 & 0/4 & 4/4 & not supported & -0.274 \\
+segment subspace overlap to AdamW & -0.00238356 & 1/4 & 4/4 & not supported & -0.063 \\
+cumulative subspace overlap to AdamW & -0.008376 & 0/4 & 4/4 & not supported & +0.035 \\
+\bottomrule\end{tabular}
+\caption{Every original weight-space predictor under four-fold leave-dose-index-out prediction. Decisions use exact MSE comparisons, not displayed RMSE. A missing correlation is undefined, not zero; baseline equivalence is distinct from an unidentified or numerically unresolved prediction.}
+\label{tab:corrected-bridge}
+\end{table*}%
+}
+\newcommand{\CorrectedMainSection}{%
+\section{Optimizer Effects on Dense Retrieval}
+\label{sec:optimizer-retrieval}
+The primary estimand averages all four declared rates within optimizer from a common model, dataset, training schedule, and evaluation suite.
+
+\begin{table}[t]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrl}\toprule
+Contrast & Mean & 95\% CI & Decision \\
+\midrule
+Muon - AdamW & +0.0016 & [-0.0108, +0.0139] & inconclusive \\
+NorMuon - AdamW & +0.0021 & [-0.0089, +0.0130] & inconclusive \\
+NorMuon - Muon & +0.0005 & [-0.0020, +0.0030] & inconclusive \\
+\bottomrule\end{tabular}
+\caption{Final-stage retrieval over 14 decontaminated BEIR tasks, with simultaneous paired-task intervals for all three optimizer contrasts.}
+\label{tab:optimizer-primary}
+\end{table}
+\paragraph{Primary comparison.} Across the four-rate surface, Muon versus AdamW is inconclusive at +0.0016 [-0.0108, +0.0139] nDCG@10, and NorMuon versus AdamW is inconclusive at +0.0021 [-0.0089, +0.0130]. Validation-selected comparisons are secondary: Muon versus AdamW inconclusive at +0.0032 [-0.0016, +0.0080]; NorMuon versus AdamW positive at +0.0044 [+0.0015, +0.0073]; NorMuon versus Muon inconclusive at +0.0012 [-0.0023, +0.0047]. These are one-seed, pinned-grid results; learning rates are not independent training seeds. An inconclusive interval is not evidence of equivalence.
+}

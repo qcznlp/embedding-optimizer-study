@@ -1,0 +1,161 @@
+{
+  "scope": "original_exit_records_reconciling_primary_progress_during_backup",
+  "transitions": [
+    {
+      "through_count": 440,
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T12:19:38.327450+00:00' '2026-09-11T12:36:42.087111+00:00' '4' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "41f50a",
+        "wall_time_seconds": 0.000004044,
+        "exit_code": 0,
+        "original_token_count": 495,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T12:19:38.327450+00:00\", \"through_utc\": \"2026-09-11T12:36:42.087111+00:00\", \"expected_primary_count_change\": 4, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-adamw-3e-5-1563-HotpotQA.exited.json\", \"bytes\": 207, \"sha256\": \"245c6631f925e28e83ce4b4a05b7b8d1ac346309c7ae53027a798f268df51afa\", \"elapsed_seconds\": 1285.1736425161362, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:22:03.434641+00:00\", \"job\": [\"verified-v3-adamw-3e-5\", 1563, \"HotpotQA\"], \"pid\": 426160}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-normuon-3e-4-1563-HotpotQA.exited.json\", \"bytes\": 208, \"sha256\": \"0b34c02d68abdc3b2532b0b89a3ad1a8f0f6619646b79522c44f3d42b0e0d6ee\", \"elapsed_seconds\": 1316.178138579242, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:24:21.461038+00:00\", \"job\": [\"verified-v3-normuon-3e-4\", 1563, \"HotpotQA\"], \"pid\": 426479}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-normuon-1e-4-1563-MSMARCO.exited.json\", \"bytes\": 207, \"sha256\": \"87dd03d68b8a6acf98c440d1d0a02a41afa16191284a308ebd183d518172b9da\", \"elapsed_seconds\": 3228.445618795231, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:26:33.485845+00:00\", \"job\": [\"verified-v3-normuon-1e-4\", 1563, \"MSMARCO\"], \"pid\": 409483}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-muon-1e-4-1563-MSMARCO.exited.json\", \"bytes\": 205, \"sha256\": \"ed00ee56c73bd57cdc1723054eaf818d80460a62c71d21e5d9cba779af8c9361\", \"elapsed_seconds\": 3287.4700422892347, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:26:47.496586+00:00\", \"job\": [\"verified-v3-muon-1e-4\", 1563, \"MSMARCO\"], \"pid\": 409188}], \"count\": 4, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verification": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T12:19:38.327450+00:00",
+        "through_utc": "2026-09-11T12:36:42.087111+00:00",
+        "expected_primary_count_change": 4,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-adamw-3e-5-1563-HotpotQA.exited.json",
+            "bytes": 207,
+            "sha256": "245c6631f925e28e83ce4b4a05b7b8d1ac346309c7ae53027a798f268df51afa",
+            "elapsed_seconds": 1285.1736425161362,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:22:03.434641+00:00",
+            "job": [
+              "verified-v3-adamw-3e-5",
+              1563,
+              "HotpotQA"
+            ],
+            "pid": 426160
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-normuon-3e-4-1563-HotpotQA.exited.json",
+            "bytes": 208,
+            "sha256": "0b34c02d68abdc3b2532b0b89a3ad1a8f0f6619646b79522c44f3d42b0e0d6ee",
+            "elapsed_seconds": 1316.178138579242,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:24:21.461038+00:00",
+            "job": [
+              "verified-v3-normuon-3e-4",
+              1563,
+              "HotpotQA"
+            ],
+            "pid": 426479
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-normuon-1e-4-1563-MSMARCO.exited.json",
+            "bytes": 207,
+            "sha256": "87dd03d68b8a6acf98c440d1d0a02a41afa16191284a308ebd183d518172b9da",
+            "elapsed_seconds": 3228.445618795231,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:26:33.485845+00:00",
+            "job": [
+              "verified-v3-normuon-1e-4",
+              1563,
+              "MSMARCO"
+            ],
+            "pid": 409483
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-muon-1e-4-1563-MSMARCO.exited.json",
+            "bytes": 205,
+            "sha256": "ed00ee56c73bd57cdc1723054eaf818d80460a62c71d21e5d9cba779af8c9361",
+            "elapsed_seconds": 3287.4700422892347,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:26:47.496586+00:00",
+            "job": [
+              "verified-v3-muon-1e-4",
+              1563,
+              "MSMARCO"
+            ],
+            "pid": 409188
+          }
+        ],
+        "count": 4,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    },
+    {
+      "through_count": 441,
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T12:36:42.087111+00:00' '2026-09-11T12:43:13.489851+00:00' '1' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "7695f1",
+        "wall_time_seconds": 0.000004904,
+        "exit_code": 0,
+        "original_token_count": 187,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T12:36:42.087111+00:00\", \"through_utc\": \"2026-09-11T12:43:13.489851+00:00\", \"expected_primary_count_change\": 1, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-muon-1e-3-1563-HotpotQA.exited.json\", \"bytes\": 206, \"sha256\": \"2d7494e53d1eb8b4cb23758cb9690e2f526fd4b1c6885a9b3ce14b6336b6125b\", \"elapsed_seconds\": 1267.1858567930758, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:43:10.628117+00:00\", \"job\": [\"verified-v3-muon-1e-3\", 1563, \"HotpotQA\"], \"pid\": 429700}], \"count\": 1, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verification": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T12:36:42.087111+00:00",
+        "through_utc": "2026-09-11T12:43:13.489851+00:00",
+        "expected_primary_count_change": 1,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-muon-1e-3-1563-HotpotQA.exited.json",
+            "bytes": 206,
+            "sha256": "2d7494e53d1eb8b4cb23758cb9690e2f526fd4b1c6885a9b3ce14b6336b6125b",
+            "elapsed_seconds": 1267.1858567930758,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:43:10.628117+00:00",
+            "job": [
+              "verified-v3-muon-1e-3",
+              1563,
+              "HotpotQA"
+            ],
+            "pid": 429700
+          }
+        ],
+        "count": 1,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    },
+    {
+      "through_count": 442,
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T12:43:13.489851+00:00' '2026-09-11T12:47:44.463748+00:00' '1' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "dfee64",
+        "wall_time_seconds": 0.000005576,
+        "exit_code": 0,
+        "original_token_count": 188,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T12:43:13.489851+00:00\", \"through_utc\": \"2026-09-11T12:47:44.463748+00:00\", \"expected_primary_count_change\": 1, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-adamw-1e-6-1563-HotpotQA.exited.json\", \"bytes\": 206, \"sha256\": \"48b838fb15514ba375e3263ed3c47065d2b34c4435475600039834eb2709c506\", \"elapsed_seconds\": 1293.187181099318, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:45:54.656009+00:00\", \"job\": [\"verified-v3-adamw-1e-6\", 1563, \"HotpotQA\"], \"pid\": 430140}], \"count\": 1, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verification": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T12:43:13.489851+00:00",
+        "through_utc": "2026-09-11T12:47:44.463748+00:00",
+        "expected_primary_count_change": 1,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-adamw-1e-6-1563-HotpotQA.exited.json",
+            "bytes": 206,
+            "sha256": "48b838fb15514ba375e3263ed3c47065d2b34c4435475600039834eb2709c506",
+            "elapsed_seconds": 1293.187181099318,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:45:54.656009+00:00",
+            "job": [
+              "verified-v3-adamw-1e-6",
+              1563,
+              "HotpotQA"
+            ],
+            "pid": 430140
+          }
+        ],
+        "count": 1,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    }
+  ],
+  "original_exit_zero_records": 6,
+  "no_workers_started_or_restarted_by_this_readback": true,
+  "scientific_completion": false
+}

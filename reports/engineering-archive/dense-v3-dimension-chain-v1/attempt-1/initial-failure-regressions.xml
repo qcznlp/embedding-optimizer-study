@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="10.967" timestamp="2026-09-07T08:20:00.643199+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_config" name="test_public_docs_record_compute_and_acceleration_contract" time="0.001" /><testcase classname="tests.test_wandb_dense_provenance_audit" name="test_publication_contract_requires_wandb_before_distribution_and_tracks_receipt" time="0.001" /><testcase classname="tests.test_paper_audit" name="test_current_dense_paper_constants_match_strict_sources" time="1.273"><failure message="AssertionError: assert ['Confirmatio...tionHeadline'] == []&#10;  &#10;  Left contains 2 more items, first extra item: 'ConfirmationHeadline'&#10;  Use -v to get more diff">checked_in_dense_audit = {'abstract_word_budget': {'base_words_conservative': 94, 'complete': True, 'counting_rule': 'ASCII alphanumeric tokens...2026-08-26T17:49:04Z', 'path': '/root/embedding-optimizer-story-refactor/configs/paper_claim_protocol.json', ...}, ...}
+
+    def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_audit):
+        result = checked_in_dense_audit
+    
+        assert result["complete"] is False
+        assert {item["path"] for item in result["active_manuscript_pending"]} == {
+            "paper/generated/optimizer-primary.tex",
+            "paper/generated/dimension-utilization.tex",
+            "paper/generated/state-operator-factorial.tex",
+        }
+        expected_mode = (
+            "checkpoint-backed-full-source"
+            if (REPOSITORY / "outputs").exists()
+            else "portable-evaluation-closure"
+        )
+        assert result["evidence_mode"]["mode"] == expected_mode
+        if expected_mode == "portable-evaluation-closure":
+            assert result["evidence_mode"]["files"] == 2_785
+            assert result["evidence_mode"]["bytes"] == 107_442_256
+        assert result["constant_macros"]["NumDiscoveryRuns"] == "12"
+        assert result["constant_macros"]["NumDiscoveryUnits"] == "840"
+        assert result["constant_macros"]["NumWeightPairs"] == "20"
+        assert result["constant_macros"]["MuonFamilyThroughputRatioRange"] == "0.9348--0.9489"
+        assert result["constant_macros"]["MuonFamilyStateRatioRange"] == "0.6299--0.6304"
+        assert result["constant_sources"]["dataset_manifest"]["sha256"] == (
+            "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8"
+        )
+        assert result["constant_sources"]["dataset_contract"]["path"].endswith(
+            "configs/training_data_contract.json"
+        )
+        discovery_evidence = result["evidence"]["DiscoveryHeadline"]
+        assert len(discovery_evidence) == 5
+&gt;       assert result["incomplete_evidence"] == []
+E       AssertionError: assert ['Confirmatio...tionHeadline'] == []
+E         
+E         Left contains 2 more items, first extra item: 'ConfirmationHeadline'
+E         Use -v to get more diff
+
+tests/test_paper_audit.py:188: AssertionError</failure></testcase><testcase classname="tests.test_dense_trainer_normalization_candidate" name="test_stack_guard_verifies_actual_pinned_source_bytes" time="0.003" /></testsuite></testsuites>

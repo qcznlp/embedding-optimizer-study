@@ -1,0 +1,1071 @@
+{
+  "audit_implementation": {
+    "bytes": 9627,
+    "path": "../embedding-optimizer-story-refactor/reports/experiment-integrity/audit-source.py",
+    "sha256": "55d343d008508a733bb2dbba041fe9005d8022e646f3ff27291fe5a4ab4ff1e4"
+  },
+  "audit_scope": "data linkage, completed training payloads, and current source bindings",
+  "audited_portion_valid": true,
+  "boundary": "This partial audit does not certify benchmark scores, final paper claims, seed robustness, or a numerical continuation from every saved checkpoint. A completed run means its saved payloads pass the deep contract; all remaining runs and scientific publication gates still have to finish.",
+  "completed_run_ids": [
+    "padded-adamw-1e-5",
+    "padded-adamw-1e-6",
+    "padded-adamw-3e-5",
+    "padded-adamw-3e-6",
+    "padded-muon-1e-3",
+    "padded-muon-1e-4",
+    "padded-muon-3e-3",
+    "padded-muon-3e-4"
+  ],
+  "completed_training_audit": {
+    "complete": true,
+    "deep_validation": true,
+    "errors": [],
+    "expected_checkpoints": 40,
+    "expected_runs": 8,
+    "verified_checkpoints": 40,
+    "verified_runs": 8
+  },
+  "dataset": {
+    "complete": true,
+    "dataset_path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42",
+    "errors": [],
+    "row_manifest_sha256": "735ef35b7195f3dae3172496b5bc534d39f2b7594d216c685eaebb37134fc347",
+    "training_view_fingerprint": "cc0598ffd4f5454f",
+    "verified_rows": 500000
+  },
+  "downstream_presence_only": {
+    "dimension_utilization": {
+      "present": false
+    },
+    "factorial": {
+      "present": false
+    },
+    "main_completion": {
+      "content_validated_by_this_audit": false,
+      "declared_complete": false,
+      "declared_status": "waiting_for_training",
+      "identity": {
+        "bytes": 24577,
+        "path": "logs/dense-no-packing-finalization/pipeline-ledger.json",
+        "sha256": "3d3c34c6a4d6b4b362bc9894e3bc17802e43ba8c7c4345a32a289280b6d6580f"
+      },
+      "present": true
+    },
+    "outcomes": {
+      "present": false
+    }
+  },
+  "materialized_row_linkage": {
+    "boundary": "All stored row identities checked; upstream texts were not re-downloaded.",
+    "complete": true,
+    "duplicate_sample_ids": 0,
+    "invalid_negative_groups": 0,
+    "row_identity_mismatches": 0,
+    "rows": 500000,
+    "source_counts": {
+      "fever": 52489,
+      "fiqa": 2629,
+      "hotpotqa": 40630,
+      "msmarco": 240405,
+      "nq": 72725,
+      "squadv2": 62244,
+      "trivia": 28878
+    },
+    "unique_sample_ids": 500000
+  },
+  "matrix": {
+    "bytes": 1601,
+    "path": "configs/dense_no_packing_retrain.yaml",
+    "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+  },
+  "observed_at_utc": "2026-09-04T19:56:33.941535+00:00",
+  "progress": {
+    "active_phase": "corrected_dense_no_packing_training",
+    "active_protocol": "configs/dense_no_packing_execution_protocol.json",
+    "canonical_handoff": "PROJECT_STATUS.md",
+    "complete_runs": 8,
+    "control_plane_warning_affected_runs": {
+      "tcpstore_heartbeat_disconnect": 2
+    },
+    "control_plane_warning_markers": {
+      "tcpstore_heartbeat_disconnect": 113709
+    },
+    "error_markers": {
+      "cuda_oom": 0,
+      "nccl_error": 0,
+      "non_finite": 0,
+      "traceback": 0
+    },
+    "evaluation_protocol": "configs/dense_no_packing_evaluation_protocol.json",
+    "implementation_pull_request": "https://github.com/qcznlp/embedding-optimizer-study/pull/42",
+    "matrix": "/root/embedding-optimizer-study/configs/dense_no_packing_retrain.yaml",
+    "objective": "Compare AdamW, Muon, and NorMuon for corrected independently padded DenseOn retriever adaptation.",
+    "observation": "artifact_only_no_process_inspection",
+    "pending_runs": 2,
+    "planned_beir_task_units": 840,
+    "planned_checkpoints": 60,
+    "planned_runs": 12,
+    "resumable_checkpoints": 40,
+    "runs": [
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 56921
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 1e-06,
+        "optimizer": "adamw",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-adamw-1e-6",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 56788
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 3e-06,
+        "optimizer": "adamw",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-adamw-3e-6",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 1e-05,
+        "optimizer": "adamw",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-adamw-1e-5",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 3e-05,
+        "optimizer": "adamw",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-adamw-3e-5",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 0.0001,
+        "optimizer": "muon",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-muon-1e-4",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 0.0003,
+        "optimizer": "muon",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-muon-3e-4",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 0.001,
+        "optimizer": "muon",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-muon-1e-3",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 3907,
+        "learning_rate": 0.003,
+        "optimizer": "muon",
+        "resumable_checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "run_id": "padded-muon-3e-3",
+        "state": "complete"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 495,
+        "learning_rate": 0.0001,
+        "optimizer": "normuon",
+        "resumable_checkpoint_steps": [],
+        "run_id": "padded-normuon-1e-4",
+        "state": "started_artifacts_present"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": 3907,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 423,
+        "learning_rate": 0.0003,
+        "optimizer": "normuon",
+        "resumable_checkpoint_steps": [],
+        "run_id": "padded-normuon-3e-4",
+        "state": "started_artifacts_present"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": null,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 0,
+        "learning_rate": 0.001,
+        "optimizer": "normuon",
+        "resumable_checkpoint_steps": [],
+        "run_id": "padded-normuon-1e-3",
+        "state": "pending"
+      },
+      {
+        "control_plane_warning_markers": {
+          "tcpstore_heartbeat_disconnect": 0
+        },
+        "declared_total_steps": null,
+        "error_markers": {
+          "cuda_oom": 0,
+          "nccl_error": 0,
+          "non_finite": 0,
+          "traceback": 0
+        },
+        "latest_log_step": 0,
+        "learning_rate": 0.003,
+        "optimizer": "normuon",
+        "resumable_checkpoint_steps": [],
+        "run_id": "padded-normuon-3e-3",
+        "state": "pending"
+      }
+    ],
+    "schema_version": 1,
+    "scope": "corrected_dense_no_packing",
+    "started_incomplete_runs": 2,
+    "study_status": "active",
+    "tracking_issue": "https://github.com/qcznlp/embedding-optimizer-study/issues/41"
+  },
+  "protocol_bindings": {
+    "checked_bindings": [
+      {
+        "bytes": 4116,
+        "matches": true,
+        "path": "configs/dense_no_packing_preflight_protocol.json",
+        "protocol": "dense_no_packing_execution_protocol.json",
+        "sha256": "b1ca8c25e1292b6436a9faca80bfc454b5c1b54be094e2d1f4a2699e8230ffc4"
+      },
+      {
+        "bytes": 1800,
+        "matches": true,
+        "path": "reports/dense-no-packing/preflight-selection.json",
+        "protocol": "dense_no_packing_execution_protocol.json",
+        "sha256": "ba25fa31f00a3842dcaf11b7038d0b00c53978241ff131d3e41435ad734027dd"
+      },
+      {
+        "bytes": 1601,
+        "matches": true,
+        "path": "configs/dense_no_packing_retrain.yaml",
+        "protocol": "dense_no_packing_execution_protocol.json",
+        "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+      },
+      {
+        "bytes": 1019,
+        "matches": true,
+        "path": "configs/formal_runtime.json",
+        "protocol": "dense_no_packing_execution_protocol.json",
+        "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+      },
+      {
+        "bytes": 7170,
+        "matches": true,
+        "path": "src/embed_optim/corrected_geometry_matrix.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "b08d9e6d7b7f57fbd1f8504a81c002d1b287c2ced82f33ee8780fa4d0681dfe6"
+      },
+      {
+        "bytes": 23632,
+        "matches": true,
+        "path": "src/embed_optim/corrected_geometry_summary.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+      },
+      {
+        "bytes": 25648,
+        "matches": true,
+        "path": "src/embed_optim/geometry.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+      },
+      {
+        "bytes": 7052,
+        "matches": true,
+        "path": "src/embed_optim/config.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+      },
+      {
+        "bytes": 11839,
+        "matches": true,
+        "path": "src/embed_optim/optimizers.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+      },
+      {
+        "bytes": 111685,
+        "matches": true,
+        "path": "src/embed_optim/aggregate.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+      },
+      {
+        "bytes": 1255,
+        "matches": true,
+        "path": "src/embed_optim/corrected_input_execution.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+      },
+      {
+        "bytes": 15720,
+        "matches": true,
+        "path": "src/embed_optim/matrix.py",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "ffea83211823aa9d5f49f615020034cf2c1db4538fe67e6061bf1d6750da6bb7"
+      },
+      {
+        "bytes": 6054,
+        "matches": true,
+        "path": "configs/dense_no_packing_execution_protocol.json",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+      },
+      {
+        "bytes": 4838,
+        "matches": true,
+        "path": "configs/dense_no_packing_evaluation_protocol.json",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98"
+      },
+      {
+        "bytes": 1601,
+        "matches": true,
+        "path": "configs/dense_no_packing_retrain.yaml",
+        "protocol": "dense_no_packing_analysis_protocol.json",
+        "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+      },
+      {
+        "bytes": 19823,
+        "matches": true,
+        "path": "src/embed_optim/corrected_outcome_summary.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+      },
+      {
+        "bytes": 9893,
+        "matches": true,
+        "path": "src/embed_optim/corrected_beir_evaluation.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+      },
+      {
+        "bytes": 8315,
+        "matches": true,
+        "path": "src/embed_optim/corrected_validation_matrix.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "3604920cbd5c1b55b5f39c265345e77a71c279bbcc0668e4d4b46b2efaaeed50"
+      },
+      {
+        "bytes": 1255,
+        "matches": true,
+        "path": "src/embed_optim/corrected_input_execution.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+      },
+      {
+        "bytes": 111685,
+        "matches": true,
+        "path": "src/embed_optim/aggregate.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+      },
+      {
+        "bytes": 7052,
+        "matches": true,
+        "path": "src/embed_optim/config.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+      },
+      {
+        "bytes": 5282,
+        "matches": true,
+        "path": "src/embed_optim/decontamination.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+      },
+      {
+        "bytes": 6170,
+        "matches": true,
+        "path": "src/embed_optim/evaluation_utils.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+      },
+      {
+        "bytes": 22754,
+        "matches": true,
+        "path": "src/embed_optim/validation_data.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "ae1311e7cae7c5b8a1a6991e687be6709358bec77b4592d2cd63cbfd98f5ec2d"
+      },
+      {
+        "bytes": 25648,
+        "matches": true,
+        "path": "src/embed_optim/geometry.py",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+      },
+      {
+        "bytes": 6054,
+        "matches": true,
+        "path": "configs/dense_no_packing_execution_protocol.json",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+      },
+      {
+        "bytes": 4838,
+        "matches": true,
+        "path": "configs/dense_no_packing_evaluation_protocol.json",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98"
+      },
+      {
+        "bytes": 8282,
+        "matches": true,
+        "path": "configs/dense_no_packing_analysis_protocol.json",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+      },
+      {
+        "bytes": 1601,
+        "matches": true,
+        "path": "configs/dense_no_packing_retrain.yaml",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+      },
+      {
+        "bytes": 5180,
+        "matches": true,
+        "path": "configs/validation_probe.json",
+        "protocol": "dense_no_packing_outcome_protocol.json",
+        "sha256": "a7e20fd3ebb3477a7104bae322bf2fb5340ad47fe1377bcf20e923b64697d2d1"
+      },
+      {
+        "bytes": 26258,
+        "matches": true,
+        "path": "src/embed_optim/corrected_retrieval_bridge.py",
+        "protocol": "dense_no_packing_bridge_implementation_protocol_v2.json",
+        "sha256": "347331a3c35d12a95188c0927a327b06bd30dd4ffa11b161c432117b4299eb10"
+      },
+      {
+        "bytes": 7052,
+        "matches": true,
+        "path": "src/embed_optim/config.py",
+        "protocol": "dense_no_packing_bridge_implementation_protocol_v2.json",
+        "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+      },
+      {
+        "bytes": 25648,
+        "matches": true,
+        "path": "src/embed_optim/geometry.py",
+        "protocol": "dense_no_packing_bridge_implementation_protocol_v2.json",
+        "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+      },
+      {
+        "bytes": 8282,
+        "matches": true,
+        "path": "configs/dense_no_packing_analysis_protocol.json",
+        "protocol": "dense_no_packing_bridge_implementation_protocol_v2.json",
+        "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+      },
+      {
+        "bytes": 7666,
+        "matches": true,
+        "path": "configs/dense_no_packing_outcome_protocol.json",
+        "protocol": "dense_no_packing_bridge_implementation_protocol_v2.json",
+        "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
+      },
+      {
+        "bytes": 1601,
+        "matches": true,
+        "path": "configs/dense_no_packing_retrain.yaml",
+        "protocol": "dense_no_packing_bridge_implementation_protocol_v2.json",
+        "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+      },
+      {
+        "bytes": 19840,
+        "matches": true,
+        "path": "src/embed_optim/corrected_execution_sensitivity.py",
+        "protocol": "dense_no_packing_sensitivity_implementation_protocol.json",
+        "sha256": "3277e998d083252eb0db9b4b843930352c3641418325106ecfc5bc60e181c9c6"
+      },
+      {
+        "bytes": 7052,
+        "matches": true,
+        "path": "src/embed_optim/config.py",
+        "protocol": "dense_no_packing_sensitivity_implementation_protocol.json",
+        "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+      },
+      {
+        "bytes": 25648,
+        "matches": true,
+        "path": "src/embed_optim/geometry.py",
+        "protocol": "dense_no_packing_sensitivity_implementation_protocol.json",
+        "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+      },
+      {
+        "bytes": 8282,
+        "matches": true,
+        "path": "configs/dense_no_packing_analysis_protocol.json",
+        "protocol": "dense_no_packing_sensitivity_implementation_protocol.json",
+        "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+      },
+      {
+        "bytes": 7666,
+        "matches": true,
+        "path": "configs/dense_no_packing_outcome_protocol.json",
+        "protocol": "dense_no_packing_sensitivity_implementation_protocol.json",
+        "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
+      },
+      {
+        "bytes": 1601,
+        "matches": true,
+        "path": "configs/dense_no_packing_retrain.yaml",
+        "protocol": "dense_no_packing_sensitivity_implementation_protocol.json",
+        "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+      },
+      {
+        "bytes": 38709,
+        "matches": true,
+        "path": "src/embed_optim/corrected_publication.py",
+        "protocol": "dense_no_packing_publication_protocol.json",
+        "sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6"
+      },
+      {
+        "bytes": 25648,
+        "matches": true,
+        "path": "src/embed_optim/geometry.py",
+        "protocol": "dense_no_packing_publication_protocol.json",
+        "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+      },
+      {
+        "bytes": 8282,
+        "matches": true,
+        "path": "configs/dense_no_packing_analysis_protocol.json",
+        "protocol": "dense_no_packing_publication_protocol.json",
+        "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+      },
+      {
+        "bytes": 7666,
+        "matches": true,
+        "path": "configs/dense_no_packing_outcome_protocol.json",
+        "protocol": "dense_no_packing_publication_protocol.json",
+        "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
+      },
+      {
+        "bytes": 6499,
+        "matches": true,
+        "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+        "protocol": "dense_no_packing_publication_protocol.json",
+        "sha256": "ccf81a94026b8198e97877bfea995914f74ad9d8137885bf60de0f0fe86245ae"
+      },
+      {
+        "bytes": 5032,
+        "matches": true,
+        "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        "protocol": "dense_no_packing_publication_protocol.json",
+        "sha256": "99a2a967e162e96fe24d1edd74f6c8b15a7e7ccc26056f4063e5799c9e35b7f3"
+      },
+      {
+        "bytes": 2714,
+        "matches": true,
+        "path": "src/embed_optim/state_operator_factorial_contract.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "c0d4ebd67f9836b968e1ec003cd60454534ddea774436721735ffe05594c1e24"
+      },
+      {
+        "bytes": 43991,
+        "matches": true,
+        "path": "src/embed_optim/state_operator_factorial.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "585cac945a32ebd101d64b402b6746ee2f01da03018ced12ed092d34a423d292"
+      },
+      {
+        "bytes": 12488,
+        "matches": true,
+        "path": "src/embed_optim/state_operator_factorial_evaluation.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "649b83744f39f95fc59dd255320f08894219e82484cdf5c348e78e9c4531fb3b"
+      },
+      {
+        "bytes": 28182,
+        "matches": true,
+        "path": "src/embed_optim/state_operator_factorial_probe.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "7a40bafe3b8d43122cf0559bb83e1d3e6dd169da3fbf4ece8f70f5ccc720784c"
+      },
+      {
+        "bytes": 22605,
+        "matches": true,
+        "path": "src/embed_optim/state_operator_factorial_summary.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "d6d4d8481404e38b0e7ab9291680c39a99909fc3fb87959bc42be49f4361cc27"
+      },
+      {
+        "bytes": 6674,
+        "matches": true,
+        "path": "src/embed_optim/state_operator_factorial_training.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "0bc728cadee6829d2e03e1d56d94a06ca726502ef074996e4611e9c7073a65e0"
+      },
+      {
+        "bytes": 15720,
+        "matches": true,
+        "path": "src/embed_optim/matrix.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "ffea83211823aa9d5f49f615020034cf2c1db4538fe67e6061bf1d6750da6bb7"
+      },
+      {
+        "bytes": 16750,
+        "matches": true,
+        "path": "src/embed_optim/train.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+      },
+      {
+        "bytes": 7052,
+        "matches": true,
+        "path": "src/embed_optim/config.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+      },
+      {
+        "bytes": 11839,
+        "matches": true,
+        "path": "src/embed_optim/optimizers.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+      },
+      {
+        "bytes": 2117,
+        "matches": true,
+        "path": "src/embed_optim/collators.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+      },
+      {
+        "bytes": 3805,
+        "matches": true,
+        "path": "src/embed_optim/losses.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+      },
+      {
+        "bytes": 10641,
+        "matches": true,
+        "path": "src/embed_optim/callbacks.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+      },
+      {
+        "bytes": 25320,
+        "matches": true,
+        "path": "src/embed_optim/gradient_probe.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "3e06f35eb3a6a294be0da6b78ca6ae6846357c6ff2aac70a54bd99e4d384ddac"
+      },
+      {
+        "bytes": 23435,
+        "matches": true,
+        "path": "src/embed_optim/update_geometry.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "93c295cad852fbeb3e065077442f7f94740d7b6981dd16e4c141fc4377c3fbb4"
+      },
+      {
+        "bytes": 25648,
+        "matches": true,
+        "path": "src/embed_optim/geometry.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+      },
+      {
+        "bytes": 26823,
+        "matches": true,
+        "path": "src/embed_optim/short_branch.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "828345379b4cd4312b6b8a1881a84a7b3116b16fa09ad402e2c1b0e0321c2a4f"
+      },
+      {
+        "bytes": 20602,
+        "matches": true,
+        "path": "src/embed_optim/probe_export.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+      },
+      {
+        "bytes": 20127,
+        "matches": true,
+        "path": "src/embed_optim/probe_matrix.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "e286688e2886db91e5f1d147c7a3e2044898bdd8b347d5ed106318593c2e1d28"
+      },
+      {
+        "bytes": 43786,
+        "matches": true,
+        "path": "src/embed_optim/representation_geometry.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "2910a084079e2c53a6b4152fcb1a32f4ab30387975a1dbbca336db9e546469a2"
+      },
+      {
+        "bytes": 11499,
+        "matches": true,
+        "path": "src/embed_optim/supplemental_training_audit.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "d05c14da2cc6076f0b13bd26dd1100c4d0b4d8e7ca7014639908b7ca53dc5796"
+      },
+      {
+        "bytes": 9893,
+        "matches": true,
+        "path": "src/embed_optim/corrected_beir_evaluation.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+      },
+      {
+        "bytes": 1255,
+        "matches": true,
+        "path": "src/embed_optim/corrected_input_execution.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+      },
+      {
+        "bytes": 27491,
+        "matches": true,
+        "path": "src/embed_optim/evaluate_matrix.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2"
+      },
+      {
+        "bytes": 6170,
+        "matches": true,
+        "path": "src/embed_optim/evaluation_utils.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+      },
+      {
+        "bytes": 5282,
+        "matches": true,
+        "path": "src/embed_optim/decontamination.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+      },
+      {
+        "bytes": 111685,
+        "matches": true,
+        "path": "src/embed_optim/aggregate.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+      },
+      {
+        "bytes": 7263,
+        "matches": true,
+        "path": "src/embed_optim/gpu_lease.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+      },
+      {
+        "bytes": 1104,
+        "matches": true,
+        "path": "scripts/eval/dense_no_packing_parallel.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a"
+      },
+      {
+        "bytes": 11179,
+        "matches": true,
+        "path": "scripts/eval/dense_parallel.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72"
+      },
+      {
+        "bytes": 26739,
+        "matches": true,
+        "path": "scripts/eval/dense_sequential.py",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906"
+      },
+      {
+        "bytes": 10347,
+        "matches": true,
+        "path": "configs/dense_no_packing_state_operator_factorial_protocol.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "5773943a3ae9b581021a0f7b85b162c74d5c497eeca1386578ff9d2c3bcafe76"
+      },
+      {
+        "bytes": 6054,
+        "matches": true,
+        "path": "configs/dense_no_packing_execution_protocol.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+      },
+      {
+        "bytes": 1601,
+        "matches": true,
+        "path": "configs/dense_no_packing_retrain.yaml",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+      },
+      {
+        "bytes": 1019,
+        "matches": true,
+        "path": "configs/formal_runtime.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+      },
+      {
+        "bytes": 2433,
+        "matches": true,
+        "path": "configs/common_state_probe.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+      },
+      {
+        "bytes": 867,
+        "matches": true,
+        "path": "configs/representation_probe.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "45e76c8daa5bda0213c346b39200a34ddc1e9295f37198a2bd238276ee6057e2"
+      },
+      {
+        "bytes": 5737,
+        "matches": true,
+        "path": "configs/beir_representation_probe.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "474aa62282ab200ebb522bc6897db9f2077dd39f627322ea476392b988f71f50"
+      },
+      {
+        "bytes": 3103,
+        "matches": true,
+        "path": "configs/short_branch_protocol.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "d3dc498f5e952d09d1423a53dc36499b638366d23e3876bb81aadb7e88369bec"
+      },
+      {
+        "bytes": 532,
+        "matches": true,
+        "path": "reports/short-branch/subset-receipt.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "855bf0c76403ad45ee8901051f354f3a31da57b3c1f1fd2d21c7891d22bf942e"
+      },
+      {
+        "bytes": 3139,
+        "matches": true,
+        "path": "configs/dense_scope_amendment.json",
+        "protocol": "dense_no_packing_state_operator_factorial_implementation_protocol.json",
+        "sha256": "c271f73988507bd95de96a3914c782de65d3fb118cd8385a14ad6d010bfc12b5"
+      }
+    ],
+    "complete": true,
+    "problems": []
+  },
+  "repository_commit": "f231a6430712388778f32ad1736a4cb6de3bec3e",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "sources": [
+    {
+      "bytes": 16750,
+      "path": "src/embed_optim/train.py",
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    },
+    {
+      "bytes": 3805,
+      "path": "src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    {
+      "bytes": 11839,
+      "path": "src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 2117,
+      "path": "src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 7052,
+      "path": "src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 14465,
+      "path": "src/embed_optim/data.py",
+      "sha256": "5afe090147492abda341055e580fc626809c973d3a5e49b0a82e8891d925cff1"
+    },
+    {
+      "bytes": 111685,
+      "path": "src/embed_optim/aggregate.py",
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+    },
+    {
+      "bytes": 7492,
+      "path": "src/embed_optim/corrected_progress.py",
+      "sha256": "bb20afdd9687b37a0bd5cba9726365d86a80ec9054f88aab3844099d27e5c9b9"
+    },
+    {
+      "bytes": 9893,
+      "path": "src/embed_optim/corrected_beir_evaluation.py",
+      "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+    },
+    {
+      "bytes": 19823,
+      "path": "src/embed_optim/corrected_outcome_summary.py",
+      "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+    },
+    {
+      "bytes": 5282,
+      "path": "src/embed_optim/decontamination.py",
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    }
+  ]
+}

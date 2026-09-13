@@ -1,0 +1,54 @@
+{
+  "scope": "engineering_terminal_command_handoff",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "completed_sessions": [
+    {
+      "session_id": 97751,
+      "exit_code": 0,
+      "entrypoint": "pytest -q tests/test_primary_v3_validation.py",
+      "junit": "focused-tests.xml",
+      "passed_cases": 65,
+      "boundary": "Before two additional all-runs-before-selection tests; retained."
+    },
+    {
+      "session_id": 45906,
+      "exit_code": 0,
+      "entrypoint": "pytest -q tests/test_primary_v3_validation.py",
+      "junit": "focused-tests-final.xml",
+      "passed_cases": 67
+    },
+    {
+      "session_id": 56896,
+      "exit_code": 0,
+      "entrypoint": "pytest -q",
+      "junit": "full-tests.xml",
+      "passed_cases": 1777
+    },
+    {
+      "session_id": 89590,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= HF_DATASETS_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_v3_validation.py --repository /root/embedding-optimizer-story-refactor --training-root /tmp/dense-identity-source.8rUgLF --workdir /tmp/dense-v3-validation.Gf6KJ2",
+      "result": "/tmp/dense-v3-validation.Gf6KJ2/result.json"
+    },
+    {
+      "session_id": 16850,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_v3_validation_admission.py --repository /root/embedding-optimizer-story-refactor --training-root /tmp/dense-identity-source.8rUgLF --workdir /tmp/dense-v3-validation-admission.dCL5F1",
+      "result": "/tmp/dense-v3-validation-admission.dCL5F1/result.json",
+      "actual_rejected_cases": 18
+    }
+  ],
+  "preparation": {
+    "entrypoint": "scripts/prepare_dense_v3_validation.py",
+    "exit_code": 0,
+    "output": "configs/dense_primary_v3_validation_protocol.json"
+  },
+  "recording_boundary": "Terminal-observation handoff, not an independently worker-signed execution log. Exact argv is recorded only where retained by the session handoff or actual worker receipt.",
+  "model_updates": 0,
+  "formal_validation_executed": false,
+  "primary_recipe_selection_produced": false,
+  "network_uploads": 0,
+  "scientific_completion": false,
+  "formal_replication_ready": false,
+  "source_published": false
+}

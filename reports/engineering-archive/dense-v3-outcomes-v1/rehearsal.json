@@ -1,0 +1,1054 @@
+{
+  "actual_missing_primary_cli": {
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "embed_optim.primary_v3_outcomes",
+      "build",
+      "--protocol",
+      "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_outcome_protocol_v2.json",
+      "--primary-protocol",
+      "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_protocol.json",
+      "--validation-protocol",
+      "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_validation_protocol.json",
+      "--repository",
+      "/root/embedding-optimizer-story-refactor",
+      "--training-root",
+      "/tmp/dense-identity-source.8rUgLF",
+      "--experiment-root",
+      "/root/embedding-optimizer-study",
+      "--results-root",
+      "/tmp/dense-v3-outcomes-replay.EEVh60/absent-beir",
+      "--validation-data",
+      "/tmp/dense-partition-candidate.kHXoGW/validation",
+      "--validation-root",
+      "/tmp/dense-v3-outcomes-replay.EEVh60/absent-validation",
+      "--output",
+      "/tmp/dense-v3-outcomes-replay.EEVh60/must-not-be-created"
+    ],
+    "returncode": 1,
+    "stderr": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\nTraceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcomes.py\", line 453, in <module>\n    main()\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcomes.py\", line 440, in main\n    plan, evidence, tables = collect_evidence(\n                             ^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcomes.py\", line 331, in collect_evidence\n    selected = collect_selection(\n               ^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py\", line 204, in collect_selection\n    primary.complete_run(root, run_id)\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_contract.py\", line 199, in complete_run\n    checked = inspect_complete_run(run_root, self.expected_identity(run_id), list(STEPS))\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_completion.py\", line 256, in inspect_complete_run\n    raise ValueError(\"Require an ordinary retained run directory\")\nValueError: Require an ordinary retained run directory\n",
+    "stdout": ""
+  },
+  "all_changed_cases_rejected": true,
+  "all_positive_tables_are_synthetic": true,
+  "artifacts": [
+    {
+      "bytes": 60904,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/all_task_scores.csv",
+      "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+    },
+    {
+      "bytes": 153587,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/evidence.json",
+      "sha256": "561b8641a07f5d1e00cc964cdac473f4da4a405ef5d8bdd5cb859c463fb5be4d"
+    },
+    {
+      "bytes": 2101,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/manifest.json",
+      "sha256": "de27e8705c4be3b7e4f63edb7f5572a75911a1f1204852ea673ac3c9b5070a9a"
+    },
+    {
+      "bytes": 780,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/optimizer_stage_scores.csv",
+      "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+    },
+    {
+      "bytes": 809,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/primary_summary.csv",
+      "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+    },
+    {
+      "bytes": 1584,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/primary_task_effects.csv",
+      "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+    },
+    {
+      "bytes": 818,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/run_observed_auc.csv",
+      "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+    },
+    {
+      "bytes": 4261,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/run_stage_scores.csv",
+      "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+    },
+    {
+      "bytes": 978,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/secondary_summary.csv",
+      "sha256": "3f29c726dd3c2704c545a8adf18ed297093cb9bc273bca41fdc7cf1a8be768a6"
+    },
+    {
+      "bytes": 1503,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/secondary_task_effects.csv",
+      "sha256": "c78e3a9aecef7eb7fa71d20bb16e72d7d0c6a65d955f5600845b845c6d6f5c75"
+    },
+    {
+      "bytes": 590,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-bundle/validation_run_metrics.csv",
+      "sha256": "71311472eb5b43923b8315a59903264b76016b3cf0e9e5793ef114824c832f25"
+    },
+    {
+      "bytes": 223332,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-input.json",
+      "sha256": "c790d4717362b59ab8919a259804b399ae2ad714e9457616a1818f10bba19c6c"
+    },
+    {
+      "bytes": 218,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-plan.json",
+      "sha256": "479102fbea6774f58de358b60d8f4cf9f0e68ed7637f92101cc8e3ca93d2bec3"
+    },
+    {
+      "bytes": 2148,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fresh-cpu-fixture-readback.json",
+      "sha256": "f56a36a1dbff982ce47ff8812a2fc525b692c98ef26b930cdd6c1f09458e0291"
+    },
+    {
+      "bytes": 7099,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-best_rate_estimand.json",
+      "sha256": "91c9dd88f8b91eb29fb07390523b7a2db251f331a6816b5233beda1faa99091b"
+    },
+    {
+      "bytes": 60904,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/all_task_scores.csv",
+      "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+    },
+    {
+      "bytes": 153588,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/evidence.json",
+      "sha256": "3f30f11d15824d7d36224530b722ff673ec041751c23522fc1f57e1fa8315832"
+    },
+    {
+      "bytes": 1789,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/manifest.json",
+      "sha256": "ba99644fed5e344ab53e9a1270c571f939ab47b3978e5579195ae701d9475fca"
+    },
+    {
+      "bytes": 780,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/optimizer_stage_scores.csv",
+      "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+    },
+    {
+      "bytes": 809,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/primary_summary.csv",
+      "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+    },
+    {
+      "bytes": 1584,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/primary_task_effects.csv",
+      "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+    },
+    {
+      "bytes": 818,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/run_observed_auc.csv",
+      "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+    },
+    {
+      "bytes": 4261,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/run_stage_scores.csv",
+      "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+    },
+    {
+      "bytes": 978,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/secondary_summary.csv",
+      "sha256": "3f29c726dd3c2704c545a8adf18ed297093cb9bc273bca41fdc7cf1a8be768a6"
+    },
+    {
+      "bytes": 1503,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/secondary_task_effects.csv",
+      "sha256": "c78e3a9aecef7eb7fa71d20bb16e72d7d0c6a65d955f5600845b845c6d6f5c75"
+    },
+    {
+      "bytes": 590,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/validation_run_metrics.csv",
+      "sha256": "71311472eb5b43923b8315a59903264b76016b3cf0e9e5793ef114824c832f25"
+    },
+    {
+      "bytes": 60904,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/all_task_scores.csv",
+      "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+    },
+    {
+      "bytes": 153587,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/evidence.json",
+      "sha256": "561b8641a07f5d1e00cc964cdac473f4da4a405ef5d8bdd5cb859c463fb5be4d"
+    },
+    {
+      "bytes": 1789,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/manifest.json",
+      "sha256": "84de3c3e8b0bdf13c366aa5e88117794c53a1c82ff592ea285e9fc217ffe4abb"
+    },
+    {
+      "bytes": 780,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/optimizer_stage_scores.csv",
+      "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+    },
+    {
+      "bytes": 810,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/primary_summary.csv",
+      "sha256": "f306807fe209262285a85f7a63c8dbdc80284266359f31a3c71efc975d775cca"
+    },
+    {
+      "bytes": 1584,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/primary_task_effects.csv",
+      "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+    },
+    {
+      "bytes": 818,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/run_observed_auc.csv",
+      "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+    },
+    {
+      "bytes": 4261,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/run_stage_scores.csv",
+      "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+    },
+    {
+      "bytes": 978,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/secondary_summary.csv",
+      "sha256": "3f29c726dd3c2704c545a8adf18ed297093cb9bc273bca41fdc7cf1a8be768a6"
+    },
+    {
+      "bytes": 1503,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/secondary_task_effects.csv",
+      "sha256": "c78e3a9aecef7eb7fa71d20bb16e72d7d0c6a65d955f5600845b845c6d6f5c75"
+    },
+    {
+      "bytes": 590,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/validation_run_metrics.csv",
+      "sha256": "71311472eb5b43923b8315a59903264b76016b3cf0e9e5793ef114824c832f25"
+    },
+    {
+      "bytes": 60904,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/all_task_scores.csv",
+      "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+    },
+    {
+      "bytes": 153587,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/evidence.json",
+      "sha256": "561b8641a07f5d1e00cc964cdac473f4da4a405ef5d8bdd5cb859c463fb5be4d"
+    },
+    {
+      "bytes": 1789,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/manifest.json",
+      "sha256": "55b4ab9073754a661239cad2758ef6199ee535ad825c67ed31d2a5daa061fa34"
+    },
+    {
+      "bytes": 780,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/optimizer_stage_scores.csv",
+      "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+    },
+    {
+      "bytes": 809,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/primary_summary.csv",
+      "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+    },
+    {
+      "bytes": 1584,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/primary_task_effects.csv",
+      "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+    },
+    {
+      "bytes": 818,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/run_observed_auc.csv",
+      "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+    },
+    {
+      "bytes": 4262,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/run_stage_scores.csv",
+      "sha256": "b5c7f0b4b353ea52007a775ad88a3996b8c7378d652b76131bd553fc5b60aa38"
+    },
+    {
+      "bytes": 978,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/secondary_summary.csv",
+      "sha256": "3f29c726dd3c2704c545a8adf18ed297093cb9bc273bca41fdc7cf1a8be768a6"
+    },
+    {
+      "bytes": 1503,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/secondary_task_effects.csv",
+      "sha256": "c78e3a9aecef7eb7fa71d20bb16e72d7d0c6a65d955f5600845b845c6d6f5c75"
+    },
+    {
+      "bytes": 590,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/validation_run_metrics.csv",
+      "sha256": "71311472eb5b43923b8315a59903264b76016b3cf0e9e5793ef114824c832f25"
+    },
+    {
+      "bytes": 60904,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/all_task_scores.csv",
+      "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+    },
+    {
+      "bytes": 153587,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/evidence.json",
+      "sha256": "561b8641a07f5d1e00cc964cdac473f4da4a405ef5d8bdd5cb859c463fb5be4d"
+    },
+    {
+      "bytes": 1789,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/manifest.json",
+      "sha256": "a660c0daed39b5e5bf1bbc0c7ee783c7417508565adeedbe63be7badaeb50eee"
+    },
+    {
+      "bytes": 780,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/optimizer_stage_scores.csv",
+      "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+    },
+    {
+      "bytes": 809,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/primary_summary.csv",
+      "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+    },
+    {
+      "bytes": 1584,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/primary_task_effects.csv",
+      "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+    },
+    {
+      "bytes": 818,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/run_observed_auc.csv",
+      "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+    },
+    {
+      "bytes": 4261,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/run_stage_scores.csv",
+      "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+    },
+    {
+      "bytes": 979,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/secondary_summary.csv",
+      "sha256": "2f85aebb5675dd784d844db9ad40a9b42652b4e33b78a4bb8c1d9c37b7ab6eb5"
+    },
+    {
+      "bytes": 1503,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/secondary_task_effects.csv",
+      "sha256": "c78e3a9aecef7eb7fa71d20bb16e72d7d0c6a65d955f5600845b845c6d6f5c75"
+    },
+    {
+      "bytes": 590,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/validation_run_metrics.csv",
+      "sha256": "71311472eb5b43923b8315a59903264b76016b3cf0e9e5793ef114824c832f25"
+    },
+    {
+      "bytes": 7275,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-claim_execution_authority.json",
+      "sha256": "f1cfd9ea57b02f67c828f4f6c9a6470eb921b79e8b443b4258c235e92004289a"
+    },
+    {
+      "bytes": 7275,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-fewer_resamples.json",
+      "sha256": "f4c9a8e793370db68328e061a02e54fb3df01a305b5d723d143c6e4174678270"
+    },
+    {
+      "bytes": 7134,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-impute_initial_score.json",
+      "sha256": "87d0fcd367b5df3b0b05aeec30b3be2be52a6b3ced2dc161cc0eebbac8faa234"
+    },
+    {
+      "bytes": 7276,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-missing_high_rate.json",
+      "sha256": "a712812a872069375a191393793db234a74ea888121f6bd45000374db3424d52"
+    },
+    {
+      "bytes": 5535,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-missing_sources.json",
+      "sha256": "e091a8ded4fea09ad54105d0138b285acba6f212fdc01dc7137af31fe33cc110"
+    },
+    {
+      "bytes": 7276,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-missing_validation_acceptance.json",
+      "sha256": "8b8920a3887981be825430e2ab090cb601601f643c0f03ebef51c1747a1c7c8a"
+    },
+    {
+      "bytes": 7081,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-nominal_support.json",
+      "sha256": "b676b64d9b7c16434d74bcec93bb5ab9b850e5419ce609e0852f15c467784327"
+    },
+    {
+      "bytes": 7276,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-old_primary.json",
+      "sha256": "bfed0847ff9ade7b6f50c14ea1c3ede255a4fe3425737e298e75c705b3ea9b1c"
+    },
+    {
+      "bytes": 7276,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-old_validation.json",
+      "sha256": "e87165d13b3fb81bd8fe2fe1f22c607f5faa657fed409adc2b99815b1a021522"
+    },
+    {
+      "bytes": 7270,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-other_seed.json",
+      "sha256": "74e0e8f558abf3a0094f7d9e05944b513b8a2872e68933172def0d11155c4d90"
+    },
+    {
+      "bytes": 7275,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-run_bootstrap.json",
+      "sha256": "5d914293e24ff9b8f7f99d56948f36db5ff3b4fa0fc9a180235fce6a289a90e3"
+    },
+    {
+      "bytes": 7275,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-scientific_complete.json",
+      "sha256": "ed2abf637967e06b1526c6d28c2acd978db9b60647e924fdbd2a0983317b17c8"
+    },
+    {
+      "bytes": 19830,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-status-only-primary-release.json",
+      "sha256": "4048228cf6047783fb81cc771bd5a8bd72bb6ae8b8d885207a3007b6355a29db"
+    }
+  ],
+  "bootstrap_samples": 50000,
+  "bootstrap_seed": 20260903,
+  "boundary": "Synthetic arithmetic/readback checks and an actual missing-input rejection, not complete primary model evidence. Draft parent hashes cannot become a runnable release through a status edit; an explicit reviewed source/runtime/parent transition remains required.",
+  "changed_cases": [
+    {
+      "artifact": {
+        "bytes": 5535,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-missing_sources.json",
+        "sha256": "e091a8ded4fea09ad54105d0138b285acba6f212fdc01dc7137af31fe33cc110"
+      },
+      "case": "missing_sources",
+      "error": "Incomplete outcome source closure",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7276,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-old_primary.json",
+        "sha256": "bfed0847ff9ade7b6f50c14ea1c3ede255a4fe3425737e298e75c705b3ea9b1c"
+      },
+      "case": "old_primary",
+      "error": "An immutable outcome parent binding differs",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7276,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-old_validation.json",
+        "sha256": "e87165d13b3fb81bd8fe2fe1f22c607f5faa657fed409adc2b99815b1a021522"
+      },
+      "case": "old_validation",
+      "error": "An immutable outcome parent binding differs",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7276,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-missing_validation_acceptance.json",
+        "sha256": "8b8920a3887981be825430e2ab090cb601601f643c0f03ebef51c1747a1c7c8a"
+      },
+      "case": "missing_validation_acceptance",
+      "error": "An immutable outcome parent binding differs",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7099,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-best_rate_estimand.json",
+        "sha256": "91c9dd88f8b91eb29fb07390523b7a2db251f331a6816b5233beda1faa99091b"
+      },
+      "case": "best_rate_estimand",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7275,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-run_bootstrap.json",
+        "sha256": "5d914293e24ff9b8f7f99d56948f36db5ff3b4fa0fc9a180235fce6a289a90e3"
+      },
+      "case": "run_bootstrap",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7270,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-other_seed.json",
+        "sha256": "74e0e8f558abf3a0094f7d9e05944b513b8a2872e68933172def0d11155c4d90"
+      },
+      "case": "other_seed",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7275,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-fewer_resamples.json",
+        "sha256": "f4c9a8e793370db68328e061a02e54fb3df01a305b5d723d143c6e4174678270"
+      },
+      "case": "fewer_resamples",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7081,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-nominal_support.json",
+        "sha256": "b676b64d9b7c16434d74bcec93bb5ab9b850e5419ce609e0852f15c467784327"
+      },
+      "case": "nominal_support",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7134,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-impute_initial_score.json",
+        "sha256": "87d0fcd367b5df3b0b05aeec30b3be2be52a6b3ced2dc161cc0eebbac8faa234"
+      },
+      "case": "impute_initial_score",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7276,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-missing_high_rate.json",
+        "sha256": "a712812a872069375a191393793db234a74ea888121f6bd45000374db3424d52"
+      },
+      "case": "missing_high_rate",
+      "error": "Artifact belongs to a different primary identity",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7275,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-scientific_complete.json",
+        "sha256": "ed2abf637967e06b1526c6d28c2acd978db9b60647e924fdbd2a0983317b17c8"
+      },
+      "case": "scientific_complete",
+      "error": "Not the preparation-only v3 outcome contract",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 7275,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-claim_execution_authority.json",
+        "sha256": "f1cfd9ea57b02f67c828f4f6c9a6470eb921b79e8b443b4258c235e92004289a"
+      },
+      "case": "claim_execution_authority",
+      "error": "Not the preparation-only v3 outcome contract",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 19830,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-status-only-primary-release.json",
+        "sha256": "4048228cf6047783fb81cc771bd5a8bd72bb6ae8b8d885207a3007b6355a29db"
+      },
+      "case": "status_only_release_changes_bound_parent",
+      "error": "Validation binds another primary revision",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 1789,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-primary_summary-csv/manifest.json",
+        "sha256": "84de3c3e8b0bdf13c366aa5e88117794c53a1c82ff592ea285e9fc217ffe4abb"
+      },
+      "case": "rehashed_primary_summary.csv",
+      "error": "Outcome differs from fresh evidence/statistical recomputation: primary_summary.csv",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 1789,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-secondary_summary-csv/manifest.json",
+        "sha256": "a660c0daed39b5e5bf1bbc0c7ee783c7417508565adeedbe63be7badaeb50eee"
+      },
+      "case": "rehashed_secondary_summary.csv",
+      "error": "Outcome differs from fresh evidence/statistical recomputation: secondary_summary.csv",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 1789,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-run_stage_scores-csv/manifest.json",
+        "sha256": "55b4ab9073754a661239cad2758ef6199ee535ad825c67ed31d2a5daa061fa34"
+      },
+      "case": "rehashed_run_stage_scores.csv",
+      "error": "Outcome differs from fresh evidence/statistical recomputation: run_stage_scores.csv",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 1789,
+        "path": "/tmp/dense-v3-outcomes-replay.EEVh60/invalid-bundle-evidence-json/manifest.json",
+        "sha256": "ba99644fed5e344ab53e9a1270c571f939ab47b3978e5579195ae701d9475fca"
+      },
+      "case": "rehashed_evidence.json",
+      "error": "Outcome differs from fresh evidence/statistical recomputation: evidence.json",
+      "rejected": true
+    }
+  ],
+  "formal_outcome_produced": false,
+  "formal_replication_ready": false,
+  "fresh_cpu_fixture_readback": {
+    "outputs": {
+      "all_task_scores.csv": {
+        "bytes": 60904,
+        "path": "all_task_scores.csv",
+        "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+      },
+      "evidence.json": {
+        "bytes": 153587,
+        "path": "evidence.json",
+        "sha256": "561b8641a07f5d1e00cc964cdac473f4da4a405ef5d8bdd5cb859c463fb5be4d"
+      },
+      "optimizer_stage_scores.csv": {
+        "bytes": 780,
+        "path": "optimizer_stage_scores.csv",
+        "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+      },
+      "primary_summary.csv": {
+        "bytes": 809,
+        "path": "primary_summary.csv",
+        "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+      },
+      "primary_task_effects.csv": {
+        "bytes": 1584,
+        "path": "primary_task_effects.csv",
+        "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+      },
+      "run_observed_auc.csv": {
+        "bytes": 818,
+        "path": "run_observed_auc.csv",
+        "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+      },
+      "run_stage_scores.csv": {
+        "bytes": 4261,
+        "path": "run_stage_scores.csv",
+        "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+      },
+      "secondary_summary.csv": {
+        "bytes": 978,
+        "path": "secondary_summary.csv",
+        "sha256": "3f29c726dd3c2704c545a8adf18ed297093cb9bc273bca41fdc7cf1a8be768a6"
+      },
+      "secondary_task_effects.csv": {
+        "bytes": 1503,
+        "path": "secondary_task_effects.csv",
+        "sha256": "c78e3a9aecef7eb7fa71d20bb16e72d7d0c6a65d955f5600845b845c6d6f5c75"
+      },
+      "validation_run_metrics.csv": {
+        "bytes": 590,
+        "path": "validation_run_metrics.csv",
+        "sha256": "71311472eb5b43923b8315a59903264b76016b3cf0e9e5793ef114824c832f25"
+      }
+    },
+    "plan": {
+      "not_primary_evidence": true,
+      "outcome_protocol_sha256": "2a12b78a1a309cd6cc4a56593e4b1b1030370fc579045d1708d572eb5577d68e",
+      "scientific_completion": false,
+      "scope": "engineering_synthetic_outcome_fixture"
+    },
+    "recomputed_bytes_verified": true,
+    "scientific_completion": false
+  },
+  "gpu_workers": 0,
+  "model_updates": 0,
+  "network_uploads": 0,
+  "numpy_version": "2.5.2",
+  "observed_at_utc": "2026-09-06T18:09:01.279296+00:00",
+  "original_kernel_scalar_comparisons": [
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "muon",
+        "adamw"
+      ],
+      "field": "mean_delta_ndcg_at_10"
+    },
+    {
+      "absolute_error": 5.421010862427522e-20,
+      "contrast": [
+        "muon",
+        "adamw"
+      ],
+      "field": "across_task_standard_error"
+    },
+    {
+      "absolute_error": 2.220446049250313e-16,
+      "contrast": [
+        "muon",
+        "adamw"
+      ],
+      "field": "simultaneous_critical_value"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "muon",
+        "adamw"
+      ],
+      "field": "simultaneous_ci_95_lower"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "muon",
+        "adamw"
+      ],
+      "field": "simultaneous_ci_95_upper"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "muon",
+        "adamw"
+      ],
+      "field": "nominal_bootstrap_ci_95_lower"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "muon",
+        "adamw"
+      ],
+      "field": "nominal_bootstrap_ci_95_upper"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "adamw"
+      ],
+      "field": "mean_delta_ndcg_at_10"
+    },
+    {
+      "absolute_error": 2.168404344971009e-19,
+      "contrast": [
+        "normuon",
+        "adamw"
+      ],
+      "field": "across_task_standard_error"
+    },
+    {
+      "absolute_error": 2.220446049250313e-16,
+      "contrast": [
+        "normuon",
+        "adamw"
+      ],
+      "field": "simultaneous_critical_value"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "adamw"
+      ],
+      "field": "simultaneous_ci_95_lower"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "adamw"
+      ],
+      "field": "simultaneous_ci_95_upper"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "adamw"
+      ],
+      "field": "nominal_bootstrap_ci_95_lower"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "adamw"
+      ],
+      "field": "nominal_bootstrap_ci_95_upper"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "muon"
+      ],
+      "field": "mean_delta_ndcg_at_10"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "muon"
+      ],
+      "field": "across_task_standard_error"
+    },
+    {
+      "absolute_error": 2.220446049250313e-16,
+      "contrast": [
+        "normuon",
+        "muon"
+      ],
+      "field": "simultaneous_critical_value"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "muon"
+      ],
+      "field": "simultaneous_ci_95_lower"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "muon"
+      ],
+      "field": "simultaneous_ci_95_upper"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "muon"
+      ],
+      "field": "nominal_bootstrap_ci_95_lower"
+    },
+    {
+      "absolute_error": 0.0,
+      "contrast": [
+        "normuon",
+        "muon"
+      ],
+      "field": "nominal_bootstrap_ci_95_upper"
+    }
+  ],
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "primary_recipe_selection_produced": false,
+  "primary_unchanged_when_validation_selection_changes": true,
+  "rehearsal_passed": true,
+  "replay_cli": {
+    "argv": [
+      "/usr/bin/python3",
+      "-B",
+      "/root/embedding-optimizer-story-refactor/scripts/audit_dense_v3_outcomes.py",
+      "--repository",
+      "/root/embedding-optimizer-story-refactor",
+      "--training-root",
+      "/tmp/dense-identity-source.8rUgLF",
+      "--workdir",
+      "/tmp/dense-v3-outcomes-replay.EEVh60",
+      "--replay-fixture",
+      "--expected-protocol-sha256",
+      "2a12b78a1a309cd6cc4a56593e4b1b1030370fc579045d1708d572eb5577d68e"
+    ],
+    "returncode": 0,
+    "stderr": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\n",
+    "stdout": "{'fixture_recomputed': True, 'scientific_completion': False}\n"
+  },
+  "saved_fixture": {
+    "outputs": {
+      "all_task_scores.csv": {
+        "bytes": 60904,
+        "path": "all_task_scores.csv",
+        "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+      },
+      "evidence.json": {
+        "bytes": 153587,
+        "path": "evidence.json",
+        "sha256": "561b8641a07f5d1e00cc964cdac473f4da4a405ef5d8bdd5cb859c463fb5be4d"
+      },
+      "optimizer_stage_scores.csv": {
+        "bytes": 780,
+        "path": "optimizer_stage_scores.csv",
+        "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+      },
+      "primary_summary.csv": {
+        "bytes": 809,
+        "path": "primary_summary.csv",
+        "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+      },
+      "primary_task_effects.csv": {
+        "bytes": 1584,
+        "path": "primary_task_effects.csv",
+        "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+      },
+      "run_observed_auc.csv": {
+        "bytes": 818,
+        "path": "run_observed_auc.csv",
+        "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+      },
+      "run_stage_scores.csv": {
+        "bytes": 4261,
+        "path": "run_stage_scores.csv",
+        "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+      },
+      "secondary_summary.csv": {
+        "bytes": 978,
+        "path": "secondary_summary.csv",
+        "sha256": "3f29c726dd3c2704c545a8adf18ed297093cb9bc273bca41fdc7cf1a8be768a6"
+      },
+      "secondary_task_effects.csv": {
+        "bytes": 1503,
+        "path": "secondary_task_effects.csv",
+        "sha256": "c78e3a9aecef7eb7fa71d20bb16e72d7d0c6a65d955f5600845b845c6d6f5c75"
+      },
+      "validation_run_metrics.csv": {
+        "bytes": 590,
+        "path": "validation_run_metrics.csv",
+        "sha256": "71311472eb5b43923b8315a59903264b76016b3cf0e9e5793ef114824c832f25"
+      }
+    },
+    "plan": {
+      "not_primary_evidence": true,
+      "outcome_protocol_sha256": "2a12b78a1a309cd6cc4a56593e4b1b1030370fc579045d1708d572eb5577d68e",
+      "scientific_completion": false,
+      "scope": "engineering_synthetic_outcome_fixture"
+    },
+    "recomputed_bytes_verified": true,
+    "scientific_completion": false
+  },
+  "scalar_atol": 1e-12,
+  "scalar_rtol": 1e-12,
+  "scientific_completion": false,
+  "scope": "engineering_dense_v3_outcome_rehearsal",
+  "secondary_changes_when_selection_changes": true,
+  "source_published": false,
+  "synthetic_grid_cells": 840,
+  "unchanged_inputs_and_sources": [
+    {
+      "bytes": 18614,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcomes.py",
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    {
+      "bytes": 2621,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_outcomes.py",
+      "sha256": "353d3acf34e7aa0d2c20224431c680a217d6e0be9c7228af2a90a2bac9cc5144"
+    },
+    {
+      "bytes": 19823,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_outcome_summary.py",
+      "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+    },
+    {
+      "bytes": 111685,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/aggregate.py",
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+    },
+    {
+      "bytes": 5282,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/decontamination.py",
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    {
+      "bytes": 7052,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 12568,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_contract.py",
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    {
+      "bytes": 28342,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_completion.py",
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    {
+      "bytes": 6368,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_completion.py",
+      "sha256": "fa9168911a84dd05ead48ff1a497701f88ae99caa16393c9bc3fbc7115fbed9f"
+    },
+    {
+      "bytes": 15105,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation.py",
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    {
+      "bytes": 11060,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py",
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    {
+      "bytes": 19832,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_protocol.json",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    },
+    {
+      "bytes": 7020,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_validation_protocol.json",
+      "sha256": "96a8aa2fc684d29ec67649c2e637c0cd4c7dcdd0f31f2e354b7d0955a18fb1c3"
+    },
+    {
+      "bytes": 179586,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-validation-v1/validation.json",
+      "sha256": "1967ca78e216df0934e0b379808fd10c98598b8054e936f3f2ae2f3806f363b4"
+    },
+    {
+      "bytes": 8202,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_no_packing_outcome_protocol.json",
+      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+    },
+    {
+      "bytes": 6697,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_outcome_protocol.json",
+      "sha256": "914996b3423ba01329c03844419cca61e2a33452fe026665bb940d5b82e2cffe"
+    },
+    {
+      "bytes": 7276,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_outcome_protocol_v2.json",
+      "sha256": "2a12b78a1a309cd6cc4a56593e4b1b1030370fc579045d1708d572eb5577d68e"
+    },
+    {
+      "bytes": 16206,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_v3_outcomes.py",
+      "sha256": "a66b45b4352b060912a7a33e7b5a5b07571586b1b7c6495e9bb16124f59a968d"
+    },
+    {
+      "bytes": 223332,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-input.json",
+      "sha256": "c790d4717362b59ab8919a259804b399ae2ad714e9457616a1818f10bba19c6c"
+    },
+    {
+      "bytes": 218,
+      "path": "/tmp/dense-v3-outcomes-replay.EEVh60/fixture-plan.json",
+      "sha256": "479102fbea6774f58de358b60d8f4cf9f0e68ed7637f92101cc8e3ca93d2bec3"
+    }
+  ]
+}

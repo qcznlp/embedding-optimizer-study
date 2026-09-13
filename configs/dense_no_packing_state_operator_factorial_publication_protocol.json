@@ -2,13 +2,28 @@
   "schema_version": 1,
   "status": "prospective_state_operator_publication_lock",
   "frozen_at_utc": "2026-09-04T04:06:35Z",
-  "amended_at_utc": "2026-09-04T05:36:11Z",
+  "amended_at_utc": "2026-09-05T04:49:16.559615+00:00",
   "purpose": "Bind the result-independent validation, decision mapping, manuscript topology, and paper-only rendering for the prospective corrected DenseOn state-by-operator factorial before any factorial output exists.",
   "amendments": [
     {
       "path": "configs/dense_no_packing_state_operator_abstract_compliance_migration.json",
       "bytes": 4326,
       "sha256": "e4ef66061165e0632c1ecaf8b0f2b8643ff488ca37118401444bc3dbe6faebe1"
+    },
+    {
+      "path": "configs/dense_no_packing_state_operator_weight_space_narrative_migration.json",
+      "bytes": 4427,
+      "sha256": "ea9471e1b67fca3f45e2a74432c5516c282167bcf1a1acb2aaf735444cc88d8e"
+    },
+    {
+      "path": "configs/dense_primary_dimension_handoff_protocol.json",
+      "bytes": 8436,
+      "sha256": "a5d7567020980bb6fe0fa8b967bbe908cff1c936a8cb5b5f75eb9c9749197049"
+    },
+    {
+      "path": "configs/dense_no_packing_state_operator_claim_wording_amendment.json",
+      "bytes": 6866,
+      "sha256": "929fe6445598b84b546670eb5eefd408c5221cacad6cc8e93a984651dbbe5de7"
     }
   ],
   "visibility_at_freeze": {
@@ -36,29 +51,39 @@
   },
   "source_bindings": {
     "publication_renderer": {
+      "bytes": 18564,
       "path": "src/embed_optim/state_operator_factorial_publication.py",
-      "bytes": 17869,
-      "sha256": "a0de6d29ea96227976846fa13718bc5c38a83a4b97a405aa9e263520e5502c6b"
+      "sha256": "83b7a92e43711ce55647aef8084bd507ae2ea8bec01d14b15754a45d15ec18d0"
     },
     "paper_audit": {
       "path": "src/embed_optim/paper_audit.py",
-      "bytes": 117164,
-      "sha256": "a410a5c150cfb8d369d8c7c1c309aea2109ee1e2a5bb3a3ddb62d7b8a0ccd54f"
+      "bytes": 121763,
+      "sha256": "916042ad8469f069cd06caff4f66e2c323be5ca284658fad5daaa71b6645bb8a"
     },
     "manuscript_topology": {
+      "bytes": 24331,
       "path": "paper/main.tex",
-      "bytes": 34967,
-      "sha256": "20a087c8796fc2c6b637f6fbe28c38d29070777cf07fe0e71ba9673fe1ad0f81"
+      "sha256": "4d59c3219589204ec396d5b9d8c6269df1dfc89f29361ddf70ada26100dbbb2b"
     },
     "paper_build": {
       "path": "paper/Makefile",
-      "bytes": 2659,
-      "sha256": "5bc46626f586c92658b76db4cd456e54f207e041f28debdf317a9748b6ad5bc9"
+      "bytes": 1763,
+      "sha256": "70f96295cba43d07ddefb0c895a55937c4c720ef67d84bfc18b36a597097af92"
     },
     "paper_layout_audit": {
       "path": "src/embed_optim/paper_layout.py",
-      "bytes": 5852,
-      "sha256": "298e19924ed85d9ac78a01216721356fb8ee5e3631f6507a5e7451478dbc8897"
+      "bytes": 5054,
+      "sha256": "eb9d2bb4406c1cdd25f220e94d364283b15570b22dd3e09127388440c5d4afcc"
+    },
+    "conceptual_figure_generator": {
+      "path": "scripts/plot_weight_space_dimension_map.py",
+      "bytes": 6987,
+      "sha256": "2f713c0b9dbf874f9ca1287d91291bcee250934c006fee67265685557773e454"
+    },
+    "development_fixture_generator": {
+      "bytes": 3165,
+      "path": "scripts/render_state_operator_pending.py",
+      "sha256": "4202f38e214371726d77b99a54ed8c86d7c3ac15cceadf21d9b6d0b379366fb7"
     }
   },
   "input_contract": {
@@ -75,22 +100,27 @@
     "source_addressing": "Verify the byte count and SHA-256 of every consumed summary table before rendering."
   },
   "rendering_contract": {
-    "abstract": "Report all three crossed effects and the predeclared interpretation rather than leaving the mechanism conclusion at the historical spectral negative; the complete expanded abstract must remain within the official 200-word ACL limit.",
-    "main_mechanism": "After the local-to-global and failed-spectral evidence, state the carried weight-state effect, averaged continuation-operator effect, and interaction with exact 95% intervals and decisions.",
-    "main_conclusion": "Propagate the same source-bound crossed result into the main Conclusion.",
-    "appendix": "Show all three co-primary estimates and decisions in one compact table and point to the exact 126 seed-task contrasts and five-stage probe tables.",
+    "abstract": "Report all three final 50K-continuation endpoint contrasts and marginal intervals within the existing 200-word abstract limit; do not describe them as a decomposition of the primary-training gain.",
+    "appendix": "Report all three co-primary contrasts with their marginal, not simultaneous, intervals and retain every exact seed-task contrast and probe trajectory.",
+    "main_conclusion": "Propagate the same source-bound endpoint contrasts without implying within-level benefit, feature mediation, equivalence or effect dominance.",
+    "main_mechanism": "Report averaged source-state and continuation contrasts and their interaction with every original estimate, marginal 95% interval and decision; calibration matches the fixed probe, not the first realized shuffled-batch update.",
     "result_blind_branching": {
-      "positive_interaction": "Support the closed-loop state-operator feedback account, while separately naming any supported state or operator main effects.",
-      "weight_state_only": "Attribute the practical gain primarily to the reached weight state, not a universally better local direction.",
-      "operator_only": "Attribute the supported branch-horizon contribution to the continuation transform.",
-      "weight_and_operator_without_interaction": "Report additive carried-state and operator benefits without claiming state-specific complementarity.",
-      "no_positive_effect": "Retain the retrieval result without a positive mechanism claim and disclose any supported negative estimand."
+      "no_positive_effect": "Report supported negative contrasts or inconclusive intervals without treating nonsignificance as equivalence or absence of an effect.",
+      "operator_only": "The continuation contrast is positive after averaging the fixed source states; this need not hold within both states or dominate other contrasts.",
+      "positive_interaction": "The relative Muon continuation effect is more favorable from the Muon-reached state; this need not imply benefit from either state or full-trajectory co-adaptation.",
+      "weight_and_operator_without_interaction": "Both averaged contrasts favor Muon, but their positive signs do not establish additivity; interpret the interaction separately.",
+      "weight_state_only": "The source-state contrast is positive after averaging continuation operators; this does not establish dominance or equivalence of the other effects to zero."
     }
   },
   "expected_outputs": {
     "paper_latex": "paper/generated/state-operator-factorial.tex",
     "publication_manifest": "reports/state-operator-factorial/publication_manifest.json"
   },
+  "complete_paper_layout_amendment": {
+    "reason": "The complete synthetic-results paper revealed an over-wide single-column factorial appendix table. Use a double-column table with the same three estimates, intervals, decisions and label. No numerical or inferential change.",
+    "factorial_outputs_visible": false,
+    "runtime_deployed": false
+  },
   "paper_scope": "The ACL manuscript is the sole publication deliverable. Summary CSVs and manifests are audit evidence rather than independent publication artifacts.",
-  "claim_boundary": "The crossed branch can distinguish a carried state effect, an averaged continuation effect, and their interaction for one source-checkpoint pair and one 50K branch horizon. It cannot identify universal mediation of the full 500K trajectory."
+  "claim_boundary": "These are final post-continuation contrasts for one fixed source pair and 50K horizon, not baseline-subtracted gains or a decomposition of primary training. The endpoint diagonal difference equals state plus operator, not state plus operator plus interaction. Neither averaged effects nor interaction alone establish within-level benefit, effect dominance, feature mediation or full-trajectory co-adaptation."
 }

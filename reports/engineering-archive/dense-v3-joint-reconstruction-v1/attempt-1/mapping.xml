@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="12" time="10.504" timestamp="2026-09-07T14:41:46.677967+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_geometry_binding_order_matches_actual_frozen_authoring" time="0.044"><failure message="ValueError: Joint provenance order or original subtree differs">minimal_roles = namespace(root=PosixPath('/tmp/pytest-of-root/pytest-1983/test_geometry_binding_order_ma0/explicit-synthetic-minimal-r...56fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016})))
+
+    def test_geometry_binding_order_matches_actual_frozen_authoring(minimal_roles):
+        # gather iterates the loaded protocol, not the Python TABLE_COUNTS insertion order.
+&gt;       result = joint.provenance(minimal_roles, {"raw_bindings": []})
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_primary_v3_joint_reconstruction.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/primary_v3_joint_reconstruction.py:85: in provenance
+    root, current = local_bindings(inputs, rows, role, names)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+inputs = namespace(root=PosixPath('/tmp/pytest-of-root/pytest-1983/test_geometry_binding_order_ma0/explicit-synthetic-minimal-r...56fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016})))
+rows = [{'bytes': 44, 'path': '/unavailable-original/geometry/summary.json', 'sha256': '2266bfdc24b951af4ac425fc000fcb80ce750...-original/geometry/subspace_health.csv', 'sha256': '2266bfdc24b951af4ac425fc000fcb80ce750a00fc6bc5dea856b645f6a48737'}]
+role = 'geometry'
+names = ['summary.json', 'checkpoint_geometry.csv', 'run_pair_subspace_overlap.csv', 'optimizer_pair_subspace_summary.csv', 'subspace_health.csv']
+
+    def local_bindings(inputs, rows, role, names):
+        """Require an ordered, complete lexical subtree, never hash/basename matching."""
+        if not isinstance(rows, list) or len(rows) != len(names) or not names:
+            raise ValueError("Incomplete joint provenance binding population")
+        require_same(sorted(names), files.inventory(inputs.root / role))
+        first = producer_path(rows[0]["path"])
+        suffix = producer_path(names[0])
+        original_root = first.parents[len(suffix.parts) - 1]
+        addresses = []
+        for row, name in zip(rows, names, strict=True):
+            if set(row) != {"path", "bytes", "sha256"}:
+                raise ValueError("Invalid joint provenance binding schema")
+            if producer_path(row["path"]) != original_root / name:
+&gt;               raise ValueError("Joint provenance order or original subtree differs")
+E               ValueError: Joint provenance order or original subtree differs
+
+src/embed_optim/primary_v3_joint_reconstruction.py:51: ValueError</failure></testcase><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_joint_provenance_rejects_mapping_contradictions[missing]" time="0.003" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_joint_provenance_rejects_mapping_contradictions[duplicate]" time="0.003" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_joint_provenance_rejects_mapping_contradictions[reordered]" time="0.006" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_joint_provenance_rejects_mapping_contradictions[escape]" time="0.006" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_joint_provenance_rejects_mapping_contradictions[suffix]" time="0.003" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_joint_provenance_rejects_mapping_contradictions[extra_file]" time="0.006" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_local_role_requires_complete_ordered_inventory" time="0.002" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_actual_authoring_still_refuses_absent_primary" time="0.100" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_output_must_be_new_and_outside_input" time="0.001" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_joint_geometry_first_stage_uses_one_displacement_anchor" time="0.130" /><testcase classname="tests.test_primary_v3_joint_reconstruction" name="test_minimal_mapping_fixture_is_not_full_admission" time="0.005" /></testsuite></testsuites>

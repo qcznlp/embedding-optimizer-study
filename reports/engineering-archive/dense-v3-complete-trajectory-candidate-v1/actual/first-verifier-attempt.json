@@ -1,0 +1,14 @@
+{
+  "scope": "actual_first_archive_verifier_attempt",
+  "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/verify_archive.py",
+  "result": {
+    "chunk_id": "c59ddb",
+    "wall_time_seconds": 0.000004177,
+    "exit_code": 1,
+    "original_token_count": 186,
+    "output": "Traceback (most recent call last):\n  File \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/verify_archive.py\", line 112, in <module>\n    main()\n  File \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/verify_archive.py\", line 90, in main\n    assert (path.parent / local).exists(), (path, local)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: (PosixPath('/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/before/CURRENT_EXPERIMENT.md'), 'reports/engineering-archive/dense-v3-fourth-stage-pool-b-artifact-backup-v1/observations.json')\n"
+  },
+  "cause": "The verifier resolved relative links of the byte-preserved CURRENT before-copy against its archive directory instead of its original story root. No verification file was written; the original before-copy is unchanged.",
+  "original_attempt_source": "first-verifier-attempt.py",
+  "scientific_completion": false
+}

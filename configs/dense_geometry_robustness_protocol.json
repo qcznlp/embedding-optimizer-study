@@ -1,0 +1,232 @@
+{
+  "formal_execution_authorized": false,
+  "interpretation": {
+    "approximation_gate": "No pass threshold for approximation quality, ranking or seed stability; report every case and distinguish correctness from precision adequacy",
+    "degeneracy": "A repeated singular value crossing a retained-rank boundary makes that individual top-r subspace non-unique; report gaps, never impute uniqueness",
+    "full_spectrum": "Stable rank and singular-value entropy use the complete spectrum, not a truncated renormalized sketch",
+    "primary_features_changed": false,
+    "projectors": "FP64 QR for comparison only; overlap is tr(PQ)/r, RMS sine is ||P-Q||_F/sqrt(2r); retain boundary gaps and captured energy",
+    "retrieval_or_causal_claim_authorized": false,
+    "useful_embedding_dimensions_demonstrated": false
+  },
+  "parents": {
+    "diagnostic_geometry": {
+      "bytes": 1226333,
+      "path": "reports/engineering-archive/dense-v3-geometry-chain-v1/rehearsal-v2.json",
+      "sha256": "0bd4d9290fd672229ee2d3a5cd4c891854c3e951fc47286bf8e8424190c5c665"
+    },
+    "geometry_acceptance": {
+      "bytes": 238730,
+      "path": "reports/engineering-archive/dense-v3-geometry-chain-v1/validation.json",
+      "sha256": "053866a23b34d7323cbfe7d97ceb0d9ae3f1473227ae01cf1fa0b83b32c39226"
+    },
+    "geometry_protocol": {
+      "bytes": 8987,
+      "path": "configs/dense_primary_v3_geometry_protocol_v2.json",
+      "sha256": "9b6dad688072c08e8994e45f80c897a7889ab5fbcbccab27b643944c85ae625b"
+    }
+  },
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "engineering_dense_geometry_robustness",
+  "selection": {
+    "algorithms": [
+      "adamw",
+      "muon",
+      "normuon"
+    ],
+    "displacement_kind": "cumulative",
+    "matrices": 12,
+    "origin": "Inherit all twelve prior full-spectrum controls; no further selection or exclusions",
+    "prior_information": "Known optimizer-dependent spectral sketch error motivated this diagnostic; it is not a blind confirmatory mechanism test",
+    "step": 3,
+    "tensor_names": [
+      "0.layers.0.attn.Wo.weight",
+      "0.layers.0.attn.Wqkv.weight",
+      "0.layers.0.mlp.Wi.weight",
+      "0.layers.0.mlp.Wo.weight"
+    ]
+  },
+  "settings": {
+    "base_seed": 20260903,
+    "cpu_threads": 4,
+    "exact_backends": [
+      "numpy",
+      "torch"
+    ],
+    "input": "Identical primary FP32 displacement promoted losslessly to FP64 for exact controls",
+    "original_basis_orthogonality_atol": 2e-05,
+    "oversample": 8,
+    "projector_reference_atol": 2e-07,
+    "reference_atol": 1e-10,
+    "reference_rtol": 2e-08,
+    "seed_mapping": "Unchanged cumulative _basis_seed at step 3 plus declared offset",
+    "variants": [
+      {
+        "id": "r8-s0-p2",
+        "power_iterations": 2,
+        "rank": 8,
+        "seed_offset": 0
+      },
+      {
+        "id": "r8-s1-p2",
+        "power_iterations": 2,
+        "rank": 8,
+        "seed_offset": 1
+      },
+      {
+        "id": "r8-s2-p2",
+        "power_iterations": 2,
+        "rank": 8,
+        "seed_offset": 2
+      },
+      {
+        "id": "r16-s0-p2",
+        "power_iterations": 2,
+        "rank": 16,
+        "seed_offset": 0
+      },
+      {
+        "id": "r16-s1-p2",
+        "power_iterations": 2,
+        "rank": 16,
+        "seed_offset": 1
+      },
+      {
+        "id": "r16-s2-p2",
+        "power_iterations": 2,
+        "rank": 16,
+        "seed_offset": 2
+      },
+      {
+        "id": "r32-s0-p2",
+        "power_iterations": 2,
+        "rank": 32,
+        "seed_offset": 0
+      },
+      {
+        "id": "r32-s1-p2",
+        "power_iterations": 2,
+        "rank": 32,
+        "seed_offset": 1
+      },
+      {
+        "id": "r32-s2-p2",
+        "power_iterations": 2,
+        "rank": 32,
+        "seed_offset": 2
+      },
+      {
+        "id": "r64-s0-p2",
+        "power_iterations": 2,
+        "rank": 64,
+        "seed_offset": 0
+      },
+      {
+        "id": "r64-s1-p2",
+        "power_iterations": 2,
+        "rank": 64,
+        "seed_offset": 1
+      },
+      {
+        "id": "r64-s2-p2",
+        "power_iterations": 2,
+        "rank": 64,
+        "seed_offset": 2
+      },
+      {
+        "id": "r16-s0-p8",
+        "power_iterations": 8,
+        "rank": 16,
+        "seed_offset": 0
+      }
+    ]
+  },
+  "sources": {
+    "scripts/audit_dense_geometry_robustness.py": {
+      "bytes": 15979,
+      "sha256": "f4f600296771c9f86efbcab1509652224fc491a8da467f66f420025a1ecfcb34"
+    },
+    "scripts/audit_dense_natural_data.py": {
+      "bytes": 15846,
+      "sha256": "cddd19ba7da57781daa237492d80eae757fdca587fc7a6af0bafe0edf74eb896"
+    },
+    "scripts/audit_dense_v3_geometry.py": {
+      "bytes": 22383,
+      "sha256": "3a9f677a1042af9303ae65f918971813f8f076e92ac7fa3dc8fcd5eb95da51db"
+    },
+    "scripts/prepare_dense_geometry_robustness.py": {
+      "bytes": 4787,
+      "sha256": "1e42f6b5fbac665ab6727a65fb0d7cfd77699444e14f3fa4e4e746fbcc7957dd"
+    },
+    "scripts/prepare_dense_v3_geometry.py": {
+      "bytes": 2603,
+      "sha256": "3d3ba3b480c1c01ecdff40b6292f7011312eedb95f5b51f1a8579683e4adf97d"
+    },
+    "src/embed_optim/config.py": {
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "src/embed_optim/corrected_geometry_summary.py": {
+      "bytes": 23632,
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    "src/embed_optim/geometry.py": {
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "src/embed_optim/geometry_robustness.py": {
+      "bytes": 7184,
+      "sha256": "8816dd6340154cee0375357276f1a872da40fee758dd634f984a08a1ad78b04b"
+    },
+    "src/embed_optim/optimizers.py": {
+      "bytes": 11839,
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_geometry_kernels.py": {
+      "bytes": 7418,
+      "sha256": "8c26a9c78b7b10b36aacbbe3e7c52b0fae8ae4c0baed96299a5a11975e1f9e5f"
+    },
+    "src/embed_optim/primary_geometry_reductions.py": {
+      "bytes": 960,
+      "sha256": "8e47b5eaf10979692a764776bc9c3e6b380cbc0d6b3dfc825e39b88aaa5ee443"
+    },
+    "src/embed_optim/primary_v3_contract.py": {
+      "bytes": 9267,
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "src/embed_optim/primary_v3_geometry.py": {
+      "bytes": 14429,
+      "sha256": "e5bb4ed03f36193391a5f9f088bd0fe04e774ee67081cf0eb2d2d79a18488159"
+    },
+    "src/embed_optim/primary_v3_geometry_io.py": {
+      "bytes": 11657,
+      "sha256": "3008e45e714fe6a599d77197e86c74db80c664f08155568369af95e308d16696"
+    },
+    "src/embed_optim/primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    "src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    "src/embed_optim/primary_weight_entries.py": {
+      "bytes": 12687,
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    "tests/test_geometry_robustness.py": {
+      "bytes": 8806,
+      "sha256": "71f6f45d57b46a70f9c3a53136edeb4d66204428dde267d382325a56f2df7bd5"
+    }
+  },
+  "status": "DRAFT_DIAGNOSTIC_ONLY"
+}

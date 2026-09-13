@@ -1,0 +1,68 @@
+{
+  "scope": "actual_bounded_factorial_worker_component_attempts",
+  "workdir": "/root/embedding-optimizer-story-refactor",
+  "first": {
+    "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dense-v3-factorial-worker.lIJCnUVr/source-first/src:/root/embedding-optimizer-story-refactor:/root/embedding-optimizer-story-refactor/tests nice -n 10 /usr/bin/python -B -m pytest -q tests/test_factorial_v3_worker.py --junitxml=/tmp/dense-v3-factorial-worker.lIJCnUVr/tests-first.xml > /tmp/dense-v3-factorial-worker.lIJCnUVr/tests-first.log 2>&1",
+    "launch": {
+      "chunk_id": "e05149",
+      "wall_time_seconds": 1.000918714,
+      "session_id": 33576,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "terminal": {
+      "chunk_id": "a13109",
+      "wall_time_seconds": 0.000002596,
+      "exit_code": 1,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "tests": 53,
+    "passed": 50,
+    "failed": 3,
+    "errors": 0,
+    "skipped": 0,
+    "failure_scope": "Three real omissions in the new unexecuted worker: loaded context metadata, fresh-reader factory recipe, and fresh-reader requested arguments."
+  },
+  "final": {
+    "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONPATH=/tmp/dense-v3-factorial-worker.lIJCnUVr/source-final/src:/root/embedding-optimizer-story-refactor:/root/embedding-optimizer-story-refactor/tests nice -n 10 /usr/bin/python -B -m pytest -q tests/test_factorial_v3_worker.py tests/test_factorial_v3_factory.py tests/test_factorial_v3_run_contract.py --junitxml=/tmp/dense-v3-factorial-worker.lIJCnUVr/tests-final.xml > /tmp/dense-v3-factorial-worker.lIJCnUVr/tests-final.log 2>&1",
+    "launch": {
+      "chunk_id": "8280a8",
+      "wall_time_seconds": 1.001440488,
+      "session_id": 28447,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "terminal": {
+      "chunk_id": "69cf8f",
+      "wall_time_seconds": 0.000001696,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "tests": 194,
+    "passed": 194,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "new_worker_cases": 57,
+    "parent_component_cases": 137
+  },
+  "pretest_lint": {
+    "command": "/usr/bin/python -B -m ruff check tests/test_factorial_v3_worker.py",
+    "chunk_id": "bea382",
+    "exit_code": 1,
+    "diagnostic": "F401: dataclasses imported but unused at tests/test_factorial_v3_worker.py:9:8",
+    "correction": "Removed unused import before either pytest execution. The preserved first test source is the actually executed post-lint version, not a claimed pre-lint original."
+  },
+  "scope_boundaries": {
+    "real_gpu_calibration": false,
+    "formal_trainer_executed": false,
+    "formal_branches": 0,
+    "orchestration_is_explicitly_mocked": true,
+    "source_closure_and_cpu_refusal_are_real": true,
+    "scientific_admission": false,
+    "whole_repository_tests_claimed": false,
+    "whole_goal_complete": false
+  }
+}

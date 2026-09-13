@@ -1,0 +1,134 @@
+{
+  "cold_reconstruction_verified": false,
+  "fixture": {
+    "bytes": 249,
+    "sha256": "d9720b7d665497e398435c76ba62501aeec5c487b6d7fd066bf3dd0109762186"
+  },
+  "passed": true,
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "reconstruction": {
+    "basis_orthogonality_remeasured": false,
+    "bridge_and_functional_inference_recomputed": false,
+    "checkpoint_tensors_revalidated": false,
+    "checkpoints_reconstructed": 60,
+    "external_archive_sha256": "c8d42e718ff42175b52e69085478f1b0f8f285ebc615b6255e934e1fae950da3",
+    "manuscript_installed": false,
+    "model_encoding_repeated": false,
+    "original_geometry_aggregate_numerics_verified": true,
+    "original_outcomes_recomputed": false,
+    "original_spectral_and_entry_definitions_preserved": true,
+    "outputs": {
+      "fresh_checkpoint_rows.json": {
+        "bytes": 111430,
+        "sha256": "0bc0133dbafaea8796fe4f8e1e1503ccfa80a15f488ad2f205927c82c5ab3bcb"
+      },
+      "geometry/checkpoint_geometry.csv": {
+        "bytes": 25927,
+        "sha256": "3dde0665013ddec1bb8313d6ea3a0888b9f0bc2bda1a3229d9fe320a8d003bae"
+      },
+      "geometry/optimizer_pair_subspace_summary.csv": {
+        "bytes": 3952,
+        "sha256": "29e1def642a07519a09ac8c5206aad5914e6fa0f2d2086c0bae46467f0677283"
+      },
+      "geometry/run_pair_subspace_overlap.csv": {
+        "bytes": 95325,
+        "sha256": "4ce9bd699baa45ddf3830be11679f3e34874b56d04c6fcfe971a7cfd39fd28bf"
+      },
+      "geometry/subspace_health.csv": {
+        "bytes": 1176546,
+        "sha256": "d1911aeec541bc6e01a3e00b2577d0da875d779a2fe838f9c0d4c2f8eda60d10"
+      },
+      "geometry/summary.json": {
+        "bytes": 25800,
+        "sha256": "d77632f01231af71391b00ca9183f40fe3b878ec39218849331abffe1d85017e"
+      },
+      "local_addresses.json": {
+        "bytes": 31194,
+        "sha256": "c30d5a25d1bb71a290cbc2c749f3a8304874a5b6d6c07a31110b1815056f6423"
+      },
+      "reconstruction_plan.json": {
+        "bytes": 287,
+        "sha256": "372f4b2732d16df40e3fd2dfa44a7969df685d44c6be8674c86f2d0df5096f22"
+      }
+    },
+    "primary_scientific_admission": false,
+    "raw_matrix_records_authenticated": 5280,
+    "raw_vector_features_recomputed": false,
+    "raw_weight_metrics_recomputed": false,
+    "retrieval_repeated": false,
+    "run_pairs_recomputed": 660,
+    "scientific_completion": false,
+    "scope": "dense_primary_v3_geometry_reconstruction",
+    "spectral_health_records_authenticated": 10560,
+    "spectral_health_remeasured": false,
+    "table_counts": {
+      "checkpoint_geometry": 60,
+      "optimizer_pair_subspace_summary": 60,
+      "run_pair_subspace_overlap": 660,
+      "subspace_health": 10560
+    },
+    "upstream_admission_simulated": true
+  },
+  "scientific_completion": false,
+  "scope": "engineering_complete_geometry_same_process_smoke",
+  "sources": [
+    {
+      "bytes": 12731,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_geometry_primitives.py",
+      "sha256": "fa4d63e580ec4588dbb1aa27c660441d41d8815d0c6c01218d08a0db9d2780fe"
+    },
+    {
+      "bytes": 8404,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_geometry_reconstruction.py",
+      "sha256": "b66b158fb97e910080b178f9dee687c0efad4c10c7dae6cc1e2900998364340c"
+    },
+    {
+      "bytes": 15525,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/geometry_reconstruction_fixture.py",
+      "sha256": "ca1786141f431bb136badd61d523f0fd906b2004a94eab1e8a2af9d1e2ffc4a6"
+    },
+    {
+      "bytes": 2265,
+      "path": "/tmp/dense-v3-geometry-reader-smoke.V1KzY2/run.py",
+      "sha256": "107da20f04e4d42ff16d1bfed193ac3ecdbbd89f1f86c4d39b2a6ac3a2733dc5"
+    }
+  ]
+}

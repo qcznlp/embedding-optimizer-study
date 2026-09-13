@@ -1,0 +1,80 @@
+{
+  "scope": "Actual final-cohort readback/export and archival calls; no new evaluation launch.",
+  "native_readback": {
+    "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-primary-v3/src:/root/embedding-optimizer-primary-v3 /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-first-complete-evaluations-v1/source/readback.py --output /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/all-twelve-final-readback.json",
+    "result": {
+      "chunk_id": "1ff0c1",
+      "wall_time_seconds": 1.00104464,
+      "session_id": 46521,
+      "original_token_count": 80,
+      "output": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\n"
+    }
+  },
+  "native_terminal": {
+    "chunk_id": "f7c8ae",
+    "wall_time_seconds": 0.000002737,
+    "exit_code": 0,
+    "original_token_count": 505,
+    "output": "{\"output\": \"/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/all-twelve-final-readback.json\", \"observed_at_utc\": \"2026-09-10T16:47:07.332219+00:00\", \"checkpoints\": [{\"run_id\": \"verified-v3-adamw-1e-5\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.58863, \"macro_score_0_to_100\": 58.863}, {\"run_id\": \"verified-v3-muon-3e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5571792857142857, \"macro_score_0_to_100\": 55.71792857142857}, {\"run_id\": \"verified-v3-normuon-1e-4\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5909735714285714, \"macro_score_0_to_100\": 59.09735714285714}, {\"run_id\": \"verified-v3-normuon-3e-4\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5936371428571429, \"macro_score_0_to_100\": 59.36371428571429}, {\"run_id\": \"verified-v3-adamw-3e-5\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5892628571428571, \"macro_score_0_to_100\": 58.92628571428571}, {\"run_id\": \"verified-v3-normuon-1e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5914471428571428, \"macro_score_0_to_100\": 59.14471428571429}, {\"run_id\": \"verified-v3-muon-3e-4\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5924307142857143, \"macro_score_0_to_100\": 59.243071428571426}, {\"run_id\": \"verified-v3-normuon-3e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5584957142857143, \"macro_score_0_to_100\": 55.84957142857143}, {\"run_id\": \"verified-v3-muon-1e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5919135714285715, \"macro_score_0_to_100\": 59.19135714285714}, {\"run_id\": \"verified-v3-adamw-3e-6\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5834164285714286, \"macro_score_0_to_100\": 58.34164285714286}, {\"run_id\": \"verified-v3-adamw-1e-6\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5649535714285714, \"macro_score_0_to_100\": 56.495357142857145}, {\"run_id\": \"verified-v3-muon-1e-4\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5910157142857143, \"macro_score_0_to_100\": 59.10157142857143}], \"scientific_completion\": false}\n"
+  },
+  "original_export": {
+    "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py --input /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/all-twelve-final-readback.json --output /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables",
+    "result": {
+      "chunk_id": "d6fada",
+      "wall_time_seconds": 0.000004141,
+      "exit_code": 0,
+      "original_token_count": 279,
+      "output": "{\"complete_checkpoints\": 12, \"independent_raw_score_reconstruction_passed\": true, \"input\": {\"bytes\": 2537171, \"path\": \"/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/all-twelve-final-readback.json\", \"sha256\": \"b8c9aff0f580e3fee1d8f239b2943ef649ec154ae5767ee576ee47b38e027fd6\"}, \"optimizer_ranking_or_selection\": false, \"original_queue\": {\"bytes\": 6588, \"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/authorization.json\", \"sha256\": \"2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c\"}, \"outputs\": {\"summary.csv\": {\"bytes\": 1029, \"sha256\": \"0796de3939e4bfe7c9fbf3506279a292bcb6454cf1e9dc3ab4b217c713ba8e6a\"}, \"summary.md\": {\"bytes\": 1359, \"sha256\": \"cfec20eeed3a697e1753ff9b118ed3c09431adcc4089a40978b8876835273aaf\"}, \"task-scores.csv\": {\"bytes\": 9705, \"sha256\": \"660b991962c38ee8ec32808215b5ae99c3e2a8c4dc1a418542a4e63333a3363f\"}}, \"scientific_completion\": false, \"source\": {\"bytes\": 8311, \"path\": \"/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py\", \"sha256\": \"153c34be933fda190d8fccb09add5772b09f4aafdcff616613921a77f7e930cd\"}, \"task_rows\": 168}\n"
+    }
+  },
+  "archived_export": {
+    "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/source/export_final_tables.py --input /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/actual/all-twelve-final-readback.json --output /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/archive-replay",
+    "result": {
+      "chunk_id": "647b3f",
+      "wall_time_seconds": 0.000003807,
+      "exit_code": 0,
+      "original_token_count": 309,
+      "output": "{\"complete_checkpoints\": 12, \"independent_raw_score_reconstruction_passed\": true, \"input\": {\"bytes\": 2537171, \"path\": \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/actual/all-twelve-final-readback.json\", \"sha256\": \"b8c9aff0f580e3fee1d8f239b2943ef649ec154ae5767ee576ee47b38e027fd6\"}, \"optimizer_ranking_or_selection\": false, \"original_queue\": {\"bytes\": 6588, \"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/authorization.json\", \"sha256\": \"2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c\"}, \"outputs\": {\"summary.csv\": {\"bytes\": 1029, \"sha256\": \"0796de3939e4bfe7c9fbf3506279a292bcb6454cf1e9dc3ab4b217c713ba8e6a\"}, \"summary.md\": {\"bytes\": 1359, \"sha256\": \"cfec20eeed3a697e1753ff9b118ed3c09431adcc4089a40978b8876835273aaf\"}, \"task-scores.csv\": {\"bytes\": 9705, \"sha256\": \"660b991962c38ee8ec32808215b5ae99c3e2a8c4dc1a418542a4e63333a3363f\"}}, \"scientific_completion\": false, \"source\": {\"bytes\": 8311, \"path\": \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/source/export_final_tables.py\", \"sha256\": \"153c34be933fda190d8fccb09add5772b09f4aafdcff616613921a77f7e930cd\"}, \"task_rows\": 168}\n"
+    }
+  },
+  "negative_six_record_input": {
+    "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py --input /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-first-complete-evaluations-v1/actual/first-six-complete.json --output /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/rejected-six-output",
+    "result": {
+      "chunk_id": "c68f5b",
+      "wall_time_seconds": 0.000004133,
+      "exit_code": 1,
+      "original_token_count": 133,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py\", line 142, in <module>\n    main()\n  File \"/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py\", line 32, in main\n    require(bundle[\"scope\"] == \"descriptive_complete_fourteen_task_checkpoint_readback\" and\n  File \"/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py\", line 14, in require\n    raise ValueError(message)\nValueError: Wrong bounded input: require all twelve finals\n"
+    }
+  },
+  "syntax_and_refusal_boundary": {
+    "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nfrom pathlib import Path\nimport ast,hashlib,json\nsource=Path('/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py')\nraw=source.read_bytes()\nast.parse(raw)\nassert not Path('/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/rejected-six-output').exists()\nold=Path('/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-first-complete-evaluations-v1/source/export_tables.py')\nassert hashlib.sha256(old.read_bytes()).hexdigest()=='d94ae90aa5ce4cbb1ca175f6e74a5715f93ec51b340ea87043d76eced598b2a4'\nprint(json.dumps({'syntax_parses':True,'negative_control_created_no_output':True,'old_exporter_unchanged':True,'source':{'path':str(source),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()},'scope':'Bounded export preparation; no evaluation measurement.'}))\nPY",
+    "result": {
+      "chunk_id": "0823e7",
+      "wall_time_seconds": 0.000004306,
+      "exit_code": 0,
+      "original_token_count": 89,
+      "output": "{\"syntax_parses\": true, \"negative_control_created_no_output\": true, \"old_exporter_unchanged\": true, \"source\": {\"path\": \"/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py\", \"bytes\": 8311, \"sha256\": \"153c34be933fda190d8fccb09add5772b09f4aafdcff616613921a77f7e930cd\"}, \"scope\": \"Bounded export preparation; no evaluation measurement.\"}\n"
+    }
+  },
+  "initial_copy": {
+    "cmd": "mkdir /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1\nmkdir /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/source /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/actual /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/before /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/tables\ncp --update=none-fail /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-first-complete-evaluations-v1/source/readback.py /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/source/readback.py\ncp --update=none-fail /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/source/export_final_tables.py\ncp --update=none-fail /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/all-twelve-final-readback.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/actual/all-twelve-final-readback.json\ncp --update=none-fail /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/CURRENT_EXPERIMENT.before.md /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/before/CURRENT_EXPERIMENT.md\ncp --update=none-fail /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/summary.csv /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/task-scores.csv /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/summary.md /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/manifest.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/tables/",
+    "result": {
+      "chunk_id": "5db4fb",
+      "wall_time_seconds": 0.000003866,
+      "exit_code": 1,
+      "original_token_count": 200,
+      "output": "cp: invalid argument ‘none-fail’ for ‘--update’\nValid arguments are:\n  - ‘all’\n  - ‘none’\n  - ‘older’\nTry 'cp --help' for more information.\ncp: invalid argument ‘none-fail’ for ‘--update’\nValid arguments are:\n  - ‘all’\n  - ‘none’\n  - ‘older’\nTry 'cp --help' for more information.\ncp: invalid argument ‘none-fail’ for ‘--update’\nValid arguments are:\n  - ‘all’\n  - ‘none’\n  - ‘older’\nTry 'cp --help' for more information.\ncp: invalid argument ‘none-fail’ for ‘--update’\nValid arguments are:\n  - ‘all’\n  - ‘none’\n  - ‘older’\nTry 'cp --help' for more information.\ncp: invalid argument ‘none-fail’ for ‘--update’\nValid arguments are:\n  - ‘all’\n  - ‘none’\n  - ‘older’\nTry 'cp --help' for more information.\n"
+    }
+  },
+  "supported_copy": {
+    "cmd": "cp --update=none /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-first-complete-evaluations-v1/source/readback.py /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/source/readback.py\ncp --update=none /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/export_final_tables.py /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/source/export_final_tables.py\ncp --update=none /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/all-twelve-final-readback.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/actual/all-twelve-final-readback.json\ncp --update=none /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/CURRENT_EXPERIMENT.before.md /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/before/CURRENT_EXPERIMENT.md\ncp --update=none /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/summary.csv /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/task-scores.csv /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/summary.md /tmp/dense-v3-final-checkpoint-readback.gSO8OWbe/tables/manifest.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-all-final-evaluations-v1/tables/",
+    "result": {
+      "chunk_id": "c3cae5",
+      "wall_time_seconds": 0.000003503,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  }
+}

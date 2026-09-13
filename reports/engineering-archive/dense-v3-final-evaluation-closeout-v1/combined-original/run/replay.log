@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/tmp/dense-v3-combined-paper-replay.URO4uk9L/closed/replay_complete.py", line 511, in <module>
+    main()
+  File "/tmp/dense-v3-combined-paper-replay.URO4uk9L/closed/replay_complete.py", line 504, in main
+    isolated_replay(args)
+  File "/tmp/dense-v3-combined-paper-replay.URO4uk9L/closed/replay_complete.py", line 408, in isolated_replay
+    replay_numerical_and_paper(bundle, output, args.manifest_sha256)
+  File "/tmp/dense-v3-combined-paper-replay.URO4uk9L/closed/replay_complete.py", line 290, in replay_numerical_and_paper
+    need(io['failure'] is None and not io['producer_reads_refused'] and io['network_refused'] == 0,
+  File "/tmp/dense-v3-combined-paper-replay.URO4uk9L/closed/replay_complete.py", line 58, in need
+    raise ValueError(message)
+ValueError: Primary component attempted a producer fallback

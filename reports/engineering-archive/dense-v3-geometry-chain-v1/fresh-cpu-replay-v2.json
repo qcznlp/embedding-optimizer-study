@@ -1,0 +1,192 @@
+{
+  "artifacts": [
+    {
+      "bytes": 168,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/checkpoint-1-bases.safetensors",
+      "sha256": "40c9a4d619931b9802c6bc7a1303a35fb5d743ec5f24484434ce0e9523cdbd60"
+    },
+    {
+      "bytes": 282138,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/checkpoint-1.json",
+      "sha256": "783e14e0b85873dbf3ea5b859f09747965b2386cef8d4edc49eba058fe4b7f79"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/checkpoint-2-bases.safetensors",
+      "sha256": "411d7e85b972d0d545591d8d4e57eb8e35b0409e5b6b35a6afd7893abc3946ae"
+    },
+    {
+      "bytes": 414724,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/checkpoint-2.json",
+      "sha256": "d7165521225a6788a5d377848d310781897a2a35b740c08a9da5f81c83bfd544"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/checkpoint-3-bases.safetensors",
+      "sha256": "1ada03e48405fa88da38857f966cdd7bce876ca16c1f7ca7915c7a4fdee411c5"
+    },
+    {
+      "bytes": 414845,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/checkpoint-3.json",
+      "sha256": "aaab6ba965c9f2cdfee43be5129728ade9855efef9a3162e483a23b5a9497e4b"
+    },
+    {
+      "bytes": 20480,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/manifest.json",
+      "sha256": "a0857b402592394afefb0f6ef3bb3b6dbe7d5c323b046fe6bcf7e14c8833dc69"
+    },
+    {
+      "bytes": 168,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/checkpoint-1-bases.safetensors",
+      "sha256": "40c9a4d619931b9802c6bc7a1303a35fb5d743ec5f24484434ce0e9523cdbd60"
+    },
+    {
+      "bytes": 213517,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/checkpoint-1.json",
+      "sha256": "753f634ab860d448cf87b824edf7e0f9f751fa5ec6c577b27836d300d9c39e68"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/checkpoint-2-bases.safetensors",
+      "sha256": "882c09d2817393298b0c308f85a26da09785e0c31f28e81ccd0af132c3d96be9"
+    },
+    {
+      "bytes": 414724,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/checkpoint-2.json",
+      "sha256": "d7165521225a6788a5d377848d310781897a2a35b740c08a9da5f81c83bfd544"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/checkpoint-3-bases.safetensors",
+      "sha256": "1ada03e48405fa88da38857f966cdd7bce876ca16c1f7ca7915c7a4fdee411c5"
+    },
+    {
+      "bytes": 414845,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/checkpoint-3.json",
+      "sha256": "aaab6ba965c9f2cdfee43be5129728ade9855efef9a3162e483a23b5a9497e4b"
+    },
+    {
+      "bytes": 20480,
+      "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/manifest.json",
+      "sha256": "f7827e04b52b2877d548212e05150ff6121cf12d6f4b63d55598a81eb72de9ac"
+    }
+  ],
+  "boundary": "Exact same-source/runtime CPU replay of short diagnostic trajectories and two rehashed semantic corruption controls, not primary geometry, cross-host equivalence, useful dimensions or optimizer findings.",
+  "changed_cases": [
+    {
+      "case": "raw_metric",
+      "error": "Artifact belongs to a different primary identity",
+      "manifest": {
+        "bytes": 20480,
+        "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/manifest.json",
+        "sha256": "f7827e04b52b2877d548212e05150ff6121cf12d6f4b63d55598a81eb72de9ac"
+      },
+      "mutated_file": {
+        "bytes": 213517,
+        "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-raw_metric/checkpoint-1.json",
+        "sha256": "753f634ab860d448cf87b824edf7e0f9f751fa5ec6c577b27836d300d9c39e68"
+      },
+      "rejected": true
+    },
+    {
+      "case": "nonzero_basis",
+      "error": "Stored subspace differs from fresh saved-weight computation",
+      "manifest": {
+        "bytes": 20480,
+        "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/manifest.json",
+        "sha256": "a0857b402592394afefb0f6ef3bb3b6dbe7d5c323b046fe6bcf7e14c8833dc69"
+      },
+      "mutated_file": {
+        "bytes": 27073928,
+        "path": "/tmp/dense-v3-geometry-replay.jd0MyI/invalid-nonzero_basis/checkpoint-2-bases.safetensors",
+        "sha256": "411d7e85b972d0d545591d8d4e57eb8e35b0409e5b6b35a6afd7893abc3946ae"
+      },
+      "rejected": true
+    }
+  ],
+  "checkpoints": 9,
+  "formal_geometry_produced": false,
+  "fresh_geometry_replay_passed": true,
+  "gpu_workers": 0,
+  "model_updates": 0,
+  "models": 3,
+  "observed_at_utc": "2026-09-06T19:49:35.040004+00:00",
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "raw_matrix_records": 792,
+  "records": [
+    {
+      "checkpoints": 3,
+      "numeric_readback_passed": true,
+      "raw_matrix_records": 264,
+      "run_id": "diagnostic-natural-adamw"
+    },
+    {
+      "checkpoints": 3,
+      "numeric_readback_passed": true,
+      "raw_matrix_records": 264,
+      "run_id": "diagnostic-natural-muon"
+    },
+    {
+      "checkpoints": 3,
+      "numeric_readback_passed": true,
+      "raw_matrix_records": 264,
+      "run_id": "diagnostic-natural-normuon"
+    }
+  ],
+  "rehearsal": {
+    "bytes": 1226333,
+    "path": "/tmp/dense-v3-geometry-retry.Pysj3k/result.json",
+    "sha256": "0bd4d9290fd672229ee2d3a5cd4c891854c3e951fc47286bf8e8424190c5c665"
+  },
+  "scientific_completion": false,
+  "scope": "engineering_dense_v3_geometry_fresh_cpu_replay",
+  "source": {
+    "bytes": 7323,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/replay_dense_v3_geometry.py",
+    "sha256": "dbe5c41cea97c3c5c52a56ca19a654997d0d51f393f285b4de0137ee206a6065"
+  },
+  "table_counts": {
+    "checkpoint_geometry": 9,
+    "optimizer_pair_subspace_summary": 18,
+    "run_pair_subspace_overlap": 18,
+    "subspace_health": 1584
+  }
+}

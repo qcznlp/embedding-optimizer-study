@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-04T20:39:54.403951+00:00",
+  "status": "implementation_checks_passed",
+  "scientific_completion": false,
+  "primary_model_inference_executed": false,
+  "sources": {
+    "configs/dense_primary_dimension_export_protocol.json": {
+      "path": "configs/dense_primary_dimension_export_protocol.json",
+      "bytes": 5725,
+      "sha256": "df763c71c1934f9d19c41f2f40968451128a1f0dd3d60538893813f37d7b87b0"
+    },
+    "configs/dense_dimension_utilization_protocol.json": {
+      "path": "configs/dense_dimension_utilization_protocol.json",
+      "bytes": 7792,
+      "sha256": "de56772ef84745c074940527d621a932a06a20e865a10bc3faad823bcb0e651e"
+    },
+    "src/embed_optim/primary_dimension_probe.py": {
+      "path": "src/embed_optim/primary_dimension_probe.py",
+      "bytes": 20005,
+      "sha256": "6ab31633959a9ed6eaf1d67b3cf77b8e7ecd3bd8cbd5c5e12a64d494a0c90f4b"
+    },
+    "src/embed_optim/dimension_utilization.py": {
+      "path": "src/embed_optim/dimension_utilization.py",
+      "bytes": 29332,
+      "sha256": "9867e5707d37e86c0901357e8534d6acdfa930e7b7685608b4ffca1cefe1c9b9"
+    },
+    "src/embed_optim/dimension_publication.py": {
+      "path": "src/embed_optim/dimension_publication.py",
+      "bytes": 36212,
+      "sha256": "5962cfd202adeee7dd53b63ab589e5c18dc31596b717d195f5c694701d5759d5"
+    },
+    "tests/test_primary_dimension_probe.py": {
+      "path": "tests/test_primary_dimension_probe.py",
+      "bytes": 9616,
+      "sha256": "1750f99c4cb158e63da91f5a648aa9905b2e8e31065474930b45f0db45cc78a3"
+    },
+    "tests/test_dimension_utilization.py": {
+      "path": "tests/test_dimension_utilization.py",
+      "bytes": 8567,
+      "sha256": "6ff79ca7fa358642d7b9fb2511d8a5a75fd21f6d0f9c9fa99403846855c2771c"
+    },
+    "tests/test_dimension_publication.py": {
+      "path": "tests/test_dimension_publication.py",
+      "bytes": 6978,
+      "sha256": "ab546937dde58b2e9f9dadfbf4592789c7cab4dc7faee6eda12bc352ceb378ae"
+    }
+  },
+  "tests": {
+    "dimension-handoff-full-tests.xml": {
+      "receipt": {
+        "path": "reports/experiment-integrity/dimension-handoff-full-tests.xml",
+        "bytes": 126612,
+        "sha256": "d52f28ca74dcfdff0fdc5068a02fc14d57e5adec638c268ffe996931baad21c9"
+      },
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "928",
+          "time": "101.998",
+          "timestamp": "2026-09-05T04:35:25.563809+08:00",
+          "hostname": "mlflow-training-zl8wuc-496809-n3-master-0"
+        }
+      ]
+    },
+    "primary-dimension-probe-tests.xml": {
+      "receipt": {
+        "path": "reports/experiment-integrity/primary-dimension-probe-tests.xml",
+        "bytes": 6047,
+        "sha256": "25700519c16ed044b63a202904b6fc99324318149b054f6d6c61fc382fb27110"
+      },
+      "suites": [
+        {
+          "name": "pytest",
+          "errors": "0",
+          "failures": "0",
+          "skipped": "0",
+          "tests": "41",
+          "time": "4.875",
+          "timestamp": "2026-09-05T04:33:57.326875+08:00",
+          "hostname": "mlflow-training-zl8wuc-496809-n3-master-0"
+        }
+      ]
+    }
+  },
+  "read_only_primary_plan": {
+    "path": "reports/experiment-integrity/primary-dimension-plan.json",
+    "bytes": 3110,
+    "sha256": "a513f6a0cc255ffecba996e121f278deaa4b9114ac6c6afc9f8f7f10692ff871"
+  },
+  "historical_regeneration_still_audits": true,
+  "validation_scope": [
+    "exact 61-state export plan",
+    "checkpoint/probe/encoding identities and observed loading",
+    "resume without overwriting untagged or changed artifacts",
+    "primary analyzer requires source-bound export handoff",
+    "publisher recomputes contrasts, bridge folds, decisions and exact LaTeX",
+    "synthetic findings compile with pdflatex"
+  ],
+  "remaining": [
+    "automatic post-main handoff integration",
+    "actual 61-state primary inference and analysis",
+    "Hugging Face analysis artifact archive",
+    "portable final-paper evidence closure and release-gate integration"
+  ],
+  "boundary": "Synthetic wrapper/inference/publication tests and a real read-only artifact plan; not a primary optimizer or mechanism finding. Live training and finalization source contracts remain unchanged."
+}

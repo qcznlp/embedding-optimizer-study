@@ -1,0 +1,194 @@
+{
+  "all_original_scientific_rules_unchanged": true,
+  "authoritative_paper_installed": false,
+  "complete_paper_source_and_extracted_text_exact": true,
+  "completed_at_utc": "2026-09-13T11:28:06.570975+00:00",
+  "factorial_counts": {
+    "beir_seed_task_scores": 168,
+    "estimand_seed_task_contrasts": 126,
+    "estimand_summary": 3,
+    "factorial_cell_summary": 4,
+    "probe_checkpoint_metrics": 60,
+    "probe_task_metrics": 840
+  },
+  "factorial_independent_verification": {
+    "independent_cell_moments": 4,
+    "independent_multiplicity_bootstrap": [
+      {
+        "decision": "supported_positive",
+        "draws": 100000,
+        "estimand": "weight_state_effect",
+        "max_absolute_difference": 1.734723475976807e-18
+      },
+      {
+        "decision": "supported_negative",
+        "draws": 100000,
+        "estimand": "operator_effect",
+        "max_absolute_difference": 0.0
+      },
+      {
+        "decision": "inconclusive",
+        "draws": 100000,
+        "estimand": "state_operator_interaction",
+        "max_absolute_difference": 0.0
+      }
+    ],
+    "independent_rational_seed_task_effects": 126,
+    "intervals": "three marginal 95% intervals; not simultaneous",
+    "original_estimates_not_replaced": true,
+    "scientific_completion": false,
+    "tolerance": 2e-15
+  },
+  "full_goal_complete": false,
+  "gpu_resume_verified_here": false,
+  "input_manifest_sha256": "746a545d3e59d86aab8d4ff6579abca3be9884f1ea824a702e4fa28bc85956b7",
+  "loaded_project_modules": {
+    "embed_optim": {
+      "bytes": 84,
+      "role": "primary/src/embed_optim/__init__.py",
+      "sha256": "ddfea072915535be4c693c1263f18e17a47ecc7c25d2f6dbe86ff6d2fad7646e"
+    },
+    "embed_optim.basis_sensitivity": {
+      "bytes": 52385,
+      "role": "primary/src/embed_optim/basis_sensitivity.py",
+      "sha256": "a8237bce7faff372f4f6d22a051bf9d2b28dcb6c6617a00be78d38370dfc5347"
+    },
+    "embed_optim.causal_chain_rendering": {
+      "bytes": 39062,
+      "role": "primary/src/embed_optim/causal_chain_rendering.py",
+      "sha256": "423c2561e3d7f16ddf03b5c56d1b90f15ed9bc9b646e654de1574ba7fe152ce0"
+    },
+    "embed_optim.causal_chain_reporting": {
+      "bytes": 66816,
+      "role": "primary/src/embed_optim/causal_chain_reporting.py",
+      "sha256": "9c611c41c074717b456561fd35fba4dceaddfe78de909773b26c23cc856c79a1"
+    },
+    "embed_optim.config": {
+      "bytes": 7052,
+      "role": "primary/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "embed_optim.data": {
+      "bytes": 14465,
+      "role": "primary/src/embed_optim/data.py",
+      "sha256": "5afe090147492abda341055e580fc626809c973d3a5e49b0a82e8891d925cff1"
+    },
+    "embed_optim.decontamination": {
+      "bytes": 5282,
+      "role": "primary/src/embed_optim/decontamination.py",
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "embed_optim.dense_retrieval_dynamics_publication": {
+      "bytes": 14185,
+      "role": "primary/src/embed_optim/dense_retrieval_dynamics_publication.py",
+      "sha256": "fea464624f1c64a525b5c83c6007841f3829bd979915703e4ecc9a3c0d00d311"
+    },
+    "embed_optim.geometry": {
+      "bytes": 25648,
+      "role": "primary/src/embed_optim/geometry.py",
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "embed_optim.mechanism_report": {
+      "bytes": 52148,
+      "role": "primary/src/embed_optim/mechanism_report.py",
+      "sha256": "183698c675f0c77604c1ecf384cc55257e915d2b9d99c745c0e17662142f904c"
+    },
+    "embed_optim.optimizers": {
+      "bytes": 11839,
+      "role": "primary/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "embed_optim.outcome_report": {
+      "bytes": 53134,
+      "role": "primary/src/embed_optim/outcome_report.py",
+      "sha256": "c723de92cd11ace631d90e54cc8d670b77455cad31f9254f1d184b7b0d632f6d"
+    },
+    "embed_optim.paper_audit": {
+      "bytes": 121763,
+      "role": "primary/src/embed_optim/paper_audit.py",
+      "sha256": "916042ad8469f069cd06caff4f66e2c323be5ca284658fad5daaa71b6645bb8a"
+    },
+    "embed_optim.paper_layout": {
+      "bytes": 5054,
+      "role": "primary/src/embed_optim/paper_layout.py",
+      "sha256": "eb9d2bb4406c1cdd25f220e94d364283b15570b22dd3e09127388440c5d4afcc"
+    },
+    "embed_optim.primary_contract": {
+      "bytes": 12568,
+      "role": "primary/src/embed_optim/primary_contract.py",
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "embed_optim.primary_v3_contract": {
+      "bytes": 9267,
+      "role": "primary/src/embed_optim/primary_v3_contract.py",
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "embed_optim.primary_v3_manuscript": {
+      "bytes": 14980,
+      "role": "primary/src/embed_optim/primary_v3_manuscript.py",
+      "sha256": "ac34d0feaab05a0ad76e5590f32ff55af3ae5108a891df6124a766e11af5b84c"
+    },
+    "embed_optim.primary_v3_manuscript_build": {
+      "bytes": 11027,
+      "role": "primary/src/embed_optim/primary_v3_manuscript_build.py",
+      "sha256": "c0b9ae35759abe3661444be06585e8737cdd945bcd3b8ad620187d48ac4ccec8"
+    },
+    "embed_optim.primary_v3_paper_layout": {
+      "bytes": 2740,
+      "role": "primary/src/embed_optim/primary_v3_paper_layout.py",
+      "sha256": "a1fd89065f339215cf4c6c66a654a4f297792f14f2124cdf5bf551fa847a97da"
+    },
+    "embed_optim.primary_v3_validation": {
+      "bytes": 15105,
+      "role": "primary/src/embed_optim/primary_v3_validation.py",
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    "embed_optim.primary_v3_validation_io": {
+      "bytes": 11060,
+      "role": "primary/src/embed_optim/primary_v3_validation_io.py",
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    "embed_optim.probe_export": {
+      "bytes": 20602,
+      "role": "primary/src/embed_optim/probe_export.py",
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    "embed_optim.probes": {
+      "bytes": 13945,
+      "role": "primary/src/embed_optim/probes.py",
+      "sha256": "15a8212e3bf58820e0eaaf22aa8e5f4413d5e4d320036b8f29f761552dd70a8c"
+    },
+    "embed_optim.scope": {
+      "bytes": 5200,
+      "role": "primary/src/embed_optim/scope.py",
+      "sha256": "f6a8e3661062da7e52c5943d3303e359df287a8c3ff949e181b4a56ecdcfbd99"
+    },
+    "embed_optim.state_operator_factorial_publication": {
+      "bytes": 18564,
+      "role": "primary/src/embed_optim/state_operator_factorial_publication.py",
+      "sha256": "83b7a92e43711ce55647aef8084bd507ae2ea8bec01d14b15754a45d15ec18d0"
+    },
+    "embed_optim.update_geometry": {
+      "bytes": 23435,
+      "role": "primary/src/embed_optim/update_geometry.py",
+      "sha256": "93c295cad852fbeb3e065077442f7f94740d7b6981dd16e4c141fc4377c3fbb4"
+    }
+  },
+  "native_model_admission_is_upstream_provenance": true,
+  "pdf": {
+    "bytes": 338716,
+    "sha256": "f198481c79116ceb9ad8d437ed74598278e4c034b00735bcde3a79cdfae6606b"
+  },
+  "physical_second_host": false,
+  "primary_completion": {
+    "bytes": 22792,
+    "sha256": "07402ec8d1bb65609b83bb91ba38c3fef7e5b51a9ec7448fda7535905f8afd7d"
+  },
+  "scope": "actual-combined-dense-paper-numerical-portability-v1",
+  "source_release": false,
+  "strict_document": {
+    "bytes": 66693,
+    "sha256": "432a97beb88b08ace25c03bdd6bbff01277a47dbc2d76b7d1d4f9401d571aaaa"
+  },
+  "visual_review_complete": false
+}

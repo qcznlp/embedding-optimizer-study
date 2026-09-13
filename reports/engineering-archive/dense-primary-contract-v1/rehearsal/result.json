@@ -1,0 +1,3132 @@
+{
+  "actual_draft_execution_rejection": {
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "-m",
+      "embed_optim.primary_training",
+      "--protocol",
+      "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+      "--repository",
+      "/root/embedding-optimizer-story-refactor",
+      "--training-root",
+      "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+      "--experiment-root",
+      "/root/embedding-optimizer-study",
+      "--run-id",
+      "verified-muon-3e-4",
+      "--execute"
+    ],
+    "returncode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"<frozen runpy>\", line 198, in _run_module_as_main\n  File \"<frozen runpy>\", line 88, in _run_code\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_training.py\", line 119, in <module>\n    main()\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_training.py\", line 87, in main\n    contract = PrimaryContract.load(\n               ^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_contract.py\", line 191, in load\n    raise ValueError(\"Prepared primary contract is not execution authorized\")\nValueError: Prepared primary contract is not execution authorized\n"
+  },
+  "actual_read_only_cli_plans": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-adamw-1e-6",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 1e-06,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 1e-06,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-adamw-1e-6",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-adamw-1e-6",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-adamw-3e-6",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 3e-06,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 3e-06,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-adamw-3e-6",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-adamw-3e-6",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-adamw-1e-5",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 1e-05,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 1e-05,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-adamw-1e-5",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-adamw-1e-5",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-adamw-3e-5",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 3e-05,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 3e-05,
+            "momentum": 0.95,
+            "name": "adamw",
+            "normuon_beta2": 0.95,
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-adamw-3e-5",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-adamw-3e-5",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-muon-1e-4",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0001,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-muon-1e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-muon-1e-4",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-muon-3e-4",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0003,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-muon-3e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-muon-3e-4",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-muon-1e-3",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.001,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-muon-1e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-muon-1e-3",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-muon-3e-3",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.003,
+            "momentum": 0.95,
+            "name": "muon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-v1",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-muon-3e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-muon-3e-3",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-normuon-1e-4",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0001,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-normuon-1e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-normuon-1e-4",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-normuon-3e-4",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.0003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.0003,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-normuon-3e-4",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-normuon-3e-4",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-normuon-1e-3",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.001,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.001,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-normuon-1e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-normuon-1e-3",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "embed_optim.primary_training",
+        "--protocol",
+        "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+        "--repository",
+        "/root/embedding-optimizer-story-refactor",
+        "--training-root",
+        "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/candidate-source",
+        "--experiment-root",
+        "/root/embedding-optimizer-study",
+        "--run-id",
+        "verified-normuon-3e-3",
+        "--inspect"
+      ],
+      "plan": {
+        "checkpoint_steps": [
+          782,
+          1563,
+          2345,
+          3126,
+          3907
+        ],
+        "execution": {
+          "environment": {
+            "CUBLAS_WORKSPACE_CONFIG": null,
+            "FLASH_ATTENTION_DETERMINISTIC": null,
+            "NVIDIA_TF32_OVERRIDE": null
+          },
+          "training_arguments": {
+            "bf16": true,
+            "data_seed": 42,
+            "dataloader_drop_last": true,
+            "dataloader_num_workers": 8,
+            "dataloader_persistent_workers": true,
+            "dataloader_pin_memory": true,
+            "dataloader_prefetch_factor": 4,
+            "ddp_find_unused_parameters": false,
+            "fp16": false,
+            "full_determinism": false,
+            "gradient_accumulation_steps": 4,
+            "gradient_checkpointing": true,
+            "gradient_checkpointing_kwargs": {
+              "use_reentrant": false
+            },
+            "learning_rate": 0.003,
+            "length_column_name": "length",
+            "logging_first_step": true,
+            "logging_steps": 10,
+            "logging_strategy": "steps",
+            "lr_scheduler_type": "linear",
+            "max_grad_norm": 1.0,
+            "max_steps": -1,
+            "num_train_epochs": 1.0,
+            "per_device_train_batch_size": 8,
+            "remove_unused_columns": false,
+            "save_strategy": "no",
+            "seed": 42,
+            "tf32": true,
+            "train_sampling_strategy": "group_by_length",
+            "warmup_steps": 0.1
+          },
+          "world_size": 4
+        },
+        "protocol_sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2",
+        "recipe": {
+          "checkpoint_fractions": [
+            0.2,
+            0.4,
+            0.6,
+            0.8,
+            1.0
+          ],
+          "dataloader_workers": 8,
+          "dense_can_flatten_inputs": false,
+          "epochs": 1.0,
+          "flash_attention": true,
+          "global_batch_size": 128,
+          "gradient_checkpointing": true,
+          "max_grad_norm": 1.0,
+          "max_length": 8192,
+          "micro_batch_size": 8,
+          "model_family": "dense",
+          "model_name": "lightonai/DenseOn-unsupervised",
+          "model_revision": "0edbd55684eb782bce55ee74c95b25c97cbe7f43",
+          "numerical_policy": "single-normalization-deterministic-backward-v1",
+          "optimizer": {
+            "adjust_lr_fn": "original",
+            "aux_beta1": 0.9,
+            "aux_beta2": 0.999,
+            "aux_eps": 1e-08,
+            "aux_lr": 3e-06,
+            "beta1": 0.9,
+            "beta2": 0.999,
+            "eps": 1e-08,
+            "lr": 0.003,
+            "momentum": 0.95,
+            "name": "normuon",
+            "normuon_beta2": 0.95,
+            "ns_implementation": "unfused-bfloat16-additive-eps-v2",
+            "ns_steps": 5,
+            "weight_decay": 0.01
+          },
+          "run_id": "verified-normuon-3e-3",
+          "seed": 42,
+          "temperature": 0.02,
+          "warmup_ratio": 0.1
+        },
+        "run_id": "verified-normuon-3e-3",
+        "scientific_completion": false,
+        "scope": "dense_primary_correctness_v2",
+        "status": "prepared_not_execution_authorized",
+        "training_executed": false
+      },
+      "returncode": 0
+    }
+  ],
+  "boundary": "The generic reader accepts 12 prior real diagnostic payloads only under their authenticated diagnostic identities. It rejects those identities for the new primary and all 60 old primary checkpoints. No primary run, real upload, actual scoring or full-run acceptance was performed; network behavior is tested separately with a mocked backend.",
+  "evaluation_workers_executed": 0,
+  "hf_writes_executed": 0,
+  "model_or_pickle_loaded": false,
+  "model_updates_executed": 0,
+  "observed_at_utc": "2026-09-06T11:39:41.824687+00:00",
+  "old_primary_checkpoints_rejected": [
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-6/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-6/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-6/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-6/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-6/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-5/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-5/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-5/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-5/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-5/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-4/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-4/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-4/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-4/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-4/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-3/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-3/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-3/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-3/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-1e-3/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-3/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-3/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-3/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-3/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-muon-3e-3/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-4/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-4/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-4/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-4/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-4/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-4/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-4/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-4/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-4/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-4/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-3/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-3/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-3/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-3/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-1e-3/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-782",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-1563",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-2345",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-3126",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    },
+    {
+      "checkpoint": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-3907",
+      "rejected": "Missing ordinary contract file: dense_run_contract.json"
+    }
+  ],
+  "production_deployed": false,
+  "protocol": {
+    "bytes": 11246,
+    "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v2_protocol.json",
+    "sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2"
+  },
+  "read_only_rehearsal_passed": true,
+  "real_corrupt_optimizer_copies_rejected": [
+    {
+      "checkpoint": "/tmp/dense-identity-admission.xjs6n5/corrupted-verified-adamw-3e-5/checkpoint-2",
+      "rejected": "File content identity differs: optimizer.pt"
+    },
+    {
+      "checkpoint": "/tmp/dense-identity-admission.xjs6n5/corrupted-verified-muon-3e-4/checkpoint-2",
+      "rejected": "File content identity differs: optimizer.pt"
+    },
+    {
+      "checkpoint": "/tmp/dense-identity-admission.xjs6n5/corrupted-verified-normuon-3e-4/checkpoint-2",
+      "rejected": "File content identity differs: optimizer.pt"
+    }
+  ],
+  "real_diagnostic_checkpoints": [
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3060,
+          "sha256": "f17568d89afd6ef551e61bd1dd36d7e11f2f30c6c694f83391bd7d8abc1d6cd5"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18251,
+            "path": "README.md",
+            "sha256": "80d798572d479a2c9962c809df9af60c50c973ac4ac84f0a7a09cad69bc161f3"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1140,
+            "path": "dense_numerical_contract.json",
+            "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+          },
+          {
+            "bytes": 9241,
+            "path": "dense_run_contract.json",
+            "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "9e5300a46d2a84dc8f3441b3f427083f72430ac4e8f23578110c17641435b217"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 1192229323,
+            "path": "optimizer.pt",
+            "sha256": "aa618915bdf591d7254e653ef9c46474a187bbcc472f0712d7ef94fa578cd74e"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "23d33cd9dab8d2cc5658362e95ebb9f51d07afb571457a881a076fca77631908"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 932,
+            "path": "trainer_state.json",
+            "sha256": "8a5a2adcf12ecb78e7da78797b28401c535c563aae33863a7dcf9afa21259f4b"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "0149d8b89ef859e61fcf0089d6b4ea65a9c9c1259db7804c6e85e9f94ee0dc62"
+          },
+          {
+            "bytes": 3060,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "f17568d89afd6ef551e61bd1dd36d7e11f2f30c6c694f83391bd7d8abc1d6cd5"
+          }
+        ],
+        "run_identity_sha256": "cdb6e793d93b40faf1fc6cbf5d5b02fbd55f7a6ffc07e21405b0d4dd95127e92",
+        "step": 1
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-1",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3060,
+          "sha256": "58c141c2f780b082d85fd0b59f27e3d901aaaf8cce36fd197ae993c2ff89edde"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18252,
+            "path": "README.md",
+            "sha256": "27bda09399d4a05c8959331f9f26eabc6ba31807e3c1b07f980889dbbe1d525c"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1140,
+            "path": "dense_numerical_contract.json",
+            "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+          },
+          {
+            "bytes": 9241,
+            "path": "dense_run_contract.json",
+            "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "d2a911f3b7ed33de0e84dc3aed7be684471cb182f6580bfd383a6ed29d64e250"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 1192229323,
+            "path": "optimizer.pt",
+            "sha256": "d6fd206e0bbfba976c5fe2a9d59e41411957589ad90df065bbb9dbd3a09b8c17"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "41ea0d9ed050da2d083d54e2253da60c2428236e3d01cb1a413d19b71cdb5c59"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 932,
+            "path": "trainer_state.json",
+            "sha256": "3557bf0ae11f41e68514577af0f67521b3344c6bbad34802bc3c60b9d9750717"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "0149d8b89ef859e61fcf0089d6b4ea65a9c9c1259db7804c6e85e9f94ee0dc62"
+          },
+          {
+            "bytes": 3060,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "58c141c2f780b082d85fd0b59f27e3d901aaaf8cce36fd197ae993c2ff89edde"
+          }
+        ],
+        "run_identity_sha256": "cdb6e793d93b40faf1fc6cbf5d5b02fbd55f7a6ffc07e21405b0d4dd95127e92",
+        "step": 2
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-2",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3060,
+          "sha256": "a5a8bfd381ae076bbcfbef137eac57a2c1e8dc8c1678cee384c5d328b9fd3263"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18252,
+            "path": "README.md",
+            "sha256": "3c03ee9c4ad86e8d6629b6087868804192293f78766e6d441fb6bf78dbc95b8d"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1140,
+            "path": "dense_numerical_contract.json",
+            "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+          },
+          {
+            "bytes": 9241,
+            "path": "dense_run_contract.json",
+            "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "7e972573dcb3aacaedae02c2a1a04a1bc6e9f93913b6ec7661dfc931ba8c93e4"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 1192229323,
+            "path": "optimizer.pt",
+            "sha256": "b9162d9db1a92dc78eb4f75e56e8347abe0b3f178d5377f31e6208ed127e9db4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "32f2e59210c8e3f86e304a5ce3f92312df3884573302af269d12c6ee366d6682"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 916,
+            "path": "trainer_state.json",
+            "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "0149d8b89ef859e61fcf0089d6b4ea65a9c9c1259db7804c6e85e9f94ee0dc62"
+          },
+          {
+            "bytes": 3060,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "a5a8bfd381ae076bbcfbef137eac57a2c1e8dc8c1678cee384c5d328b9fd3263"
+          }
+        ],
+        "run_identity_sha256": "cdb6e793d93b40faf1fc6cbf5d5b02fbd55f7a6ffc07e21405b0d4dd95127e92",
+        "step": 3
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-adamw-3e-5/checkpoint-3",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3060,
+          "sha256": "5f7c586e8897816b1c86e27f0a900e7ce8916b2e39c070534126073d57dd7a2d"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18129,
+            "path": "README.md",
+            "sha256": "896c880fed1c3d347ff7b5006f723742caffa00814f1aceec0ca01810ab66eba"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1140,
+            "path": "dense_numerical_contract.json",
+            "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+          },
+          {
+            "bytes": 9241,
+            "path": "dense_run_contract.json",
+            "sha256": "d9c8fc8630acc1474be8427711ff6fba33ef84426cb62dcea7674b93964cdae7"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "7e972573dcb3aacaedae02c2a1a04a1bc6e9f93913b6ec7661dfc931ba8c93e4"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 1192229323,
+            "path": "optimizer.pt",
+            "sha256": "a17819f09b6f713a53b0dd4e91f8b612e5a9e5069a76db69ead0e4435ddba002"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "32f2e59210c8e3f86e304a5ce3f92312df3884573302af269d12c6ee366d6682"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 916,
+            "path": "trainer_state.json",
+            "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "24d16543e2849d5a599b1d391ee0f07514e6d595e3ae4a64bd0a814d9b286846"
+          },
+          {
+            "bytes": 3060,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "5f7c586e8897816b1c86e27f0a900e7ce8916b2e39c070534126073d57dd7a2d"
+          }
+        ],
+        "run_identity_sha256": "cdb6e793d93b40faf1fc6cbf5d5b02fbd55f7a6ffc07e21405b0d4dd95127e92",
+        "step": 3
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-adamw-3e-5/checkpoint-3",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "98dd9d6c7227c51e788061ae56ab857cba3b0138c97ee74833f50162235487f7"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18253,
+            "path": "README.md",
+            "sha256": "e3913d4af52c9495e1fe334b18faa38a982d18275207964fbcfe18acfe592706"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1156,
+            "path": "dense_numerical_contract.json",
+            "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+          },
+          {
+            "bytes": 9307,
+            "path": "dense_run_contract.json",
+            "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "9e5300a46d2a84dc8f3441b3f427083f72430ac4e8f23578110c17641435b217"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 750992651,
+            "path": "optimizer.pt",
+            "sha256": "1ae328da34e0c323d93d66c5024c157e82774f2490fd7961bc6da1636a14b1e0"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 932,
+            "path": "trainer_state.json",
+            "sha256": "8a5a2adcf12ecb78e7da78797b28401c535c563aae33863a7dcf9afa21259f4b"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "c17c3aee297ec2b76637d554139b1517b52bc9413f339f39a87837b3a43d3860"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "98dd9d6c7227c51e788061ae56ab857cba3b0138c97ee74833f50162235487f7"
+          }
+        ],
+        "run_identity_sha256": "ac0df7a873754755d4768b78bf222fc3a2a02a5255c617329370ab4c4a8295c0",
+        "step": 1
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-1",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "f50b6ab1dc6a9f4adec7a2f12deeaf62b5fe9612e3d1cb4b41879550d9c21b14"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18254,
+            "path": "README.md",
+            "sha256": "f7b135686179c82128b07d385b3a389b49012f7510edab1d1cd430d862318fde"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1156,
+            "path": "dense_numerical_contract.json",
+            "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+          },
+          {
+            "bytes": 9307,
+            "path": "dense_run_contract.json",
+            "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "d9ef9c195dc0453a704a8d53cd7f9c196a84ccc26f18048695627ac32accceb5"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 750992651,
+            "path": "optimizer.pt",
+            "sha256": "470d3b2baed3c71f9f3d2a0e62e896a00f6b3f9d5d873d719dfa53e8731581a5"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 932,
+            "path": "trainer_state.json",
+            "sha256": "3557bf0ae11f41e68514577af0f67521b3344c6bbad34802bc3c60b9d9750717"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "c17c3aee297ec2b76637d554139b1517b52bc9413f339f39a87837b3a43d3860"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "f50b6ab1dc6a9f4adec7a2f12deeaf62b5fe9612e3d1cb4b41879550d9c21b14"
+          }
+        ],
+        "run_identity_sha256": "ac0df7a873754755d4768b78bf222fc3a2a02a5255c617329370ab4c4a8295c0",
+        "step": 2
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-2",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "b4176f0605d43225b0674632ac99d22febfbf9e8f3cbc35576c2c569e1ac4e02"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18254,
+            "path": "README.md",
+            "sha256": "72f80aa41961b79c5accb72e4b8e8cc4f22a28204ae0dfbc0f8d855e61421a9d"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1156,
+            "path": "dense_numerical_contract.json",
+            "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+          },
+          {
+            "bytes": 9307,
+            "path": "dense_run_contract.json",
+            "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "2c41d79d614304a33f38662d6cc01c322dacc2844230d6d12ceafc3fe8c4dcc7"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 750992651,
+            "path": "optimizer.pt",
+            "sha256": "6339ad70e96013efd139cefa12d9d0078fcaccc281d2c71c3de98dc7e6687f97"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 916,
+            "path": "trainer_state.json",
+            "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "c17c3aee297ec2b76637d554139b1517b52bc9413f339f39a87837b3a43d3860"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "b4176f0605d43225b0674632ac99d22febfbf9e8f3cbc35576c2c569e1ac4e02"
+          }
+        ],
+        "run_identity_sha256": "ac0df7a873754755d4768b78bf222fc3a2a02a5255c617329370ab4c4a8295c0",
+        "step": 3
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-muon-3e-4/checkpoint-3",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "d01571a7506884a6fb1d0eb6149b62f926f2b264397fe8b469bf8374f6977c3e"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18131,
+            "path": "README.md",
+            "sha256": "63e224fb11b94785d62132b13137472658c20d903aa4733f10687ba4181e227d"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1156,
+            "path": "dense_numerical_contract.json",
+            "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+          },
+          {
+            "bytes": 9307,
+            "path": "dense_run_contract.json",
+            "sha256": "86712ed359cc879ffc5f9ca5a5dbd42180949d0ea2ad0987f76fe4d0598ff078"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "d49d1fd2865ce7d4d997b3a366a6fbbf7ad0434631e0e638a68d55e23a38aedb"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 750992651,
+            "path": "optimizer.pt",
+            "sha256": "52d7dc1c3342b0e626b473dc45cd63f626142e6cdeb8d3ca50b9a918cc75d130"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 916,
+            "path": "trainer_state.json",
+            "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "9abf4c8dda0c5323e6dd69b42e9d2a92f7a6e3d5d4d757ddb98a9c1063727d4c"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "d01571a7506884a6fb1d0eb6149b62f926f2b264397fe8b469bf8374f6977c3e"
+          }
+        ],
+        "run_identity_sha256": "ac0df7a873754755d4768b78bf222fc3a2a02a5255c617329370ab4c4a8295c0",
+        "step": 3
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-muon-3e-4/checkpoint-3",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "d2b0123b474d6dbc8420710b8f2c17bede02aa53d362904ced170b2fcf7d8f7a"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18253,
+            "path": "README.md",
+            "sha256": "eb5ef1a11600dbd5751fe0677f02932d073e6e5ec0d76023f3ce58537c082280"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1205,
+            "path": "dense_numerical_contract.json",
+            "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+          },
+          {
+            "bytes": 9375,
+            "path": "dense_run_contract.json",
+            "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "9e5300a46d2a84dc8f3441b3f427083f72430ac4e8f23578110c17641435b217"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 751558603,
+            "path": "optimizer.pt",
+            "sha256": "9171e50bc12dfcdbc1e6e6af1c5afe8e81aa095891a6e5d9f804b4a18d03b090"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 932,
+            "path": "trainer_state.json",
+            "sha256": "8a5a2adcf12ecb78e7da78797b28401c535c563aae33863a7dcf9afa21259f4b"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "9cd50a8e9c67e6b744edaa46507397a8d1b346494ddd92240f39f47e9163cc70"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "d2b0123b474d6dbc8420710b8f2c17bede02aa53d362904ced170b2fcf7d8f7a"
+          }
+        ],
+        "run_identity_sha256": "f57e9197a54c99e59a515299afe245e7f03b8b58bd6a4efa825c077570a62ade",
+        "step": 1
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-1",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "c7bf855edf7e98e10b30e4d22dea86628d6b24c79faf8edcaeccaa386d24c2cd"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18254,
+            "path": "README.md",
+            "sha256": "fea10389eaa89ca63fbabf22bff775881c0920cec5cd886cea9600cd8a0fe2b5"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1205,
+            "path": "dense_numerical_contract.json",
+            "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+          },
+          {
+            "bytes": 9375,
+            "path": "dense_run_contract.json",
+            "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "4f26d30790d70c616b752198047d7e23ae2684553bae5a5b1ed02220015b522f"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 751558603,
+            "path": "optimizer.pt",
+            "sha256": "8402090b2e1bcb74086f73abb4d5d76854b7904f6aef22d2779ccc1ec7746725"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 932,
+            "path": "trainer_state.json",
+            "sha256": "3557bf0ae11f41e68514577af0f67521b3344c6bbad34802bc3c60b9d9750717"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "9cd50a8e9c67e6b744edaa46507397a8d1b346494ddd92240f39f47e9163cc70"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "c7bf855edf7e98e10b30e4d22dea86628d6b24c79faf8edcaeccaa386d24c2cd"
+          }
+        ],
+        "run_identity_sha256": "f57e9197a54c99e59a515299afe245e7f03b8b58bd6a4efa825c077570a62ade",
+        "step": 2
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-2",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "0d98f55c60198ef4fac17a41b184251de7ff7e54849582f211d1f7d7df8d7422"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18254,
+            "path": "README.md",
+            "sha256": "f31cb7cb4222d185367d67b8022e92fd970ee9212d22c172faf44e28b479b65d"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1205,
+            "path": "dense_numerical_contract.json",
+            "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+          },
+          {
+            "bytes": 9375,
+            "path": "dense_run_contract.json",
+            "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "49d011f079683b419fb570dc5432feb1ae2a0616e0ae679e8b94af30977a0c33"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 751558603,
+            "path": "optimizer.pt",
+            "sha256": "812c10416dd0341ea6802dde2857214665390a940303fb1ff76b41a1e886d206"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 916,
+            "path": "trainer_state.json",
+            "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "9cd50a8e9c67e6b744edaa46507397a8d1b346494ddd92240f39f47e9163cc70"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "0d98f55c60198ef4fac17a41b184251de7ff7e54849582f211d1f7d7df8d7422"
+          }
+        ],
+        "run_identity_sha256": "f57e9197a54c99e59a515299afe245e7f03b8b58bd6a4efa825c077570a62ade",
+        "step": 3
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/baseline/dense/verified-normuon-3e-4/checkpoint-3",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    },
+    {
+      "checked": {
+        "checkpoint_seal": {
+          "bytes": 3059,
+          "sha256": "c66c18e80e96a6825f4fa70d6e7ab0f21403b856131fcd37bc7d292930eb24ef"
+        },
+        "files": [
+          {
+            "bytes": 89,
+            "path": "1_Pooling/config.json",
+            "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+          },
+          {
+            "bytes": 18131,
+            "path": "README.md",
+            "sha256": "2bdd323ea8de3dd8652c37111f82590a7228728685171b7a52bda5d9dea0bc3c"
+          },
+          {
+            "bytes": 1951,
+            "path": "config.json",
+            "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+          },
+          {
+            "bytes": 299,
+            "path": "config_sentence_transformers.json",
+            "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+          },
+          {
+            "bytes": 1205,
+            "path": "dense_numerical_contract.json",
+            "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+          },
+          {
+            "bytes": 9375,
+            "path": "dense_run_contract.json",
+            "sha256": "afee5e81785403f0065107f0cf91466ec20b5f8e5149c83861c3a77492f94e43"
+          },
+          {
+            "bytes": 596070136,
+            "path": "model.safetensors",
+            "sha256": "49d011f079683b419fb570dc5432feb1ae2a0616e0ae679e8b94af30977a0c33"
+          },
+          {
+            "bytes": 277,
+            "path": "modules.json",
+            "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+          },
+          {
+            "bytes": 751558603,
+            "path": "optimizer.pt",
+            "sha256": "9709509a2b698a2792c392290254ec7adb7fb2dbe28e9a0348b5c0978e9c13b7"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_0.pth",
+            "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_1.pth",
+            "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_2.pth",
+            "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+          },
+          {
+            "bytes": 15365,
+            "path": "rng_state_3.pth",
+            "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+          },
+          {
+            "bytes": 1465,
+            "path": "scheduler.pt",
+            "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+          },
+          {
+            "bytes": 241,
+            "path": "sentence_bert_config.json",
+            "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+          },
+          {
+            "bytes": 3583486,
+            "path": "tokenizer.json",
+            "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+          },
+          {
+            "bytes": 541,
+            "path": "tokenizer_config.json",
+            "sha256": "47c0525ae671256b1e53d1618bfef03e37ff2d0aff52c3ecf976a0cd06ba931f"
+          },
+          {
+            "bytes": 916,
+            "path": "trainer_state.json",
+            "sha256": "1f91d636ba7f90e1bd72ee14037ab9aefa876bd4287c50c5b0271d0c0c18f03d"
+          },
+          {
+            "bytes": 5649,
+            "path": "training_args.bin",
+            "sha256": "61408a080034f40749790a4bc5663d6850b6ac39de50af28b50aa80237f6e8d6"
+          },
+          {
+            "bytes": 3059,
+            "path": "dense_checkpoint_seal.json",
+            "sha256": "c66c18e80e96a6825f4fa70d6e7ab0f21403b856131fcd37bc7d292930eb24ef"
+          }
+        ],
+        "run_identity_sha256": "f57e9197a54c99e59a515299afe245e7f03b8b58bd6a4efa825c077570a62ade",
+        "step": 3
+      },
+      "checkpoint": "/tmp/dense-identity-entry.rCO4Oz/continuation/dense/verified-normuon-3e-4/checkpoint-3",
+      "diagnostic_identity_accepted": true,
+      "primary_identity_rejected": "Artifact belongs to a different primary identity",
+      "producer_payloads_unchanged": true
+    }
+  ],
+  "scientific_completion": false,
+  "scope": "engineering_dense_primary_consumer_rehearsal",
+  "sources": {
+    "scripts/audit_dense_primary_consumers.py": {
+      "bytes": 8780,
+      "sha256": "d3adf193897b67f6461185d9ba6aa0876bc1af830ed97e9325291c47317b0e64"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_io.py": {
+      "bytes": 10609,
+      "sha256": "5b4411a54b2cdbc5c0d7a2a55b1a469c31d7eca65f772fccf84f83d263163250"
+    },
+    "src/embed_optim/primary_training.py": {
+      "bytes": 4722,
+      "sha256": "ab5c6ff0eeba3c3e6efe59a76d4aacdd1682c56cebf10df4edbe6ecafd1e65a0"
+    }
+  }
+}

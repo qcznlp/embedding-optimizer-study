@@ -1,0 +1,1837 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="54" skipped="0" tests="80" time="4.296" timestamp="2026-09-12T17:32:53.220501+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[0]" time="0.060"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 0
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[1]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 1
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[2]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 2
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[3]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 3
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[4]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 4
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[5]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 5
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[6]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 6
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[7]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 7
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[8]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 8
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[9]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 9
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[10]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 10
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[11]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 11
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[12]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 12
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[13]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 13
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[14]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 14
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[15]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 15
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[16]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 16
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[17]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 17
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[18]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 18
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[19]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 19
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[20]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 20
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[21]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 21
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[22]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 22
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[23]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 23
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[24]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 24
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[25]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 25
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[26]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 26
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[27]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 27
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[28]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 28
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[29]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 29
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[30]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 30
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[31]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 31
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[32]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 32
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[33]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 33
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[34]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 34
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[35]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 35
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[36]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 36
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[37]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 37
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[38]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 38
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[39]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 39
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[40]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 40
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[41]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 41
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[42]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 42
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[43]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 43
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[44]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 44
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[45]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 45
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[46]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 46
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[47]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 47
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[48]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 48
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[49]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 49
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[50]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 50
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[51]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 51
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[52]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 52
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_each_actual_accepted_record_reconstructs_14_scores[53]" time="0.002"><failure message="ValueError: Non-finite JSON constant: NaN">prior = {'assembly': {'bytes': 15970, 'path': '/root/embedding-optimizer-primary-v3/source-assembly.json', 'sha256': 'e603ef17...: [...], 'ndcg_at_10': 0.5841, 'task': 'HotpotQA', 'undefined_auxiliary_metrics_not_used': []}, ...]}, ...}, ...], ...}
+index = 53
+
+    @pytest.mark.parametrize('index', range(54))
+    def test_each_actual_accepted_record_reconstructs_14_scores(prior, index):
+        record = prior['checkpoints'][index]
+&gt;       rows = T.validate_record(record)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/test_complete_trajectory.py:26: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:141: in validate_record
+    raw_score = strict_json(raw_files[score_files[0]['path']][1])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:71: in strict_json
+    return json.loads(raw, object_pairs_hook=unique, parse_constant=invalid)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/__init__.py:359: in loads
+    return cls(**kw).decode(s)
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/json/decoder.py:353: in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+value = 'NaN'
+
+    def invalid(value):
+&gt;       raise ValueError('Non-finite JSON constant: ' + value)
+E       ValueError: Non-finite JSON constant: NaN
+
+dense-v3-complete-trajectory-candidate.tsN1mjJ3/complete_trajectory.py:69: ValueError</failure></testcase><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[macro]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[points]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[rational]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[step]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[duplicate_raw]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[missing_raw]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[alias]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[task_order]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[complete_scope]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[operational_scope]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[operational_auth]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[worker_exit]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[worker_pid]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[worker_start]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[worker_lease]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[worker_command]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[worker_alias]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[worker_missing]" time="0.002" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_bad_record_semantics_refused_after_mock_reembedding[cache_key]" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_actual_partial_grid_cannot_create_output" time="0.116" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_noncanonical_json_is_refused[{&quot;a&quot;:1,&quot;a&quot;:2}]" time="0.000" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_noncanonical_json_is_refused[{&quot;a&quot;:NaN}]" time="0.000" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_noncanonical_json_is_refused[{&quot;a&quot;:Infinity}]" time="0.000" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_external_anchor_refuses_changed_bundle" time="0.015" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_symlinked_supplied_file_refused" time="0.001" /><testcase classname="dense-v3-complete-trajectory-candidate.tsN1mjJ3.test_complete_trajectory" name="test_original_kernel_loads_without_importing_project_or_torch" time="0.007" /></testsuite></testsuites>

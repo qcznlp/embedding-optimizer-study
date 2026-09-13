@@ -1,0 +1,29 @@
+{
+  "scope": "engineering_query_partition_audit",
+  "protected_queries": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.prepare_dense_data_protection --repository /root/embedding-optimizer-story-refactor --experiment-root /root/embedding-optimizer-study --output /tmp/dense-data-revision.qaPjm8/protected-queries.json",
+    "exit_code": 0
+  },
+  "independent_string_replay": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.replay_dense_query_overlap --producer /tmp/dense-data-revision.qaPjm8/protected-queries.json --producer-sha256 f20353ce500807a7bfe4ddf30169560bfe6ef415b082d2291060102946e37f66 --output /tmp/dense-data-revision.qaPjm8/string-replay.json",
+    "exit_code": 0
+  },
+  "revision_proposal": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.prepare_dense_partition_revision --repository /root/embedding-optimizer-story-refactor --experiment-root /root/embedding-optimizer-study --output /tmp/dense-data-revision.qaPjm8/revision-proposal.json",
+    "exit_code": 0,
+    "replacement_queries_selected": 0
+  },
+  "focused_tests": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_dense_data_protection.py --junitxml=/tmp/dense-data-revision.qaPjm8/protection-tests.xml",
+    "exit_code": 0,
+    "cases": 9
+  },
+  "full_tests": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-data-revision.qaPjm8/full-protection-tests.xml",
+    "exit_code": 0,
+    "cases": 1606
+  },
+  "data_modified": false,
+  "training_executed": false,
+  "scientific_completion": false
+}

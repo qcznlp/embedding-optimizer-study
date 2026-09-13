@@ -1,0 +1,77 @@
+{
+  "scope": "engineering_terminal_command_handoff",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "completed_sessions": [
+    {
+      "session_id": 15374,
+      "exit_code": 0,
+      "entrypoint": "pytest -q tests/test_primary_v3_outcomes.py",
+      "junit": "focused-tests.xml",
+      "passed_cases": 65
+    },
+    {
+      "session_id": 1067,
+      "exit_code": 0,
+      "entrypoint": "scripts/prepare_dense_v3_outcomes.py",
+      "output": "configs/dense_primary_v3_outcome_protocol.json",
+      "boundary": "Failed serializer predecessor retained, not active."
+    },
+    {
+      "session_id": 75333,
+      "exit_code": 0,
+      "entrypoint": "pytest -q tests/test_primary_v3_outcomes.py",
+      "junit": "focused-tests-final.xml",
+      "passed_cases": 67
+    },
+    {
+      "session_id": 63273,
+      "exit_code": 0,
+      "entrypoint": "pytest -q",
+      "junit": "full-tests.xml",
+      "passed_cases": 1844,
+      "boundary": "Precedes the actual serializer fix; passing tests did not cover the independent-process failure."
+    },
+    {
+      "session_id": 96360,
+      "exit_code": 1,
+      "entrypoint": "scripts/audit_dense_v3_outcomes.py",
+      "workdir": "/tmp/dense-v3-outcomes.pMqV0Z",
+      "boundary": "Fresh independent-process fixture readback failed on CSV field order; original source/protocol/output retained in attempt-1 and the named workdir."
+    },
+    {
+      "session_id": 17764,
+      "exit_code": 0,
+      "entrypoint": "scripts/prepare_dense_v3_outcomes.py",
+      "output": "configs/dense_primary_v3_outcome_protocol_v2.json"
+    },
+    {
+      "session_id": 13768,
+      "exit_code": 0,
+      "entrypoint": "pytest -q tests/test_primary_v3_outcomes.py",
+      "junit": "focused-tests-v2.xml",
+      "passed_cases": 69
+    },
+    {
+      "session_id": 79363,
+      "exit_code": 0,
+      "entrypoint": "pytest -q",
+      "junit": "full-tests-v2.xml",
+      "passed_cases": 1846
+    },
+    {
+      "session_id": 56561,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_v3_outcomes.py --repository /root/embedding-optimizer-story-refactor --training-root /tmp/dense-identity-source.8rUgLF --workdir /tmp/dense-v3-outcomes-replay.EEVh60 --expected-protocol-sha256 2a12b78a1a309cd6cc4a56593e4b1b1030370fc579045d1708d572eb5577d68e",
+      "result": "/tmp/dense-v3-outcomes-replay.EEVh60/result.json",
+      "actual_rejected_cases": 18
+    }
+  ],
+  "recording_boundary": "Terminal-observation handoff, not an independently worker-signed execution log. The actual successful rehearsal records its subprocess argv and observed return/output.",
+  "all_positive_outcome_tables_are_synthetic": true,
+  "model_updates": 0,
+  "gpu_workers": 0,
+  "network_uploads": 0,
+  "formal_outcome_produced": false,
+  "scientific_completion": false,
+  "source_published": false
+}

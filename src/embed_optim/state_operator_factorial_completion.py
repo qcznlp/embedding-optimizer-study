@@ -106,6 +106,64 @@ def _split(command: str) -> tuple[str, ...]:
     return values
 
 
+def _primary_dimension_steps(
+    repository: Path,
+    protocol: dict[str, Any],
+    python: str,
+) -> list[PipelineStep]:
+    binding = protocol.get("parent_bindings", {}).get("primary_dimension_handoff")
+    if binding is None:
+        # Original immutable controller contracts predate the dimension addendum.
+        return []
+    if not _binding_valid(binding, repository):
+        raise ValueError("Primary dimension handoff binding changed")
+    handoff = json.loads((repository / binding["path"]).read_text(encoding="utf-8"))
+    bindings = [
+        *handoff.get("parent_bindings", {}).values(),
+        *handoff.get("source_bindings", {}).values(),
+    ]
+    expected_names = [
+        "primary-publication-refresh",
+        "primary-dimension-export",
+        "primary-dimension-export-audit",
+        "primary-dimension-analysis",
+        "primary-dimension-analysis-audit",
+        "primary-dimension-publication",
+        "primary-dimension-publication-audit",
+        "primary-dimension-evidence",
+        "primary-dimension-portable-audit",
+        "primary-dimension-archive",
+        "primary-dimension-archive-audit",
+    ]
+    if (
+        handoff.get("status") != "prospective_primary_dimension_handoff_lock"
+        or not bindings
+        or any(not _binding_valid(item, repository) for item in bindings)
+        or [item.get("name") for item in handoff.get("steps", [])] != expected_names
+    ):
+        raise ValueError("Primary dimension handoff sources or step order differ")
+    from .primary_dimension_probe import load_contract
+
+    load_contract(repository)
+    from .dimension_archive import load_contract as load_archive_contract
+
+    load_archive_contract(repository)
+    steps = []
+    for item in handoff["steps"]:
+        command = tuple(python if token == "{python}" else token for token in item["command"])
+        if item["cpu_only"]:
+            command = (
+                "env",
+                "CUDA_VISIBLE_DEVICES=",
+                "OPENBLAS_NUM_THREADS=2",
+                "OMP_NUM_THREADS=2",
+                "MKL_NUM_THREADS=2",
+                *command,
+            )
+        steps.append(PipelineStep(item["name"], command))
+    return steps
+
+
 def pipeline_steps(
     args: argparse.Namespace,
     repository: Path,
@@ -128,6 +186,7 @@ def pipeline_steps(
         str(protocol["source_checkpoint_gate"]["checkpoint_step"]),
     )
     steps.append(PipelineStep("source-checkpoint-durability", source_backup))
+    steps.extend(_primary_dimension_steps(repository, protocol, str(args.python)))
     steps.extend(
         PipelineStep(f"calibration-{index:02d}", _split(command))
         for index, command in enumerate(commands["calibration"], start=1)
@@ -532,6 +591,21 @@ def run_pipeline(
     protocol = load_completion_protocol(protocol_path, repository)
     steps = pipeline_steps(args, repository, protocol)
     contract = _contract(args, repository, protocol_path, steps)
+    if getattr(args, "dry_run", False):
+        print(
+            json.dumps(
+                {
+                    "status": "dry_run",
+                    "scientific_completion": False,
+                    "main_completion_ready": _main_complete(args.main_ledger.resolve(), protocol),
+                    "controller_started": False,
+                    "contract": contract,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+        )
+        return 0
     log_dir = (repository / args.log_dir).resolve()
     ledger_path = log_dir / "pipeline-ledger.json"
     with _exclusive_lease(log_dir / "controller.lease"):
@@ -621,6 +695,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--retry-delay", type=float, default=300.0)
     parser.add_argument("--max-attempts", type=int, default=0)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate and print the plan without acquiring a controller or GPU lease",
+    )
     args = parser.parse_args(argv)
     if not args.main_ledger.is_absolute():
         args.main_ledger = args.workdir / args.main_ledger

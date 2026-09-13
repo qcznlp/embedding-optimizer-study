@@ -1,0 +1,74 @@
+{
+  "scope": "read_only_native_status_request_reconciliation",
+  "pools": {
+    "a": {
+      "started": 356,
+      "exit_zero": 352,
+      "native_started_without_exit": [
+        {
+          "job": [
+            "verified-v3-muon-1e-4",
+            3126,
+            "MSMARCO"
+          ],
+          "pid": 690146,
+          "start_ticks": 317366140
+        },
+        {
+          "job": [
+            "verified-v3-normuon-3e-4",
+            3126,
+            "HotpotQA"
+          ],
+          "pid": 704358,
+          "start_ticks": 317539764
+        },
+        {
+          "job": [
+            "verified-v3-normuon-1e-4",
+            3126,
+            "MSMARCO"
+          ],
+          "pid": 690532,
+          "start_ticks": 317372141
+        },
+        {
+          "job": [
+            "verified-v3-adamw-3e-5",
+            3126,
+            "HotpotQA"
+          ],
+          "pid": 704353,
+          "start_ticks": 317539063
+        }
+      ],
+      "completed": null,
+      "failed_receipt_present": false
+    },
+    "b": {
+      "started": 420,
+      "exit_zero": 420,
+      "native_started_without_exit": [],
+      "completed": {
+        "completed_at_utc": "2026-09-12T08:59:47.869754+00:00",
+        "remaining_study_requirements": [
+          "other_pool",
+          "baseline",
+          "validation_4096",
+          "complete_grid_inference",
+          "weight_space_analysis",
+          "paper_and_reproducible_release"
+        ],
+        "scientific_completion": false,
+        "verified_checkpoint_task_cells": 420,
+        "verified_checkpoints": 30
+      },
+      "failed_receipt_present": false
+    }
+  },
+  "total_native_exit_zero": 772,
+  "native_complete_checkpoint_receipts": 54,
+  "independent_new_score_reconstruction": false,
+  "new_task_or_scheduler_started": false
+}
+

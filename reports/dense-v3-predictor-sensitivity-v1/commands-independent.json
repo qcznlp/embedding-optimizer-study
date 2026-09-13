@@ -1,0 +1,25 @@
+[
+  {
+    "cmd": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-predictor-sensitivity.wIhgwqvS/verify_independent.py --parent /root/embedding-optimizer-story-refactor/reports/dense-v3-weight-retrieval-v1 --analysis /tmp/dense-v3-predictor-sensitivity.wIhgwqvS/actual --receipt-sha256 00009a1f0253d9dfa6de9938f016f20f339f1e0729e6ce31886aca9a96a2db64 --output /tmp/dense-v3-predictor-sensitivity.wIhgwqvS/independent.json",
+    "chunk_id": "bec2b1",
+    "wall_time_seconds": 1.000641124,
+    "session_id": 93230,
+    "original_token_count": 0,
+    "output": ""
+  },
+  {
+    "session_id": 93230,
+    "chunk_id": "80c8a0",
+    "wall_time_seconds": 5.000960477,
+    "original_token_count": 98,
+    "output": "{\"verified_comparisons\": 14, \"verified_predictions\": 840, \"baseline\": [\"B0_original\", false]}\n{\"verified_comparisons\": 28, \"verified_predictions\": 1680, \"baseline\": [\"B0_original\", true]}\n{\"verified_comparisons\": 42, \"verified_predictions\": 2520, \"baseline\": [\"B1_raw_rate\", false]}\n{\"verified_comparisons\": 56, \"verified_predictions\": 3360, \"baseline\": [\"B2_optimizer_stage_rate\", false]}\n"
+  },
+  {
+    "session_id": 93230,
+    "chunk_id": "79b480",
+    "wall_time_seconds": 0.000002501,
+    "exit_code": 0,
+    "original_token_count": 200,
+    "output": "{\"verified_comparisons\": 70, \"verified_predictions\": 4200, \"baseline\": [\"B3_nominal_schedule\", false]}\n{\"verified_comparisons\": 84, \"verified_predictions\": 5040, \"baseline\": [\"B3_nominal_schedule\", true]}\n{\"scope\": \"independent-all-designs-and-full-rational-solve-of-post-result-sensitivity\", \"completed_at_utc\": \"2026-09-12T12:38:50.332738+00:00\", \"readout_sha256\": \"00009a1f0253d9dfa6de9938f016f20f339f1e0729e6ce31886aca9a96a2db64\", \"independently_reconstructed_design_rows\": 240, \"independently_reconstructed_nominal_covariates\": 60, \"exact_prediction_rows\": 5040, \"exact_fold_mse_comparisons\": 336, \"pooled_comparisons\": 84, \"redundant_self_addition_folds\": 8, \"exploratory_post_result\": true, \"independent_experiment\": false, \"formal_primary_admission\": false, \"scientific_completion\": false}\n"
+  }
+]

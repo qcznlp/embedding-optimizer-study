@@ -1,0 +1,21 @@
+{
+  "scope": "engineering_test_source_path_failure",
+  "recorded_at_utc": "2026-09-06T18:49:08Z",
+  "terminal_session": 62000,
+  "exit_code": 1,
+  "junit": "full-tests-final.xml",
+  "tests": 1891,
+  "failures": 2,
+  "failed_tests": [
+    "tests/test_dimension_publication.py::test_complete_synthetic_findings_fit_the_naacl_paper_layout",
+    "tests/test_state_operator_claim_wording.py::test_complete_synthetic_candidate_paper_compiles_within_layout_gate"
+  ],
+  "cause": "This invocation supplied relative PYTHONPATH=src:.; the make subprocess changed working directory to a copied fixture paper, then imported the editable live checkout's older paper_layout.py.",
+  "observed_wrong_source": "/root/embedding-optimizer-study/src/embed_optim/paper_layout.py",
+  "remedy": "Rerun the same suite and unchanged sources with the isolated checkout's two absolute PYTHONPATH entries.",
+  "paper_source_changed": false,
+  "test_or_acceptance_rule_relaxed": false,
+  "failure_overridden": false,
+  "boundary": "This is the previously documented relative-path subprocess context error, not a newly diagnosed geometry or manuscript-layout defect. Preserve this failed invocation and require its actual full retry.",
+  "scientific_completion": false
+}

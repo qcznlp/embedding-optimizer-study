@@ -15,12 +15,9 @@ from embed_optim.causal_chain_rendering import (
 )
 from embed_optim.paper_audit import (
     ABSTRACT_WORD_LIMIT,
-    PAPER_APPENDIX_GENERATED_INPUTS,
-    PAPER_DEFINITION_GENERATED_INPUTS,
     PAPER_DISCOVERY_FIGURE_CAPTION,
     PAPER_DISCOVERY_FIGURE_INCLUDES,
     PAPER_DISCOVERY_FIGURE_LABEL,
-    PAPER_MAIN_GENERATED_INPUTS,
     PAPER_MAIN_REQUIRED_ONCE,
     PAPER_RESULT_TABLE_PATHS,
     PAPER_SOURCE_TABLE_PATHS,
@@ -153,14 +150,19 @@ def checked_in_dense_audit():
     return audit_paper(
         families=("dense",),
         scope_amendment="configs/dense_scope_amendment.json",
-        strict=True,
+        strict=False,
     )
 
 
 def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_audit):
     result = checked_in_dense_audit
 
-    assert result["complete"] is True
+    assert result["complete"] is False
+    assert {item["path"] for item in result["active_manuscript_pending"]} == {
+        "paper/generated/optimizer-primary.tex",
+        "paper/generated/dimension-utilization.tex",
+        "paper/generated/state-operator-factorial.tex",
+    }
     expected_mode = (
         "checkpoint-backed-full-source"
         if (REPOSITORY / "outputs").exists()
@@ -183,11 +185,28 @@ def test_current_dense_paper_constants_match_strict_sources(checked_in_dense_aud
     )
     discovery_evidence = result["evidence"]["DiscoveryHeadline"]
     assert len(discovery_evidence) == 5
+    # Current v3 findings must not make the historical guard admit its missing
+    # confirmation/intervention evidence. The old outcome manifest still fails.
+    assert result["incomplete_evidence"] == ["ConfirmationHeadline", "InterventionHeadline"]
+    assert "Complete DenseOn results." in (REPOSITORY / "README.md").read_text()
+    historical_readme = (
+        REPOSITORY
+        / "reports/engineering-archive/dense-v3-versioned-paper-reproduction-v1/before/README.md"
+    )
+    assert "FINAL_CONCLUSION_PENDING" in historical_readme.read_text()
+    for headline in result["incomplete_evidence"]:
+        assert any(
+            str(item["path"]).endswith("reports/outcome-summary.manifest.json")
+            and item["complete"] is False
+            for item in result["evidence"][headline]
+        )
+    assert result["dimension_publication"]["complete"] is False
+    assert result["dimension_publication"]["status"] == "prospective_pending"
     assert all(item["complete"] is True for item in discovery_evidence)
     assert result["claim_protocol"]["status"] == "prospective_completion_lock"
     assert result["claim_protocol"]["amendments"][0]["headline_contract_changed"] is False
     assert len(result["claim_protocol"]["source_bindings"]) == 11
-    assert result["paper_results"]["complete"] is True
+    assert result["paper_results"]["complete"] is False
     assert result["document_language_problems"] == []
 
 
@@ -261,6 +280,15 @@ def synthetic_future_final_audit(monkeypatch):
         parsed[name] = "audited final result"
     monkeypatch.setattr("embed_optim.paper_audit._macros", lambda _path: parsed)
     _stub_completed_nonheadline_audit_gates(monkeypatch)
+    monkeypatch.setattr("embed_optim.paper_audit._active_manuscript_pending", lambda _root: [])
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._dimension_publication_status",
+        lambda _root: {"complete": True, "status": "synthetic_complete"},
+    )
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._primary_publication_status",
+        lambda _root: {"complete": True, "status": "synthetic_complete"},
+    )
     return audit_paper(
         families=("dense",),
         scope_amendment="configs/dense_scope_amendment.json",
@@ -273,6 +301,59 @@ def test_synthetic_future_final_state_can_pass_every_completion_gate(
     assert synthetic_future_final_audit["complete"] is True
     assert synthetic_future_final_audit["pending_headlines"] == []
     assert synthetic_future_final_audit["incomplete_evidence"] == []
+
+
+@pytest.mark.parametrize("status", ["prospective_pending", "invalid_or_stale"])
+def test_no_pending_markers_does_not_replace_primary_publication_evidence(
+    synthetic_future_final_audit, monkeypatch, status
+):
+    monkeypatch.setattr(
+        "embed_optim.paper_audit._primary_publication_status",
+        lambda _root: {"complete": False, "status": status},
+    )
+    result = audit_paper(families=("dense",), scope_amendment="configs/dense_scope_amendment.json")
+    assert result["complete"] is False
+    assert result["active_manuscript_pending"] == []
+    assert result["primary_publication"]["status"] == status
+
+
+def test_primary_publication_gate_uses_requested_root_and_propagates_corruption(
+    tmp_path, monkeypatch
+):
+    from embed_optim import corrected_publication
+    from embed_optim.paper_audit import _primary_publication_status
+
+    assert _primary_publication_status(tmp_path)["status"] == "prospective_pending"
+    path = tmp_path / "reports/dense-no-packing-publication/summary_manifest.json"
+    path.parent.mkdir(parents=True)
+    path.write_text("{}")
+
+    def reject(args):
+        assert args.output_dir == path.parent
+        assert args.latex_output == tmp_path / "paper/generated/optimizer-primary.tex"
+        assert args.protocol == tmp_path / "configs/dense_no_packing_publication_protocol.json"
+        raise ValueError("synthetic corrupt source")
+
+    monkeypatch.setattr(corrected_publication, "audit_report", reject)
+    result = _primary_publication_status(tmp_path)
+    assert not result["complete"] and result["status"] == "invalid_or_stale"
+    assert "corrupt source" in result["error"]
+
+
+def test_active_manuscript_requires_every_result_include_without_pending_markers(tmp_path):
+    from embed_optim.paper_audit import PENDING_MANUSCRIPT_SOURCES, _active_manuscript_pending
+
+    assert len(_active_manuscript_pending(tmp_path)) == len(PENDING_MANUSCRIPT_SOURCES)
+    for relative in PENDING_MANUSCRIPT_SOURCES:
+        path = tmp_path / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("% \\ResultPending{comment only}\nAudited result.\n", encoding="utf-8")
+    assert _active_manuscript_pending(tmp_path) == []
+    path = tmp_path / PENDING_MANUSCRIPT_SOURCES[-1]
+    path.write_text("\\ResultPending{measurement missing}\n", encoding="utf-8")
+    assert _active_manuscript_pending(tmp_path) == [
+        {"path": str(PENDING_MANUSCRIPT_SOURCES[-1]), "status": "pending", "markers": 1}
+    ]
 
 
 def test_paper_claim_protocol_freezes_result_contingent_language_before_completion():
@@ -875,21 +956,22 @@ def test_paper_main_topology_requires_every_generated_input_and_conclusion(tmp_p
         "\n".join(
             (
                 r"\input{results}",
-                *PAPER_DEFINITION_GENERATED_INPUTS,
-                *PAPER_MAIN_GENERATED_INPUTS,
-                r"\input{generated/candidate-breadth}",
-                r"\input{generated/corrected-no-packing}",
+                r"\input{generated/optimizer-primary}",
+                r"\input{generated/dimension-utilization}",
                 r"\input{generated/state-operator-factorial}",
                 r"\CorrectedAbstractFinding",
                 r"\StateOperatorAbstractFinding",
-                r"\CausalChainSummaryTable",
-                r"\CandidateBreadthDiscussion",
                 r"\CorrectedMainSection",
+                r"\CorrectedWeightSpaceFinding",
+                r"\DimensionUtilizationFinding",
+                r"\DimensionUtilizationFigure",
+                r"\CorrectedGeometryBridgeFinding",
+                r"\DimensionRetrievalBridgeFinding",
                 r"\StateOperatorMechanismFinding",
                 r"\section{Conclusion}",
                 r"\CorrectedConclusionFinding",
+                r"\DimensionConclusionFinding",
                 r"\StateOperatorConclusionFinding",
-                r"\CandidateBreadthConclusion",
                 r"\label{paper-main-end}",
                 r"\section{Limitations}",
                 r"\section{Ethical Considerations}",
@@ -897,13 +979,8 @@ def test_paper_main_topology_requires_every_generated_input_and_conclusion(tmp_p
                 r"\appendix",
                 r"\section{Artifact and Reproducibility}",
                 r"\CorrectedGeometryBridgeTable",
-                r"\CorrectedExecutionSensitivityTable",
+                r"\DimensionUtilizationAppendixTable",
                 r"\StateOperatorAppendixTable",
-                r"\ResultConclusion",
-                r"\CandidateBreadthFigure",
-                *PAPER_APPENDIX_GENERATED_INPUTS,
-                r"\CausalChainDiagnostics",
-                r"\input{generated/retrieval-dynamics-extension}",
             )
         )
         + "\n"
@@ -914,7 +991,7 @@ def test_paper_main_topology_requires_every_generated_input_and_conclusion(tmp_p
     for token in PAPER_MAIN_REQUIRED_ONCE:
         main.write_text(canonical.replace(token, "", 1), encoding="utf-8")
         assert _paper_main_topology_complete(tmp_path) is False
-    main.write_text(canonical + PAPER_MAIN_GENERATED_INPUTS[0] + "\n", encoding="utf-8")
+    main.write_text(canonical + r"\CorrectedMainSection" + "\n", encoding="utf-8")
     assert _paper_main_topology_complete(tmp_path) is False
 
     main.write_text(
@@ -953,21 +1030,22 @@ def test_paper_main_topology_rejects_exempt_region_bypasses(tmp_path: Path, bypa
     canonical = "\n".join(
         (
             r"\input{results}",
-            *PAPER_DEFINITION_GENERATED_INPUTS,
-            *PAPER_MAIN_GENERATED_INPUTS,
-            r"\input{generated/candidate-breadth}",
-            r"\input{generated/corrected-no-packing}",
+            r"\input{generated/optimizer-primary}",
+            r"\input{generated/dimension-utilization}",
             r"\input{generated/state-operator-factorial}",
             r"\CorrectedAbstractFinding",
             r"\StateOperatorAbstractFinding",
-            r"\CausalChainSummaryTable",
-            r"\CandidateBreadthDiscussion",
             r"\CorrectedMainSection",
+            r"\CorrectedWeightSpaceFinding",
+            r"\DimensionUtilizationFinding",
+            r"\DimensionUtilizationFigure",
+            r"\CorrectedGeometryBridgeFinding",
+            r"\DimensionRetrievalBridgeFinding",
             r"\StateOperatorMechanismFinding",
             r"\section{Conclusion}",
             r"\CorrectedConclusionFinding",
+            r"\DimensionConclusionFinding",
             r"\StateOperatorConclusionFinding",
-            r"\CandidateBreadthConclusion",
             r"\label{paper-main-end}",
             r"\section{Limitations}",
             r"\section{Ethical Considerations}",
@@ -975,13 +1053,8 @@ def test_paper_main_topology_rejects_exempt_region_bypasses(tmp_path: Path, bypa
             r"\appendix",
             r"\section{Artifact and Reproducibility}",
             r"\CorrectedGeometryBridgeTable",
-            r"\CorrectedExecutionSensitivityTable",
+            r"\DimensionUtilizationAppendixTable",
             r"\StateOperatorAppendixTable",
-            r"\ResultConclusion",
-            r"\CandidateBreadthFigure",
-            *PAPER_APPENDIX_GENERATED_INPUTS,
-            r"\CausalChainDiagnostics",
-            r"\input{generated/retrieval-dynamics-extension}",
         )
     )
     main.write_text(
@@ -998,21 +1071,22 @@ def test_paper_main_topology_uses_only_active_latex_source(tmp_path: Path) -> No
     canonical = "\n".join(
         (
             r"\input{results}",
-            *PAPER_DEFINITION_GENERATED_INPUTS,
-            *PAPER_MAIN_GENERATED_INPUTS,
-            r"\input{generated/candidate-breadth}",
-            r"\input{generated/corrected-no-packing}",
+            r"\input{generated/optimizer-primary}",
+            r"\input{generated/dimension-utilization}",
             r"\input{generated/state-operator-factorial}",
             r"\CorrectedAbstractFinding",
             r"\StateOperatorAbstractFinding",
-            r"\CausalChainSummaryTable",
-            r"\CandidateBreadthDiscussion",
             r"\CorrectedMainSection",
+            r"\CorrectedWeightSpaceFinding",
+            r"\DimensionUtilizationFinding",
+            r"\DimensionUtilizationFigure",
+            r"\CorrectedGeometryBridgeFinding",
+            r"\DimensionRetrievalBridgeFinding",
             r"\StateOperatorMechanismFinding",
             r"\section{Conclusion}",
             r"\CorrectedConclusionFinding",
+            r"\DimensionConclusionFinding",
             r"\StateOperatorConclusionFinding",
-            r"\CandidateBreadthConclusion",
             r"\label{paper-main-end}",
             "% \\section[Hidden]{Hidden section}",
             "% \\section*{Hidden starred section}",
@@ -1024,13 +1098,8 @@ def test_paper_main_topology_uses_only_active_latex_source(tmp_path: Path) -> No
             r"\appendix",
             r"\section{Artifact and Reproducibility}",
             r"\CorrectedGeometryBridgeTable",
-            r"\CorrectedExecutionSensitivityTable",
+            r"\DimensionUtilizationAppendixTable",
             r"\StateOperatorAppendixTable",
-            r"\ResultConclusion",
-            r"\CandidateBreadthFigure",
-            *PAPER_APPENDIX_GENERATED_INPUTS,
-            r"\CausalChainDiagnostics",
-            r"\input{generated/retrieval-dynamics-extension}",
             "% \\section{Conclusion}",
         )
     )
@@ -1063,6 +1132,23 @@ def test_final_document_language_audit_rejects_only_declared_stale_phrases(tmp_p
         "README.md: Once complete, the supplemental",
         "paper/main.tex: The final analysis will report",
         "paper/main.tex: intentionally left unresolved",
+    ]
+
+
+def test_final_document_language_audit_excludes_engineering_debugging_from_manuscript(
+    tmp_path: Path,
+) -> None:
+    readme = tmp_path / "README.md"
+    paper = tmp_path / "paper/main.tex"
+    generated = tmp_path / "paper/generated/optimizer-primary.tex"
+    generated.parent.mkdir(parents=True)
+    readme.write_text("Final repository status.\n", encoding="utf-8")
+    paper.write_text("Scientific manuscript.\n", encoding="utf-8")
+    generated.write_text("A padding failure changed the execution path.\n", encoding="utf-8")
+
+    assert _final_document_language_problems(tmp_path) == [
+        "paper/generated/optimizer-primary.tex: scientific-scope:padding",
+        "paper/generated/optimizer-primary.tex: scientific-scope:execution-path",
     ]
 
 
@@ -1320,21 +1406,22 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
     paper_contract = causal_chain_paper_contract()
     ordered_topology = (
         r"\input{results}",
-        *PAPER_DEFINITION_GENERATED_INPUTS,
-        *PAPER_MAIN_GENERATED_INPUTS,
-        r"\input{generated/candidate-breadth}",
-        r"\input{generated/corrected-no-packing}",
+        r"\input{generated/optimizer-primary}",
+        r"\input{generated/dimension-utilization}",
         r"\input{generated/state-operator-factorial}",
         r"\CorrectedAbstractFinding",
         r"\StateOperatorAbstractFinding",
-        r"\CausalChainSummaryTable",
-        r"\CandidateBreadthDiscussion",
         r"\CorrectedMainSection",
+        r"\CorrectedWeightSpaceFinding",
+        r"\DimensionUtilizationFinding",
+        r"\DimensionUtilizationFigure",
+        r"\CorrectedGeometryBridgeFinding",
+        r"\DimensionRetrievalBridgeFinding",
         r"\StateOperatorMechanismFinding",
         r"\section{Conclusion}",
         r"\CorrectedConclusionFinding",
+        r"\DimensionConclusionFinding",
         r"\StateOperatorConclusionFinding",
-        r"\CandidateBreadthConclusion",
         r"\label{paper-main-end}",
         r"\section{Limitations}",
         r"\section{Ethical Considerations}",
@@ -1342,13 +1429,8 @@ def test_paper_audit_binds_causal_headline_and_rejects_main_text_overclaim(
         r"\appendix",
         r"\section{Artifact and Reproducibility}",
         r"\CorrectedGeometryBridgeTable",
-        r"\CorrectedExecutionSensitivityTable",
+        r"\DimensionUtilizationAppendixTable",
         r"\StateOperatorAppendixTable",
-        r"\ResultConclusion",
-        r"\CandidateBreadthFigure",
-        *PAPER_APPENDIX_GENERATED_INPUTS,
-        r"\CausalChainDiagnostics",
-        r"\input{generated/retrieval-dynamics-extension}",
     )
     canonical_main_text = "\n".join(
         (

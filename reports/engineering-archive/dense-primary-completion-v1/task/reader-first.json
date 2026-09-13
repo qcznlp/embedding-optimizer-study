@@ -1,0 +1,93 @@
+{
+  "boundary": "One real SciFact full-corpus diagnostic output parsed again on CPU. Undefined unused auxiliary nAUC values are recorded, not zero-imputed or used by the predeclared nDCG estimand. The original failed reader, raw NaN bytes and successful worker are preserved. This is not a primary result, another evaluation, or proof of the cause of each actual per-query auxiliary degeneracy.",
+  "evaluation_workers_executed": 0,
+  "hf_writes_executed": 0,
+  "inspected": {
+    "files": [
+      {
+        "bytes": 6928,
+        "path": "/tmp/dense-primary-task.arBdZO/dense/results/verified-muon-3e-4__checkpoint-3/local/SciFactDecontaminated.json",
+        "sha256": "f759f99549b223a97e71279c6eaa1bdd1fc596f311ab4724b0f86ce10ff3e242"
+      },
+      {
+        "bytes": 1004,
+        "path": "/tmp/dense-primary-task.arBdZO/dense/results/verified-muon-3e-4__checkpoint-3/local/model_meta.json",
+        "sha256": "e777007fa3f3a1a4281f5b3233f27ea0b464debf708944905941feb4bb3679d3"
+      },
+      {
+        "bytes": 281,
+        "path": "/tmp/dense-primary-task.arBdZO/dense/results/verified-muon-3e-4__checkpoint-3/local/run_settings.jsonl",
+        "sha256": "e5ac874013455b7b1811680abf61113d7a2b55ff346d67f0ee64058101727c4a"
+      }
+    ],
+    "ndcg_at_10": 0.87919,
+    "task": "SciFact",
+    "undefined_auxiliary_metrics_not_used": [
+      {
+        "metric": "nauc_recall_at_100_max",
+        "split": "test",
+        "subset_row": 0
+      },
+      {
+        "metric": "nauc_recall_at_100_std",
+        "split": "test",
+        "subset_row": 0
+      },
+      {
+        "metric": "nauc_recall_at_100_diff1",
+        "split": "test",
+        "subset_row": 0
+      },
+      {
+        "metric": "nauc_recall_at_1000_max",
+        "split": "test",
+        "subset_row": 0
+      },
+      {
+        "metric": "nauc_recall_at_1000_std",
+        "split": "test",
+        "subset_row": 0
+      },
+      {
+        "metric": "nauc_recall_at_1000_diff1",
+        "split": "test",
+        "subset_row": 0
+      }
+    ]
+  },
+  "model_updates_executed": 0,
+  "observed_at_utc": "2026-09-06T12:16:50.195898+00:00",
+  "producer": {
+    "bytes": 9960,
+    "path": "/tmp/dense-primary-task.arBdZO/result.json",
+    "sha256": "878ede1e95a0539d297bed7e6fd9dabf99f641b0dbe5faa03540ede35008353b"
+  },
+  "production_deployed": false,
+  "raw_task_artifacts_unchanged": true,
+  "real_task_reader_passed": true,
+  "scientific_completion": false,
+  "scope": "engineering_dense_primary_real_task_reader_replay",
+  "source_bindings": {
+    "scripts/replay_dense_primary_task_reader.py": {
+      "bytes": 4325,
+      "sha256": "385f880d1b2ed8279ab6501a4546c1748ce37b7a932c8e990878b2ec2359fd36"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 23492,
+      "sha256": "66406af2595f489c23de553e42f18508b64721048073d81b56e00670e131471e"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    }
+  },
+  "upstream_control": {
+    "constant_metric_instances": 20,
+    "source": {
+      "bytes": 23036,
+      "path": "/usr/local/lib/python3.12/dist-packages/mteb/_evaluators/retrieval_metrics.py",
+      "sha256": "5b64ee8440c50f109e8874289baf4ca73fa8a1bf67422ae04415fbb989d3b10a"
+    },
+    "undefined_nauc_returned": true
+  }
+}

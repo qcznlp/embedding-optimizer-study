@@ -1,0 +1,23 @@
+{
+  "scope": "local_archive_credential_scan_rejected_synthetic_test_parameter_id",
+  "launch": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/verify_archive.py",
+    "result": {
+      "chunk_id": "d2f605",
+      "wall_time_seconds": 1.000566081,
+      "session_id": 78478,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "terminal": {
+    "chunk_id": "19e443",
+    "wall_time_seconds": 0.000002534,
+    "exit_code": 1,
+    "original_token_count": 163,
+    "output": "Traceback (most recent call last):\n  File \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/verify_archive.py\", line 176, in <module>\n    main()\n  File \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/verify_archive.py\", line 154, in main\n    assert backup.SECRETS.search(path.read_bytes()) is None, path\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/actual/transport-tests.xml\n"
+  },
+  "transfer_or_model_execution_failed": false,
+  "remote_write": false,
+  "note": "The archived test XML intentionally includes a rejected synthetic credential-shaped parameter. Inspect exact fixture and preserve this failure before any narrow local-provenance handling. Public payload did not include the test XML."
+}

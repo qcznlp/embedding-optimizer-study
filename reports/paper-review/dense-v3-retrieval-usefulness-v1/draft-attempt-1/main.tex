@@ -1,0 +1,455 @@
+\documentclass[11pt]{article}
+
+\usepackage[review]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{placeins}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+\input{results}
+\input{generated/optimizer-primary}
+\input{generated/dimension-utilization}
+\input{generated/state-operator-factorial}
+
+\title{Same Start, Different Weight Spaces:\\
+How AdamW and Muon Adapt Dense Retrievers}
+
+\author{Anonymous ACL submission}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Does changing the geometry of optimization make a dense retriever use its representation space
+more effectively? We compare AdamW, Muon, and NorMuon from one pretrained DenseOn checkpoint on
+500,000 shared queries, following 12 configurations through five checkpoints and 14 decontaminated
+BEIR tasks. \CorrectedAbstractFinding{} We distinguish broader weight-space motion from
+retrieval-useful dimension allocation by linking reached weights to coordinate-deletion effects
+and testing prediction at held-out learning-rate doses. A crossed continuation from two fixed
+reached states then tests whether those states respond differently to further optimization.
+\StateOperatorAbstractFinding{}
+\end{abstract}
+
+\section{Introduction}
+
+Dense retrieval adapts a pretrained encoder so that a small vector preserves distinctions needed
+to rank a large corpus. Most adaptation uses AdamW, whose coordinate-wise scaling differs from
+Muon's approximately orthogonalized matrix updates
+\citep{loshchilov2019decoupled,liu2025muon}. Changing that rule changes which weight states the
+encoder reaches. The central question is whether the resulting motion creates more useful
+retrieval representations, rather than simply spreading parameter changes across more directions.
+
+There are reasons to expect either outcome. In pretraining studies, Muon learns features with
+higher effective rank and stronger transfer \citep{ruan2026features}. In contrast, studies of
+Adam-pretrained models find that switching optimizers during fine-tuning can disrupt learned
+knowledge, particularly as update strength increases \citep{qu2026finetune,liu2026consistency}.
+These findings concern different training settings. Neither tells us how an Adam-pretrained dense
+retriever's weight space should change to improve corpus ranking.
+
+Retrieval also exposes a distinction between spreading a representation and using it well.
+Randomly removing many embedding coordinates can have surprisingly little effect, and removing
+some coordinates can even improve retrieval \citep{takeshita2025dimensions}. Consequently, a
+broader spectrum need not mean that more dimensions carry useful ranking evidence. We ask whether
+optimizer-induced weight changes alter the balance and distribution of helpful and degrading
+coordinate contributions.
+
+We follow this question from weights to function. Starting from the same DenseOn checkpoint, we
+train AdamW, Muon, and NorMuon on identical 500,000-query groups with seven hard negatives each.
+Four rates per optimizer and five checkpoints expose the rate dependence and timing of retrieval
+changes on 14 decontaminated BEIR tasks. We then trace the reached weight states and measure how
+coordinate removal changes their representations' ranking behavior. To distinguish a useful
+retrieval descriptor from a statistic that merely identifies the optimizer, we test prediction at
+held-out learning-rate doses.
+
+Figure~\ref{fig:weight-space-map} shows this progression. A separate $2\times2$ continuation
+crosses two fixed reached states with reset AdamW or Muon. Calibrating update scale on a common
+probe lets us ask whether further adaptation depends on both the starting weights and the
+continuation rule. This intervention concerns whole states and subsequent optimization; it does
+not isolate any particular geometric feature as the cause of the original retrieval difference.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{figures/optimizer-weight-dimension-map.pdf}
+    \caption{Our explanatory target and evidence chain. Optimizer-specific trajectories create
+    reached weight states and embeddings; weight and coordinate-level measurements become candidate
+    explanations only if they predict full-corpus retrieval out of learning-rate dose. The crossed
+    continuation estimates post-continuation state, operator, and interaction contrasts for one fixed
+    checkpoint pair.}
+    \label{fig:weight-space-map}
+\end{figure*}
+
+The study addresses three connected questions:
+\begin{itemize}
+    \item when and across which learning rates optimizer choice changes full-corpus retrieval;
+    \item which differences between reached weight states translate into distributed, helpful
+    coordinate contributions and predict retrieval at held-out doses; and
+    \item whether those reached states respond differently when the continuation optimizer changes.
+\end{itemize}
+
+\section{From Optimizer Updates to Retrieval States}
+
+\subsection{From weight-space motion to ranking evidence}
+
+Let $e_\theta(x)$ be the unit-normalized embedding produced by weights $\theta$.
+The cosine margin between a relevant document $d^+$ and a competing document $d^-$ is
+\begin{align}
+m_\theta(q,d^+,d^-)
+&=s_\theta(q,d^+)-s_\theta(q,d^-) \nonumber\\
+&=\sum_{j=1}^{768} e_{\theta,j}(q)
+ \bigl[e_{\theta,j}(d^+)-e_{\theta,j}(d^-)\bigr].
+\label{eq:retrieval-margin}
+\end{align}
+This identity separates the spread of a representation from its alignment with relevance:
+different coordinates may reinforce or oppose a ranking distinction. The encoder maps weight
+changes into these query--document relationships, so a weight-displacement spectrum alone does
+not determine whether the changed directions help retrieval.
+
+Our analysis therefore distinguishes three objects: motion in parameter space, the allocation of
+functional coordinate contributions in the reached representation, and full-corpus ranking.
+Coordinate deletion measures sensitivity of that representation; because deletion is followed by
+renormalization, its effects are not the additive terms in Equation~\ref{eq:retrieval-margin}.
+The eight-document probe makes these interventions tractable, while the unchanged full-corpus
+BEIR evaluation supplies the retrieval outcome.
+
+\subsection{Update geometry is not an outcome}
+
+For a matrix parameter $W$ with gradient $G_t$, AdamW applies an element-wise second-moment
+preconditioner. Muon instead applies a Newton--Schulz approximation to the polar factor of a momentum
+matrix. For the compact SVD $M=U\Sigma V^\top$, its idealized transform is $UV^\top$, which equalizes
+nonzero singular values \citep{jordan2024muon}. NorMuon adds a row-wise historical rescaling after
+orthogonalization \citep{li2025normuon}.
+
+Repeated application of these rules changes both weights and the gradients of subsequent updates.
+We study the accumulated result at saved checkpoints, rather than identify a trajectory with one
+operator transform. Spectral equalization can emphasize weak directions
+\citep{pang2026htmuon}, while optimizer switching can disturb pretrained features
+\citep{qu2026finetune}. These motivate competing explanations to test through reached states,
+not an assumption that a flatter spectrum must improve retrieval.
+
+\section{Related Work}
+
+Dense dual encoders compress queries and documents into single vectors and rank by similarity.
+BEIR evaluates whether such representations transfer across heterogeneous retrieval tasks
+\citep{thakur2021beir}. DenseOn provides the unsupervised, not-yet-fine-tuned checkpoint and open
+training recipe used here \citep{sourty2026denseon}. Representation geometry also matters for
+retrieval: HIL combines isotropic and anisotropic representations in a late-interaction retriever
+\citep{kim2024hil}. Its emphasis on their balance motivates studying relevance-sensitive
+consequences of geometric change, rather than maximizing a spread statistic in isolation.
+
+Coordinate ablations provide a more functional view of dimension use. \citet{takeshita2025dimensions}
+find that text encoders often retain most retrieval quality after random removal of half their
+dimensions; their tested isotropy, correlation, and outlier measures do not account for the
+observation, while deleting some individual coordinates improves performance. We use this distinction to ask whether an optimizer
+merely changes representation rank or changes the distribution of helpful, redundant, and harmful
+dimensions along its trajectory.
+
+Muon has shown attractive scaling in language-model pretraining, while NorMuon augments its
+matrix-level transform with neuron-wise adaptation \citep{liu2025muon,li2025normuon}. Concurrent
+work warns that switching an Adam-pretrained model to Muon can disrupt pretrained knowledge as
+update strength grows \citep{qu2026finetune,liu2026consistency}. Other analyses relate Muon to
+feature rank or margins, identify risks from spectral equalization, or argue for covariance-aware
+and layer-dependent matrix geometry \citep{ruan2026features,pang2026htmuon,du2026newtonmuon,
+massena2026schatten}. Our question is downstream and retrieval-specific: which geometric changes
+survive optimizer state feedback, preserve unseen scores, and predict corpus ranking?
+
+\section{Tracing an Optimizer Through Weight Space}
+
+\subsection{One controlled adaptation problem}
+
+We adapt the released DenseOn unsupervised checkpoint on one deterministic view of
+\NumTrainingQueries{} queries. Each group contains one positive and \NumHardNegatives{} distinct
+sampled hard negatives. Queries are allocated proportionally across seven source datasets; a
+candidate is eligible only when its mined score is below $0.95$ times the positive score, and the
+seven negatives are sampled without replacement from the first ten eligible candidates using
+stable seed-42 hashes. Every optimizer receives identical group identities and order. We use cosine
+InfoNCE at temperature 0.02, no in-batch or cross-device negatives, maximum context length
+\ContextLength{}, global batch size 128, one epoch, and bfloat16 forward passes.
+
+The grid contains four learning rates per optimizer: $\{10^{-6},3\!\times\!10^{-6},10^{-5},
+3\!\times\!10^{-5}\}$ for AdamW and $\{10^{-4},3\!\times\!10^{-4},10^{-3},3\!\times\!10^{-3}\}$
+for Muon and NorMuon. Muon-family runs route hidden two-dimensional matrices through the matrix
+rule and auxiliary parameters through AdamW at $3\!\times\!10^{-6}$. Each run keeps checkpoints at
+20, 40, 60, 80, and 100\% of 3,907 optimizer steps. Every checkpoint is evaluated on the same
+\NumBEIRTasks-task decontaminated BEIR suite.
+
+We use eight NVIDIA L20Z GPUs as two disjoint four-GPU training pools, retaining four ranks per
+run. Retrieval evaluation is task-parallel across otherwise idle devices and uses exact retrieval
+rather than approximate ranking. AdamW uses fused CUDA AdamW; Muon and NorMuon use the documented
+decomposed-bfloat16 Newton--Schulz implementation. All runs retain the same example identities,
+ordering, checkpoint boundaries, and scoring semantics.
+
+\subsection{Comparing rate surfaces and testing retrieval descriptors}
+
+The primary estimand averages the four predeclared learning-rate cells within each optimizer at the
+final checkpoint. This makes the optimizer comparison a statement about the tested rate surface,
+not a post-hoc best cell. Task-level common resampling supplies simultaneous max-$T$ intervals for
+the three pairwise contrasts. We also report all five optimizer-by-stage means and a secondary
+validation-selected comparison, but neither can replace the primary surface-level result.
+
+We test whether a state measurement describes retrieval beyond identifying which optimizer
+produced it. Nine predeclared weight-space features and four representation-space features are
+added separately to a baseline containing optimizer, checkpoint stage, and centered log learning
+rate within optimizer. Four folds each hold out one ordered rate index across all optimizers and
+stages. Predictive support requires lower pooled held-out RMSE and improvement in at least three
+folds. The representation features are helpful mass share, normalized helpful participation,
+degrading mass, and relative shortlist nDCG after removing 50\% of coordinates. We report every
+candidate, including unsupported or unidentified comparisons. This tests generalization to an
+unseen rate dose, not an unseen retrieval task or causal mediation.
+
+\CorrectedMainSection
+
+\section{How the Optimizers Reshape the Retriever}
+
+\subsection{Weight-state trajectories}
+
+For each of the 88 hidden matrices $W_\ell$, we measure the saved-checkpoint segment
+$W_{\ell,t}-W_{\ell,t-1}$ and cumulative displacement $W_{\ell,t}-W_{\ell,0}$. Magnitude is the
+joint Frobenius norm of the displacement divided by the joint current weight norm, not an average
+of matrix-wise ratios. Parameter-weighted summaries describe effective rank, row-norm coefficient
+of variation, and top-1\% row-energy share. Rank-16 left/right subspace overlap compares all
+unordered run pairs at each stage; optimizer-pair summaries average all learning-rate pairs
+equally, without selecting a reference rate.
+
+We retain the original approximate spectral measurements and separately report full-spectrum
+sensitivity. Entropy rank computed from all singular values is a different quantity from entropy
+within a renormalized truncated spectrum; the full-spectrum rank summaries explicitly weight
+nonzero matrices. Neither measurement replaces the other. These are properties of the state
+produced by many updates, not of a single optimizer step.
+
+\CorrectedWeightSpaceFinding
+
+\subsection{Does Muon use embedding dimensions differently?}
+
+Weight motion matters through the representation it creates. The frozen probe contains 16 queries
+from each of 14 tasks, each with one relevant document and seven fixed competing documents.
+We measure query/document covariance rank and recompute shortlist retrieval after removing
+20 shared random coordinate sets at each of 10, 25, 50, and 75\% removal.
+
+The primary attribution uses positive--hardest-negative margin. For task $t$ and coordinate $j$,
+let $a_{tj}$ be the task-mean change in margin after deleting $j$ and renormalizing. We average
+over queries before separating helpful and degrading effects:
+$h_{tj}=\max(-a_{tj},0)$ and $b_{tj}=\max(a_{tj},0)$.
+Writing $H_t=\sum_j h_{tj}$ and $B_t=\sum_j b_{tj}$, the three summaries are
+\begin{equation}
+\frac{H_t}{H_t+B_t},\qquad
+\frac{H_t^2}{768\sum_j h_{tj}^2},\qquad B_t.
+\label{eq:coordinate-utility}
+\end{equation}
+They measure helpful mass \emph{share}, normalized helpful participation, and degrading mass.
+Zero denominators are assigned zero by the fixed definition. We compute each summary within task
+before averaging tasks; analogous shortlist-nDCG attributions are descriptive. These deletion
+sensitivities are not additive score contributions because renormalization and changes in the
+hardest competing document couple their effects.
+
+Final-stage optimizer summaries average all four rates. We use 50,000 common task-bootstrap
+resamples and one fixed-standard-error max-$T$ family over the nine combinations of three features
+and three optimizer contrasts. More constructive coordinate use requires all three simultaneous
+95\% intervals in the desired directions: greater helpful share and participation, less degrading
+mass. Failure of this joint criterion does not establish equivalence.
+
+Coordinate attribution is basis dependent. We repeat the endpoint analysis after three shared Haar
+rotations, each of which preserves all full-vector cosine scores. A native-coordinate difference can
+support a claim about native-coordinate utilization. Directional agreement across the three tested
+rotations is a robustness check, not proof of invariance under arbitrary bases or of greater
+dimensional capacity.
+
+\DimensionUtilizationFinding
+
+\DimensionUtilizationFigure
+
+\subsection{Which state measurements predict retrieval?}
+
+Every weight- and representation-space candidate faces the same leave-dose-index-out test. The
+baseline already knows optimizer identity, checkpoint stage, and within-optimizer dose, so a feature
+must explain variation beyond recognizing Muon. We report all candidates, including unsupported
+ones, and treat predictive support as a bridge to retrieval rather than causal mediation.
+
+\CorrectedGeometryBridgeFinding
+
+\DimensionRetrievalBridgeFinding
+
+\section{How Do Reached States Respond to Further Optimization?}
+
+Retrieval at a fixed checkpoint depends on its weights, not on an optimizer applied only later.
+Our follow-up therefore asks a conditional question: does the reached state change the response to
+further optimization? We fix the 60\% AdamW $3\!\times\!10^{-5}$ and Muon $3\!\times\!10^{-4}$
+checkpoints, reset optimizer history, and continue each with reset AdamW and reset Muon. The source
+pair is fixed, not selected from the new BEIR outcomes or averaged over the primary rate surface.
+
+Each cell's hidden learning rate is calibrated to a global hidden update-to-weight Frobenius ratio
+of $5\!\times\!10^{-4}$ on the fixed 32-example gradient-history probe, then held fixed as the
+schedule's base rate. This does not match the first realized shuffled-batch update or subsequent
+update norms. Both rules use the same hidden/auxiliary partition and auxiliary AdamW at
+$3\!\times\!10^{-6}$; calibration excludes weight decay. The four cells share each of three fixed
+data orders and a 50,000-query horizon.
+
+For each seed--task pair, let $Y_{so}$ be final nDCG@10 after this continuation, with source
+$s\in\{A,M\}$ and continuation rule $o\in\{A,M\}$. The frozen contrasts are
+\begin{align}
+\Delta_S &= \tfrac12[(Y_{MA}-Y_{AA})+(Y_{MM}-Y_{AM})],\\
+\Delta_O &= \tfrac12[(Y_{AM}-Y_{AA})+(Y_{MM}-Y_{MA})],\\
+\Delta_I &= (Y_{MM}-Y_{MA})-(Y_{AM}-Y_{AA}).
+\end{align}
+They concern post-continuation endpoints, not gains relative to each source checkpoint. In
+particular, $Y_{MM}-Y_{AA}=\Delta_S+\Delta_O$; the interaction is not a third additive component.
+A positive averaged contrast need not hold within both levels, and positive interaction can mean
+less harm rather than improvement. Each contrast receives its own 95\% two-way seed/task bootstrap
+interval from 100,000 resamples; these are marginal, not simultaneous intervals. An inconclusive
+contrast is not equivalent to zero or dominated by one whose interval excludes zero.
+
+\StateOperatorMechanismFinding
+
+\section{Discussion}
+
+\paragraph{Optimizer quality is a property of a trajectory surface.}
+The all-rate estimand prevents the argument from collapsing onto one fortunate learning rate, while
+five checkpoint stages reveal whether an advantage emerges early, accumulates gradually, or
+disappears. The result remains specific to the tested DenseOn adaptation problem; it is stronger
+than a best-cell comparison and weaker than a universal optimizer ranking.
+
+\paragraph{Weight-space separation and functional change need not coincide.}
+Muon can produce spectrally distinct displacements without improving coordinate utility. Conversely,
+small changes in weights can alter which query--document distinctions a representation preserves.
+The held-out-dose tests ask which measurements track corpus ranking beyond optimizer identity,
+stage, and dose. If none adds predictive value, the tested weight-space explanation remains
+unresolved even when retrieval differs; visual separation cannot supply the missing link.
+
+\paragraph{Dimension count and dimension utility are different.}
+Random-removal robustness can arise from redundancy, distributed coding, or cancellation between
+helpful and degrading coordinates. Effective rank can also disagree with the functional ablation
+readout. The coordinate analysis therefore asks which parts of the representation help retrieval,
+how distributed that utility is, and whether any optimizer difference survives a change of basis.
+
+\paragraph{Continuation tests state-dependent responses, not a gain decomposition.}
+The crossed design asks whether a source-state advantage persists on average after further
+adaptation and whether the relative continuation preference changes between the fixed states.
+Neither an averaged main effect nor an interaction alone establishes benefit within both states,
+additivity, or full-trajectory co-adaptation. Explaining a particular geometric feature causally
+would require an intervention on that feature, beyond the present state-level comparison.
+
+\FloatBarrier
+
+\section{Conclusion}
+
+\CorrectedConclusionFinding
+
+\DimensionConclusionFinding
+
+\StateOperatorConclusionFinding
+
+The central distinction is between distributing weight-space motion and distributing useful ranking
+evidence. Reached-weight measurements, coordinate interventions, held-out-dose prediction, and
+conditional continuation provide complementary views of that distinction. Together they can narrow
+an explanation of optimizer-dependent retrieval without treating an intrinsic update property as a
+new discovery or claiming a causal decomposition of the original gain.
+
+\label{paper-main-end}
+
+\section{Limitations}
+
+Primary inference concerns one 149M-parameter DenseOn checkpoint, one English supervised corpus,
+and one epoch of full-parameter adaptation. The base model was pretrained with an Adam-family
+optimizer, so this is a study of optimizer switching rather than Muon-from-scratch pretraining.
+Four learning rates provide a broad but finite grid. The all-rate contrast reduces best-cell
+selection dependence but remains a one-seed, pinned-grid result; the secondary selected-recipe
+comparison does not replace replication across training views.
+
+Decontamination reduces known benchmark overlap but cannot establish the absence of every semantic
+duplicate. Aggregate MTEB outputs lack per-query rankings, so uncertainty is computed over tasks and
+we make no query-level BEIR significance claim. The geometry and dimension bridges are predictive
+rather than causal and may miss useful properties outside the frozen candidates. Coordinate
+ablation uses an eight-document probe, and coordinate identities are not invariant under rotation;
+the rotation control limits, rather than eliminates, this dependence.
+
+The crossed reset-state factorial concerns one fixed 60\% checkpoint pair and a 50K-query
+continuation horizon. Its three order seeds do not replicate source-model training, and its marginal
+intervals are not family-wise controlled. It changes entire source states and continuation rules,
+not a measured geometry feature, and therefore does not identify mediation over the full 500K
+trajectory or establish why a feature predicts retrieval.
+
+\section{Ethical Considerations}
+
+This study does not collect new human-subject data or deploy a retrieval system to users. Released
+models and corpora can nevertheless contain social biases, harmful material, copyrighted text, or
+personal information. Higher benchmark nDCG is not evidence of fairness, safety, privacy, or
+deployment readiness. A production retriever requires corpus-specific auditing, filtering, access
+controls, and human review appropriate to its users and failure costs.
+
+We report useful wall time, throughput, GPU-hours, and optimizer-state size because an optimizer
+recommendation has resource consequences. These measurements are specific to the pinned hardware
+and software stack and do not justify unbounded hyperparameter search. Public artifacts must respect
+the licenses and usage terms of upstream models, datasets, and evaluation collections.
+
+\bibliography{references}
+
+\appendix
+
+\section{Artifact and Reproducibility}
+
+We preserve the exact model and dataset revisions, deterministic 500K training ledger, negative
+sampling seeds, optimizer routing, package locks, W\&B histories, checkpoint hashes, and evaluation
+receipts. Every reported table is generated only after source-bound completeness and provenance
+audits. The public artifact manifest binds each model state and result to its byte count and digest;
+the renderer fails closed when an expected run, checkpoint, task, or source identity differs.
+
+\section{Complete Weight-Space and Dimension Readouts}
+
+The main text reports the weight- and representation-space findings that bear on the mechanism.
+For completeness, the tables below retain every frozen candidate, including negative results.
+
+\CorrectedGeometryBridgeTable
+
+\DimensionUtilizationAppendixTable
+
+\section{State-by-Operator Mechanism Test}
+
+The crossed experiment resets optimizer state at both source checkpoints, matches the fixed
+calibration-probe update scale, and reports all three co-primary contrasts regardless of sign.
+Exact seed--task contrasts and all five probe stages remain in the source-addressed artifact tables.
+
+\StateOperatorAppendixTable
+
+\FloatBarrier
+
+\section{Interpretation of the Analyses}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{p{0.20\linewidth}p{0.39\linewidth}p{0.32\linewidth}}
+\toprule
+Claim & Required evidence & Insufficient evidence alone \\
+\midrule
+Faster adaptation & useful wall time, examples/s, GPU-hours, matched-hardware time-to-quality & lower loss at equal steps \\
+Better DenseOn optimizer & all-rate contrast over 14 tasks & best BEIR cell alone \\
+Weight motion explains retrieval & held-out prediction beyond optimizer, stage, and dose & larger displacement alone \\
+Dimensions are used more constructively & helpful mass share and normalized participation rise while degrading mass falls, with simultaneous intervals & effective rank alone \\
+Geometry predicts retrieval & held-out prediction beyond optimizer, stage, and dose & optimizer-identifying geometry \\
+Source-state advantage persists on average after continuation & crossed endpoint state contrast with calibrated probe scale & one-step functional proxy \\
+Continuation preference depends on reached state & crossed endpoint interaction & full-trajectory co-adaptation \\
+\bottomrule
+\end{tabular}
+\caption{How the analyses distinguish retrieval outcomes, predictive descriptors, and conditional
+continuation effects. Each comparison has a different scope of interpretation.}
+\label{tab:claim-firewall}
+\end{table*}
+
+\section{Full Experimental Matrix}
+
+The DenseOn matrix contains three optimizers, four rates per optimizer, five
+checkpoints, and \NumBEIRTasks{} tasks: 12 runs, 60 checkpoints, and 840 checkpoint--task units.
+The released result tables additionally contain every optimizer-by-stage mean, validation-selected
+secondary contrast, per-task final score, wall time, throughput, peak allocation, and checkpoint
+size. No run is removed on the basis of retrieval quality.
+
+\end{document}

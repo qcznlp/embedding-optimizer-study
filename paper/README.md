@@ -1,179 +1,189 @@
 # NAACL manuscript
 
-This directory contains the result-safe DenseOn manuscript for the AdamW/Muon/NorMuon optimizer
-study. It uses the official ACL style files pinned to commit
-`d5adc823ff0f80f98c80405ca0ab66c68e684409` of
-[`acl-org/acl-style-files`](https://github.com/acl-org/acl-style-files). The style files are fetched
-into an ignored local directory so the repository does not silently fork the conference template.
+**Current complete-result manuscript, 2026-09-13:**
+[stable source and build instructions](current/README.md),
+[reviewed PDF](../reports/paper-review/dense-v3-complete-manuscript-revision-v1/actual/paper/build/main.pdf),
+[LaTeX](../reports/paper-review/dense-v3-complete-manuscript-revision-v1/actual/paper/main.tex),
+and [revision/build evidence](../reports/paper-review/dense-v3-complete-manuscript-revision-v1/README.md).
+All results and the reached-state/continuation story are present. The unchanged
+strict complete-document checker passes the 158-word abstract/eight-page main;
+all thirteen pages were visually reviewed. **The default `make` and `make all`
+now build this reviewed manuscript.** `make release` executes the full original
+numerical reconstruction before joining its results to the reviewed paper.
+Both new Make entry points have actually passed. Remote source publication and
+the remaining source-version test integration are separate delivery requirements.
 
-The paper's main story is a positive but bounded Muon result: a coherent historical learning-rate
-region improves best-run, median, five-stage, and per-task DenseOn retrieval over AdamW even though
-Muon's norm-matched immediate step is weaker. The mechanistic question is why repeated Muon updates
-produce a better trajectory when the usual spectral explanation fails. A packed-validation bug is a
-secondary model-selection result: it chooses outside Muon's useful region and motivates the clean
-independently padded replication that governs the final optimizer recommendation. See
-`../PROJECT_STATUS.md` before editing result language.
+The complete DenseOn paper for the AdamW/Muon/NorMuon optimizer study is in
+`current/`. The parent `main.tex` is a historical development template, not the
+current result text. Its exact original Makefile remains `legacy.Makefile`,
+available explicitly through `make legacy-all` and `make legacy-release`.
+The paper asks one question: starting from the same pretrained retriever, how do the
+optimizers change weight space, and which changes are associated with more useful ranking
+representations? The distinction is between spreading weight motion and distributing helpful
+retrieval evidence, not whether Muon has its characteristic update spectrum.
 
-Build the review-format PDF with:
+The manuscript intentionally excludes implementation-debugging narrative and invalid exploratory
+runs. Those records remain available in the repository for engineering audit, but they are not
+scientific evidence and are never rendered into the paper.
+
+## Story and evidence chain
+
+The paper follows one sequence:
+
+1. compare the complete four-rate surface for each optimizer over five checkpoints and 14
+   decontaminated BEIR tasks;
+2. measure the weight states reached by each trajectory through displacement, rank, row allocation,
+   and subspace overlap;
+3. test whether the reached representations use their 768 coordinates differently through random
+   removal, helpful mass share, normalized helpful participation, degrading mass, and shared rotations;
+4. require candidate state measurements to predict retrieval when a learning-rate dose is held out;
+5. cross two fixed AdamW- and Muon-reached states with reset continuations to measure averaged
+   endpoint contrasts and state-dependent continuation responses.
+
+Muon's orthogonalized update spectrum and NorMuon's row rescaling are operator fingerprints, not
+standalone contributions. A one-step proxy cannot establish which optimizer is better. The paper's
+explanatory claims require trajectory-level evidence, out-of-dose retrieval prediction, and the
+crossed continuation intervention.
+
+## Build and result safety
+
+The LaTeX environment needs PGFPlots and its `groupplots` library (provided by
+`texlive-pictures` in the TeX Live distribution). Dimension plots are native vector coordinates in
+the generated include, so the publication audit recomputes the plotted values and the exact figure
+source along with the tables; it does not trust a separately edited image.
+
+Reproduce the complete review-format PDF with a new absolute output directory:
 
 ```bash
-cd paper
-make
+make -C paper current CURRENT_OUTPUT=/absolute/path/to/new-paper-build
 ```
 
-## Scope amendment
+The complete release-artifact check requires an explicit unchanged numerical bundle:
 
-The project originally included DenseOn and LateOn. After the original discovery runs and some
-exploratory mechanism outputs were visible, the user directing the project requested that future
-work focus on DenseOn because LateOn was substantially slower and less central to the intended paper
-audience. This is a **user-directed, post-hoc scope amendment**, not a preregistered exclusion.
+```bash
+make -C paper release PYTHON=/usr/bin/python \
+  NUMERICAL_BUNDLE=/absolute/path/to/accepted-closed-bundle \
+  RELEASE_OUTPUT=/absolute/path/to/new-complete-build
+```
 
-The main paper therefore makes primary, causal, and confirmatory claims about DenseOn only. LateOn
-artifacts remain in the repository as historical exploratory material, but they are not pooled,
-treated as replication, used to estimate architecture interactions, or allowed to determine headline
-wording. The authoritative dated record is `../configs/dense_scope_amendment.json`; the manuscript
-plan is `../docs/naacl-dense-paper-plan.md`. The original
-`../docs/naacl-paper-plan.md` remains byte-for-byte frozen as a historical two-family protocol
-artifact.
+See [bundle and source-version instructions](../docs/versioned-paper-reproduction.md).
+Missing or modified inputs fail before publication; output directories are never
+overwritten. The result is `new-complete-build/reviewed/paper/build/main.pdf`.
+This command does not push to GitHub or bypass remaining repository tests/audits.
 
-Legacy manifests outside the manuscript may still contain two model panels for provenance. Every
-generated manuscript table and placeholder is strictly DenseOn-only. The final paper audit must
-reject any headline, confidence interval, or generated table that includes LateOn.
+## Preserved historical build contracts
 
-## Result safety
+The following contract belongs to the historical parent template and original
+source/runtime, **not** the default v3 entry. Use `make legacy-all` or
+`make legacy-release` only for its scoped regression checks. Its development
+markers remain preserved and cannot be treated as complete current results.
+The historical generated-source roles are:
 
-`results.tex` is the only checked-in source of final numerical result macros. A
-`\ResultPending{...}` marker denotes an unresolved evidence gate and renders visibly in red. The
-paper is not submission-ready while any marker remains.
+- `generated/optimizer-primary.tex` supplies the primary optimizer contrasts, weight-state
+  summary, and complete geometry bridge;
+- `generated/dimension-utilization.tex` supplies the all-rate utility figure, dimension-use contrasts, rotation control, and
+  dimension-to-retrieval bridge;
+- `generated/state-operator-factorial.tex` supplies the state, continuation-operator, and
+  interaction effects.
 
-The central narrative and evidence sequence is deliberately gated:
+Every generator validates source hashes and expected cardinalities before replacing its placeholder.
+The ordinary build compiles those existing includes; it does not regenerate historical findings or
+require the withdrawn experiment's model/analysis tree. Generate real primary results through the
+declared analysis controller, not by editing the includes or invoking the historical headline writer.
 
-1. the historical sweep establishes a coherent useful Muon region across best-run, median,
-   time-to-quality, checkpoint trajectory, and task-level views;
-2. same-state, Frobenius-matched Muon-family steps are nevertheless weaker than AdamW on mean
-   immediate margin, making accumulated optimizer-induced state feedback the central puzzle;
-3. symmetric cross-tails and shared-start branches test how that local disadvantage becomes a
-   trajectory-level gain;
-4. temporal prediction and spectral component interventions reject flattening as the tested
-   explanation, rather than presenting an intrinsic Muon property as novelty;
-5. hybrid AdamW rules out parameter routing as a sufficient recipe explanation;
-6. the packed validator selects a damaging rate outside the useful Muon region, and its failed
-   width-7 reproduction exposes batch-dependent execution;
-7. the independently padded 12-run matrix decides whether the positive retrieval result survives
-   clean execution and which geometry, if any, predicts it out of dose; and
-8. a prospective reset-state 2x2 factorial separates the carried Muon weight state, the next Muon
-   operator, and their interaction, deciding whether the final story supports state--operator
-   feedback or retains the retrieval result without a positive mechanism claim.
+The final gate independently reloads the primary publication's bound upstream tables and reconstructs
+the exact manuscript text, standalone engineering report and manifest. Updating an edited output's
+digest cannot bypass this comparison. This publication check does not repeat training or retrieval.
 
-Exact state-feedback cosines, shared-start outcomes, hybrid results, confirmatory intervals, and the
-temporal and dose/band causal-chain estimates must enter through audited macros or generated tables.
-A supported/negative verdict alone is insufficient: the paper must display the numerical predictor
-and negative-control errors, treatment-coefficient changes, anchor support counts, and forward-bridge
-errors that determine each verdict. Do not copy them directly into prose. Spectral flattening and row
-adaptation are implementation fingerprints, not standalone paper contributions.
+The original historical release requires its own complete generated results and
+strict original manuscript gates:
 
-The claim protocol and its content-hashed amendments bind experiment and intervention protocols to
-headline decision rules. If a bound source receives a factual documentation correction, the original
-freeze context and the evidence visible at amendment time must remain recorded. An unrecorded source
-change is a hard audit failure.
+```bash
+make -C paper legacy-release
+python -m embed_optim.paper_audit \
+  --strict \
+  --families dense \
+  --scope-amendment configs/dense_scope_amendment.json
+```
 
-Run `embed-optim-audit-paper` during drafting. It reports unresolved evidence without hiding it.
-`embed-optim-audit-paper --strict` is the final submission gate. After every DenseOn evidence report
-exists, run `embed-optim-render-paper-results`; it replaces only authorized headline macros and table
-files, writes `reports/paper-results.manifest.json`, and binds rendered bytes to the claim protocol,
-evidence manifests, and source tables.
+The final audit must establish all of the following:
 
-After the separately frozen candidate-breadth matrix completes, run
-`embed-optim-summarize-candidate-breadth` and `embed-optim-render-candidate-breadth`, followed by each
-command's `--audit-only` mode. The publication renderer owns only
-`generated/candidate-breadth.tex`; it supplies the appendix result-figure macro, main-text
-evidence paragraph, result-bound `\CandidateBreadthDiscussion`, and bounded
-`\CandidateBreadthConclusion` used by the final Conclusion. Its
-manifest binds the manuscript output to all 12 evaluation manifests, the discovery BEIR table,
-the nested-width protocol, and the deterministic SVG/PDF figure.
-The separate `python -m embed_optim.packing_invariance --audit-only` command verifies the score-level
-implementation receipt against its checkpoint and validation hashes without rerunning inference.
-The paired loss and margin contrasts carry descriptive 95% source-stratified paired percentile
-bootstrap intervals from 50,000 resamples, with the seven fixed 32-query source strata resampled
-independently. The interval plan is frozen before candidate data or scores are visible and does not
-change the supported/partial/not-supported rule.
-For the final publication handoff, `embed-optim-candidate-breadth-release --resume` performs those
-steps after validating the complete canonical Dense finalization ledger and all of its hashed logs,
-then reruns the current report renderers, strict paper audits, release PDF build, tests, style checks,
-and distribution audit under a new content-addressed ledger.
+- exactly 12 primary runs, 60 checkpoints, and 840 checkpoint-task retrieval units;
+- no unresolved result marker;
+- a maximum eight-page main paper before Limitations and Ethical Considerations;
+- an abstract of at most 200 words after all generated findings expand;
+- all main claims trace to content-addressed manifests;
+- the dimension publication's portable closure passes source checks and recomputation of all
+  statistics, decisions and exact generated LaTeX in a clean clone;
+- no hidden or best-cell-only optimizer selection;
+- no unsupported causal language for observational geometry or predictive bridges.
 
-`make -C paper` invokes the renderer with `--if-ready`: incomplete experiments keep audited red
-placeholders, while complete evidence can be rendered before LaTeX compilation. This preserves a
-buildable developer draft. `make -C paper release` instead cleans the build, runs the renderer without
-`--if-ready`, and builds the PDF only from complete evidence. The release finalizer then repeats the
-strict paper audit after the PDF build and before constructing either distribution.
+The portable dimension gate does not rerun encoding or coordinate ablations and does not validate
+model payloads. The closure is created only after the full checkpoint-backed authoring audit; the
+larger model and embedding archive is needed to repeat those upstream computations. Pending primary
+results therefore cannot pass merely by removing the visible development markers.
 
-The pending tables are topology-faithful: they reserve the same main/appendix float labels and row
-cardinalities as the final Dense-only renderer. The pending headline and conclusion macros are also
-final-shaped layout fixtures: their prose and numeric tokens reserve the deterministic renderer's
-full result footprint rather than using abbreviated status text. Main text retains six headline
-floats; systems, per-task, representation, basis, tail, and full causal diagnostics are placed in the
-appendix. Every developer build runs the layout gate. It audits every classified float label, not
-only the conclusion page, so a deferred main-text float after the audited endpoint or on page 9
-cannot be hidden by an end label that remained within the limit.
+## Claim boundaries
 
-The corrected renderer follows the same rule. Its visible pending fixture reserves the exact
-three-row primary table and defines all nine geometry-bridge rows plus the final-stage
-execution-sensitivity table before any corrected outcome exists. Only the primary all-rate answer
-is invoked in the main narrative; the complete bridge and sensitivity tables are invoked after
-`\appendix`. This placement was fixed after a result-blind topology build showed that putting all
-three tables in the main paper moved the endpoint to page 9 and made the primary table over-wide.
-The generated include is loaded in the preamble and also defines one identical all-rate finding for
-the abstract and main Conclusion. The full historical packed-selector claim is retained after the
-appendix boundary so it cannot displace the corrected verdict from the paper's headline locations.
+The primary optimizer comparison averages all four predeclared rates within optimizer. A
+validation-selected recipe is secondary. Task-level common resampling yields simultaneous max-T
+intervals for the three pairwise optimizer contrasts.
 
-The crossed-factorial renderer is also paper-only and result blind. Its topology fixture reserves
-one abstract finding, one mechanism paragraph, one Conclusion finding, and one three-row appendix
-table. After a complete 12-run/168-BEIR-unit factorial summary appears, the strict paper audit
-requires all four locations to match the source-bound renderer and rejects the pending fixture.
-The abstract audit also enforces the official ACLPUB 200-word maximum before and after both pending
-result macros expand. It counts the checked-in prose conservatively, reserves the longest possible
-corrected and factorial branches, requires each result macro exactly once, and rejects any other
-LaTeX command in the abstract. The current result-blind maximum is 198 words.
+Geometry is explanatory only when it adds held-out predictive value beyond optimizer identity,
+checkpoint stage, and within-optimizer dose. Coordinate attribution is basis dependent, so native
+coordinate findings are checked under three shared orthogonal rotations. Predictive support is not
+causal mediation.
 
-The source audit also fixes the post-conclusion submission boundary: the only sections between the
-eight-page endpoint and the references are `Limitations` and `Ethical Considerations`. Artifact and
-reproducibility details live after `\appendix`, so they cannot be mistaken for page-limit-exempt
-ethics prose.
+The three co-primary dimension features use positive--hardest-negative margin. First average each
+coordinate's deletion-and-renormalization effect over queries within a task; only then separate
+positive and negative effects. Helpful share is H/(H+B), helpful participation is
+H²/(768 × sum of squared helpful effects), and degrading mass is B. Zero denominators map to zero
+under the unchanged definition. Average task-level summaries, not individual-query summaries.
+The nine final-stage feature-by-optimizer contrasts share one fixed-SE max-T family. Analogous
+shortlist-nDCG attributions remain descriptive, not substitute primary endpoints.
 
-## DenseOn evidence contract
+Weight-displacement magnitude uses a ratio of joint Frobenius norms, not a mean of layer-wise
+ratios. The original approximate geometry and full-spectrum sensitivity are separate measurements:
+full-spectrum entropy is not renormalized truncated-spectrum entropy, and full-spectrum rank
+summaries explicitly use nonzero parameter weights. Retain both branches and all their candidates.
+The margin decomposition in the introduction is a score identity, not a novel theorem or an
+additive interpretation of deletion sensitivities. Held-out dose is not held-out task.
 
-The final renderer/auditor may read legacy two-model manifests, but each primary gate must select and
-verify the DenseOn subset explicitly.
+Agreement under three sampled rotations does not establish invariance under arbitrary bases.
+The crossed reset experiment does not directly manipulate a measured geometric feature, so its
+effects cannot by themselves establish that feature as a causal mediator.
 
-| Claim family | Authoritative evidence | DenseOn final gate |
-|---|---|---|
-| Discovery training and systems behavior | canonical Trainer/W&B histories, completion records, and manifests under `reports/training-dynamics/` | 12 DenseOn runs and 60 checkpoints; every history, terminal record, systems summary, and source-bound figure passes audit |
-| Discovery retrieval behavior | [`reports/dense-discovery/coverage.json`](../reports/dense-discovery/coverage.json), strict aggregate tables, and plot sidecars | exactly 840 DenseOn checkpoint--task cells across 14 decontaminated-BEIR tasks |
-| Discovery time-to-quality | `configs/retrieval_dynamics_protocol.json` and `reports/retrieval-dynamics-dense/summary_manifest.json` | 60 DenseOn checkpoint means and all 840 source task files pass hashes; right-censored AdamW-median rule and post-hoc timing are disclosed |
-| Post-hoc corpus-size diagnostic | `configs/corpus_size_diagnostic.json` and `reports/corpus-size-diagnostic/publication_manifest.json` | 140 selected-run task-stage deltas and 10 deterministic association rows reproduce from hash-bound discovery tables; same-suite selection, 14-task scope, and non-causal boundary remain visible |
-| Integrated weight trajectories | `reports/weight-space/summary_manifest.json` | 12 DenseOn runs and 60 checkpoints with verified model inputs |
-| Common-state update geometry | `reports/common-state/summary_manifest.json` and exact-spectrum manifest | every frozen DenseOn anchor, gradient replay, transform, and spectrum passes Cartesian and source-hash audits |
-| Immediate causal intervention | `reports/functional-intervention/manifest.json` | every DenseOn anchor and paired query record passes scale, sign, pairing, and source audits |
-| Post-hoc state-feedback synthesis | common-state cosine summary and `reports/local-global-reversal/summary_manifest.json` | trajectory-conditioned AdamW--Muon, Muon--NorMuon, and terminal-gradient alignments are source-bound and labeled post hoc |
-| Post-hoc symmetric tail diagnostic | `configs/tail_stability_analysis.json` and `reports/tail-stability/summary_manifest.json` | fixed DenseOn quantiles and Adam/challenger cross-tails are labeled post hoc; no robustness claim without the accumulated gate |
-| Post-hoc candidate-breadth diagnostic | `configs/candidate_breadth_probe.json`, `reports/candidate-breadth/summary.json`, and `publication_manifest.json` | 12 width-7 baseline reproductions plus nested widths 10--2,048 for 224 balanced queries; paired loss/margin deltas include descriptive 50,000-resample source-stratified 95% intervals; support requires both Muon-family endpoint reversals and never replaces three-seed inference |
-| Spectrum/basis attribution | `configs/spectral_transplant_intervention.json` and `reports/spectral-transplant/summary_manifest.json` | complete DenseOn spectrum, basis, interaction, path, and band cells; this fixed-state tier is insufficient for long-horizon causality |
-| Accumulated causal branch | `reports/short-branch/summary_manifest.json` | 9 DenseOn runs and 45 checkpoints on both frozen probes; three-seed joint loss-p95/unseen-margin-p05 endpoint |
-| Temporal causal-chain bridge | `reports/temporal-short-branch/summary_manifest.json`, `paired_contrasts.csv`, `loso_predictions.csv`, and `estimates.csv` in that directory | every frozen predictor and norm control is reported across held-out seeds; numerical RMSE changes and optimizer-coefficient changes are displayed even when the bridge is negative |
-| Dose/band causal-chain bridge | `reports/dose-band/summary_manifest.json`, `reports/dose-band/anchor_tests.csv`, and `reports/dose-band/heldout_predictions.csv` | all 10 frozen anchors and 84 forward-retrieval rows pass audit; numerical dose, band, basis-control, and held-out RMSE results are displayed rather than reduced to a verdict |
-| Routing fairness | `reports/hybrid-adamw/summary_manifest.json` | all 4 DenseOn hybrid-AdamW learning-rate runs and 56 final BEIR cells |
-| Confirmatory retrieval claims | `reports/confirmatory/summary_manifest.json` | 3 seeds × 3 optimizers = 9 DenseOn runs and 126 final BEIR cells; two primary contrasts receive nominal intervals and the original six-comparison Bonferroni familywise intervals |
-| Final outcome rendering | `reports/outcome-summary.manifest.json` and `reports/paper-results.manifest.json` | all DenseOn tables/headlines are source-hashed; no unresolved marker or LateOn contribution to primary inference |
+The crossed continuation uses fixed AdamW 3e-5 and Muon 3e-4 states at 60% training progress,
+resets optimizer history, matches hidden update scale on a fixed calibration probe, and repeats
+the four cells under three data-order seeds. It does not match the first realized shuffled-batch
+update. The measured quantities are final 50,000-query continuation endpoints, not gains relative
+to the starting checkpoints or a decomposition of the original training result.
 
-Checkpoint correlations are observational. Causal language is reserved for fixed-state interventions
-and shared-start branches. The exploratory training view is never pooled with the three confirmation
-views as though all four were prospectively sampled.
+An averaged benefit need not hold within both states or both continuation rules. Positive
+interaction may mean less harm rather than beneficial continuation. The three marginal intervals
+are not simultaneous coverage, and an inconclusive interval establishes neither equivalence nor
+the dominance of another effect. The source pair has one primary training seed; the three
+continuation orders are not independently retrained source models.
 
-## Historical LateOn artifacts
+The [claim-wording amendment](../configs/dense_no_packing_state_operator_claim_wording_amendment.json)
+narrows those prose implications while preserving numerical decisions and the original scientific
+protocol bytes. The manuscript, result renderer and conceptual figure use this interpretation in
+the isolated checkout. This is not a deployed runtime or a completed scientific paper.
 
-Do not delete or rewrite LateOn logs to make the narrowed study look prospective. Preserve their
-hashes and provenance, label them historical/exploratory, and keep every LateOn table in the
-repository archive outside the manuscript. The paper appendix may describe and link to that archive,
-but every generated appendix table remains strictly DenseOn-only and the manuscript must not make
-MaxSim, token-level, cross-architecture, or general late-interaction claims.
+If no summary or publication exists, regenerate the development-only factorial placeholder with:
+
+```bash
+python -B scripts/render_state_operator_pending.py --repository /absolute/path/to/checkout
+```
+
+This helper contains no invented scores and refuses to overwrite a non-development include or
+operate after a scientific summary/publication appears. It is not part of the runtime pipeline and
+cannot substitute for a completed result. The conceptual map is reproducible through
+`scripts/plot_weight_space_dimension_map.py`; its PDF uses vector text without a creation-time stamp.
+
+## Scope
+
+The manuscript is DenseOn-only. Other model-family artifacts remain outside the paper and do not
+enter its intervals, tables, or claims. See `../CURRENT_EXPERIMENT.md` for dated execution state,
+`../AGENTS.md` for safe continuation instructions, and `../docs/naacl-dense-paper-plan.md` for the
+result-contingent narrative map.

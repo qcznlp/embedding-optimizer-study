@@ -9,6 +9,7 @@ from embed_optim import evaluation_source_archive
 from embed_optim.aggregate import EVALUATION_PACKAGES, _evaluation_runtime
 from embed_optim.evaluate_matrix import EVALUATION_SOURCE_MODULES
 from embed_optim.evaluation_source_provenance import (
+    CORRECTED_DENSE_SOURCE_LABELS,
     CURRENT_SOURCE_LABELS,
     DISCOVERY_ARCHIVE_LABELS,
     EvaluationSourceProvenanceError,
@@ -32,13 +33,15 @@ def _git(repo: Path, *args: str) -> str:
     return result.stdout.strip()
 
 
-def _committed_source_fixture(repo: Path) -> dict[str, dict[str, str | int]]:
+def _committed_source_fixture(
+    repo: Path, labels: frozenset[str] = CURRENT_SOURCE_LABELS
+) -> dict[str, dict[str, str | int]]:
     repo.mkdir()
     _git(repo, "init", "-q")
     _git(repo, "config", "user.email", "test@example.com")
     _git(repo, "config", "user.name", "Test")
     manifest = {}
-    for label in sorted(CURRENT_SOURCE_LABELS):
+    for label in sorted(labels):
         content = f"tracked evaluator source: {label}\n".encode()
         path = repo / label
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -132,6 +135,46 @@ def test_current_evaluator_emits_the_authenticated_git_fallback_topology():
         "scripts/eval/late_interaction.py",
     }
     assert emitted_labels == CURRENT_SOURCE_LABELS
+
+
+def test_corrected_emitter_runtime_is_accepted_by_actual_outcome_reader(tmp_path, monkeypatch):
+    from embed_optim import aggregate
+    from embed_optim.corrected_beir_evaluation import _source_manifest
+    from embed_optim.evaluate_matrix import _record_runtime
+
+    repo = tmp_path / "repository"
+    manifest = _committed_source_fixture(repo, CORRECTED_DENSE_SOURCE_LABELS)
+    # Check the real producer's mapping, not an independently invented schema.
+    assert set(_source_manifest(Path(__file__).resolve().parents[1])) == set(manifest)
+    monkeypatch.setattr(aggregate, "__file__", str(repo / "src/embed_optim/aggregate.py"))
+    versions = {package: "engineering-test-version" for package in EVALUATION_PACKAGES}
+    results = tmp_path / "results"
+    results.mkdir()
+    _record_runtime(results, "/test/python", versions, manifest)
+    before = (results / "evaluation_runtime.json").read_bytes()
+
+    assert _evaluation_runtime(results) == versions
+    assert (results / "evaluation_runtime.json").read_bytes() == before
+    audit = verify_evaluation_source_manifest(manifest, repo_root=repo)
+    assert audit["method"] == "reachable-git-blobs"
+    assert audit["source_files"] == 10
+
+
+@pytest.mark.parametrize("mutation", ["missing", "mixed", "unknown", "changed_bytes"])
+def test_corrected_topology_does_not_bypass_source_authentication(tmp_path, mutation):
+    repo = tmp_path / "repository"
+    manifest = _committed_source_fixture(repo, CORRECTED_DENSE_SOURCE_LABELS)
+    target = "src/embed_optim/corrected_input_execution.py"
+    if mutation == "missing":
+        manifest.pop(target)
+    elif mutation == "mixed":
+        manifest["scripts/eval/late_interaction.py"] = manifest.pop(target)
+    elif mutation == "unknown":
+        manifest["scripts/eval/unknown.py"] = manifest[target]
+    else:
+        manifest[target] = _identity(b"uncommitted replacement")
+    with pytest.raises(EvaluationSourceProvenanceError):
+        verify_evaluation_source_manifest(manifest, repo_root=repo)
 
 
 def test_packaged_archive_matches_declared_historical_git_blobs():

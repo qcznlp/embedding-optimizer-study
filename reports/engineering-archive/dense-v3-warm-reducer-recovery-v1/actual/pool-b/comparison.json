@@ -1,0 +1,91 @@
+{
+  "additional_queries": 9936,
+  "additional_updates": 78,
+  "all_checkpoints_resume_verified": false,
+  "counts": {
+    "model": {
+      "arrays": 0,
+      "scalars": 0,
+      "tensors": 134
+    },
+    "optimizer.pt": {
+      "arrays": 0,
+      "scalars": 937,
+      "tensors": 226
+    },
+    "rng_state_0.pth": {
+      "arrays": 1,
+      "scalars": 631,
+      "tensors": 5
+    },
+    "rng_state_1.pth": {
+      "arrays": 1,
+      "scalars": 631,
+      "tensors": 5
+    },
+    "rng_state_2.pth": {
+      "arrays": 1,
+      "scalars": 631,
+      "tensors": 5
+    },
+    "rng_state_3.pth": {
+      "arrays": 1,
+      "scalars": 631,
+      "tensors": 5
+    },
+    "scheduler.pt": {
+      "arrays": 0,
+      "scalars": 10,
+      "tensors": 0
+    }
+  },
+  "endpoint_comparison": "exact_all_tensors_and_states_no_tolerance",
+  "exact_all_model_tensors": true,
+  "exact_optimizer_scheduler_and_all_rank_rng": true,
+  "native": {
+    "resumed": {
+      "component_binding": {
+        "path": "/tmp/dense-v3-warm-reducer-recovery.rP4NVV4i/run/pool-b/trainer-output/dense/factorial-v3-adamw_state-muon-seed314159/checkpoint-391",
+        "sha256": "69dc106fdbaed1b63b6fb8fc37ac0a0770f39481e38f1baab6f955829f061758"
+      },
+      "model_tensors": 134,
+      "optimizer": {
+        "groups": 3,
+        "named_routing": true,
+        "parameter_states": 134,
+        "step": 391
+      },
+      "rank_rng_states": 4,
+      "run_identity_sha256": "7c86aa8f4b439f4c8a859a965d5313e9844cf6e9b4d9424f50636ca0ddb404e0",
+      "step": 391
+    },
+    "uninterrupted": {
+      "component_binding": {
+        "path": "/root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-adamw_state-muon-seed314159/checkpoint-391",
+        "sha256": "27355319342ce90fd4d4fd9f413469e4e25bb5af98b14c831acb1890a89c6e06"
+      },
+      "model_tensors": 134,
+      "optimizer": {
+        "groups": 3,
+        "named_routing": true,
+        "parameter_states": 134,
+        "step": 391
+      },
+      "rank_rng_states": 4,
+      "run_identity_sha256": "7c86aa8f4b439f4c8a859a965d5313e9844cf6e9b4d9424f50636ca0ddb404e0",
+      "step": 391
+    }
+  },
+  "original": {
+    "path": "/root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-adamw_state-muon-seed314159/checkpoint-391",
+    "sha256": "27355319342ce90fd4d4fd9f413469e4e25bb5af98b14c831acb1890a89c6e06"
+  },
+  "physical_second_host": false,
+  "resumed": {
+    "path": "/tmp/dense-v3-warm-reducer-recovery.rP4NVV4i/run/pool-b/trainer-output/dense/factorial-v3-adamw_state-muon-seed314159/checkpoint-391",
+    "sha256": "69dc106fdbaed1b63b6fb8fc37ac0a0770f39481e38f1baab6f955829f061758"
+  },
+  "run_id": "factorial-v3-adamw_state-muon-seed314159",
+  "scientific_completion": false,
+  "scope": "dense-v3-warm-reducer-gated-recovery-v1"
+}

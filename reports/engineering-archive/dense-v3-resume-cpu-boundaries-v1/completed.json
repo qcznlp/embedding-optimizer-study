@@ -1,0 +1,55 @@
+{
+  "exact_gpu_resume_accepted": false,
+  "full_cause_localized": false,
+  "gpu_initialized": false,
+  "loaded_checkpoints": [
+    {
+      "all_134_loaded_model_tensors_bit_exact": true,
+      "all_optimizer_and_scheduler_state_bit_exact_on_cpu": true,
+      "case": "a",
+      "component_sha256": "00e0dab0a4aaf52a5783ffb6ae2d5399952d55f2055b65b033fb5c4a0baa400d",
+      "gpu_loaded_state_or_gradients_tested": false,
+      "step": 313,
+      "upstream_loader_after_zeroing_bit_exact": true
+    },
+    {
+      "all_134_loaded_model_tensors_bit_exact": true,
+      "all_optimizer_and_scheduler_state_bit_exact_on_cpu": true,
+      "case": "b",
+      "component_sha256": "dda70c52285f3eb1025b990bd00a46dedf89e54c9a9e65d8fce29aa9f1aa7795",
+      "gpu_loaded_state_or_gradients_tested": false,
+      "step": 313,
+      "upstream_loader_after_zeroing_bit_exact": true
+    }
+  ],
+  "runtime": {
+    "packages": {
+      "accelerate": "1.13.0",
+      "datasets": "4.8.4",
+      "fast-plaid": "1.6.0.290",
+      "flash-attn": "2.7.4.post1",
+      "late-interaction-kernels": "0.4.5",
+      "mteb": "2.18.16",
+      "pylate": "1.6.0",
+      "sentence-transformers": "5.7.0",
+      "torch": "2.9.1+cu129",
+      "transformers": "5.3.0",
+      "usearch": "2.26.0",
+      "wandb": "0.26.1"
+    },
+    "python": "3.12.3",
+    "python_executable": "/usr/bin/python3.12",
+    "torch_cuda": "12.9"
+  },
+  "sampler_cases": 16,
+  "scientific_results_changed": false,
+  "scope": "dense-v3-resume-cpu-boundary-diagnosis-v1",
+  "source_sha256": {
+    "accelerate.data_loader": "43ed3268025110162def628e71dd6213cee0fdc47481865f99d8b129718673b1",
+    "embed_optim.factorial_v3_batches": "20325e4d5103f56112bb4eed94f9329b32672460b01e0d747a43283b452e6509",
+    "embed_optim.factorial_v3_optimizer": "a524851ec6458b0f0591da6e3f657cfdc9b4d0c92d0290f2cfbf5e2bea1db6f0",
+    "embed_optim.saved_factorial_checkpoint": "d54a0810f451ceeedaaf3cc538f42243a8337b2bcc86c6c9f1b6987a36888360",
+    "sentence_transformers.base.trainer": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59",
+    "transformers.trainer": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+  }
+}

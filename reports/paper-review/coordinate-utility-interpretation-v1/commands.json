@@ -1,0 +1,46 @@
+{
+  "scope": "Synthetic interpretation executions, not model or optimizer experiments",
+  "sparse_original": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src /usr/bin/python -B /tmp/dense-coordinate-interpretation.uv2YfVsB/review.py",
+    "tool_chunk": "6deffe",
+    "exit_code": 0,
+    "output": "counterexample.json"
+  },
+  "sparse_archived": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/paper-review/coordinate-utility-interpretation-v1/source/review.py",
+    "tool_chunk": "fb8963",
+    "exit_code": 0,
+    "output": "sparse-replay.json",
+    "all_non_timestamp_fields_identical": true
+  },
+  "dense_initial": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src /usr/bin/python -B /tmp/dense-coordinate-interpretation.uv2YfVsB/dense_review.py",
+    "tool_chunk": "b6e84a",
+    "exit_code": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/tmp/dense-coordinate-interpretation.uv2YfVsB/dense_review.py\", line 136, in <module>\n    a,b=verify(docs_a),verify(docs_b)\n        ^^^^^^^^^^^^^^\n  File \"/tmp/dense-coordinate-interpretation.uv2YfVsB/dense_review.py\", line 116, in verify\n    assert abs(summary[name]-float(expected))<1e-12\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n",
+    "executed_source_preserved": "source/dense_review.initial.py",
+    "original_unpropagated_aggregate_check_remains_failed": true
+  },
+  "dense_diagnosis": {
+    "tool_chunk": "fbcf9f",
+    "exit_code": 0,
+    "output": "initial-aggregate-diagnosis.json"
+  },
+  "dense_propagated": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src /usr/bin/python -B /tmp/dense-coordinate-interpretation.uv2YfVsB/dense_review.py",
+    "tool_chunk": "c96003",
+    "exit_code": 0,
+    "output": "dense-counterexample.json",
+    "new_scope": "Propagation of unchanged per-coordinate 1e-12 bound through sums/ratios; exact directional intervals are not statistical intervals."
+  },
+  "dense_archived": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/paper-review/coordinate-utility-interpretation-v1/source/dense_review.py",
+    "tool_chunk": "3b8b7f",
+    "exit_code": 0,
+    "output": "dense-replay.json",
+    "all_non_timestamp_fields_identical": true
+  },
+  "no_gpu_or_model_execution": true,
+  "original_scientific_sources_changed": false,
+  "original_statistical_rules_changed": false
+}

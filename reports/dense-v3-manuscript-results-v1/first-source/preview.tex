@@ -1,0 +1,45 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{booktabs,amsmath,graphicx,pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+\input{optimizer-primary.tex}
+\input{dimension-utilization.tex}
+\input{recipe-sensitivity.tex}
+\title{Dense Retriever Optimization: Complete Primary Result Fragments}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+\CorrectedMainSection
+\section{Reached weight states and retrieval prediction}
+\CorrectedWeightSpaceFinding
+
+\CorrectedGeometryBridgeFinding
+
+\paragraph{Comparator sensitivity.}
+\RecipeSensitivityFinding
+\CorrectedGeometryBridgeTable
+\section{Functional representation utility}
+\DimensionUtilizationFinding
+
+\DimensionRetrievalBridgeFinding
+
+\DimensionConclusionFinding
+\DimensionUtilizationFigure
+\DimensionUtilizationAppendixTable
+\clearpage
+\section{All post-result recipe comparisons}
+The four recipe-only comparators retain the original outcome and held-dose
+folds. B0 contains optimizer indicators, stage indicators and within-optimizer
+centered log learning rate. B1 adds optimizer-specific raw learning rate.
+B2 uses optimizer-specific stage indicators and log/raw rate slopes. B3 adds
+the nominal accumulated learning-rate schedule. The latter is not a measured
+weight-update norm. B0+D and B3+D additionally condition on cumulative weight
+displacement. Each cell adds just one measurement, and all four folds remain.
+\WeightRecipeSensitivityTable
+\FunctionalRecipeSensitivityTable
+\clearpage
+\end{document}

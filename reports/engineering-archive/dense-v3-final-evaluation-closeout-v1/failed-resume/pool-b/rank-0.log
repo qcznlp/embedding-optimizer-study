@@ -1,0 +1,55 @@
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+When using DistributedDataParallel (DDP), it is recommended to set `dataloader_drop_last=True` to avoid hanging issues with an uneven last batch. Setting `dataloader_drop_last=True`.
+Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in ModernBertModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 15035.76it/s]
+/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/factorial_v3_factory.py:148: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  or model.get_sentence_embedding_dimension() != 768
+Computing widget examples:   0%|          | 0/1 [00:00<?, ?example/s]                                                                     Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 14783.83it/s]
+  0%|          | 0/391 [00:00<?, ?it/s][rank0]: Traceback (most recent call last):
+[rank0]:   File "/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py", line 501, in <module>
+[rank0]:     main()
+[rank0]:   File "/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py", line 496, in main
+[rank0]:     result = globals()[args.mode](args)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py", line 335, in worker
+[rank0]:     trainer.train(resume_from_checkpoint=case['download_checkpoint'])
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py", line 1424, in train
+[rank0]:     return inner_training_loop(
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py", line 1506, in _inner_training_loop
+[rank0]:     self._run_epoch(
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py", line 1760, in _run_epoch
+[rank0]:     self.optimizer.step()
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/accelerate/optimizer.py", line 179, in step
+[rank0]:     self.optimizer.step(closure)
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/optim/lr_scheduler.py", line 133, in wrapper
+[rank0]:     return func.__get__(opt, opt.__class__)(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/optim/optimizer.py", line 517, in wrapper
+[rank0]:     out = func(*args, **kwargs)
+[rank0]:           ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/factorial_v3_optimizer.py", line 289, in step
+[rank0]:     result = super().step()
+[rank0]:              ^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/optim/optimizer.py", line 517, in wrapper
+[rank0]:     out = func(*args, **kwargs)
+[rank0]:           ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py", line 120, in decorate_context
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/optimizers.py", line 151, in step
+[rank0]:     self._adamw_step(group)
+[rank0]:   File "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/optimizers.py", line 182, in _adamw_step
+[rank0]:     optim_f.adamw(
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/optim/adamw.py", line 159, in adamw
+[rank0]:     adam(
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/optim/optimizer.py", line 150, in maybe_fallback
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/optim/adam.py", line 953, in adam
+[rank0]:     func(
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/optim/adam.py", line 862, in _fused_adam
+[rank0]:     func(
+[rank0]: RuntimeError: Expected all tensors to be on the same device, but got state_steps is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA___fused_adamw_)
+  0%|          | 0/391 [00:49<?, ?it/s]

@@ -1,0 +1,59 @@
+{
+  "cases": 3800,
+  "changed_files_between_role_launches": [
+    ".github/workflows/ci.yml",
+    "AGENTS.md",
+    "CURRENT_EXPERIMENT.md",
+    "PROJECT_STATUS.md",
+    "docs/completion-gates.md",
+    "pyproject.toml",
+    "tests/test_corrected_publication.py",
+    "tests/test_dense_finalization_pipeline.py",
+    "tests/test_dimension_publication.py",
+    "tests/test_paper_layout.py"
+  ],
+  "complete": true,
+  "current_role_rerun": true,
+  "fresh_training_worker_admission": false,
+  "historical_roles_restarted": false,
+  "original_failed_combined_run_preserved": true,
+  "remote_publication": false,
+  "role_file_sha256": "16fef314c00a848ce5e6e1592f8955ecb7a83f5c4d70c32a67c7d82d4fc7caf3",
+  "roles": {
+    "current": {
+      "cases": 2873,
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "input_inventory_sha256": "a1ea20a0349f10c4ee5e032d5cc21e269f87eeeac218e9752596c61c3a5148a0",
+      "result_path": "/tmp/dense-v3-release-transition.zFMpOKti/current-role-final/current-result.json",
+      "result_sha256": "71889454cb9c0ac18788a9c58969b2a469d226e8f41fe9c01ed0aa215d2111b7",
+      "skipped": 0,
+      "test_modules": 181
+    },
+    "original-analysis": {
+      "cases": 733,
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "input_inventory_sha256": "4cee802e119417d255f1ecbc8935c17e40c49cd0873258359910b36cb5e8d54b",
+      "result_path": "/tmp/dense-v3-release-transition.zFMpOKti/full-source-tests-v1/original-analysis-result.json",
+      "result_sha256": "96fb954f35119c4f259867c178ca2a372e9ae8ddda0c417660bd115465b0ae1c",
+      "skipped": 0,
+      "test_modules": 27
+    },
+    "original-factorial": {
+      "cases": 194,
+      "errors": 0,
+      "exit_code": 0,
+      "failures": 0,
+      "input_inventory_sha256": "4cee802e119417d255f1ecbc8935c17e40c49cd0873258359910b36cb5e8d54b",
+      "result_path": "/tmp/dense-v3-release-transition.zFMpOKti/full-source-tests-v1/original-factorial-result.json",
+      "result_sha256": "de2ed12d17616b261cd062ff07a7ab48bdc315eb58ea440cf98b6e633321a35d",
+      "skipped": 0,
+      "test_modules": 3
+    }
+  },
+  "scope": "Complete per-source-version regression matrix; not a passing bare mixed-source pytest invocation or fresh training admission",
+  "test_modules": 211
+}

@@ -1,0 +1,43 @@
+{
+  "scope": "engineering_dense_primary_contract_commands",
+  "scientific_completion": false,
+  "production_deployed": false,
+  "commands": [
+    {
+      "purpose": "Actual common primary input audit; immutable HF tree read only",
+      "command": "env CUDA_VISIBLE_DEVICES= WORLD_SIZE=4 EMBED_OPTIM_MAX_STEPS=-1 EMBED_OPTIM_STOP_AFTER_STEP=-1 WANDB_MODE=disabled PYTHONWARNINGS=ignore PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/dense-identity-source.8rUgLF/src:/root/embedding-optimizer-story-refactor:/tmp/dense-identity-source.8rUgLF OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.prepare_dense_primary_inputs --candidate-root /tmp/dense-identity-source.8rUgLF --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-full-identity-v1/prepared-source.json --source-sha256 1c6163c5aeee9d0735a6859c0e2f56a701c59d5111b553de6fb5c758da138dfd --experiment-root /root/embedding-optimizer-study --workdir /tmp/dense-primary-inputs.S0TY10",
+      "observed_exit": 0,
+      "result": "/tmp/dense-primary-inputs.S0TY10/result.json"
+    },
+    {
+      "purpose": "Prepare draft protocol; never activate",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/root/embedding-optimizer-story-refactor/src PYTHONDONTWRITEBYTECODE=1 python3 -B scripts/prepare_dense_primary_protocol.py --repository /root/embedding-optimizer-story-refactor --training-root /tmp/dense-identity-source.8rUgLF --output configs/dense_primary_v2_protocol.json",
+      "command_kind": "reproduction_invocation_not_a_verbatim_terminal_transcript",
+      "note": "The actual proposal was prepared at 11:26 UTC. Use a new output path to reproduce; its original path is immutable. Actual formal execution was not requested."
+    },
+    {
+      "purpose": "Real checkpoint shared-reader and primary CLI rehearsal",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_primary_consumers --repository /root/embedding-optimizer-story-refactor --experiment-root /root/embedding-optimizer-study --output /tmp/dense-primary-consumers.gYe7fQ/result.json",
+      "observed_exit": 0,
+      "result": "/tmp/dense-primary-consumers.gYe7fQ/result.json"
+    },
+    {
+      "purpose": "Final focused 51-case selection",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_primary_contract.py --junitxml=/tmp/dense-primary-contract-tests.UB4LbD/focused-final.xml",
+      "observed_exit": 0
+    },
+    {
+      "purpose": "Final complete isolated suite",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-primary-contract-tests.UB4LbD/isolated-final.xml",
+      "observed_exit": 0,
+      "receipt": "tests/isolated-full.xml"
+    }
+  ],
+  "notes": [
+    "The first focused receipt passed 44 cases; ruff initially reported F401 for unused shutil in tests/test_primary_contract.py. That import was removed and lint passed; this was not a numerical failure.",
+    "The first full receipt passed 1468 cases before seven additional receipt guards were added.",
+    "Backup remote writes and commit preservation are tested with a mocked API, not a real new upload.",
+    "Actual draft CLI rejection was intentionally nonzero and is preserved in the real rehearsal receipt.",
+    "No formal numerical candidate full suite was rerun or declared accepted by this isolated suite."
+  ]
+}

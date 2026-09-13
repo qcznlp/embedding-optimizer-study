@@ -14,31 +14,10 @@ from embed_optim.paper_layout import (
 ROOT = Path(__file__).resolve().parents[1]
 
 EXPECTED_FLOAT_ROWS = {
-    "tab:discovery-results": 3,
-    "tab:common-state-results": 2,
-    "tab:intervention-results": 1,
-    "tab:causal-chain-summary": 3,
-    "tab:confirmation-results": 3,
-    "tab:corrected-primary": 3,
-    "tab:claim-firewall": 8,
-    "tab:training-systems-results": 3,
-    "tab:basis-sensitivity-results": 3,
-    "tab:representation-results": 3,
-    "tab:tail-identity-results": 2,
-    "tab:tail-persistence-results": 2,
-    "tab:spectral-factorial-results": 2,
-    "tab:spectral-tail-results": 3,
-    "tab:causal-temporal-diagnostics": 6,
-    "tab:causal-temporal-estimates": 16,
-    "tab:causal-temporal-pairs": 6,
-    "tab:causal-dose-diagnostics": 6,
-    "tab:causal-dose-anchors": 10,
-    "tab:causal-forward-rmse": 5,
-    "tab:extended-retrieval-dynamics": 4,
-    "tab:denseon-per-task-results": 14,
-    "tab:task-delta-stability": 8,
+    "tab:optimizer-primary": 3,
+    "tab:claim-firewall": 7,
     "tab:corrected-bridge": 9,
-    "tab:corrected-sensitivity": 2,
+    "tab:dimension-utilization": 6,
     "tab:state-operator-factorial": 3,
 }
 
@@ -136,17 +115,18 @@ def test_layout_gate_rejects_appendix_float_before_main_endpoint(tmp_path: Path)
         audit_paper_layout(tmp_path / "paper")
 
 
-def test_corpus_size_diagnostic_is_frozen_as_appendix_only():
-    label = "fig:corpus-size-diagnostic"
+def test_dimension_utilization_detail_is_frozen_as_appendix_only():
+    label = "tab:dimension-utilization"
 
     assert label in APPENDIX_FLOAT_LABELS
     assert label not in MAIN_TEXT_FLOAT_LABELS
 
 
 def test_corrected_result_topology_preserves_one_main_answer_and_appendix_detail():
-    assert "tab:corrected-primary" in MAIN_TEXT_FLOAT_LABELS
+    assert "fig:weight-space-map" in MAIN_TEXT_FLOAT_LABELS
+    assert "tab:optimizer-primary" in MAIN_TEXT_FLOAT_LABELS
     assert "tab:corrected-bridge" in APPENDIX_FLOAT_LABELS
-    assert "tab:corrected-sensitivity" in APPENDIX_FLOAT_LABELS
+    assert "tab:dimension-utilization" in APPENDIX_FLOAT_LABELS
     assert "tab:state-operator-factorial" in APPENDIX_FLOAT_LABELS
 
 
@@ -170,7 +150,12 @@ def test_layout_gate_rejects_missing_or_unclassified_float(tmp_path: Path):
 
 
 def test_checked_in_sources_reserve_final_float_topology_and_row_counts():
-    sources = [ROOT / "paper/main.tex", *sorted((ROOT / "paper/generated").glob("*.tex"))]
+    sources = [
+        ROOT / "paper/main.tex",
+        ROOT / "paper/generated/optimizer-primary.tex",
+        ROOT / "paper/generated/dimension-utilization.tex",
+        ROOT / "paper/generated/state-operator-factorial.tex",
+    ]
     texts = {path: path.read_text(encoding="utf-8") for path in sources}
     observed_labels = []
     observed_rows = {}
@@ -221,24 +206,19 @@ def test_final_results_fill_every_headline_and_conclusion_without_pending_placeh
     assert "Temporal spectral bridge rejected" in causal
     assert "Frozen component account rejected" in causal
     assert "No forward bridge; fixed-state conclusion only" in causal
-    candidate = (ROOT / "paper/generated/candidate-breadth.tex").read_text(encoding="utf-8")
-    assert r"\newcommand{\CandidateBreadthConclusion}" in candidate
-    assert r"\newcommand{\CandidateBreadthDiscussion}" in candidate
-    assert r"\newcommand{\CandidateBreadthFigure}" in candidate
-    assert r"\label{fig:candidate-breadth}" in candidate
-    assert "nested-candidate decision was not supported" in candidate
-    assert "prerequisite width-7 bridge failed" in candidate
-    assert "maximum error 8.286419" in candidate
-    assert "Candidate-breadth uncertainty and paired prevalence" in candidate
-    assert r"Width 7 $\rightarrow$ 2,048 loss/margin deltas" in candidate
 
 
 def test_release_runs_layout_gate_only_after_pdf_build():
-    makefile = (ROOT / "paper/Makefile").read_text(encoding="utf-8")
+    makefile = (ROOT / "paper/legacy.Makefile").read_text(encoding="utf-8")
     all_target = makefile.split("\nall:", 1)[1].split("\n\nrelease:", 1)[0]
     assert "$(BUILD)/main.pdf" in all_target
     assert "embed_optim.paper_layout" in all_target
     release = makefile.split("\nrelease:\n", 1)[1].split("\n\nvendor:", 1)[0]
 
-    assert "cd .. && $(PYTHON) -m embed_optim.paper_results --repo-root ." in release
+    assert "embed_optim.paper_results" not in makefile
+    assert "headlines" not in all_target
+    assert "cd .. && $(PYTHON) -m embed_optim.paper_audit --strict" in release
     assert release.index("$(MAKE) $(BUILD)/main.pdf") < release.index("-m embed_optim.paper_layout")
+    assert release.index("-m embed_optim.paper_layout") < release.index(
+        "-m embed_optim.paper_audit"
+    )

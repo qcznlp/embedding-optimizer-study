@@ -1,0 +1,74 @@
+{
+  "input_execution": {
+    "mode": "independently_padded",
+    "sentence_transformers_can_flatten_inputs": false
+  },
+  "matrix": {
+    "path": "configs/dense_no_packing_retrain.yaml",
+    "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+  },
+  "protocol": {
+    "path": "configs/dense_no_packing_execution_protocol.json",
+    "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+  },
+  "schema_version": 1,
+  "source_files": {
+    "scripts/eval/dense_no_packing_parallel.py": {
+      "bytes": 1104,
+      "sha256": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a"
+    },
+    "scripts/eval/dense_parallel.py": {
+      "bytes": 11179,
+      "sha256": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72"
+    },
+    "scripts/eval/dense_sequential.py": {
+      "bytes": 26739,
+      "sha256": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906"
+    },
+    "src/embed_optim/aggregate.py": {
+      "bytes": 111685,
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+    },
+    "src/embed_optim/config.py": {
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "src/embed_optim/corrected_beir_evaluation.py": {
+      "bytes": 9893,
+      "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+    },
+    "src/embed_optim/corrected_input_execution.py": {
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "src/embed_optim/decontamination.py": {
+      "bytes": 5282,
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "src/embed_optim/evaluate_matrix.py": {
+      "bytes": 27491,
+      "sha256": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2"
+    },
+    "src/embed_optim/evaluation_utils.py": {
+      "bytes": 6170,
+      "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+    }
+  },
+  "status": "locked",
+  "tasks": [
+    "ArguAna",
+    "ClimateFEVER",
+    "DBPedia",
+    "FEVER",
+    "FiQA2018",
+    "HotpotQA",
+    "MSMARCO",
+    "NFCorpus",
+    "NQ",
+    "QuoraRetrieval",
+    "SCIDOCS",
+    "SciFact",
+    "TRECCOVID",
+    "Touche2020"
+  ]
+}

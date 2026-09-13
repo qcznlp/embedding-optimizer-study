@@ -11,8 +11,11 @@ import pytest
 from embed_optim.paper_audit import _state_operator_publication_status
 from embed_optim.state_operator_factorial_completion import (
     _main_complete,
+    _primary_dimension_steps,
     load_completion_protocol,
+    parse_args,
     pipeline_steps,
+    run_pipeline,
 )
 from embed_optim.state_operator_factorial_publication import (
     _interpretation,
@@ -75,10 +78,21 @@ def test_checked_in_completion_contract_is_source_bound_and_exact() -> None:
     steps = pipeline_steps(_args(), ROOT, protocol)
 
     assert protocol["visibility_at_freeze"]["factorial_outputs_visible"] is False
-    assert len(steps) == 36
-    assert [step.name for step in steps[:8]] == [
+    assert len(steps) == 47
+    assert [step.name for step in steps[:19]] == [
         "protocol-audit",
         "source-checkpoint-durability",
+        "primary-publication-refresh",
+        "primary-dimension-export",
+        "primary-dimension-export-audit",
+        "primary-dimension-analysis",
+        "primary-dimension-analysis-audit",
+        "primary-dimension-publication",
+        "primary-dimension-publication-audit",
+        "primary-dimension-evidence",
+        "primary-dimension-portable-audit",
+        "primary-dimension-archive",
+        "primary-dimension-archive-audit",
         "calibration-01",
         "calibration-02",
         "calibration-03",
@@ -141,6 +155,105 @@ def test_main_completion_gate_requires_the_entire_exact_parent(tmp_path: Path) -
     assert _main_complete(path, protocol) is False
 
 
+def test_primary_dimension_handoff_preserves_original_factorial_commands() -> None:
+    protocol = load_completion_protocol(COMPLETION_PROTOCOL, ROOT)
+    augmented = pipeline_steps(_args(), ROOT, protocol)
+    original_protocol = json.loads(json.dumps(protocol))
+    original_protocol["parent_bindings"].pop("primary_dimension_handoff")
+    original = pipeline_steps(_args(), ROOT, original_protocol)
+    assert [step for step in augmented if not step.name.startswith("primary-")] == original
+    assert len(original) == 36
+    extra = [step for step in augmented if step.name.startswith("primary-")]
+    assert len(extra) == 11
+    assert all(step.parallel_group is None for step in extra)
+    assert extra[1].command == (
+        "/usr/bin/python3",
+        "-m",
+        "embed_optim.primary_dimension_probe",
+        "--gpu",
+        "0",
+    )
+    assert all(
+        step.command[:2] == ("env", "CUDA_VISIBLE_DEVICES=")
+        for step in extra
+        if step.name != "primary-dimension-export"
+    )
+    assert augmented.index(extra[-1]) < next(
+        i for i, step in enumerate(augmented) if step.name == "calibration-01"
+    )
+
+
+def test_primary_dimension_handoff_rejects_changed_protocol(tmp_path: Path) -> None:
+    protocol = load_completion_protocol(COMPLETION_PROTOCOL, ROOT)
+    child = tmp_path / "changed.json"
+    child.write_text("{}\n")
+    changed = json.loads(json.dumps(protocol))
+    binding = changed["parent_bindings"]["primary_dimension_handoff"]
+    binding["path"] = str(child)
+    with pytest.raises(ValueError, match="binding changed"):
+        _primary_dimension_steps(ROOT, changed, "/usr/bin/python3")
+
+
+def test_controller_dry_run_starts_no_controller_and_uses_full_gate(tmp_path, monkeypatch, capsys):
+    import embed_optim.state_operator_factorial_completion as controller
+
+    args = parse_args(
+        [
+            "--workdir",
+            str(ROOT),
+            "--main-ledger",
+            str(tmp_path / "missing-main.json"),
+            "--log-dir",
+            str(tmp_path / "logs"),
+            "--python",
+            "/usr/bin/python3",
+            "--dry-run",
+        ]
+    )
+    monkeypatch.setattr(
+        controller, "_exclusive_lease", lambda *a: pytest.fail("dry run took a lease")
+    )
+    assert run_pipeline(args, run_command=lambda *a, **k: pytest.fail("dry run executed work")) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["main_completion_ready"] is False
+    assert result["controller_started"] is False
+    assert result["scientific_completion"] is False
+    assert len(result["contract"]["steps"]) == 47
+    assert not (tmp_path / "logs").exists()
+
+
+def test_augmented_controller_waits_without_executing_any_command(tmp_path):
+    args = parse_args(
+        [
+            "--workdir",
+            str(ROOT),
+            "--main-ledger",
+            str(tmp_path / "missing-main.json"),
+            "--log-dir",
+            str(tmp_path / "logs"),
+            "--python",
+            "/usr/bin/python3",
+        ]
+    )
+
+    class ObservedWait(Exception):
+        pass
+
+    def stop_after_observing_wait(_seconds):
+        raise ObservedWait
+
+    with pytest.raises(ObservedWait):
+        run_pipeline(
+            args,
+            run_command=lambda *a, **k: pytest.fail("work ran before main completed"),
+            sleeper=stop_after_observing_wait,
+        )
+    ledger = json.loads((tmp_path / "logs/pipeline-ledger.json").read_text())
+    assert ledger["status"] == "waiting_for_main_completion"
+    assert ledger["steps"] == []
+    assert ledger["complete"] is False
+
+
 def test_checked_in_publication_contract_is_result_blind_and_bound() -> None:
     protocol = _load_protocol(PUBLICATION_PROTOCOL, ROOT)
     visibility = protocol["visibility_at_freeze"]
@@ -151,6 +264,41 @@ def test_checked_in_publication_contract_is_result_blind_and_bound() -> None:
         "publication_manifest",
     }
     assert "state-operator-factorial" in (ROOT / "paper/main.tex").read_text(encoding="utf-8")
+
+
+def test_weight_space_narrative_migration_is_result_blind_and_exact() -> None:
+    migration_path = (
+        ROOT / "configs/dense_no_packing_state_operator_weight_space_narrative_migration.json"
+    )
+    migration = json.loads(migration_path.read_text(encoding="utf-8"))
+    visibility = migration["visibility_at_freeze"]
+    assert migration["status"] == "prospective_state_operator_weight_space_narrative_migration"
+    assert visibility["main_corrected_retrieval_outputs_visible"] is False
+    assert visibility["main_corrected_geometry_to_retrieval_outputs_visible"] is False
+    assert visibility["factorial_steps_started"] == 0
+    assert visibility["factorial_outputs_visible"] is False
+    assert migration["new_source_bindings"]["manuscript_topology"] == _file_record(
+        ROOT / "reports/paper-review/factorial-claims-v2/before/paper/main.tex", ROOT
+    ) | {"path": "paper/main.tex"}
+    # The prior result-blind narrative remains immutable; a separate narrower
+    # publication amendment, not an in-place history rewrite, binds today's text.
+    wording = json.loads(
+        (ROOT / "configs/dense_no_packing_state_operator_claim_wording_amendment.json").read_text()
+    )
+    assert wording["new_source_bindings"]["manuscript_topology"] == _file_record(
+        ROOT / "paper/main.tex", ROOT
+    )
+    assert wording["scientific_design_changed"] is False
+    assert any("one-step" in item for item in migration["scientific_invariants"])
+
+    publication = json.loads(PUBLICATION_PROTOCOL.read_text(encoding="utf-8"))
+    completion = json.loads(COMPLETION_PROTOCOL.read_text(encoding="utf-8"))
+    migration_record = _file_record(migration_path, ROOT)
+    assert migration_record in publication["amendments"]
+    assert completion["parent_bindings"]["weight_space_narrative_migration"] == migration_record
+    assert completion["parent_bindings"]["publication_protocol"] == _file_record(
+        PUBLICATION_PROTOCOL, ROOT
+    )
 
 
 def test_paper_audit_allows_only_pending_before_summary(tmp_path: Path) -> None:
@@ -174,12 +322,27 @@ def test_paper_audit_allows_only_pending_before_summary(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     ("weight", "operator", "interaction", "expected"),
     (
-        ("supported_positive", "inconclusive", "inconclusive", "inherited"),
-        ("inconclusive", "supported_positive", "inconclusive", "continuation transform"),
-        ("supported_positive", "supported_positive", "inconclusive", "additive"),
-        ("inconclusive", "inconclusive", "supported_positive", "closed-loop"),
+        ("supported_positive", "inconclusive", "inconclusive", "does not establish its dominance"),
+        (
+            "inconclusive",
+            "supported_positive",
+            "inconclusive",
+            "need not favor Muon within each state",
+        ),
+        (
+            "supported_positive",
+            "supported_positive",
+            "inconclusive",
+            "do not imply an additive response",
+        ),
+        (
+            "inconclusive",
+            "inconclusive",
+            "supported_positive",
+            "need not mean Muon helps from either state",
+        ),
         ("inconclusive", "supported_negative", "inconclusive", "opposite direction"),
-        ("inconclusive", "inconclusive", "inconclusive", "does not support"),
+        ("inconclusive", "inconclusive", "inconclusive", "not evidence of equivalence"),
     ),
 )
 def test_publication_decision_map_is_fixed_before_results(
@@ -199,7 +362,8 @@ def test_latex_renderer_propagates_all_estimands_to_the_story() -> None:
     assert "\\ResultPending" not in latex
     assert latex.count("+0.0200") >= 2
     assert latex.count("inconclusive") >= 1
-    assert "closed-loop state--operator feedback" in latex
+    assert "does not establish full-trajectory co-adaptation" in latex
+    assert "supporting the predeclared closed-loop" not in latex
     assert "\\newcommand{\\StateOperatorAbstractFinding}" in latex
     assert "\\newcommand{\\StateOperatorMechanismFinding}" in latex
     assert "\\newcommand{\\StateOperatorConclusionFinding}" in latex
@@ -327,7 +491,8 @@ def test_publication_renderer_requires_complete_hashed_summary(tmp_path: Path) -
     )
 
     assert result["status"] == "complete"
-    assert result["interpretation"].startswith("Muon-created weights")
+    assert result["interpretation"].startswith("The relative Muon-versus-AdamW continuation effect")
+    assert "need not mean Muon helps from either state" in result["interpretation"]
     assert "\\ResultPending" not in paper.read_text(encoding="utf-8")
     assert (
         render(

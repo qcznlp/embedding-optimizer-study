@@ -1,0 +1,213 @@
+--- a/src/embed_optim/corrected_publication.py
++++ b/src/embed_optim/corrected_publication.py
+@@ -852,7 +852,7 @@
+         "\\newcommand{\\CorrectedConclusionFinding}{" + finding + "}\n"
+         "\\newcommand{\\CorrectedGeometryBridgeTable}{%\n"
+         "\\begin{table*}[t]\n\\centering\n\\small\n"
+-        "\\begin{tabular}{lrrrl}\n\\toprule\nFrozen geometry feature & $\\Delta$RMSE & Folds & Supported & Residual $\\rho$ \\\\n\\midrule\n"
++        "\\begin{tabular}{lrrrl}\n\\toprule\nFrozen geometry feature & $\\Delta$RMSE & Folds & Supported & Residual $\\rho$ \\\\\n\\midrule\n"
+         + bridge_rows
+         + "\n\\bottomrule\n\\end{tabular}\n"
+         "\\caption{Four-fold leave-dose-index-out geometry-to-retrieval bridge. Positive "
+@@ -860,7 +860,7 @@
+         "\\label{tab:corrected-bridge}\n\\end{table*}%\n}\n"
+         "\\newcommand{\\CorrectedExecutionSensitivityTable}{%\n"
+         "\\begin{table}[t]\n\\centering\n\\small\n"
+-        "\\begin{tabular}{lrrr}\n\\toprule\nContrast & Historical & Corrected & Shift \\\\n\\midrule\n"
++        "\\begin{tabular}{lrrr}\n\\toprule\nContrast & Historical & Corrected & Shift \\\\\n\\midrule\n"
+         + sensitivity_rows
+         + "\n\\bottomrule\n\\end{tabular}\n"
+         "\\caption{Final-stage execution-path sensitivity. The executions are not pooled and "
+@@ -872,7 +872,7 @@
+         "The corrective matrix disables flattened input execution during training and every "
+         "checkpoint reload. The primary estimand averages all four frozen rates within optimizer.\n\n"
+         "\\begin{table}[t]\n\\centering\n\\scriptsize\n\\setlength{\\tabcolsep}{3pt}\n"
+-        "\\begin{tabular}{lrrl}\n\\toprule\nContrast & Mean & 95\\% CI & Decision \\\\n\\midrule\n"
++        "\\begin{tabular}{lrrl}\n\\toprule\nContrast & Mean & 95\\% CI & Decision \\\\\n\\midrule\n"
+         + primary_rows
+         + "\n\\bottomrule\n\\end{tabular}\n"
+         "\\caption{Corrected final-stage retrieval inference over 14 decontaminated BEIR tasks "
+--- a/src/embed_optim/evaluation_source_provenance.py
++++ b/src/embed_optim/evaluation_source_provenance.py
+@@ -37,13 +37,32 @@
+     }
+ )
+ 
+-# A non-archived manifest may only use the complete source topology emitted by
+-# the current evaluator.  Individual Git-authenticated files cannot be mixed
++# The general evaluator emits this complete source topology. Individual
++# Git-authenticated files cannot be mixed
+ # into an arbitrary subset or extended with an unrecognized worker input.
+ CURRENT_SOURCE_LABELS = frozenset(
+     {
+         *DISCOVERY_ARCHIVE_LABELS,
+         "src/embed_optim/gpu_lease.py",
++    }
++)
++
++
++# The corrected Dense-only wrapper emits a different, equally exact topology.
++# Its own reload control and config are bound; unrelated LateOn and generic GPU
++# lease modules are not inputs to that wrapper. Never accept a union or subset.
++CORRECTED_DENSE_SOURCE_LABELS = frozenset(
++    {
++        "scripts/eval/dense_no_packing_parallel.py",
++        "scripts/eval/dense_parallel.py",
++        "scripts/eval/dense_sequential.py",
++        "src/embed_optim/aggregate.py",
++        "src/embed_optim/config.py",
++        "src/embed_optim/corrected_beir_evaluation.py",
++        "src/embed_optim/corrected_input_execution.py",
++        "src/embed_optim/decontamination.py",
++        "src/embed_optim/evaluate_matrix.py",
++        "src/embed_optim/evaluation_utils.py",
+     }
+ )
+ 
+@@ -284,9 +303,10 @@
+     """Authenticate an evaluator source manifest against immutable source bytes.
+ 
+     The packaged discovery archive is authoritative for its exact historical
+-    label mapping.  Other accepted manifests must have the complete current
+-    evaluator topology and every identity must match a locally reachable Git
+-    blob recorded at that exact repository path.
++    label mapping. Other accepted manifests must have either the complete
++    general evaluator topology or the complete corrected Dense-only topology.
++    Every identity must match a locally reachable Git blob recorded at that
++    exact repository path; topology recognition does not authenticate bytes.
+     """
+ 
+     recorded = _recorded_manifest(source_files)
+@@ -310,7 +330,7 @@
+             },
+         }
+ 
+-    if labels != CURRENT_SOURCE_LABELS:
++    if labels not in (CURRENT_SOURCE_LABELS, CORRECTED_DENSE_SOURCE_LABELS):
+         missing = sorted(CURRENT_SOURCE_LABELS - labels)
+         unexpected = sorted(labels - CURRENT_SOURCE_LABELS)
+         raise EvaluationSourceProvenanceError(
+--- a/configs/dense_no_packing_outcome_protocol.json
++++ b/configs/dense_no_packing_outcome_protocol.json
+@@ -84,6 +84,11 @@
+       "path": "src/embed_optim/geometry.py",
+       "bytes": 25648,
+       "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
++    },
++    "evaluation_source_provenance": {
++      "path": "src/embed_optim/evaluation_source_provenance.py",
++      "bytes": 13809,
++      "sha256": "235a9c1cf78597b11e41436003dba5a19eca689b1c4d8394c3da4e0a307f3cba"
+     }
+   },
+   "validation_selection": {
+@@ -144,5 +149,11 @@
+     "previous_aggregate_sha256": "d0aefed6a19e8f7c758a833068db3578b07509a70a8610c87a6aefac397323b0",
+     "estimands_or_thresholds_changed": false
+   },
+-  "claim_boundary": "The corrected outcome supports claims about this pinned DenseOn model, deterministic 500k-query seven-negative view, one training seed, optimizer implementations, and declared rate grids. Task bootstrap intervals quantify benchmark-task variation, not training-seed variation. The post-diagnosis origin and single seed preclude universal optimizer claims."
++  "claim_boundary": "The corrected outcome supports claims about this pinned DenseOn model, deterministic 500k-query seven-negative view, one training seed, optimizer implementations, and declared rate grids. Task bootstrap intervals quantify benchmark-task variation, not training-seed variation. The post-diagnosis origin and single seed preclude universal optimizer claims.",
++  "evaluation_handoff_amendment": {
++    "reason": "Authenticate the exact corrected Dense evaluation source mapping before outcome aggregation; preserve all scientific and numerical definitions.",
++    "scientific_contract_changed": false,
++    "numerical_implementation_changed": false,
++    "runtime_deployed": false
++  }
+ }
+--- a/configs/dense_no_packing_bridge_implementation_protocol_v2.json
++++ b/configs/dense_no_packing_bridge_implementation_protocol_v2.json
+@@ -31,7 +31,7 @@
+     },
+     "outcome_protocol": {
+       "path": "configs/dense_no_packing_outcome_protocol.json",
+-      "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
++      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+     },
+     "matrix": {
+       "path": "configs/dense_no_packing_retrain.yaml",
+@@ -92,5 +92,11 @@
+     "previous_outcome_protocol_sha256": "773f0eb6a1eb4562856dcebf0f8f59e30ac41b517d713a4a698c1340f4bc75d3",
+     "scientific_or_executable_behavior_changed": false
+   },
+-  "claim_boundary": "This is one-seed, post-diagnosis mechanism triangulation. It can show whether a predeclared geometry feature tracks or predicts retrieval variation beyond the locked optimizer, stage, and learning-rate baseline in this pinned grid. It cannot identify mediation, prove causality, or establish a universal optimizer mechanism."
++  "claim_boundary": "This is one-seed, post-diagnosis mechanism triangulation. It can show whether a predeclared geometry feature tracks or predicts retrieval variation beyond the locked optimizer, stage, and learning-rate baseline in this pinned grid. It cannot identify mediation, prove causality, or establish a universal optimizer mechanism.",
++  "evaluation_handoff_amendment": {
++    "reason": "Authenticate the exact corrected Dense evaluation source mapping before outcome aggregation; preserve all scientific and numerical definitions.",
++    "scientific_contract_changed": false,
++    "numerical_implementation_changed": false,
++    "runtime_deployed": false
++  }
+ }
+--- a/configs/dense_no_packing_sensitivity_implementation_protocol.json
++++ b/configs/dense_no_packing_sensitivity_implementation_protocol.json
+@@ -24,7 +24,7 @@
+     },
+     "outcome_protocol": {
+       "path": "configs/dense_no_packing_outcome_protocol.json",
+-      "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
++      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+     },
+     "matrix": {
+       "path": "configs/dense_no_packing_retrain.yaml",
+@@ -82,5 +82,11 @@
+     "previous_dense_coverage_sha256": "b04c8c558127e544a687988333449a07024f87138dcc7b5d51c22fd97d09ba36",
+     "scientific_or_executable_behavior_changed": false
+   },
+-  "claim_boundary": "A ranking or optimizer-minus-AdamW change is execution-path sensitivity evidence. The historical and corrected checkpoints are not a newly randomized packing experiment, so this summary is not a causal estimate of packing and must not be pooled into corrected inference."
++  "claim_boundary": "A ranking or optimizer-minus-AdamW change is execution-path sensitivity evidence. The historical and corrected checkpoints are not a newly randomized packing experiment, so this summary is not a causal estimate of packing and must not be pooled into corrected inference.",
++  "evaluation_handoff_amendment": {
++    "reason": "Authenticate the exact corrected Dense evaluation source mapping before outcome aggregation; preserve all scientific and numerical definitions.",
++    "scientific_contract_changed": false,
++    "numerical_implementation_changed": false,
++    "runtime_deployed": false
++  }
+ }
+--- a/configs/dense_no_packing_publication_protocol.json
++++ b/configs/dense_no_packing_publication_protocol.json
+@@ -26,22 +26,22 @@
+     },
+     "outcome_protocol": {
+       "path": "configs/dense_no_packing_outcome_protocol.json",
+-      "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
++      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+     },
+     "bridge_protocol": {
+       "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+-      "sha256": "ccf81a94026b8198e97877bfea995914f74ad9d8137885bf60de0f0fe86245ae"
++      "sha256": "88fb013be3fc69c7477750314af264df78080ba2573c578c95e886bb0712ec46"
+     },
+     "sensitivity_protocol": {
+       "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+-      "sha256": "99a2a967e162e96fe24d1edd74f6c8b15a7e7ccc26056f4063e5799c9e35b7f3"
++      "sha256": "127631614a9ee37bd5fcf5e0543554a5d8f618b88cc6ffd87b16d5f93ca46c48"
+     }
+   },
+   "source_bindings": {
+     "corrected_publication": {
+       "path": "src/embed_optim/corrected_publication.py",
+-      "bytes": 38709,
+-      "sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6"
++      "bytes": 38712,
++      "sha256": "ec299f29bb76b73228eb5d026cc014a78e35bcacaed688906ad0b02668dd1af6"
+     },
+     "geometry_helpers": {
+       "path": "src/embed_optim/geometry.py",
+@@ -129,5 +129,17 @@
+     "historical_selector_location": "appendix",
+     "scientific_claims_changed": false
+   },
+-  "claim_boundary": "The corrected conclusion is one-seed, pinned-grid evidence. The primary comparison averages every predeclared rate; validation selection is secondary; all nine geometry features must be disclosed. Predictive geometry support is not causal mediation, and historical-versus-corrected shifts are execution-path sensitivity rather than a randomized causal effect of packing."
++  "claim_boundary": "The corrected conclusion is one-seed, pinned-grid evidence. The primary comparison averages every predeclared rate; validation selection is secondary; all nine geometry features must be disclosed. Predictive geometry support is not causal mediation, and historical-versus-corrected shifts are execution-path sensitivity rather than a randomized causal effect of packing.",
++  "evaluation_handoff_amendment": {
++    "reason": "Authenticate the exact corrected Dense evaluation source mapping before outcome aggregation; preserve all scientific and numerical definitions.",
++    "scientific_contract_changed": false,
++    "numerical_implementation_changed": false,
++    "runtime_deployed": false
++  },
++  "latex_header_syntax_amendment": {
++    "reason": "Replace literal backslash-n after all three table-header row terminators with an actual newline. Publication syntax only.",
++    "affected_headers": 3,
++    "scientific_contract_changed": false,
++    "primary_publication_outputs_visible": false
++  }
+ }

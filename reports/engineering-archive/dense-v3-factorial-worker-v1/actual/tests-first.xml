@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="53" time="10.835" timestamp="2026-09-10T20:51:54.004989+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[314159-adamw-adamw_state]" time="0.073" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[314159-adamw-muon_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[314159-muon-adamw_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[314159-muon-muon_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[271828-adamw-adamw_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[271828-adamw-muon_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[271828-muon-adamw_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[271828-muon-muon_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[161803-adamw-adamw_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[161803-adamw-muon_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[161803-muon-adamw_state]" time="0.070" /><testcase classname="tests.test_factorial_v3_worker" name="test_mocked_complete_lifecycle_and_fresh_reader[161803-muon-muon_state]" time="0.071" /><testcase classname="tests.test_factorial_v3_worker" name="test_actual_cpu_call_refuses_before_any_write_or_factory" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_actual_assembled_source_closure" time="0.007" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[missing_calibration]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[same_calibration]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[hand_entered_rate]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[bad_binding]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[wrong_state]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[wrong_operator]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[wrong_seed]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[relative_output]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[record_in_model]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[record_in_source]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[record_in_data]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[symlink_record]" time="0.001" /><testcase classname="tests.test_factorial_v3_worker" name="test_request_and_source_controls[wrong_worker_source]" time="0.002" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[step]" time="0.043" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[epoch]" time="0.043" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[optimizer]" time="0.042" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[scheduler]" time="0.042" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[resume_binding]" time="0.042" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[resume_step]" time="0.042" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[gradient]" time="0.042" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[creation_recipe]" time="0.037" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[creation_authority]" time="0.037" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[cpu_loading]" time="0.037" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_factory_controls[short_context]" time="0.042"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2025/test_fresh_factory_controls_sh0')
+problem = 'short_context'
+
+    @pytest.mark.parametrize("problem", (
+        "step", "epoch", "optimizer", "scheduler", "resume_binding", "resume_step",
+        "gradient", "creation_recipe", "creation_authority", "cpu_loading", "short_context",
+    ))
+    def test_fresh_factory_controls(tmp_path, problem):
+        args, kwargs = parameters(tmp_path)
+        declared = worker.request(*args, **kwargs)
+        sources = worker.require_sources(args[0], args[5], kwargs["expected_worker_source"])
+        trainer, creation, _ = created_fixture(declared)
+        if problem == "step":
+            trainer.state.global_step = 1
+        elif problem == "epoch":
+            trainer.state.epoch = 0.2
+        elif problem == "optimizer":
+            trainer.optimizer = object()
+        elif problem == "scheduler":
+            trainer.lr_scheduler = object()
+        elif problem == "resume_binding":
+            trainer._resume_binding = {}
+        elif problem == "resume_step":
+            trainer._resume_step = 79
+        elif problem == "gradient":
+            trainer.model.parameters = lambda: [SimpleNamespace(grad=1)]
+        elif problem == "creation_recipe":
+            creation["recipe"]["max_length"] = 512
+        elif problem == "creation_authority":
+            creation["execution_authorized"] = True
+        elif problem == "cpu_loading":
+            creation["loaded_model"]["diagnostic_cpu"] = True
+        else:
+            creation["loaded_model"]["maximum_context"] = 512
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_factorial_v3_worker.py:239: Failed</failure></testcase><testcase classname="tests.test_factorial_v3_worker" name="test_failure_preserves_attempt_without_completion_or_retry[train]" time="0.054" /><testcase classname="tests.test_factorial_v3_worker" name="test_failure_preserves_attempt_without_completion_or_retry[save]" time="0.054" /><testcase classname="tests.test_factorial_v3_worker" name="test_failure_preserves_attempt_without_completion_or_retry[native_read]" time="0.246" /><testcase classname="tests.test_factorial_v3_worker" name="test_rank_completion_controls[partial]" time="0.000" /><testcase classname="tests.test_factorial_v3_worker" name="test_rank_completion_controls[nan]" time="0.000" /><testcase classname="tests.test_factorial_v3_worker" name="test_rank_completion_controls[duplicate_rank]" time="0.000" /><testcase classname="tests.test_factorial_v3_worker" name="test_rank_completion_controls[missing_rank]" time="0.000" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_reader_controls_even_after_rehash[changed_factory_recipe]" time="0.076"><failure message="Failed: DID NOT RAISE any of (&lt;class 'ValueError'&gt;, &lt;class 'FileNotFoundError'&gt;)">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7f2828571880&gt;
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2025/test_fresh_reader_controls_eve0')
+problem = 'changed_factory_recipe'
+
+    @pytest.mark.parametrize("problem", (
+        "changed_factory_recipe", "changed_factory_arguments", "extra_failure", "claimed_exit",
+        "changed_native", "changed_rank", "missing_calibration_on_real_reader",
+    ))
+    def test_fresh_reader_controls_even_after_rehash(monkeypatch, tmp_path, problem):
+        original_native = worker._read_native
+        args, kwargs, declared, _, _, _, _ = mocked_worker(monkeypatch, tmp_path)
+        binding = worker.run_branch(*args, **kwargs)
+        records = Path(declared["record_root"])
+        complete = read_json(records / worker.COMPLETE)
+        if problem.startswith("changed_factory_"):
+            value = read_json(records / "factory.json")
+            if problem == "changed_factory_recipe":
+                value["creation"]["recipe"]["max_length"] = 512
+            else:
+                value["creation"]["requested_arguments"]["max_steps"] = 10
+            replace_json(records / "factory.json", value)
+            complete["factory_record"] = file_identity(records / "factory.json")
+        elif problem == "extra_failure":
+            worker._write_new(records / "rank-1-failed.json", {"synthetic_failure": True})
+        elif problem == "claimed_exit":
+            complete["process_exit_observed"] = True
+        elif problem == "changed_native":
+            complete["native_readback"]["explicitly_mocked_native_read"] = False
+        elif problem == "changed_rank":
+            complete["rank_results"][0]["global_step"] = 300
+        else:
+            monkeypatch.setattr(worker, "_read_native", original_native)
+        replace_json(records / worker.COMPLETE, complete)
+        binding = file_identity(records / worker.COMPLETE)
+&gt;       with pytest.raises((ValueError, FileNotFoundError)):
+E       Failed: DID NOT RAISE any of (&lt;class 'ValueError'&gt;, &lt;class 'FileNotFoundError'&gt;)
+
+tests/test_factorial_v3_worker.py:321: Failed</failure></testcase><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_reader_controls_even_after_rehash[changed_factory_arguments]" time="0.075"><failure message="Failed: DID NOT RAISE any of (&lt;class 'ValueError'&gt;, &lt;class 'FileNotFoundError'&gt;)">monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7f2828578590&gt;
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2025/test_fresh_reader_controls_eve1')
+problem = 'changed_factory_arguments'
+
+    @pytest.mark.parametrize("problem", (
+        "changed_factory_recipe", "changed_factory_arguments", "extra_failure", "claimed_exit",
+        "changed_native", "changed_rank", "missing_calibration_on_real_reader",
+    ))
+    def test_fresh_reader_controls_even_after_rehash(monkeypatch, tmp_path, problem):
+        original_native = worker._read_native
+        args, kwargs, declared, _, _, _, _ = mocked_worker(monkeypatch, tmp_path)
+        binding = worker.run_branch(*args, **kwargs)
+        records = Path(declared["record_root"])
+        complete = read_json(records / worker.COMPLETE)
+        if problem.startswith("changed_factory_"):
+            value = read_json(records / "factory.json")
+            if problem == "changed_factory_recipe":
+                value["creation"]["recipe"]["max_length"] = 512
+            else:
+                value["creation"]["requested_arguments"]["max_steps"] = 10
+            replace_json(records / "factory.json", value)
+            complete["factory_record"] = file_identity(records / "factory.json")
+        elif problem == "extra_failure":
+            worker._write_new(records / "rank-1-failed.json", {"synthetic_failure": True})
+        elif problem == "claimed_exit":
+            complete["process_exit_observed"] = True
+        elif problem == "changed_native":
+            complete["native_readback"]["explicitly_mocked_native_read"] = False
+        elif problem == "changed_rank":
+            complete["rank_results"][0]["global_step"] = 300
+        else:
+            monkeypatch.setattr(worker, "_read_native", original_native)
+        replace_json(records / worker.COMPLETE, complete)
+        binding = file_identity(records / worker.COMPLETE)
+&gt;       with pytest.raises((ValueError, FileNotFoundError)):
+E       Failed: DID NOT RAISE any of (&lt;class 'ValueError'&gt;, &lt;class 'FileNotFoundError'&gt;)
+
+tests/test_factorial_v3_worker.py:321: Failed</failure></testcase><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_reader_controls_even_after_rehash[extra_failure]" time="0.067" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_reader_controls_even_after_rehash[claimed_exit]" time="0.066" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_reader_controls_even_after_rehash[changed_native]" time="0.068" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_reader_controls_even_after_rehash[changed_rank]" time="0.068" /><testcase classname="tests.test_factorial_v3_worker" name="test_fresh_reader_controls_even_after_rehash[missing_calibration_on_real_reader]" time="0.074" /><testcase classname="tests.test_factorial_v3_worker" name="test_module_has_no_launcher_or_process_control" time="0.005" /></testsuite></testsuites>

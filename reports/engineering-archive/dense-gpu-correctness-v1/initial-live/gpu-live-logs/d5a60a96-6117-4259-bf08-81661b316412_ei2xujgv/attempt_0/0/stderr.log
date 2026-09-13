@@ -1,0 +1,12 @@
+Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in ModernBertModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+Computing widget examples:   0%|          | 0/1 [00:00<?, ?example/s]                                                                     Computing widget examples:   0%|          | 0/1 [00:00<?, ?example/s]                                                                     Computing widget examples:   0%|          | 0/1 [00:00<?, ?example/s]                                                                     [rank0]: Traceback (most recent call last):
+[rank0]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_normalization.py", line 522, in <module>
+[rank0]:     main()
+[rank0]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_normalization.py", line 510, in main
+[rank0]:     tf32_matmul=torch.backends.cuda.matmul.allow_tf32,
+[rank0]:                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/usr/local/lib/python3.12/dist-packages/torch/backends/cuda/__init__.py", line 131, in __getattr__
+[rank0]:     return torch._C._get_cublas_allow_tf32()
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: RuntimeError: PyTorch is checking whether allow_tf32_new is enabled for cuBlas matmul,Current status indicate that you have used mix of the legacy and new APIs to set the TF32 status for cublas matmul. We suggest only using the new API to set the TF32 flag. See also: https://pytorch.org/docs/main/notes/cuda.html#tensorfloat-32-tf32-on-ampere-and-later-devices
+[rank0]:[W906 14:06:24.680523346 ProcessGroupNCCL.cpp:1524] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())

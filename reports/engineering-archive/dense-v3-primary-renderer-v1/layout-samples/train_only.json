@@ -1,0 +1,278 @@
+{
+  "latex": "% Candidate original-bridge rendering; no manuscript installation authorized.\n\\newcommand{\\CorrectedGeometryBridgeFinding}{The held-out-dose predictive criterion is undefined for all nine weight-space features; these comparisons cannot establish either support or lack of support. All nine features and all four folds are retained. Undefined folds are not pooled as available cases. This is prediction outside a learning-rate dose on the same task suite, not causal mediation, statistical significance or evidence of equivalence.}\n\\newcommand{\\CorrectedGeometryBridgeTable}{%\n\\begin{table*}[t]\n\\centering\\small\n\\begin{tabular}{lrrrll}\\toprule\nGeometry feature & RMSE reduction & Improved & Defined & Criterion & Residual $\\rho$ \\\\\n\\midrule\nlog segment/weight norm & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\nsegment stable-rank fraction & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\nsegment effective-rank fraction & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\nsegment row-norm CV & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\nsegment top-1\\% row energy & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\ncumulative/weight norm & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\ncumulative stable-rank fraction & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\nsegment subspace overlap to AdamW & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\ncumulative subspace overlap to AdamW & --- & 2/4 & 3/4 & undefined & +0.697 \\\\\n\\bottomrule\\end{tabular}\n\\caption{Every original weight-space predictor under four-fold leave-dose-index-out prediction. Decisions use exact MSE comparisons, not displayed RMSE. A missing correlation is undefined, not zero; baseline equivalence is distinct from an unidentified or numerically unresolved prediction.}\n\\label{tab:corrected-bridge}\n\\end{table*}%\n}\n",
+  "manuscript_installed": false,
+  "primary_admission_supplied": false,
+  "rows": [
+    {
+      "association": {
+        "feature": "log_saved_segment_to_weight_ratio",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "log_saved_segment_to_weight_ratio",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "log segment/weight norm",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "saved_segment_stable_rank_fraction",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "saved_segment_stable_rank_fraction",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "segment stable-rank fraction",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "saved_segment_sketch_effective_rank_fraction",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "saved_segment_sketch_effective_rank_fraction",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "segment effective-rank fraction",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "saved_segment_row_norm_cv",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "saved_segment_row_norm_cv",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "segment row-norm CV",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "saved_segment_top_1pct_row_energy",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "saved_segment_top_1pct_row_energy",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "segment top-1% row energy",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "cumulative_displacement_to_weight_ratio",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "cumulative_displacement_to_weight_ratio",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "cumulative/weight norm",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "cumulative_stable_rank_fraction",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "cumulative_stable_rank_fraction",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "cumulative stable-rank fraction",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "mean_saved_segment_subspace_overlap_to_adamw",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "mean_saved_segment_subspace_overlap_to_adamw",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "segment subspace overlap to AdamW",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    },
+    {
+      "association": {
+        "feature": "mean_cumulative_subspace_overlap_to_adamw",
+        "feature_residual_energy_exact": "405/512",
+        "outcome_residual_energy_exact": "75/2048",
+        "pearson_residual_association": 0.7745966692414834,
+        "rows": 60,
+        "spearman_residual_association": 0.6972509667751356,
+        "status": "resolved"
+      },
+      "criterion": "undefined",
+      "feature": "mean_cumulative_subspace_overlap_to_adamw",
+      "fold_status_counts": {
+        "resolved": 3,
+        "unidentified_extension": 1
+      },
+      "folds_defined": 3,
+      "folds_improved": 2,
+      "folds_total": 4,
+      "label": "cumulative subspace overlap to AdamW",
+      "pooled_baseline_mse_exact": "5/4608",
+      "pooled_baseline_rmse": 0.03294039229342062,
+      "pooled_feature_mse_exact": null,
+      "pooled_feature_rmse": null,
+      "pooled_mse_reduction_exact": null,
+      "pooled_rmse_reduction": null,
+      "pooled_rows": 60,
+      "predictively_useful": null,
+      "status": "undefined_fold_present"
+    }
+  ],
+  "scientific_completion": false
+}

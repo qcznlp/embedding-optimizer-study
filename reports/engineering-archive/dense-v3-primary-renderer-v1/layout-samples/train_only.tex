@@ -1,0 +1,33 @@
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times,latexsym}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+% Candidate original-bridge rendering; no manuscript installation authorized.
+\newcommand{\CorrectedGeometryBridgeFinding}{The held-out-dose predictive criterion is undefined for all nine weight-space features; these comparisons cannot establish either support or lack of support. All nine features and all four folds are retained. Undefined folds are not pooled as available cases. This is prediction outside a learning-rate dose on the same task suite, not causal mediation, statistical significance or evidence of equivalence.}
+\newcommand{\CorrectedGeometryBridgeTable}{%
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{lrrrll}\toprule
+Geometry feature & RMSE reduction & Improved & Defined & Criterion & Residual $\rho$ \\
+\midrule
+log segment/weight norm & --- & 2/4 & 3/4 & undefined & +0.697 \\
+segment stable-rank fraction & --- & 2/4 & 3/4 & undefined & +0.697 \\
+segment effective-rank fraction & --- & 2/4 & 3/4 & undefined & +0.697 \\
+segment row-norm CV & --- & 2/4 & 3/4 & undefined & +0.697 \\
+segment top-1\% row energy & --- & 2/4 & 3/4 & undefined & +0.697 \\
+cumulative/weight norm & --- & 2/4 & 3/4 & undefined & +0.697 \\
+cumulative stable-rank fraction & --- & 2/4 & 3/4 & undefined & +0.697 \\
+segment subspace overlap to AdamW & --- & 2/4 & 3/4 & undefined & +0.697 \\
+cumulative subspace overlap to AdamW & --- & 2/4 & 3/4 & undefined & +0.697 \\
+\bottomrule\end{tabular}
+\caption{Every original weight-space predictor under four-fold leave-dose-index-out prediction. Decisions use exact MSE comparisons, not displayed RMSE. A missing correlation is undefined, not zero; baseline equivalence is distinct from an unidentified or numerically unresolved prediction.}
+\label{tab:corrected-bridge}
+\end{table*}%
+}
+\begin{document}
+\section*{Synthetic boundary layout sample}
+This is an artificial train only case, not a model result.
+\CorrectedGeometryBridgeFinding
+\CorrectedGeometryBridgeTable
+\end{document}

@@ -1,0 +1,53 @@
+........................................................................ [ 61%]
+............................................F.                           [100%]
+=================================== FAILURES ===================================
+_____________ test_distribution_bundles_result_safe_paper_sources ______________
+
+    def test_distribution_bundles_result_safe_paper_sources() -> None:
+        installed = _installed_data_paths()
+        paper_files = (
+            "paper/Makefile",
+            "paper/README.md",
+            "paper/main.tex",
+            "paper/references.bib",
+            "paper/results.tex",
+        )
+        result_tables = (
+            "paper/generated/optimizer-primary.tex",
+            "paper/generated/dimension-utilization.tex",
+            "paper/generated/state-operator-factorial.tex",
+        )
+        for source in paper_files:
+            assert installed[source] == PurePosixPath(
+                "share/embedding-optimizer-study"
+            ) / PurePosixPath(source)
+        for source in result_tables:
+            assert installed[source] == PurePosixPath(
+                "share/embedding-optimizer-study"
+            ) / PurePosixPath(source)
+    
+        main = (ROOT / "paper/main.tex").read_text()
+        makefile = (ROOT / "paper/Makefile").read_text()
+>       assert "figures/optimizer-weight-dimension-map.pdf" in makefile
+E       assert 'figures/optimizer-weight-dimension-map.pdf' in "SHELL := /bin/bash\n.DEFAULT_GOAL := current\n\nPYTHON ?= python3\nexport PYTHONPATH := $(abspath ../src)$(if $(PYTHO...) -f legacy.Makefile' all\n\nlegacy-release:\n\t$(MAKE) -f legacy.Makefile MAKE='$(MAKE) -f legacy.Makefile' release\n"
+
+tests/test_distribution.py:356: AssertionError
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63
+  /usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+    import pynvml  # type: ignore[import]
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+../../usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7
+  /usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7: DeprecationWarning: Importing from 'sentence_transformers.models' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.modules' instead.
+    from sentence_transformers.models import Pooling, Transformer
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_distribution.py::test_distribution_bundles_result_safe_paper_sources
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,12 @@
+{
+  "scope": "preserved-inference-waiting-control-failure",
+  "original_sources_and_tests": "first-attempt",
+  "test_terminal": "cca400",
+  "test_exit_code": 1,
+  "tests_run": 28,
+  "errors": 2,
+  "failure": "The unchanged generic file identity helper reports an absent future completion as ValueError, not FileNotFoundError. The new wait consumer therefore needed an explicit absent-file distinction.",
+  "correction": "The new collector first rejects symlink ancestry, then raises FileNotFoundError for an absent future completion. Existing ordinary-file, source, complete-population and numerical checks remain unchanged.",
+  "actual_result_collector_or_gpu_started": false,
+  "actual_scientific_results": false
+}

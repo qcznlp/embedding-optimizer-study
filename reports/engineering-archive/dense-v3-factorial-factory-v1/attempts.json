@@ -1,0 +1,81 @@
+{
+  "scope": "dense-v3-factorial-factory-executed-attempts-v1",
+  "workdir": "/tmp/dense-v3-factorial-factory.wIg6Mi",
+  "source_assembly": "actual/source-first",
+  "source_versions_executed": 1,
+  "cpu_only": true,
+  "numerical_primary_source_changed": false,
+  "formal_gpu_calibration_or_training_executed": false,
+  "environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "WANDB_MODE": "disabled",
+    "TOKENIZERS_PARALLELISM": "false",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONPATH": "/tmp/dense-v3-factorial-factory.wIg6Mi/source-first/src:/root/embedding-optimizer-story-refactor"
+  },
+  "calls": [
+    {
+      "session_id": 77931,
+      "kind": "installed model class/method inspection",
+      "exit_code": 0,
+      "status": "terminal",
+      "gpu_context_or_model_created": false
+    },
+    {
+      "session_id": 29515,
+      "kind": "initial focused tests",
+      "exit_code": 0,
+      "status": "terminal",
+      "command": "nice -n 10 /usr/bin/python -B -m pytest -q -o cache_dir=/tmp/dense-v3-factorial-factory.wIg6Mi/pytest-cache-first tests/test_factorial_v3_factory.py --junitxml=/tmp/dense-v3-factorial-factory.wIg6Mi/tests-first.xml",
+      "test_cases": 26,
+      "source": "actual/test_factorial_v3_factory.py"
+    },
+    {
+      "session_id": 54074,
+      "kind": "first genuine CPU model-loading call",
+      "exit_code": 0,
+      "status": "terminal",
+      "command": "nice -n 10 /usr/bin/python -B /tmp/dense-v3-factorial-factory.wIg6Mi/audit_factorial_v3_factory.py --repository /root/embedding-optimizer-story-refactor --source /tmp/dense-v3-factorial-factory.wIg6Mi/source-first --output /tmp/dense-v3-factorial-factory.wIg6Mi/actual-loading-first.json",
+      "combined_log": "actual/actual-loading-first.log",
+      "source_models": 2,
+      "configuration_controls": 14,
+      "synthetic_rate_and_data_metadata": true,
+      "forward_backward_or_training": false
+    },
+    {
+      "session_id": 94632,
+      "kind": "final combined tests",
+      "exit_code": 0,
+      "status": "terminal",
+      "command": "nice -n 10 /usr/bin/python -B -m pytest -q -o cache_dir=/tmp/dense-v3-factorial-factory.wIg6Mi/pytest-cache-final tests/test_factorial_v3_factory.py tests/test_factorial_v3_run_contract.py --junitxml=/tmp/dense-v3-factorial-factory.wIg6Mi/tests-final.xml",
+      "test_cases": 137,
+      "new_factory_cases": 30,
+      "inherited_run_component_cases": 107,
+      "source": "actual/test_factory_final.py"
+    },
+    {
+      "session_id": 53689,
+      "kind": "final genuine CPU model-loading call",
+      "exit_code": 0,
+      "status": "terminal",
+      "command": "nice -n 10 /usr/bin/python -B /tmp/dense-v3-factorial-factory.wIg6Mi/audit_factory_final.py --repository /root/embedding-optimizer-story-refactor --source /tmp/dense-v3-factorial-factory.wIg6Mi/source-first --output /tmp/dense-v3-factorial-factory.wIg6Mi/actual-loading-final.json",
+      "combined_log": "actual/actual-loading-final.log",
+      "source_models": 2,
+      "configuration_controls": 20,
+      "synthetic_rate_and_data_metadata": true,
+      "forward_backward_or_training": false
+    }
+  ],
+  "development_observations": [
+    "Initial test import ordering caused Ruff I001; fixed before the initial passing test invocation.",
+    "The first audit helper had Ruff F821 for a nested reference to the later-deleted local model name; its actual model-loading execution nonetheless passed. Final helper uses an explicit loaded_model argument, adds tokenizer controls and passes lint.",
+    "One apply_patch context failed without changing files; the actual formatted lines were read before the corrected patch.",
+    "Initial shell documentation lookups included a nonexistent guessed audit filename and protocol directory; no source or experiment was modified by those failed reads."
+  ],
+  "reporting_boundary": "No tests, repeated model loads, ranks or mutation controls are additional training seeds. No benchmark or optimizer-quality result is produced."
+}

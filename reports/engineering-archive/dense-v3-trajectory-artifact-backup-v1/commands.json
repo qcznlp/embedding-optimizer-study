@@ -1,0 +1,91 @@
+{
+  "scope": "actual_complete_trajectory_transport_and_readback_commands; no inferred exit records",
+  "records": {
+    "goalCompleteTrajectoryRawScoreIndexCommand": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source/build_raw_score_index.py --output /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/raw-score-index.json",
+    "goalCompleteTrajectoryRawScoreIndexInitialResult": {
+      "chunk_id": "3160fa",
+      "wall_time_seconds": 0.678302883,
+      "exit_code": 0,
+      "original_token_count": 118,
+      "output": "{\"checkpoints\": 60, \"identity\": {\"bytes\": 553411, \"git_blob_sha1\": \"42dbabac04b07b6c8905473140fc67fa9382d924\", \"sha256\": \"0418c68b9a78cc80173c9cf6af5d5bb57d223d7e763bc6da03d2fe4f682bbf96\"}, \"new_model_or_network_execution\": false, \"output\": \"/tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/raw-score-index.json\", \"raw_scores_reconstructed\": 840, \"recovered_bytes_rechecked\": 37364806, \"recovered_files_rechecked\": 2888, \"scientific_completion\": false, \"snapshots\": 5}\n"
+    },
+    "goalCompleteTrajectoryBackupAdapterTestsCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q -p no:cacheprovider /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source/test_backup.py --junitxml=/tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/adapter-tests.xml",
+    "goalCompleteTrajectoryBackupAdapterTestsResult": {
+      "chunk_id": "eb5bf9",
+      "wall_time_seconds": 0.25517462,
+      "exit_code": 0,
+      "original_token_count": 25,
+      "output": "..................                                                       [100%]\n18 passed in 0.06s\n"
+    },
+    "goalCompleteTrajectoryBackupPrepareCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source/backup.py prepare --workdir /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm",
+    "goalCompleteTrajectoryBackupPrepareResult": {
+      "chunk_id": "51271d",
+      "wall_time_seconds": 0.000005205,
+      "exit_code": 0,
+      "original_token_count": 231,
+      "output": "{\"manifest\": {\"bytes\": 6223, \"git_blob_sha1\": \"efe790daccc1e91a4038664479d8c55f7d318f28\", \"sha256\": \"f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\"}, \"parent_revision\": \"5eb4cceed5c3dbee05d46850ec0d76aedff7d4cc\", \"parent_transport_sha256\": \"ab565206b22d0138c8227fef3f26eb28e2abeb7653c6f7137b7b532a289ec046\", \"prefix\": \"corrected-dense-correctness-v3/complete-retrieval-trajectories/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\", \"remote_mutations\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"scientific_completion\": false, \"scope\": \"complete-v3-retrieval-trajectories-backup\", \"source\": {\"bytes\": 17352, \"git_blob_sha1\": \"619c50952f4b96db0577054076ca91b617d33c0f\", \"sha256\": \"2fe608e1479ebe8003745b9782cd1fc338b665a57a84e1da39efcefa5c061b5f\"}, \"upload_bytes\": 1093911, \"upload_files\": 26}\n"
+    },
+    "goalCompleteTrajectoryBackupStagedReadCommand": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source/verify_recovered.py --root /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/staging --manifest-sha256 f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65 --output /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/staged-reconstruction.json",
+    "goalCompleteTrajectoryBackupStagedReadResult": {
+      "chunk_id": "c9beee",
+      "wall_time_seconds": 0.000004184,
+      "exit_code": 0,
+      "original_token_count": 232,
+      "output": "{\"areas_and_normalized_means_reconstructed\": 24, \"bytes_verified\": 1093911, \"endpoint_contrasts_matched\": 6, \"endpoint_task_numeric_fields_reconstructed\": 168, \"files_verified\": 26, \"indexed_raw_snapshots\": 5, \"manifest\": {\"bytes\": 6223, \"git_blob_sha1\": \"efe790daccc1e91a4038664479d8c55f7d318f28\", \"sha256\": \"f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\"}, \"new_bootstrap_or_model_execution\": false, \"observed_at_utc\": \"2026-09-12T11:37:44.033581+00:00\", \"optimizer_stage_means_and_medians_reconstructed\": 30, \"plotted_checkpoints_reconstructed\": 60, \"raw_remote_files_downloaded_by_this_reader\": false, \"reads_only_supplied_snapshot\": true, \"run_stage_means_and_medians_reconstructed\": 120, \"scientific_completion\": false, \"scope\": \"independent_recovered_complete_trajectory_numeric_reconstruction\", \"selected_stage_comparisons_reconstructed\": 5, \"task_scores_crosschecked_with_index_and_observer\": 840}\n"
+    },
+    "goalCompleteTrajectoryBackupReaderTestsCommand": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B -m pytest -q -p no:cacheprovider /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source/test_verify_recovered.py --junitxml=/tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/reader-tests.xml",
+    "goalCompleteTrajectoryBackupReaderTestsResult": {
+      "chunk_id": "230055",
+      "wall_time_seconds": 0.394189157,
+      "exit_code": 0,
+      "original_token_count": 25,
+      "output": "........................                                                 [100%]\n24 passed in 0.20s\n"
+    },
+    "goalCompleteTrajectoryBackupUploadCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source/backup.py upload --workdir /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm",
+    "goalCompleteTrajectoryBackupUploadInitialResult": {
+      "chunk_id": "46324c",
+      "wall_time_seconds": 1.00081183,
+      "session_id": 97081,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "goalCompleteTrajectoryBackupUploadTerminalResult": {
+      "chunk_id": "c94577",
+      "wall_time_seconds": 0.000002272,
+      "exit_code": 0,
+      "original_token_count": 771,
+      "output": "\rProcessing Files (0 / 0)      : |          |  0.00B /  0.00B            \n\rNew Data Upload               : |          |  0.00B /  0.00B            \u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\rProcessing Files (1 / 1)      : 100%|██████████|  164kB /  164kB, 15.9kB/s  \n\rNew Data Upload               : 100%|██████████|  164kB /  164kB, 15.9kB/s  \u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\n\n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \u001b[A\u001b[A\rProcessing Files (1 / 1)      : 100%|██████████|  164kB /  164kB, 14.1kB/s  \n\rNew Data Upload               : 100%|██████████|  164kB /  164kB, 14.1kB/s  \n\r  ...etrieval_trajectories.png: 100%|██████████|  164kB /  164kB            \n{\"durability_verified\": true, \"files\": 26, \"manifest\": {\"bytes\": 6223, \"git_blob_sha1\": \"efe790daccc1e91a4038664479d8c55f7d318f28\", \"sha256\": \"f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\"}, \"old_corrected_subtrees_unchanged\": 13, \"old_root_entries_unchanged\": 20, \"prefix\": \"corrected-dense-correctness-v3/complete-retrieval-trajectories/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\", \"remote_paths_deleted_or_overwritten\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"revision\": \"dbcd12376f483347cc570584abc588503c0a5fa0\", \"root_attributes_unchanged\": true, \"scientific_completion\": false, \"source_code_uploaded\": false, \"uploaded_at_utc\": \"2026-09-12T11:39:09.445379+00:00\", \"verified_at_utc\": \"2026-09-12T11:39:10.284368+00:00\"}\n"
+    },
+    "goalCompleteTrajectoryBackupDownloadCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source/backup.py download-verify --workdir /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm",
+    "goalCompleteTrajectoryBackupDownloadInitialResult": {
+      "chunk_id": "36294d",
+      "wall_time_seconds": 1.001607444,
+      "session_id": 33978,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "goalCompleteTrajectoryBackupDownloadTerminalResult": {
+      "chunk_id": "c7dd68",
+      "wall_time_seconds": 0.000002287,
+      "exit_code": 0,
+      "original_token_count": 285,
+      "output": "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n{\"all_payload_hashes_match\": true, \"bytes\": 1093911, \"downloaded_root\": \"/tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/download/corrected-dense-correctness-v3/complete-retrieval-trajectories/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\", \"files\": 26, \"manifest\": {\"bytes\": 6223, \"git_blob_sha1\": \"efe790daccc1e91a4038664479d8c55f7d318f28\", \"sha256\": \"f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\"}, \"new_model_or_statistical_execution\": false, \"observed_at_utc\": \"2026-09-12T11:40:10.905100+00:00\", \"prefix\": \"corrected-dense-correctness-v3/complete-retrieval-trajectories/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\", \"revision\": \"dbcd12376f483347cc570584abc588503c0a5fa0\", \"same_physical_host\": true, \"scientific_completion\": false, \"scope\": \"actual-complete-anonymous-retrieval-trajectories-recovery\"}\n"
+    },
+    "goalCompleteTrajectoryBackupIndependentReadCommand": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/source/verify_recovered.py --root /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/download/corrected-dense-correctness-v3/complete-retrieval-trajectories/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65 --manifest-sha256 f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65 --output /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/isolated-reconstruction.json",
+    "goalCompleteTrajectoryBackupIndependentReadResult": {
+      "chunk_id": "0dba9c",
+      "wall_time_seconds": 0.000004214,
+      "exit_code": 0,
+      "original_token_count": 232,
+      "output": "{\"areas_and_normalized_means_reconstructed\": 24, \"bytes_verified\": 1093911, \"endpoint_contrasts_matched\": 6, \"endpoint_task_numeric_fields_reconstructed\": 168, \"files_verified\": 26, \"indexed_raw_snapshots\": 5, \"manifest\": {\"bytes\": 6223, \"git_blob_sha1\": \"efe790daccc1e91a4038664479d8c55f7d318f28\", \"sha256\": \"f2e3aec64101721e337dc13fc1bae5cdb3799ca76e0faece0fe7fbafabdf4e65\"}, \"new_bootstrap_or_model_execution\": false, \"observed_at_utc\": \"2026-09-12T11:40:28.003002+00:00\", \"optimizer_stage_means_and_medians_reconstructed\": 30, \"plotted_checkpoints_reconstructed\": 60, \"raw_remote_files_downloaded_by_this_reader\": false, \"reads_only_supplied_snapshot\": true, \"run_stage_means_and_medians_reconstructed\": 120, \"scientific_completion\": false, \"scope\": \"independent_recovered_complete_trajectory_numeric_reconstruction\", \"selected_stage_comparisons_reconstructed\": 5, \"task_scores_crosschecked_with_index_and_observer\": 840}\n"
+    },
+    "goalCompleteTrajectoryBackupArchiveCopyCommand": "set -e\nmkdir /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1\nmkdir /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/actual /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/before\ncp -a /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/source /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/source\ncp /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/raw-score-index.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/\ncp /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/preflight.json /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/adapter-tests.xml /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/reader-tests.xml /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/staged-reconstruction.json /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/upload-mode-preflight.json /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/upload-started.json /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/upload.json /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/remote-audit.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/actual/\ncp /tmp/dense-v3-trajectory-artifact-backup.hAJsqqOm/staging/artifact_manifest.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/actual/\ncp /root/embedding-optimizer-story-refactor/CURRENT_EXPERIMENT.md /root/embedding-optimizer-story-refactor/README.md /root/embedding-optimizer-story-refactor/PROJECT_STATUS.md /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/before/",
+    "goalCompleteTrajectoryBackupArchiveCopyResult": {
+      "chunk_id": "7c8796",
+      "wall_time_seconds": 0.000002681,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  }
+}

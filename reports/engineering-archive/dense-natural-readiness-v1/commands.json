@@ -1,0 +1,44 @@
+{
+  "scope": "engineering_dense_natural_readiness_and_text_integrity",
+  "failed_natural_launch": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_natural_data --repository /root/embedding-optimizer-story-refactor --workdir /tmp/dense-natural-readiness.muZla7",
+    "exit_code": 1
+  },
+  "focused_initial": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_dense_natural_data_audit.py --junitxml=/tmp/dense-natural-checks.MDyv0J/focused.xml",
+    "exit_code": 0,
+    "tests": 46
+  },
+  "full_initial": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-natural-checks.MDyv0J/full.xml",
+    "exit_code": 0,
+    "tests": 1584
+  },
+  "focused_content": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_dense_text_integrity.py tests/test_dense_natural_data_audit.py --junitxml=/tmp/dense-natural-checks.MDyv0J/focused-content.xml",
+    "exit_code": 0,
+    "tests": 59
+  },
+  "full_content": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-natural-checks.MDyv0J/full-content.xml",
+    "exit_code": 0,
+    "tests": 1597
+  },
+  "full_data_content": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_text_integrity --repository /root/embedding-optimizer-story-refactor --output /tmp/dense-natural-checks.MDyv0J/full-data-content.json",
+    "exit_code": 0,
+    "text_eligibility_passed": false
+  },
+  "upstream_origins": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_empty_text_origins --content-audit /tmp/dense-natural-checks.MDyv0J/full-data-content.json --content-sha256 fbfc06240961e943bfa6869cec9a70b40c7ea98415fb8963e495915faa1ac66d --output /tmp/dense-natural-checks.MDyv0J/empty-origins.json",
+    "exit_code": 0
+  },
+  "validation_content": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_validation_text --repository /root/embedding-optimizer-story-refactor --experiment-root /root/embedding-optimizer-study --output /tmp/dense-natural-checks.MDyv0J/validation-content.json",
+    "exit_code": 0,
+    "text_eligibility_passed": false
+  },
+  "scientific_completion": false,
+  "production_deployed": false,
+  "primary_training_executed": false
+}

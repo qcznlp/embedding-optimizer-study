@@ -1,0 +1,97 @@
+{
+  "scope": "actual_complete_training_telemetry_calls",
+  "calls": {
+    "production": {
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MPLCONFIGDIR=/tmp/dense-v3-training-observations.GnXWzfYq/matplotlib nice -n 10 /usr/bin/python -B /tmp/dense-v3-training-observations.GnXWzfYq/source-first/observe_primary_v3_training.py --parent /root/embedding-optimizer-v3-experiment/launch/functional-dimensions/inputs.json --native-root /root/embedding-optimizer-v3-experiment/outputs/dense-correctness-v3/dense --output /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-training-observations-v1 --copy-inputs > /tmp/dense-v3-training-observations.GnXWzfYq/actual-first.log 2>&1",
+      "launch": {
+        "chunk_id": "9f254f",
+        "wall_time_seconds": 1.001102467,
+        "session_id": 2863,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "terminal": {
+        "chunk_id": "1598ee",
+        "wall_time_seconds": 0.000002381,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "log": "actual/actual-first.log"
+    },
+    "focused_tests": {
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q -p no:cacheprovider --junitxml=/tmp/dense-v3-training-observations.GnXWzfYq/focused-first.xml tests/test_primary_v3_training_observations.py > /tmp/dense-v3-training-observations.GnXWzfYq/focused-first.log 2>&1",
+      "result": {
+        "chunk_id": "f439b7",
+        "wall_time_seconds": 0.303210798,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "log": "actual/focused-first.log",
+      "junit": "actual/focused-first.xml"
+    },
+    "independent_native": {
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 nice -n 10 /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-training-observations-v1/source-first/audit_primary_v3_training_observations.py --artifact /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-training-observations-v1 --parent /root/embedding-optimizer-v3-experiment/launch/functional-dimensions/inputs.json --native-root /root/embedding-optimizer-v3-experiment/outputs/dense-correctness-v3/dense --references /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-training-observations-v1/reference-sources --output /tmp/dense-v3-training-observations.GnXWzfYq/independent-first.json > /tmp/dense-v3-training-observations.GnXWzfYq/independent-first.log 2>&1",
+      "result": {
+        "chunk_id": "ea3b6d",
+        "wall_time_seconds": 0.277979086,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "log": "actual/independent-first.log",
+      "receipt": "actual/independent-first.json"
+    },
+    "fresh_replay": {
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MPLCONFIGDIR=/tmp/dense-v3-training-observations.GnXWzfYq/matplotlib nice -n 10 /usr/bin/python -B /tmp/dense-v3-training-observations.GnXWzfYq/source-first/observe_primary_v3_training.py --parent /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-training-observations-v1/inputs/admission.json --native-root /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-training-observations-v1/inputs/native --output /tmp/dense-v3-training-observations.GnXWzfYq/replay-first --copy-inputs > /tmp/dense-v3-training-observations.GnXWzfYq/replay-first.log 2>&1",
+      "launch": {
+        "chunk_id": "ad87f2",
+        "wall_time_seconds": 1.001356196,
+        "session_id": 68123,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "terminal": {
+        "chunk_id": "82402b",
+        "wall_time_seconds": 0.00000175,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "log": "actual/replay-first.log"
+    },
+    "independent_replay": {
+      "command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 nice -n 10 /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-training-observations-v1/source-first/audit_primary_v3_training_observations.py --artifact /tmp/dense-v3-training-observations.GnXWzfYq/replay-first --parent /tmp/dense-v3-training-observations.GnXWzfYq/replay-first/inputs/admission.json --native-root /tmp/dense-v3-training-observations.GnXWzfYq/replay-first/inputs/native --references /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-training-observations-v1/reference-sources --output /tmp/dense-v3-training-observations.GnXWzfYq/independent-replay-first.json > /tmp/dense-v3-training-observations.GnXWzfYq/independent-replay-first.log 2>&1",
+      "result": {
+        "chunk_id": "7de786",
+        "wall_time_seconds": 0.267291234,
+        "exit_code": 0,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "log": "actual/independent-replay-first.log",
+      "receipt": "actual/independent-replay-first.json"
+    }
+  },
+  "lint_and_format": {
+    "chunk_id": "c7e805",
+    "exit_code": 0,
+    "commands": [
+      "/usr/bin/python -B -m ruff format scripts/audit_primary_v3_training_observations.py tests/test_primary_v3_training_observations.py",
+      "/usr/bin/python -B -m ruff check scripts/audit_primary_v3_training_observations.py tests/test_primary_v3_training_observations.py scripts/observe_primary_v3_training.py"
+    ],
+    "result": "Two new files formatted; all checks passed."
+  },
+  "direct_byte_comparison": {
+    "chunk_id": "2f9ab4",
+    "exit_code": 0,
+    "files_compared": 143,
+    "passed": true,
+    "all_nine_numerical_and_figure_outputs_exact": true,
+    "manifest_sha256": "98e3a7cae491d4bb06ae949a909f9466690e8f5d40edb600a3e5ce1e2ba17205",
+    "scope": "Actual read-only byte comparison between original artifact and fresh replay, including 133 input files; same host."
+  },
+  "gpu_execution": false,
+  "scientific_completion": false
+}

@@ -1,0 +1,83 @@
+{
+  "all_three_estimands": [
+    {
+      "bootstrap_ci_95_lower": 0.0004713035714285712,
+      "bootstrap_ci_95_upper": 0.006783815476190476,
+      "bootstrap_samples": 100000,
+      "bootstrap_seed": 20260904,
+      "decision": "supported_positive",
+      "estimand": "weight_state_effect",
+      "point_estimate": 0.003222023809523812,
+      "seed_clusters": 3,
+      "task_clusters": 14
+    },
+    {
+      "bootstrap_ci_95_lower": -0.008965723214285732,
+      "bootstrap_ci_95_upper": -0.001855473214285726,
+      "bootstrap_samples": 100000,
+      "bootstrap_seed": 20260904,
+      "decision": "supported_negative",
+      "estimand": "operator_effect",
+      "point_estimate": -0.0052644047619047705,
+      "seed_clusters": 3,
+      "task_clusters": 14
+    },
+    {
+      "bootstrap_ci_95_lower": -0.001229303571428574,
+      "bootstrap_ci_95_upper": 0.0055514702380952095,
+      "bootstrap_samples": 100000,
+      "bootstrap_seed": 20260904,
+      "decision": "inconclusive",
+      "estimand": "state_operator_interaction",
+      "point_estimate": 0.002079761904761899,
+      "seed_clusters": 3,
+      "task_clusters": 14
+    }
+  ],
+  "full_goal_complete": false,
+  "historical_guard_admission_claimed": false,
+  "independent_arithmetic_repeated": {
+    "independent_cell_moments": 4,
+    "independent_multiplicity_bootstrap": [
+      {
+        "decision": "supported_positive",
+        "draws": 100000,
+        "estimand": "weight_state_effect",
+        "max_absolute_difference": 1.734723475976807e-18
+      },
+      {
+        "decision": "supported_negative",
+        "draws": 100000,
+        "estimand": "operator_effect",
+        "max_absolute_difference": 0.0
+      },
+      {
+        "decision": "inconclusive",
+        "draws": 100000,
+        "estimand": "state_operator_interaction",
+        "max_absolute_difference": 0.0
+      }
+    ],
+    "independent_rational_seed_task_effects": 126,
+    "intervals": "three marginal 95% intervals; not simultaneous",
+    "original_estimates_not_replaced": true,
+    "scientific_completion": false,
+    "tolerance": 2e-15
+  },
+  "interpretation": "The averaged post-continuation source-state contrast favors the Muon-reached state. This does not establish its dominance over the other contrasts; inconclusive intervals are not equivalence to zero.",
+  "original_native_collectors_reused": true,
+  "original_numerics_reconstructed_exactly": true,
+  "renderer": {
+    "bytes": 18564,
+    "sha256": "83b7a92e43711ce55647aef8084bd507ae2ea8bec01d14b15754a45d15ec18d0"
+  },
+  "scope": "current_complete_factorial_paper_readout",
+  "table_counts": {
+    "beir_seed_task_scores": 168,
+    "estimand_seed_task_contrasts": 126,
+    "estimand_summary": 3,
+    "factorial_cell_summary": 4,
+    "probe_checkpoint_metrics": 60,
+    "probe_task_metrics": 840
+  }
+}

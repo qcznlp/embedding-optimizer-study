@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "purpose": "Run every test module once against its explicit source version, without changing scientific contracts or suppressing failing cases.",
+  "historical_roles": {
+    "original-analysis": {
+      "changes": {
+        "src/embed_optim/config.py": {
+          "origin": "reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed/primary/src/embed_optim/config.py",
+          "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+        },
+        "src/embed_optim/optimizers.py": {
+          "origin": "reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed/primary/src/embed_optim/optimizers.py",
+          "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+        },
+        "src/embed_optim/train.py": {
+          "origin": "reports/engineering-archive/dense-v3-numerical-source-integration-v1/before/src/embed_optim/train.py",
+          "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+        },
+        "src/embed_optim/short_branch.py": {
+          "origin": "reports/engineering-archive/dense-v3-numerical-source-integration-v1/before/src/embed_optim/short_branch.py",
+          "sha256": "828345379b4cd4312b6b8a1881a84a7b3116b16fa09ad402e2c1b0e0321c2a4f"
+        },
+        "paper/main.tex": {
+          "origin": "reports/paper-review/dense-v3-retrieval-usefulness-v1/before/paper/main.tex",
+          "sha256": "4d59c3219589204ec396d5b9d8c6269df1dfc89f29361ddf70ada26100dbbb2b"
+        },
+        "paper/Makefile": {
+          "origin": "reports/engineering-archive/dense-v3-current-paper-entry-v1/actual/before/paper/Makefile",
+          "sha256": "70f96295cba43d07ddefb0c895a55937c4c720ef67d84bfc18b36a597097af92"
+        }
+      },
+      "tests": [
+        "tests/test_corrected_execution_sensitivity.py",
+        "tests/test_corrected_geometry.py",
+        "tests/test_corrected_outcome_summary.py",
+        "tests/test_corrected_retrieval_bridge.py",
+        "tests/test_dense_trainer_normalization_candidate.py",
+        "tests/test_dimension_archive.py",
+        "tests/test_dimension_release.py",
+        "tests/test_main_handoff_repair.py",
+        "tests/test_primary_dimension_probe.py",
+        "tests/test_primary_v3_bridge.py",
+        "tests/test_primary_v3_dimension_inference.py",
+        "tests/test_primary_v3_exact_bridge.py",
+        "tests/test_primary_v3_exact_geometry.py",
+        "tests/test_primary_v3_exact_publication.py",
+        "tests/test_primary_v3_exact_reconstruction.py",
+        "tests/test_primary_v3_geometry.py",
+        "tests/test_primary_v3_geometry_reconstruction.py",
+        "tests/test_primary_v3_joint_reconstruction.py",
+        "tests/test_primary_v3_outcome_reconstruction.py",
+        "tests/test_primary_v3_publication.py",
+        "tests/test_primary_v3_publication_reconstruction.py",
+        "tests/test_primary_v3_reconstruction_sources.py",
+        "tests/test_primary_v3_vector_reconstruction.py",
+        "tests/test_state_operator_factorial.py",
+        "tests/test_state_operator_factorial_completion.py",
+        "tests/test_state_operator_factorial_protocol.py",
+        "tests/test_successor_parent_publication.py"
+      ]
+    },
+    "original-factorial": {
+      "changes": {
+        "src/embed_optim/factorial_v3_inputs.py": {
+          "origin": "reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/factorial_v3_inputs.py",
+          "sha256": "372db4abf1e7136f118a42916e07146d20dc09d5c5de868d3c09f0951aa237f7"
+        }
+      },
+      "tests": [
+        "tests/test_factorial_v3_factory.py",
+        "tests/test_factorial_v3_run_contract.py",
+        "tests/test_factorial_v3_worker.py"
+      ]
+    }
+  }
+}

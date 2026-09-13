@@ -1,0 +1,885 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="30" skipped="0" tests="83" time="22.293" timestamp="2026-09-10T18:09:43.855342+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[314159-adamw-adamw_state]" time="0.018"><failure message="KeyError: 'adamw_lr'">state = 'adamw_state', operator = 'adamw', seed = 314159
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[314159-adamw-muon_state]" time="0.018"><failure message="KeyError: 'adamw_lr'">state = 'muon_state', operator = 'adamw', seed = 314159
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[314159-muon-adamw_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'adamw_state', operator = 'muon', seed = 314159
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[314159-muon-muon_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'muon_state', operator = 'muon', seed = 314159
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[271828-adamw-adamw_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'adamw_state', operator = 'adamw', seed = 271828
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[271828-adamw-muon_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'muon_state', operator = 'adamw', seed = 271828
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[271828-muon-adamw_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'adamw_state', operator = 'muon', seed = 271828
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[271828-muon-muon_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'muon_state', operator = 'muon', seed = 271828
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[161803-adamw-adamw_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'adamw_state', operator = 'adamw', seed = 161803
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[161803-adamw-muon_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'muon_state', operator = 'adamw', seed = 161803
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[161803-muon-adamw_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'adamw_state', operator = 'muon', seed = 161803
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_all_twelve_identity_wirings_do_not_authorize_execution[161803-muon-muon_state]" time="0.017"><failure message="KeyError: 'adamw_lr'">state = 'muon_state', operator = 'muon', seed = 161803
+
+    @pytest.mark.parametrize("state", contract.STATES)
+    @pytest.mark.parametrize("operator", ["adamw", "muon"])
+    @pytest.mark.parametrize("seed", contract.batches.ORDER_SEEDS)
+    def test_all_twelve_identity_wirings_do_not_authorize_execution(state, operator, seed):
+        identity = metadata_identity(state, operator, seed)
+        assert contract.require_identity(identity) == identity
+        assert identity["source"]["run_id"] == contract.STATES[state]
+        assert identity["scientific_admission"] is False
+        assert identity["execution_authorized"] is False
+&gt;       assert identity["optimizer"]["adamw_lr"] == 3e-6
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'adamw_lr'
+
+tests/test_factorial_v3_run_contract.py:138: KeyError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path0-True]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path1-True]" time="0.016" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path2-True]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path3-42]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path4-normuon]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path5-padded-adamw-3e-5]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path6-3907]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path7-0000000000000000000000000000000000000000]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path8-0000000000000000000000000000000000000000000000000000000000000000]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path9-49984]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path10-0000000000000000000000000000000000000000000000000000000000000000]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path11-0000000000000000000000000000000000000000000000000000000000000000]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path12-value12]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path13-not-a-fingerprint]" time="0.016" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path14-64]" time="0.016" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path15-True]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path16-512]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path17-390]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path18-False]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path19-unbound]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path20-0.0001]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path21-0.0]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path22-0000000000000000000000000000000000000000000000000000000000000000]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_identity_fields_refused[path23-0000000000000000000000000000000000000000000000000000000000000000]" time="0.015" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_current_assembly_and_runtime_are_read_without_gpu_initialization" time="0.237"><failure message="AssertionError: assert '2.9.1+cu129' == '2.9.1'&#10;  &#10;  - 2.9.1&#10;  + 2.9.1+cu129">def test_current_assembly_and_runtime_are_read_without_gpu_initialization():
+        before = torch.cuda.is_initialized()
+        runtime = contract.require_run_dependencies(metadata_identity())
+&gt;       assert runtime["packages"]["torch"] == "2.9.1"
+E       AssertionError: assert '2.9.1+cu129' == '2.9.1'
+E         
+E         - 2.9.1
+E         + 2.9.1+cu129
+
+tests/test_factorial_v3_run_contract.py:184: AssertionError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_current_run_module_drift_is_not_hidden_by_parent_bindings" time="0.020" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path0-True]" time="0.025" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path1-legacy]" time="0.025" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path2-1]" time="0.026" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path3-42]" time="0.026" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path4-49984]" time="0.026" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path5-False]" time="0.026" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path6-4]" time="0.026" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path7-0000000000000000000000000000000000000000000000000000000000000000]" time="0.025" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path8-unverified]" time="0.026" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_unbound_or_changed_component_cannot_be_a_run[path9-0000000000000000000000000000000000000000000000000000000000000000]" time="0.026" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[use_cpu-True]" time="0.017"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume0')
+name = 'use_cpu', value = True
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[bf16-False]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume1')
+name = 'bf16', value = False
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[data_seed-42]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume2')
+name = 'data_seed', value = 42
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[seed-42]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume3')
+name = 'seed', value = 42
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[learning_rate-0.004]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume4')
+name = 'learning_rate', value = 0.004
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[run_name-another-run]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume5')
+name = 'run_name', value = 'another-run'
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[weight_decay-0.0]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume6')
+name = 'weight_decay', value = 0.0
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[gradient_checkpointing_kwargs-value7]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume7')
+name = 'gradient_checkpointing_kwargs', value = {'use_reentrant': True}
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[dataloader_num_workers-0]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume8')
+name = 'dataloader_num_workers', value = 0
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[dataloader_persistent_workers-False]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume9')
+name = 'dataloader_persistent_workers', value = False
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[dataloader_prefetch_factor-2]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume10')
+name = 'dataloader_prefetch_factor', value = 2
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[dataloader_pin_memory-False]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume11')
+name = 'dataloader_pin_memory', value = False
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[dataloader_drop_last-True]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume12')
+name = 'dataloader_drop_last', value = True
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[gradient_accumulation_steps-1]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume13')
+name = 'gradient_accumulation_steps', value = 1
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[train_sampling_strategy-group_by_length]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume14')
+name = 'train_sampling_strategy', value = 'group_by_length'
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_changed_serialized_arguments_refused[save_total_limit-1]" time="0.016"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_changed_serialized_argume15')
+name = 'save_total_limit', value = 1
+
+    @pytest.mark.parametrize(
+        "name,value",
+        [
+            ("use_cpu", True),
+            ("bf16", False),
+            ("data_seed", 42),
+            ("seed", 42),
+            ("learning_rate", 0.004),
+            ("run_name", "another-run"),
+            ("weight_decay", 0.0),
+            ("gradient_checkpointing_kwargs", {"use_reentrant": True}),
+            ("dataloader_num_workers", 0),
+            ("dataloader_persistent_workers", False),
+            ("dataloader_prefetch_factor", 2),
+            ("dataloader_pin_memory", False),
+            ("dataloader_drop_last", True),
+            ("gradient_accumulation_steps", 1),
+            ("train_sampling_strategy", "group_by_length"),
+            ("save_total_limit", 1),
+        ],
+    )
+    def test_changed_serialized_arguments_refused(tmp_path, name, value):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+&gt;       contract.require_arguments(args, identity)
+
+tests/test_factorial_v3_run_contract.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_saved_argument_round_trip_is_not_a_gpu_run" time="0.018"><failure message="ValueError: Artifact belongs to a different primary identity">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2014/test_saved_argument_round_trip0')
+
+    def test_saved_argument_round_trip_is_not_a_gpu_run(tmp_path):
+        identity = metadata_identity()
+        args = metadata_arguments(tmp_path, identity)
+        path = tmp_path / "training_args.bin"
+        torch.save(args, path)
+        restored = torch.load(path, map_location="cpu", weights_only=False)
+&gt;       contract.require_arguments(restored, identity)
+
+tests/test_factorial_v3_run_contract.py:257: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/factorial_v3_run_contract.py:404: in require_arguments
+    require_same(getattr(args, key), value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+actual = False, expected = True
+
+    def require_same(actual, expected):
+        if canonical(actual) != canonical(expected):
+&gt;           raise ValueError("Artifact belongs to a different primary identity")
+E           ValueError: Artifact belongs to a different primary identity
+
+/tmp/dense-v3-factorial-run-contract.BEaQJZ/source-second/src/embed_optim/primary_contract.py:98: ValueError</failure></testcase><testcase classname="tests.test_factorial_v3_run_contract" name="test_actual_text_hash_catches_spoofed_dataset_fingerprint" time="6.884" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_bound_trainer_does_not_override_numerical_training_or_save_hooks" time="0.000" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_no_process_group_cannot_enter_finalization" time="0.000" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_rng_structure_reader_preserves_all_global_cpu_rng_states" time="0.004" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_malformed_rng_refused[cpu-value0]" time="0.001" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_malformed_rng_refused[cpu-value1]" time="0.001" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_malformed_rng_refused[cuda-value2]" time="0.001" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_malformed_rng_refused[cuda-value3]" time="0.001" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_malformed_rng_refused[python-value4]" time="0.001" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_malformed_rng_refused[numpy-value5]" time="0.001" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_incomplete_final_training_state_refused[global_step-390]" time="0.000" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_incomplete_final_training_state_refused[max_steps-392]" time="0.000" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_incomplete_final_training_state_refused[num_train_epochs-2]" time="0.000" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_incomplete_final_training_state_refused[train_batch_size-32]" time="0.000" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_incomplete_final_training_state_refused[epoch-0.999]" time="0.000" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_tiny_weights_cannot_pass_the_default_full_denseon_reader" time="0.001" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_legacy_component_cannot_reach_tensor_deserialization" time="0.027" /><testcase classname="tests.test_factorial_v3_run_contract" name="test_missing_genuine_calibrations_cannot_prepare_a_formal_run" time="5.139" /></testsuite></testsuites>

@@ -1,0 +1,160 @@
+{
+  "amendment": {
+    "boundary": "One-seed fixed-grid descriptive prediction/association, not significance, mediation, causal explanation or useful embedding dimensions. Original approximate features retain their measured limitations; exact sensitivity remains separate work.",
+    "exact_geometry_feature_family_added": false,
+    "features_baseline_folds_and_mathematical_support_rule_changed": false,
+    "full_primary_results_observed_when_prepared": false,
+    "numerical_implementation_changed": true,
+    "old_source_and_protocol_preserved": true,
+    "undefined_domain_explicitly_extended": true
+  },
+  "features": [
+    "log_saved_segment_to_weight_ratio",
+    "saved_segment_stable_rank_fraction",
+    "saved_segment_sketch_effective_rank_fraction",
+    "saved_segment_row_norm_cv",
+    "saved_segment_top_1pct_row_energy",
+    "cumulative_displacement_to_weight_ratio",
+    "cumulative_stable_rank_fraction",
+    "mean_saved_segment_subspace_overlap_to_adamw",
+    "mean_cumulative_subspace_overlap_to_adamw"
+  ],
+  "formal_execution_authorized": false,
+  "numerical_policy": {
+    "association": "Exact rational baseline residuals and average-rank ties; zero residual or numerically unresolved nonzero feature/outcome direction has undefined association",
+    "boundary": "Numerical resolution is a declared input-stability convention, not statistical significance or causal identification; tiny exact improvements remain tiny",
+    "display": "80-digit Decimal square roots and cancellation-safe RMSE subtraction converted to finite floats; display precision never decides improvement",
+    "inputs": "Every finite binary64 bridge value is its exact rational value; no decimal rounding or denominator approximation",
+    "ols": "Exact rational eight-column baseline and one-feature Frisch-Waugh-Lovell decomposition; no regularization",
+    "redundancy": "Exactly zero training residual yields baseline-equivalent predictions only if that same relation extends to every held-out row; otherwise augmented prediction is unidentified",
+    "resolution": "Nonzero added direction must have full rank under eps64 * max(rows,9) * leading singular value on the training-standardized augmented design",
+    "standardization": "Training-only affine feature standardization is algebraically eliminated using the intercept; retain its exact mean/variance and display scale",
+    "support": "Compare exact rational MSE; strictly lower pooled MSE and strictly lower in at least three of four folds; identical mathematical RMSE ordering",
+    "undefined": "Any unidentified/unresolved fold makes the full pooled augmented comparison and usefulness flag undefined; retain all rows and never pool only available folds"
+  },
+  "parents": {
+    "analysis": {
+      "bytes": 8282,
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+    },
+    "exact_geometry_acceptance": {
+      "bytes": 249833,
+      "path": "reports/engineering-archive/dense-v3-exact-geometry-v1/validation.json",
+      "sha256": "63076c3fcabbca857601b72f5dd55f83698d25134980b54f71304dbf517fa993"
+    },
+    "geometry": {
+      "bytes": 8987,
+      "path": "configs/dense_primary_v3_geometry_protocol_v2.json",
+      "sha256": "9b6dad688072c08e8994e45f80c897a7889ab5fbcbccab27b643944c85ae625b"
+    },
+    "legacy_bridge": {
+      "bytes": 6820,
+      "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+      "sha256": "88fb013be3fc69c7477750314af264df78080ba2573c578c95e886bb0712ec46"
+    },
+    "null_counterexample": {
+      "bytes": 144959,
+      "path": "reports/engineering-archive/dense-v3-exact-geometry-v1/bridge-null-feature.json",
+      "sha256": "5c8d8e3fbd0f9a13c3bd6a4fbcd23a2bcc6f2f05d40ac42aa12fca07e77067b0"
+    },
+    "outcomes": {
+      "bytes": 7276,
+      "path": "configs/dense_primary_v3_outcome_protocol_v2.json",
+      "sha256": "2a12b78a1a309cd6cc4a56593e4b1b1030370fc579045d1708d572eb5577d68e"
+    },
+    "primary": {
+      "bytes": 19832,
+      "path": "configs/dense_primary_v3_protocol.json",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    },
+    "validation": {
+      "bytes": 7020,
+      "path": "configs/dense_primary_v3_validation_protocol.json",
+      "sha256": "96a8aa2fc684d29ec67649c2e637c0cd4c7dcdd0f31f2e354b7d0955a18fb1c3"
+    }
+  },
+  "prepared_at_utc": "2026-09-06T21:56:55.017896+00:00",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scientific_rules": {
+    "adamw_overlap_rule": "For Muon and NorMuon rows average overlap to all four AdamW rates. For an AdamW row average the other three AdamW rates, excluding self-comparison.",
+    "association_table": "Also report Pearson and Spearman associations after residualizing outcome and each feature on the locked baseline. These are descriptive and are not a substitute for held-out prediction.",
+    "claim_boundary": "This is one-seed, post-diagnosis mechanism triangulation. It can show whether geometry tracks or predicts retrieval variation beyond the locked baseline in this grid; it cannot identify mediation, prove causality, or generalize beyond the pinned model/data/optimizer grids.",
+    "features": [
+      "log saved-segment-to-weight ratio",
+      "saved-segment stable-rank fraction",
+      "saved-segment sketch effective-rank fraction",
+      "saved-segment row-norm CV",
+      "saved-segment top-1-percent row energy",
+      "cumulative displacement-to-weight ratio",
+      "cumulative stable-rank fraction",
+      "mean saved-segment subspace overlap to all AdamW rates at the same stage",
+      "mean cumulative subspace overlap to all AdamW rates at the same stage"
+    ],
+    "outcome": "mean decontaminated BEIR nDCG@10 over the 14 pinned tasks at the same checkpoint",
+    "prediction_test": "For each feature separately, compare a baseline containing optimizer indicators, stage indicators, and within-optimizer centered log10 learning rate with the same model plus the feature. Use four leave-dose-index-out folds, holding out the corresponding ordered learning-rate index for every optimizer and all stages.",
+    "status": "locked_before_corrected_retrieval_outputs",
+    "support_rule": "Call a feature predictively useful only if adding it lowers pooled held-out RMSE and lowers RMSE in at least three of four folds. Report every feature and fold; do not select a feature for the paper based only on the pooled score.",
+    "unit": "run by retained checkpoint, 60 rows"
+  },
+  "scope": "dense_primary_v3_retrieval_bridge",
+  "sources": {
+    "scripts/prepare_dense_v3_bridge.py": {
+      "bytes": 2162,
+      "sha256": "1831fb88d487071c9546a0eec90c19f9a801a174530d138327d05ae50090c51d"
+    },
+    "src/embed_optim/bridge_exact_arithmetic.py": {
+      "bytes": 7560,
+      "sha256": "0d66ce6e99aa42b8d93c8295cb0f5f3015ea7b7907a9f10fb095d95be2d646b4"
+    },
+    "src/embed_optim/bridge_numerics.py": {
+      "bytes": 10557,
+      "sha256": "ff6c5b5019673d105a6f87cc7241a7b65b7199c2b5ad2cdaf37c5e55c1364c2c"
+    },
+    "src/embed_optim/corrected_retrieval_bridge.py": {
+      "bytes": 26258,
+      "sha256": "347331a3c35d12a95188c0927a327b06bd30dd4ffa11b161c432117b4299eb10"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_v3_bridge.py": {
+      "bytes": 10965,
+      "sha256": "bea3740f1bde59706b4309e7154a7de1dcc7ba8e3358688011fc4a523010878e"
+    },
+    "src/embed_optim/primary_v3_contract.py": {
+      "bytes": 9267,
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "src/embed_optim/primary_v3_geometry.py": {
+      "bytes": 14429,
+      "sha256": "e5bb4ed03f36193391a5f9f088bd0fe04e774ee67081cf0eb2d2d79a18488159"
+    },
+    "src/embed_optim/primary_v3_geometry_io.py": {
+      "bytes": 11657,
+      "sha256": "3008e45e714fe6a599d77197e86c74db80c664f08155568369af95e308d16696"
+    },
+    "src/embed_optim/primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    "src/embed_optim/primary_v3_validation.py": {
+      "bytes": 15105,
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    "src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    }
+  },
+  "status": "prepared_not_execution_authorized",
+  "table_counts": {
+    "bridge_rows": 60,
+    "feature_prediction_summary": 9,
+    "held_out_predictions": 540,
+    "leave_dose_fold_metrics": 36,
+    "residual_associations": 9
+  }
+}

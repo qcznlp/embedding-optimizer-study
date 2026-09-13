@@ -1,0 +1,134 @@
+--- a/src/embed_optim/corrected_completion_pipeline.py
++++ b/src/embed_optim/corrected_completion_pipeline.py
+@@ -306,7 +306,6 @@
+     if ledger.get("complete") is True:
+         return ledger
+     ledger.pop("failed_step", None)
+-    ledger["steps"] = []
+     for backup in (ledger.get("backups") or {}).values():
+         if backup.get("complete") is True:
+             backup["complete"] = False
+@@ -314,6 +313,56 @@
+     ledger["status"] = "waiting_for_training"
+     ledger["observed_at_utc"] = _timestamp()
+     return ledger
++
++
++def _validate_step_records(
++    ledger: dict[str, Any], steps: list[PipelineStep], repository: Path
++) -> None:
++    """Accept only the recorded, source-bound prefix of this serial plan."""
++    records = ledger.get("steps")
++    if not isinstance(records, list) or len(records) > len(steps):
++        raise RuntimeError("Invalid completion step history")
++    for index, record in enumerate(records, start=1):
++        step = steps[index - 1]
++        if (
++            not isinstance(record, dict)
++            or record.get("index") != index
++            or record.get("name") != step.name
++            or record.get("command") != list(step.command)
++            or type(record.get("complete")) is not bool
++            or not isinstance(record.get("attempts"), list)
++        ):
++            raise RuntimeError("Completion step history differs from the exact plan")
++        previous_attempt = 0
++        for attempt in record["attempts"]:
++            if (
++                not isinstance(attempt, dict)
++                or type(attempt.get("attempt")) is not int
++                or attempt["attempt"] <= previous_attempt
++            ):
++                raise RuntimeError("Invalid completion attempt history")
++            previous_attempt = attempt["attempt"]
++            log = attempt.get("log", {})
++            expected = f"{index:02d}-{step.name}.attempt-{previous_attempt}.log"
++            try:
++                path = (repository / log["path"]).resolve()
++                if (
++                    not path.is_relative_to(repository.resolve())
++                    or path.name != expected
++                    or _file_identity(path, repository) != log
++                ):
++                    raise RuntimeError("Completion attempt log identity changed")
++            except (OSError, KeyError, TypeError, ValueError) as error:
++                raise RuntimeError("Completion attempt log is missing or invalid") from error
++        attempts = record["attempts"]
++        success = bool(
++            attempts
++            and type(attempts[-1].get("return_code")) is int
++            and attempts[-1]["return_code"] == 0
++            and "execution_error" not in attempts[-1]
++        )
++        if record["complete"] != success or (not success and index != len(records)):
++            raise RuntimeError("Completion history has a false or out-of-order success")
+ 
+ 
+ def _assert_contract_unchanged(
+@@ -337,7 +386,7 @@
+     log_path.parent.mkdir(parents=True, exist_ok=True)
+     return_code = None
+     execution_error = None
+-    with log_path.open("w", encoding="utf-8") as handle:
++    with log_path.open("x", encoding="utf-8") as handle:
+         try:
+             result = run_command(
+                 command,
+@@ -375,8 +424,17 @@
+     attempts = record.setdefault("attempts", [])
+     while record.get("complete") is not True:
+         _assert_contract_unchanged(args, repository, steps, contract)
+-        attempt = len(attempts) + 1
++        attempt = max((item["attempt"] for item in attempts), default=0) + 1
+         log_path = log_dir / f"{label}.attempt-{attempt}.log"
++        # A command may finish writing before its parent records the return code.
++        # Retain that uncommitted log, then allocate a fresh numbered attempt.
++        while log_path.exists() or log_path.is_symlink():
++            record.setdefault("preserved_orphan_attempt_logs", []).append(
++                {"attempt": attempt, "log": _file_identity(log_path, repository)}
++            )
++            _atomic_json(ledger_path, ledger)
++            attempt += 1
++            log_path = log_dir / f"{label}.attempt-{attempt}.log"
+         started = _timestamp()
+         return_code, execution_error = _run_attempt(
+             command,
+@@ -449,6 +507,7 @@
+         ledger = _load_ledger(ledger_path, contract, resume=args.resume)
+         if ledger.get("complete") is True:
+             return 0
++        _validate_step_records(ledger, steps, repository)
+         _atomic_json(ledger_path, ledger)
+ 
+         while True:
+@@ -506,17 +565,21 @@
+             sleeper(args.poll_seconds)
+ 
+         ledger["status"] = "finalizing"
+-        ledger["steps"] = []
+         _atomic_json(ledger_path, ledger)
+         for index, step in enumerate(steps, start=1):
+-            record: dict[str, Any] = {
+-                "index": index,
+-                "name": step.name,
+-                "command": list(step.command),
+-                "attempts": [],
+-                "complete": False,
+-            }
+-            ledger["steps"].append(record)
++            if index <= len(ledger["steps"]):
++                record = ledger["steps"][index - 1]
++                if record["complete"] is True:
++                    continue
++            else:
++                record = {
++                    "index": index,
++                    "name": step.name,
++                    "command": list(step.command),
++                    "attempts": [],
++                    "complete": False,
++                }
++                ledger["steps"].append(record)
+             ledger["active_step"] = step.name
+             ledger["status"] = "finalizing"
+             _atomic_json(ledger_path, ledger)

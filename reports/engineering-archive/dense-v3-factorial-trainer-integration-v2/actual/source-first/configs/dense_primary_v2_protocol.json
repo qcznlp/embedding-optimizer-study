@@ -1,0 +1,281 @@
+{
+  "analysis": {
+    "primary_estimand": "At the final checkpoint, average nDCG@10 over the four predeclared learning rates within optimizer for each task, then contrast Muon-AdamW, NorMuon-AdamW, and NorMuon-Muon across the 14 paired tasks.",
+    "primary_support_rule": "An optimizer-family advantage is supported only when its simultaneous 95% interval versus AdamW lies wholly above zero and all four rates completed. An interval wholly below zero supports a disadvantage; otherwise report inconclusive.",
+    "primary_uncertainty": "50,000 paired task bootstraps with seed 20260903; simultaneous max-T 95% intervals over the three optimizer contrasts.",
+    "secondary_estimand": "Compare the validation-selected recipe per optimizer on final-checkpoint mean nDCG@10 using the same paired max-T procedure; label this secondary.",
+    "stability": "Report completion, non-finite values, gradient norms, peak memory, accepted wall time, checkpoint bytes, and optimizer-state bytes for every run.",
+    "training_dynamics": "Report every optimizer-rate-task checkpoint, optimizer-level stage means, and trapezoidal area over normalized progress. Dynamics are descriptive unless an interval procedure is explicitly added without changing the primary rule.",
+    "weight_space": "At all five checkpoints, report update norm, update-to-weight ratio, singular-value effective/stable rank, top-subspace overlap with AdamW, and representation/retrieval bridges. These mechanism analyses are secondary and cannot substitute for the primary retrieval contrast."
+  },
+  "beir_task_revisions": {
+    "ArguAna": {
+      "repo": "lightonai/arguana-decontaminated",
+      "revision": "c19c66cb43fb9b090cc55e81c10d9b5dc70b47a7"
+    },
+    "ClimateFEVER": {
+      "repo": "lightonai/climate-fever-decontaminated",
+      "revision": "1e73a88ba467a00e22ae814873edc3a9bb63b441"
+    },
+    "DBPedia": {
+      "repo": "lightonai/dbpedia-entity-decontaminated",
+      "revision": "7689f39462841132f3345798c946481418a8b77c"
+    },
+    "FEVER": {
+      "repo": "lightonai/fever-decontaminated",
+      "revision": "c39d8922d4bd04bc690a4331800018c1c44d41bd"
+    },
+    "FiQA2018": {
+      "repo": "lightonai/fiqa-decontaminated",
+      "revision": "6d053f042b0a58763f0463d4591521725c8eb1b9"
+    },
+    "HotpotQA": {
+      "repo": "lightonai/hotpotqa-decontaminated",
+      "revision": "2a3899c49545c56f84d5e884a1723c34ed96ae61"
+    },
+    "MSMARCO": {
+      "repo": "lightonai/msmarco-decontaminated",
+      "revision": "7e98709a5db3f95bbd50a7b9b53f3a2c5d69f837"
+    },
+    "NFCorpus": {
+      "repo": "lightonai/nfcorpus-decontaminated",
+      "revision": "de914702862784c9d5c937cf4736bf37bc7bbac9"
+    },
+    "NQ": {
+      "repo": "lightonai/nq-decontaminated",
+      "revision": "8d4418d0bab92c5887e0f330fe9bea1e692e173f"
+    },
+    "QuoraRetrieval": {
+      "repo": "lightonai/quora-decontaminated",
+      "revision": "a303966cc5dc0dcfb77761202d10e02c2fc67be2"
+    },
+    "SCIDOCS": {
+      "repo": "lightonai/scidocs-decontaminated",
+      "revision": "a5f62cf5006386ed1f069b79c56fbbe18e4e778a"
+    },
+    "SciFact": {
+      "repo": "lightonai/scifact-decontaminated",
+      "revision": "0729fa34af49875724d18ace64ce07f3e1dc0587"
+    },
+    "TRECCOVID": {
+      "repo": "lightonai/trec-covid-decontaminated",
+      "revision": "9e28c1e95c3e04a8f12ea2053822d80312f15794"
+    },
+    "Touche2020": {
+      "repo": "lightonai/webis-touche2020-decontaminated",
+      "revision": "84c6c1ff39a87ee1e1d4356fc6f43df6d49431b3"
+    }
+  },
+  "checkpoint_prefix": "corrected-dense-correctness-v2/dense",
+  "checkpoint_repository": "qcz/embedding-optimizer-study-checkpoints",
+  "checkpoint_steps": [
+    782,
+    1563,
+    2345,
+    3126,
+    3907
+  ],
+  "consumer_sources": {
+    "configs/formal_runtime.json": {
+      "bytes": 1019,
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    "configs/formal_runtime_constraints.txt": {
+      "bytes": 391,
+      "sha256": "6fd2c13a6930eb54debcdb41d67d9d40d897d88b7429fc61efb7c98d1475575f"
+    },
+    "requirements-formal-flash.txt": {
+      "bytes": 193,
+      "sha256": "95740f2f725b3cc5d085ffdc577697d5ae3cd681ab6705e3ada6866d923c1a2e"
+    },
+    "requirements-formal.lock": {
+      "bytes": 245835,
+      "sha256": "0c88c4b3c24b1b1b3b92216c41d23bd0dc0510acd98e734e9ab7e75244b18fa9"
+    },
+    "scripts/eval/dense_no_packing_parallel.py": {
+      "bytes": 1104,
+      "sha256": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a"
+    },
+    "scripts/eval/dense_parallel.py": {
+      "bytes": 11179,
+      "sha256": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72"
+    },
+    "scripts/eval/dense_sequential.py": {
+      "bytes": 26739,
+      "sha256": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906"
+    },
+    "src/embed_optim/aggregate.py": {
+      "bytes": 111685,
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+    },
+    "src/embed_optim/corrected_input_execution.py": {
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "src/embed_optim/decontamination.py": {
+      "bytes": 5282,
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "src/embed_optim/evaluate_matrix.py": {
+      "bytes": 27491,
+      "sha256": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2"
+    },
+    "src/embed_optim/evaluation_source_provenance.py": {
+      "bytes": 13809,
+      "sha256": "235a9c1cf78597b11e41436003dba5a19eca689b1c4d8394c3da4e0a307f3cba"
+    },
+    "src/embed_optim/evaluation_utils.py": {
+      "bytes": 6170,
+      "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+    },
+    "src/embed_optim/gpu_lease.py": {
+      "bytes": 7263,
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_io.py": {
+      "bytes": 10609,
+      "sha256": "5b4411a54b2cdbc5c0d7a2a55b1a469c31d7eca65f772fccf84f83d263163250"
+    },
+    "src/embed_optim/primary_training.py": {
+      "bytes": 4722,
+      "sha256": "ab5c6ff0eeba3c3e6efe59a76d4aacdd1682c56cebf10df4edbe6ecafd1e65a0"
+    },
+    "src/embed_optim/runtime.py": {
+      "bytes": 6928,
+      "sha256": "6c6d143a0adb61f653bbe9e1143166670b8550e49104e41da5745c4c76d1f311"
+    }
+  },
+  "data_path": "data/denseon-sft-500k-seed42",
+  "evaluation": {
+    "benchmark": "the same 14 pinned decontaminated BEIR tasks used by the historical Dense study",
+    "checkpoints_per_run": 5,
+    "expected_task_units": 840,
+    "metric": "nDCG@10",
+    "retrieval": "exact full-corpus scoring with the existing pinned task revisions and evaluator contract",
+    "tasks": [
+      "ArguAna",
+      "ClimateFEVER",
+      "DBPedia",
+      "FEVER",
+      "FiQA2018",
+      "HotpotQA",
+      "MSMARCO",
+      "NFCorpus",
+      "NQ",
+      "QuoraRetrieval",
+      "SCIDOCS",
+      "SciFact",
+      "TRECCOVID",
+      "Touche2020"
+    ],
+    "validation_selection": {
+      "dataset": "data/validation-4096-seed20260826",
+      "execution": "independently padded",
+      "rule": "Within each optimizer, choose the final-checkpoint learning rate with minimum mean contrastive loss across all 4096 rows; ties choose the lower learning rate. BEIR is not an input."
+    }
+  },
+  "gpu_lease_root": "/tmp/embedding-optimizer-primary-gpu-leases",
+  "gpu_pools": [
+    [
+      "0",
+      "1",
+      "2",
+      "3"
+    ],
+    [
+      "4",
+      "5",
+      "6",
+      "7"
+    ]
+  ],
+  "historical_artifacts": "Preserve outside scientific inference; no old score/cache/checkpoint can supply revised primary results. No implementation incident or historical implementation comparison enters any manuscript section.",
+  "input_bindings": {
+    "bytes": 72188,
+    "path": "reports/dense-primary-v2/input-bindings.json",
+    "sha256": "02561536a7ac691290f127dc07ddef41cede4b15e9bfbabb97eee0b569a0fa59"
+  },
+  "output_root": "outputs/dense-correctness-v2",
+  "pending_release_requirements": [
+    "owner development-publication/deployment direction",
+    "single assembled committed source checkout",
+    "reviewed evidence-preserving retirement/transition of old paused controllers",
+    "natural-data execution readiness",
+    "new complete-run/outcome/dimension/factorial/publication consumers"
+  ],
+  "prepared_at_utc": "2026-09-06T11:26:41.397366+00:00",
+  "production_deployed": false,
+  "purpose": "Prospective revised primary matrix using the verified numerical and full-run identity implementations; not a retrospectively preregistered original study.",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "dense_primary_correctness_v2",
+  "status": "prepared_not_execution_authorized",
+  "training_sources": {
+    "configs/dense_correctness_candidate.yaml": {
+      "bytes": 2009,
+      "sha256": "6a2183f20d6110f09d0d3df125cea2ae95174f08f9eefdc75a5544fefbf251ae"
+    },
+    "src/embed_optim/__init__.py": {
+      "bytes": 84,
+      "sha256": "ddfea072915535be4c693c1263f18e17a47ecc7c25d2f6dbe86ff6d2fad7646e"
+    },
+    "src/embed_optim/artifact_inventory.py": {
+      "bytes": 1971,
+      "sha256": "856f9fcfaf1a4f0c89062a22d8771eef0e3543995881ac89097e688e82fd2e6b"
+    },
+    "src/embed_optim/callbacks.py": {
+      "bytes": 10641,
+      "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+    },
+    "src/embed_optim/collators.py": {
+      "bytes": 2117,
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    "src/embed_optim/config.py": {
+      "bytes": 8925,
+      "sha256": "25d85021a0d78918374cb995016e80563c5ede9b8e87499809e336323105436b"
+    },
+    "src/embed_optim/dense_numerical_contract.py": {
+      "bytes": 7315,
+      "sha256": "207d8545f7d329979ebbe0e90317f95f6ca01bb310eeff040fe3de461956d8f4"
+    },
+    "src/embed_optim/dense_run_contract.py": {
+      "bytes": 13159,
+      "sha256": "185d96536a9ea36b537aa15420687814165ca8fc0b0d784907039561991584fa"
+    },
+    "src/embed_optim/losses.py": {
+      "bytes": 3805,
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    "src/embed_optim/optimizers.py": {
+      "bytes": 12765,
+      "sha256": "7d7d4f200c410cb1b24e1773ae72811582f43a0c794a5d1b2af269c123e69b1e"
+    },
+    "src/embed_optim/short_branch.py": {
+      "bytes": 26794,
+      "sha256": "e4c8c0c5e5cc24fcb69fa9beff86135ff47e1e36769d3026856b313b66185613"
+    },
+    "src/embed_optim/train.py": {
+      "bytes": 24017,
+      "sha256": "af80da12db318dd202b654c97a656c1558abba921e95c5355933d80f3e824d06"
+    },
+    "tests/test_dense_numerical_contract.py": {
+      "bytes": 10718,
+      "sha256": "f2be6494e585316d5e39c20f509e8f6aeea7cac10e068608d3ccf1d54aa67caf"
+    },
+    "tests/test_dense_run_contract.py": {
+      "bytes": 11630,
+      "sha256": "0a916a2e903d0c4cc26ae4fafaf74bbed992485e9a31e567ee4fa473fde92b24"
+    }
+  },
+  "wandb": {
+    "entity": "stevezenguom",
+    "project": "embedding-optimizer-study"
+  },
+  "worker_python": "/usr/bin/python3",
+  "world_size": 4
+}

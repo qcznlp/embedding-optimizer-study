@@ -1,0 +1,1152 @@
+{
+  "checkpoint": {
+    "inputs": [
+      {
+        "bytes": 89,
+        "path": "1_Pooling/config.json",
+        "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+      },
+      {
+        "bytes": 1951,
+        "path": "config.json",
+        "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+      },
+      {
+        "bytes": 299,
+        "path": "config_sentence_transformers.json",
+        "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+      },
+      {
+        "bytes": 3067,
+        "path": "dense_checkpoint_seal.json",
+        "sha256": "92da58d7ee17d5a85c24da74167fb4123bfb5174d6503939b1b8f45266e1623f"
+      },
+      {
+        "bytes": 1140,
+        "path": "dense_numerical_contract.json",
+        "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+      },
+      {
+        "bytes": 10725,
+        "path": "dense_run_contract.json",
+        "sha256": "372bb4ef44b7fbe105cfdcbb5bec5a1757222b01bd17c5517554d24832f3d982"
+      },
+      {
+        "bytes": 596070136,
+        "path": "model.safetensors",
+        "sha256": "3e3087b5aeae2723360085234607560f54dbc868cd4a3b78ef5663b09ac87cdb"
+      },
+      {
+        "bytes": 277,
+        "path": "modules.json",
+        "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+      },
+      {
+        "bytes": 241,
+        "path": "sentence_bert_config.json",
+        "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+      },
+      {
+        "bytes": 3583486,
+        "path": "tokenizer.json",
+        "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+      },
+      {
+        "bytes": 542,
+        "path": "tokenizer_config.json",
+        "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+      },
+      {
+        "bytes": 41789,
+        "path": "trainer_state.json",
+        "sha256": "b05274e1e9a5a352ce871fdeecb587f7e36c76da84675c1d1d5e631e5f889520"
+      }
+    ],
+    "path": "/root/embedding-optimizer-v3-experiment/outputs/dense-correctness-v3/dense/verified-v3-adamw-3e-5/checkpoint-2345",
+    "run_config": {
+      "path": "/root/embedding-optimizer-v3-experiment/outputs/dense-correctness-v3/dense/verified-v3-adamw-3e-5/run_config.json",
+      "sha256": "4459919aa54a761d5c30d805c7268cddc96d184e3c6c2c4db4d7a71963175548"
+    }
+  },
+  "common_state_spec": {
+    "bytes": 2433,
+    "path": "/root/embedding-optimizer-story-refactor/configs/common_state_probe.json",
+    "sha256": "ac0661b1077c5413b282adc5d491a5b26343a2ba499cc4b16cb452f595160c60"
+  },
+  "config": {
+    "device": "cuda:0",
+    "examples_per_gradient": 4,
+    "family": "dense",
+    "flash_attention": true,
+    "forward_dtype": "bfloat16",
+    "gradient_checkpointing": true,
+    "gradient_steps": 8,
+    "max_grad_norm": 1.0,
+    "micro_batch_size": 1,
+    "model_dtype": "float32",
+    "model_mode": "train",
+    "parameter_partition": "hidden",
+    "seed": 2718,
+    "storage_dtype": "float32",
+    "temperature": 0.02,
+    "weights_advanced": false
+  },
+  "gradient_shards": [
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 0.1216228607604477,
+      "mean_loss": 0.14564451575279236,
+      "path": "gradient-0000.safetensors",
+      "pre_clip_grad_norm": 8.222137451171875,
+      "sample_ids": [
+        381868,
+        1650,
+        42739,
+        229827
+      ],
+      "sha256": "7ce3834aa2a856e5fb259a1145a2caf26cd2f4591ed9a01788583698c210eee7",
+      "step_index": 0
+    },
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 1.0,
+      "mean_loss": 0.0072991251945495605,
+      "path": "gradient-0001.safetensors",
+      "pre_clip_grad_norm": 0.5273018479347229,
+      "sample_ids": [
+        328676,
+        410988,
+        482352,
+        399711
+      ],
+      "sha256": "67b519b919ae20b9ebaa759f9449bb2e48f4097ad4a3e902980fb6d34d0e3f56",
+      "step_index": 1
+    },
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 0.3227347407537771,
+      "mean_loss": 0.052520751953125,
+      "path": "gradient-0002.safetensors",
+      "pre_clip_grad_norm": 3.0985188484191895,
+      "sample_ids": [
+        1580,
+        24023,
+        103775,
+        331964
+      ],
+      "sha256": "fc9d862be4158af0f7cf2d6b5c46c9f12d1e030b993259ea8639d2aefb64f98c",
+      "step_index": 2
+    },
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 1.0,
+      "mean_loss": 0.0006866455078125,
+      "path": "gradient-0003.safetensors",
+      "pre_clip_grad_norm": 0.04710483178496361,
+      "sample_ids": [
+        409243,
+        476370,
+        385262,
+        1145
+      ],
+      "sha256": "7e4febbfcb833afe613ff1b55aa966bcecd68a98cdd119a45a1c467ef50822e4",
+      "step_index": 3
+    },
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 1.0,
+      "mean_loss": 0.001682668924331665,
+      "path": "gradient-0004.safetensors",
+      "pre_clip_grad_norm": 0.1861025094985962,
+      "sample_ids": [
+        36308,
+        223711,
+        285013,
+        442883
+      ],
+      "sha256": "529a25cfdad56b76264dd3448ede0435407c510b4047e44eee46bd6c9382c019",
+      "step_index": 4
+    },
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 1.0,
+      "mean_loss": 0.01598072052001953,
+      "path": "gradient-0005.safetensors",
+      "pre_clip_grad_norm": 0.8385840654373169,
+      "sample_ids": [
+        482113,
+        391941,
+        986,
+        9282
+      ],
+      "sha256": "aafb3f224ca39f05ac6ecb5cd05d052468b6d40e3a1742af9eafa73f5a121e8a",
+      "step_index": 5
+    },
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 0.07746297384823518,
+      "mean_loss": 0.19048309326171875,
+      "path": "gradient-0006.safetensors",
+      "pre_clip_grad_norm": 12.909392356872559,
+      "sample_ids": [
+        159134,
+        331368,
+        443538,
+        477771
+      ],
+      "sha256": "b7fa562664668fa63508714417a56cab4889c559aca2ca65affb688f9b11c77f",
+      "step_index": 6
+    },
+    {
+      "bytes": 441197072,
+      "clip_coefficient": 0.09250012001708498,
+      "mean_loss": 0.16225957870483398,
+      "path": "gradient-0007.safetensors",
+      "pre_clip_grad_norm": 10.810795783996582,
+      "sample_ids": [
+        360293,
+        770,
+        25162,
+        93968
+      ],
+      "sha256": "bbb7f908568baf770b119ca432d3e7b23022006101b3c8d144608c92de4c8972",
+      "step_index": 7
+    }
+  ],
+  "parameter_name_mapping": [
+    {
+      "checkpoint_name": "layers.0.attn.Wqkv.weight",
+      "model_name": "0.model.layers.0.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.0.attn.Wo.weight",
+      "model_name": "0.model.layers.0.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.0.mlp.Wi.weight",
+      "model_name": "0.model.layers.0.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.0.mlp.Wo.weight",
+      "model_name": "0.model.layers.0.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.1.attn.Wqkv.weight",
+      "model_name": "0.model.layers.1.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.1.attn.Wo.weight",
+      "model_name": "0.model.layers.1.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.1.mlp.Wi.weight",
+      "model_name": "0.model.layers.1.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.1.mlp.Wo.weight",
+      "model_name": "0.model.layers.1.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.2.attn.Wqkv.weight",
+      "model_name": "0.model.layers.2.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.2.attn.Wo.weight",
+      "model_name": "0.model.layers.2.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.2.mlp.Wi.weight",
+      "model_name": "0.model.layers.2.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.2.mlp.Wo.weight",
+      "model_name": "0.model.layers.2.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.3.attn.Wqkv.weight",
+      "model_name": "0.model.layers.3.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.3.attn.Wo.weight",
+      "model_name": "0.model.layers.3.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.3.mlp.Wi.weight",
+      "model_name": "0.model.layers.3.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.3.mlp.Wo.weight",
+      "model_name": "0.model.layers.3.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.4.attn.Wqkv.weight",
+      "model_name": "0.model.layers.4.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.4.attn.Wo.weight",
+      "model_name": "0.model.layers.4.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.4.mlp.Wi.weight",
+      "model_name": "0.model.layers.4.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.4.mlp.Wo.weight",
+      "model_name": "0.model.layers.4.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.5.attn.Wqkv.weight",
+      "model_name": "0.model.layers.5.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.5.attn.Wo.weight",
+      "model_name": "0.model.layers.5.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.5.mlp.Wi.weight",
+      "model_name": "0.model.layers.5.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.5.mlp.Wo.weight",
+      "model_name": "0.model.layers.5.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.6.attn.Wqkv.weight",
+      "model_name": "0.model.layers.6.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.6.attn.Wo.weight",
+      "model_name": "0.model.layers.6.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.6.mlp.Wi.weight",
+      "model_name": "0.model.layers.6.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.6.mlp.Wo.weight",
+      "model_name": "0.model.layers.6.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.7.attn.Wqkv.weight",
+      "model_name": "0.model.layers.7.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.7.attn.Wo.weight",
+      "model_name": "0.model.layers.7.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.7.mlp.Wi.weight",
+      "model_name": "0.model.layers.7.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.7.mlp.Wo.weight",
+      "model_name": "0.model.layers.7.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.8.attn.Wqkv.weight",
+      "model_name": "0.model.layers.8.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.8.attn.Wo.weight",
+      "model_name": "0.model.layers.8.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.8.mlp.Wi.weight",
+      "model_name": "0.model.layers.8.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.8.mlp.Wo.weight",
+      "model_name": "0.model.layers.8.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.9.attn.Wqkv.weight",
+      "model_name": "0.model.layers.9.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.9.attn.Wo.weight",
+      "model_name": "0.model.layers.9.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.9.mlp.Wi.weight",
+      "model_name": "0.model.layers.9.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.9.mlp.Wo.weight",
+      "model_name": "0.model.layers.9.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.10.attn.Wqkv.weight",
+      "model_name": "0.model.layers.10.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.10.attn.Wo.weight",
+      "model_name": "0.model.layers.10.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.10.mlp.Wi.weight",
+      "model_name": "0.model.layers.10.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.10.mlp.Wo.weight",
+      "model_name": "0.model.layers.10.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.11.attn.Wqkv.weight",
+      "model_name": "0.model.layers.11.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.11.attn.Wo.weight",
+      "model_name": "0.model.layers.11.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.11.mlp.Wi.weight",
+      "model_name": "0.model.layers.11.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.11.mlp.Wo.weight",
+      "model_name": "0.model.layers.11.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.12.attn.Wqkv.weight",
+      "model_name": "0.model.layers.12.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.12.attn.Wo.weight",
+      "model_name": "0.model.layers.12.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.12.mlp.Wi.weight",
+      "model_name": "0.model.layers.12.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.12.mlp.Wo.weight",
+      "model_name": "0.model.layers.12.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.13.attn.Wqkv.weight",
+      "model_name": "0.model.layers.13.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.13.attn.Wo.weight",
+      "model_name": "0.model.layers.13.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.13.mlp.Wi.weight",
+      "model_name": "0.model.layers.13.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.13.mlp.Wo.weight",
+      "model_name": "0.model.layers.13.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.14.attn.Wqkv.weight",
+      "model_name": "0.model.layers.14.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.14.attn.Wo.weight",
+      "model_name": "0.model.layers.14.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.14.mlp.Wi.weight",
+      "model_name": "0.model.layers.14.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.14.mlp.Wo.weight",
+      "model_name": "0.model.layers.14.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.15.attn.Wqkv.weight",
+      "model_name": "0.model.layers.15.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.15.attn.Wo.weight",
+      "model_name": "0.model.layers.15.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.15.mlp.Wi.weight",
+      "model_name": "0.model.layers.15.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.15.mlp.Wo.weight",
+      "model_name": "0.model.layers.15.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.16.attn.Wqkv.weight",
+      "model_name": "0.model.layers.16.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.16.attn.Wo.weight",
+      "model_name": "0.model.layers.16.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.16.mlp.Wi.weight",
+      "model_name": "0.model.layers.16.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.16.mlp.Wo.weight",
+      "model_name": "0.model.layers.16.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.17.attn.Wqkv.weight",
+      "model_name": "0.model.layers.17.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.17.attn.Wo.weight",
+      "model_name": "0.model.layers.17.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.17.mlp.Wi.weight",
+      "model_name": "0.model.layers.17.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.17.mlp.Wo.weight",
+      "model_name": "0.model.layers.17.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.18.attn.Wqkv.weight",
+      "model_name": "0.model.layers.18.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.18.attn.Wo.weight",
+      "model_name": "0.model.layers.18.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.18.mlp.Wi.weight",
+      "model_name": "0.model.layers.18.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.18.mlp.Wo.weight",
+      "model_name": "0.model.layers.18.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.19.attn.Wqkv.weight",
+      "model_name": "0.model.layers.19.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.19.attn.Wo.weight",
+      "model_name": "0.model.layers.19.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.19.mlp.Wi.weight",
+      "model_name": "0.model.layers.19.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.19.mlp.Wo.weight",
+      "model_name": "0.model.layers.19.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.20.attn.Wqkv.weight",
+      "model_name": "0.model.layers.20.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.20.attn.Wo.weight",
+      "model_name": "0.model.layers.20.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.20.mlp.Wi.weight",
+      "model_name": "0.model.layers.20.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.20.mlp.Wo.weight",
+      "model_name": "0.model.layers.20.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    },
+    {
+      "checkpoint_name": "layers.21.attn.Wqkv.weight",
+      "model_name": "0.model.layers.21.attn.Wqkv.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.21.attn.Wo.weight",
+      "model_name": "0.model.layers.21.attn.Wo.weight",
+      "shape": [
+        768,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.21.mlp.Wi.weight",
+      "model_name": "0.model.layers.21.mlp.Wi.weight",
+      "shape": [
+        2304,
+        768
+      ]
+    },
+    {
+      "checkpoint_name": "layers.21.mlp.Wo.weight",
+      "model_name": "0.model.layers.21.mlp.Wo.weight",
+      "shape": [
+        768,
+        1152
+      ]
+    }
+  ],
+  "partition_summary": {
+    "aux_decay": {
+      "parameters": 38682624,
+      "tensors": 1
+    },
+    "aux_no_decay": {
+      "parameters": 34560,
+      "tensors": 45
+    },
+    "hidden": {
+      "parameters": 110297088,
+      "tensors": 88
+    }
+  },
+  "probe": {
+    "dataset_fingerprint": "62084e83cc7c3635",
+    "frozen_spec": {
+      "expected_manifest_sha256": "40953eb60bb5dbfa02d9abde5e634bb3221ee934d7ca654c5e5a7e961b39eed2",
+      "path": "/root/embedding-optimizer-story-refactor/configs/representation_probe.json",
+      "sha256": "45e76c8daa5bda0213c346b39200a34ddc1e9295f37198a2bd238276ee6057e2"
+    },
+    "manifest_sha256": "40953eb60bb5dbfa02d9abde5e634bb3221ee934d7ca654c5e5a7e961b39eed2",
+    "path": "/root/embedding-optimizer-study/data/probes/training-1024-seed1729",
+    "selected_sample_ids_sha256": "3c86d4bd8879fe52d0daca3bbfb0560393cbe8ce73830a9fbf9f468daf911a78",
+    "selection_sha256": "a48f25324a3921da85b6fce81d0f0616d7eab7b05d322cddd387452ae06ba557"
+  },
+  "runtime": {
+    "cuda": "12.9",
+    "gpu_name": "NVIDIA L20Z",
+    "pylate": "1.6.0",
+    "sentence_transformers": "5.7.0",
+    "torch": "2.9.1+cu129"
+  },
+  "schema_version": 1,
+  "selection": [
+    {
+      "dataset_index": 651,
+      "order": 0,
+      "sample_id": 381868,
+      "source": "fever"
+    },
+    {
+      "dataset_index": 85,
+      "order": 1,
+      "sample_id": 1650,
+      "source": "fiqa"
+    },
+    {
+      "dataset_index": 291,
+      "order": 2,
+      "sample_id": 42739,
+      "source": "hotpotqa"
+    },
+    {
+      "dataset_index": 407,
+      "order": 3,
+      "sample_id": 229827,
+      "source": "msmarco"
+    },
+    {
+      "dataset_index": 520,
+      "order": 4,
+      "sample_id": 328676,
+      "source": "nq"
+    },
+    {
+      "dataset_index": 740,
+      "order": 5,
+      "sample_id": 410988,
+      "source": "squadv2"
+    },
+    {
+      "dataset_index": 933,
+      "order": 6,
+      "sample_id": 482352,
+      "source": "trivia"
+    },
+    {
+      "dataset_index": 705,
+      "order": 7,
+      "sample_id": 399711,
+      "source": "fever"
+    },
+    {
+      "dataset_index": 81,
+      "order": 8,
+      "sample_id": 1580,
+      "source": "fiqa"
+    },
+    {
+      "dataset_index": 212,
+      "order": 9,
+      "sample_id": 24023,
+      "source": "hotpotqa"
+    },
+    {
+      "dataset_index": 320,
+      "order": 10,
+      "sample_id": 103775,
+      "source": "msmarco"
+    },
+    {
+      "dataset_index": 529,
+      "order": 11,
+      "sample_id": 331964,
+      "source": "nq"
+    },
+    {
+      "dataset_index": 732,
+      "order": 12,
+      "sample_id": 409243,
+      "source": "squadv2"
+    },
+    {
+      "dataset_index": 900,
+      "order": 13,
+      "sample_id": 476370,
+      "source": "trivia"
+    },
+    {
+      "dataset_index": 660,
+      "order": 14,
+      "sample_id": 385262,
+      "source": "fever"
+    },
+    {
+      "dataset_index": 57,
+      "order": 15,
+      "sample_id": 1145,
+      "source": "fiqa"
+    },
+    {
+      "dataset_index": 264,
+      "order": 16,
+      "sample_id": 36308,
+      "source": "hotpotqa"
+    },
+    {
+      "dataset_index": 400,
+      "order": 17,
+      "sample_id": 223711,
+      "source": "msmarco"
+    },
+    {
+      "dataset_index": 440,
+      "order": 18,
+      "sample_id": 285013,
+      "source": "nq"
+    },
+    {
+      "dataset_index": 814,
+      "order": 19,
+      "sample_id": 442883,
+      "source": "squadv2"
+    },
+    {
+      "dataset_index": 931,
+      "order": 20,
+      "sample_id": 482113,
+      "source": "trivia"
+    },
+    {
+      "dataset_index": 682,
+      "order": 21,
+      "sample_id": 391941,
+      "source": "fever"
+    },
+    {
+      "dataset_index": 49,
+      "order": 22,
+      "sample_id": 986,
+      "source": "fiqa"
+    },
+    {
+      "dataset_index": 170,
+      "order": 23,
+      "sample_id": 9282,
+      "source": "hotpotqa"
+    },
+    {
+      "dataset_index": 353,
+      "order": 24,
+      "sample_id": 159134,
+      "source": "msmarco"
+    },
+    {
+      "dataset_index": 528,
+      "order": 25,
+      "sample_id": 331368,
+      "source": "nq"
+    },
+    {
+      "dataset_index": 816,
+      "order": 26,
+      "sample_id": 443538,
+      "source": "squadv2"
+    },
+    {
+      "dataset_index": 908,
+      "order": 27,
+      "sample_id": 477771,
+      "source": "trivia"
+    },
+    {
+      "dataset_index": 600,
+      "order": 28,
+      "sample_id": 360293,
+      "source": "fever"
+    },
+    {
+      "dataset_index": 41,
+      "order": 29,
+      "sample_id": 770,
+      "source": "fiqa"
+    },
+    {
+      "dataset_index": 219,
+      "order": 30,
+      "sample_id": 25162,
+      "source": "hotpotqa"
+    },
+    {
+      "dataset_index": 312,
+      "order": 31,
+      "sample_id": 93968,
+      "source": "msmarco"
+    }
+  ],
+  "selection_sha256": "591c3b1758e803004fdfd164e5454bb4bfbafa0a64259530b823bd9dedfedcac",
+  "status": "complete"
+}

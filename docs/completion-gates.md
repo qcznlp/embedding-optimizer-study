@@ -1,18 +1,88 @@
 # DenseOn study completion gates
 
-This checklist defines “complete” for the active Dense-only AdamW/Muon/NorMuon study. Existing
-two-family discovery artifacts are preserved and audited first, but only the DenseOn slice can
-satisfy primary, causal, or confirmatory gates. The authoritative scope is
+## Current v3 completion — 2026-09-13
+
+The scientific matrix is complete. Use [current status](../CURRENT_EXPERIMENT.md)
+and [agent instructions](../AGENTS.md) for live recovery handles and remaining
+source-release work. **Do not run the historical controllers below.** Their
+older namespaces, waiting conditions and missing-result statements are retained
+provenance, not instructions to repeat experiments or restart stopped processes.
+
+| Gate | Current verified evidence | Remaining boundary |
+| --- | --- | --- |
+| Primary science | Twelve runs, sixty checkpoints, 840 retrieval units, fourteen baseline tasks and twelve validation results; [native assembly](../reports/engineering-archive/dense-v3-current-publication-consumer-v1/README.md) | Original unknown process exits remain unknown; artifacts do not invent exits |
+| Weight and representation analyses | Complete weight and 61-state functional panels, all fixed contrasts and exploratory comparator controls; [findings and evidence](../PROJECT_STATUS.md) | Predictive association is not mediation; rotation-sensitive participation is not basis-robust capacity |
+| Crossed continuation | Twelve runs, sixty checkpoints/probes, 168 task results and all six inference tables; [complete closeout](../reports/engineering-archive/dense-v3-final-evaluation-closeout-v1/README.md) | Two fixed sources and three order seeds, not independent source-training replications |
+| Durability and tracking | All 120 checkpoints backed up; required analysis groups downloaded anonymously and verified; all 24 W&B runs/history checked; [restoration guides](checkpoint-restoration.md) | Backup does not establish exact GPU continuation or physical second-host execution |
+| Numerical reconstruction | Complete original primary/factorial graph and generated findings reproduced; [closed replay entry](paper-results-reproduction.md#complete-paper-replay) | Preserve the recorded working-directory requirement and original failed attempt |
+| Reviewed manuscript | Complete result text, eight-page main, 158-word abstract and all 13 pages checked; actual new default/all build passes; [current build](../paper/current/README.md) | Document acceptance is not full source publication; historical Make rules are preserved in legacy.Makefile |
+| Source/distribution | Primary numerics integrated; original distribution audit passes; actual version-isolated complete numerical/current-paper wheel execution and new Make release pass, with 194 composition integration tests; [composition guide](versioned-paper-reproduction.md) | Preserve original fresh-worker admission boundaries; finish [full source-version tests](source-version-testing.md), final package/hygiene checks and actual source publication |
+| Exact training recovery | Both genuine warmed restores pass complete bitwise endpoint comparison after 78 updates; [actual recovery](../reports/engineering-archive/dense-v3-warm-reducer-recovery-v1/README.md) | Two tested cases, not all checkpoints, NorMuon, a physical second host or a packaged general recovery entry |
+| Final publication | Local reviewed paper and content-addressed artifacts exist | Relevant tests/audits, assembled-source transition, no pending result macros, no Type 3 fonts, credential hygiene and actual authorized publication still required |
+
+This table maps current accepted evidence; it does not alter scientific estimands,
+retroactively pass an old source lock, waive a failed test, authorize a stopped
+controller transition or claim the remote GitHub source is current. The historical
+checklists and their original command order remain below for audit. The owner has
+authorized public visibility; their older private-only conditions are superseded.
+
+## Historical corrected-primary checklist — not the current controller
+
+This section preserves the previous corrected-primary completion specification.
+Its completed discovery and follow-up outputs cannot substitute for the current
+v3 matrix. Read `PROJECT_STATUS.md` and `AGENTS.md` before running commands.
+The authoritative family scope is
 [configs/dense_scope_amendment.json](../configs/dense_scope_amendment.json).
 
 A running process, plausible file count, or green unit test is not sufficient. Every accepted gate
 must have a complete manifest, exact cardinality, content hashes, and the same scope-amendment
 identity.
 
+| Requirement | Authoritative evidence | Passing condition |
+| --- | --- | --- |
+| Shared data | Materialized training view and sampling ledger | All 500,000 row identities and source quotas agree; seven seeded distinct negatives per query; identical fingerprint across the 12 runs |
+| Primary training | `configs/dense_no_packing_retrain.yaml`, execution protocol and deep completion audit | Four declared rates per optimizer, 12 complete runs, all 60 scheduled model/optimizer/scheduler/trainer/four-rank-RNG payloads valid |
+| Retrieval | Evaluation and outcome protocols, primary result manifests | Exactly 12 × 5 × 14 = 840 provenance-valid task units; independent validation selection; frozen simultaneous optimizer contrasts |
+| Weight space and bridge | Analysis and bridge implementation protocols | All primary states, nine declared bridge features and held-out-dose folds audited; predictive support is not causal mediation |
+| Dimension exports | `configs/dense_primary_dimension_export_protocol.json` and `primary_exports.json` | Pretrained model plus all 60 primary states; fixed probe identities; complete checkpoint-backed source/configuration/encoding receipts |
+| Dimension findings | Dimension analysis and publication manifests | Exact task, random-draw and rotation panels; all numerical outputs, decisions and generated LaTeX recomputed by the authoring audit |
+| Portable dimension evidence | `reports/dimension-utilization-publication/portable_manifest.json` | Closed source tables and per-state provenance; clean-clone recomputation passes without producer-directory fallback; no claim to repeat encoding or ablations |
+| State-by-operator intervention | Frozen factorial design, implementation, completion and publication protocols | Two source states × two reset continuation operators × three order seeds; calibration, training, probe/full-corpus evaluation, inference and publication audited |
+| Durability | Original immutable HF commits and local/remote digest inventories | Every completed primary and factorial run and the required analysis artifacts are recoverable; stage backup is not scientific completion |
+| Tracking | Read-only primary W&B provenance audit | Exact identities/configuration/source bindings and completed states for all declared runs |
+| Manuscript | Three active generated includes and strict paper/release audits | Primary-only scientific claims; no pending result markers; complete evidence; compliant abstract/page count; no Type 3 fonts |
+| Handoff and release | Current status, source-bound receipts, tests and public repository/archive | Tests and source audits pass; current branch deployed under the controlled transition; final evidence published without credentials |
+
+The live main controller must finish its exact existing contract before the isolated narrative
+changes are merged. The prospective augmented factorial plan adds eleven primary/dimension steps
+before calibration while retaining its original 36 commands. Its read-only inspection command is:
+
+```bash
+CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /usr/bin/python3 \
+  -m embed_optim.state_operator_factorial_completion --dry-run
+```
+
+Do not launch a second controller. The old waiting factorial ledger must still have zero executed
+steps and be archived byte-for-byte under the declared transition before restarting only that
+controller. This transition has not been deployed. See
+[dimension-utilization.md](dimension-utilization.md) and
+[state-operator-factorial.md](state-operator-factorial.md) for the precise handoff.
+
+The final paper gate is deliberately incomplete while primary dimension evidence is absent. A
+passing historical portable inventory or removal of visible pending macros cannot satisfy it.
+Repository engineering records remain outside the manuscript, including its appendix.
+
+## Historical checklist — not primary completion
+
+The remainder documents the earlier exploratory workflow and its original release requirements.
+Do not run its orchestration as the active workflow or import its scientific claims into the paper.
+The owner subsequently authorized a public repository; historical private-release conditions below
+are superseded by that authorization.
+
 | Requirement | Authoritative evidence | DenseOn passing condition |
 | --- | --- | --- |
 | Scope | configs/dense_scope_amendment.json | families=["dense"]; historical Late is retained, not used in primary inference |
-| Execution contract | configs/experiment.yaml, README.md, and paper/main.tex | eight H100-equivalent GPUs are documented as two disjoint four-GPU training pools; each run retains four ranks; exact task-parallel evaluation and numerical acceleration boundaries are disclosed |
+| Execution contract | configs/experiment.yaml, README.md, and paper/main.tex | eight NVIDIA L20Z GPUs are documented as two disjoint four-GPU training pools; each run retains four ranks; exact task-parallel evaluation and numerical acceleration boundaries are disclosed |
 | Shared data | materialized 500K manifest and row ledger | 500,000 rows, seven source quotas, seven distinct seeded negatives, one training-view fingerprint |
 | Discovery training | configs/experiment.yaml plus completion/checkpoint audit | 12 runs, 60 checkpoints, all model/optimizer/scheduler/Trainer/RNG payloads deep-valid |
 | Discovery evaluation | [reports/dense-discovery/coverage.json](../reports/dense-discovery/coverage.json) and provenance-valid MTEB files | 12 × 5 × 14 = 840 DenseOn units selected only after the full historical source contract passes |

@@ -1,0 +1,103 @@
+{
+  "archive_files": {
+    "README.md": {
+      "bytes": 5131,
+      "git_blob_sha1": "0cfdf909728c13a6a6476f139a462e13c0c4f799",
+      "sha256": "4b89549fdae9fc4595ab793c1bcbb6def53a0ba2343c9701c48f5952c06dcbc8"
+    },
+    "actual/all-twelve-final-readback.json": {
+      "bytes": 2537171,
+      "git_blob_sha1": "eb2e21772d4b81700925a1c0e6611779a9756050",
+      "sha256": "b8c9aff0f580e3fee1d8f239b2943ef649ec154ae5767ee576ee47b38e027fd6"
+    },
+    "before/CURRENT_EXPERIMENT.md": {
+      "bytes": 13599,
+      "git_blob_sha1": "abdccdba26f4a5e81a8034efb5d5f00994c76029",
+      "sha256": "4b1d7ad7278d077d3b11ca9b478a7924aff67ab85f28bc15c8a4fad1df1ceb9b"
+    },
+    "commands.json": {
+      "bytes": 14037,
+      "git_blob_sha1": "caee74159144e5cc5881233d7968da61dde03d2d",
+      "sha256": "3284f6814b431c1dad341bbe3fb6033da5cbc63a284a769100f713ad2b1d1ddc"
+    },
+    "observations.json": {
+      "bytes": 8165,
+      "git_blob_sha1": "88b295179c113bdbab0bbcf98c358d3ba356a58d",
+      "sha256": "bfdb8d952d414eb56e8c5bec9b42cbeb97cee883d226e8637c18498c2a0db076"
+    },
+    "source/export_final_tables.py": {
+      "bytes": 8311,
+      "git_blob_sha1": "bc66427cdbd142c5c09889fcf5f90896cb2c654f",
+      "sha256": "153c34be933fda190d8fccb09add5772b09f4aafdcff616613921a77f7e930cd"
+    },
+    "source/readback.py": {
+      "bytes": 9129,
+      "git_blob_sha1": "af9fb1b14d659f5ba04aa0d69758b3e14356c7a0",
+      "sha256": "765f00465728ad6e18d299f2e064070d6cc525775a5bf1c7e71273c9497ca5b2"
+    },
+    "tables/manifest.json": {
+      "bytes": 1252,
+      "git_blob_sha1": "ba5cc6765949dc84f4180ecf4fc84dc10fafe564",
+      "sha256": "ae86c2fa5f4e083b8ff5597f539f342fabd35e746bf7c739c574273c52820568"
+    },
+    "tables/summary.csv": {
+      "bytes": 1029,
+      "git_blob_sha1": "b4494d0e1c0beb15328af53984cf25b20bb0f75b",
+      "sha256": "0796de3939e4bfe7c9fbf3506279a292bcb6454cf1e9dc3ab4b217c713ba8e6a"
+    },
+    "tables/summary.md": {
+      "bytes": 1359,
+      "git_blob_sha1": "2c32f5bf765f671fe832cb663e49293cdf97487c",
+      "sha256": "cfec20eeed3a697e1753ff9b118ed3c09431adcc4089a40978b8876835273aaf"
+    },
+    "tables/task-scores.csv": {
+      "bytes": 9705,
+      "git_blob_sha1": "d2d8c23c2bcea6bb7a5ce8328e849a2d799dcdbc",
+      "sha256": "660b991962c38ee8ec32808215b5ae99c3e2a8c4dc1a418542a4e63333a3363f"
+    }
+  },
+  "byte_identical_replayed_table_files": 3,
+  "checked_local_links": 30,
+  "csv_round_trip_task_and_mean_checks": 180,
+  "dispatch_authorization_files_unchanged": 6,
+  "first_six_archive_files_preserved": 15,
+  "full_primary_grid_complete": false,
+  "independent_raw_score_export_passed": true,
+  "initial_copy_exit_remains_one": true,
+  "live_files": {
+    "CURRENT_EXPERIMENT.md": {
+      "bytes": 14382,
+      "git_blob_sha1": "49990e17ccebb9dafc3a58e941d23bed3caa2e11",
+      "sha256": "c1478883ad16adc8b07529fbccbdb14845796afbe41c5aaed568c0ef548f7979"
+    }
+  },
+  "manuscript_source_pdf_generated_results_and_bound_protocols_unchanged": true,
+  "native_complete_checkpoints": 12,
+  "native_task_scores": 168,
+  "negative_six_input_rejected_without_output": true,
+  "new_model_or_retrieval_recomputation": false,
+  "observed_at_utc": "2026-09-10T16:53:10.595309+00:00",
+  "optimizer_ranking_or_selection": false,
+  "overlap_is_not_new_independent_evidence": true,
+  "passed_in_declared_scope": true,
+  "previous_current_handoff_binding_preserved_in_before_copy": true,
+  "previous_interpretation_archive_files_preserved": 12,
+  "previous_six_records_unchanged": 6,
+  "primary_source_assemblies_verified": 2,
+  "primary_source_files_per_assembly": 56,
+  "query_level_ranking_reconstruction": false,
+  "remote_write": false,
+  "resource_handoff": false,
+  "scientific_completion": false,
+  "scope": "complete_final_checkpoint_descriptive_native_score_readback",
+  "self_link_to_check_after_write": 1,
+  "significance_test": false,
+  "source_release": false,
+  "validation_based_selection": false,
+  "whole_goal_complete": false,
+  "actual_verification_call": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nfrom pathlib import Path\nfrom datetime import datetime,timezone\nfrom fractions import Fraction\nimport csv,hashlib,json,re,subprocess\nstory=Path('/root/embedding-optimizer-story-refactor')\nexperiment=Path('/root/embedding-optimizer-v3-experiment')\nprimary=Path('/root/embedding-optimizer-primary-v3')\narchive=story/'reports/engineering-archive/dense-v3-all-final-evaluations-v1'\nwork=Path('/tmp/dense-v3-final-checkpoint-readback.gSO8OWbe')\nold=story/'reports/engineering-archive/dense-v3-first-complete-evaluations-v1'\nprior=story/'reports/paper-review/coordinate-utility-interpretation-v1'\ndef identity(path):\n raw=Path(path).read_bytes()\n return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),'git_blob_sha1':hashlib.sha1(b'blob '+str(len(raw)).encode()+bytes([0])+raw).hexdigest()}\ndef check(path,expected):\n actual=identity(path)\n assert all(actual[key]==value for key,value in expected.items()),str(path)\n return actual\ncheck(archive/'source/readback.py',{'sha256':'765f00465728ad6e18d299f2e064070d6cc525775a5bf1c7e71273c9497ca5b2'})\ncheck(archive/'source/export_final_tables.py',{'sha256':'153c34be933fda190d8fccb09add5772b09f4aafdcff616613921a77f7e930cd'})\ncheck(archive/'actual/all-twelve-final-readback.json',{'bytes':2537171,'sha256':'b8c9aff0f580e3fee1d8f239b2943ef649ec154ae5767ee576ee47b38e027fd6'})\ncheck(old/'verification.json',{'sha256':'8d9b100f00ad0d972aaa2e1a6eb3d44f926e4faca89ffab62c2067c4836c1b2b'})\noldv=json.loads((old/'verification.json').read_text())\nfor name,item in oldv['archive_files'].items():check(old/name,item)\ncheck(prior/'verification.json',{'sha256':'316e52642f8e7678b58165bf1237a0ffc5be7dab041f94e969c8a335360125b1'})\nprevious=json.loads((prior/'verification.json').read_text())\nfor name,item in previous['archive_files'].items():check(prior/name,item)\nassert set(previous['live_files'])=={'CURRENT_EXPERIMENT.md'}\ncheck(archive/'before/CURRENT_EXPERIMENT.md',previous['live_files']['CURRENT_EXPERIMENT.md'])\ncheck(story/'AGENTS.md',{'sha256':'2ea0ac433747a4406823013f36701f49fb8cd806a5c01bdbad73c88ad93b6946'})\ncheck(story/'paper/main.tex',{'sha256':'45a3d297e08dfbb99908508a68ee71f077f29203bc3da8b017f6564769bc177e'})\nframing=story/'reports/paper-review/dense-v3-retrieval-usefulness-v1'\ncheck(framing/'verification.json',{'sha256':'300133970cdae9da812f7e6ea00cbfa2ea9fe57d00812a2e85e82ab79f6a1021'})\npaper_v=json.loads((framing/'verification.json').read_text())\ncheck(story/'paper/build/main.pdf',paper_v['archive_files']['draft/main.pdf'])\nfor name,item in json.loads((framing/'before-bindings.json').read_text()).items():\n if name.startswith('configs/') or name.startswith('paper/generated/'):check(story/name,item)\nfor root in (primary,experiment/'launch/source-snapshot'):\n check(root/'source-assembly.json',{'sha256':'e603ef175c0f691a1dd83c4d8b474d90da2fc67c8c65f5a77f3c3180e78332b8'})\n assembly=json.loads((root/'source-assembly.json').read_text())\n assert len(assembly['files'])==56\n for name,item in assembly['files'].items():check(root/name,item['identity'])\nfreeze={'evaluation-handoff/dispatch.py':'5b8a89bed5e0eaa02a12585ee3f6c883ca3e162b550898d68322321ee41d8427','evaluation-handoff/authorization.json':'2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c','validation-handoff/validation.py':'d2fc55c67670ea5b42cacb055f48379ef278a465ce86d95808231ab86049d913','validation-handoff/authorization.json':'6a8dcdd579bd6c2f6ea82e3f4cd808f88e92e9a28b9e97f41ffa6447eb0e1f6f','functional-dimensions/dispatch.py':'3b02f1d8486f3c2b41d0403cbf291580d0ca32868b8b29cb05514a22770257f5','functional-dimensions/authorization.json':'d72527595e2c963eae7fd46b0a1de2bd83d1ea15a863ae467a1065cfc5b2f336'}\nfor name,sha in freeze.items():check(experiment/'launch'/name,{'sha256':sha})\nbundle=json.loads((archive/'actual/all-twelve-final-readback.json').read_text())\nassert len(bundle['checkpoints'])==12\nfor key in ('scientific_completion','committed_source_release','full_primary_grid_complete','cuda_initialized','optimizer_ranking_or_selection','available_case_mean','model_or_retrieval_recomputed'):assert bundle[key] is False\nrecords={(r['run_id'],r['step']):r for r in bundle['checkpoints']}\nassert len(records)==12 and {step for run,step in records}=={3907}\nprevious_records=json.loads((old/'actual/first-six-complete.json').read_text())['checkpoints']\nassert len(previous_records)==6\nfor record in previous_records:assert records[(record['run_id'],record['step'])]==record\nmanifest=json.loads((archive/'tables/manifest.json').read_text())\nassert manifest['complete_checkpoints']==12 and manifest['task_rows']==168 and manifest['independent_raw_score_reconstruction_passed'] is True\nassert manifest['scientific_completion'] is False and manifest['optimizer_ranking_or_selection'] is False\nreplay_manifest=json.loads((work/'archive-replay/manifest.json').read_text())\nfor name,item in manifest['outputs'].items():\n check(archive/'tables'/name,item)\n assert (archive/'tables'/name).read_bytes()==(work/'archive-replay'/name).read_bytes()\nassert manifest['outputs']==replay_manifest['outputs']\nfor key in manifest:\n if key in ('input','source'):\n  assert {k:v for k,v in manifest[key].items() if k!='path'}=={k:v for k,v in replay_manifest[key].items() if k!='path'}\n else:assert manifest[key]==replay_manifest[key]\nwith (archive/'tables/task-scores.csv').open() as h:taskrows=list(csv.DictReader(h))\nwith (archive/'tables/summary.csv').open() as h:summary=list(csv.DictReader(h))\nassert len(taskrows)==168 and len(summary)==12\nseen=set()\nfor row in taskrows:\n key=(row['run_id'],int(row['step']),row['task'])\n assert key not in seen\n seen.add(key)\n native=records[key[:2]]\n values={r['task']:r['ndcg_at_10'] for r in native['native_complete_reread']['tasks']}\n assert float(row['ndcg_at_10'])==values[key[2]]\nfor row in summary:\n key=(row['run_id'],int(row['step']))\n values=[float(r['ndcg_at_10']) for r in taskrows if (r['run_id'],int(r['step']))==key]\n assert len(values)==14 and int(row['tasks'])==14\n mean=sum((Fraction.from_float(v) for v in values),Fraction())/14\n assert float(mean)==float(row['macro_ndcg_at_10'])==records[key]['macro_ndcg_at_10']\n assert float(100*mean)==float(row['macro_score_0_to_100'])==records[key]['macro_score_0_to_100']\ncommands=json.loads((archive/'commands.json').read_text())\nassert commands['native_readback']['result']['session_id']==46521\nassert commands['native_terminal']['exit_code']==0\nfor key in ('original_export','archived_export','syntax_and_refusal_boundary','supported_copy'):assert commands[key]['result']['exit_code']==0\nfor key in ('negative_six_record_input','initial_copy'):assert commands[key]['result']['exit_code']==1\nassert not (work/'rejected-six-output').exists()\nsubprocess.run(['git','-C',str(story),'diff','--check','--','CURRENT_EXPERIMENT.md'],check=True,capture_output=True,text=True)\nlinks=0;pending_self=0\nfor p in (archive/'README.md',archive/'tables/summary.md',story/'CURRENT_EXPERIMENT.md'):\n for target in re.findall(r'\\[[^\\]]+\\]\\(([^)]+)\\)',p.read_text()):\n  target=target.split('#',1)[0].strip('<>')\n  if not target or '://' in target:continue\n  resolved=(p.parent/target).resolve()\n  if resolved==archive/'verification.json':pending_self+=1;continue\n  assert resolved.exists(),(str(p),target)\n  links+=1\nresult={'scope':'complete_final_checkpoint_descriptive_native_score_readback','observed_at_utc':datetime.now(timezone.utc).isoformat(),'passed_in_declared_scope':True,'native_complete_checkpoints':12,'native_task_scores':168,'independent_raw_score_export_passed':True,'csv_round_trip_task_and_mean_checks':180,'byte_identical_replayed_table_files':3,'previous_six_records_unchanged':6,'overlap_is_not_new_independent_evidence':True,'first_six_archive_files_preserved':len(oldv['archive_files']),'previous_interpretation_archive_files_preserved':len(previous['archive_files']),'previous_current_handoff_binding_preserved_in_before_copy':True,'primary_source_assemblies_verified':2,'primary_source_files_per_assembly':56,'dispatch_authorization_files_unchanged':6,'manuscript_source_pdf_generated_results_and_bound_protocols_unchanged':True,'checked_local_links':links,'self_link_to_check_after_write':pending_self,'initial_copy_exit_remains_one':True,'negative_six_input_rejected_without_output':True,'new_model_or_retrieval_recomputation':False,'query_level_ranking_reconstruction':False,'validation_based_selection':False,'significance_test':False,'optimizer_ranking_or_selection':False,'full_primary_grid_complete':False,'scientific_completion':False,'source_release':False,'remote_write':False,'resource_handoff':False,'whole_goal_complete':False,'archive_files':{str(p.relative_to(archive)):identity(p) for p in sorted(archive.rglob('*')) if p.is_file() and p.name!='verification.json'},'live_files':{'CURRENT_EXPERIMENT.md':identity(story/'CURRENT_EXPERIMENT.md')}}\nprint(json.dumps(result,sort_keys=True))\nPY",
+    "tool_chunk": "811707",
+    "exit_code": 0
+  }
+}

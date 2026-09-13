@@ -1,179 +1,297 @@
 # Agent handoff instructions
 
-## Goal and authoritative read order
+## Read first
 
-The active goal is to determine whether AdamW, Muon, or NorMuon gives better optimization and
-retrieval outcomes when adapting DenseOn on the same deterministic 500k-query, seven-negative
-training set. The current phase is the 12-run independently padded corrective replication. LateOn
-is no longer active work.
+1. [CURRENT_EXPERIMENT.md](CURRENT_EXPERIMENT.md): current completion and remaining work.
+2. [PROJECT_STATUS.md](PROJECT_STATUS.md): results and authoritative evidence map.
+3. [README.md](README.md) and [current paper](paper/current/README.md).
+4. The frozen protocol, accepted receipts and historical instructions for the surface being changed.
 
-Read these sources in order before acting:
+The full preceding handoff is preserved byte-for-byte in
+[the historical archive](reports/engineering-archive/dense-v3-portable-handoff-v1/before/AGENTS.md).
+Its older liveness counts are history, not instructions to restart jobs.
+All preservation, scientific acceptance, source-release gates, safety and authority limits remain binding.
+Before changing a historical source/runtime surface, read its detailed archived instructions;
+this short handoff does not waive or replace a frozen contract.
 
-1. `PROJECT_STATUS.md` — canonical human-readable state, conclusions, blockers, and next steps.
-2. `CURRENT_PROGRESS.json` — latest committed machine-readable training snapshot.
-3. `README.md` — public study overview and reproducibility entry point.
-4. `configs/dense_scope_amendment.json` — active Dense-only scope.
-5. The frozen protocol relevant to the task. For the current phase, read
-   `configs/dense_no_packing_execution_protocol.json`, its preflight parent, and
-   `configs/dense_no_packing_evaluation_protocol.json`. Weight-space and retrieval-bridge work
-   must additionally follow `configs/dense_no_packing_analysis_protocol.json` and the source-bound
-   bridge implementation in `configs/dense_no_packing_bridge_implementation_protocol_v2.json`;
-   corrected outcome aggregation must follow `configs/dense_no_packing_outcome_protocol.json`, and
-   historical/corrected comparisons must follow
-   `configs/dense_no_packing_sensitivity_implementation_protocol.json`. Final paper rendering
-   must follow `configs/dense_no_packing_publication_protocol.json`.
-6. For the prospective state-by-operator mechanism follow-up, read both
-   `configs/dense_no_packing_state_operator_factorial_protocol.json` and
-   `configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`, plus its
-   publication and completion locks and the result-blind abstract-compliance migration, then follow
-   `docs/state-operator-factorial.md`. Do not execute it from changed source bytes or before the main
-   corrected completion ledger is fully complete.
-7. `docs/dense-no-packing-retrain.md` — exact corrected-matrix operational commands.
+## Goal and scientific scope
 
-If `logs/dense-no-packing-v1/recovery-supervisor-state.json` exists, read it after
-`CURRENT_PROGRESS.json`. It is the atomic control-plane state for the recovery defined in
-`configs/dense_no_packing_control_plane_recovery.json`; do not launch a competing matrix while its
-phase is `waiting_for_adopted_training` or `matrix_running`.
+Deliver a defensible NAACL paper and reproducible repository/model-analysis artifacts
+for **DenseOn only**, comparing AdamW, Muon and NorMuon. No new LateOn or blog work.
+The latest direct owner authority is: “你有权做一切事情，目标是尽快完成任务”.
+Training-first priority was fulfilled; source/publication cleanup is now required.
 
-The legacy recovery state has no code-level heartbeat while its blocking matrix child runs. The
-artifact-only next-pair guard is frozen in
-`configs/dense_no_packing_matrix_handoff_guard.json` and publishes
-`logs/dense-no-packing-handoff-guard/state.json`. It waits for both current AdamW runs to become
-deeply complete, then gives the existing matrix five minutes to create a declared Muon successor
-log or output. It yields if any successor artifact appears and invokes the unchanged recovery
-supervisor only after the full absence grace and a final race check. Do not launch a second guard
-while its lease is held, and never replace its artifact gates with process inspection.
+The primary design remains the same revised deterministic 500K queries, seed 42,
+one positive plus seven distinct fixed hard negatives, no in-batch/cross-device negatives,
+8192 context, global batch 128, one epoch, four rates per optimizer and five stages.
+Primary rates are not independent seeds. Keep every run/rate/stage/task and frozen selection rule.
 
-If `logs/dense-no-packing-finalization/pipeline-ledger.json` exists, it is the atomic handoff state
-for incremental corrected checkpoint backup and the post-training evaluation/analysis/publication
-chain. Do not launch a competing corrected finalizer while its controller lease is held. Resume it
-only with `python -m embed_optim.corrected_completion_pipeline --resume`; the exact operational
-source/protocol/command contract must still match.
+The story is reached weights and trajectories -> functional representation utility ->
+held-out-rate retrieval prediction, with a separately bounded crossed continuation.
+Intrinsic spectral/row behavior, one-step proxies and engineering tests are not optimizer
+quality or mechanism findings. No packing, padding or other implementation-error narrative
+belongs anywhere in the paper, including the appendix. Preserve it only as engineering evidence.
+Never put held/historical or synthetic outcomes into current paper results.
+Do not hand-edit generated findings or erase pending markers to obtain acceptance.
 
-The owner-directed paper-only amendment caused the pre-amendment controller to fail closed at
-2026-09-04 00:07 UTC. Its sole authorized contract transition is frozen in
-`configs/dense_no_packing_completion_contract_migration.json`. If the ledger still has the exact
-source contract named there and the controller lease is free, run
-`python -m embed_optim.completion_contract_migration` once, then resume the controller normally.
-The migration archives the original ledger byte-for-byte and verifies that the matrix, execution
-protocol, controller, arguments, and command order did not change. Never generalize this path to
-accept arbitrary contract drift.
+The crossed design uses two fixed genuine 60% states, reset AdamW/Muon, a fixed initial
+gradient-history calibration and 50K queries under three order seeds. These seeds do not
+replicate source training. Main contrasts are averaged endpoints, not gains from each source.
+MM-AA = state + operator; interaction is not a third additive term.
+Initial probe matching does not match subsequent update norms or angular dynamics.
+Common auxiliary continuation does not remove different primary source-recipe histories.
+Marginal crossed intervals are not simultaneous coverage, equivalence or mediation.
 
-The first resumed audit exposed a narrower operational bug: audit-only full-run verification erased
-the stored upload commit identity. The hardening transition is frozen separately in
-`configs/dense_no_packing_backup_provenance_migration.json`; it preserves the original upload
-commit during audits and adds `corrected_checkpoint_backup.py` to the controller's own contract.
-If the live ledger still has that protocol's exact source hash and the controller lease is free,
-run `python -m embed_optim.completion_backup_contract_migration`, then resume normally. This second
-one-time transition must not be substituted for any future source change.
+Coordinate attribution deletes and renormalizes; it is not additive raw score attribution.
+Native-coordinate differences and three sampled rotations do not establish arbitrary-basis
+invariance or greater useful capacity. Average effects within task before splitting helpful/
+degrading mass. Preserve frozen zero-denominator handling and all undefined coverage.
+Full-spectrum entropy differs from truncated-spectrum entropy; retain both measurement branches.
+Held-out-dose prediction is not held-out-task generalization or a causal explanation.
+Post-result recipe controls and cosine-sensitivity analyses remain explicitly exploratory.
 
-A later result-blind manuscript topology preflight found that placing every corrected table in the
-main paper pushed its endpoint to page 9. The exact non-scientific transition is frozen in
-`configs/dense_no_packing_publication_layout_migration.json`: the all-rate retrieval answer remains
-in the main narrative, while the complete geometry-bridge and execution-sensitivity tables are
-invoked after the appendix boundary. After this change reaches the experiment checkout and the
-controller releases its lease, migrate with
-`python -m embed_optim.completion_contract_migration --protocol
-configs/dense_no_packing_publication_layout_migration.json`, then resume the ordinary controller.
-Do not use that migration for any other source drift.
+## Current state — 2026-09-13
 
-A second result-blind narrative audit found that the frozen corrected renderer would update its
-results section but not the abstract or main Conclusion. The exact publication-only transition is
-frozen in `configs/dense_no_packing_publication_narrative_migration.json`: the same primary
-all-rate finding is rendered into the abstract and main Conclusion, while the full historical
-packed-selector claim moves to the appendix. After this change reaches the experiment checkout and
-the controller releases its lease, migrate with
-`/usr/bin/python3 -m embed_optim.completion_contract_migration --protocol
-configs/dense_no_packing_publication_narrative_migration.json`, then resume the ordinary controller
-with `/usr/bin/python3`. This migration was executed at 03:12 UTC on 2026-09-04; its distributable
-receipt is `reports/dense-no-packing/publication-narrative-migration.json`. Do not rerun it or use it
-for any other source drift.
+Latest release work: the default `make` / `make all` now builds `paper/current`;
+`make release` executes the accepted complete numerical-to-reviewed-paper entry
+with explicit NUMERICAL_BUNDLE and new RELEASE_OUTPUT. Both actual executions
+passed (39662 / fdd7ec / 0 and 93370 / 199e92 / 0). The original Makefile is
+byte-preserved as `paper/legacy.Makefile`, with explicit legacy targets.
+README's conclusion is now generated from authenticated complete outputs;
+its previous pending marker was not manually waived. Read
+`/tmp/dense-v3-release-transition.zFMpOKti/RUNNING.md` for this active CPU-only
+release transition, not the terminal prior-turn handles below.
+All 3,800 tests now pass in the complete source-version matrix: current 2,873,
+original analysis 733, original factorial 194; zero failures/errors/skips.
+Current-role rerun 1409 / 174339 / exit 0; exact matrix join ce9d90 / exit 0.
+The first combined run retains exit 1 for five corrected old-Make routes; its
+historical children both passed. No test job remains live. Distribution, style,
+portable evidence and isolated CFF checks pass. Final source publication remains.
+The complete source-version runner is `scripts/test_source_roles.py`; read
+docs/source-version-testing.md. It assigns every test exactly once, authenticates
+six original analysis dependencies and one original factorial dependency, and
+refuses failures/errors/skips/duplicate cases. Never replace historical locks
+to make mixed-source pytest pass. No source publication is claimed yet.
 
-If `logs/dense-no-packing-sealed-backup/state.json` exists, it is the independent per-checkpoint
-durability state. Its supervisor only reads training artifacts and uses CPU/network resources. Do
-not launch a duplicate while `logs/dense-no-packing-sealed-backup/supervisor.lease` is held. A
-covered checkpoint means a hash-audited remote backup exists; it never means the run or study is
-scientifically complete.
+All 24 scientific runs, 120 checkpoints, primary 840-task evaluation, baseline 14 tasks,
+12 validation selections, weight/functional analyses, 168 continuation tasks, five-stage probes,
+statistics, tracking and required result backups are complete. Original complete numerical/PDF
+replay has passed. No registered scientific or recovery job remains live. The
+new exact recovery checks are terminal: AdamW **58312 / 20aa07 / exit 0**,
+Muon **65312 / 02e59e / exit 0**, all eight ranks and both fresh readers exit zero.
+Read /tmp/dense-v3-warm-reducer-recovery.rP4NVV4i/RUNNING.md. Source
+3edaa4ea6ed39006bcf178cf611bee46811d0319e7d2608857eb250df7242fbb,
+authority 49de01d10a5bca26436db205dd0159df49813daf73abe68dd03ee23f52022b08.
+29 helper/native-normalization/exact-gate controls and CPU preparation pass.
+All eight ranks pass the first-gradient gate, then both 78-update continuations
+pass original exact step-391 comparison: all 134 model tensors, complete optimizer,
+scheduler, four rank RNGs and selected Trainer counters. No tolerance was added.
+See reports/engineering-archive/dense-v3-warm-reducer-recovery-v1/README.md.
+This resolves the two tested endpoint mismatches, not all-save/NorMuon/second-host
+coverage or a packaged general restore API. Do not poll/restart these completed jobs.
+docs/completion-gates.md now separates current v3
+evidence from historical controller instructions; it does not waive release gates.
+First paired-backward diagnostic sessions 17406 / 663091 and 39489 / 33677f
+are terminal failures before the second pass. Preserve their source/outputs:
+/tmp/dense-v3-paired-backward.lNjcKc0t/RUNNING.md. The diagnostic wrongly required
+model_accepts_loss_kwargs=false; original Trainer normalization also applies
+when the actual item count is None. A corrected diagnostic observes that native
+count explicitly. Its 17 helper/native-normalization tests pass; it does not
+change original training math or relax any endpoint comparison.
+The corrected paired entry is terminal: 32954 / c06ef0 and 85232 / 6ee966
+exit zero, all eight rank exits zero. Read
+/tmp/dense-v3-paired-backward-fixed.JXOJBril/RUNNING.md. Same weights, optimizer,
+scheduler, actual inputs and first-input RNG are verified. All 536 local leaf
+contributions per rank match across passes, but 123/134 post-DDP gradient tensors
+differ in both cases. DDP bucket rebuilding changes from 0 to 1. This locates a
+paired difference downstream of local differentiation; it is not yet proof that
+the original long endpoint failure is fully explained or repaired. No optimizer
+update or clipping was performed; do not poll/restart these completed sessions.
+The new first-backward diagnostic is also terminal: sessions 50164 / 84aa35
+and 69733 / 4a2137 both exit zero, all eight ranks zero. Read
+/tmp/dense-v3-first-gradient.FDK2kcqs/RUNNING.md; do not poll or restart these handles.
+Both genuine saves load model/optimizer/scheduler states bit-exactly on device,
+and all four actual resumed microbatches match expected token features per rank.
+All 134 post-DDP/pre-clip gradients agree across ranks. No clipping or optimizer
+update was executed. Original uninterrupted gradients are not available here;
+this does not establish exact endpoint resume or identify the previous divergence's cause.
+The subsequent all-element CPU rank-mean comparison has relative L2 differences
+2.32e-8 / 2.47e-8 and fitted scale approximately one; no tolerance is changed.
+See reports/engineering-archive/dense-v3-first-gradient-boundary-v1/README.md.
+The completed paired CPU comparison covers all 149,014,272 elements per case:
+relative L2 differences 2.0473483980114333e-8 / 2.1862897063898537e-8;
+maximum absolute difference 1.4901161193847656e-8 in both. Its output artifacts
+are complete, but the original launch tool/session exit was lost and remains unknown.
+See reports/engineering-archive/dense-v3-paired-backward-boundary-v1/README.md.
+The separately bound warm-reducer adapter above now passes both original exact
+endpoint comparisons. Do not repeat this paired diagnosis or either completed
+78-update check as missing work. The portable adapter is now implemented; final
+versioned-source delivery remains.
+Do not repeat these completed tasks as missing work or poll their terminal sessions.
 
-On the experiment host, `CURRENT_PROGRESS.json` may lag the logs. Refresh it only through the
-artifact-only command below; it does not inspect system processes:
+The reviewed manuscript is in **paper/current**, with all twelve authenticated inputs.
+Use the documented current-paper entry and a new explicit output directory.
+The complete document checker is byte-identical to the accepted original component.
+Actual Make and extracted-wheel builds pass; the latter uses 28 wheel-local study modules
+and reproduces the reviewed PDF text. The 158-word abstract/eight-page main and all 13 pages
+have been checked. Final current-paper focused integration has 86 passing tests.
+The historical parent paper remains separate; its original Make rules are now
+byte-preserved in legacy.Makefile. Current default/all/release have transitioned
+as recorded above; they no longer dispatch the historical template.
+A document-only success is not full scientific-consumer integration or source release.
 
-```bash
-python -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json
-```
+Both earlier device-only GPU resume checks remain historical exact-equality failures:
+sessions 39663 / 75985, actual exits 1 (8ceca3 / 1672c5). All eight ranks reach step 391
+and exit zero, but both fresh comparison readers fail. All 134 model tensors differ in
+each case, as do moments; scheduler, four-rank RNG and counters match. The new
+warm-reducer checks above resolve these two cases; their earlier failures stay preserved.
+The first resumed loss log covers seven updates, not the uninterrupted ten.
+Do not infer a backend cause, relax tolerance, change kernels, overwrite old outputs or
+automatically retry. Fresh scientific checkpoints remain unchanged; diagnostic resumed
+states do not replace them. The device-counter helper is not yet a general restore integration.
 
-## Handoff discipline
+The CPU boundary diagnostic now passes: all three seeds/four logical ranks retain
+the entire resumed index suffix; eight-worker seed-314159 checks agree. Both genuine
+step-313 saves load all 134 model tensors and complete optimizer/scheduler states
+bit-exactly on CPU using the original loaders. See
+reports/engineering-archive/dense-v3-resume-cpu-boundaries-v1/README.md.
+Do not repeat those checks as missing. The subsequent real GPU boundary above
+now covers device loading/tokens and records leaf contributions plus actual
+post-DDP gradients. No backend cause is proven.
 
-Keep `PROJECT_STATUS.md` current whenever a meaningful run, failure, release gate, backup, or
-scientific interpretation changes. At the same boundary, refresh `CURRENT_PROGRESS.json`, update
-GitHub issue #41, and commit and push the documentation/evidence change once its checks pass. Do
-not commit a new snapshot for every training step; the JSON is a durable handoff receipt, while the
-command above is the live view. Never put claims based only on a running or partially written
-checkpoint into the paper.
+The original full distribution audit now passes (actual build/audit exits zero);
+see reports/engineering-archive/dense-v3-portable-input-roles-v1/README.md.
+Historical ten/six/one-finding failures remain preserved. Recorded namespaces now come from
+pinned genuine input audits; the changed reader exactly reproduces the accepted input result.
+The relevant 43 local tests, 58 diagnostic-assembly calibration cases and one cold CLI pass.
+The latter preserves and explicitly exercises all original producer-root refusals.
+Never hide strings, remove negative controls or weaken the scanner. Successful packaging does not prove
+every runtime entry works. Same-host relocation is not a physical second-host test.
 
-The active corrective phase is governed by `configs/dense_no_packing_execution_protocol.json`;
-its engineering parent is `configs/dense_no_packing_preflight_protocol.json`, and corrected
-checkpoint reloads are governed by `configs/dense_no_packing_evaluation_protocol.json`. The
-weight-space operationalization and retrieval bridge are governed by
-`configs/dense_no_packing_analysis_protocol.json`; the later executable bridge source binding is
-governed by `configs/dense_no_packing_bridge_implementation_protocol_v2.json`. The v1 bridge
-implementation lock is a superseded, never-executed receipt and must not be used. Validation
-selection, max-T inference, and retrieval dynamics are governed by
-`configs/dense_no_packing_outcome_protocol.json`; execution-path sensitivity is governed by
-`configs/dense_no_packing_sensitivity_implementation_protocol.json`. Generate the complete
-corrected paper tables only through `python -m embed_optim.corrected_publication`, which
-verifies all four upstream manifests and the source-bound publication protocol. Do not hand edit
-its generated paper include. Do not launch or interpret corrected runs from
-an uncommitted matrix.
+## Next work
 
-Use `python -m embed_optim.corrected_wandb_audit --allow-partial` for a read-only audit of active
-corrected source runs. Omit the partial flag only after 12/12 training completion. This check may
-verify W&B identity, configuration, and state, but it must not mutate source histories or supply a
-scientific result.
+Primary numerical source is now integrated byte-for-byte: all 33 primary modules and
+56 assembly bindings match the actual training snapshot; all twelve source identities
+load with repository and training root both this checkout. The 271 relevant tests and
+three actual one-tree/CLI controls pass. Read docs/current-training-source.md and
+reports/engineering-archive/dense-v3-numerical-source-integration-v1/README.md.
+Do not repeat the source copy as missing work. The historical candidate YAML is a
+test/preparation fixture, not the current v3 data/run matrix.
 
-The active paper scope is DenseOn only. LateOn files are historical provenance and must not be
-promoted into primary inference or used to justify new computation.
+Saved factorial checkpoint inspection now has a separate explicit-local-path entry:
+docs/saved-factorial-checkpoints.md. Genuine AdamW/Muon step-313 wheel reads exactly
+match the original native reader, with saved identities unchanged and old directories
+refused. This is artifact inspection, not fresh-run source admission or exact GPU resume.
+See reports/engineering-archive/dense-v3-portable-factorial-checkpoint-v1/README.md;
+the original source/checkpoint validators and fresh-run rejection remain unchanged.
 
-The completion controller uploads a run after all five scheduled checkpoints are deeply complete.
-If a machine-shutdown risk requires earlier durability, use
-`python -m embed_optim.incremental_checkpoint_backup` only on an already sealed scheduled
-checkpoint. Its receipt must report `scientific_completion=false`, verify the local payload is
-stable, and compare Hugging Face LFS SHA-256 or Git-blob SHA-1 digests after upload. This operation
-preserves a resumable state; it must never promote a partial run into a completed result.
-For unattended coverage use `python -m embed_optim.sealed_checkpoint_supervisor`; it reuses the
-same sealed-checkpoint uploader, fails closed on invalid receipts or a changed source contract,
-and yields the final checkpoint to an active whole-run backup before applying its own fallback.
+The already-completed full numerical/PDF replay now has a stable local closed bundle:
+reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed.
+Read docs/paper-results-reproduction.md; invoke its unchanged entry from closed/primary.
+All 189 input files and eight generated current-paper inputs match their accepted bytes.
+This reuses completed replay, not a new experiment or remote/source-release admission.
+Its document is the original complete-result prose; paper/current builds the reviewed revision.
 
-The state-by-operator follow-up has its own source-bound handoff at
-`python -m embed_optim.state_operator_factorial_completion --resume`. Its ledger is under
-`logs/state-operator-factorial/completion/`. It must wait for the exact completed main corrected
-ledger, then runs the frozen calibration, six training waves, checkpoint backup, probe/BEIR
-evaluation, summary, paper-only renderer, and release gates. Do not launch any factorial command in
-parallel with that controller while its lease is held.
+1. The explicit versioned scientific/document composition now works. Read
+   docs/versioned-paper-reproduction.md and
+   reports/engineering-archive/dense-v3-versioned-paper-reproduction-v1/README.md.
+   Actual extracted-wheel execution **82694 / f9d233 / exit 0** reconstructs the
+   complete original numerical graph, joins all eight shared inputs and builds
+   the reviewed 158-word/eight-page-main/13-page paper. Twenty-nine current modules
+   load from the wheel; 26 combined/84 primary modules load from the original
+   source closure. Both original I/O boundaries pass; 194 integration tests pass.
+   Do not poll/restart the completed job or repeat this integration as missing.
+   Source d5013dba447d8affc61e547ea09d395499b3539b95468cc52aa63240640eeb11.
+   Work /tmp/dense-v3-composed-reproduction.06yZQ4dP; read RUNNING.md, now terminal.
+   The old 56/60-file publication contracts still preserve their two config/optimizer
+   version bindings and original failed admission. Numerical consumers execute their
+   original source roles in fresh processes rather than changing those contracts.
+   The old factorial fresh-worker 66-file parent still differs in its input module;
+   this numerical/document command is not fresh-worker admission. Retain its failed
+   152-case source-bound evidence. The reviewed default/release transition now
+   passes actual builds; finish full source-role regressions and curated source
+   publication. Do not claim
+   that a working replay silently admits a changed training worker.
+2. Retain the passing distribution/portability checks through source consolidation, including
+   historical provenance and semantic negative controls. Do not rerun the resolved findings as missing.
+3. Preserve the now implemented scoped `embed_optim_restore` add-on. Read
+   docs/training-restoration.md and reports/engineering-archive/dense-v3-portable-restore-v1/README.md.
+   Its 83 tests and five actual CPU integration tests from an extracted wheel pass;
+   all 25 source/reference members match wheel/sdist. Eight modules load wheel-locally,
+   seven producer-root negative controls pass, with no actual forbidden reads or CUDA.
+   The core computation matches the original successful GPU helpers; the new outer
+   wrapper itself is not separately GPU-verified. It still requires native source,
+   checkpoint and four-rank resource admission, supports only the two declared saves,
+   and is not a general new-host launcher. No GPU repetition is required to restate
+   original endpoint evidence. Preserve the first two source-fidelity test failures
+   (formatter import order/docstring indentation), their explicit narrow normalization,
+   and the successful final tests. No computation or historical source lock was changed.
+4. Finish authorized source publication. All-source-version regression, original
+   full distribution, hygiene, default/release and scientific reconstruction
+   checks now pass. Preserve their exact receipts; do not repeat completed tests
+   or scientific work as missing. Verify the final publication snapshot and
+   use normal existing Git access once; no bypass of any access denial.
 
-The result-blind abstract-compliance transition is recorded in
-`configs/dense_no_packing_state_operator_abstract_compliance_migration.json`. It preserves every
-scientific choice while enforcing the ACLPUB 200-word abstract maximum after both result macros
-expand. A pre-transition factorial ledger with zero executed steps must be archived byte-for-byte
-before resuming the controller against the refreshed source contract; never overwrite that ledger
-or treat its waiting state as scientific output. The completed host transition is recorded in
-`reports/state-operator-factorial/abstract-compliance-runtime-migration.json`; the active contract
-starts with `6605090d` and remains at zero steps until the exact main corrected ledger completes.
+Use accepted native evidence and completed replay where reuse is allowed; do not counterfeit
+an old guard passing, rewrite a failed binding, or endlessly rerun finished preparation.
+The actual one-vs-two-identical-selection history amendment remains explicit.
+Two final primary NorMuon OS exits are unobserved; do not invent zero exits from artifact success.
+Other specifically unknown tool exits in the historical evidence remain unknown.
 
-Never inspect, read, edit, signal, stop, replace, or otherwise touch `gpu.py` or its processes. It
-is outside this repository and automatically yields to study jobs.
+## Runtime and external authority — hard limits
 
-Preserve all existing checkpoints and evidence. Use new output namespaces for corrected reruns;
-never overwrite the 34 completed historical Dense runs. Treat protocol thresholds and failed gates
-as results, not knobs to relax. In particular, the candidate-breadth width-7 reproduction failure
-and `reports/candidate-breadth/packing_invariance.json` must remain disclosed.
+Never inspect, read, edit, signal, stop, replace or otherwise touch **gpu.py or its processes**.
+No broad process/GPU-process inspection, pgrep/ps scans or GPU process enumeration.
+Only exact registered study identities may be inspected through their accepted readers.
+The narrow historical handoff reader is scripts.audit_dense_natural_data.handoff().
 
-Before committing, run the tests and release/audit commands appropriate to the changed surface,
-check `git diff --check`, and verify that the manuscript has no pending result macros or Type 3
-fonts. Do not push generated evidence or change GitHub pull-request state until its source-bound
-audits pass. Never print or commit credentials.
+The old stopped controller identities remain protected:
+196647/start246327790, 870313/start257721545, 870864/start257733056.
+Their four-step main prefix and zero-step waiting factorial are not fresh dispatches.
+Original main ledger SHA: 95c69483f60badddd3c13e175951bcb52682523589c62bf898a57eb786d4e4ef.
+Never resume/kill them casually, launch competing controllers or apply a zero-step migration
+to the nonzero main prefix. Read archived exact contracts/locations before any proposed transition.
 
-For a fast repository handoff check, run `python scripts/portable_evidence.py --audit-only`, then the
-strict Dense paper audit documented in `README.md`. The portable closure is the clean-clone evidence
-boundary; the public Hugging Face checkpoint archive is required for full model-state
-reconstruction. Never relax either audit to turn a failure into a pass.
+Both original GPU lease namespaces remain mandatory for admitted GPU work.
+Children inherit both lease FDs; closing a parent must not explicitly LOCK_UN a surviving child.
+Do not force-unlock, infer a free slot from a stale observation or change frozen live source.
+An expired observation is not process termination; use the same handle or exact owned identity.
+
+GitHub issue-comment/update writes returned 403. Do not retry those writes, bypass the denial
+or switch credentials. Read-only account admin/push metadata does not prove application write
+scope. Git push has not been attempted. One existing-integration/Issues-access question remains
+pending; do not repeat it. No remote source availability follows from local edits.
+Preselected answers and automatic goal continuations are not new authority.
+Commit/push, controller transition and WIP publication retain their review/authority boundaries.
+The final pre-commit/release gates still require complete results, relevant tests/audits,
+no pending macros and no Type 3 fonts. Do not self-waive them.
+
+HF withdrawal was safety-rejected for 9,629 paths / 366,252,912,201 logical bytes.
+Nothing was deleted. Never retry, split or bypass that denial. Historical erasure would require
+specific approval, exact scope, shared-object/current-backup dependency checks and preserved
+current evidence. Existing LateOn/shared artifacts remain protected. Never expose credentials.
+
+## Protocol and work discipline
+
+Read configs/dense_scope_amendment.json and the relevant dense_primary_v3 protocols.
+For weights, retain original/exact geometry and bridge contracts and all their candidates.
+For dimensions, read configs/dense_dimension_utilization_protocol.json and
+docs/dimension-utilization.md. For factorial, read its scientific/implementation/publication/
+completion locks, claim wording/handoff amendments and docs/state-operator-factorial.md.
+For publication, read paper/README.md and docs/completion-gates.md, retaining historical gates.
+Old locks do not automatically admit v3 identities; replacing hashes is not integration.
+
+Treat this file's directory as the repository, not a fixed producer location. On this host use
+/usr/bin/python with an explicit absolute repository src/repository PYTHONPATH for every test
+and child; the installed package/live .venv can otherwise import an unvalidated source tree.
+Use explicit location roles for other trees; exact historical locations and source hashes are
+preserved in the linked handoff and native receipts, not portable runtime defaults.
+Keep existing WIP and frozen source copies. Use apply_patch for authored edits and rg for search.
+Do not commit unrelated changes or mutate sealed archives. Use new output paths and preserve
+all failed/unknown-exit evidence. CURRENT_PROGRESS.json is legacy accounting, not a heartbeat
+or scientific verdict; refresh only through its original explicit experiment/output context.
+No subagents are requested; continue locally unless the owner explicitly asks.
+
+Report concise Chinese updates. Distinguish actual science, diagnostics, portability and release.
+Classify each goal turn by real progress or verified waiting and keep the full goal active until
+all required paper/repository/reproducibility deliverables are actually verified.

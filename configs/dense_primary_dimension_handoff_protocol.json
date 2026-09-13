@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "status": "prospective_primary_dimension_handoff_lock",
+  "frozen_at_utc": "2026-09-04T20:45:35.233682+00:00",
+  "purpose": "Add the independently frozen primary dimension analysis before factorial calibration and refresh the primary manuscript include after the narrative-only merge. Preserve the complete original factorial sequence and scientific design.",
+  "visibility_at_freeze": {
+    "primary_complete_runs": 8,
+    "primary_dimension_outputs_visible": false,
+    "factorial_status": "waiting_for_main_completion",
+    "factorial_executed_steps": 0,
+    "factorial_outputs_visible": false
+  },
+  "parent_bindings": {
+    "configs/dense_dimension_utilization_protocol.json": {
+      "path": "configs/dense_dimension_utilization_protocol.json",
+      "bytes": 7792,
+      "sha256": "de56772ef84745c074940527d621a932a06a20e865a10bc3faad823bcb0e651e"
+    },
+    "configs/dense_primary_dimension_export_protocol.json": {
+      "path": "configs/dense_primary_dimension_export_protocol.json",
+      "bytes": 6270,
+      "sha256": "4c7f4a7e0785ff324ae5312ee8d5b4133765d377ceb973f1af05987ecb87ba2f"
+    },
+    "configs/dense_no_packing_publication_protocol.json": {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "bytes": 11337,
+      "sha256": "39dfd12e6e59b55c2496474221e0d52993a336986e687c32a28cf05586476761"
+    },
+    "configs/dense_primary_dimension_archive_protocol.json": {
+      "path": "configs/dense_primary_dimension_archive_protocol.json",
+      "bytes": 6083,
+      "sha256": "a6ab3201dc220e7fd93a99151f8a3cf4cd02a9954e200ee4231228eeaa95548e"
+    }
+  },
+  "source_bindings": {
+    "src/embed_optim/state_operator_factorial_completion.py": {
+      "path": "src/embed_optim/state_operator_factorial_completion.py",
+      "bytes": 27658,
+      "sha256": "6a9702eca542f67ece7f7a39ed2c58d7444635ee5d5fe6df6c49bb976c3cb2f4"
+    },
+    "src/embed_optim/primary_dimension_probe.py": {
+      "path": "src/embed_optim/primary_dimension_probe.py",
+      "bytes": 20005,
+      "sha256": "6ab31633959a9ed6eaf1d67b3cf77b8e7ecd3bd8cbd5c5e12a64d494a0c90f4b"
+    },
+    "src/embed_optim/dimension_utilization.py": {
+      "path": "src/embed_optim/dimension_utilization.py",
+      "bytes": 30424,
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    "src/embed_optim/dimension_publication.py": {
+      "path": "src/embed_optim/dimension_publication.py",
+      "bytes": 45170,
+      "sha256": "1120d125843789ef7a6aa32fff86d1845eddee16e7ff7d4e3410cd7d8e80761c"
+    },
+    "src/embed_optim/corrected_publication.py": {
+      "path": "src/embed_optim/corrected_publication.py",
+      "bytes": 40493,
+      "sha256": "fd69b84b2440ce5277f1952e42fda28fc22cf46f8451e68a2026f205207e82df"
+    },
+    "src/embed_optim/dimension_release.py": {
+      "path": "src/embed_optim/dimension_release.py",
+      "bytes": 6824,
+      "sha256": "2695b45bc7f92f3d2593cd329e656f425e454909b7f0822c0568ba9bad33998c"
+    },
+    "src/embed_optim/dimension_archive.py": {
+      "path": "src/embed_optim/dimension_archive.py",
+      "bytes": 15410,
+      "sha256": "ab13493dc6d8c9c3c690de1ace30e3534086f8cabafb94aa6e28e8091866f26f"
+    }
+  },
+  "steps": [
+    {
+      "name": "primary-publication-refresh",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.corrected_publication"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-export",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.primary_dimension_probe",
+        "--gpu",
+        "0"
+      ],
+      "cpu_only": false
+    },
+    {
+      "name": "primary-dimension-export-audit",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.primary_dimension_probe",
+        "--audit-only"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-analysis",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_utilization",
+        "--analysis-scope",
+        "corrected",
+        "--input-root",
+        "results/dense-primary-dimension-probe/exports/dense",
+        "--output-dir",
+        "reports/dimension-utilization-primary"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-analysis-audit",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_utilization",
+        "--analysis-scope",
+        "corrected",
+        "--input-root",
+        "results/dense-primary-dimension-probe/exports/dense",
+        "--output-dir",
+        "reports/dimension-utilization-primary",
+        "--audit-only"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-publication",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_publication"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-publication-audit",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_publication",
+        "--audit-only"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-evidence",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_release"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-portable-audit",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_publication",
+        "--portable-audit"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-archive",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_archive"
+      ],
+      "cpu_only": true
+    },
+    {
+      "name": "primary-dimension-archive-audit",
+      "command": [
+        "{python}",
+        "-m",
+        "embed_optim.dimension_archive",
+        "--audit-only"
+      ],
+      "cpu_only": true
+    }
+  ],
+  "scheduling": {
+    "insert_after": "source-checkpoint-durability",
+    "insert_before": "calibration-01",
+    "main_completion_gate_unchanged": true,
+    "expected_inserted_steps": 11,
+    "expected_total_steps": 47,
+    "cpu_environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OPENBLAS_NUM_THREADS": "2",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2"
+    },
+    "gpu_export": "One cooperative lease on device 0, only after the exact complete main ledger and full deep training gate."
+  },
+  "runtime_migration": {
+    "prior_controller_contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8",
+    "prior_controller_source_sha256": "24d9923956a912753eebe48a605af6f98d9d03fc5315ec9bb4f3181ca0dff498",
+    "required_executed_steps": 0,
+    "required_status": "waiting_for_main_completion",
+    "action": "Archive the old zero-step ledger byte-for-byte after stopping only its own waiting controller; retain the main ledger unchanged, then start the augmented controller with the new source-bound contract. Never substitute arbitrary contract drift or apply this migration after factorial work starts."
+  },
+  "scientific_invariants": [
+    "All original 36 factorial commands retain their relative order, arguments, seeds, source states, optimizer calibration, evaluation cells and statistical rules.",
+    "The dimension science and export numerical settings remain in their separate pre-output locks.",
+    "The main trainer, main finalizer and checkpoint backup supervisor remain untouched.",
+    "No intermediate result or synthetic fixture is promoted to a scientific finding."
+  ],
+  "release_boundary": "Execution, full-source authoring audit, portable publication recomputation and content-addressed HF vector/evidence archival are implemented. Real execution, upload and the controlled zero-step runtime deployment remain pending.",
+  "amended_at_utc": "2026-09-04T22:43:12.677327+00:00",
+  "archive_amendment": {
+    "previous_inserted_steps": 9,
+    "previous_total_steps": 45,
+    "new_inserted_steps": 11,
+    "new_total_steps": 47,
+    "scientific_rules_changed": false,
+    "primary_outputs_visible": false,
+    "runtime_deployed": false
+  },
+  "evaluation_handoff_amendment": {
+    "reason": "Refresh only the primary publication parent identity after binding the corrected evaluation-source verifier. All eleven steps, science, sources and completion requirements remain unchanged.",
+    "scientific_contract_changed": false,
+    "numerical_implementation_changed": false,
+    "runtime_deployed": false
+  }
+}

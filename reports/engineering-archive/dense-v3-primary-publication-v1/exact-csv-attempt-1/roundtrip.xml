@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="4" time="10.169" timestamp="2026-09-07T16:48:46.388936+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_primary_v3_publication" name="test_complete_csv_roundtrip_preserves_exact_rational_strings[0]" time="0.050"><failure message="AssertionError: assert {'bridge_rows....}, ...], ...} == {'bridge_rows....}, ...], ...}&#10;  &#10;  Omitting 3 identical items, use -vv to show&#10;  Differing items:&#10;  {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 9, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '35/16', ...}, ...]} != {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 9, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '35/16', ...}, ...]}&#10;  {'feature_prediction_summary': [{...&#10;  &#10;  ...Full output truncated (2 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1987/test_complete_csv_roundtrip_pr0')
+index = 0
+
+    @pytest.mark.parametrize("index", range(4))
+    def test_complete_csv_roundtrip_preserves_exact_rational_strings(tmp_path, index):
+        archive = ROOT / "reports/engineering-archive/dense-v3-primary-renderer-v1"
+        tables = read_json(archive / "probe-result.json")["cases"][index]["complete_kernel_tables"]
+        for name, rows in tables.items():
+            (tmp_path / (name + ".csv")).write_bytes(csv_bytes(rows))
+        restored = publication.read_tables(tmp_path, publication.inference.original.TABLE_COUNTS)
+&gt;       assert restored == tables
+E       AssertionError: assert {'bridge_rows....}, ...], ...} == {'bridge_rows....}, ...], ...}
+E         
+E         Omitting 3 identical items, use -vv to show
+E         Differing items:
+E         {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 9, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '35/16', ...}, ...]} != {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 9, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '35/16', ...}, ...]}
+E         {'feature_prediction_summary': [{...
+E         
+E         ...Full output truncated (2 lines hidden), use '-vv' to show
+
+tests/test_primary_v3_publication.py:111: AssertionError</failure></testcase><testcase classname="tests.test_primary_v3_publication" name="test_complete_csv_roundtrip_preserves_exact_rational_strings[1]" time="0.047"><failure message="AssertionError: assert {'bridge_rows....}, ...], ...} == {'bridge_rows....}, ...], ...}&#10;  &#10;  Omitting 2 identical items, use -vv to show&#10;  Differing items:&#10;  {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173...rank': 8, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': 0, ...}, ...]} != {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173...nk': 8, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '0', ...}, ...]}&#10;  {'feature_prediction_summary': [{...&#10;  &#10;  ...Full output truncated (3 lines hidden), use '-vv' to show">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1987/test_complete_csv_roundtrip_pr1')
+index = 1
+
+    @pytest.mark.parametrize("index", range(4))
+    def test_complete_csv_roundtrip_preserves_exact_rational_strings(tmp_path, index):
+        archive = ROOT / "reports/engineering-archive/dense-v3-primary-renderer-v1"
+        tables = read_json(archive / "probe-result.json")["cases"][index]["complete_kernel_tables"]
+        for name, rows in tables.items():
+            (tmp_path / (name + ".csv")).write_bytes(csv_bytes(rows))
+        restored = publication.read_tables(tmp_path, publication.inference.original.TABLE_COUNTS)
+&gt;       assert restored == tables
+E       AssertionError: assert {'bridge_rows....}, ...], ...} == {'bridge_rows....}, ...], ...}
+E         
+E         Omitting 2 identical items, use -vv to show
+E         Differing items:
+E         {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173...rank': 8, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': 0, ...}, ...]} != {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173...nk': 8, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '0', ...}, ...]}
+E         {'feature_prediction_summary': [{...
+E         
+E         ...Full output truncated (3 lines hidden), use '-vv' to show
+
+tests/test_primary_v3_publication.py:111: AssertionError</failure></testcase><testcase classname="tests.test_primary_v3_publication" name="test_complete_csv_roundtrip_preserves_exact_rational_strings[2]" time="0.046"><failure message="AssertionError: assert {'bridge_rows....}, ...], ...} == {'bridge_rows....}, ...], ...}&#10;  &#10;  Omitting 4 identical items, use -vv to show&#10;  Differing items:&#10;  {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '45/64', ...}, ...]} != {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '45/64', ...}, ...]}&#10;  Use -v to get more diff">tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1987/test_complete_csv_roundtrip_pr2')
+index = 2
+
+    @pytest.mark.parametrize("index", range(4))
+    def test_complete_csv_roundtrip_preserves_exact_rational_strings(tmp_path, index):
+        archive = ROOT / "reports/engineering-archive/dense-v3-primary-renderer-v1"
+        tables = read_json(archive / "probe-result.json")["cases"][index]["complete_kernel_tables"]
+        for name, rows in tables.items():
+            (tmp_path / (name + ".csv")).write_bytes(csv_bytes(rows))
+        restored = publication.read_tables(tmp_path, publication.inference.original.TABLE_COUNTS)
+&gt;       assert restored == tables
+E       AssertionError: assert {'bridge_rows....}, ...], ...} == {'bridge_rows....}, ...], ...}
+E         
+E         Omitting 4 identical items, use -vv to show
+E         Differing items:
+E         {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '45/64', ...}, ...]} != {'leave_dose_fold_metrics': [{'augmented_numeric_rank': 8, 'baseline_mse_exact': '1/512', 'baseline_rmse': 0.044194173... 9, 'baseline_mse_exact': '1/4608', 'baseline_rmse': 0.01473139127471974, 'exact_residual_energy': '45/64', ...}, ...]}
+E         Use -v to get more diff
+
+tests/test_primary_v3_publication.py:111: AssertionError</failure></testcase><testcase classname="tests.test_primary_v3_publication" name="test_complete_csv_roundtrip_preserves_exact_rational_strings[3]" time="0.421" /></testsuite></testsuites>

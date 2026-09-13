@@ -1,0 +1,72 @@
+[
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 10,
+      "row": 15
+    },
+    "filename": "/root/embedding-optimizer-story-refactor/scripts/restore_factorial_probes.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport argparse\nimport hashlib\nimport json\nimport re\nfrom concurrent.futures import ThreadPoolExecutor\nfrom datetime import datetime, timezone\nfrom pathlib import Path, PurePosixPath\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 17
+          },
+          "location": {
+            "column": 1,
+            "row": 7
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 7
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 7,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 59,
+      "row": 20
+    },
+    "filename": "/root/embedding-optimizer-story-refactor/src/embed_optim/complete_paper_document.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from __future__ import annotations\n\nimport hashlib\nimport os\nimport re\nimport subprocess\nfrom pathlib import Path\n\nfrom embed_optim import paper_audit as original_audit\nfrom embed_optim import paper_layout as original_layout\nfrom embed_optim import primary_v3_manuscript as original\nfrom embed_optim import primary_v3_manuscript_build as original_build\nfrom embed_optim.primary_contract import file_identity, require_same, verify_file\nfrom embed_optim.primary_v3_validation_io import write_new\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 22
+          },
+          "location": {
+            "column": 1,
+            "row": 7
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 7
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 7,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  }
+]

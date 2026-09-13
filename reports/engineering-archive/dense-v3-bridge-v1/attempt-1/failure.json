@@ -1,0 +1,17 @@
+{
+  "scope": "engineering_independent_bridge_reference_failure",
+  "observed_at_utc": "2026-09-06T22:02:13Z",
+  "session_id": 1090,
+  "workdir": "/tmp/dense-v3-bridge-audit.6xH3YX",
+  "exit_code": 1,
+  "protocol_sha256": "540c3c3041ea13d9029fb5534283187b4f4141dfc66eba668938a7dc7d8ae803",
+  "location": "independent_full_systems -> ranks -> int(v < x)",
+  "exception": "TypeError: int() argument must be a string, a bytes-like object or a real number, not 'BooleanFalse'",
+  "cause": "SymPy exact comparisons return Boolean atoms, whose truth value is supported but int conversion is not supported by this runtime.",
+  "proposed_reference_only_correction": "Count comparisons through conditional iteration; independently check exact/tied/negative rational rank controls before oracle execution.",
+  "analysis_source_changed": false,
+  "protocol_or_tolerance_changed": false,
+  "scientific_completion": false,
+  "failure_overridden": false,
+  "preserve_partial_outputs": true
+}

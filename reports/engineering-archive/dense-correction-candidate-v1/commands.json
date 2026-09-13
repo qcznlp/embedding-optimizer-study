@@ -1,0 +1,59 @@
+{
+  "scope": "preparation_only_gpu_diagnostics_not_formal_training",
+  "source_manifest": "prepared-source-v2.json",
+  "source_sha256": "559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f",
+  "candidate_root": "/tmp/dense-correction-source.0YHywN",
+  "jobs": [
+    {
+      "label": "short",
+      "work": "/tmp/dense-prepared-gpu.eFlx23",
+      "logs": "/tmp/dense-prepared-gpu-logs.xlFNJv",
+      "group": "7888a4de-ee82-49bf-a30a-a06095818ac2_lb4ts7_l",
+      "command": "env CUDA_VISIBLE_DEVICES=0,1,2,3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 torchrun --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-prepared-gpu-logs.xlFNJv --redirects 3 --tee 0 /root/embedding-optimizer-story-refactor/scripts/audit_prepared_dense_gpu.py --candidate-root /tmp/dense-correction-source.0YHywN --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/prepared-source-v2.json --source-sha256 559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f --workdir /tmp/dense-prepared-gpu.eFlx23 --fixture short --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit /root/embedding-optimizer-story-refactor/reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+      "observed_launcher_exit_code": 0
+    },
+    {
+      "label": "max-context",
+      "work": "/tmp/dense-prepared-gpu.IIsxPO",
+      "logs": "/tmp/dense-prepared-gpu-logs.2v96y4",
+      "group": "5e24f3cf-5662-4ff1-b651-42fc0f4d3db7_jgxfqj9p",
+      "command": "env CUDA_VISIBLE_DEVICES=4,5,6,7 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 torchrun --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-prepared-gpu-logs.2v96y4 --redirects 3 --tee 0 /root/embedding-optimizer-story-refactor/scripts/audit_prepared_dense_gpu.py --candidate-root /tmp/dense-correction-source.0YHywN --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/prepared-source-v2.json --source-sha256 559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f --workdir /tmp/dense-prepared-gpu.IIsxPO --fixture max_context --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit /root/embedding-optimizer-story-refactor/reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+      "observed_launcher_exit_code": 0
+    },
+    {
+      "label": "resume",
+      "work": "/tmp/dense-prepared-resume.u7zFyu",
+      "logs": "/tmp/dense-prepared-resume-logs.BDUbxj",
+      "group": "9174d58f-4230-4e1b-add2-3a9f6f76ebcc_w17irwbi",
+      "command": "env CUDA_VISIBLE_DEVICES=0,1,2,3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 torchrun --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-prepared-resume-logs.BDUbxj --redirects 3 --tee 0 /root/embedding-optimizer-story-refactor/scripts/audit_prepared_dense_resume.py --candidate-root /tmp/dense-correction-source.0YHywN --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/prepared-source-v2.json --source-sha256 559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f --workdir /tmp/dense-prepared-resume.u7zFyu --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit /root/embedding-optimizer-story-refactor/reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+      "observed_launcher_exit_code": 0
+    },
+    {
+      "label": "entrypoint",
+      "work": "/tmp/dense-prepared-entry.IrjSyV",
+      "logs": "/tmp/dense-prepared-entry-logs.OdSCfY",
+      "group": "c2559c29-df02-4a35-ad64-870079fe0085_qyjtxgfi",
+      "command": "env EMBED_OPTIM_MAX_STEPS=3 EMBED_OPTIM_STOP_AFTER_STEP=-1 CUDA_VISIBLE_DEVICES=4,5,6,7 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 torchrun --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-prepared-entry-logs.OdSCfY --redirects 3 --tee 0 /root/embedding-optimizer-story-refactor/scripts/audit_prepared_dense_entrypoint.py --candidate-root /tmp/dense-correction-source.0YHywN --source-manifest /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-correction-candidate-v1/prepared-source-v2.json --source-sha256 559c6df47af4bc8885665334865b1e87c36b18d6dfb4bb75b95faa41440b7a6f --workdir /tmp/dense-prepared-entry.IrjSyV --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit /root/embedding-optimizer-story-refactor/reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+      "observed_launcher_exit_code": 0
+    }
+  ],
+  "reference": {
+    "cpu": {
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 PYTHONWARNINGS=ignore python3 -B /root/embedding-optimizer-story-refactor/scripts/audit_prepared_optimizer_correction.py --candidate-root /tmp/dense-correction-source.0YHywN --output /tmp/dense-prepared-audit.fxwA6B/optimizer-cpu-v2.json --device cpu",
+      "observed_exit_code": 0
+    },
+    "cuda": {
+      "command": "env CUDA_VISIBLE_DEVICES=0 PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/root/embedding-optimizer-story-refactor:/tmp/dense-correction-source.0YHywN PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 PYTHONWARNINGS=ignore python3 -B /root/embedding-optimizer-story-refactor/scripts/audit_prepared_optimizer_correction.py --candidate-root /tmp/dense-correction-source.0YHywN --output /tmp/dense-prepared-audit.fxwA6B/optimizer-gpu-v2.json --device cuda",
+      "observed_exit_code": 0
+    }
+  },
+  "full_candidate_tests": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/tmp/dense-correction-source.0YHywN/src:/tmp/dense-correction-source.0YHywN PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-prepared-audit.fxwA6B/candidate-base-full-v2.xml",
+    "observed_exit_code": 1,
+    "tests": 923,
+    "failures": 11,
+    "errors": 0,
+    "skipped": 0,
+    "exclusions": []
+  }
+}

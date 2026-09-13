@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/usr/bin/python",
+    "-B",
+    "-I",
+    "-c",
+    "\nimport json, sys\nfrom pathlib import Path\nwheel, reference, output = map(Path, sys.argv[1:])\nsys.path.insert(0, str(wheel))\nfrom embed_optim import dense_run_contract, dense_numerical_contract, train\ndense_numerical_contract.verify_stack(train.OptimizerTrainer)\nsource = dense_run_contract.source_identity()\nexpected = json.loads(reference.read_bytes())\nassert len(expected['runs']) == 12\nassert all(identity['source'] == source for identity in expected['runs'].values())\nmodules = {name: module.__file__ for name,module in sys.modules.items()\n           if (name == 'embed_optim' or name.startswith('embed_optim.')) and getattr(module,'__file__',None)}\nassert modules and all(Path(path).is_relative_to(wheel) for path in modules.values())\nassert not train.torch.cuda.is_initialized()\nwith output.open('x') as stream:\n    json.dump({'all_twelve_primary_source_identities_equal': True, 'loaded_modules': modules,\n               'training_executed': False, 'source_release': False}, stream, indent=2)\nprint('WHEEL_LOCAL_PRIMARY_SOURCES_MATCH_ALL_TWELVE_RUNS')\n",
+    "/tmp/dense-v3-numerical-integration.DUnt6osB/wheel",
+    "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-numerical-source-integration-v1/actual/primary-one-tree.json",
+    "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-numerical-source-integration-v1/distribution/wheel-source-readback.json"
+  ],
+  "actual_exit_code": 0
+}

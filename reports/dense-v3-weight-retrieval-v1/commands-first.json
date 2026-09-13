@@ -1,0 +1,58 @@
+[
+  {
+    "cmd": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py --repository /root/embedding-optimizer-story-refactor --weight-root /tmp/dense-v3-weight-artifact-backup.7hBFjg/download/corrected-dense-correctness-v3/weight-space/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/9f53cdb8260f7b9d8f4c29db04159d02dfb7ff4e272cf9c9ba49cba842a1a841 --outcome-root /root/embedding-optimizer-story-refactor/reports/dense-v3-complete-trajectories-v1 --index /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/raw-score-index.json --output /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/input-inspection --inputs-only",
+    "chunk_id": "b4284f",
+    "wall_time_seconds": 0.02278726,
+    "exit_code": 1,
+    "original_token_count": 242,
+    "output": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 366, in <module>\n    main()\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 320, in main\n    inputs = inspect_inputs(args, kernels)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 189, in inspect_inputs\n    scores = table(args.outcome_root, score_name, accepted[\"payloads\"][score_name])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 187, in table\n    return parse(path)\n           ^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_exact_bridge.py\", line 162, in typed_csv\n    with Path(path).open(encoding=\"utf-8\", newline=\"\") as stream:\n         ^^^^\nNameError: name 'Path' is not defined. Did you mean: 'path'?\n"
+  },
+  {
+    "cmd": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py --repository /root/embedding-optimizer-story-refactor --weight-root /tmp/dense-v3-weight-artifact-backup.7hBFjg/download/corrected-dense-correctness-v3/weight-space/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/9f53cdb8260f7b9d8f4c29db04159d02dfb7ff4e272cf9c9ba49cba842a1a841 --outcome-root /root/embedding-optimizer-story-refactor/reports/dense-v3-complete-trajectories-v1 --index /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/raw-score-index.json --output /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/input-inspection --inputs-only",
+    "chunk_id": "151089",
+    "wall_time_seconds": 0.049198127,
+    "exit_code": 1,
+    "original_token_count": 168,
+    "output": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 366, in <module>\n    main()\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 320, in main\n    inputs = inspect_inputs(args, kernels)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 208, in inspect_inputs\n    need(score_map[(row[\"run_id\"], stage)][\"mean_ndcg_at_10\"] == row[\"macro_ndcg_at_10\"], \"Macro outcome differs\")\n  File \"/tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py\", line 43, in need\n    raise ValueError(message)\nValueError: Macro outcome differs\n"
+  },
+  {
+    "cmd": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py --repository /root/embedding-optimizer-story-refactor --weight-root /tmp/dense-v3-weight-artifact-backup.7hBFjg/download/corrected-dense-correctness-v3/weight-space/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/9f53cdb8260f7b9d8f4c29db04159d02dfb7ff4e272cf9c9ba49cba842a1a841 --outcome-root /root/embedding-optimizer-story-refactor/reports/dense-v3-complete-trajectories-v1 --index /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/raw-score-index.json --output /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/input-inspection --inputs-only",
+    "chunk_id": "1bb1bd",
+    "wall_time_seconds": 0.57312132,
+    "exit_code": 0,
+    "original_token_count": 87,
+    "output": "{\"scope\": \"actual-complete-weight-retrieval-pure-numerical-readout\", \"completed_at_utc\": \"2026-09-12T12:14:52.886064+00:00\", \"inputs_only\": true, \"native_weight_retrieval_identity_seal_joins\": 60, \"original_raw_checkpoint_rows_matched\": 120, \"raw_index_task_scores_matched\": 840, \"formal_consumer_called\": false, \"scientific_completion\": false}\n"
+  },
+  {
+    "cmd": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/readout.py --repository /root/embedding-optimizer-story-refactor --weight-root /tmp/dense-v3-weight-artifact-backup.7hBFjg/download/corrected-dense-correctness-v3/weight-space/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/9f53cdb8260f7b9d8f4c29db04159d02dfb7ff4e272cf9c9ba49cba842a1a841 --outcome-root /root/embedding-optimizer-story-refactor/reports/dense-v3-complete-trajectories-v1 --index /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-trajectory-artifact-backup-v1/raw-score-index.json --output /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/actual",
+    "chunk_id": "fccca7",
+    "wall_time_seconds": 1.00121719,
+    "session_id": 27994,
+    "original_token_count": 0,
+    "output": ""
+  },
+  {
+    "session_id": 27994,
+    "chunk_id": "f39221",
+    "wall_time_seconds": 0.00000241,
+    "exit_code": 0,
+    "original_token_count": 87,
+    "output": "{\"scope\": \"actual-complete-weight-retrieval-pure-numerical-readout\", \"completed_at_utc\": \"2026-09-12T12:15:02.027346+00:00\", \"inputs_only\": false, \"native_weight_retrieval_identity_seal_joins\": 60, \"original_raw_checkpoint_rows_matched\": 120, \"raw_index_task_scores_matched\": 840, \"formal_consumer_called\": false, \"scientific_completion\": false}\n"
+  },
+  {
+    "cmd": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/verify_predictions.py --readout /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/actual --receipt-sha256 6891e82a46df11a6d142e79fdf495afa329f40912569337f4b1d6da33d5e8046 --output /tmp/dense-v3-weight-retrieval-readout.01uTJ7Aq/independent-predictions.json",
+    "chunk_id": "55f220",
+    "wall_time_seconds": 1.001435191,
+    "session_id": 50887,
+    "original_token_count": 152,
+    "output": "{\"family\": \"original\", \"feature\": \"log_saved_segment_to_weight_ratio\", \"improved_folds\": 3, \"predictive_support\": true}\n{\"family\": \"original\", \"feature\": \"saved_segment_stable_rank_fraction\", \"improved_folds\": 0, \"predictive_support\": false}\n{\"family\": \"original\", \"feature\": \"saved_segment_sketch_effective_rank_fraction\", \"improved_folds\": 3, \"predictive_support\": true}\n{\"family\": \"original\", \"feature\": \"saved_segment_row_norm_cv\", \"improved_folds\": 3, \"predictive_support\": true}\n{\"family\": \"original\", \"feature\": \"saved_segment_top_1pct_row_energy\", \"improved_folds\": 3, \"predictive_support\": true}\n"
+  },
+  {
+    "session_id": 50887,
+    "chunk_id": "b06e98",
+    "wall_time_seconds": 0.00000219,
+    "exit_code": 0,
+    "original_token_count": 443,
+    "output": "{\"family\": \"original\", \"feature\": \"cumulative_displacement_to_weight_ratio\", \"improved_folds\": 4, \"predictive_support\": true}\n{\"family\": \"original\", \"feature\": \"cumulative_stable_rank_fraction\", \"improved_folds\": 0, \"predictive_support\": false}\n{\"family\": \"original\", \"feature\": \"mean_saved_segment_subspace_overlap_to_adamw\", \"improved_folds\": 1, \"predictive_support\": false}\n{\"family\": \"original\", \"feature\": \"mean_cumulative_subspace_overlap_to_adamw\", \"improved_folds\": 0, \"predictive_support\": false}\n{\"family\": \"exact\", \"feature\": \"exact_nonzero_saved_segment_stable_rank_fraction\", \"improved_folds\": 0, \"predictive_support\": false}\n{\"family\": \"exact\", \"feature\": \"full_spectrum_nonzero_saved_segment_entropy_rank_fraction\", \"improved_folds\": 3, \"predictive_support\": true}\n{\"family\": \"exact\", \"feature\": \"exact_nonzero_cumulative_stable_rank_fraction\", \"improved_folds\": 0, \"predictive_support\": false}\n{\"family\": \"exact\", \"feature\": \"exact_mean_saved_segment_overlap_to_adamw\", \"improved_folds\": 1, \"predictive_support\": false}\n{\"family\": \"exact\", \"feature\": \"exact_mean_cumulative_overlap_to_adamw\", \"improved_folds\": 2, \"predictive_support\": false}\n{\"scope\": \"independent-full-augmented-rational-OLS-on-actual-weight-retrieval-panel\", \"completed_at_utc\": \"2026-09-12T12:17:15.272604+00:00\", \"producer_readout_sha256\": \"6891e82a46df11a6d142e79fdf495afa329f40912569337f4b1d6da33d5e8046\", \"exact_held_out_prediction_rows\": 840, \"exact_fold_mse_comparisons\": 56, \"pooled_summaries_and_decisions\": 14, \"residual_associations\": 14, \"solver\": \"SymPy rational full augmented normal equations; not producer FWL implementation\", \"sympy_version\": \"1.14.0\", \"same_data_not_independent_experiment\": true, \"formal_primary_admission\": false, \"scientific_completion\": false}\n"
+  }
+]

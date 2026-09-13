@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "scope": "engineering_main_handoff_repair_preparation",
+  "observed_at_utc": "2026-09-05T00:56:37.791558+00:00",
+  "repository": "/root/embedding-optimizer-study",
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "implementation": {
+    "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_main_handoff_repair.py",
+    "bytes": 10656,
+    "sha256": "97a182d2e8603c69754a2a9b4e2113078f9d45eb55de3488ca56851587dfe0fb"
+  },
+  "source_ledger": {
+    "path": "before/main-ledger.json",
+    "bytes": 24577,
+    "sha256": "314b66a065d60e7bfedf9d4e9f669418d509de1a1844597e794b6257be1b21bf"
+  },
+  "before": [
+    {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "bytes": 8282,
+      "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+    },
+    {
+      "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+      "bytes": 6499,
+      "sha256": "ccf81a94026b8198e97877bfea995914f74ad9d8137885bf60de0f0fe86245ae"
+    },
+    {
+      "path": "configs/dense_no_packing_evaluation_protocol.json",
+      "bytes": 4838,
+      "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98"
+    },
+    {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "bytes": 6054,
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+    },
+    {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "bytes": 7666,
+      "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
+    },
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "bytes": 9404,
+      "sha256": "c815e8dfb52ac71350d8c1e7384bdf122ce549ec92fbc2fe883a9a4866e6d71c"
+    },
+    {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "bytes": 1601,
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    },
+    {
+      "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+      "bytes": 5032,
+      "sha256": "99a2a967e162e96fe24d1edd74f6c8b15a7e7ccc26056f4063e5799c9e35b7f3"
+    },
+    {
+      "path": "src/embed_optim/corrected_checkpoint_backup.py",
+      "bytes": 7953,
+      "sha256": "29935e16ad8469fb75efa4272c215c235e60bda15ad5d1be1fe7a5ec9e1b1727"
+    },
+    {
+      "path": "src/embed_optim/corrected_completion_pipeline.py",
+      "bytes": 20348,
+      "sha256": "7f3e6f440d4b79b2a7aea3d5336b9458fbeb8cb61c5537fdda13fea72d591972"
+    },
+    {
+      "path": "src/embed_optim/corrected_publication.py",
+      "bytes": 38709,
+      "sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6"
+    },
+    {
+      "path": "src/embed_optim/evaluation_source_provenance.py",
+      "bytes": 12947,
+      "sha256": "fec4c185af25e973894f69626fe6361ba59a211a2044986e2edad69862125f6d"
+    }
+  ],
+  "after": [
+    {
+      "path": "src/embed_optim/corrected_publication.py",
+      "bytes": 38712,
+      "sha256": "ec299f29bb76b73228eb5d026cc014a78e35bcacaed688906ad0b02668dd1af6"
+    },
+    {
+      "path": "src/embed_optim/evaluation_source_provenance.py",
+      "bytes": 13809,
+      "sha256": "235a9c1cf78597b11e41436003dba5a19eca689b1c4d8394c3da4e0a307f3cba"
+    },
+    {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "bytes": 8202,
+      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+    },
+    {
+      "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+      "bytes": 6820,
+      "sha256": "88fb013be3fc69c7477750314af264df78080ba2573c578c95e886bb0712ec46"
+    },
+    {
+      "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+      "bytes": 5353,
+      "sha256": "127631614a9ee37bd5fcf5e0543554a5d8f618b88cc6ffd87b16d5f93ca46c48"
+    },
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "bytes": 10024,
+      "sha256": "9b8fd89d41eb5d22a2a53b97a59cd44ab4c589382ab0f60e9b1da501123ba9da"
+    }
+  ],
+  "patch": {
+    "path": "main-handoff-repair.patch",
+    "bytes": 12588,
+    "sha256": "a9c642582fe431d28c0ae28303f2cbeff9e34ab16bc52e91fa0c6adefd2d0b15"
+  },
+  "from_contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+  "to_contract_sha256": "af646ecf89bfe87cf79a20eaf3495d134eeb912899e9c219a7917f96dfdc976c",
+  "commands_and_arguments_unchanged": true,
+  "controller_lease_acquired": false,
+  "current_main_steps": 0,
+  "current_backups_preserved_in_snapshot": 8,
+  "successor_requires_new_parent_binding": true
+}

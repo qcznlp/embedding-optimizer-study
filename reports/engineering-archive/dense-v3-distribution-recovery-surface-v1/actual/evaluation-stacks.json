@@ -1,0 +1,186 @@
+{
+  "jobs": [
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 3158,
+        "user_ticks": 505950
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 3158,
+        "user_ticks": 505948
+      },
+      "bounded_log_oom_retry_lines": [
+        "RETRYING ClimateFEVER (OOM) -> encode_char_budget=1500000"
+      ],
+      "pid": 868551,
+      "pool": "a",
+      "run_id": "factorial-v3-adamw_state-adamw-seed161803",
+      "sample_exit_code": 0,
+      "start_ticks": 322344640,
+      "stderr": "",
+      "stdout": "Process 868551: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker ClimateFEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-adamw_state-adamw-seed161803/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-adamw_state-adamw-seed161803/checkpoint-391/dense/factorial-v3-adamw_state-adamw-seed161803__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 868551 (active): \"MainThread\"\n    _encode_plus (transformers/tokenization_utils_tokenizers.py:924)\n    __call__ (transformers/tokenization_utils_base.py:2490)\n    _call_single_modality_processor (sentence_transformers/base/modules/transformer.py:1402)\n    _call_processor (sentence_transformers/base/modules/transformer.py:1341)\n    preprocess (sentence_transformers/base/modules/transformer.py:1008)\n    preprocess (sentence_transformers/base/model.py:578)\n    encode (sentence_transformers/sentence_transformer/model.py:654)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 868566 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 868876 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "ClimateFEVER"
+    },
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 8173,
+        "user_ticks": 511787
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 8173,
+        "user_ticks": 511785
+      },
+      "bounded_log_oom_retry_lines": [],
+      "pid": 869283,
+      "pool": "a",
+      "run_id": "factorial-v3-adamw_state-adamw-seed314159",
+      "sample_exit_code": 0,
+      "start_ticks": 322350048,
+      "stderr": "",
+      "stdout": "Process 869283: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker FEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-adamw_state-adamw-seed314159/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-adamw_state-adamw-seed314159/checkpoint-391/dense/factorial-v3-adamw_state-adamw-seed314159__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 869283 (active): \"MainThread\"\n    _get_unpad_data (transformers/modeling_flash_attention_utils.py:271)\n    _upad_input (transformers/modeling_flash_attention_utils.py:324)\n    _flash_attention_forward (transformers/modeling_flash_attention_utils.py:652)\n    flash_attention_forward (transformers/integrations/flash_attention.py:68)\n    forward (transformers/models/modernbert/modeling_modernbert.py:295)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (transformers/models/modernbert/modeling_modernbert.py:334)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    __call__ (transformers/modeling_layers.py:93)\n    forward (transformers/models/modernbert/modeling_modernbert.py:481)\n    wrapper (transformers/utils/output_capturing.py:253)\n    wrapper (transformers/utils/generic.py:917)\n    forward (sentence_transformers/base/modules/transformer.py:1196)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (sentence_transformers/base/model.py:517)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    encode (sentence_transformers/sentence_transformer/model.py:662)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 869316 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 869547 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "FEVER"
+    },
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 3211,
+        "user_ticks": 503979
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 3211,
+        "user_ticks": 503977
+      },
+      "bounded_log_oom_retry_lines": [
+        "RETRYING ClimateFEVER (OOM) -> encode_char_budget=1500000"
+      ],
+      "pid": 868900,
+      "pool": "a",
+      "run_id": "factorial-v3-muon_state-muon-seed161803",
+      "sample_exit_code": 0,
+      "start_ticks": 322347494,
+      "stderr": "",
+      "stdout": "Process 868900: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker ClimateFEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-muon_state-muon-seed161803/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-muon_state-muon-seed161803/checkpoint-391/dense/factorial-v3-muon_state-muon-seed161803__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 868900 (active): \"MainThread\"\n    _get_unpad_data (transformers/modeling_flash_attention_utils.py:271)\n    _upad_input (transformers/modeling_flash_attention_utils.py:324)\n    _flash_attention_forward (transformers/modeling_flash_attention_utils.py:652)\n    flash_attention_forward (transformers/integrations/flash_attention.py:68)\n    forward (transformers/models/modernbert/modeling_modernbert.py:295)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (transformers/models/modernbert/modeling_modernbert.py:334)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    __call__ (transformers/modeling_layers.py:93)\n    forward (transformers/models/modernbert/modeling_modernbert.py:481)\n    wrapper (transformers/utils/output_capturing.py:253)\n    wrapper (transformers/utils/generic.py:917)\n    forward (sentence_transformers/base/modules/transformer.py:1196)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (sentence_transformers/base/model.py:517)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    encode (sentence_transformers/sentence_transformer/model.py:662)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 868978 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 869209 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "ClimateFEVER"
+    },
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 6883,
+        "user_ticks": 435452
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 6883,
+        "user_ticks": 435450
+      },
+      "bounded_log_oom_retry_lines": [],
+      "pid": 872289,
+      "pool": "a",
+      "run_id": "factorial-v3-muon_state-muon-seed314159",
+      "sample_exit_code": 0,
+      "start_ticks": 322429812,
+      "stderr": "",
+      "stdout": "Process 872289: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker FEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-muon_state-muon-seed314159/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-muon_state-muon-seed314159/checkpoint-391/dense/factorial-v3-muon_state-muon-seed314159__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 872289 (active+gil): \"MainThread\"\n    as_tensor (transformers/tokenization_utils_base.py:690)\n    convert_to_tensors (transformers/tokenization_utils_base.py:731)\n    __init__ (transformers/tokenization_utils_base.py:240)\n    _encode_plus (transformers/tokenization_utils_tokenizers.py:962)\n    __call__ (transformers/tokenization_utils_base.py:2490)\n    _call_single_modality_processor (sentence_transformers/base/modules/transformer.py:1402)\n    _call_processor (sentence_transformers/base/modules/transformer.py:1341)\n    preprocess (sentence_transformers/base/modules/transformer.py:1008)\n    preprocess (sentence_transformers/base/model.py:578)\n    encode (sentence_transformers/sentence_transformer/model.py:654)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 872360 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 872623 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "FEVER"
+    },
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 3476,
+        "user_ticks": 496386
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 3476,
+        "user_ticks": 496384
+      },
+      "bounded_log_oom_retry_lines": [
+        "RETRYING ClimateFEVER (OOM) -> encode_char_budget=1500000"
+      ],
+      "pid": 869570,
+      "pool": "b",
+      "run_id": "factorial-v3-adamw_state-muon-seed161803",
+      "sample_exit_code": 0,
+      "start_ticks": 322355118,
+      "stderr": "",
+      "stdout": "Process 869570: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker ClimateFEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-adamw_state-muon-seed161803/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-adamw_state-muon-seed161803/checkpoint-391/dense/factorial-v3-adamw_state-muon-seed161803__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 869570 (active): \"MainThread\"\n    _get_unpad_data (transformers/modeling_flash_attention_utils.py:271)\n    _upad_input (transformers/modeling_flash_attention_utils.py:324)\n    _flash_attention_forward (transformers/modeling_flash_attention_utils.py:652)\n    flash_attention_forward (transformers/integrations/flash_attention.py:68)\n    forward (transformers/models/modernbert/modeling_modernbert.py:295)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (transformers/models/modernbert/modeling_modernbert.py:334)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    __call__ (transformers/modeling_layers.py:93)\n    forward (transformers/models/modernbert/modeling_modernbert.py:481)\n    wrapper (transformers/utils/output_capturing.py:253)\n    wrapper (transformers/utils/generic.py:917)\n    forward (sentence_transformers/base/modules/transformer.py:1196)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (sentence_transformers/base/model.py:517)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    encode (sentence_transformers/sentence_transformer/model.py:662)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 869590 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 870061 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "ClimateFEVER"
+    },
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 7965,
+        "user_ticks": 507249
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 7965,
+        "user_ticks": 507248
+      },
+      "bounded_log_oom_retry_lines": [],
+      "pid": 869576,
+      "pool": "b",
+      "run_id": "factorial-v3-adamw_state-muon-seed314159",
+      "sample_exit_code": 0,
+      "start_ticks": 322355630,
+      "stderr": "",
+      "stdout": "Process 869576: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker FEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-adamw_state-muon-seed314159/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-adamw_state-muon-seed314159/checkpoint-391/dense/factorial-v3-adamw_state-muon-seed314159__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 869576 (active): \"MainThread\"\n    _encode_plus (transformers/tokenization_utils_tokenizers.py:924)\n    __call__ (transformers/tokenization_utils_base.py:2490)\n    _call_single_modality_processor (sentence_transformers/base/modules/transformer.py:1402)\n    _call_processor (sentence_transformers/base/modules/transformer.py:1341)\n    preprocess (sentence_transformers/base/modules/transformer.py:1008)\n    preprocess (sentence_transformers/base/model.py:578)\n    encode (sentence_transformers/sentence_transformer/model.py:654)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 869610 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 870294 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "FEVER"
+    },
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 3403,
+        "user_ticks": 494485
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 3403,
+        "user_ticks": 494484
+      },
+      "bounded_log_oom_retry_lines": [
+        "RETRYING ClimateFEVER (OOM) -> encode_char_budget=1500000"
+      ],
+      "pid": 869573,
+      "pool": "b",
+      "run_id": "factorial-v3-muon_state-adamw-seed161803",
+      "sample_exit_code": 0,
+      "start_ticks": 322355475,
+      "stderr": "",
+      "stdout": "Process 869573: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker ClimateFEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-muon_state-adamw-seed161803/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-muon_state-adamw-seed161803/checkpoint-391/dense/factorial-v3-muon_state-adamw-seed161803__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 869573 (active): \"MainThread\"\n    _get_unpad_data (transformers/modeling_flash_attention_utils.py:271)\n    _upad_input (transformers/modeling_flash_attention_utils.py:324)\n    _flash_attention_forward (transformers/modeling_flash_attention_utils.py:652)\n    flash_attention_forward (transformers/integrations/flash_attention.py:68)\n    forward (transformers/models/modernbert/modeling_modernbert.py:295)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (transformers/models/modernbert/modeling_modernbert.py:334)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    __call__ (transformers/modeling_layers.py:93)\n    forward (transformers/models/modernbert/modeling_modernbert.py:481)\n    wrapper (transformers/utils/output_capturing.py:253)\n    wrapper (transformers/utils/generic.py:917)\n    forward (sentence_transformers/base/modules/transformer.py:1196)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (sentence_transformers/base/model.py:517)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    encode (sentence_transformers/sentence_transformer/model.py:662)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 869601 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 870290 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "ClimateFEVER"
+    },
+    {
+      "after": {
+        "state": "R",
+        "system_ticks": 7074,
+        "user_ticks": 442286
+      },
+      "before": {
+        "state": "R",
+        "system_ticks": 7074,
+        "user_ticks": 442285
+      },
+      "bounded_log_oom_retry_lines": [],
+      "pid": 871699,
+      "pool": "b",
+      "run_id": "factorial-v3-muon_state-adamw-seed314159",
+      "sample_exit_code": 0,
+      "start_ticks": 322423095,
+      "stderr": "",
+      "stdout": "Process 871699: /usr/bin/python -B /root/embedding-optimizer-primary-v3/scripts/eval/dense_no_packing_parallel.py --worker FEVER --models /root/embedding-optimizer-v3-experiment/outputs/dense-v3-state-operator-v1/dense/factorial-v3-muon_state-adamw-seed314159/checkpoint-391 --results_folder /root/embedding-optimizer-v3-experiment/evaluations/dense-v3-state-operator-v1/factorial-v3-muon_state-adamw-seed314159/checkpoint-391/dense/factorial-v3-muon_state-adamw-seed314159__checkpoint-391 --bf16 --fa2 --local --decontaminated --encode_char_budget 3000000\nPython v3.12.3 (/usr/bin/python3.12)\n\nThread 871699 (active): \"MainThread\"\n    _get_unpad_data (transformers/modeling_flash_attention_utils.py:271)\n    _upad_input (transformers/modeling_flash_attention_utils.py:324)\n    _flash_attention_forward (transformers/modeling_flash_attention_utils.py:652)\n    flash_attention_forward (transformers/integrations/flash_attention.py:68)\n    forward (transformers/models/modernbert/modeling_modernbert.py:295)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (transformers/models/modernbert/modeling_modernbert.py:334)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    __call__ (transformers/modeling_layers.py:93)\n    forward (transformers/models/modernbert/modeling_modernbert.py:481)\n    wrapper (transformers/utils/output_capturing.py:253)\n    wrapper (transformers/utils/generic.py:917)\n    forward (sentence_transformers/base/modules/transformer.py:1196)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    forward (sentence_transformers/base/model.py:517)\n    _call_impl (torch/nn/modules/module.py:1786)\n    _wrapped_call_impl (torch/nn/modules/module.py:1775)\n    encode (sentence_transformers/sentence_transformer/model.py:662)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    decorate_context (torch/utils/_contextlib.py:120)\n    budget_encode (dense_parallel.py:60)\n    encode_document (sentence_transformers/sentence_transformer/model.py:323)\n    wrapper (sentence_transformers/util/decorators.py:41)\n    encode (mteb/models/sentence_transformer_wrapper.py:318)\n    _full_corpus_search (mteb/models/search_wrappers.py:253)\n    search (mteb/models/search_wrappers.py:182)\n    __call__ (mteb/_evaluators/retrieval_evaluator.py:105)\n    _evaluate_subset (mteb/abstasks/retrieval.py:384)\n    evaluate (mteb/abstasks/abstask.py:223)\n    evaluate (mteb/abstasks/retrieval.py:313)\n    _evaluate_task (mteb/evaluate.py:215)\n    evaluate (mteb/evaluate.py:643)\n    run_worker (dense_parallel.py:106)\n    main (dense_parallel.py:294)\n    main (dense_no_packing_parallel.py:33)\n    <module> (dense_no_packing_parallel.py:37)\nThread 871747 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\nThread 872047 (idle): \"tqdm_monitor\"\n    wait (threading.py:359)\n    wait (threading.py:655)\n    run (tqdm/_monitor.py:69)\n    _bootstrap_inner (threading.py:1073)\n    _bootstrap (threading.py:1030)\n",
+      "task": "FEVER"
+    }
+  ],
+  "nonblocking": true,
+  "observed_at_utc": "2026-09-12T23:46:42.187685+00:00",
+  "scientific_completion": false,
+  "scope": "one stack sample per exact registered worker; not throughput or GPU utilization",
+  "source_or_worker_mutation": false,
+  "unrelated_process_or_gpu_enumeration": false
+}

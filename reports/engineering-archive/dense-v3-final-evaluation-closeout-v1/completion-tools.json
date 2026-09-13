@@ -1,0 +1,55 @@
+{
+  "capture": {
+    "chunk_id": "825345",
+    "wall_time_seconds": 0.000004337,
+    "exit_code": 0,
+    "original_token_count": 93,
+    "output": "{\"copied_files\": 88, \"bytes\": 3242117, \"actual_tables\": {\"beir_seed_task_scores\": 168, \"estimand_seed_task_contrasts\": 126, \"estimand_summary\": 3, \"factorial_cell_summary\": 4, \"probe_checkpoint_metrics\": 60, \"probe_task_metrics\": 840}, \"compiled_document\": true, \"failed_resume_cases\": 2, \"failed_resume_rank_logs\": 8, \"recomputation\": false, \"full_goal_complete\": false}\n"
+  },
+  "inference": {
+    "chunk_id": "9793ed",
+    "wall_time_seconds": 0.000002566,
+    "exit_code": 0,
+    "original_token_count": 84,
+    "output": "{\"readout\": {\"bytes\": 2455, \"sha256\": \"b6b69d9b087a6797c54330064316aa9f9fe71887797ef59313efce8c3214781d\"}, \"table_counts\": {\"beir_seed_task_scores\": 168, \"factorial_cell_summary\": 4, \"estimand_seed_task_contrasts\": 126, \"estimand_summary\": 3, \"probe_checkpoint_metrics\": 60, \"probe_task_metrics\": 840}, \"scientific_completion\": false}\n"
+  },
+  "document": {
+    "chunk_id": "a07a56",
+    "wall_time_seconds": 0.000003254,
+    "exit_code": 0,
+    "original_token_count": 34,
+    "output": "{\"document_complete\": true, \"output\": \"/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper\", \"full_goal_complete\": false}\n"
+  },
+  "combined": {
+    "chunk_id": "8993cb",
+    "wall_time_seconds": 5.00170367,
+    "session_id": 56449,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "outcomes": {
+    "chunk_id": "d9dc1b",
+    "wall_time_seconds": 5.001733005,
+    "session_id": 35024,
+    "original_token_count": 35,
+    "output": "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"
+  },
+  "resume_a": [
+    {
+      "chunk_id": "e5a992",
+      "wall_time_seconds": 0.00000217,
+      "exit_code": 1,
+      "original_token_count": 156,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py\", line 501, in <module>\n    main()\n  File \"/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py\", line 496, in main\n    result = globals()[args.mode](args)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py\", line 444, in coordinate\n    t.supervise(children)\n  File \"/root/embedding-optimizer-v3-experiment/launch/factorial-training-v1/factorial_dispatch.py\", line 365, in supervise\n    raise RuntimeError('A direct owned rank failed')\nRuntimeError: A direct owned rank failed\n"
+    }
+  ],
+  "resume_b": [
+    {
+      "chunk_id": "083fed",
+      "wall_time_seconds": 12.414582581,
+      "exit_code": 1,
+      "original_token_count": 156,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py\", line 501, in <module>\n    main()\n  File \"/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py\", line 496, in main\n    result = globals()[args.mode](args)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/dense-v3-resume-verification.wcsmQnDm/resume.py\", line 444, in coordinate\n    t.supervise(children)\n  File \"/root/embedding-optimizer-v3-experiment/launch/factorial-training-v1/factorial_dispatch.py\", line 365, in supervise\n    raise RuntimeError('A direct owned rank failed')\nRuntimeError: A direct owned rank failed\n"
+    }
+  ]
+}

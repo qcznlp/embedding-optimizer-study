@@ -1,0 +1,290 @@
+{
+  "actual_model_results_used": false,
+  "boundary": "Synthetic algebraic counterexamples evaluated by the unchanged frozen contrast and bootstrap functions. These are not optimizer measurements, primary findings, new decision thresholds, runtime repairs or deployment.",
+  "cases": [
+    {
+      "cell_order": [
+        "AA",
+        "AM",
+        "MA",
+        "MM"
+      ],
+      "current_abstract": "% Generated only from the complete, source-bound state-by-operator summary.\n\\newcommand{\\StateOperatorAbstractFinding}{%\nA crossed reset-state continuation test separates the gain into carried weight-state, operator, and interaction effects of +0.1875 [+0.1875, +0.1875], -0.1875 [-0.1875, -0.1875], and +0.1250 [+0.1250, +0.1250] nDCG@10, respectively. Muon-created weights and Muon continuation are complementary, supporting the predeclared closed-loop state--operator feedback account alongside a carried Muon-state benefit.}\n",
+      "current_interpretation": "Muon-created weights and Muon continuation are complementary, supporting the predeclared closed-loop state--operator feedback account alongside a carried Muon-state benefit.",
+      "effect_rows": 126,
+      "estimands": {
+        "operator_effect": {
+          "bootstrap_ci_95_lower": -0.1875,
+          "bootstrap_ci_95_upper": -0.1875,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "supported_negative",
+          "estimand": "operator_effect",
+          "point_estimate": -0.1875,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        },
+        "state_operator_interaction": {
+          "bootstrap_ci_95_lower": 0.125,
+          "bootstrap_ci_95_upper": 0.125,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "supported_positive",
+          "estimand": "state_operator_interaction",
+          "point_estimate": 0.125,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        },
+        "weight_state_effect": {
+          "bootstrap_ci_95_lower": 0.1875,
+          "bootstrap_ci_95_upper": 0.1875,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "supported_positive",
+          "estimand": "weight_state_effect",
+          "point_estimate": 0.1875,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        }
+      },
+      "name": "positive_interaction_but_muon_harms_both_states",
+      "simple_operator_effects_by_seed": [
+        [
+          -0.25,
+          -0.125
+        ],
+        [
+          -0.25,
+          -0.125
+        ],
+        [
+          -0.25,
+          -0.125
+        ]
+      ],
+      "source_score_rows": 168,
+      "synthetic_cell_values_by_order_seed": [
+        [
+          0.5,
+          0.25,
+          0.625,
+          0.5
+        ],
+        [
+          0.5,
+          0.25,
+          0.625,
+          0.5
+        ],
+        [
+          0.5,
+          0.25,
+          0.625,
+          0.5
+        ]
+      ]
+    },
+    {
+      "cell_order": [
+        "AA",
+        "AM",
+        "MA",
+        "MM"
+      ],
+      "current_abstract": "% Generated only from the complete, source-bound state-by-operator summary.\n\\newcommand{\\StateOperatorAbstractFinding}{%\nA crossed reset-state continuation test separates the gain into carried weight-state, operator, and interaction effects of +0.3125 [+0.3125, +0.3125], +0.0625 [+0.0625, +0.0625], and -0.3750 [-0.3750, -0.3750] nDCG@10, respectively. The branch supports additive carried-state and continuation-operator benefits, but not state-specific complementarity.}\n",
+      "current_interpretation": "The branch supports additive carried-state and continuation-operator benefits, but not state-specific complementarity.",
+      "effect_rows": 126,
+      "estimands": {
+        "operator_effect": {
+          "bootstrap_ci_95_lower": 0.0625,
+          "bootstrap_ci_95_upper": 0.0625,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "supported_positive",
+          "estimand": "operator_effect",
+          "point_estimate": 0.0625,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        },
+        "state_operator_interaction": {
+          "bootstrap_ci_95_lower": -0.375,
+          "bootstrap_ci_95_upper": -0.375,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "supported_negative",
+          "estimand": "state_operator_interaction",
+          "point_estimate": -0.375,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        },
+        "weight_state_effect": {
+          "bootstrap_ci_95_lower": 0.3125,
+          "bootstrap_ci_95_upper": 0.3125,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "supported_positive",
+          "estimand": "weight_state_effect",
+          "point_estimate": 0.3125,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        }
+      },
+      "name": "positive_main_effects_with_supported_negative_interaction",
+      "simple_operator_effects_by_seed": [
+        [
+          0.25,
+          -0.125
+        ],
+        [
+          0.25,
+          -0.125
+        ],
+        [
+          0.25,
+          -0.125
+        ]
+      ],
+      "source_score_rows": 168,
+      "synthetic_cell_values_by_order_seed": [
+        [
+          0.375,
+          0.625,
+          0.875,
+          0.75
+        ],
+        [
+          0.375,
+          0.625,
+          0.875,
+          0.75
+        ],
+        [
+          0.375,
+          0.625,
+          0.875,
+          0.75
+        ]
+      ]
+    },
+    {
+      "cell_order": [
+        "AA",
+        "AM",
+        "MA",
+        "MM"
+      ],
+      "current_abstract": "% Generated only from the complete, source-bound state-by-operator summary.\n\\newcommand{\\StateOperatorAbstractFinding}{%\nA crossed reset-state continuation test separates the gain into carried weight-state, operator, and interaction effects of +0.0156 [+0.0156, +0.0156], +0.0417 [-0.2500, +0.2500], and +0.0000 [+0.0000, +0.0000] nDCG@10, respectively. The practical gain is primarily inherited in the Muon-reached weight state, not in a universally better local Muon direction.}\n",
+      "current_interpretation": "The practical gain is primarily inherited in the Muon-reached weight state, not in a universally better local Muon direction.",
+      "effect_rows": 126,
+      "estimands": {
+        "operator_effect": {
+          "bootstrap_ci_95_lower": -0.25,
+          "bootstrap_ci_95_upper": 0.25,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "inconclusive",
+          "estimand": "operator_effect",
+          "point_estimate": 0.041666666666666664,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        },
+        "state_operator_interaction": {
+          "bootstrap_ci_95_lower": 0,
+          "bootstrap_ci_95_upper": 0,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "inconclusive",
+          "estimand": "state_operator_interaction",
+          "point_estimate": 0,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        },
+        "weight_state_effect": {
+          "bootstrap_ci_95_lower": 0.015625,
+          "bootstrap_ci_95_upper": 0.015625,
+          "bootstrap_samples": 100000,
+          "bootstrap_seed": 20260904,
+          "decision": "supported_positive",
+          "estimand": "weight_state_effect",
+          "point_estimate": 0.015625,
+          "seed_clusters": 3,
+          "task_clusters": 14
+        }
+      },
+      "name": "state_supported_operator_larger_but_uncertain",
+      "simple_operator_effects_by_seed": [
+        [
+          -0.25,
+          -0.25
+        ],
+        [
+          0.125,
+          0.125
+        ],
+        [
+          0.25,
+          0.25
+        ]
+      ],
+      "source_score_rows": 168,
+      "synthetic_cell_values_by_order_seed": [
+        [
+          0.375,
+          0.125,
+          0.390625,
+          0.140625
+        ],
+        [
+          0.375,
+          0.5,
+          0.390625,
+          0.515625
+        ],
+        [
+          0.375,
+          0.625,
+          0.390625,
+          0.640625
+        ]
+      ]
+    }
+  ],
+  "findings": [
+    "A positive interaction can mean Muon is less harmful at its own source state; it does not imply benefit at either source state.",
+    "The current renderer calls positive averaged state/operator effects additive even when the interaction is significantly negative.",
+    "A supported state effect alongside an inconclusive larger operator estimate does not establish state-effect dominance or equivalence of the other effect to zero.",
+    "The abstract says it separates the gain although its inputs only contain post-continuation endpoint contrasts, not a decomposition of the primary 500k outcome.",
+    "Calibration matches a fixed gradient-history probe direction ratio, not the first realized shuffled-batch update; the frozen protocol explicitly clarifies this distinction."
+  ],
+  "observed_at_utc": "2026-09-05T03:54:41.707449+00:00",
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "synthetic_counterexamples_to_factorial_interpretation_not_experiment_results",
+  "source_bindings": [
+    {
+      "bytes": 22605,
+      "path": "src/embed_optim/state_operator_factorial_summary.py",
+      "sha256": "d6d4d8481404e38b0e7ab9291680c39a99909fc3fb87959bc42be49f4361cc27"
+    },
+    {
+      "bytes": 17866,
+      "path": "src/embed_optim/state_operator_factorial_publication.py",
+      "sha256": "7c33d4e1818fd1718642ffaa018b43b099f43d318357bf24157b859e86f98195"
+    },
+    {
+      "bytes": 10347,
+      "path": "configs/dense_no_packing_state_operator_factorial_protocol.json",
+      "sha256": "5773943a3ae9b581021a0f7b85b162c74d5c497eeca1386578ff9d2c3bcafe76"
+    },
+    {
+      "bytes": 6230,
+      "path": "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
+      "sha256": "9fdc054e34982f5b86c0804d9b43d35614bfbe4c2cff432e362e09e6eaf63a83"
+    },
+    {
+      "bytes": 22668,
+      "path": "paper/main.tex",
+      "sha256": "114abe415deee0a3c371c175091fca3bd3a595534c3f3c3ab7cbb377af6b8448"
+    }
+  ]
+}

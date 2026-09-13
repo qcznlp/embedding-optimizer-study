@@ -1,0 +1,89 @@
+{
+  "scope": "executed_engineering_commands_not_a_portable_or_new_run_authorization",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "gpu_environment": {
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "WANDB_MODE": "disabled",
+    "OPENBLAS_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "HF_HUB_DISABLE_PROGRESS_BARS": "1",
+    "PYTHONWARNINGS": "ignore",
+    "PYTHONPATH": "/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor"
+  },
+  "launcher_prefix": ["/usr/bin/python3", "-B", "-m", "torch.distributed.run", "--standalone", "--nnodes=1", "--nproc-per-node=4"],
+  "launcher_suffix": ["--redirects", "3", "--tee", "3"],
+  "common_script_arguments": [
+    "--repository", "/root/embedding-optimizer-story-refactor",
+    "--handoff", "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "--download-root", "/tmp/dense-checkpoint-restore.Og1kZs/download",
+    "--audit", "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+    "--audit-sha256", "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6"
+  ],
+  "construction": "Set CUDA_VISIBLE_DEVICES for the case; concatenate launcher_prefix, --log-dir and case log_dir, launcher_suffix, script, common_script_arguments, --workdir and case workdir, and case extra_arguments. Equivalent argument ordering is used here; no hidden training argument overrides are omitted. Use new output directories for any approved rerun.",
+  "cases": [
+    {
+      "name": "initial-old-path-final-metadata-failure",
+      "cuda_visible_devices": "0,1,2,3",
+      "script": "scripts/audit_dense_gpu_normalization.py",
+      "executed_source_archive": "initial-source/audit_dense_gpu_normalization.py",
+      "log_dir": "/tmp/dense-gpu-handoff.4MuYjC/gpu-live-logs",
+      "workdir": "/tmp/dense-gpu-normalization.AmMSao",
+      "extra_arguments": ["--trainer", "live"],
+      "exit_code": 1
+    },
+    {
+      "name": "short-candidate",
+      "cuda_visible_devices": "0,1,2,3",
+      "script": "scripts/audit_dense_gpu_normalization.py",
+      "log_dir": "/tmp/dense-gpu-handoff.4MuYjC/gpu-candidate-logs",
+      "workdir": "/tmp/dense-gpu-normalization.ZzjYHg",
+      "extra_arguments": ["--trainer", "candidate"],
+      "exit_code": 0
+    },
+    {
+      "name": "gpu-resume-measurements",
+      "cuda_visible_devices": "0,1,2,3",
+      "script": "scripts/audit_dense_gpu_resume.py",
+      "log_dir": "/tmp/dense-gpu-handoff.4MuYjC/gpu-resume-logs",
+      "workdir": "/tmp/dense-gpu-resume.8t7UPz",
+      "extra_arguments": [],
+      "exit_code": 1,
+      "note": "All six continuations measured; non-bitwise replay remains a failed strict flag."
+    },
+    {
+      "name": "short-live-repeat-complete-receipt",
+      "cuda_visible_devices": "0,1,2,3",
+      "script": "scripts/audit_dense_gpu_normalization.py",
+      "log_dir": "/tmp/dense-gpu-handoff.4MuYjC/gpu-live-repeat-logs",
+      "workdir": "/tmp/dense-gpu-normalization.2hgpJc",
+      "extra_arguments": ["--trainer", "live"],
+      "exit_code": 1,
+      "note": "All nine checks measured; quarter-scale normalization remains failed."
+    },
+    {
+      "name": "max-context-default",
+      "cuda_visible_devices": "4,5,6,7",
+      "script": "scripts/audit_dense_gpu_max_context.py",
+      "log_dir": "/tmp/dense-gpu-handoff.4MuYjC/gpu-max-context-logs",
+      "workdir": "/tmp/dense-gpu-max-context.X0DznQ",
+      "extra_arguments": [],
+      "exit_code": 1,
+      "note": "Completed with no OOM; all nine default-kernel raw-gradient tolerance checks failed."
+    },
+    {
+      "name": "max-context-deterministic-control",
+      "cuda_visible_devices": "4,5,6,7",
+      "script": "scripts/audit_dense_gpu_deterministic_control.py",
+      "log_dir": "/tmp/dense-gpu-handoff.4MuYjC/gpu-deterministic-control-logs",
+      "workdir": "/tmp/dense-gpu-max-context.b9OZNY",
+      "extra_arguments": ["--control-receipt", "/tmp/dense-gpu-handoff.4MuYjC/deterministic-control.json"],
+      "exit_code": 0
+    }
+  ],
+  "primary_checkpoint_or_source_mutations": false,
+  "formal_training_runs_launched": 0
+}

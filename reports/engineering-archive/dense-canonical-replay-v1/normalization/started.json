@@ -1,0 +1,35 @@
+{
+  "audit_execution_complete": false,
+  "baseline_exports": [],
+  "boundary": "After bucket-layout origin localization, explicitly change only owned DDP communication to one lexical-name-ordered FP32 predivided SUM and owned attention backward flags to deterministic. The pinned single-normalization Trainer candidate is unchanged. Verify actual full-model gradients against the prior manual oracle or strict full Trainer checkpoint replay. No default-path failure is relabeled, no tolerance is changed, and no primary/production run is executed. Baseline state fingerprints and diagnostic file inventories are exported for a later independent-process test; this campaign alone is same-process-group replay.",
+  "command_arguments": [
+    "--repository",
+    "/root/embedding-optimizer-story-refactor",
+    "--workdir",
+    "/tmp/dense-gpu-normalization.Axkk0D",
+    "--handoff",
+    "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "--download-root",
+    "/tmp/dense-checkpoint-restore.Og1kZs/download",
+    "--audit",
+    "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+    "--audit-sha256",
+    "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+    "--trainer",
+    "candidate"
+  ],
+  "observations": {
+    "attention_controls": [],
+    "reducers": []
+  },
+  "production_deployed": false,
+  "scientific_completion": false,
+  "scope": "engineering_canonical_reduction_deterministic_backward_control",
+  "source": {
+    "bytes": 11155,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_canonical_replay.py",
+    "sha256": "9f0e83cb069d79b8b18f82e9af5aeaa103bb94067a66c6585a6fd453abd60170"
+  },
+  "started_at_utc": "2026-09-06T08:18:27.526107+00:00",
+  "target": "normalization"
+}

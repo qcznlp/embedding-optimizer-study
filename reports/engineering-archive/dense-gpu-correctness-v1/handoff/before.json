@@ -1,0 +1,151 @@
+{
+  "authority": "Owner: \u8bf7\u4f60\u6301\u7eed\u63a8\u8fdb\u76ee\u6807\uff0c\u4f18\u5148\u4fdd\u8bc1\u4efb\u52a1\u7684\u6b63\u786e\u6027\uff0c\u79d1\u5b66\u6027; announced project-only GPU handoff.",
+  "chain": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "S"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "S"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "S"
+    }
+  ],
+  "ledger_sha256": "95c69483f60badddd3c13e175951bcb52682523589c62bf898a57eb786d4e4ef",
+  "observed_at_utc": "2026-09-06T05:56:32.718908+00:00",
+  "scientific_completion": false,
+  "source_hashes": {
+    "scripts/eval/dense_no_packing_parallel.py": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a",
+    "scripts/eval/dense_parallel.py": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72",
+    "scripts/eval/dense_sequential.py": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906",
+    "src/embed_optim/corrected_beir_evaluation.py": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91",
+    "src/embed_optim/corrected_completion_pipeline.py": "7f3e6f440d4b79b2a7aea3d5336b9458fbeb8cb61c5537fdda13fea72d591972",
+    "src/embed_optim/evaluation_utils.py": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+  },
+  "workers": [
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-1563",
+      "pid": 1044801,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-normuon-3e-3__checkpoint-1563",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264105947,
+      "state": "R",
+      "task": "ClimateFEVER"
+    },
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-2345",
+      "pid": 1044867,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-normuon-3e-3__checkpoint-2345",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264106247,
+      "state": "R",
+      "task": "ClimateFEVER"
+    },
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-3126",
+      "pid": 1047768,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-normuon-3e-3__checkpoint-3126",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264117358,
+      "state": "R",
+      "task": "ClimateFEVER"
+    },
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-normuon-3e-3/checkpoint-3907",
+      "pid": 1047908,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-normuon-3e-3__checkpoint-3907",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264118759,
+      "state": "R",
+      "task": "ClimateFEVER"
+    },
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-782",
+      "pid": 1049914,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-adamw-1e-6__checkpoint-782",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264120361,
+      "state": "R",
+      "task": "FEVER"
+    },
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-1563",
+      "pid": 1052182,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-adamw-1e-6__checkpoint-1563",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264128568,
+      "state": "R",
+      "task": "FEVER"
+    },
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-2345",
+      "pid": 1053047,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-adamw-1e-6__checkpoint-2345",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264130469,
+      "state": "R",
+      "task": "FEVER"
+    },
+    {
+      "children": [],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "model": "/root/embedding-optimizer-study/outputs/dense-no-packing-v1/dense/padded-adamw-1e-6/checkpoint-3126",
+      "pid": 1054761,
+      "ppid": 870864,
+      "results": "/root/embedding-optimizer-study/results/dense-no-packing-beir/dense/padded-adamw-1e-6__checkpoint-3126",
+      "sigterm_default_unblocked": true,
+      "start_ticks": 264135475,
+      "state": "R",
+      "task": "FEVER"
+    }
+  ]
+}

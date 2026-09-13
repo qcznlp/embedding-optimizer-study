@@ -1,0 +1,55 @@
+--- a/src/embed_optim/corrected_publication.py
++++ b/src/embed_optim/corrected_publication.py
+@@ -852,7 +852,7 @@
+         "\\newcommand{\\CorrectedConclusionFinding}{" + finding + "}\n"
+         "\\newcommand{\\CorrectedGeometryBridgeTable}{%\n"
+         "\\begin{table*}[t]\n\\centering\n\\small\n"
+-        "\\begin{tabular}{lrrrl}\n\\toprule\nFrozen geometry feature & $\\Delta$RMSE & Folds & Supported & Residual $\\rho$ \\\\n\\midrule\n"
++        "\\begin{tabular}{lrrrl}\n\\toprule\nFrozen geometry feature & $\\Delta$RMSE & Folds & Supported & Residual $\\rho$ \\\\\n\\midrule\n"
+         + bridge_rows
+         + "\n\\bottomrule\n\\end{tabular}\n"
+         "\\caption{Four-fold leave-dose-index-out geometry-to-retrieval bridge. Positive "
+@@ -860,7 +860,7 @@
+         "\\label{tab:corrected-bridge}\n\\end{table*}%\n}\n"
+         "\\newcommand{\\CorrectedExecutionSensitivityTable}{%\n"
+         "\\begin{table}[t]\n\\centering\n\\small\n"
+-        "\\begin{tabular}{lrrr}\n\\toprule\nContrast & Historical & Corrected & Shift \\\\n\\midrule\n"
++        "\\begin{tabular}{lrrr}\n\\toprule\nContrast & Historical & Corrected & Shift \\\\\n\\midrule\n"
+         + sensitivity_rows
+         + "\n\\bottomrule\n\\end{tabular}\n"
+         "\\caption{Final-stage execution-path sensitivity. The executions are not pooled and "
+@@ -872,7 +872,7 @@
+         "The corrective matrix disables flattened input execution during training and every "
+         "checkpoint reload. The primary estimand averages all four frozen rates within optimizer.\n\n"
+         "\\begin{table}[t]\n\\centering\n\\scriptsize\n\\setlength{\\tabcolsep}{3pt}\n"
+-        "\\begin{tabular}{lrrl}\n\\toprule\nContrast & Mean & 95\\% CI & Decision \\\\n\\midrule\n"
++        "\\begin{tabular}{lrrl}\n\\toprule\nContrast & Mean & 95\\% CI & Decision \\\\\n\\midrule\n"
+         + primary_rows
+         + "\n\\bottomrule\n\\end{tabular}\n"
+         "\\caption{Corrected final-stage retrieval inference over 14 decontaminated BEIR tasks "
+--- a/configs/dense_no_packing_publication_protocol.json
++++ b/configs/dense_no_packing_publication_protocol.json
+@@ -40,8 +40,8 @@
+   "source_bindings": {
+     "corrected_publication": {
+       "path": "src/embed_optim/corrected_publication.py",
+-      "bytes": 38709,
+-      "sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6"
++      "bytes": 38712,
++      "sha256": "ec299f29bb76b73228eb5d026cc014a78e35bcacaed688906ad0b02668dd1af6"
+     },
+     "geometry_helpers": {
+       "path": "src/embed_optim/geometry.py",
+@@ -129,5 +129,11 @@
+     "historical_selector_location": "appendix",
+     "scientific_claims_changed": false
+   },
+-  "claim_boundary": "The corrected conclusion is one-seed, pinned-grid evidence. The primary comparison averages every predeclared rate; validation selection is secondary; all nine geometry features must be disclosed. Predictive geometry support is not causal mediation, and historical-versus-corrected shifts are execution-path sensitivity rather than a randomized causal effect of packing."
++  "claim_boundary": "The corrected conclusion is one-seed, pinned-grid evidence. The primary comparison averages every predeclared rate; validation selection is secondary; all nine geometry features must be disclosed. Predictive geometry support is not causal mediation, and historical-versus-corrected shifts are execution-path sensitivity rather than a randomized causal effect of packing.",
++  "latex_header_syntax_amendment": {
++    "reason": "Replace literal backslash-n after all three table-header row terminators with an actual newline. Publication syntax only.",
++    "affected_headers": 3,
++    "scientific_contract_changed": false,
++    "primary_publication_outputs_visible": false
++  }
+ }

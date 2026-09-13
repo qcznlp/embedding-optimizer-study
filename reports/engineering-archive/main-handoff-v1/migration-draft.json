@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "scope": "draft_evaluation_and_publication_handoff_transition",
+  "runtime_deployed": false,
+  "reason": "Bind the corrected evaluation source verifier and repair three publication header separators, with all numeric sources, commands and arguments unchanged.",
+  "from_contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+  "to_contract_sha256": "af646ecf89bfe87cf79a20eaf3495d134eeb912899e9c219a7917f96dfdc976c",
+  "scientific_contract_changed": false,
+  "required_unchanged_sources": [
+    "src/embed_optim/corrected_completion_pipeline.py",
+    "src/embed_optim/corrected_checkpoint_backup.py",
+    "configs/dense_no_packing_retrain.yaml",
+    "configs/dense_no_packing_execution_protocol.json",
+    "configs/dense_no_packing_evaluation_protocol.json",
+    "configs/dense_no_packing_analysis_protocol.json"
+  ],
+  "allowed_changed_sources": [
+    "configs/dense_no_packing_outcome_protocol.json",
+    "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+    "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+    "configs/dense_no_packing_publication_protocol.json"
+  ],
+  "amendment_assertions": [
+    {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "field": "evaluation_handoff_amendment.scientific_contract_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+      "field": "evaluation_handoff_amendment.scientific_contract_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+      "field": "evaluation_handoff_amendment.scientific_contract_changed",
+      "expected": false
+    },
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "field": "evaluation_handoff_amendment.scientific_contract_changed",
+      "expected": false
+    }
+  ],
+  "archive_basename": "pipeline-ledger.pre-evaluation-handoff-4152531e.json",
+  "draft_boundary": "Not deployed. Require a verified sole-controller handoff, archived ledger, audited six-file patch and consistent successor parent before runtime transition. This does not authorize deletion, publication, training changes or a competing controller."
+}

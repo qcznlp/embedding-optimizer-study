@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="17" failures="0" skipped="0" tests="34" time="0.366" timestamp="2026-09-12T06:50:12.966749+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="test_backup" name="test_actual_complete_third_stage_pool_b_selection_and_safety" time="0.005"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[missing]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[duplicate]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[wrong_stage]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[wrong_protocol]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[wrong_completion]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[wrong_recompute]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[missing_task]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[alias]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[worker_missing]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_incomplete_or_wrong_cohort_refused[task_duplicate]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_actual_data_tables_are_complete" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_undefined_or_changed_score_refused[ndcg_at_10-nan]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_undefined_or_changed_score_refused[ndcg_at_10--1.0]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_undefined_or_changed_score_refused[ndcg_at_10-1.01]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_undefined_or_changed_score_refused[mean-0.0]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_undefined_or_changed_score_refused[points-0.0]" time="0.000"><error message="failed on setup with &quot;ModuleNotFoundError: No module named 'scripts'&quot;">@pytest.fixture(scope='module')
+    def actual():
+&gt;       t = B.load_transport()
+            ^^^^^^^^^^^^^^^^^^
+
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/test_backup.py:19: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/tmp/dense-v3-third-stage-pool-b-artifact-backup.R4V10dgb/source/backup.py:63: in load_transport
+    spec.loader.exec_module(module)
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    """Additions-only backup of complete v3 endpoint and validation scores, never code."""
+    
+    from __future__ import annotations
+    
+    import argparse
+    import hashlib
+    import json
+    import re
+    import shutil
+    from concurrent.futures import ThreadPoolExecutor
+    from datetime import datetime, timezone
+    from pathlib import Path, PurePosixPath
+    
+&gt;   from scripts.restore_primary_v3 import file_identity
+E   ModuleNotFoundError: No module named 'scripts'
+
+embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/source/backup.py:14: ModuleNotFoundError</error></testcase><testcase classname="test_backup" name="test_regular_new_only_upload_modes" time="0.000" /><testcase classname="test_backup" name="test_remote_mode_changes_refused[lfs]" time="0.000" /><testcase classname="test_backup" name="test_remote_mode_changes_refused[ignore]" time="0.000" /><testcase classname="test_backup" name="test_remote_mode_changes_refused[overwrite]" time="0.000" /><testcase classname="test_backup" name="test_remote_mode_changes_refused[missing]" time="0.000" /><testcase classname="test_backup" name="test_remote_mode_changes_refused[extra]" time="0.000" /><testcase classname="test_backup" name="test_remote_mode_changes_refused[wrong_count]" time="0.000" /><testcase classname="test_backup" name="test_exact_prior_root_and_subtrees_preserved" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[card]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[attributes]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[root_deleted]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[root_added]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[sub_changed]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[sub_deleted]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[sub_extra]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[addition_missing]" time="0.000" /><testcase classname="test_backup" name="test_remote_preservation_changes_refused[addition_preexisting]" time="0.000" /></testsuite></testsuites>

@@ -24,6 +24,55 @@ from embed_optim.corrected_publication import (
 REPOSITORY = Path(__file__).resolve().parents[1]
 
 
+@pytest.fixture
+def synthetic_primary_publication(tmp_path, monkeypatch):
+    from embed_optim import corrected_publication as publication
+
+    args = publication.parse_args([])
+    args.protocol = REPOSITORY / args.protocol
+    args.output_dir = tmp_path / "primary-publication"
+    args.latex_output = tmp_path / "paper/primary.tex"
+    evidence = _evidence()
+    monkeypatch.setattr(publication, "load_publication_evidence", lambda *_: evidence)
+    manifest = publication.build_report(args)
+    return publication, args, evidence, manifest
+
+
+def test_primary_publication_audit_is_read_only_and_reconstructs_text(
+    synthetic_primary_publication,
+):
+    publication, args, _, manifest = synthetic_primary_publication
+    paths = [
+        args.output_dir / "summary_manifest.json",
+        args.output_dir / "corrected_dense_results.md",
+        args.latex_output,
+    ]
+    before = {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in paths}
+    assert publication.audit_report(args) == manifest
+    assert {p: (p.read_bytes(), p.stat().st_mtime_ns) for p in paths} == before
+
+
+@pytest.mark.parametrize("mutation", ["latex", "markdown", "conclusion", "coverage", "evidence"])
+def test_rehashed_primary_output_cannot_bypass_source_reconstruction(
+    synthetic_primary_publication, mutation
+):
+    publication, args, evidence, manifest = synthetic_primary_publication
+    if mutation in {"latex", "markdown"}:
+        key = "paper_latex" if mutation == "latex" else "standalone_markdown"
+        path = Path(manifest["outputs"][key]["path"])
+        path.write_text(path.read_text().replace("+0.0200", "+0.9200"))
+        manifest["outputs"][key] = publication._file_record(path)
+    elif mutation == "conclusion":
+        manifest["conclusion"] = "edited outcome"
+    elif mutation == "coverage":
+        manifest["coverage"]["beir_task_units"] = 839
+    else:
+        evidence["primary"][0]["mean"] = 0.4
+    (args.output_dir / "summary_manifest.json").write_text(json.dumps(manifest))
+    with pytest.raises(ValueError, match="reconstructed evidence"):
+        publication.audit_report(args)
+
+
 def _contrast(treatment: str, baseline: str, mean: float, *, secondary: bool = False):
     row = {
         "treatment": treatment,
@@ -164,24 +213,27 @@ def test_rendered_publication_contains_every_frozen_feature_and_claim_boundary()
     assert "not causal mediation" in markdown
     finding = build_corrected_finding(evidence)
     assert finding == (
-        "In the corrected all-rate comparison, Muon versus AdamW is positive at "
+        "Across the four-rate surface, Muon versus AdamW is positive at "
         "+0.0200 [+0.0100, +0.0300] nDCG@10, and NorMuon versus AdamW is negative "
         "at -0.0300 [-0.0400, -0.0200]."
     )
-    assert "Corrected Independently Padded Replication" in latex
-    assert "Final-stage execution-path sensitivity" in latex
+    assert "Optimizer Effects on Dense Retrieval" in latex
     assert r"\newcommand{\CorrectedAbstractFinding}" in latex
     assert r"\newcommand{\CorrectedConclusionFinding}" in latex
+    assert r"\newcommand{\CorrectedWeightSpaceFinding}" in latex
+    assert r"\newcommand{\CorrectedGeometryBridgeFinding}" in latex
     assert r"\newcommand{\CorrectedMainSection}" in latex
     assert r"\newcommand{\CorrectedGeometryBridgeTable}" in latex
-    assert r"\newcommand{\CorrectedExecutionSensitivityTable}" in latex
     assert latex.index(r"\newcommand{\CorrectedGeometryBridgeTable}") < latex.index(
-        r"\section{Corrected Independently Padded Replication}"
+        r"\section{Optimizer Effects on Dense Retrieval}"
     )
     assert "Contrast & Mean & 95\\% CI & Decision" in latex
+    assert "Decision " + "\\\\\n" + r"\midrule" in latex
+    assert r"Residual $\rho$ " + "\\\\\n" + r"\midrule" in latex
+    assert r"\\n\midrule" not in latex
 
 
-def test_corrected_detail_tables_are_called_only_after_the_appendix_boundary() -> None:
+def test_corrected_detail_table_is_called_only_after_the_appendix_boundary() -> None:
     manuscript = (REPOSITORY / "paper/main.tex").read_text(encoding="utf-8")
     document = manuscript.index(r"\begin{document}")
     abstract_start = manuscript.index(r"\begin{abstract}")
@@ -189,19 +241,17 @@ def test_corrected_detail_tables_are_called_only_after_the_appendix_boundary() -
     main_end = manuscript.index(r"\label{paper-main-end}")
     conclusion = manuscript.index(r"\section{Conclusion}")
     appendix = manuscript.index(r"\appendix")
-    corrected_input = manuscript.index(r"\input{generated/corrected-no-packing}")
+    corrected_input = manuscript.index(r"\input{generated/optimizer-primary}")
     corrected_abstract = manuscript.index(r"\CorrectedAbstractFinding")
     corrected_main = manuscript.index(r"\CorrectedMainSection")
     corrected_conclusion = manuscript.index(r"\CorrectedConclusionFinding")
     bridge_call = manuscript.index(r"\CorrectedGeometryBridgeTable")
-    sensitivity_call = manuscript.index(r"\CorrectedExecutionSensitivityTable")
-    historical_conclusion = manuscript.index(r"\ResultConclusion")
 
     assert corrected_input < document < abstract_start < corrected_abstract < abstract_end
     assert abstract_end < corrected_main < conclusion < corrected_conclusion < main_end
-    assert main_end < appendix < bridge_call < sensitivity_call < historical_conclusion
-    makefile = (REPOSITORY / "paper/Makefile").read_text(encoding="utf-8")
-    assert "generated/corrected-no-packing.tex" in makefile
+    assert main_end < appendix < bridge_call
+    makefile = (REPOSITORY / "paper/legacy.Makefile").read_text(encoding="utf-8")
+    assert "generated/optimizer-primary.tex" in makefile
 
 
 def test_conclusion_reports_supported_features_without_cherry_picking() -> None:
@@ -300,7 +350,7 @@ def test_checked_in_publication_protocol_binds_current_sources_before_results() 
     assert protocol["expected_outputs"] == {
         "standalone_markdown": ("reports/dense-no-packing-publication/corrected_dense_results.md"),
         "summary_manifest": "reports/dense-no-packing-publication/summary_manifest.json",
-        "paper_latex": "paper/generated/corrected-no-packing.tex",
+        "paper_latex": "paper/generated/optimizer-primary.tex",
         "primary_contrasts": 3,
         "secondary_contrasts": 3,
         "optimizer_stage_rows": 15,

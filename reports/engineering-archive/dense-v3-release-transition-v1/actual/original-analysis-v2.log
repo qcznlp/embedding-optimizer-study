@@ -1,0 +1,2248 @@
+........................................................................ [  9%]
+........................................................................ [ 19%]
+........................................................................ [ 29%]
+........................................................................ [ 39%]
+........................................................................ [ 49%]
+........................................................................ [ 58%]
+........................................................................ [ 68%]
+........................................................................ [ 78%]
+........................................................................ [ 88%]
+....................FF............FF..........F....EEEEEEEEEEEF.F....... [ 98%]
+..FEEEEEEEE..                                                            [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_combined_rejects_undeclared_completion_changes[weaker_gate] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_undeclar0')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_undeclar0')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_combined_rejects_undeclared_completion_changes[source_state] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_undeclar1')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_undeclar1')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_combined_rejects_undeclared_completion_changes[extra_parent] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_undeclar2')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_undeclar2')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_combined_rejects_rehashed_scientific_or_command_drift[configs/dense_no_packing_publication_protocol.json] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_rehashed0')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_rehashed0')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_combined_rejects_rehashed_scientific_or_command_drift[configs/dense_primary_dimension_handoff_protocol.json] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_rehashed1')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_rehashed1')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_combined_rejects_rehashed_scientific_or_command_drift[configs/dense_no_packing_state_operator_factorial_publication_protocol.json] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_rehashed2')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_rehashed2')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+______ ERROR at setup of test_combined_rejects_changed_archived_evidence _______
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_changed_0')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_combined_rejects_changed_0')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_recovery_rejects_modified_or_rehashed_dependency_changes[evidence] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified0')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified0')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_recovery_rejects_modified_or_rehashed_dependency_changes[target] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified1')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified1')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_recovery_rejects_modified_or_rehashed_dependency_changes[scientific_flag] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified2')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified2')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_recovery_rejects_modified_or_rehashed_dependency_changes[prior_protocol] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified3')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_recovery_rejects_modified3')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_wording_rejects_rehashed_undeclared_publication_changes[rendering_contract] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_0')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_0')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_wording_rejects_rehashed_undeclared_publication_changes[input_contract] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_1')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_1')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_wording_rejects_rehashed_undeclared_publication_changes[expected_outputs] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_2')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_2')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_wording_rejects_rehashed_scope_expansion[scientific_flag] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_3')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_3')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+___ ERROR at setup of test_wording_rejects_rehashed_scope_expansion[policy] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_4')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_4')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_wording_rejects_rehashed_scope_expansion[source_path] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_5')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_5')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_wording_rejects_rehashed_scope_expansion[new_allowed_field] _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_6')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_rejects_rehashed_6')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_ ERROR at setup of test_wording_cannot_rewrite_and_rehash_its_prior_publication _
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_cannot_rewrite_an0')
+
+    @pytest.fixture
+    def amendment_copy(tmp_path):
+        # Only small declared evidence, never checkpoints or a live control plane.
+        first, second, third, fourth = read(AMENDMENT), read(COMBINED), read(RECOVERY), read(WORDING)
+        paths = {
+            str(AMENDMENT.relative_to(ROOT)),
+            str(COMBINED.relative_to(ROOT)),
+            str(RECOVERY.relative_to(ROOT)),
+            CLAIM_WORDING,
+        }
+        for item in [
+            first["prior_prepared_completion_protocol"],
+            *first["evidence_bindings"],
+            *second["prior_prepared_protocols"].values(),
+            *second["refreshed_protocol_bindings"].values(),
+            *second["evidence_bindings"],
+            third["prior_prepared_completion_protocol"],
+            *third["evidence_bindings"],
+            fourth["prior_prepared_completion_protocol"],
+            fourth["prior_prepared_publication_protocol"],
+            *fourth["new_source_bindings"].values(),
+            *fourth["unchanged_scientific_bindings"].values(),
+            *fourth["evidence_bindings"],
+        ]:
+            paths.add(item["path"])
+        for label in (
+            "configs/dense_no_packing_outcome_protocol.json",
+            "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+            "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+        ):
+            for side in ("before", "after"):
+                paths.add(f"reports/engineering-archive/main-handoff-v1/{side}/{label}")
+        for path in paths:
+            target = tmp_path / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(ROOT / path, target)
+        protocol = read(PROTOCOL)
+>       validate_amendment_chain(tmp_path, protocol)
+
+tests/test_successor_parent_publication.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/pytest-of-root/pytest-2068/test_wording_cannot_rewrite_an0')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+=================================== FAILURES ===================================
+_________________ test_generate_and_audit_six_two_run_matrices _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_generate_and_audit_six_tw0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f89016f28a0>
+
+    def test_generate_and_audit_six_two_run_matrices(tmp_path: Path, monkeypatch) -> None:
+        calibration = tmp_path / "calibration"
+        matrices = tmp_path / "matrices"
+        _write_calibration(calibration, "adamw_state", adamw=1.0, muon=2.0)
+        _write_calibration(calibration, "muon_state", adamw=2.0, muon=4.0)
+        original_load = factorial._load_calibration_metrics
+    
+        def load_without_provenance(state, root, **_kwargs):
+            return original_load(state, root, verify_provenance=False)
+    
+        monkeypatch.setattr(factorial, "_load_calibration_metrics", load_without_provenance)
+    
+>       manifest = factorial.generate_factorial_matrices(
+            matrix_root=matrices,
+            calibration_root=calibration,
+            deep_data_audit=False,
+        )
+
+tests/test_state_operator_factorial.py:121: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/state_operator_factorial.py:711: in generate_factorial_matrices
+    implementation_path, _ = require_factorial_implementation()
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('configs/dense_no_packing_state_operator_factorial_implementation_protocol.json')
+
+    def require_factorial_implementation(
+        path: str | Path = IMPLEMENTATION_PROTOCOL,
+    ) -> tuple[Path, dict[str, Any]]:
+        resolved = resolve_matrix_path(path).resolve()
+        protocol = json.loads(resolved.read_text(encoding="utf-8"))
+        if protocol.get("schema_version") != SCHEMA_VERSION:
+            raise ValueError("Unsupported factorial implementation protocol schema")
+        if protocol.get("status") != "prospective_state_operator_factorial_implementation_lock":
+            raise ValueError("Factorial implementation is not prospectively locked")
+        for group in ("parent_bindings", "source_bindings", "configuration_bindings"):
+            bindings = protocol.get(group)
+            if not isinstance(bindings, dict) or not bindings:
+                raise ValueError(f"Factorial implementation protocol lacks {group}")
+            for label, identity in bindings.items():
+                source = Path(identity["path"]).resolve()
+                if (
+                    not source.is_file()
+                    or source.stat().st_size != identity.get("bytes")
+                    or _sha256(source) != identity.get("sha256")
+                ):
+>                   raise ValueError(f"Factorial {group} identity differs: {label}")
+E                   ValueError: Factorial source_bindings identity differs: short_branch_data_audit
+
+src/embed_optim/state_operator_factorial_contract.py:37: ValueError
+_________ test_gradient_export_rejects_manifest_without_padded_receipt _________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2068/test_gradient_export_rejects_m0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f860b166f90>
+
+    def test_gradient_export_rejects_manifest_without_padded_receipt(
+        tmp_path: Path, monkeypatch
+    ) -> None:
+        checkpoint = tmp_path / "checkpoint-2345"
+        checkpoint.mkdir()
+        protocol_path = tmp_path / "scientific.json"
+        protocol_path.write_text("{}\n", encoding="utf-8")
+        protocol = {
+            "source_states": {
+                "states": [
+                    {
+                        "label": "adamw_state",
+                        "run_id": "source",
+                        "checkpoint": str(checkpoint),
+                    }
+                ]
+            },
+            "scale_calibration": {"gradient_history_steps": 8},
+        }
+        monkeypatch.setattr(
+            factorial,
+            "load_factorial_protocol",
+            lambda _path: (protocol_path, protocol),
+        )
+        output = tmp_path / "calibration"
+        gradient_root = output / "adamw_state" / "gradients"
+        gradient_root.mkdir(parents=True)
+        (gradient_root / "manifest.json").write_text("{}\n", encoding="utf-8")
+    
+        with pytest.raises(FileExistsError, match="untagged gradient artifact"):
+>           factorial.export_padded_gradient_calibration(
+                "adamw_state", protocol_path, calibration_root=output
+            )
+
+tests/test_state_operator_factorial.py:172: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/state_operator_factorial.py:409: in export_padded_gradient_calibration
+    require_factorial_implementation()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('configs/dense_no_packing_state_operator_factorial_implementation_protocol.json')
+
+    def require_factorial_implementation(
+        path: str | Path = IMPLEMENTATION_PROTOCOL,
+    ) -> tuple[Path, dict[str, Any]]:
+        resolved = resolve_matrix_path(path).resolve()
+        protocol = json.loads(resolved.read_text(encoding="utf-8"))
+        if protocol.get("schema_version") != SCHEMA_VERSION:
+            raise ValueError("Unsupported factorial implementation protocol schema")
+        if protocol.get("status") != "prospective_state_operator_factorial_implementation_lock":
+            raise ValueError("Factorial implementation is not prospectively locked")
+        for group in ("parent_bindings", "source_bindings", "configuration_bindings"):
+            bindings = protocol.get(group)
+            if not isinstance(bindings, dict) or not bindings:
+                raise ValueError(f"Factorial implementation protocol lacks {group}")
+            for label, identity in bindings.items():
+                source = Path(identity["path"]).resolve()
+                if (
+                    not source.is_file()
+                    or source.stat().st_size != identity.get("bytes")
+                    or _sha256(source) != identity.get("sha256")
+                ):
+>                   raise ValueError(f"Factorial {group} identity differs: {label}")
+E                   ValueError: Factorial source_bindings identity differs: short_branch_data_audit
+
+src/embed_optim/state_operator_factorial_contract.py:37: ValueError
+________ test_checked_in_publication_contract_is_result_blind_and_bound ________
+
+    def test_checked_in_publication_contract_is_result_blind_and_bound() -> None:
+>       protocol = _load_protocol(PUBLICATION_PROTOCOL, ROOT)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_state_operator_factorial_completion.py:258: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('/tmp/dense-v3-release-transition.zFMpOKti/original-analysis-v2/configs/dense_no_packing_state_operator_factorial_publication_protocol.json')
+root = PosixPath('/tmp/dense-v3-release-transition.zFMpOKti/original-analysis-v2')
+
+    def _load_protocol(path: Path, root: Path) -> dict[str, Any]:
+        protocol = _load_json(path)
+        if protocol.get("status") != "prospective_state_operator_publication_lock":
+            raise ValueError("State-operator publication protocol status differs")
+        bindings = [
+            *protocol.get("parent_bindings", {}).values(),
+            *protocol.get("source_bindings", {}).values(),
+            *protocol.get("amendments", []),
+        ]
+        if not bindings:
+            raise ValueError("State-operator publication protocol has no source bindings")
+        for binding in bindings:
+            source = root / str(binding.get("path", ""))
+            if not _record_matches(binding, source, root):
+>               raise ValueError(f"State-operator publication source changed: {source}")
+E               ValueError: State-operator publication source changed: /tmp/dense-v3-release-transition.zFMpOKti/original-analysis-v2/paper/main.tex
+
+src/embed_optim/state_operator_factorial_publication.py:89: ValueError
+_______ test_weight_space_narrative_migration_is_result_blind_and_exact ________
+
+    def test_weight_space_narrative_migration_is_result_blind_and_exact() -> None:
+        migration_path = (
+            ROOT / "configs/dense_no_packing_state_operator_weight_space_narrative_migration.json"
+        )
+        migration = json.loads(migration_path.read_text(encoding="utf-8"))
+        visibility = migration["visibility_at_freeze"]
+        assert migration["status"] == "prospective_state_operator_weight_space_narrative_migration"
+        assert visibility["main_corrected_retrieval_outputs_visible"] is False
+        assert visibility["main_corrected_geometry_to_retrieval_outputs_visible"] is False
+        assert visibility["factorial_steps_started"] == 0
+        assert visibility["factorial_outputs_visible"] is False
+        assert migration["new_source_bindings"]["manuscript_topology"] == _file_record(
+            ROOT / "reports/paper-review/factorial-claims-v2/before/paper/main.tex", ROOT
+        ) | {"path": "paper/main.tex"}
+        # The prior result-blind narrative remains immutable; a separate narrower
+        # publication amendment, not an in-place history rewrite, binds today's text.
+        wording = json.loads(
+            (ROOT / "configs/dense_no_packing_state_operator_claim_wording_amendment.json").read_text()
+        )
+>       assert wording["new_source_bindings"]["manuscript_topology"] == _file_record(
+            ROOT / "paper/main.tex", ROOT
+        )
+E       AssertionError: assert {'bytes': 243...a26100dbbb2b'} == {'bytes': 268...564769bc177e'}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'sha256': '4d59c3219589204ec396d5b9d8c6269df1dfc89f29361ddf70ada26100dbbb2b'} != {'sha256': '45a3d297e08dfbb99908508a68ee71f077f29203bc3da8b017f6564769bc177e'}
+E         {'bytes': 24331} != {'bytes': 26831}
+E         Use -v to get more diff
+
+tests/test_state_operator_factorial_completion.py:288: AssertionError
+_________ test_state_operator_factorial_implementation_is_source_bound _________
+
+    def test_state_operator_factorial_implementation_is_source_bound() -> None:
+>       path, protocol = require_factorial_implementation()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_state_operator_factorial_protocol.py:105: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('configs/dense_no_packing_state_operator_factorial_implementation_protocol.json')
+
+    def require_factorial_implementation(
+        path: str | Path = IMPLEMENTATION_PROTOCOL,
+    ) -> tuple[Path, dict[str, Any]]:
+        resolved = resolve_matrix_path(path).resolve()
+        protocol = json.loads(resolved.read_text(encoding="utf-8"))
+        if protocol.get("schema_version") != SCHEMA_VERSION:
+            raise ValueError("Unsupported factorial implementation protocol schema")
+        if protocol.get("status") != "prospective_state_operator_factorial_implementation_lock":
+            raise ValueError("Factorial implementation is not prospectively locked")
+        for group in ("parent_bindings", "source_bindings", "configuration_bindings"):
+            bindings = protocol.get(group)
+            if not isinstance(bindings, dict) or not bindings:
+                raise ValueError(f"Factorial implementation protocol lacks {group}")
+            for label, identity in bindings.items():
+                source = Path(identity["path"]).resolve()
+                if (
+                    not source.is_file()
+                    or source.stat().st_size != identity.get("bytes")
+                    or _sha256(source) != identity.get("sha256")
+                ):
+>                   raise ValueError(f"Factorial {group} identity differs: {label}")
+E                   ValueError: Factorial source_bindings identity differs: short_branch_data_audit
+
+src/embed_optim/state_operator_factorial_contract.py:37: ValueError
+_____ test_repaired_parent_preserves_all_47_commands_and_arguments_exactly _____
+
+    def test_repaired_parent_preserves_all_47_commands_and_arguments_exactly():
+        old = read(ROOT / "reports/experiment-integrity/dimension-figure-factorial-plan.json")[
+            "result"
+        ]["contract"]
+        args = controller.parse_args(
+            [
+                "--workdir",
+                str(ROOT),
+                "--main-ledger",
+                old["arguments"]["main_ledger"],
+                "--python",
+                old["arguments"]["python"],
+                "--dry-run",
+            ]
+        )
+        protocol = controller.load_completion_protocol(PROTOCOL, ROOT)
+        steps = controller.pipeline_steps(args, ROOT, protocol)
+        actual = controller._contract(args, ROOT, PROTOCOL, steps)
+        assert len(actual["steps"]) == 47
+>       assert actual["steps"] == old["steps"]
+E       AssertionError: assert [{'command': ...': None}, ...] == [{'command': ...': None}, ...]
+E         
+E         At index 40 diff: {'index': 41, 'name': 'paper-release', 'command': ['make', '-C', '/tmp/dense-v3-release-transition.zFMpOKti/original-analysis-v2/paper', 'release', 'PYTHON=/usr/bin/python'], 'parallel_group': None} != {'command': ['make', '-C', '/root/embedding-optimizer-story-refactor/paper', 'release', 'PYTHON=/usr/bin/python'], 'index': 41, 'name': 'paper-release', 'parallel_group': None}
+E         Use -v to get more diff
+
+tests/test_successor_parent_publication.py:308: AssertionError
+_______ test_real_projection_has_distinct_local_and_deployment_contracts _______
+
+    def test_real_projection_has_distinct_local_and_deployment_contracts():
+>       result = build_plan(ROOT)
+                 ^^^^^^^^^^^^^^^^
+
+tests/test_successor_parent_publication.py:358: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+scripts/audit_successor_contract.py:368: in build_plan
+    amendment, active_binding = validate_amendment_chain(repository, protocol)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/dense-v3-release-transition.zFMpOKti/original-analysis-v2')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+_______ test_claim_wording_adds_only_a_publication_binding_and_timestamp _______
+
+    def test_claim_wording_adds_only_a_publication_binding_and_timestamp():
+        from scripts.audit_successor_contract import CLAIM_RENDERING_CONTRACT
+    
+        protocol = controller.load_completion_protocol(PROTOCOL, ROOT)
+        amendment = read(WORDING)
+        previous = read(ROOT / amendment["prior_prepared_completion_protocol"]["path"])
+        expected = deepcopy(previous)
+        expected["parent_bindings"]["publication_protocol"] = identity(ROOT / FACTORIAL_PUBLICATION)
+        expected["parent_bindings"]["claim_wording"] = identity(WORDING)
+        expected["amended_at_utc"] = amendment["frozen_at_utc"]
+        assert protocol == expected
+        assert protocol["main_completion_gate"] == previous["main_completion_gate"]
+        assert read(ROOT / FACTORIAL_PUBLICATION)["rendering_contract"] == CLAIM_RENDERING_CONTRACT
+>       _, binding = validate_amendment_chain(ROOT, protocol)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_successor_parent_publication.py:467: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+repository = PosixPath('/tmp/dense-v3-release-transition.zFMpOKti/original-analysis-v2')
+protocol = {'amended_at_utc': '2026-09-05T04:49:16.559615+00:00', 'claim_boundary': 'This controller implements the predeclared f...the three declared cell pairs concurrently on disjoint pools, never more than two cell evaluators at once.', ...}, ...}
+
+    def validate_amendment_chain(repository: Path, protocol: dict) -> tuple[dict, dict]:
+        """Verify a publication-only fourth layer after fully reconstructing its predecessor."""
+        binding = protocol.get("parent_bindings", {}).get("claim_wording")
+        if binding is None:
+            return _validate_prior_amendment_chain(repository, protocol)
+        if binding.get("path") != CLAIM_WORDING or not controller._binding_valid(binding, repository):
+            raise ValueError("Claim wording amendment identity changed")
+        amendment = json.loads((repository / CLAIM_WORDING).read_text())
+        prior_completion = amendment.get("prior_prepared_completion_protocol", {})
+        prior_publication = amendment.get("prior_prepared_publication_protocol", {})
+        sources = amendment.get("new_source_bindings", {})
+        evidence = amendment.get("evidence_bindings", [])
+        evidence_paths = {
+            "reports/paper-review/factorial-claims-v1/counterexamples.json",
+            "reports/paper-review/factorial-claims-v1/exact-algebra.json",
+            "reports/paper-review/factorial-claims-v1/candidate-tests-v4.xml",
+            "reports/paper-review/factorial-claims-v1/validation.json",
+        }
+        if (
+            amendment.get("status") != "prospective_factorial_claim_wording_amendment"
+            or amendment.get("runtime_deployed") is not False
+            or amendment.get("scientific_design_changed") is not False
+            or amendment.get("numerical_implementation_changed") is not False
+            or amendment.get("interpretation_narrowed") is not True
+            or prior_completion.get("path") != f"{CLAIM_ARCHIVE}/{COMPLETION}"
+            or prior_publication.get("path") != f"{CLAIM_ARCHIVE}/{FACTORIAL_PUBLICATION}"
+            or set(sources) != set(CLAIM_SOURCE_PATHS)
+            or any(sources[key].get("path") != path for key, path in CLAIM_SOURCE_PATHS.items())
+            or len(evidence) != len(evidence_paths)
+            or {item.get("path") for item in evidence} != evidence_paths
+            or amendment.get("rendering_contract") != CLAIM_RENDERING_CONTRACT
+            or amendment.get("claim_boundary") != CLAIM_BOUNDARY
+            or amendment.get("allowed_completion_protocol_changes")
+            != [
+                "parent_bindings.publication_protocol",
+                "parent_bindings.claim_wording",
+                "amended_at_utc",
+            ]
+        ):
+            raise ValueError("Unexpected claim wording scope")
+        for item in [prior_completion, prior_publication, *sources.values(), *evidence]:
+            if not controller._binding_valid(item, repository):
+>               raise ValueError("Claim wording evidence/source changed")
+E               ValueError: Claim wording evidence/source changed
+
+scripts/audit_successor_contract.py:248: ValueError
+=============================== warnings summary ===============================
+../../../usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63
+  /usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+    import pynvml  # type: ignore[import]
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+../../../usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7
+  /usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7: DeprecationWarning: Importing from 'sentence_transformers.models' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.modules' instead.
+    from sentence_transformers.models import Pooling, Transformer
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_state_operator_factorial.py::test_generate_and_audit_six_two_run_matrices
+FAILED tests/test_state_operator_factorial.py::test_gradient_export_rejects_manifest_without_padded_receipt
+FAILED tests/test_state_operator_factorial_completion.py::test_checked_in_publication_contract_is_result_blind_and_bound
+FAILED tests/test_state_operator_factorial_completion.py::test_weight_space_narrative_migration_is_result_blind_and_exact
+FAILED tests/test_state_operator_factorial_protocol.py::test_state_operator_factorial_implementation_is_source_bound
+FAILED tests/test_successor_parent_publication.py::test_repaired_parent_preserves_all_47_commands_and_arguments_exactly
+FAILED tests/test_successor_parent_publication.py::test_real_projection_has_distinct_local_and_deployment_contracts
+FAILED tests/test_successor_parent_publication.py::test_claim_wording_adds_only_a_publication_binding_and_timestamp
+ERROR tests/test_successor_parent_publication.py::test_combined_rejects_undeclared_completion_changes[weaker_gate]
+ERROR tests/test_successor_parent_publication.py::test_combined_rejects_undeclared_completion_changes[source_state]
+ERROR tests/test_successor_parent_publication.py::test_combined_rejects_undeclared_completion_changes[extra_parent]
+ERROR tests/test_successor_parent_publication.py::test_combined_rejects_rehashed_scientific_or_command_drift[configs/dense_no_packing_publication_protocol.json]
+ERROR tests/test_successor_parent_publication.py::test_combined_rejects_rehashed_scientific_or_command_drift[configs/dense_primary_dimension_handoff_protocol.json]
+ERROR tests/test_successor_parent_publication.py::test_combined_rejects_rehashed_scientific_or_command_drift[configs/dense_no_packing_state_operator_factorial_publication_protocol.json]
+ERROR tests/test_successor_parent_publication.py::test_combined_rejects_changed_archived_evidence
+ERROR tests/test_successor_parent_publication.py::test_recovery_rejects_modified_or_rehashed_dependency_changes[evidence]
+ERROR tests/test_successor_parent_publication.py::test_recovery_rejects_modified_or_rehashed_dependency_changes[target]
+ERROR tests/test_successor_parent_publication.py::test_recovery_rejects_modified_or_rehashed_dependency_changes[scientific_flag]
+ERROR tests/test_successor_parent_publication.py::test_recovery_rejects_modified_or_rehashed_dependency_changes[prior_protocol]
+ERROR tests/test_successor_parent_publication.py::test_wording_rejects_rehashed_undeclared_publication_changes[rendering_contract]
+ERROR tests/test_successor_parent_publication.py::test_wording_rejects_rehashed_undeclared_publication_changes[input_contract]
+ERROR tests/test_successor_parent_publication.py::test_wording_rejects_rehashed_undeclared_publication_changes[expected_outputs]
+ERROR tests/test_successor_parent_publication.py::test_wording_rejects_rehashed_scope_expansion[scientific_flag]
+ERROR tests/test_successor_parent_publication.py::test_wording_rejects_rehashed_scope_expansion[policy]
+ERROR tests/test_successor_parent_publication.py::test_wording_rejects_rehashed_scope_expansion[source_path]
+ERROR tests/test_successor_parent_publication.py::test_wording_rejects_rehashed_scope_expansion[new_allowed_field]
+ERROR tests/test_successor_parent_publication.py::test_wording_cannot_rewrite_and_rehash_its_prior_publication
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

@@ -1,0 +1,47 @@
+{
+  "command": [
+    "/usr/bin/python",
+    "-B",
+    "-m",
+    "torch.distributed.run",
+    "--standalone",
+    "--nnodes=1",
+    "--nproc_per_node=4",
+    "--max-restarts=0",
+    "/root/embedding-optimizer-v3-experiment/launch/train_matrix.py",
+    "--launch-sha",
+    "00000e5a49b510a1d2c2f9ce28ab8c0ce13929b3b2acdda551bf0356a6b8f01d",
+    "--worker",
+    "--run-id",
+    "verified-v3-adamw-1e-6"
+  ],
+  "continuation_manifest_sha256": "5c6cbd1ae85d6c8bae56bee2409eb59562b3ee603b57dfcfc6e84c97b1927cf7",
+  "coordinator_pid": 1663672,
+  "gpu_pool": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "launch_sha256": "00000e5a49b510a1d2c2f9ce28ab8c0ce13929b3b2acdda551bf0356a6b8f01d",
+  "preserved_dispatchers": [
+    {
+      "pid": 196647,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "pid": 870313,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "pid": 870864,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "run_id": "verified-v3-adamw-1e-6",
+  "started_at": "2026-09-09T04:55:03.544904+00:00",
+  "torchrun_pid": 1802048
+}

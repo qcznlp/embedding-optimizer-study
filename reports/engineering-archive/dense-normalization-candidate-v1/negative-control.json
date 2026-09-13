@@ -1,0 +1,77 @@
+{
+  "boundary": "Prospective single-normalization subclass of the unchanged study Trainer. Four CPU/Gloo ranks, tiny two-layer random ModernBERT, FP32/SDPA, zero dropout, non-reentrant gradient checkpointing, three optimizer steps on 288 distinct synthetic queries: 128 + 128 + 32. Independent raw/clipped full-batch gradients and actual LR cadence. Not GPU/full-model/8192-token/resume validation or a scientific result; no production code or library modification.",
+  "complete_for_cpu_fixture": false,
+  "failure": {
+    "message": "{\"passed\": false, \"type\": \"AssertionError\", \"message\": \"0.model.embeddings.tok_embeddings.weight: Tensor-likes are not close!\\n\\nMismatched elements: 2629 / 10048 (26.2%)\\nGreatest absolute difference: 1.4012813568115234 at index (5, 28) (up to 5e-06 allowed)\\nGreatest relative difference: 0.7570350170135498 at index (31, 25) (up to 0.0005 allowed)\"}",
+    "type": "RuntimeError"
+  },
+  "negative_control_constant_tail": true,
+  "observed_at_utc": "2026-09-05T06:50:48.426538+00:00",
+  "records": [],
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "scope": "engineering_four_rank_cpu_normalization_candidate_with_epoch_tail",
+  "source_bindings": [
+    {
+      "bytes": 16943,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_normalization.py",
+      "sha256": "92bb2965f4be570e221cfdf7861bc03c63986195840c4cd4213228783067106f"
+    },
+    {
+      "bytes": 4389,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/dense_trainer_normalization_candidate.py",
+      "sha256": "08d7c58df2e8f8f1d537cc76ee514781f6ceb7a73b1d2eff72e688f383d1a761"
+    },
+    {
+      "bytes": 21023,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_ddp_accumulation.py",
+      "sha256": "55b09ad9cc483334e1d0af9f7c6101448f11a0fc3dd5eae7a65233b72eaaf2f5"
+    },
+    {
+      "bytes": 14125,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_loss_contract.py",
+      "sha256": "6373e1c5987c858f19bc3503a6ad7db47bd00ab5d279ff959b341e919e6ab55f"
+    },
+    {
+      "bytes": 16750,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/train.py",
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    },
+    {
+      "bytes": 3805,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    {
+      "bytes": 2117,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 7052,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 1601,
+      "path": "/root/embedding-optimizer-study/configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  ],
+  "tolerances": {
+    "gradient_atol": 5e-06,
+    "gradient_rtol": 0.0005
+  },
+  "versions": {
+    "accelerate": "1.13.0",
+    "datasets": "4.8.4",
+    "sentence-transformers": "5.7.0",
+    "torch": "2.9.1+cu129",
+    "transformers": "5.3.0"
+  }
+}

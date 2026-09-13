@@ -260,7 +260,7 @@ def test_candidate_publication_progress_verifies_source_records(tmp_path: Path) 
     source_paths = {
         "configs/protocol.json": b"{}\n",
         "reports/candidate-breadth/summary.json": b"{}\n",
-        "paper/generated/candidate-breadth.tex": b"% generated\n",
+        "reports/engineering-archive/candidate-breadth-paper-fragment.tex": b"% generated\n",
         "reports/candidate-breadth/contrasts.csv": b"delta\n",
     }
     for relative, body in source_paths.items():
@@ -284,7 +284,11 @@ def test_candidate_publication_progress_verifies_source_records(tmp_path: Path) 
                 "status": "complete",
                 "protocol": record("configs/protocol.json"),
                 "summary": record("reports/candidate-breadth/summary.json"),
-                "outputs": {"paper_tex": record("paper/generated/candidate-breadth.tex")},
+                "outputs": {
+                    "paper_tex": record(
+                        "reports/engineering-archive/candidate-breadth-paper-fragment.tex"
+                    )
+                },
                 "summary_outputs": {"contrasts": record("reports/candidate-breadth/contrasts.csv")},
             }
         ),
@@ -300,7 +304,9 @@ def test_candidate_publication_progress_verifies_source_records(tmp_path: Path) 
         "problems": [],
     }
 
-    (tmp_path / "paper/generated/candidate-breadth.tex").write_text("% changed\n", encoding="utf-8")
+    (tmp_path / "reports/engineering-archive/candidate-breadth-paper-fragment.tex").write_text(
+        "% changed\n", encoding="utf-8"
+    )
     invalid = _candidate_publication_progress(manifest, tmp_path)
     assert invalid["status"] == "invalid"
     assert invalid["complete"] is False

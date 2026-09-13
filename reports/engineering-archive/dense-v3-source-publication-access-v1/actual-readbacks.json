@@ -1,0 +1,162 @@
+{
+  "captured_at_utc": "2026-09-13 01:05:05 UTC",
+  "scope": "read-only publication access and provenance clarification, not a write test or permission change",
+  "repository": "qcznlp/embedding-optimizer-study",
+  "repository_read": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "id": "1335524068",
+      "name": "embedding-optimizer-study",
+      "owner": {
+        "login": "qcznlp",
+        "id": 58885859,
+        "type": "User",
+        "avatar_url": "https://avatars.githubusercontent.com/u/58885859?v=4",
+        "url": "https://api.github.com/users/qcznlp"
+      },
+      "repository_full_name": "qcznlp/embedding-optimizer-study",
+      "permissions": {
+        "admin": true,
+        "maintain": true,
+        "pull": true,
+        "push": true,
+        "triage": true
+      },
+      "allow_auto_merge": null,
+      "allow_merge_commit": null,
+      "allow_rebase_merge": null,
+      "allow_squash_merge": null,
+      "allow_update_branch": null,
+      "clone_url": "https://github.com/qcznlp/embedding-optimizer-study.git",
+      "size": 19285,
+      "default_branch": "main",
+      "git_commits_url": "https://api.github.com/repos/qcznlp/embedding-optimizer-study/git/commits{/sha}",
+      "git_refs_url": "https://api.github.com/repos/qcznlp/embedding-optimizer-study/git/refs{/sha}",
+      "git_url": "git://github.com/qcznlp/embedding-optimizer-study.git",
+      "master_branch": null,
+      "visibility": "public",
+      "archived": false,
+      "is_code_search_indexed": null
+    },
+    "isError": false
+  },
+  "existing_identity_read": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "login": "qcznlp",
+      "id": 58885859
+    },
+    "isError": false
+  },
+  "managed_installations_scoped_view": {
+    "allow_all_repositories_for_testing": false,
+    "installations": []
+  },
+  "branch_name_read": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "branches": [
+        {
+          "branch": "main"
+        }
+      ],
+      "cursor": "MQ"
+    },
+    "isError": false
+  },
+  "recent_repository_commit_read": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "commits": [
+        {
+          "sha": "f231a6430712388778f32ad1736a4cb6de3bec3e",
+          "message": "Merge pull request #90 from qcznlp/status/muon-high-dose-checkpoint-3126\n\nstatus: seal high-dose Muon checkpoint 3126",
+          "url": "https://api.github.com/repos/qcznlp/embedding-optimizer-study/commits/f231a6430712388778f32ad1736a4cb6de3bec3e",
+          "html_url": "https://github.com/qcznlp/embedding-optimizer-study/commit/f231a6430712388778f32ad1736a4cb6de3bec3e",
+          "diff": null,
+          "files": null,
+          "repository_full_name": "qcznlp/embedding-optimizer-study",
+          "comments": null,
+          "author": null,
+          "committer": null,
+          "created_at": "2026-09-04T17:37:23Z",
+          "git_author_email": null,
+          "display_url": "https://github.com/qcznlp/embedding-optimizer-study/commit/f231a6430712388778f32ad1736a4cb6de3bec3e",
+          "display_title": "Merge pull request #90 from qcznlp/status/muon-high-dose-checkpoint-3126"
+        }
+      ]
+    },
+    "isError": false
+  },
+  "installations_scoped_view": {
+    "isError": false,
+    "returned_fields": [
+      "allow_all_repositories_for_testing",
+      "installations"
+    ],
+    "total_installations_returned": 6,
+    "returned_entry_field_names": [
+      "account_avatar_url",
+      "account_id",
+      "account_login",
+      "account_type",
+      "events",
+      "html_url",
+      "id",
+      "repository_selection",
+      "viewer_can_administer"
+    ],
+    "qcznlp_installations": [],
+    "scope": "read only; no permission change; unrelated account values omitted"
+  },
+  "readme_at_returned_commit": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Action completed."
+      }
+    ],
+    "structuredContent": {
+      "content": "<!--\nThis README substantially modifies the lightonai/mdenseon-mlateon README at commit\nb0db47a48f969d825446668b5b17bfc27a359fc1. See THIRD_PARTY_NOTICES.md.\n-->\n\n# Muon for dense-retriever adaptation\n\nA reproducible study of AdamW, Muon, and NorMuon for supervised adaptation of\n[DenseOn-unsupervised](https://huggingface.co/lightonai/DenseOn-unsupervised).\n\n**Headline result.** In the historical four-rate sweep, the best AdamW, Muon, and NorMuon runs\nreach 0.5899, 0.5923, and 0.5934 mean nDCG@10 over 14 decontaminated BEIR tasks. Muon and NorMuon\nbeat the best AdamW point on 10 and 11 tasks and reach the AdamW quality reference in about 0.75\nuseful hours instead of 1.41, despite slightly lower per-step throughput. The scientific puzzle is\nthat their norm-matched first step is worse: the gain appears only after optimizer trajectories\ndiverge. The active independently padded replication determines how much of this positive result\nsurvives an execution-invariant comparison.\n\nThe project compares complete training dynamics, zero-shot retrieval quality, systems cost, and\nweight/update geometry. Its central question is not whether Muon produces flatter update\nspectra—that is largely built into the operator—but whether its apparent optimization gains survive\nindependent full-corpus evaluation and implementation-invariance checks. The manuscript and its\nsource-bound generated tables are the sole publication deliverable; standalone reports remain\nauditable evidence rather than a parallel article.\n\nThe repository is public under Apache-2.0. For the current verified state, known limitations, and\nexact continuation order, start with [PROJECT_STATUS.md](PROJECT_STATUS.md). Coding agents should\nalso read [AGENTS.md](AGENTS.md) before taking action.\n\n## 60-second handoff\n\nThe active work is a 12-run, DenseOn-only corrective replication with input packing disabled. It\nis intentionally separated from the 34 completed historical Dense runs. The implementation was\nmerged through [PR #42](https://github.com/qcznlp/embedding-optimizer-study/pull/42), and execution\nis tracked in [issue #41](https://github.com/qcznlp/embedding-optimizer-study/issues/41).\n\n- Human-readable source of truth: [PROJECT_STATUS.md](PROJECT_STATUS.md)\n- Latest committed machine-readable snapshot: [CURRENT_PROGRESS.json](CURRENT_PROGRESS.json)\n- Exact run/evaluation/backup commands: [docs/dense-no-packing-retrain.md](docs/dense-no-packing-retrain.md)\n- Frozen scientific contract: [configs/dense_no_packing_execution_protocol.json](configs/dense_no_packing_execution_protocol.json)\n- Frozen reload/evaluation contract: [configs/dense_no_packing_evaluation_protocol.json](configs/dense_no_packing_evaluation_protocol.json)\n- Frozen weight-space/bridge contract: [configs/dense_no_packing_analysis_protocol.json](configs/dense_no_packing_analysis_protocol.json)\n- Frozen outcome/statistical contract: [configs/dense_no_packing_outcome_protocol.json](configs/dense_no_packing_outcome_protocol.json)\n- Source-bound bridge implementation: [configs/dense_no_packing_bridge_implementation_protocol_v2.json](configs/dense_no_packing_bridge_implementation_protocol_v2.json)\n- Historical/corrected sensitivity implementation: [configs/dense_no_packing_sensitivity_implementation_protocol.json](configs/dense_no_packing_sensitivity_implementation_protocol.json)\n- Source-bound paper renderer: [configs/dense_no_packing_publication_protocol.json](configs/dense_no_packing_publication_protocol.json)\n- Prospective state×operator mechanism follow-up: [docs/state-operator-factorial.md](docs/state-operator-factorial.md)\n- Its frozen contracts: [scientific](configs/dense_no_packing_state_operator_factorial_protocol.json), [implementation](configs/dense_no_packing_state_operator_factorial_implementation_protocol.json), [paper rendering](configs/dense_no_packing_state_operator_factorial_publication_protocol.json), [200-word abstract migration](configs/dense_no_packing_state_operator_abstract_compliance_migration.json), and [completion handoff](configs/dense_no_packing_state_operator_factorial_completion_protocol.json)\n- Resume-safe mechanism handoff: `python -m embed_optim.state_operator_factorial_completion --resume`\n- Active control-plane recovery receipt: [configs/dense_no_packing_control_plane_recovery.json](configs/dense_no_packing_control_plane_recovery.json)\n- Read-only corrected W&B audit: `python -m embed_optim.corrected_wandb_audit --allow-partial`\n\nOn the experiment host, refresh the artifact-only snapshot without inspecting system processes:\n\n```bash\npython -m embed_optim.corrected_progress --output CURRENT_PROGRESS.json\n```\n\nThe committed JSON is a handoff snapshot, not a heartbeat. Run the command above for the freshest\nlocal state. Meaningful transitions—completed/failed runs, evaluation milestones, verified\nbackups, or changed scientific conclusions—must also be recorded in `PROJECT_STATUS.md` and issue\n#41. The external `gpu.py` utility and its processes are strictly out of scope.\n\n- Dense-only NAACL plan: [docs/naacl-dense-paper-plan.md](docs/naacl-dense-paper-plan.md)\n- Authoritative manuscript: [paper/](paper/README.md)\n- Live dashboard: [Weights & Biases](https://wandb.ai/stevezenguom/embedding-optimizer-study)\n- Public checkpoint backup: [qcz/embedding-optimizer-study-checkpoints](https://huggingface.co/qcz/embedding-optimizer-study-checkpoints)\n- Public analysis-artifact backup: [qcz/embedding-optimizer-study-analysis-artifacts](https://huggingface.co/datasets/qcz/embedding-optimizer-study-analysis-artifacts)\n\n> **Current reproducibility warning.** The frozen candidate-breadth audit exposed material batch\n> non-invariance in the historical SentenceTransformers flattened ModernBERT FlashAttention path.\n> Historical Dense training used that pinned path, while corpus retrieval used padded independent\n> encoding. The existing comparison is therefore evidence about this exact implementation, not yet\n> a general clean eight-way optimizer result. See\n> [the handoff](PROJECT_STATUS.md#critical-execution-finding) and the source-bound candidate report.\n\n## Verify a clean clone\n\nThe Git repository includes a 107.4MB minimal, content-addressed paper-evidence closure; it does not\nduplicate the 416GB public checkpoint archive. A new contributor or agent can therefore validate\nthe released claims immediately after installing the development dependencies:\n\n~~~bash\nuv sync --extra dev --extra eval --extra analysis\nuv run python scripts/portable_evidence.py --audit-only",
+      "encoding": "utf-8",
+      "sha": "50fffdd59c90fe3f782bd4556b785dc765cb607c",
+      "display_url": "https://github.com/qcznlp/embedding-optimizer-study/blob/f231a6430712388778f32ad1736a4cb6de3bec3e/README.md",
+      "display_title": "README.md"
+    },
+    "isError": false
+  },
+  "installation_view_boundary": "These two records are explicitly scoped derived views, not complete raw API installation responses. They do not establish GitHub App Issues or Contents write scopes.",
+  "owner_question": {
+    "sent": true,
+    "accepted_by_question_tool": true,
+    "reply_received_at_record_creation": false,
+    "purpose": "Confirm existing integration access to this repository and Issues write authorization through the normal owner-controlled path; no credential requested in chat.",
+    "blocks_current_evaluation": false
+  },
+  "no_github_write_or_retry": true,
+  "no_alternate_credential_or_identity": true,
+  "no_permission_update": true,
+  "no_commit_push_or_source_publication": true,
+  "no_hf_mutation": true,
+  "full_goal_complete": false
+}

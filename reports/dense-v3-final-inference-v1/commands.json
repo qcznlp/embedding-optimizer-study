@@ -1,0 +1,73 @@
+{
+  "scope": "actual_complete_endpoint_inference_and_source_relocated_replay",
+  "actual": {
+    "command": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-endpoint-inference.pee7UOFu/run_endpoint_inference.py --repository /root/embedding-optimizer-story-refactor --evaluation-root /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/download/corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f --output /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-final-inference-v1",
+    "result": {
+      "chunk_id": "d1721d",
+      "wall_time_seconds": 1.001215792,
+      "session_id": 31452,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "actual_terminal": {
+    "chunk_id": "3d3e61",
+    "wall_time_seconds": 0.000003276,
+    "exit_code": 0,
+    "original_token_count": 912,
+    "output": "{\"checks\": [{\"family\": \"primary\", \"interval_numeric_fields_checked\": 24, \"maximum_absolute_scalar_replay_difference\": 1.734723475976807e-18, \"support_decisions_checked\": 3, \"task_optimizer_means_checked\": 42}, {\"family\": \"secondary\", \"interval_numeric_fields_checked\": 24, \"maximum_absolute_scalar_replay_difference\": 8.673617379884035e-19, \"support_decisions_checked\": 3, \"task_optimizer_means_checked\": 42}], \"observed_at_utc\": \"2026-09-10T17:55:40.927965+00:00\", \"output\": \"/root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-final-inference-v1\", \"primary\": [{\"across_task_standard_error\": 0.005748341624247988, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0015691071428571607, \"nominal_bootstrap_ci_95_lower\": -0.00860559374999997, \"nominal_bootstrap_ci_95_upper\": 0.013292656250000038, \"simultaneous_ci_95_lower\": -0.010808336441841229, \"simultaneous_ci_95_upper\": 0.013946550727555549, \"simultaneous_critical_value\": 2.153219901281987, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"muon\"}, {\"across_task_standard_error\": 0.005097415550342816, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0020726785714285795, \"nominal_bootstrap_ci_95_lower\": -0.006809825892857118, \"nominal_bootstrap_ci_95_upper\": 0.012491263392857152, \"simultaneous_ci_95_lower\": -0.008903178036673842, \"simultaneous_ci_95_upper\": 0.013048535179531001, \"simultaneous_critical_value\": 2.153219901281987, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"normuon\"}, {\"across_task_standard_error\": 0.0011510287059952591, \"baseline\": \"muon\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0005035714285714187, \"nominal_bootstrap_ci_95_lower\": -0.0016117946428571798, \"nominal_bootstrap_ci_95_upper\": 0.002711267857142845, \"simultaneous_ci_95_lower\": -0.001974846488124426, \"simultaneous_ci_95_upper\": 0.0029819893452672636, \"simultaneous_critical_value\": 2.153219901281987, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"normuon\"}], \"scientific_completion\": false, \"secondary\": [{\"across_task_standard_error\": 0.002169027527721249, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.003167857142857153, \"nominal_bootstrap_ci_95_lower\": -0.00038142857142857043, \"nominal_bootstrap_ci_95_upper\": 0.0077257321428571505, \"simultaneous_ci_95_lower\": -0.0016307954862677283, \"simultaneous_ci_95_upper\": 0.007966509771982034, \"simultaneous_critical_value\": 2.212352110702016, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"muon\"}, {\"across_task_standard_error\": 0.001315729319454505, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.004374285714285718, \"nominal_bootstrap_ci_95_lower\": 0.002054267857142852, \"nominal_bootstrap_ci_95_upper\": 0.007017857142857147, \"simultaneous_ci_95_lower\": 0.0014634291772780165, \"simultaneous_ci_95_upper\": 0.007285142251293419, \"simultaneous_critical_value\": 2.212352110702016, \"support\": \"positive\", \"tasks\": 14, \"treatment\": \"normuon\"}, {\"across_task_standard_error\": 0.001598508785562223, \"baseline\": \"muon\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0012064285714285647, \"nominal_bootstrap_ci_95_lower\": -0.0019171607142857087, \"nominal_bootstrap_ci_95_upper\": 0.004163571428571414, \"simultaneous_ci_95_lower\": -0.002330035714285736, \"simultaneous_ci_95_upper\": 0.004742892857142865, \"simultaneous_critical_value\": 2.212352110702016, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"normuon\"}]}\n"
+  },
+  "render": {
+    "command": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 /usr/bin/python -B /tmp/dense-v3-endpoint-inference.pee7UOFu/render_endpoint_inference.py --input /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-final-inference-v1/readout.json --output /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-final-inference-v1-figures",
+    "result": {
+      "chunk_id": "07a629",
+      "wall_time_seconds": 0.7700249,
+      "exit_code": 0,
+      "original_token_count": 593,
+      "output": "{\"input\": {\"bytes\": 20319, \"sha256\": \"592c902f94b8f190f3165f4075dfddc1e8c3f52add760805da639b541d27716f\"}, \"manuscript_installed\": false, \"matplotlib_version\": \"3.11.1\", \"new_statistical_inference\": false, \"outputs\": {\"endpoint_contrasts.pdf\": {\"bytes\": 22147, \"sha256\": \"933ff9f09a482564b8630abd08e849d7e3f4aaa1cb4681a2bdf61bdbfbe173b8\"}, \"endpoint_contrasts.png\": {\"bytes\": 112384, \"sha256\": \"1f35906aa74382f48de7ed8abb42d70721778c2879834179495f3cd6956fd625\"}, \"endpoint_contrasts.svg\": {\"bytes\": 18783, \"sha256\": \"d67b614254fb957d8a8e83f4759405f8b24383346d17aec67e1da33b94f918b0\"}, \"figure_data.csv\": {\"bytes\": 675, \"sha256\": \"d9674d73c96d326aaf79d1463e3570a3bd23e803f901849c236a16b7fcf0860d\"}}, \"plotted_rows\": [{\"baseline\": \"adamw\", \"difference_points\": 0.15691071428571607, \"family\": \"primary\", \"simultaneous_lower_points\": -1.0808336441841229, \"simultaneous_upper_points\": 1.394655072755555, \"support\": \"inconclusive\", \"treatment\": \"muon\", \"y\": 2}, {\"baseline\": \"adamw\", \"difference_points\": 0.20726785714285795, \"family\": \"primary\", \"simultaneous_lower_points\": -0.8903178036673842, \"simultaneous_upper_points\": 1.3048535179531, \"support\": \"inconclusive\", \"treatment\": \"normuon\", \"y\": 1}, {\"baseline\": \"muon\", \"difference_points\": 0.050357142857141865, \"family\": \"primary\", \"simultaneous_lower_points\": -0.1974846488124426, \"simultaneous_upper_points\": 0.29819893452672636, \"support\": \"inconclusive\", \"treatment\": \"normuon\", \"y\": 0}, {\"baseline\": \"adamw\", \"difference_points\": 0.3167857142857153, \"family\": \"secondary\", \"simultaneous_lower_points\": -0.16307954862677282, \"simultaneous_upper_points\": 0.7966509771982034, \"support\": \"inconclusive\", \"treatment\": \"muon\", \"y\": 2}, {\"baseline\": \"adamw\", \"difference_points\": 0.4374285714285718, \"family\": \"secondary\", \"simultaneous_lower_points\": 0.14634291772780164, \"simultaneous_upper_points\": 0.7285142251293419, \"support\": \"positive\", \"treatment\": \"normuon\", \"y\": 1}, {\"baseline\": \"muon\", \"difference_points\": 0.12064285714285647, \"family\": \"secondary\", \"simultaneous_lower_points\": -0.23300357142857359, \"simultaneous_upper_points\": 0.47428928571428647, \"support\": \"inconclusive\", \"treatment\": \"normuon\", \"y\": 0}], \"scientific_completion\": false, \"scope\": \"all_six_frozen_endpoint_intervals_visualization\", \"source\": {\"bytes\": 5120, \"sha256\": \"d12456e74b526e5b335f63befc3aa598ee1b9d7d7ccf10b8434738c2f8ed2481\"}}\n"
+    }
+  },
+  "relocated_replay": {
+    "command": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/dense-v3-final-inference-v1/source/run_endpoint_inference.py --repository /root/embedding-optimizer-story-refactor/reports/dense-v3-final-inference-v1/source-original --evaluation-root /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/download/corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f --output /tmp/dense-v3-endpoint-inference.pee7UOFu/relocated-replay",
+    "result": {
+      "chunk_id": "d48589",
+      "wall_time_seconds": 1.00115058,
+      "session_id": 96345,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "relocated_replay_terminal": {
+    "chunk_id": "3c1420",
+    "wall_time_seconds": 0.000003409,
+    "exit_code": 0,
+    "original_token_count": 905,
+    "output": "{\"checks\": [{\"family\": \"primary\", \"interval_numeric_fields_checked\": 24, \"maximum_absolute_scalar_replay_difference\": 1.734723475976807e-18, \"support_decisions_checked\": 3, \"task_optimizer_means_checked\": 42}, {\"family\": \"secondary\", \"interval_numeric_fields_checked\": 24, \"maximum_absolute_scalar_replay_difference\": 8.673617379884035e-19, \"support_decisions_checked\": 3, \"task_optimizer_means_checked\": 42}], \"observed_at_utc\": \"2026-09-10T17:58:33.460767+00:00\", \"output\": \"/tmp/dense-v3-endpoint-inference.pee7UOFu/relocated-replay\", \"primary\": [{\"across_task_standard_error\": 0.005748341624247988, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0015691071428571607, \"nominal_bootstrap_ci_95_lower\": -0.00860559374999997, \"nominal_bootstrap_ci_95_upper\": 0.013292656250000038, \"simultaneous_ci_95_lower\": -0.010808336441841229, \"simultaneous_ci_95_upper\": 0.013946550727555549, \"simultaneous_critical_value\": 2.153219901281987, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"muon\"}, {\"across_task_standard_error\": 0.005097415550342816, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0020726785714285795, \"nominal_bootstrap_ci_95_lower\": -0.006809825892857118, \"nominal_bootstrap_ci_95_upper\": 0.012491263392857152, \"simultaneous_ci_95_lower\": -0.008903178036673842, \"simultaneous_ci_95_upper\": 0.013048535179531001, \"simultaneous_critical_value\": 2.153219901281987, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"normuon\"}, {\"across_task_standard_error\": 0.0011510287059952591, \"baseline\": \"muon\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0005035714285714187, \"nominal_bootstrap_ci_95_lower\": -0.0016117946428571798, \"nominal_bootstrap_ci_95_upper\": 0.002711267857142845, \"simultaneous_ci_95_lower\": -0.001974846488124426, \"simultaneous_ci_95_upper\": 0.0029819893452672636, \"simultaneous_critical_value\": 2.153219901281987, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"normuon\"}], \"scientific_completion\": false, \"secondary\": [{\"across_task_standard_error\": 0.002169027527721249, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.003167857142857153, \"nominal_bootstrap_ci_95_lower\": -0.00038142857142857043, \"nominal_bootstrap_ci_95_upper\": 0.0077257321428571505, \"simultaneous_ci_95_lower\": -0.0016307954862677283, \"simultaneous_ci_95_upper\": 0.007966509771982034, \"simultaneous_critical_value\": 2.212352110702016, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"muon\"}, {\"across_task_standard_error\": 0.001315729319454505, \"baseline\": \"adamw\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.004374285714285718, \"nominal_bootstrap_ci_95_lower\": 0.002054267857142852, \"nominal_bootstrap_ci_95_upper\": 0.007017857142857147, \"simultaneous_ci_95_lower\": 0.0014634291772780165, \"simultaneous_ci_95_upper\": 0.007285142251293419, \"simultaneous_critical_value\": 2.212352110702016, \"support\": \"positive\", \"tasks\": 14, \"treatment\": \"normuon\"}, {\"across_task_standard_error\": 0.001598508785562223, \"baseline\": \"muon\", \"bootstrap_samples\": 50000, \"bootstrap_seed\": 20260903, \"mean_delta_ndcg_at_10\": 0.0012064285714285647, \"nominal_bootstrap_ci_95_lower\": -0.0019171607142857087, \"nominal_bootstrap_ci_95_upper\": 0.004163571428571414, \"simultaneous_ci_95_lower\": -0.002330035714285736, \"simultaneous_ci_95_upper\": 0.004742892857142865, \"simultaneous_critical_value\": 2.212352110702016, \"support\": \"inconclusive\", \"tasks\": 14, \"treatment\": \"normuon\"}]}\n"
+  },
+  "pdf_fonts": {
+    "command": "pdffonts /root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-final-inference-v1-figures/endpoint_contrasts.pdf",
+    "tool_chunk": "2c33dd",
+    "exit_code": 0,
+    "observed_fonts": [
+      {
+        "name": "GBVBVY+DejaVuSans",
+        "type": "CID TrueType",
+        "embedded": true
+      },
+      {
+        "name": "DQIFZV+DejaVuSans",
+        "type": "CID TrueType",
+        "embedded": true
+      }
+    ]
+  },
+  "visual_inspection": {
+    "path": "/root/embedding-optimizer-v3-experiment/analyses/dense-primary-v3-final-inference-v1-figures/endpoint_contrasts.png",
+    "actually_viewed": true,
+    "all_six_intervals_and_both_family_labels_visible": true,
+    "no_clipped_text_observed": true
+  },
+  "new_training": false,
+  "resource_handoff": false,
+  "scientific_completion": false
+}

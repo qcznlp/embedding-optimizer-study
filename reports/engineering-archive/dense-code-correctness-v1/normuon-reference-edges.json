@@ -1,0 +1,1307 @@
+{
+  "audit_executed_completely": true,
+  "boundary": "Four small synthetic matrix shapes, six gradient scales, four successive updates from zero optimizer state; CPU FP32 state/BF16 polynomial. Not actual primary gradients, GPU equivalence, performance impact, a model-quality result, or evidence that formal runs encountered this envelope. No production source changed. Audit execution success is not reference-conformance success.",
+  "cases": [
+    {
+      "element_gradient_scale": 1.0,
+      "shape": [
+        8,
+        4
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.71955943107605,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.71955943107605,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.7129743099212646,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.7129743099212646,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.742577075958252,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.742577075958252,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.543881416320801,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.543881416320801,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1.0,
+      "shape": [
+        4,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 1.930408000946045,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.930408000946045,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 1.9731186628341675,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9731186628341675,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 1.9091578722000122,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9091578722000122,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.0083024501800537,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.0083024501800537,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1.0,
+      "shape": [
+        8,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.621581554412842,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.621581554412842,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.5088138580322266,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.5088138580322266,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.8085615634918213,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.8085615634918213,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.5044102668762207,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.5044102668762207,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1.0,
+      "shape": [
+        64,
+        32
+      ],
+      "steps": [
+        {
+          "local_update_norm": 6.680843830108643,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.680843830108643,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 6.752811908721924,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.752811908721924,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 6.698001861572266,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.698001861572266,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 6.617668628692627,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.617668628692627,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.001,
+      "shape": [
+        8,
+        4
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.6765007972717285,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.6765007972717285,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.747297525405884,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.747297525405884,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.707361936569214,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.707361936569214,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.5501019954681396,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.5501019954681396,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.001,
+      "shape": [
+        4,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 1.9887471199035645,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9887471199035645,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 1.9641587734222412,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9641587734222412,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 1.917356014251709,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.917356014251709,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 1.9928406476974487,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9928406476974487,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.001,
+      "shape": [
+        8,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.6214842796325684,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.6214842796325684,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.4740498065948486,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.4740498065948486,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.7864766120910645,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.7864766120910645,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.50351881980896,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.50351881980896,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.001,
+      "shape": [
+        64,
+        32
+      ],
+      "steps": [
+        {
+          "local_update_norm": 6.69980525970459,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.69980525970459,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 6.744060516357422,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.744060516357422,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 6.675895690917969,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.675895690917969,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 6.6031036376953125,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.6031036376953125,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-05,
+      "shape": [
+        8,
+        4
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.7080821990966797,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.051955219358205795,
+          "max_row_second_moment_error": 0.000925254775211215,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.605391502380371,
+          "relative_l2_update_error": 0.058126892894506454,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.721486806869507,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.04656344652175903,
+          "max_row_second_moment_error": 0.001566941849887371,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.6945104598999023,
+          "relative_l2_update_error": 0.03492100536823273,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.7272286415100098,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.04484075307846069,
+          "max_row_second_moment_error": 0.0012664850801229477,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.7311151027679443,
+          "relative_l2_update_error": 0.03503166884183884,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.543203830718994,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.05240362882614136,
+          "max_row_second_moment_error": 0.0010336115956306458,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.6355175971984863,
+          "relative_l2_update_error": 0.04653818532824516,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-05,
+      "shape": [
+        4,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 1.9128471612930298,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.05427965521812439,
+          "max_row_second_moment_error": 0.0009199157357215881,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.8528388738632202,
+          "relative_l2_update_error": 0.05938733369112015,
+          "step": 1
+        },
+        {
+          "local_update_norm": 1.9498744010925293,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.04576614871621132,
+          "max_row_second_moment_error": 0.001278543844819069,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9075428247451782,
+          "relative_l2_update_error": 0.053629953414201736,
+          "step": 2
+        },
+        {
+          "local_update_norm": 1.9643495082855225,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.07593749463558197,
+          "max_row_second_moment_error": 0.00162411667406559,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.8710873126983643,
+          "relative_l2_update_error": 0.08858382701873779,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.0376086235046387,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.03985053300857544,
+          "max_row_second_moment_error": 0.0019062012434005737,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9915096759796143,
+          "relative_l2_update_error": 0.05073445290327072,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-05,
+      "shape": [
+        8,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.6001784801483154,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.045145183801651,
+          "max_row_second_moment_error": 0.0004881424829363823,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.563471555709839,
+          "relative_l2_update_error": 0.04471253231167793,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.4575915336608887,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.04499238729476929,
+          "max_row_second_moment_error": 0.0008815042674541473,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.5444467067718506,
+          "relative_l2_update_error": 0.056982431560754776,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.803699493408203,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.03873591125011444,
+          "max_row_second_moment_error": 0.0007430631667375565,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.7616190910339355,
+          "relative_l2_update_error": 0.04352964088320732,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.485910654067993,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.04713946580886841,
+          "max_row_second_moment_error": 0.0009712744504213333,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.5200536251068115,
+          "relative_l2_update_error": 0.05791395902633667,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-05,
+      "shape": [
+        64,
+        32
+      ],
+      "steps": [
+        {
+          "local_update_norm": 6.738452434539795,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.738452434539795,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 6.7774739265441895,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.7774739265441895,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 6.691742897033691,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.691742897033691,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 6.582011699676514,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.582011699676514,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-07,
+      "shape": [
+        8,
+        4
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.7590274810791016,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.20329132676124573,
+          "max_row_second_moment_error": 0.004132187459617853,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.131598472595215,
+          "relative_l2_update_error": 0.31437939405441284,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.826234817504883,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.3649529218673706,
+          "max_row_second_moment_error": 0.006840513087809086,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.3596222400665283,
+          "relative_l2_update_error": 0.41056615114212036,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.605039596557617,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.2521040141582489,
+          "max_row_second_moment_error": 0.010063705034554005,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.4128496646881104,
+          "relative_l2_update_error": 0.31059378385543823,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.668999671936035,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.28185537457466125,
+          "max_row_second_moment_error": 0.013923322781920433,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.1539950370788574,
+          "relative_l2_update_error": 0.30114981532096863,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-07,
+      "shape": [
+        4,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 1.845470666885376,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.17941683530807495,
+          "max_row_second_moment_error": 0.0031684727873653173,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.5746755599975586,
+          "relative_l2_update_error": 0.30589932203292847,
+          "step": 1
+        },
+        {
+          "local_update_norm": 1.979793667793274,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.20695894956588745,
+          "max_row_second_moment_error": 0.004714677110314369,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.550093173980713,
+          "relative_l2_update_error": 0.3470235764980316,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.03844952583313,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.2315712571144104,
+          "max_row_second_moment_error": 0.00889083743095398,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.596339225769043,
+          "relative_l2_update_error": 0.3861907422542572,
+          "step": 3
+        },
+        {
+          "local_update_norm": 1.8351759910583496,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.14980736374855042,
+          "max_row_second_moment_error": 0.007855165749788284,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.8098552227020264,
+          "relative_l2_update_error": 0.22064386308193207,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-07,
+      "shape": [
+        8,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.604250431060791,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.2791115343570709,
+          "max_row_second_moment_error": 0.0020335186272859573,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.36999773979187,
+          "relative_l2_update_error": 0.3487928807735443,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.5956339836120605,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.20102043449878693,
+          "max_row_second_moment_error": 0.0029885428957641125,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.6482744216918945,
+          "relative_l2_update_error": 0.25248390436172485,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.51279616355896,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.2275868058204651,
+          "max_row_second_moment_error": 0.002567821182310581,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.5383846759796143,
+          "relative_l2_update_error": 0.26686611771583557,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.5417873859405518,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.18434737622737885,
+          "max_row_second_moment_error": 0.003505842760205269,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.423588275909424,
+          "relative_l2_update_error": 0.23501519858837128,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-07,
+      "shape": [
+        64,
+        32
+      ],
+      "steps": [
+        {
+          "local_update_norm": 6.721897125244141,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.12960682809352875,
+          "max_row_second_moment_error": 0.000134892703499645,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.843536853790283,
+          "relative_l2_update_error": 0.2320544570684433,
+          "step": 1
+        },
+        {
+          "local_update_norm": 6.7767486572265625,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.1258835792541504,
+          "max_row_second_moment_error": 0.00023129896726459265,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.789874076843262,
+          "relative_l2_update_error": 0.23681385815143585,
+          "step": 2
+        },
+        {
+          "local_update_norm": 6.645737648010254,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.11288246512413025,
+          "max_row_second_moment_error": 0.0003099745372310281,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.879202842712402,
+          "relative_l2_update_error": 0.21433380246162415,
+          "step": 3
+        },
+        {
+          "local_update_norm": 6.599658966064453,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.11460818350315094,
+          "max_row_second_moment_error": 0.000422545475885272,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 6.7043681144714355,
+          "relative_l2_update_error": 0.20059891045093536,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-09,
+      "shape": [
+        8,
+        4
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.697749376296997,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.0037919580936431885,
+          "max_row_second_moment_error": 5.3128693252801895e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.695219039916992,
+          "relative_l2_update_error": 0.003798377700150013,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.98972225189209,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.007464230060577393,
+          "max_row_second_moment_error": 0.00019936542958021164,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.987107276916504,
+          "relative_l2_update_error": 0.005826737731695175,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.712552070617676,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.00729447603225708,
+          "max_row_second_moment_error": 0.00031116046011447906,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.7053849697113037,
+          "relative_l2_update_error": 0.0056772176176309586,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.845472574234009,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.010039865970611572,
+          "max_row_second_moment_error": 0.0004011858254671097,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.8429999351501465,
+          "relative_l2_update_error": 0.006517649628221989,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-09,
+      "shape": [
+        4,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 1.9791710376739502,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.007776379585266113,
+          "max_row_second_moment_error": 4.973262548446655e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9730970859527588,
+          "relative_l2_update_error": 0.006799272261559963,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.08144474029541,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.006881296634674072,
+          "max_row_second_moment_error": 0.00010649487376213074,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.078847646713257,
+          "relative_l2_update_error": 0.006443997845053673,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.0078046321868896,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.005575984716415405,
+          "max_row_second_moment_error": 8.419342339038849e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.0050230026245117,
+          "relative_l2_update_error": 0.005744333378970623,
+          "step": 3
+        },
+        {
+          "local_update_norm": 1.9413809776306152,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.007929384708404541,
+          "max_row_second_moment_error": 0.00015010498464107513,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 1.9367897510528564,
+          "relative_l2_update_error": 0.007027923129498959,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-09,
+      "shape": [
+        8,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 2.5587732791900635,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.0069921016693115234,
+          "max_row_second_moment_error": 7.917312905192375e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.551964521408081,
+          "relative_l2_update_error": 0.0068026352673769,
+          "step": 1
+        },
+        {
+          "local_update_norm": 2.404143810272217,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.006873518228530884,
+          "max_row_second_moment_error": 0.0001673046499490738,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.392275333404541,
+          "relative_l2_update_error": 0.008317781612277031,
+          "step": 2
+        },
+        {
+          "local_update_norm": 2.70154070854187,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.008510708808898926,
+          "max_row_second_moment_error": 0.0002088155597448349,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.6915342807769775,
+          "relative_l2_update_error": 0.00757072027772665,
+          "step": 3
+        },
+        {
+          "local_update_norm": 2.673128604888916,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.00818711519241333,
+          "max_row_second_moment_error": 0.0001490674912929535,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 2.6764702796936035,
+          "relative_l2_update_error": 0.010286225005984306,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 1e-09,
+      "shape": [
+        64,
+        32
+      ],
+      "steps": [
+        {
+          "local_update_norm": 7.52886962890625,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.01997341215610504,
+          "max_row_second_moment_error": 3.8996629882603884e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 7.589637756347656,
+          "relative_l2_update_error": 0.033628255128860474,
+          "step": 1
+        },
+        {
+          "local_update_norm": 7.444277286529541,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.03395304083824158,
+          "max_row_second_moment_error": 7.44319986552e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 7.509856700897217,
+          "relative_l2_update_error": 0.040682174265384674,
+          "step": 2
+        },
+        {
+          "local_update_norm": 7.342977046966553,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.024822741746902466,
+          "max_row_second_moment_error": 8.065311703830957e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 7.404872417449951,
+          "relative_l2_update_error": 0.04053940251469612,
+          "step": 3
+        },
+        {
+          "local_update_norm": 7.316572189331055,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": false,
+          "max_absolute_update_error": 0.02462899684906006,
+          "max_row_second_moment_error": 9.197951294481754e-05,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 7.385725021362305,
+          "relative_l2_update_error": 0.04589393734931946,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.0,
+      "shape": [
+        8,
+        4
+      ],
+      "steps": [
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.0,
+      "shape": [
+        4,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.0,
+      "shape": [
+        8,
+        8
+      ],
+      "steps": [
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    },
+    {
+      "element_gradient_scale": 0.0,
+      "shape": [
+        64,
+        32
+      ],
+      "steps": [
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 1
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 2
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 3
+        },
+        {
+          "local_update_norm": 0.0,
+          "matches_clamp_only_control_exactly": true,
+          "matches_pinned_reference": true,
+          "max_absolute_update_error": 0.0,
+          "max_row_second_moment_error": 0.0,
+          "momentum_matches_reference_exactly": true,
+          "reference_update_norm": 0.0,
+          "relative_l2_update_error": 0.0,
+          "step": 4
+        }
+      ]
+    }
+  ],
+  "conforms_to_pinned_reference_over_tested_envelope": false,
+  "difference": "Local Newton-Schulz uses norm.clamp_min(1e-7); pinned official NorMuon uses norm + 1e-7. Changing just that statement in an isolated upstream namespace yields bit-identical local updates and states for all cases.",
+  "nonconforming_updates": 44,
+  "observed_at_utc": "2026-09-05T17:52:59.386427+00:00",
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "scope": "engineering_normuon_pinned_reference_small_gradient_fidelity",
+  "source_bindings": [
+    {
+      "bytes": 6562,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_normuon_reference_edges.py",
+      "sha256": "204c1723b27213f8d5a98a70708068f012be6279c9f0b0dc58c0f5aeca640b28"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    }
+  ],
+  "tested_updates": 96,
+  "tolerances": {
+    "atol": 1e-05,
+    "rtol": 1.3e-06
+  },
+  "upstream": {
+    "bytes": 13062,
+    "sha256": "706c1a35fb35342f6ff207f8310b814a1c8f55c6ffba0e843537db434a696141",
+    "url": "https://raw.githubusercontent.com/zichongli5/NorMuon/c6989a8354730695d9f5a9faa6c55eeb24865209/normuon.py"
+  }
+}

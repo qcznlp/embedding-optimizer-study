@@ -1,0 +1,44 @@
+{
+  "scope": "engineering_only_full_identity_integration",
+  "candidate_root": "/tmp/dense-identity-source.8rUgLF",
+  "numerical_parent_preserved": "/tmp/dense-correction-source.0YHywN",
+  "entrypoint": {
+    "command": "env CUDA_VISIBLE_DEVICES=4,5,6,7 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled TOKENIZERS_PARALLELISM=false PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore EMBED_OPTIM_MAX_STEPS=3 EMBED_OPTIM_STOP_AFTER_STEP=-1 PYTHONPATH=/tmp/dense-identity-source.8rUgLF/src:/root/embedding-optimizer-story-refactor:/tmp/dense-identity-source.8rUgLF OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 torchrun --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-identity-entry-logs.n54Cgn --redirects 3 --tee 0 /root/embedding-optimizer-story-refactor/scripts/audit_dense_identity_entrypoint.py --candidate-root /tmp/dense-identity-source.8rUgLF --source-manifest /tmp/dense-identity-tests.gD04cY/source-v1.json --source-sha256 1c6163c5aeee9d0735a6859c0e2f56a701c59d5111b553de6fb5c758da138dfd --workdir /tmp/dense-identity-entry.rCO4Oz --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit /root/embedding-optimizer-story-refactor/reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+    "observed_launcher_exit_code": 0,
+    "work": "/tmp/dense-identity-entry.rCO4Oz",
+    "log_root": "/tmp/dense-identity-entry-logs.n54Cgn",
+    "torchrun_id": "d124cb11-11c5-485f-9384-f04029a52604"
+  },
+  "admission": {
+    "command": "env CUDA_VISIBLE_DEVICES= WORLD_SIZE=4 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled PYTHONWARNINGS=ignore EMBED_OPTIM_MAX_STEPS=3 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/dense-identity-source.8rUgLF/src:/root/embedding-optimizer-story-refactor:/tmp/dense-identity-source.8rUgLF OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_identity_admission --candidate-root /tmp/dense-identity-source.8rUgLF --source-manifest /tmp/dense-identity-tests.gD04cY/source-v1.json --source-sha256 1c6163c5aeee9d0735a6859c0e2f56a701c59d5111b553de6fb5c758da138dfd --entry-result /tmp/dense-identity-entry.rCO4Oz/result.json --entry-sha256 0a773e0906a635ae513e8322a803bffcb1437372e873abae0aaf9a744f28f4e9 --workdir /tmp/dense-identity-admission.xjs6n5",
+    "observed_exit_code": 0,
+    "work": "/tmp/dense-identity-admission.xjs6n5"
+  },
+  "candidate_tests": {
+    "initial": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/tmp/dense-identity-source.8rUgLF/src PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_dense_numerical_contract.py --junitxml=/tmp/dense-identity-tests.gD04cY/initial-numerical.xml",
+    "initial_exit_code": 1,
+    "initial_scope": "39 tests; one old distributed-barrier unit fixture lacks newly required real data admission. Adapted only its preparation stub, preserving the barrier/no-output assertion. No production guard weakened.",
+    "focused": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/tmp/dense-identity-source.8rUgLF/src PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_dense_run_contract.py tests/test_dense_numerical_contract.py --junitxml=/tmp/dense-identity-tests.gD04cY/focused.xml",
+    "focused_exit_code": 0,
+    "focused_tests": 79,
+    "full": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/tmp/dense-identity-source.8rUgLF/src:/tmp/dense-identity-source.8rUgLF PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-identity-tests.gD04cY/full-first.xml",
+    "full_exit_code": 1,
+    "full_tests": 963,
+    "full_failures": 11,
+    "errors": 0,
+    "skips": 0,
+    "full_scope": "The same eleven unwaived old source-contract failures, no new full-suite failure."
+  },
+  "isolated_full_tests": {
+    "command": "env CUDA_VISIBLE_DEVICES= PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-identity-tests.gD04cY/isolated-full.xml",
+    "working_directory": "/root/embedding-optimizer-story-refactor",
+    "observed_exit_code": 0,
+    "tests": 1424,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "scientific_completion": false,
+  "production_deployed": false,
+  "source_published": false
+}

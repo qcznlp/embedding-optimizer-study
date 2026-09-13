@@ -17,6 +17,8 @@ jobs:
           python-version: "3.12"
           enable-cache: true
       - run: uv sync --extra dev --extra eval --extra analysis
+      - name: Install document build tools
+        run: sudo apt-get update && sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended poppler-utils
       - name: Validate citation metadata
         run: uv run cffconvert --validate --infile CITATION.cff
       - name: Audit formal CUDA 12.9 reconstruction locks
@@ -27,10 +29,23 @@ jobs:
       - run: uv run embed-optim-audit-distribution
       - name: Audit portable paper evidence closure
         run: uv run python scripts/portable_evidence.py --audit-only
-      - name: Audit dense paper claims
+      - name: Run every test in its explicit source version
+        run: uv run python scripts/test_source_roles.py --output "$RUNNER_TEMP/source-role-tests"
+      - name: Reproduce complete numerical findings and reviewed paper
         run: >-
-          uv run embed-optim-audit-paper --strict --families dense
-          --scope-amendment configs/dense_scope_amendment.json
-      - run: uv run pytest
+          make -C paper release PYTHON="$GITHUB_WORKSPACE/.venv/bin/python"
+          NUMERICAL_BUNDLE="$GITHUB_WORKSPACE/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed"
+          RELEASE_OUTPUT="$RUNNER_TEMP/complete-paper"
       - run: uv run ruff check src tests scripts
       - run: uv run ruff format --check src tests scripts
+      - name: Retain actual test and document receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-receipts
+          path: |
+            ${{ runner.temp }}/source-role-tests/*.json
+            ${{ runner.temp }}/source-role-tests/*.xml
+            ${{ runner.temp }}/source-role-tests/*.log
+            ${{ runner.temp }}/complete-paper/complete.json
+            ${{ runner.temp }}/complete-paper/reviewed/paper/build/main.pdf

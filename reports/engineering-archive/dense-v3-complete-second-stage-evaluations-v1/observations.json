@@ -1,0 +1,639 @@
+{
+  "scope": "separately_timestamped_original_primary_queue_observations",
+  "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /root/embedding-optimizer-v3-experiment/launch/task-observer/status.py",
+  "snapshots": [
+    {
+      "phase": "prior_material_backup",
+      "result": {
+        "chunk_id": "cd92b1",
+        "wall_time_seconds": 0.000004093,
+        "exit_code": 0,
+        "original_token_count": 547,
+        "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-11T12:47:58.904603+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-11T12:47:44.463748+00:00\", \"primary_tasks\": [442, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-3e-5-1563-DBPedia\", \"live\": true, \"pid\": 432918, \"ppid\": 597, \"start_ticks\": 310234122, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-4-1563-HotpotQA\", \"live\": true, \"pid\": 430534, \"ppid\": 597, \"start_ticks\": 310134408, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-1e-4-1563-HotpotQA\", \"live\": true, \"pid\": 430555, \"ppid\": 597, \"start_ticks\": 310135809, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-1563-DBPedia\", \"live\": true, \"pid\": 433585, \"ppid\": 597, \"start_ticks\": 310250525, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"7\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-1e-5-2345-ClimateFEVER\", \"live\": true, \"pid\": 424397, \"ppid\": 598, \"start_ticks\": 309956755, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"4\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-3e-6-2345-ClimateFEVER\", \"live\": true, \"pid\": 425422, \"ppid\": 598, \"start_ticks\": 309959211, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"5\", \"group\": \"primary_b\", \"job\": \"verified-v3-muon-3e-4-2345-ClimateFEVER\", \"live\": true, \"pid\": 424394, \"ppid\": 598, \"start_ticks\": 309956599, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"6\", \"group\": \"primary_b\", \"job\": \"verified-v3-normuon-1e-3-2345-ClimateFEVER\", \"live\": true, \"pid\": 424434, \"ppid\": 598, \"start_ticks\": 309957612, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+      },
+      "observation": {
+        "scope": "exact_existing_native_task_observer_status",
+        "observed_at_utc": "2026-09-11T12:47:58.904603+00:00",
+        "observer": {
+          "pid": 60083,
+          "start_ticks": 299816818,
+          "state": "S",
+          "ppid": 1986037,
+          "command_matches": true,
+          "live": true
+        },
+        "task_snapshot_at_utc": "2026-09-11T12:47:44.463748+00:00",
+        "primary_tasks": [
+          442,
+          840
+        ],
+        "baseline_tasks": [
+          14,
+          14
+        ],
+        "worker_observations_from_that_snapshot": [
+          {
+            "command_matches": true,
+            "gpu_token": "0",
+            "group": "primary_a",
+            "job": "verified-v3-adamw-3e-5-1563-DBPedia",
+            "live": true,
+            "pid": 432918,
+            "ppid": 597,
+            "start_ticks": 310234122,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "1",
+            "group": "primary_a",
+            "job": "verified-v3-muon-1e-4-1563-HotpotQA",
+            "live": true,
+            "pid": 430534,
+            "ppid": 597,
+            "start_ticks": 310134408,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "3",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-1e-4-1563-HotpotQA",
+            "live": true,
+            "pid": 430555,
+            "ppid": 597,
+            "start_ticks": 310135809,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "2",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-3e-4-1563-DBPedia",
+            "live": true,
+            "pid": 433585,
+            "ppid": 597,
+            "start_ticks": 310250525,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "7",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-1e-5-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424397,
+            "ppid": 598,
+            "start_ticks": 309956755,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "4",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-3e-6-2345-ClimateFEVER",
+            "live": true,
+            "pid": 425422,
+            "ppid": 598,
+            "start_ticks": 309959211,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "5",
+            "group": "primary_b",
+            "job": "verified-v3-muon-3e-4-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424394,
+            "ppid": 598,
+            "start_ticks": 309956599,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "6",
+            "group": "primary_b",
+            "job": "verified-v3-normuon-1e-3-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424434,
+            "ppid": 598,
+            "start_ticks": 309957612,
+            "state": "R"
+          }
+        ],
+        "completed_receipt_present": false,
+        "failed_receipt_present": false,
+        "task_snapshot_is_a_separate_timestamped_observation": true,
+        "fresh_native_task_or_model_replay": false,
+        "scientific_completion": false
+      }
+    },
+    {
+      "phase": "prior_wait_end",
+      "result": {
+        "chunk_id": "39cfa9",
+        "wall_time_seconds": 0.000004707,
+        "exit_code": 0,
+        "original_token_count": 548,
+        "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-11T13:31:50.746885+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-11T13:31:24.213287+00:00\", \"primary_tasks\": [460, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-1e-6-1563-Touche2020\", \"live\": true, \"pid\": 442401, \"ppid\": 597, \"start_ticks\": 310440661, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-4-1563-Touche2020\", \"live\": true, \"pid\": 443685, \"ppid\": 597, \"start_ticks\": 310486768, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-1e-4-1563-Touche2020\", \"live\": true, \"pid\": 443928, \"ppid\": 597, \"start_ticks\": 310488769, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-1563-NQ\", \"live\": true, \"pid\": 445347, \"ppid\": 597, \"start_ticks\": 310522075, \"state\": \"S\"}, {\"command_matches\": true, \"gpu_token\": \"7\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-1e-5-2345-ClimateFEVER\", \"live\": true, \"pid\": 424397, \"ppid\": 598, \"start_ticks\": 309956755, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"4\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-3e-6-2345-ClimateFEVER\", \"live\": true, \"pid\": 425422, \"ppid\": 598, \"start_ticks\": 309959211, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"5\", \"group\": \"primary_b\", \"job\": \"verified-v3-muon-3e-4-2345-ClimateFEVER\", \"live\": true, \"pid\": 424394, \"ppid\": 598, \"start_ticks\": 309956599, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"6\", \"group\": \"primary_b\", \"job\": \"verified-v3-normuon-1e-3-2345-ClimateFEVER\", \"live\": true, \"pid\": 424434, \"ppid\": 598, \"start_ticks\": 309957612, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+      },
+      "observation": {
+        "scope": "exact_existing_native_task_observer_status",
+        "observed_at_utc": "2026-09-11T13:31:50.746885+00:00",
+        "observer": {
+          "pid": 60083,
+          "start_ticks": 299816818,
+          "state": "S",
+          "ppid": 1986037,
+          "command_matches": true,
+          "live": true
+        },
+        "task_snapshot_at_utc": "2026-09-11T13:31:24.213287+00:00",
+        "primary_tasks": [
+          460,
+          840
+        ],
+        "baseline_tasks": [
+          14,
+          14
+        ],
+        "worker_observations_from_that_snapshot": [
+          {
+            "command_matches": true,
+            "gpu_token": "2",
+            "group": "primary_a",
+            "job": "verified-v3-adamw-1e-6-1563-Touche2020",
+            "live": true,
+            "pid": 442401,
+            "ppid": 597,
+            "start_ticks": 310440661,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "1",
+            "group": "primary_a",
+            "job": "verified-v3-muon-1e-4-1563-Touche2020",
+            "live": true,
+            "pid": 443685,
+            "ppid": 597,
+            "start_ticks": 310486768,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "3",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-1e-4-1563-Touche2020",
+            "live": true,
+            "pid": 443928,
+            "ppid": 597,
+            "start_ticks": 310488769,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "0",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-3e-4-1563-NQ",
+            "live": true,
+            "pid": 445347,
+            "ppid": 597,
+            "start_ticks": 310522075,
+            "state": "S"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "7",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-1e-5-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424397,
+            "ppid": 598,
+            "start_ticks": 309956755,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "4",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-3e-6-2345-ClimateFEVER",
+            "live": true,
+            "pid": 425422,
+            "ppid": 598,
+            "start_ticks": 309959211,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "5",
+            "group": "primary_b",
+            "job": "verified-v3-muon-3e-4-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424394,
+            "ppid": 598,
+            "start_ticks": 309956599,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "6",
+            "group": "primary_b",
+            "job": "verified-v3-normuon-1e-3-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424434,
+            "ppid": 598,
+            "start_ticks": 309957612,
+            "state": "R"
+          }
+        ],
+        "completed_receipt_present": false,
+        "failed_receipt_present": false,
+        "task_snapshot_is_a_separate_timestamped_observation": true,
+        "fresh_native_task_or_model_replay": false,
+        "scientific_completion": false
+      }
+    },
+    {
+      "phase": "this_turn_start",
+      "result": {
+        "chunk_id": "97fbdf",
+        "wall_time_seconds": 0.000004517,
+        "exit_code": 0,
+        "original_token_count": 546,
+        "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-11T13:33:24.638454+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"R\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-11T13:32:54.623192+00:00\", \"primary_tasks\": [461, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-3-1563-NQ\", \"live\": true, \"pid\": 445660, \"ppid\": 597, \"start_ticks\": 310526276, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-4-1563-Touche2020\", \"live\": true, \"pid\": 443685, \"ppid\": 597, \"start_ticks\": 310486768, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-1e-4-1563-Touche2020\", \"live\": true, \"pid\": 443928, \"ppid\": 597, \"start_ticks\": 310488769, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-1563-NQ\", \"live\": true, \"pid\": 445347, \"ppid\": 597, \"start_ticks\": 310522075, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"7\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-1e-5-2345-ClimateFEVER\", \"live\": true, \"pid\": 424397, \"ppid\": 598, \"start_ticks\": 309956755, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"4\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-3e-6-2345-ClimateFEVER\", \"live\": true, \"pid\": 425422, \"ppid\": 598, \"start_ticks\": 309959211, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"5\", \"group\": \"primary_b\", \"job\": \"verified-v3-muon-3e-4-2345-ClimateFEVER\", \"live\": true, \"pid\": 424394, \"ppid\": 598, \"start_ticks\": 309956599, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"6\", \"group\": \"primary_b\", \"job\": \"verified-v3-normuon-1e-3-2345-ClimateFEVER\", \"live\": true, \"pid\": 424434, \"ppid\": 598, \"start_ticks\": 309957612, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+      },
+      "observation": {
+        "scope": "exact_existing_native_task_observer_status",
+        "observed_at_utc": "2026-09-11T13:33:24.638454+00:00",
+        "observer": {
+          "pid": 60083,
+          "start_ticks": 299816818,
+          "state": "R",
+          "ppid": 1986037,
+          "command_matches": true,
+          "live": true
+        },
+        "task_snapshot_at_utc": "2026-09-11T13:32:54.623192+00:00",
+        "primary_tasks": [
+          461,
+          840
+        ],
+        "baseline_tasks": [
+          14,
+          14
+        ],
+        "worker_observations_from_that_snapshot": [
+          {
+            "command_matches": true,
+            "gpu_token": "2",
+            "group": "primary_a",
+            "job": "verified-v3-muon-1e-3-1563-NQ",
+            "live": true,
+            "pid": 445660,
+            "ppid": 597,
+            "start_ticks": 310526276,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "1",
+            "group": "primary_a",
+            "job": "verified-v3-muon-1e-4-1563-Touche2020",
+            "live": true,
+            "pid": 443685,
+            "ppid": 597,
+            "start_ticks": 310486768,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "3",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-1e-4-1563-Touche2020",
+            "live": true,
+            "pid": 443928,
+            "ppid": 597,
+            "start_ticks": 310488769,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "0",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-3e-4-1563-NQ",
+            "live": true,
+            "pid": 445347,
+            "ppid": 597,
+            "start_ticks": 310522075,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "7",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-1e-5-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424397,
+            "ppid": 598,
+            "start_ticks": 309956755,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "4",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-3e-6-2345-ClimateFEVER",
+            "live": true,
+            "pid": 425422,
+            "ppid": 598,
+            "start_ticks": 309959211,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "5",
+            "group": "primary_b",
+            "job": "verified-v3-muon-3e-4-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424394,
+            "ppid": 598,
+            "start_ticks": 309956599,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "6",
+            "group": "primary_b",
+            "job": "verified-v3-normuon-1e-3-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424434,
+            "ppid": 598,
+            "start_ticks": 309957612,
+            "state": "R"
+          }
+        ],
+        "completed_receipt_present": false,
+        "failed_receipt_present": false,
+        "task_snapshot_is_a_separate_timestamped_observation": true,
+        "fresh_native_task_or_model_replay": false,
+        "scientific_completion": false
+      }
+    },
+    {
+      "phase": "second_stage_ready",
+      "result": {
+        "chunk_id": "dac147",
+        "wall_time_seconds": 0.000004646,
+        "exit_code": 0,
+        "original_token_count": 551,
+        "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-11T13:48:58.966189+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-11T13:48:58.453586+00:00\", \"primary_tasks\": [504, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-1e-6-2345-ClimateFEVER\", \"live\": true, \"pid\": 458025, \"ppid\": 597, \"start_ticks\": 310621486, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-3e-5-2345-ClimateFEVER\", \"live\": true, \"pid\": 457046, \"ppid\": 597, \"start_ticks\": 310618898, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-3-2345-ClimateFEVER\", \"live\": true, \"pid\": 457792, \"ppid\": 597, \"start_ticks\": 310620681, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-2345-ClimateFEVER\", \"live\": true, \"pid\": 457272, \"ppid\": 597, \"start_ticks\": 310619426, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"7\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-1e-5-2345-ClimateFEVER\", \"live\": true, \"pid\": 424397, \"ppid\": 598, \"start_ticks\": 309956755, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"4\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-3e-6-2345-ClimateFEVER\", \"live\": true, \"pid\": 425422, \"ppid\": 598, \"start_ticks\": 309959211, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"5\", \"group\": \"primary_b\", \"job\": \"verified-v3-muon-3e-4-2345-ClimateFEVER\", \"live\": true, \"pid\": 424394, \"ppid\": 598, \"start_ticks\": 309956599, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"6\", \"group\": \"primary_b\", \"job\": \"verified-v3-normuon-1e-3-2345-ClimateFEVER\", \"live\": true, \"pid\": 424434, \"ppid\": 598, \"start_ticks\": 309957612, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+      },
+      "observation": {
+        "scope": "exact_existing_native_task_observer_status",
+        "observed_at_utc": "2026-09-11T13:48:58.966189+00:00",
+        "observer": {
+          "pid": 60083,
+          "start_ticks": 299816818,
+          "state": "S",
+          "ppid": 1986037,
+          "command_matches": true,
+          "live": true
+        },
+        "task_snapshot_at_utc": "2026-09-11T13:48:58.453586+00:00",
+        "primary_tasks": [
+          504,
+          840
+        ],
+        "baseline_tasks": [
+          14,
+          14
+        ],
+        "worker_observations_from_that_snapshot": [
+          {
+            "command_matches": true,
+            "gpu_token": "2",
+            "group": "primary_a",
+            "job": "verified-v3-adamw-1e-6-2345-ClimateFEVER",
+            "live": true,
+            "pid": 458025,
+            "ppid": 597,
+            "start_ticks": 310621486,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "3",
+            "group": "primary_a",
+            "job": "verified-v3-adamw-3e-5-2345-ClimateFEVER",
+            "live": true,
+            "pid": 457046,
+            "ppid": 597,
+            "start_ticks": 310618898,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "1",
+            "group": "primary_a",
+            "job": "verified-v3-muon-1e-3-2345-ClimateFEVER",
+            "live": true,
+            "pid": 457792,
+            "ppid": 597,
+            "start_ticks": 310620681,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "0",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-3e-4-2345-ClimateFEVER",
+            "live": true,
+            "pid": 457272,
+            "ppid": 597,
+            "start_ticks": 310619426,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "7",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-1e-5-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424397,
+            "ppid": 598,
+            "start_ticks": 309956755,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "4",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-3e-6-2345-ClimateFEVER",
+            "live": true,
+            "pid": 425422,
+            "ppid": 598,
+            "start_ticks": 309959211,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "5",
+            "group": "primary_b",
+            "job": "verified-v3-muon-3e-4-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424394,
+            "ppid": 598,
+            "start_ticks": 309956599,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "6",
+            "group": "primary_b",
+            "job": "verified-v3-normuon-1e-3-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424434,
+            "ppid": 598,
+            "start_ticks": 309957612,
+            "state": "R"
+          }
+        ],
+        "completed_receipt_present": false,
+        "failed_receipt_present": false,
+        "task_snapshot_is_a_separate_timestamped_observation": true,
+        "fresh_native_task_or_model_replay": false,
+        "scientific_completion": false
+      }
+    },
+    {
+      "phase": "final",
+      "result": {
+        "chunk_id": "a8070e",
+        "wall_time_seconds": 0.000004746,
+        "exit_code": 0,
+        "original_token_count": 551,
+        "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-11T13:55:52.506910+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-11T13:55:30.104251+00:00\", \"primary_tasks\": [504, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-1e-6-2345-ClimateFEVER\", \"live\": true, \"pid\": 458025, \"ppid\": 597, \"start_ticks\": 310621486, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-3e-5-2345-ClimateFEVER\", \"live\": true, \"pid\": 457046, \"ppid\": 597, \"start_ticks\": 310618898, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-3-2345-ClimateFEVER\", \"live\": true, \"pid\": 457792, \"ppid\": 597, \"start_ticks\": 310620681, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-2345-ClimateFEVER\", \"live\": true, \"pid\": 457272, \"ppid\": 597, \"start_ticks\": 310619426, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"7\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-1e-5-2345-ClimateFEVER\", \"live\": true, \"pid\": 424397, \"ppid\": 598, \"start_ticks\": 309956755, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"4\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-3e-6-2345-ClimateFEVER\", \"live\": true, \"pid\": 425422, \"ppid\": 598, \"start_ticks\": 309959211, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"5\", \"group\": \"primary_b\", \"job\": \"verified-v3-muon-3e-4-2345-ClimateFEVER\", \"live\": true, \"pid\": 424394, \"ppid\": 598, \"start_ticks\": 309956599, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"6\", \"group\": \"primary_b\", \"job\": \"verified-v3-normuon-1e-3-2345-ClimateFEVER\", \"live\": true, \"pid\": 424434, \"ppid\": 598, \"start_ticks\": 309957612, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+      },
+      "observation": {
+        "scope": "exact_existing_native_task_observer_status",
+        "observed_at_utc": "2026-09-11T13:55:52.506910+00:00",
+        "observer": {
+          "pid": 60083,
+          "start_ticks": 299816818,
+          "state": "S",
+          "ppid": 1986037,
+          "command_matches": true,
+          "live": true
+        },
+        "task_snapshot_at_utc": "2026-09-11T13:55:30.104251+00:00",
+        "primary_tasks": [
+          504,
+          840
+        ],
+        "baseline_tasks": [
+          14,
+          14
+        ],
+        "worker_observations_from_that_snapshot": [
+          {
+            "command_matches": true,
+            "gpu_token": "2",
+            "group": "primary_a",
+            "job": "verified-v3-adamw-1e-6-2345-ClimateFEVER",
+            "live": true,
+            "pid": 458025,
+            "ppid": 597,
+            "start_ticks": 310621486,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "3",
+            "group": "primary_a",
+            "job": "verified-v3-adamw-3e-5-2345-ClimateFEVER",
+            "live": true,
+            "pid": 457046,
+            "ppid": 597,
+            "start_ticks": 310618898,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "1",
+            "group": "primary_a",
+            "job": "verified-v3-muon-1e-3-2345-ClimateFEVER",
+            "live": true,
+            "pid": 457792,
+            "ppid": 597,
+            "start_ticks": 310620681,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "0",
+            "group": "primary_a",
+            "job": "verified-v3-normuon-3e-4-2345-ClimateFEVER",
+            "live": true,
+            "pid": 457272,
+            "ppid": 597,
+            "start_ticks": 310619426,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "7",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-1e-5-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424397,
+            "ppid": 598,
+            "start_ticks": 309956755,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "4",
+            "group": "primary_b",
+            "job": "verified-v3-adamw-3e-6-2345-ClimateFEVER",
+            "live": true,
+            "pid": 425422,
+            "ppid": 598,
+            "start_ticks": 309959211,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "5",
+            "group": "primary_b",
+            "job": "verified-v3-muon-3e-4-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424394,
+            "ppid": 598,
+            "start_ticks": 309956599,
+            "state": "R"
+          },
+          {
+            "command_matches": true,
+            "gpu_token": "6",
+            "group": "primary_b",
+            "job": "verified-v3-normuon-1e-3-2345-ClimateFEVER",
+            "live": true,
+            "pid": 424434,
+            "ppid": 598,
+            "start_ticks": 309957612,
+            "state": "R"
+          }
+        ],
+        "completed_receipt_present": false,
+        "failed_receipt_present": false,
+        "task_snapshot_is_a_separate_timestamped_observation": true,
+        "fresh_native_task_or_model_replay": false,
+        "scientific_completion": false
+      }
+    }
+  ],
+  "complete_checkpoint_outcomes_verified": 36,
+  "primary_or_functional_runtime_changed": false,
+  "scientific_completion": false
+}

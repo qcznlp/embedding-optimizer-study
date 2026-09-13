@@ -1,0 +1,3242 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="71" skipped="0" tests="77" time="2.622" timestamp="2026-09-07T21:20:32.781256+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_actual_factory_observes_same_named_matrices_and_empty_state[hybrid_adamw]" time="0.005"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_fresh_actual_factory_observes_same_named_matrices_and_empty_state(name):
+&gt;       model, config, optimizer, scheduler = pair(name)
+                                              ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_actual_factory_observes_same_named_matrices_and_empty_state[muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_fresh_actual_factory_observes_same_named_matrices_and_empty_state(name):
+&gt;       model, config, optimizer, scheduler = pair(name)
+                                              ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_nonfactorial_operators_are_not_admitted[adamw]" time="0.001" /><testcase classname="tests.test_factorial_v3_optimizer" name="test_nonfactorial_operators_are_not_admitted[normuon]" time="0.001" /><testcase classname="tests.test_factorial_v3_optimizer" name="test_nonfactorial_operators_are_not_admitted[sgd]" time="0.001" /><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[lr-0]" time="0.001" /><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[lr-nan]" time="0.001" /><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[lr-True]" time="0.001" /><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[aux_lr-1e-05]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'aux_lr', value = 1e-05
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=1e-05, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[weight_decay-0.0]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'weight_decay', value = 0.0
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.0, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[beta1-0.8]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'beta1', value = 0.8
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.8, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[beta2-0.9]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'beta2', value = 0.9
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.9, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[eps-1e-06]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'eps', value = 1e-06
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-06, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[aux_beta1-0.8]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'aux_beta1', value = 0.8
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.8, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[aux_beta2-0.9]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'aux_beta2', value = 0.9
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.9, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[aux_eps-1e-06]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'aux_eps', value = 1e-06
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-06, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[momentum-0.9]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'momentum', value = 0.9
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.9, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[ns_steps-4]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'ns_steps', value = 4
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=4, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_frozen_optimizer_settings_are_not_silently_changed[adjust_lr_fn-match_rms_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">field = 'adjust_lr_fn', value = 'match_rms_adamw'
+
+    @pytest.mark.parametrize(
+        "field,value",
+        [
+            ("lr", 0),
+            ("lr", float("nan")),
+            ("lr", True),
+            ("aux_lr", 1e-5),
+            ("weight_decay", 0.0),
+            ("beta1", 0.8),
+            ("beta2", 0.9),
+            ("eps", 1e-6),
+            ("aux_beta1", 0.8),
+            ("aux_beta2", 0.9),
+            ("aux_eps", 1e-6),
+            ("momentum", 0.9),
+            ("ns_steps", 4),
+            ("adjust_lr_fn", "match_rms_adamw"),
+        ],
+    )
+    def test_frozen_optimizer_settings_are_not_silently_changed(field, value):
+        config = dataclasses.replace(OptimizerConfig(name="muon", lr=0.0003), **{field: value})
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(Tiny(), config, expected_shapes=SHAPES)
+
+tests/test_factorial_v3_optimizer.py:115: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='match_rms_adamw')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient[alias]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">change = 'alias'
+
+    @pytest.mark.parametrize(
+        "change", ["alias", "frozen", "dtype", "names", "shape", "gradient", "missing_group"]
+    )
+    def test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient(change):
+        model, shapes = Tiny(), copy.deepcopy(SHAPES)
+        if change == "alias":
+            model.layers[1].weight = model.layers[0].weight
+        elif change == "frozen":
+            model.norm.bias.requires_grad_(False)
+        elif change == "dtype":
+            model.double()
+        elif change == "names":
+            shapes["other"] = shapes.pop("layers.0.weight")
+        elif change == "shape":
+            shapes["layers.0.weight"] = [1, 9]
+        elif change == "gradient":
+            gradients(model, 0)
+        else:
+            del model.norm
+            shapes.pop("norm.weight")
+            shapes.pop("norm.bias")
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(model, OptimizerConfig(name="muon", lr=0.0003), expected_shapes=shapes)
+
+tests/test_factorial_v3_optimizer.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient[frozen]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">change = 'frozen'
+
+    @pytest.mark.parametrize(
+        "change", ["alias", "frozen", "dtype", "names", "shape", "gradient", "missing_group"]
+    )
+    def test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient(change):
+        model, shapes = Tiny(), copy.deepcopy(SHAPES)
+        if change == "alias":
+            model.layers[1].weight = model.layers[0].weight
+        elif change == "frozen":
+            model.norm.bias.requires_grad_(False)
+        elif change == "dtype":
+            model.double()
+        elif change == "names":
+            shapes["other"] = shapes.pop("layers.0.weight")
+        elif change == "shape":
+            shapes["layers.0.weight"] = [1, 9]
+        elif change == "gradient":
+            gradients(model, 0)
+        else:
+            del model.norm
+            shapes.pop("norm.weight")
+            shapes.pop("norm.bias")
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(model, OptimizerConfig(name="muon", lr=0.0003), expected_shapes=shapes)
+
+tests/test_factorial_v3_optimizer.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient[dtype]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">change = 'dtype'
+
+    @pytest.mark.parametrize(
+        "change", ["alias", "frozen", "dtype", "names", "shape", "gradient", "missing_group"]
+    )
+    def test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient(change):
+        model, shapes = Tiny(), copy.deepcopy(SHAPES)
+        if change == "alias":
+            model.layers[1].weight = model.layers[0].weight
+        elif change == "frozen":
+            model.norm.bias.requires_grad_(False)
+        elif change == "dtype":
+            model.double()
+        elif change == "names":
+            shapes["other"] = shapes.pop("layers.0.weight")
+        elif change == "shape":
+            shapes["layers.0.weight"] = [1, 9]
+        elif change == "gradient":
+            gradients(model, 0)
+        else:
+            del model.norm
+            shapes.pop("norm.weight")
+            shapes.pop("norm.bias")
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(model, OptimizerConfig(name="muon", lr=0.0003), expected_shapes=shapes)
+
+tests/test_factorial_v3_optimizer.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient[names]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">change = 'names'
+
+    @pytest.mark.parametrize(
+        "change", ["alias", "frozen", "dtype", "names", "shape", "gradient", "missing_group"]
+    )
+    def test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient(change):
+        model, shapes = Tiny(), copy.deepcopy(SHAPES)
+        if change == "alias":
+            model.layers[1].weight = model.layers[0].weight
+        elif change == "frozen":
+            model.norm.bias.requires_grad_(False)
+        elif change == "dtype":
+            model.double()
+        elif change == "names":
+            shapes["other"] = shapes.pop("layers.0.weight")
+        elif change == "shape":
+            shapes["layers.0.weight"] = [1, 9]
+        elif change == "gradient":
+            gradients(model, 0)
+        else:
+            del model.norm
+            shapes.pop("norm.weight")
+            shapes.pop("norm.bias")
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(model, OptimizerConfig(name="muon", lr=0.0003), expected_shapes=shapes)
+
+tests/test_factorial_v3_optimizer.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient[shape]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">change = 'shape'
+
+    @pytest.mark.parametrize(
+        "change", ["alias", "frozen", "dtype", "names", "shape", "gradient", "missing_group"]
+    )
+    def test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient(change):
+        model, shapes = Tiny(), copy.deepcopy(SHAPES)
+        if change == "alias":
+            model.layers[1].weight = model.layers[0].weight
+        elif change == "frozen":
+            model.norm.bias.requires_grad_(False)
+        elif change == "dtype":
+            model.double()
+        elif change == "names":
+            shapes["other"] = shapes.pop("layers.0.weight")
+        elif change == "shape":
+            shapes["layers.0.weight"] = [1, 9]
+        elif change == "gradient":
+            gradients(model, 0)
+        else:
+            del model.norm
+            shapes.pop("norm.weight")
+            shapes.pop("norm.bias")
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(model, OptimizerConfig(name="muon", lr=0.0003), expected_shapes=shapes)
+
+tests/test_factorial_v3_optimizer.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient[gradient]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">change = 'gradient'
+
+    @pytest.mark.parametrize(
+        "change", ["alias", "frozen", "dtype", "names", "shape", "gradient", "missing_group"]
+    )
+    def test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient(change):
+        model, shapes = Tiny(), copy.deepcopy(SHAPES)
+        if change == "alias":
+            model.layers[1].weight = model.layers[0].weight
+        elif change == "frozen":
+            model.norm.bias.requires_grad_(False)
+        elif change == "dtype":
+            model.double()
+        elif change == "names":
+            shapes["other"] = shapes.pop("layers.0.weight")
+        elif change == "shape":
+            shapes["layers.0.weight"] = [1, 9]
+        elif change == "gradient":
+            gradients(model, 0)
+        else:
+            del model.norm
+            shapes.pop("norm.weight")
+            shapes.pop("norm.bias")
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(model, OptimizerConfig(name="muon", lr=0.0003), expected_shapes=shapes)
+
+tests/test_factorial_v3_optimizer.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient[missing_group]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">change = 'missing_group'
+
+    @pytest.mark.parametrize(
+        "change", ["alias", "frozen", "dtype", "names", "shape", "gradient", "missing_group"]
+    )
+    def test_fresh_model_observation_rejects_wrong_topology_or_calibration_gradient(change):
+        model, shapes = Tiny(), copy.deepcopy(SHAPES)
+        if change == "alias":
+            model.layers[1].weight = model.layers[0].weight
+        elif change == "frozen":
+            model.norm.bias.requires_grad_(False)
+        elif change == "dtype":
+            model.double()
+        elif change == "names":
+            shapes["other"] = shapes.pop("layers.0.weight")
+        elif change == "shape":
+            shapes["layers.0.weight"] = [1, 9]
+        elif change == "gradient":
+            gradients(model, 0)
+        else:
+            del model.norm
+            shapes.pop("norm.weight")
+            shapes.pop("norm.bias")
+        with pytest.raises(ValueError):
+&gt;           f.FactorialOptimizer(model, OptimizerConfig(name="muon", lr=0.0003), expected_shapes=shapes)
+
+tests/test_factorial_v3_optimizer.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_saved_resume_uses_actual_torch_payload_and_matches_uninterrupted_updates[hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_saved_resume_uses_actual_torch_payload_and_matches_uninterrupted_updates(name):
+&gt;       model, config, optimizer, scheduler, saved_opt, saved_sched = saved_pair(name)
+                                                                      ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_saved_resume_uses_actual_torch_payload_and_matches_uninterrupted_updates[muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_saved_resume_uses_actual_torch_payload_and_matches_uninterrupted_updates(name):
+&gt;       model, config, optimizer, scheduler, saved_opt, saved_sched = saved_pair(name)
+                                                                      ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_reset_from_reached_weights_does_not_inherit_eight_step_calibration_state[hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_reset_from_reached_weights_does_not_inherit_eight_step_calibration_state(name):
+&gt;       model, _, calibration, schedule = pair(name)
+                                          ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_reset_from_reached_weights_does_not_inherit_eight_step_calibration_state[muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_reset_from_reached_weights_does_not_inherit_eight_step_calibration_state(name):
+&gt;       model, _, calibration, schedule = pair(name)
+                                          ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:173: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[names-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'names'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[names-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'names'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[ids-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'ids'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[ids-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'ids'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[layout-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'layout'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[layout-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'layout'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[missing_name-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'missing_name'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[missing_name-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'missing_name'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[missing_state-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'missing_state'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[missing_state-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'missing_state'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[extra_state-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'extra_state'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[extra_state-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'extra_state'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[nonfinite-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'nonfinite'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[nonfinite-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'nonfinite'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[negative_second-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'negative_second'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[negative_second-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'negative_second'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[shape-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'shape'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[shape-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'shape'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[dtype-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'dtype'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[dtype-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'dtype'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[counter-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'counter'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[counter-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'counter'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[recipe-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'recipe'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[recipe-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'recipe'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[metadata_step-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'metadata_step'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[metadata_step-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'metadata_step'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[schema_bool-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'schema_bool'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[schema_bool-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'schema_bool'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[group_setting-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'group_setting'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[group_setting-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'group_setting'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[scheduler_counter-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'scheduler_counter'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[scheduler_counter-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'scheduler_counter'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[scheduler_lr-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'scheduler_lr'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[scheduler_lr-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'scheduler_lr'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[scheduler_horizon-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'scheduler_horizon'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[scheduler_horizon-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'scheduler_horizon'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[untrusted_step-hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw', change = 'untrusted_step'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_invalid_restore_refuses_before_mutating_either_fresh_object[untrusted_step-muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon', change = 'untrusted_step'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    @pytest.mark.parametrize(
+        "change",
+        [
+            "names",
+            "ids",
+            "layout",
+            "missing_name",
+            "missing_state",
+            "extra_state",
+            "nonfinite",
+            "negative_second",
+            "shape",
+            "dtype",
+            "counter",
+            "recipe",
+            "metadata_step",
+            "schema_bool",
+            "group_setting",
+            "scheduler_counter",
+            "scheduler_lr",
+            "scheduler_horizon",
+            "untrusted_step",
+        ],
+    )
+    def test_invalid_restore_refuses_before_mutating_either_fresh_object(name, change):
+&gt;       _, _, _, _, saved_opt, saved_sched = saved_pair(name)
+                                             ^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:211: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:58: in saved_pair
+    model, config, optimizer, scheduler = pair(name)
+                                          ^^^^^^^^^^
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_live_equal_shape_parameter_swap_refused_before_update[hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_live_equal_shape_parameter_swap_refused_before_update(name):
+&gt;       model, _, optimizer, _ = pair(name)
+                                 ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_live_equal_shape_parameter_swap_refused_before_update[muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_live_equal_shape_parameter_swap_refused_before_update(name):
+&gt;       model, _, optimizer, _ = pair(name)
+                                 ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_missing_gradient_does_not_silently_skip_a_matrix[hybrid_adamw]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'hybrid_adamw'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_missing_gradient_does_not_silently_skip_a_matrix(name):
+&gt;       model, _, optimizer, _ = pair(name)
+                                 ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:283: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_missing_gradient_does_not_silently_skip_a_matrix[muon]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">name = 'muon'
+
+    @pytest.mark.parametrize("name", ["hybrid_adamw", "muon"])
+    def test_missing_gradient_does_not_silently_skip_a_matrix(name):
+&gt;       model, _, optimizer, _ = pair(name)
+                                 ^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:283: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_routed_adamw_matches_independent_torch_adamw_groups" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">def test_routed_adamw_matches_independent_torch_adamw_groups():
+&gt;       model, _, actual, schedule = pair("hybrid_adamw")
+                                     ^^^^^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:292: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_factorial_v3_optimizer.py:39: in pair
+    optimizer = f.FactorialOptimizer(model, config, expected_shapes=SHAPES)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='hybrid_adamw', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_muon_updates_match_independent_polynomial_and_aspect_scaling[shape0]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">shape = (3, 3)
+
+    @pytest.mark.parametrize("shape", [(3, 3), (2, 3), (3, 2)])
+    def test_muon_updates_match_independent_polynomial_and_aspect_scaling(shape):
+        model = Tiny()
+        model.layers[0].weight = nn.Parameter(
+            torch.arange(math.prod(shape)).reshape(shape).float() / 17
+        )
+        shapes = {**SHAPES, "layers.0.weight": list(shape)}
+        config = OptimizerConfig(name="muon", lr=0.0003)
+&gt;       optimizer = f.FactorialOptimizer(model, config, expected_shapes=shapes)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:339: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_muon_updates_match_independent_polynomial_and_aspect_scaling[shape1]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">shape = (2, 3)
+
+    @pytest.mark.parametrize("shape", [(3, 3), (2, 3), (3, 2)])
+    def test_muon_updates_match_independent_polynomial_and_aspect_scaling(shape):
+        model = Tiny()
+        model.layers[0].weight = nn.Parameter(
+            torch.arange(math.prod(shape)).reshape(shape).float() / 17
+        )
+        shapes = {**SHAPES, "layers.0.weight": list(shape)}
+        config = OptimizerConfig(name="muon", lr=0.0003)
+&gt;       optimizer = f.FactorialOptimizer(model, config, expected_shapes=shapes)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:339: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_muon_updates_match_independent_polynomial_and_aspect_scaling[shape2]" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">shape = (3, 2)
+
+    @pytest.mark.parametrize("shape", [(3, 3), (2, 3), (3, 2)])
+    def test_muon_updates_match_independent_polynomial_and_aspect_scaling(shape):
+        model = Tiny()
+        model.layers[0].weight = nn.Parameter(
+            torch.arange(math.prod(shape)).reshape(shape).float() / 17
+        )
+        shapes = {**SHAPES, "layers.0.weight": list(shape)}
+        config = OptimizerConfig(name="muon", lr=0.0003)
+&gt;       optimizer = f.FactorialOptimizer(model, config, expected_shapes=shapes)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_factorial_v3_optimizer.py:339: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase><testcase classname="tests.test_factorial_v3_optimizer" name="test_complete_denseon_default_is_not_replaced_by_the_tiny_fixture" time="0.001"><failure message="AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'">def test_complete_denseon_default_is_not_replaced_by_the_tiny_fixture():
+        shapes = f.denseon_shapes()
+        assert len(shapes) == 134 and sum(math.prod(s) for s in shapes.values()) == 149014272
+        assert "0.model.layers.0.attn_norm.weight" not in shapes
+        assert shapes["0.model.layers.21.mlp.Wi.weight"] == [2304, 768]
+        with pytest.raises(ValueError, match="declared topology"):
+&gt;           f.FactorialOptimizer(Tiny(), OptimizerConfig(name="muon", lr=0.0003))
+
+tests/test_factorial_v3_optimizer.py:359: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/embed_optim/factorial_v3_optimizer.py:224: in __init__
+    configuration(config)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = OptimizerConfig(name='muon', lr=0.0003, weight_decay=0.01, beta1=0.9, beta2=0.999, eps=1e-08, momentum=0.95, normuon_beta2=0.95, aux_lr=3e-06, aux_beta1=0.9, aux_beta2=0.999, aux_eps=1e-08, ns_steps=5, adjust_lr_fn='original')
+
+    def configuration(config):
+        """Only the two frozen operators; LR provenance is the caller's obligation."""
+        if type(config) is not OptimizerConfig or config.name not in {"hybrid_adamw", "muon"}:
+            raise ValueError("Factorial requires routed AdamW or Muon, not primary AdamW/NorMuon")
+        _number(config.lr, positive=True)
+&gt;       actual = config.as_dict()
+                 ^^^^^^^^^^^^^^
+E       AttributeError: 'OptimizerConfig' object has no attribute 'as_dict'
+
+src/embed_optim/factorial_v3_optimizer.py:67: AttributeError</failure></testcase></testsuite></testsuites>

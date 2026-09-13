@@ -1,0 +1,787 @@
+                             Same Start, Different Weight Spaces:
+                         How AdamW and Muon Adapt Dense Retrievers
+
+
+                                             Anonymous ACL submission
+
+
+
+
+001                         Abstract                              particularly as update strength increases (Qu et al.,     043
+                                                                  2026; Liu et al., 2026). These findings concern           044
+002       Does changing the geometry of optimization
+003       make a dense retriever use its representa-              different training settings. Neither tells us how         045
+
+004       tion space more effectively? We compare                 an Adam-pretrained dense retriever’s weight space         046
+005       AdamW, Muon, and NorMuon from one pre-                  should change to improve corpus ranking.                  047
+006       trained DenseOn checkpoint on 500,000 shared                Retrieval also exposes a distinction between          048
+007       queries, following 12 configurations through            spreading a representation and using it well. Ran-        049
+008       five checkpoints and 14 decontaminated BEIR             domly removing many embedding coordinates can             050
+009       tasks. Across the four-rate surface, Muon               have surprisingly little effect, and removing some        051
+010       versus AdamW is inconclusive at +0.0016 [-
+                                                                  coordinates can even improve retrieval (Takeshita         052
+011       0.0108, +0.0139] nDCG@10, and NorMuon
+012       versus AdamW is inconclusive at +0.0021 [-              et al., 2025). Consequently, a broader spectrum           053
+013       0.0089, +0.0130]. We distinguish broader                need not mean that more dimensions carry use-             054
+014       weight-space motion from retrieval-useful di-           ful ranking evidence. We ask whether optimizer-           055
+015       mension allocation by linking reached weights           induced weight changes alter the balance and dis-         056
+016       to coordinate-deletion effects and testing pre-         tribution of helpful and degrading coordinate con-        057
+017       diction at held-out learning-rate doses. A              tributions.                                               058
+018       crossed continuation from two fixed reached
+                                                                      We follow this question from weights to function.     059
+019       states then tests whether those states respond
+020       differently to further optimization. [PENDING:          Starting from the same DenseOn checkpoint, we             060
+
+021       At the 50K continuation endpoint, the state, op-        train AdamW, Muon, and NorMuon on identical               061
+022       erator, and interaction contrasts remain pending.       500,000-query groups with seven hard negatives            062
+023       These endpoint contrasts do not decompose the           each. Four rates per optimizer and five checkpoints       063
+024       primary-training result.]                               expose the rate dependence and timing of retrieval        064
+                                                                  changes on 14 decontaminated BEIR tasks. We               065
+025   1   Introduction
+                                                                  then trace the reached weight states and measure          066
+026   Dense retrieval adapts a pretrained encoder so              how coordinate removal changes their represen-            067
+027   that a small vector preserves distinctions needed           tations’ ranking behavior. To distinguish a useful        068
+028   to rank a large corpus. Most adaptation uses                retrieval descriptor from a statistic that merely iden-   069
+029   AdamW, whose coordinate-wise scaling differs                tifies the optimizer, we test prediction at held-out      070
+030   from Muon’s approximately orthogonalized matrix             learning-rate doses.                                      071
+031   updates (Loshchilov and Hutter, 2019; Liu et al.,               Figure 1 shows this progression. A separate 2×2       072
+032   2025). Changing that rule changes which weight              continuation crosses two fixed reached states with        073
+033   states the encoder reaches. The central question is         reset AdamW or Muon. Calibrating update scale             074
+034   whether the resulting motion creates more useful            on a common probe lets us ask whether further             075
+035   retrieval representations, rather than simply spread-       adaptation depends on both the starting weights and       076
+036   ing parameter changes across more directions.               the continuation rule. This intervention concerns         077
+037      There are reasons to expect either outcome. In           whole states and subsequent optimization; it does         078
+038   pretraining studies, Muon learns features with              not isolate any particular geometric feature as the       079
+039   higher effective rank and stronger transfer (Ruan           cause of the original retrieval difference.               080
+040   et al., 2026). In contrast, studies of Adam-                    The resulting evidence distinguishes three claims     081
+041   pretrained models find that switching optimizers            that are often conflated: changing the weight spec-       082
+042   during fine-tuning can disrupt learned knowledge,           trum, changing the distribution of helpful ranking        083
+
+
+                                                              1
+         From optimizer trajectories to retrieval function
+         Shared start and training data; compare reached weights, functional dimensions, and retrieval.
+
+
+
+                                       AdamW                          Reached retriever           held-out
+                                   θA, 1 → ⋯ → θA, 5                       θt ↦ Zt               prediction     Full-corpus retrieval
+          Common start
+           DenseOn θ0                                                                                               14 BEIR tasks
+                                                                      Weight geometry
+           pretrained                                                                                                 nDCG@10
+                                                                    (distance · subspace)
+                                         Muon                      Coordinate utility · rank
+                                   θM, 1 → ⋯ → θM, 5
+
+                                   five retained stages
+                             all learning rates reported
+                                                                                   fixed 60% states
+
+
+
+
+                                                        State × continuation (optimizer history reset)
+                 Evidence questions                                    AdamW              Muon                Endpoint contrasts
+          1. how do reached states differ?               A state
+                 2. predict retrieval                                   A→A               A→M                 source state (averaged)
+                  at unseen rates?                                                                            continuation (averaged)
+            3. response to continuation?                M state                                               state × operator
+                                                                        M→A              M→M
+                                                                                                              50K · probe-calibrated scale
+
+
+
+
+      Figure 1: Our explanatory target and evidence chain. Optimizer-specific trajectories create reached weight states
+      and embeddings; weight and coordinate-level measurements become candidate explanations only if they predict
+      full-corpus retrieval out of learning-rate dose. The crossed continuation estimates post-continuation state, operator,
+      and interaction contrasts for one fixed checkpoint pair.
+
+
+084   sensitivities, and explaining retrieval quality. In                   2     From Optimizer Updates to Retrieval                              102
+085   this study, visible separation in weight space does                         States                                                           103
+086   not translate into a joint improvement in the func-
+                                                                            2.1    From weight-space motion to ranking                             104
+087   tional criteria. Predictive gains also depend on how
+                                                                                   evidence                                                        105
+088   the training recipe is represented in the compara-
+089   tor. The crossed continuation tests the remaining                     Let eθ (x) be the unit-normalized embedding pro-                       106
+090   state-dependent response question without treating                    duced by weights θ. For a relevant document                            107
+091   a geometric correlation as its answer.                                d+ and a competing document d− , write δθ =                            108
+                                                                            eθ (d+ ) − eθ (d− ). Their cosine margin for query q                   109
+092     The study addresses three connected questions:                      is                                                                     110
+
+                                                                                  mθ (q, d+ , d− ) = sθ (q, d+ ) − sθ (q, d− )                     111
+                                                                                                          768
+093      • when and across which learning rates opti-                                                     X
+                                                                                                      =           eθ,j (q) δθ,j .            (1)   112
+094        mizer choice changes full-corpus retrieval;
+                                                                                                          j=1
+
+                                                                            This identity separates the spread of a representa-                    113
+                                                                            tion from its alignment with relevance: different                      114
+095      • which differences between reached weight
+                                                                            coordinates may reinforce or oppose a ranking dis-                     115
+096        states translate into distributed, helpful coor-
+                                                                            tinction. The encoder maps weight changes into                         116
+097        dinate contributions and predict retrieval at
+                                                                            these query–document relationships, so a weight-                       117
+098        held-out doses; and
+                                                                            displacement spectrum alone does not determine                         118
+                                                                            whether the changed directions help retrieval.                         119
+                                                                               Our analysis therefore distinguishes three ob-                      120
+099      • whether those reached states respond dif-                        jects: motion in parameter space, the allocation of                    121
+100        ferently when the continuation optimizer                         functional coordinate contributions in the reached                     122
+101        changes.                                                         representation, and full-corpus ranking. Coordinate                    123
+
+
+                                                                        2
+124   deletion measures sensitivity of that representation;       formance. We use this distinction to ask whether         173
+125   because deletion is followed by renormalization, its        an optimizer merely changes representation rank          174
+126   effects are not the additive terms in Equation 1. The       or changes the distribution of helpful, redundant,       175
+127   eight-document probe makes these interventions              and harmful dimensions along its trajectory.             176
+128   tractable, while the unchanged full-corpus BEIR                Muon has shown attractive scaling in language-        177
+129   evaluation supplies the retrieval outcome.                  model pretraining, while NorMuon augments its            178
+                                                                  matrix-level transform with neuron-wise adaptation       179
+130   2.2    Update geometry is not an outcome                    (Liu et al., 2025; Li et al., 2025). Concurrent work     180
+
+131   For a matrix parameter W with gradient Gt ,                 warns that switching an Adam-pretrained model to         181
+
+132   AdamW applies an element-wise second-moment                 Muon can disrupt pretrained knowledge as update          182
+
+133   preconditioner. Muon instead applies a Newton–              strength grows (Qu et al., 2026; Liu et al., 2026).      183
+
+134   Schulz approximation to the polar factor of a mo-           Other analyses relate Muon to feature rank or mar-       184
+
+135   mentum matrix. For the compact SVD M =                      gins, identify risks from spectral equalization, or      185
+
+136   U ΣV ⊤ , its idealized transform is U V ⊤ , which           argue for covariance-aware and layer-dependent           186
+
+137   equalizes nonzero singular values (Jordan et al.,           matrix geometry (Ruan et al., 2026; Pang et al.,         187
+
+138   2024). NorMuon adds a row-wise historical rescal-           2026; Du and Su, 2026; Massena et al., 2026).            188
+
+139   ing after orthogonalization (Li et al., 2025).              Our question is downstream and retrieval-specific:       189
+
+140      Repeated application of these rules changes both         which geometric changes survive optimizer state          190
+
+141   weights and the gradients of subsequent updates.            feedback, preserve unseen scores, and predict cor-       191
+
+142   We study the accumulated result at saved check-             pus ranking?                                             192
+
+143   points, rather than identify a trajectory with one
+144   operator transform. Spectral equalization can em-           4     Tracing an Optimizer Through Weight                193
+
+145   phasize weak directions (Pang et al., 2026), while                Space                                              194
+
+146   optimizer switching can disturb pretrained features         4.1    One controlled adaptation problem                 195
+147   (Qu et al., 2026). These motivate competing ex-
+148   planations to test through reached states, not an           We adapt the released DenseOn unsupervised               196
+
+149   assumption that a flatter spectrum must improve             checkpoint on one deterministic view of 500,000          197
+
+150   retrieval.                                                  queries. Each group contains one positive and 7          198
+                                                                  distinct sampled hard negatives. Queries are allo-       199
+
+151   3     Related Work                                          cated proportionally across seven source datasets;       200
+                                                                  a candidate is eligible only when its mined score is     201
+152   Dense dual encoders compress queries and docu-              below 0.95 times the positive score, and the seven       202
+153   ments into single vectors and rank by similarity.           negatives are sampled without replacement from           203
+154   BEIR evaluates whether such representations trans-          the first ten eligible candidates using stable seed-42   204
+155   fer across heterogeneous retrieval tasks (Thakur            hashes. Every optimizer receives identical group         205
+156   et al., 2021). DenseOn provides the unsupervised,           identities and order. We use cosine InfoNCE at           206
+157   not-yet-fine-tuned checkpoint and open training             temperature 0.02, no in-batch or cross-device nega-      207
+158   recipe used here (Sourty et al., 2026). Represen-           tives, maximum context length 8,192, global batch        208
+159   tation geometry also matters for retrieval: HIL             size 128, one epoch, and bfloat16 forward passes.        209
+160   combines isotropic and anisotropic representations             The grid contains four learning rates per opti-       210
+161   in a late-interaction retriever (Kim et al., 2024).         mizer: {10−6 , 3×10−6 , 10−5 , 3×10−5 } for AdamW        211
+162   Its emphasis on their balance motivates study-              and {10−4 , 3×10−4 , 10−3 , 3×10−3 } for Muon and        212
+163   ing relevance-sensitive consequences of geometric           NorMuon. Muon-family runs route hidden two-              213
+164   change, rather than maximizing a spread statistic           dimensional matrices through the matrix rule and         214
+165   in isolation.                                               auxiliary parameters through AdamW at 3×10−6 .           215
+166      Coordinate ablations provide a more functional           Each run keeps checkpoints at 20, 40, 60, 80, and        216
+167   view of dimension use. Takeshita et al. (2025) find         100% of 3,907 optimizer steps. Every checkpoint          217
+168   that text encoders often retain most retrieval qual-        is evaluated on the same 14-task decontaminated          218
+169   ity after random removal of half their dimensions;          BEIR suite.                                              219
+170   their tested isotropy, correlation, and outlier mea-           We use eight NVIDIA L20Z GPUs as two dis-             220
+171   sures do not account for the observation, while             joint four-GPU training pools, retaining four ranks      221
+172   deleting some individual coordinates improves per-          per run. Retrieval evaluation is task-parallel across    222
+
+
+                                                              3
+            Contrast            Mean            95% CI Decision           Primary comparison. Across the four-rate sur-          263
+            Muon - AdamW    +0.0016 [-0.0108, +0.0139] inconclusive       face, Muon versus AdamW is inconclusive at             264
+            NorMuon - AdamW +0.0021 [-0.0089, +0.0130] inconclusive
+            NorMuon - Muon  +0.0005 [-0.0020, +0.0030] inconclusive       +0.0016 [-0.0108, +0.0139] nDCG@10, and Nor-           265
+                                                                          Muon versus AdamW is inconclusive at +0.0021 [-        266
+      Table 1: Final-stage retrieval over 14 decontaminated               0.0089, +0.0130]. Validation-selected comparisons      267
+      BEIR tasks, with simultaneous paired-task intervals for             are secondary: Muon versus AdamW inconclusive          268
+      all three optimizer contrasts.
+                                                                          at +0.0032 [-0.0016, +0.0080]; NorMuon versus          269
+                                                                          AdamW positive at +0.0044 [+0.0015, +0.0073];          270
+
+223   otherwise idle devices and uses exact retrieval                     NorMuon versus Muon inconclusive at +0.0012 [-         271
+
+224   rather than approximate ranking. AdamW uses                         0.0023, +0.0047]. These are one-seed, pinned-grid      272
+
+225   fused CUDA AdamW; Muon and NorMuon use the                          results; learning rates are not independent training   273
+
+226   documented decomposed-bfloat16 Newton–Schulz                        seeds. An inconclusive interval is not evidence of     274
+
+227   implementation. All runs retain the same exam-                      equivalence.                                           275
+
+228   ple identities, ordering, checkpoint boundaries, and
+                                                                          6     How the Optimizers Reshape the                   276
+229   scoring semantics.
+                                                                                Retriever                                        277
+
+230   4.2     Comparing rate surfaces and testing                         6.1    Weight-state trajectories                       278
+231           retrieval descriptors
+                                                                          For each of the 88 hidden matrices Wℓ , we measure     279
+232   The primary estimand averages the four prede-                       the saved-checkpoint segment Wℓ,t − Wℓ,t−1 and         280
+233   clared learning-rate cells within each optimizer at                 cumulative displacement Wℓ,t − Wℓ,0 . Magnitude        281
+234   the final checkpoint. This makes the optimizer                      is the joint Frobenius norm of the displacement        282
+235   comparison a statement about the tested rate sur-                   divided by the joint current weight norm, not an       283
+236   face, not a post-hoc best cell. Task-level common                   average of matrix-wise ratios. Parameter-weighted      284
+237   resampling supplies simultaneous max-T intervals                    summaries describe effective rank, row-norm coef-      285
+238   for the three pairwise contrasts. We also report                    ficient of variation, and top-1% row-energy share.     286
+239   all five optimizer-by-stage means and a secondary                   Rank-16 left/right subspace overlap compares all       287
+240   validation-selected comparison, but neither can re-                 unordered run pairs at each stage; optimizer-pair      288
+241   place the primary surface-level result.                             summaries average all learning-rate pairs equally,     289
+242      We test whether a state measurement describes                    without selecting a reference rate.                    290
+243   retrieval beyond identifying which optimizer pro-                      We retain the original approximate spectral mea-    291
+244   duced it. Nine predeclared weight-space fea-                        surements and separately report full-spectrum sen-     292
+245   tures and four representation-space features are                    sitivity. Entropy rank computed from all singular      293
+246   added separately to a baseline containing optimizer,                values is a different quantity from entropy within a   294
+247   checkpoint stage, and centered log learning rate                    renormalized truncated spectrum; the full-spectrum     295
+248   within optimizer. Four folds each hold out one or-                  rank summaries explicitly weight nonzero matrices.     296
+249   dered rate index across all optimizers and stages.                  Neither measurement replaces the other. These are      297
+250   Predictive support requires lower pooled held-out                   properties of the state produced by many updates,      298
+251   RMSE and improvement in at least three folds.                       not of a single optimizer step.                        299
+252   The representation features are helpful mass share,                    At the final stage, all-rate mean cumulative        300
+253   normalized helpful participation, degrading mass,                   hidden-weight displacement relative to weight          301
+254   and relative shortlist nDCG after removing 50%                      norm is AdamW 0.004716, Muon 0.063037, Nor-            302
+255   of coordinates. We report every candidate, includ-                  Muon 0.063103; the corresponding last-segment          303
+256   ing unsupported or unidentified comparisons. This                   ratios are AdamW 0.000355, Muon 0.006221, Nor-         304
+257   tests generalization to an unseen rate dose, not an                 Muon 0.006190.                                         305
+258   unseen retrieval task or causal mediation.
+                                                                          6.2    Does Muon use embedding dimensions              306
+                                                                                 differently?                                    307
+259   5     Optimizer Effects on Dense Retrieval
+                                                                          Weight motion matters through the representation it    308
+260   The primary estimand averages all four declared                     creates. The frozen probe contains 16 queries from     309
+261   rates within optimizer from a common model,                         each of 14 tasks, each with one relevant document      310
+262   dataset, training schedule, and evaluation suite.                   and seven fixed competing documents. We measure        311
+
+
+                                                                      4
+312   query/document covariance rank and recompute               shortlist nDCG is 0.991638/0.993778/0.992056 for         362
+313   shortlist retrieval after removing 20 shared random        AdamW/Muon/NorMuon. The figure reports all               363
+314   coordinate sets at each of 10, 25, 50, and 75%             declared rates and stages.                               364
+315   removal.
+316      The primary attribution uses positive–hardest-          6.3   Which state measurements predict                   365
+
+317   negative margin. For task t and coordinate j, let                retrieval?                                         366
+
+318   atj be the task-mean change in margin after delet-         Every weight- and representation-space candidate         367
+319   ing j and renormalizing. We average over queries           faces the same leave-dose-index-out test. The base-      368
+320   before separating helpful and degrading effects:           line already knows optimizer identity, checkpoint        369
+321   htj = max(−aP tj , 0) and btj P= max(atj , 0). Writ-       stage, and within-optimizer dose, so a feature must      370
+322   ing Ht = j htj and Bt = j btj , the three sum-             explain variation beyond recognizing Muon. We            371
+323   maries are                                                 report all candidates, including unsupported ones,       372
+               Ht                 Ht2                            and treat predictive support as a bridge to retrieval    373
+324                  ,            P    2 ,     Bt .   (2)        rather than causal mediation.                            374
+             Ht + Bt        768     j htj
+                                                                    The declared out-of-dose predictive criterion         375
+325   They measure helpful mass share, normalized help-          supports: log segment/weight norm, segment               376
+326   ful participation, and degrading mass. Zero denom-         effective-rank fraction, segment row-norm CV, seg-       377
+327   inators are assigned zero by the fixed definition.         ment top-1% row energy, cumulative/weight norm.          378
+328   We compute each summary within task before av-             All nine features and all four folds are retained.       379
+329   eraging tasks; analogous shortlist-nDCG attribu-           Undefined folds are not pooled as available cases.       380
+330   tions are descriptive. These deletion sensitivities        This is prediction outside a learning-rate dose on       381
+331   are not additive score contributions because renor-        the same task suite, not causal mediation, statistical   382
+332   malization and changes in the hardest competing            significance or evidence of equivalence. The exact-      383
+333   document couple their effects.                             measurement sensitivity meets the declared pre-          384
+334      Final-stage optimizer summaries average all four        dictive criterion for: Segment entropy rank. These       385
+335   rates. We use 50,000 common task-bootstrap re-             checks do not replace the original nine-feature anal-    386
+336   samples and one fixed-standard-error max-T fam-            ysis; all five paired comparisons are reported in the    387
+337   ily over the nine combinations of three features           appendix.                                                388
+338   and three optimizer contrasts. More constructive              Helpful mass share does not meet the declared         389
+339   coordinate use requires all three simultaneous 95%         held-out-dose predictive criterion. Helpful partic-      390
+340   intervals in the desired directions: greater help-         ipation does not meet the declared held-out-dose         391
+341   ful share and participation, less degrading mass.          predictive criterion. Degrading mass meets the           392
+342   Failure of this joint criterion does not establish         declared held-out-dose predictive criterion. 50%         393
+343   equivalence.                                               random-removal retention does not meet the de-           394
+344      Coordinate attribution is basis dependent. We           clared held-out-dose predictive criterion. This tests    395
+345   repeat the endpoint analysis after three shared Haar       prediction outside a learning-rate dose on the same      396
+346   rotations, each of which preserves all full-vector         task suite, not causal mediation or generalization       397
+347   cosine scores. A native-coordinate difference can          to unseen tasks.                                         398
+348   support a claim about native-coordinate utilization.
+349   Directional agreement across the three tested rota-        Does prediction survive recipe-only alterna-             399
+350   tions is a robustness check, not proof of invariance       tives? An additive log-rate comparator can leave         400
+351   under arbitrary bases or of greater dimensional ca-        nonlinear recipe variation for a geometric feature       401
+352   pacity.                                                    to absorb. We therefore retain a separately la-          402
+353      Muon does not meet the joint native-coordinate          belled, post-result sensitivity analysis. Alongside      403
+354   criterion relative to AdamW; this does not estab-          the original comparator (B0), B1 adds optimizer-         404
+355   lish equivalence. The required mean directions do          specific raw learning rate; B2 includes optimizer-       405
+356   not hold under every tested shared rotation. Nor-          by-stage indicators and optimizer-specific log/raw-      406
+357   Muon does not meet the joint native-coordinate             rate slopes; B3 additionally includes the nominal        407
+358   criterion relative to AdamW; this does not es-             cumulative learning-rate budget. Two further vari-       408
+359   tablish equivalence. The required mean direc-              ants condition B0 and B3 on cumulative displace-         409
+360   tions do not hold under every tested shared rota-          ment. These remain the same held-dose folds and          410
+361   tion. With 50% of coordinates removed, relative            observations, not independent experiments or a re-       411
+
+
+                                                             5
+                                                           (a) Final-state random removal                                                                       (b) Helpful mass share
+
+                                             1                                              Pretrained
+          Relative shortlist nDCG
+
+
+                                                                                            AdamW
+                                                                                            Muon
+                                                                                                                                                 0.4
+                                                                                            NorMuon
+
+
+
+
+                                                                                                                                         Share
+                                           0.99
+
+                                                                                                                                                 0.2
+
+
+
+                                           0.98
+                                                                                                                                                  0
+                                                  0   10           25               50                   75                                            0   20        40       60         80   100
+                                                                Coordinates removed (%)                                                                         Training progress (%)
+                                                                (c) Helpful participation                                                                        (d) Degrading mass
+
+
+                                            0.3
+                Normalized participation
+
+
+
+
+                                                                                                               Margin attribution mass
+                                                                                                                                                 0.1
+
+
+
+                                            0.2
+
+                                                                                                                                         5 · 10−2
+
+                                            0.1
+
+
+
+                                             0                                                                                                    0
+                                                  0        20           40     60           80           100                                           0   20        40       60         80   100
+                                                                 Training progress (%)                                                                          Training progress (%)
+
+      Figure 2: Dimension utility over the complete rate grid. (a) Final-state retention after shared random coordinate
+      removal; the zero-removal value is one by definition. (b–d) Native-coordinate margin attribution at all five stages.
+      Each optimizer curve averages all four rates and 14 tasks; (a) additionally averages 20 shared masks per nonzero
+      fraction. The gray curve or horizontal line is the pretrained reference. Lines join measured points, not fitted
+      trajectories. These are descriptive means, not confidence intervals or full-corpus retrieval scores; formal contrasts
+      and rotation controls are reported separately.
+
+
+412   vised primary analysis. In post-result exploratory                                                                             over the primary rate surface.                                  431
+413   controls, 0 of 14 weight measurements and 0 of                                                                                   Each cell’s hidden learning rate is calibrated to a           432
+414   four functional measurements meet the predictive                                                                               global hidden update-to-weight Frobenius ratio of               433
+415   criterion under all four recipe-only comparators.                                                                              5×10−4 on the fixed 32-example gradient-history                 434
+416   Predictive findings depend on the comparator; we                                                                               probe, then held fixed as the schedule’s base rate.             435
+417   retain every baseline rather than select the one with                                                                          This does not match the first realized shuffled-batch           436
+418   lowest observed error. These controls neither iden-                                                                            update or subsequent update norms. Both rules use               437
+419   tify a mediator nor establish equivalence.                                                                                     the same hidden/auxiliary partition and auxiliary               438
+                                                                                                                                     AdamW at 3×10−6 ; calibration excludes weight                   439
+420   7                                    How Do Reached States Respond to                                                          decay. The four cells share each of three fixed data            440
+421                                        Further Optimization?                                                                     orders and a 50,000-query horizon.                              441
+                                                                                                                                       For each seed–task pair, let Yso be final                     442
+422   Retrieval at a fixed checkpoint depends on its                                                                                 nDCG@10 after this continuation, with source                    443
+423   weights, not on an optimizer applied only later.                                                                               s ∈ {A, M } and continuation rule o ∈ {A, M }.                  444
+424   Our follow-up therefore asks a conditional ques-                                                                               The frozen contrasts are                                        445
+425   tion: does the reached state change the response
+426   to further optimization? We fix the 60% AdamW                                                                                      ∆S = 12 [(YM A − YAA ) + (YM M − YAM )], (3)                446
+427   3×10−5 and Muon 3×10−4 checkpoints, reset opti-                                                                                    ∆O = 21 [(YAM − YAA ) + (YM M − YM A )],              (4)   447
+428   mizer history, and continue each with reset AdamW                                                                                  ∆I = (YM M − YM A ) − (YAM − YAA ).                   (5)   448
+429   and reset Muon. The source pair is fixed, not se-
+430   lected from the new BEIR outcomes or averaged                                                                                  They concern post-continuation endpoints, not                   449
+
+
+                                                                                                               6
+450   gains relative to each source checkpoint. In par-             asks which parts of the representation help retrieval,    499
+451   ticular, YM M − YAA = ∆S + ∆O ; the interaction               how distributed that utility is, and whether any op-      500
+452   is not a third additive component. A positive aver-           timizer difference survives a change of basis.            501
+453   aged contrast need not hold within both levels, and
+                                                                    Continuation tests state-dependent responses,             502
+454   positive interaction can mean less harm rather than
+                                                                    not a gain decomposition. The crossed design              503
+455   improvement. Each contrast receives its own 95%
+                                                                    asks whether a source-state advantage persists on         504
+456   two-way seed/task bootstrap interval from 100,000
+                                                                    average after further adaptation and whether the rel-     505
+457   resamples; these are marginal, not simultaneous
+                                                                    ative continuation preference changes between the         506
+458   intervals. An inconclusive contrast is not equiva-
+                                                                    fixed states. Neither an averaged main effect nor         507
+459   lent to zero or dominated by one whose interval
+                                                                    an interaction alone establishes benefit within both      508
+460   excludes zero.
+                                                                    states, additivity, or full-trajectory co-adaptation.     509
+461      [PENDING: The averaged source-state contrast,
+                                                                    Explaining a particular geometric feature causally        510
+462   averaged continuation-operator contrast, and state–
+                                                                    would require an intervention on that feature, be-        511
+463   operator interaction remain pending, including all
+                                                                    yond the present state-level comparison.                  512
+464   three marginal intervals and decisions. Positive in-
+465   teraction alone would not establish beneficial con-           9    Conclusion                                           513
+466   tinuation or full-trajectory co-adaptation.]
+                                                                    Across the four-rate surface, Muon versus AdamW           514
+
+467   8   Discussion                                                is inconclusive at +0.0016 [-0.0108, +0.0139]             515
+                                                                    nDCG@10, and NorMuon versus AdamW is in-                  516
+468   Optimizer quality is a property of a trajectory               conclusive at +0.0021 [-0.0089, +0.0130].                 517
+469   surface. The all-rate estimand prevents the argu-                Coordinate-level utility, its tested-basis sensitiv-   518
+470   ment from collapsing onto one fortunate learning              ity, and held-out-dose prediction are distinct re-        519
+471   rate, while five checkpoint stages reveal whether an          sults. Shared-rotation sign stability does not estab-     520
+472   advantage emerges early, accumulates gradually, or            lish arbitrary-basis invariance or semantic indepen-      521
+473   disappears. The result remains specific to the tested         dence of dimensions; these measurements alone do          522
+474   DenseOn adaptation problem; it is stronger than a             not identify a mediator of an optimizer effect.           523
+475   best-cell comparison and weaker than a universal                 [PENDING: The crossed 50K continuation find-           524
+476   optimizer ranking.                                            ings remain pending. The design resets opti-              525
+                                                                    mizer state and matches the fixed calibration-probe       526
+477   Weight-space separation and functional change
+                                                                    scale; its endpoint contrasts do not decompose the        527
+478   need not coincide. Muon can produce spectrally
+                                                                    primary-training result or establish the causal role      528
+479   distinct displacements without improving coordi-
+                                                                    of a geometric feature.]                                  529
+480   nate utility. Conversely, small changes in weights
+                                                                       The central distinction is between distributing        530
+481   can alter which query–document distinctions a rep-
+                                                                    weight-space motion and distributing useful rank-         531
+482   resentation preserves. The held-out-dose tests ask
+                                                                    ing evidence. Reached-weight measurements, co-            532
+483   which measurements track corpus ranking beyond
+                                                                    ordinate interventions, held-out-dose prediction,         533
+484   optimizer identity, stage, and dose. Some candi-
+                                                                    and conditional continuation provide complemen-           534
+485   dates improve prediction under the original com-
+                                                                    tary views of that distinction. Together they can         535
+486   parator, but their success is not stable across recipe-
+                                                                    narrow an explanation of optimizer-dependent re-          536
+487   only alternatives. This distinction matters: a fea-
+                                                                    trieval without treating an intrinsic update property     537
+488   ture can summarize omitted recipe variation with-
+                                                                    as a new discovery or claiming a causal decompo-          538
+489   out supplying a robust explanation of optimizer-
+                                                                    sition of the original gain.                              539
+490   dependent retrieval. The present results leave that
+491   explanatory link unresolved; visual separation can-           10    Limitations                                         540
+492   not supply it.
+                                                                    Primary inference concerns one 149M-parameter             541
+493   Dimension count and dimension utility are dif-                DenseOn checkpoint, one English supervised cor-           542
+494   ferent. Random-removal robustness can arise                   pus, and one epoch of full-parameter adaptation.          543
+495   from redundancy, distributed coding, or cancella-             The base model was pretrained with an Adam-               544
+496   tion between helpful and degrading coordinates.               family optimizer, so this is a study of optimizer         545
+497   Effective rank can also disagree with the functional          switching rather than Muon-from-scratch pretrain-         546
+498   ablation readout. The coordinate analysis therefore           ing. Four learning rates provide a broad but finite       547
+
+
+                                                                7
+548   grid. The all-rate contrast reduces best-cell selec-        Keller Jordan, Yuchen Jin, Vlado Boza, You Jiacheng,       596
+549   tion dependence but remains a one-seed, pinned-               Franz Cesista, Laker Newhouse, and Jeremy Bern-          597
+                                                                    stein. 2024. Muon: An optimizer for hidden layers        598
+550   grid result; the secondary selected-recipe compar-
+                                                                    in neural networks.                                      599
+551   ison does not replace replication across training
+552   views.                                                      Jaeyoung Kim, Dohyeon Lee, and Seung-won Hwang.            600
+                                                                     2024. HIL: Hybrid isotropy learning for zero-shot       601
+553      Decontamination reduces known benchmark                     performance in dense retrieval. In Proceedings of       602
+554   overlap but cannot establish the absence of every              the 2024 Conference of the North American Chap-         603
+555   semantic duplicate. Aggregate MTEB outputs lack                ter of the Association for Computational Linguistics:   604
+556   per-query rankings, so uncertainty is computed                Human Language Technologies (Volume 1: Long              605
+                                                                     Papers), pages 7892–7903. Association for Compu-        606
+557   over tasks and we make no query-level BEIR signif-
+                                                                     tational Linguistics.                                   607
+558   icance claim. The geometry and dimension bridges
+559   are predictive rather than causal and may miss use-         Zichong Li, Liming Liu, Chen Liang, Weizhu Chen, and       608
+560   ful properties outside the frozen candidates. Coor-           Tuo Zhao. 2025. NorMuon: Making Muon more effi-          609
+                                                                     cient and scalable. arXiv preprint arXiv:2510.05491.    610
+561   dinate ablation uses an eight-document probe, and
+562   coordinate identities are not invariant under rota-         Jingyuan Liu, Jianlin Su, Xingcheng Yao, Zhejun Jiang,     611
+563   tion; the rotation control limits, rather than elimi-          Guokun Lai, Yulun Du, Yidao Qin, Weixin Xu, En-         612
+                                                                     zhe Lu, Junjie Yan, et al. 2025. Muon is scalable for   613
+564   nates, this dependence.                                        LLM training. arXiv preprint arXiv:2502.16982.          614
+565      The crossed reset-state factorial concerns one
+                                                                  Yuxing Liu, Jianyu Wang, and Tong Zhang. 2026.             615
+566   fixed 60% checkpoint pair and a 50K-query contin-
+                                                                    Optimizer-model consistency: Full finetuning with        616
+567   uation horizon. Its three order seeds do not repli-           the same optimizer as pretraining forgets less. arXiv    617
+568   cate source-model training, and its marginal in-              preprint arXiv:2605.06654.                               618
+569   tervals are not family-wise controlled. It changes
+                                                                  Ilya Loshchilov and Frank Hutter. 2019. Decoupled          619
+570   entire source states and continuation rules, not a             weight decay regularization. In International Confer-   620
+571   measured geometry feature, and therefore does not              ence on Learning Representations.                       621
+572   identify mediation over the full 500K trajectory or
+                                                                  Thomas Massena, Corentin Friedrich, and Mathieu Ser-       622
+573   establish why a feature predicts retrieval.                   rurier. 2026. From SGD to Muon: Adaptive op-             623
+                                                                    timization via Schatten-p norms. arXiv preprint          624
+574   11   Ethical Considerations                                   arXiv:2605.19781.                                        625
+
+                                                                  Tianyu Pang, Yujie Fang, Zihang Liu, Shenyang Deng,        626
+575   This study does not collect new human-subject data
+                                                                     Lei Hsiung, Shuhua Yu, and Yaoqing Yang. 2026.          627
+576   or deploy a retrieval system to users. Released                HTMuon: Improving Muon via heavy-tailed spectral        628
+577   models and corpora can nevertheless contain so-                correction. In Findings of the Association for Compu-   629
+578   cial biases, harmful material, copyrighted text, or            tational Linguistics: ACL 2026, pages 36504–36535.      630
+579   personal information. Higher benchmark nDCG is                Association for Computational Linguistics.               631
+
+580   not evidence of fairness, safety, privacy, or deploy-       Xingyu Qu, Peigeng Huang, and Samuel Horvath. 2026.        632
+581   ment readiness. A production retriever requires               Can Muon fine-tune Adam-pretrained models? arXiv         633
+582   corpus-specific auditing, filtering, access controls,         preprint arXiv:2605.10468.                               634
+
+583   and human review appropriate to its users and fail-         Tianyu Ruan, Fengzhuo Zhang, Shuche Wang, and Shi-         635
+584   ure costs.                                                     hua Zhang. 2026. Muon learns more robust and            636
+585      We report useful wall time, throughput, GPU-                transferable features than Adam. arXiv preprint         637
+                                                                     arXiv:2606.09658.                                       638
+586   hours, and optimizer-state size because an opti-
+587   mizer recommendation has resource consequences.             Raphaël Sourty, Antoine Chaffin, Paulo Roberto            639
+588   These measurements are specific to the pinned                 Moura Junior, and Amélie Chatelain. 2026. DenseOn       640
+                                                                    with the LateOn: Fully open dense and late-              641
+589   hardware and software stack and do not justify                interaction models for multilingual, long-context, and   642
+590   unbounded hyperparameter search. Public artifacts             code search. arXiv preprint arXiv:2607.27178.            643
+591   must respect the licenses and usage terms of up-
+                                                                  Sotaro Takeshita, Yurina Takeshita, Daniel Ruffinelli,     644
+592   stream models, datasets, and evaluation collections.          and Simone Paolo Ponzetto. 2025. Randomly re-            645
+                                                                    moving 50% of dimensions in text embeddings has          646
+                                                                    minimal impact on retrieval and classification tasks.    647
+593   References                                                    In Proceedings of the 2025 Conference on Empiri-         648
+                                                                    cal Methods in Natural Language Processing, pages        649
+594   Zhehang Du and Weijie Su. 2026. The Newton–Muon               27705–27726. Association for Computational Lin-          650
+595     optimizer. arXiv preprint arXiv:2604.01472.                 guistics.                                                651
+
+
+                                                              8
+652   Nandan Thakur, Nils Reimers, Andreas Rücklé, Ab-
+653     hishek Srivastava, and Iryna Gurevych. 2021. BEIR:
+654     A heterogeneous benchmark for zero-shot evaluation
+655     of information retrieval models. In Thirty-fifth Con-
+656     ference on Neural Information Processing Systems
+657     Datasets and Benchmarks Track.
+
+658   A    Artifact and Reproducibility
+659   We preserve the exact model and dataset revi-
+660   sions, deterministic 500K training ledger, negative
+661   sampling seeds, optimizer routing, package locks,
+662   W&B histories, checkpoint hashes, and evaluation
+663   receipts. Every reported table is generated only
+664   after source-bound completeness and provenance
+665   audits. The public artifact manifest binds each
+666   model state and result to its byte count and digest;
+667   the renderer fails closed when an expected run,
+668   checkpoint, task, or source identity differs.
+
+669   B Complete Weight-Space and Dimension
+670     Readouts
+671   The main text reports the weight- and
+672   representation-space findings that bear on
+673   the mechanism. For completeness, the tables
+674   below retain every frozen candidate, including
+675   negative results.
+
+676   C    Exploratory Recipe-Control Sensitivity
+677   All comparisons below were specified after the
+678   original predictive readout and are exploratory. The
+679   four recipe-only designs and both displacement-
+680   conditioned variants use the same four held-dose
+681   folds. We retain all predictors and comparators,
+682   including isolated positive flags; the comparator
+683   with the lowest observed error is not promoted to a
+684   new confirmatory baseline. The larger designs also
+685   have more coefficients relative to the same training
+686   observations.
+
+687   D    State-by-Operator Mechanism Test
+688   The crossed experiment resets optimizer state
+689   at both source checkpoints, matches the fixed
+690   calibration-probe update scale, and reports all three
+691   co-primary contrasts regardless of sign. Exact seed–
+692   task contrasts and all five probe stages remain in
+693   the source-addressed artifact tables.
+
+
+
+
+                                                                9
+    Geometry feature                                  RMSE reduction          Improved       Defined       Criterion            Residual ρ
+    log segment/weight norm                               +0.00594915               3/4            4/4     supported            -0.589
+    segment stable-rank fraction                          -0.00112712               0/4            4/4     not supported        -0.097
+    segment effective-rank fraction                        +0.0052098               3/4            4/4     supported            +0.608
+    segment row-norm CV                                   +0.00529116               3/4            4/4     supported            -0.597
+    segment top-1% row energy                             +0.00488877               3/4            4/4     supported            -0.579
+    cumulative/weight norm                                 +0.0190137               4/4            4/4     supported            -0.853
+    cumulative stable-rank fraction                       -0.00351357               0/4            4/4     not supported        -0.274
+    segment subspace overlap to AdamW                     -0.00238356               1/4            4/4     not supported        -0.063
+    cumulative subspace overlap to AdamW                     -0.008376              0/4            4/4     not supported        +0.035
+
+Table 2: Every original weight-space predictor under four-fold leave-dose-index-out prediction. Decisions use
+exact MSE comparisons, not displayed RMSE. A missing correlation is undefined, not zero; baseline equivalence is
+distinct from an unidentified or numerically unresolved prediction.
+
+
+
+                  Measurement                   Original criterion Exact criterion Exact RMSE gain Defined Error difference
+                  Segment stable rank           not supported    not supported       -0.00105121         4/4    +7.59091e-05
+                  Segment entropy rank          supported        supported           +0.00558286         4/4    +0.000373052
+                  Cumulative stable rank        not supported    not supported        -0.0035408         4/4     -2.72383e-05
+                  Segment overlap to AdamW      not supported    not supported       -0.00159314         4/4    +0.000790415
+                  Cumulative overlap to AdamW   not supported    not supported       -0.00406072         4/4     +0.00431528
+
+
+Table 3: Every original/exact counterpart under the same four held-out learning-rate doses. RMSE gain compares the
+exact predictor with the nuisance-only baseline; error difference is original-predictor RMSE minus exact-predictor
+RMSE. Decisions use exact MSE, not rounded display values. Dashes denote undefined comparisons. These are
+measurement-sensitivity comparisons, not uniformly pure approximation-error tests: entropy uses the full singular
+spectrum, and rank/entropy averages expose their nonzero-matrix denominators. Every declared correspondence
+and all four folds are retained. Undefined comparisons are not available-case averages. Predictive support is not
+causal mediation, statistical significance, equivalence, or evidence of useful embedding dimensions.
+
+
+
+
+       Feature                  Contrast                             Effect                Simultaneous 95% CI             Decision
+       helpful mass share       Muon–AdamW                     -0.0018016            [-0.0095111, +0.00590791]             inconclusive
+       helpful mass share       NorMuon–AdamW               +0.000437186           [-0.00522206, +0.00609643]              inconclusive
+       helpful mass share       NorMuon–Muon                 +0.00223878             [-0.00674053, +0.0112181]             inconclusive
+       helpful participation    Muon–AdamW                   +0.00358455         [+0.000143587, +0.00702552]               positive
+       helpful participation    NorMuon–AdamW                +0.00235085             [-0.00269661, +0.0073983]             inconclusive
+       helpful participation    NorMuon–Muon                 -0.00123371             [-0.00668711, +0.0042197]             inconclusive
+       degrading mass           Muon–AdamW                   -0.00130579           [-0.00396615, +0.00135456]              inconclusive
+       degrading mass           NorMuon–AdamW                -0.00183596           [-0.00400392, +0.00033199]              inconclusive
+       degrading mass           NorMuon–Muon                -0.000530169           [-0.00286867, +0.00180833]              inconclusive
+
+Table 4: All nine final-stage co-primary contrasts, averaging every declared rate. One common-resample max-T
+family covers all entries; task resampling does not estimate training-seed variation.
+
+
+
+
+                 Feature                                 RMSE reduction          Improved      Defined         Criterion
+                 helpful mass share                        -0.000389109                2/4           4/4       not supported
+                 helpful participation                      -0.00434356                1/4           4/4       not supported
+                 degrading mass                              +0.0100691                4/4           4/4       supported
+                 50% random-removal retention              +0.000341663                2/4           4/4       not supported
+
+Table 5: All four functional predictors beyond optimizer, stage and within-optimizer dose. Decisions use exact MSE
+comparisons; displayed RMSE is not a significance test. Undefined folds are retained, never pooled as available
+cases.
+
+
+
+                                                                    10
+           Measurement                                    B0           B1           B2            B3      B0+D         B3+D
+           Comparator alone                             2.905        0.652       1.391        1.439        1.004       1.420
+           log segment/weight norm                2.310* (3/4) 0.687 (2/4) 1.357* (4/4) 1.393* (4/4) 1.247 (1/4) 1.376* (4/4)
+           segment stable-rank fraction            3.018 (0/4) 0.524* (3/4) 1.435 (3/4) 1.597 (0/4) 1.050 (2/4) 1.557 (0/4)
+           segment effective-rank fraction        2.384* (3/4) 0.676 (2/4) 1.378* (3/4) 1.435* (3/4) 1.221 (1/4) 1.418* (3/4)
+           segment row-norm CV                    2.376* (3/4) 0.630* (3/4) 1.401 (1/4) 1.448 (0/4) 1.142 (1/4) 1.428 (1/4)
+           segment top-1% row energy              2.416* (3/4) 0.559* (3/4) 1.396 (1/4) 1.449 (1/4) 1.032 (2/4) 1.429 (1/4)
+           cumulative/weight norm                 1.004* (4/4) 0.795 (1/4) 1.407 (2/4) 1.420* (4/4) 1.004 (0/4) 1.420 (0/4)
+           cumulative stable-rank fraction         3.257 (0/4) 1.070 (2/4) 1.442 (1/4) 1.561 (1/4) 1.244 (1/4) 1.562 (1/4)
+           segment subspace overlap to AdamW       3.144 (1/4) 0.651 (2/4) 1.539 (0/4) 1.676 (0/4) 0.816* (3/4) 1.645 (0/4)
+           cumulative subspace overlap to AdamW    3.743 (0/4) 1.020 (1/4) 1.623 (2/4) 1.924 (1/4) 1.269 (1/4) 1.335 (2/4)
+           Exact: Segment stable rank              3.010 (0/4) 0.528* (3/4) 1.438 (3/4) 1.625 (0/4) 1.057 (2/4) 1.582 (0/4)
+           Full-spectrum segment entropy          2.347* (3/4) 0.689 (2/4) 1.294* (4/4) 1.356* (4/4) 1.260 (2/4) 1.348* (4/4)
+           Exact: Cumulative stable rank           3.259 (0/4) 1.001 (2/4) 1.313* (4/4) 1.373* (3/4) 1.213 (0/4) 1.380 (2/4)
+           Exact: Segment overlap to AdamW         3.065 (1/4) 0.601 (2/4) 1.507 (1/4) 1.645 (0/4) 0.840* (3/4) 1.596 (0/4)
+           Exact: Cumulative overlap to AdamW      3.311 (2/4) 1.398 (1/4) 1.457 (0/4) 2.140 (0/4) 1.452 (1/4) 2.017 (0/4)
+
+
+Table 6: Complete post-result exploratory recipe-control sensitivity. Cells show pooled held-dose RMSE in
+nDCG@10 points (lower is better), and the number of improved folds. An asterisk marks strictly lower exact
+pooled MSE and improvement in at least three of four folds; it is not a significance test. D is cumulative weight
+displacement. All six comparator variants are retained.
+
+
+
+
+            Measurement                                    B0             B1        B2            B3      B0+D        B3+D
+            Comparator alone                             2.905        0.652      1.391        1.439        1.004      1.420
+            Helpful mass share                      2.944 (2/4) 0.634 (2/4) 1.398 (1/4) 1.481 (1/4) 1.033 (0/4) 1.466 (1/4)
+            Helpful participation                   3.340 (1/4) 0.891 (0/4) 1.552 (3/4) 1.422* (4/4) 1.062 (2/4) 1.428 (1/4)
+            Degrading mass                         1.898* (4/4) 0.623 (2/4) 1.424 (1/4) 1.508 (0/4) 0.907* (3/4) 1.482 (1/4)
+            50% removal retention                   2.871 (2/4) 0.600* (3/4) 1.451 (2/4) 1.476 (1/4) 1.002 (2/4) 1.452 (0/4)
+
+
+Table 7: Complete post-result exploratory recipe-control sensitivity. Cells show pooled held-dose RMSE in
+nDCG@10 points (lower is better), and the number of improved folds. An asterisk marks strictly lower exact
+pooled MSE and improvement in at least three of four folds; it is not a significance test. D is cumulative weight
+displacement. All six comparator variants are retained.
+
+
+
+
+                          Factorial contrast                     Effect      Marginal 95% CI       Decision
+                          Muon-state − AdamW-state                    –                       –    pending
+                          Muon operator − AdamW operator              –                       –    pending
+                          State × operator interaction                –                       –    pending
+
+Table 8: Prospective reset-state factorial. All results remain pending. The three marginal intervals do not provide
+simultaneous family-wise coverage.
+
+
+
+
+                                                                11
+694   E   Interpretation of the Analyses
+695   F   Full Experimental Matrix
+696   The DenseOn matrix contains three optimizers,
+697   four rates per optimizer, five checkpoints, and 14
+698   tasks: 12 runs, 60 checkpoints, and 840 checkpoint–
+699   task units. The released result tables additionally
+700   contain every optimizer-by-stage mean, validation-
+701   selected secondary contrast, per-task final score,
+702   wall time, throughput, peak allocation, and check-
+703   point size. No run is removed on the basis of re-
+704   trieval quality.
+
+
+
+
+                                                            12
+  Claim                       Required evidence                                    Insufficient evidence alone
+  Faster adaptation           useful wall time, examples/s,        GPU-hours,      lower loss at equal steps
+                              matched-hardware time-to-quality
+  Better DenseOn opti-        all-rate contrast over 14 tasks                      best BEIR cell alone
+  mizer
+  Weight motion explains      held-out prediction beyond optimizer, stage, and     larger displacement alone
+  retrieval                   dose
+  Dimensions are used         helpful mass share and normalized participation      effective rank alone
+  more constructively         rise while degrading mass falls, with simultaneous
+                              intervals
+  Geometry predicts re-       held-out prediction beyond optimizer, stage, and     optimizer-identifying geometry
+  trieval                     dose
+  Source-state advantage      crossed endpoint state contrast with calibrated      one-step functional proxy
+  persists on average after   probe scale
+  continuation
+  Continuation preference     crossed endpoint interaction                         full-trajectory co-adaptation
+  depends on reached state
+
+Table 9: How the analyses distinguish retrieval outcomes, predictive descriptors, and conditional continuation
+effects. Each comparison has a different scope of interpretation.
+
+
+
+
+                                                             13
+

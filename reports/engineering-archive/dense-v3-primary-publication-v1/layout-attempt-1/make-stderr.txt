@@ -1,0 +1,14 @@
+Latexmk: Missing bbl file 'build/main.bbl' in following:
+ No file main.bbl.
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_layout.py", line 147, in <module>
+    main()
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_layout.py", line 139, in main
+    audit_paper_layout(args.paper_dir, max_main_page=args.max_main_page),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_layout.py", line 82, in audit_paper_layout
+    raise ValueError(
+ValueError: Paper float-label topology differs from the frozen main/appendix contract: missing=['tab:dimension-utilization'], unexpected=[]
+make: *** [Makefile:17: all] Error 1

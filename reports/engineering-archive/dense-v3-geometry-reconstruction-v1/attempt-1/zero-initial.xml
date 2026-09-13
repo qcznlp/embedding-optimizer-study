@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="10" skipped="0" tests="10" time="9.685" timestamp="2026-09-07T13:21:25.208710+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[row_norms-mean]" time="0.038"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'row_norms', key = 'mean'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[row_norms-cv]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'row_norms', key = 'cv'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[row_norms-gini]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'row_norms', key = 'gini'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[row_norms-max_to_median]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'row_norms', key = 'max_to_median'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[column_norms-mean]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'column_norms', key = 'mean'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[column_norms-cv]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'column_norms', key = 'cv'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[column_norms-gini]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'column_norms', key = 'gini'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[column_norms-max_to_median]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'column_norms', key = 'max_to_median'
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[top_1pct_row_energy-None]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'top_1pct_row_energy', key = None
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase><testcase classname="tests.test_primary_v3_geometry_reconstruction" name="test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics[top_10pct_row_energy-None]" time="0.001"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">contract = FunctionalInferenceContract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_dimensio...356fc6f43df6d49431b3', 'rows': 16, 'task': 'Touche2020', 'verified_text_fields': 144}], 'verified_text_fields': 2016}))
+field = 'top_10pct_row_energy', key = None
+
+    @pytest.mark.parametrize(
+        "field,key",
+        [
+            (field, key)
+            for field in ("row_norms", "column_norms")
+            for key in ("mean", "cv", "gini", "max_to_median")
+        ]
+        + [(field, None) for field in ("top_1pct_row_energy", "top_10pct_row_energy")],
+    )
+    def test_exact_zero_matrix_cannot_retain_nonzero_norm_statistics(contract, field, key):
+        row = synthetic_metric([768, 768], 0.0, displacement=True)
+        if key is None:
+            row[field] = 0.25
+        else:
+            row[field][key] = 0.25
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_geometry_reconstruction.py:178: Failed</failure></testcase></testsuite></testsuites>

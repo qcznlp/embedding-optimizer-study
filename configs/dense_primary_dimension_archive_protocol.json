@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "status": "prospective_primary_dimension_archive_lock",
+  "frozen_at_utc": "2026-09-04T21:20:40.575905+00:00",
+  "purpose": "Preserve all 61 primary fixed-probe vector arrays with their source-derived small publication closure in an immutable content-addressed dataset prefix; never treat durability as scientific completion.",
+  "destination": {
+    "repo_id": "qcz/embedding-optimizer-study-analysis-artifacts",
+    "repo_type": "dataset",
+    "prefix": "primary-dimension/v1"
+  },
+  "source_bindings": {
+    "src/embed_optim/dimension_archive.py": {
+      "path": "src/embed_optim/dimension_archive.py",
+      "bytes": 15410,
+      "sha256": "ab13493dc6d8c9c3c690de1ace30e3534086f8cabafb94aa6e28e8091866f26f"
+    },
+    "src/embed_optim/dimension_release.py": {
+      "path": "src/embed_optim/dimension_release.py",
+      "bytes": 6824,
+      "sha256": "2695b45bc7f92f3d2593cd329e656f425e454909b7f0822c0568ba9bad33998c"
+    },
+    "src/embed_optim/dimension_publication.py": {
+      "path": "src/embed_optim/dimension_publication.py",
+      "bytes": 45170,
+      "sha256": "1120d125843789ef7a6aa32fff86d1845eddee16e7ff7d4e3410cd7d8e80761c"
+    },
+    "src/embed_optim/dimension_utilization.py": {
+      "path": "src/embed_optim/dimension_utilization.py",
+      "bytes": 30424,
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    "src/embed_optim/primary_dimension_probe.py": {
+      "path": "src/embed_optim/primary_dimension_probe.py",
+      "bytes": 20005,
+      "sha256": "6ab31633959a9ed6eaf1d67b3cf77b8e7ecd3bd8cbd5c5e12a64d494a0c90f4b"
+    },
+    "src/embed_optim/artifact_inventory.py": {
+      "path": "src/embed_optim/artifact_inventory.py",
+      "bytes": 1971,
+      "sha256": "856f9fcfaf1a4f0c89062a22d8771eef0e3543995881ac89097e688e82fd2e6b"
+    },
+    "src/embed_optim/dimension_replay.py": {
+      "path": "src/embed_optim/dimension_replay.py",
+      "bytes": 13297,
+      "sha256": "6cbddc9625e906f54658aa94675515c743137117afe7bbe8e197d39a43756fc4"
+    },
+    "src/embed_optim/config.py": {
+      "path": "src/embed_optim/config.py",
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    }
+  },
+  "parent_bindings": {
+    "configs/dense_primary_dimension_export_protocol.json": {
+      "path": "configs/dense_primary_dimension_export_protocol.json",
+      "bytes": 6270,
+      "sha256": "4c7f4a7e0785ff324ae5312ee8d5b4133765d377ceb973f1af05987ecb87ba2f"
+    },
+    "configs/dense_dimension_utilization_protocol.json": {
+      "path": "configs/dense_dimension_utilization_protocol.json",
+      "bytes": 7792,
+      "sha256": "de56772ef84745c074940527d621a932a06a20e865a10bc3faad823bcb0e651e"
+    }
+  },
+  "visibility_at_freeze": {
+    "primary_complete_runs": 8,
+    "primary_dimension_outputs_visible": false,
+    "factorial_executed_steps": 0
+  },
+  "archive_contract": {
+    "authoring_gate": "Full checkpoint-backed publication audit before remote work; repeat portable/statistical and raw-vector identity checks when constructing and verifying the archive.",
+    "payload_selection": "Exact source-derived portable closure, 61 canonical raw vector arrays, and explicitly named reconstruction implementation/configuration files. No recursive whole-repository upload.",
+    "addressing": "SHA-256 of the canonical archive_manifest.json bytes determines a new prefix. Never overwrite conflicting contents.",
+    "upload": "Stage private temporary copies; hash them against frozen identities; atomically create additions against an immutable parent commit; no remote deletion or visibility change.",
+    "verification": "Compare exact paths, sizes and LFS SHA-256 / Git-blob SHA-1 at the returned immutable commit, not mutable main.",
+    "recovery": "A lost receipt may adopt a fully matching immutable remote snapshot and labels it recovered_verified_snapshot, not an original upload commit.",
+    "audit": "Rechecks the original receipt commit even if remote main advances. Keeps the original first_verified_at_utc and provenance.",
+    "offline_download": "Require the trusted receipt manifest SHA-256, exact file set and all file digests; no producer directory or network fallback.",
+    "checkpoint_payloads_included": false,
+    "raw_training_or_probe_text_included": false,
+    "scientific_completion": false
+  },
+  "operational_boundary": "CPU/network only; preserve active training and backup source contracts. Deploy only through the zero-step handoff after exact main completion.",
+  "amended_at_utc": "2026-09-04T22:43:11.202353+00:00",
+  "raw_feature_replay": {
+    "entrypoint": "python -m embed_optim.dimension_replay",
+    "input": "Verified downloaded archive and manifest SHA-256 from the trusted immutable-commit receipt",
+    "output": "A new directory outside the immutable archive; no overwritten inputs",
+    "scope": "reconstruction_dense_dimension_utilization, never primary authoring",
+    "numerical_tolerances": {
+      "csv": {
+        "rtol": 1e-09,
+        "atol": 1e-12
+      },
+      "float32_arrays": {
+        "rtol": 1e-06,
+        "atol": 1e-12
+      }
+    },
+    "covariance_ablation_random_masks_rotations": "Reuse the exact numerical kernel used by authoring; recompute all 61 states and compare all output cells and attribution arrays",
+    "encoding_or_checkpoint_validation_repeated": false,
+    "publication_inference_repeated": false,
+    "scientific_completion": false
+  },
+  "dependency_amendment": "The archive/replay use a lightweight file-inventory module instead of importing the live checkpoint-backup stack. Those training/backup implementations remain unchanged.",
+  "visualization_amendment": {
+    "primary_outputs_visible": false,
+    "scientific_estimands_changed": false,
+    "description": "The source-bound publisher now renders the frozen all-rate random-removal and utility trajectories as native vector LaTeX, with all 68 plotted means in a recomputed CSV. Existing closure selection archives the exact figure source and values. No new inference or controller command."
+  }
+}

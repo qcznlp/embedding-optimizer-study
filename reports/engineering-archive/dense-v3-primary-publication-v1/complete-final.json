@@ -1,0 +1,627 @@
+{
+  "actual_checkpoint_backed_positive_authoring_verified": false,
+  "actual_missing_primary_refusal": "Require an ordinary retained run directory",
+  "all_table_counts": {
+    "bridge": {
+      "bridge_rows": 60,
+      "feature_prediction_summary": 9,
+      "held_out_predictions": 540,
+      "leave_dose_fold_metrics": 36,
+      "residual_associations": 9
+    },
+    "functional": {
+      "bridge_rows": 60,
+      "feature_prediction_summary": 4,
+      "figure_points": 68,
+      "held_out_predictions": 240,
+      "leave_dose_fold_metrics": 16,
+      "optimizer_stage_metrics": 15,
+      "primary_contrasts": 9,
+      "residual_associations": 4,
+      "rotation_contrasts": 27
+    },
+    "geometry": {
+      "checkpoint_geometry": 60,
+      "optimizer_pair_subspace_summary": 60,
+      "run_pair_subspace_overlap": 660,
+      "subspace_health": 10560
+    },
+    "outcomes": {
+      "all_task_scores": 840,
+      "optimizer_stage_scores": 15,
+      "primary_summary": 3,
+      "primary_task_effects": 14,
+      "run_observed_auc": 12,
+      "run_stage_scores": 60,
+      "secondary_summary": 3,
+      "secondary_task_effects": 14,
+      "system_metrics": 12,
+      "validation_run_metrics": 12
+    }
+  },
+  "complete_paper_layout_verified": false,
+  "functional_latex_exactly_matches_accepted_joint_reconstruction": true,
+  "generated_artifacts": [
+    {
+      "bytes": 12180,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/draft.json",
+      "sha256": "68d9f73b8c0b91d566cfeeb2b28857bf2ea75ef3d182f86dd60578597507d041"
+    },
+    {
+      "bytes": 8402,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/dimension-utilization.tex",
+      "sha256": "dd91e8e5e62952553d0df7143ea1f89ceee987f2d4b09a30af1772dcc14485c3"
+    },
+    {
+      "bytes": 6182,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/evidence.json",
+      "sha256": "68a57a738f066a176a76d2fe3e79cfb2b36c07ab9c28ace5fe7e93353fc6a6bd"
+    },
+    {
+      "bytes": 1417,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/findings.json",
+      "sha256": "4ff7c186c7254b651e08e9671320f582074593783442d389449abfed6a19370b"
+    },
+    {
+      "bytes": 8368,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/functional-inference.tex",
+      "sha256": "24009e483fff0a4e6fb43d95be1d2b2276ae7224712cf7f1b12b4d51bddd1aab"
+    },
+    {
+      "bytes": 1461,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/manifest.json",
+      "sha256": "055e1b0a311879321a0323df2b788eae7bce40777e1ff3c8d79514992c5041a0"
+    },
+    {
+      "bytes": 3963,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/optimizer-primary.tex",
+      "sha256": "8ce7c9c6f5a68d998b087a3ac9c9035f92a2eb958e7ed9cad01110a072d87323"
+    },
+    {
+      "bytes": 43037,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/primary-summary.json",
+      "sha256": "02a01c8356a292abd6e417e951ded31c67d98c5e8651ae2413c5f744c99fc7f9"
+    },
+    {
+      "bytes": 5661845,
+      "path": "/tmp/dense-v3-primary-publication-anchored.zfIcOy/synthetic-evidence/tables.json",
+      "sha256": "c68485c73b233c6108664fa1bc668ea04bee664005f291889cc30761d64a57e7"
+    }
+  ],
+  "inputs": [
+    {
+      "bytes": 60904,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/all_task_scores.csv",
+      "sha256": "bbe374fee1953b85f70c515c6f797d5cd7aa5b3159413465c86ce2d2ea0cb363"
+    },
+    {
+      "bytes": 1584,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/primary_task_effects.csv",
+      "sha256": "8bd2672c9c4d08a8957c0aa4ec510e0e5e848ff18e38916a9e2f6de01d5c4aac"
+    },
+    {
+      "bytes": 809,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/primary_summary.csv",
+      "sha256": "3c70fea3bd80fb34301650b980ae77338d707c0e2fabea193d0ab3ec08f82ccd"
+    },
+    {
+      "bytes": 1412,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/secondary_task_effects.csv",
+      "sha256": "36a9ad86ef51df29c1cede9ee1782500a10e4e86c94c478c200e1d70d4342af6"
+    },
+    {
+      "bytes": 970,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/secondary_summary.csv",
+      "sha256": "e65617e81060d91b1e381fdbab80226598a32ba773126dbc5067460878e46310"
+    },
+    {
+      "bytes": 4261,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/run_stage_scores.csv",
+      "sha256": "f7550e08be588fe9a33cb968d44ddcd2a82b43565da00e63ddc74e0b0125bba9"
+    },
+    {
+      "bytes": 780,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/optimizer_stage_scores.csv",
+      "sha256": "71ec618952971a739269c54cc95da7b05eca5950ce24293a1fb1f662a01f53b0"
+    },
+    {
+      "bytes": 818,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/run_observed_auc.csv",
+      "sha256": "c49528e8c5a09f34dcc7dcedc7ecaef238d9f77138d5a6088bd1ea961ad85d27"
+    },
+    {
+      "bytes": 1911,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/validation_run_metrics.csv",
+      "sha256": "6d4f57688ecd87d28a01ecab7e0837cfffc9997f274f66f565a8232a5718d82f"
+    },
+    {
+      "bytes": 2219,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/system_metrics.csv",
+      "sha256": "746913d978f458c29c47481a5630c06685c29a6a8290c022c47062c4b3f76928"
+    },
+    {
+      "bytes": 27989,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/geometry/geometry/checkpoint_geometry.csv",
+      "sha256": "b94f6301b7243918514bf89e5ef1f6dfcc23bbe129ff4d67706ba4d182bb97bd"
+    },
+    {
+      "bytes": 97125,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/geometry/geometry/run_pair_subspace_overlap.csv",
+      "sha256": "fc7955108be0496ae3e67fdb0a6c91efb6396d683eb9d7fd12330f054becfda4"
+    },
+    {
+      "bytes": 4108,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/geometry/geometry/optimizer_pair_subspace_summary.csv",
+      "sha256": "5ba478d48be2fb0464854a69b29f3c095f1dcbce40e91a894abac87dce25778f"
+    },
+    {
+      "bytes": 1218786,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/geometry/geometry/subspace_health.csv",
+      "sha256": "8855b67e82c50512e9142a2522e557992d49ddf38c7e5e6d1f9f802dbe2a4682"
+    },
+    {
+      "bytes": 13970,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/bridge/bridge_rows.csv",
+      "sha256": "d655863fe484b3301bc1973344778ca1a49b52829980fc3361b02a2f7d722cbc"
+    },
+    {
+      "bytes": 40581,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/bridge/leave_dose_fold_metrics.csv",
+      "sha256": "30853414ea7389c56f45337e28f36e941e9ee99b41480b4f0f5902cb613681e9"
+    },
+    {
+      "bytes": 22117,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/bridge/feature_prediction_summary.csv",
+      "sha256": "ea69a49f3e8186b756a95d2db3ce9d1a4af9fb4abacfd90a1b1458788bf226b1"
+    },
+    {
+      "bytes": 3118,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/bridge/residual_associations.csv",
+      "sha256": "007836f4c576b9e9c546df332d0bfa1c260537f5ef5335ed759b1693046afbd4"
+    },
+    {
+      "bytes": 192651,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/bridge/held_out_predictions.csv",
+      "sha256": "513d5a6e44b8c2b2ff39d75c8c17487fbb252d6133ae46911db5a9a203f8033a"
+    },
+    {
+      "bytes": 1818,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/primary_contrasts.csv",
+      "sha256": "bbb9cffc5b033819fd4c1056135065d4f00499b5e3b9b19eeafbd6a694c6c518"
+    },
+    {
+      "bytes": 2743,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/rotation_contrasts.csv",
+      "sha256": "dd0248b160fffff5df65a1c5ebc8a3f24dd9799f26ab60b6220c79c907a68e3c"
+    },
+    {
+      "bytes": 6275,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/figure_points.csv",
+      "sha256": "a80db6346053c01bd855954fc9d4753c8951751f4d48034de1ae3969878cb643"
+    },
+    {
+      "bytes": 18723,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/bridge_rows.csv",
+      "sha256": "0405c57ae0099c5f475e78b0902d665d32d39c1d8639202a0edd0593def8f94e"
+    },
+    {
+      "bytes": 18915,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/leave_dose_fold_metrics.csv",
+      "sha256": "b9b0b2b27d4722be8b2497bb5ecca062d0df6ef1b238219efa2f3ebaec9a2908"
+    },
+    {
+      "bytes": 10672,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/feature_prediction_summary.csv",
+      "sha256": "c5ca615a978a7a4f07d16790479c52e06879a0456d06871e16a0374adacf30ed"
+    },
+    {
+      "bytes": 1462,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/residual_associations.csv",
+      "sha256": "faf20cd79bff9554607c49eca2a28130b815bce668963d70da4ffc085312b6c5"
+    },
+    {
+      "bytes": 88240,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/held_out_predictions.csv",
+      "sha256": "234426a078db4e098b4bd442b9ddedfdc3e8ee502a0c91a62ea1cdab61c484e6"
+    },
+    {
+      "bytes": 4855,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/optimizer_stage_metrics.csv",
+      "sha256": "c59243554288af05dd676c6167f3a964d940b18202c4850d6b486378a1afe8f4"
+    },
+    {
+      "bytes": 1408750,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/outcomes/outcomes/evidence.json",
+      "sha256": "fad455c939b3041d2cac9674b438214fd367c83393818cc093f196d6f5887500"
+    },
+    {
+      "bytes": 1680968,
+      "path": "/tmp/dense-v3-joint-cold.yR0bGv/cold-reconstruction/recomputed/inference/evidence.json",
+      "sha256": "29ceb58da3dc55945a72b6a3b449ec842ebcb90ec99d2e2cf7edcf58211ce924"
+    }
+  ],
+  "joint_acceptance": {
+    "path": "reports/engineering-archive/dense-v3-joint-reconstruction-v1/validation.json",
+    "sha256": "e6fd1dd99d14d8eec86937f63352a7e5b75083c4ef519d2b07fd56e8b8e85073"
+  },
+  "joint_first_audit": {
+    "path": "/tmp/dense-v3-joint-cold.yR0bGv/result.json",
+    "sha256": "9e1a06975185aa92b1e1114cef164f1df41637470a58f3a230055698d798fa77"
+  },
+  "manuscript_installed": false,
+  "passed": true,
+  "portable_primary_publication_verified": false,
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "previous_evidence_preserved_except_declared_functional_table_label": true,
+  "previous_result": {
+    "path": "/tmp/dense-v3-primary-publication-retry.qfy7oX/result.json",
+    "sha256": "ca672b515fa520aa132f5bab0faf826029e2684e2690426b11cb09c536fa2cde"
+  },
+  "same_process_generation_and_exact_readback_verified": true,
+  "scientific_completion": false,
+  "scope": "engineering_complete_primary_publication_generation_check",
+  "sources": [
+    {
+      "bytes": 1019,
+      "path": "/root/embedding-optimizer-story-refactor/configs/formal_runtime.json",
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    {
+      "bytes": 2162,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_bridge.py",
+      "sha256": "1831fb88d487071c9546a0eec90c19f9a801a174530d138327d05ae50090c51d"
+    },
+    {
+      "bytes": 2537,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_dimension_inference.py",
+      "sha256": "329a9910be55d23aa3f27a8dcbb82fa8f2545ad96a5a796a9d8d7e9380d327db"
+    },
+    {
+      "bytes": 2268,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_dimensions.py",
+      "sha256": "9355509de13c7b5d949981aee5df1abde41e4ef89cb18591d88f45f4877982c7"
+    },
+    {
+      "bytes": 2406,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_exact_bridge.py",
+      "sha256": "f1617a3b510913ccf3fd0e0d517e0da0a1e3f6ec8699b919c80819203db3889d"
+    },
+    {
+      "bytes": 1711,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_exact_geometry.py",
+      "sha256": "7dc43ef867f1029971af759ab63775f63457fc17460e2642becc123df0ebc00f"
+    },
+    {
+      "bytes": 2603,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_geometry.py",
+      "sha256": "3d3ba3b480c1c01ecdff40b6292f7011312eedb95f5b51f1a8579683e4adf97d"
+    },
+    {
+      "bytes": 1853,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_publication.py",
+      "sha256": "8216ddab10421c5946c723d89f24750b6a2f221f36185ba394c50a9be24c0bed"
+    },
+    {
+      "bytes": 7560,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/bridge_exact_arithmetic.py",
+      "sha256": "0d66ce6e99aa42b8d93c8295cb0f5f3015ea7b7907a9f10fb095d95be2d646b4"
+    },
+    {
+      "bytes": 8855,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/bridge_named_features.py",
+      "sha256": "c3106b8b118084b74b1fd9d3fffe6b25252de18ff3cd4ae5aef836c7ec7e564c"
+    },
+    {
+      "bytes": 10557,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/bridge_numerics.py",
+      "sha256": "ff6c5b5019673d105a6f87cc7241a7b65b7199c2b5ad2cdaf37c5e55c1364c2c"
+    },
+    {
+      "bytes": 7052,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 23632,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_geometry_summary.py",
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    {
+      "bytes": 1255,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_input_execution.py",
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    {
+      "bytes": 40493,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_publication.py",
+      "sha256": "fd69b84b2440ce5277f1952e42fda28fc22cf46f8451e68a2026f205207e82df"
+    },
+    {
+      "bytes": 26258,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_retrieval_bridge.py",
+      "sha256": "347331a3c35d12a95188c0927a327b06bd30dd4ffa11b161c432117b4299eb10"
+    },
+    {
+      "bytes": 12992,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_inference.py",
+      "sha256": "2ab97f49be1bc0fa57de12917da33553621d48193684848386ed0ab3e00c101c"
+    },
+    {
+      "bytes": 4963,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_inference_render.py",
+      "sha256": "ba227baa25fed40c05f1bcb1ae2fb8969822c9593d54182a332ffd65c7bdbc5b"
+    },
+    {
+      "bytes": 4831,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_intervention_io.py",
+      "sha256": "e2d3e4ea51857f99937692079c9923eca3da2d80e32d17e03a29d0f3cb33fb13"
+    },
+    {
+      "bytes": 8825,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_interventions.py",
+      "sha256": "3728c1cb6155ea3200173c5816098581a787a861ec3598b8a6b49640d37deee4"
+    },
+    {
+      "bytes": 45170,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_publication.py",
+      "sha256": "1120d125843789ef7a6aa32fff86d1845eddee16e7ff7d4e3410cd7d8e80761c"
+    },
+    {
+      "bytes": 30424,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_utilization.py",
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    {
+      "bytes": 11728,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/exact_bridge_measurements.py",
+      "sha256": "3060c7dd2a6b135b26d1ca76cd775dcbb33872b8fd2187868ff7d501bdbda50f"
+    },
+    {
+      "bytes": 25648,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/geometry.py",
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    {
+      "bytes": 7184,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/geometry_robustness.py",
+      "sha256": "8816dd6340154cee0375357276f1a872da40fee758dd634f984a08a1ad78b04b"
+    },
+    {
+      "bytes": 7263,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/gpu_lease.py",
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 28342,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_completion.py",
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    {
+      "bytes": 12568,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_contract.py",
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    {
+      "bytes": 11851,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_exact_geometry_kernels.py",
+      "sha256": "0f2263493a86b44f72ddb7b0564a1f9089f300a5767ffcb5d42eec90c001fed4"
+    },
+    {
+      "bytes": 7418,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_geometry_kernels.py",
+      "sha256": "8c26a9c78b7b10b36aacbbe3e7c52b0fae8ae4c0baed96299a5a11975e1f9e5f"
+    },
+    {
+      "bytes": 960,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_geometry_reductions.py",
+      "sha256": "8e47b5eaf10979692a764776bc9c3e6b380cbc0d6b3dfc825e39b88aaa5ee443"
+    },
+    {
+      "bytes": 10965,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_bridge.py",
+      "sha256": "bea3740f1bde59706b4309e7154a7de1dcc7ba8e3358688011fc4a523010878e"
+    },
+    {
+      "bytes": 9267,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_contract.py",
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    {
+      "bytes": 12569,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_dimension_contract.py",
+      "sha256": "f00c33e3c33a444ebc1b280264fb2d3e4976457f978ec7646e3da2579174b605"
+    },
+    {
+      "bytes": 12136,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_dimension_exports.py",
+      "sha256": "f3c7fefbb39ff3aa9ee89d6e134b71a8da7a850fb14e9924e0ec8ee2d36224da"
+    },
+    {
+      "bytes": 9441,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_dimension_inference.py",
+      "sha256": "6961a5754243dc11bcbcf1462869e791559ff72d79db2456f3b4036d692e7f4e"
+    },
+    {
+      "bytes": 9563,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_dimension_vector_io.py",
+      "sha256": "ea33869f8cf677ad0c15e8747b6d91045ba55a39301a8bf2c52f09bf642ed858"
+    },
+    {
+      "bytes": 9064,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_dimensions.py",
+      "sha256": "416ec0a8b787a54693886192cc8ae4b9c4d583960b8aef0cd27d85afb1f8e4c5"
+    },
+    {
+      "bytes": 12426,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_exact_bridge.py",
+      "sha256": "09fe7e4915d46806ab34bdc225c04ee579cfb2df115711b811538221c0adb140"
+    },
+    {
+      "bytes": 14434,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_exact_geometry.py",
+      "sha256": "8dd9ee230426664bfd87ab690dd4590dda35564f51960b283fbe1a46a10a0b31"
+    },
+    {
+      "bytes": 9666,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_exact_geometry_io.py",
+      "sha256": "53c5278380a95de3a706d803668ad4dac4f108763b05f981c4847b537f22e8f6"
+    },
+    {
+      "bytes": 14429,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_geometry.py",
+      "sha256": "e5bb4ed03f36193391a5f9f088bd0fe04e774ee67081cf0eb2d2d79a18488159"
+    },
+    {
+      "bytes": 11657,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_geometry_io.py",
+      "sha256": "3008e45e714fe6a599d77197e86c74db80c664f08155568369af95e308d16696"
+    },
+    {
+      "bytes": 18614,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcomes.py",
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    {
+      "bytes": 10453,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_publication.py",
+      "sha256": "c16e102c6ac8df22fd3e9a38dc81bf9d574e7628febabeda37e10f1b4c67e1a8"
+    },
+    {
+      "bytes": 4926,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_publication_bridge.py",
+      "sha256": "ae687d602b77421a25d25550c159fdb34f0e45a8364f35cd6378e0a2dc099ea4"
+    },
+    {
+      "bytes": 6375,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_publication_contract.py",
+      "sha256": "9e69f3ccbbe0f376da64136c993a31735ad9051e45b0c1560a884f2a1a0398a9"
+    },
+    {
+      "bytes": 3879,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_publication_render.py",
+      "sha256": "3cf00b88afc7cbaec8687ef1edd48a8d9d0e1f8cd93a4575f60aaa0992417891"
+    },
+    {
+      "bytes": 5230,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_publication_tables.py",
+      "sha256": "07da505f721646a34a9f0c9e998cd33e672e6db9756c44c143547a434e3798ad"
+    },
+    {
+      "bytes": 15105,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation.py",
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    {
+      "bytes": 11060,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py",
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    {
+      "bytes": 12687,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_weight_entries.py",
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    {
+      "bytes": 20602,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/probe_export.py",
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    {
+      "bytes": 13945,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/probes.py",
+      "sha256": "15a8212e3bf58820e0eaaf22aa8e5f4413d5e4d320036b8f29f761552dd70a8c"
+    },
+    {
+      "bytes": 6928,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/runtime.py",
+      "sha256": "6c6d143a0adb61f653bbe9e1143166670b8550e49104e41da5745c4c76d1f311"
+    },
+    {
+      "bytes": 8371,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-primary-publication-v1/probe_complete.py",
+      "sha256": "1e523b2b494cebfd0351f117e3745e3effabb961aee2b2cac114c2381ec6ff90"
+    }
+  ],
+  "synthetic_primary_admission_refusal": "Synthetic admission cannot supply primary publication",
+  "unchanged_live_core": [
+    {
+      "bytes": 16750,
+      "path": "src/embed_optim/train.py",
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    },
+    {
+      "bytes": 3805,
+      "path": "src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    {
+      "bytes": 11839,
+      "path": "src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 2117,
+      "path": "src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 7052,
+      "path": "src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 10641,
+      "path": "src/embed_optim/callbacks.py",
+      "sha256": "66e6f41fca67d5c31f0ec63fc391b55b9210741aa7f2579b6c2e2627706104a1"
+    }
+  ],
+  "unchanged_manuscript_source": {
+    "bytes": 24331,
+    "path": "paper/main.tex",
+    "sha256": "4d59c3219589204ec396d5b9d8c6269df1dfc89f29361ddf70ada26100dbbb2b"
+  },
+  "upstream_primary_admission_simulated": true
+}

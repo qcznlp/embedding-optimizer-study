@@ -1,0 +1,1801 @@
+{
+  "approximation_accuracy_pass_declared": false,
+  "artifacts": [
+    {
+      "bytes": 58181944,
+      "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/arrays.safetensors",
+      "sha256": "9453fad497ac958140e66bdd81241785a9a6f0eaa9b82f5664fbcfa033136f35"
+    },
+    {
+      "bytes": 628422,
+      "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/details.json",
+      "sha256": "9bb733c8bde23c594a1b48bdc0c9c17af172f8ac4d72d828987006ce1cf6d325"
+    },
+    {
+      "bytes": 628422,
+      "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-approximation_cases.json",
+      "sha256": "3f0b0afb42a155f248a20392c0199cfaf1985e4afef83ea95bfa60c1b82cd9e7"
+    },
+    {
+      "bytes": 58181944,
+      "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-arrays.safetensors",
+      "sha256": "c6dbdaca61557f5ed215c6b63c6f7ae7b4df439ff3a337913eb1bd06e69fa6ef"
+    },
+    {
+      "bytes": 628420,
+      "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-cross_optimizer_pair_comparisons.json",
+      "sha256": "5c219e81c5db1faba9c5e586874f7ad1c18159daef7982d6bfd456f986d5fc60"
+    },
+    {
+      "bytes": 628422,
+      "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-exact_cases.json",
+      "sha256": "66fbfd1b6d88fcfc8da23c127bb3bd7345d8776e517253b8f093f512e5ec79ea"
+    }
+  ],
+  "boundary": "Twelve inherited short diagnostic matrices only; exact numerical references and measured approximation sensitivity, not primary results, useful dimensions or a retrieval/causal explanation.",
+  "changed_cases": [
+    {
+      "case": "exact_cases",
+      "rehashed": {
+        "bytes": 628422,
+        "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-exact_cases.json",
+        "sha256": "66fbfd1b6d88fcfc8da23c127bb3bd7345d8776e517253b8f093f512e5ec79ea"
+      },
+      "rejected": true
+    },
+    {
+      "case": "approximation_cases",
+      "rehashed": {
+        "bytes": 628422,
+        "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-approximation_cases.json",
+        "sha256": "3f0b0afb42a155f248a20392c0199cfaf1985e4afef83ea95bfa60c1b82cd9e7"
+      },
+      "rejected": true
+    },
+    {
+      "case": "cross_optimizer_pair_comparisons",
+      "rehashed": {
+        "bytes": 628420,
+        "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-cross_optimizer_pair_comparisons.json",
+        "sha256": "5c219e81c5db1faba9c5e586874f7ad1c18159daef7982d6bfd456f986d5fc60"
+      },
+      "rejected": true
+    },
+    {
+      "case": "arrays",
+      "rehashed": {
+        "bytes": 58181944,
+        "path": "/tmp/dense-geometry-robustness-replay.E7a4yz/invalid-arrays.safetensors",
+        "sha256": "c6dbdaca61557f5ed215c6b63c6f7ae7b4df439ff3a337913eb1bd06e69fa6ef"
+      },
+      "rejected": true
+    }
+  ],
+  "counts": {
+    "approximation_cases": 156,
+    "cross_optimizer_pair_comparisons": 156,
+    "exact_cases": 12,
+    "same_matrix_seed_comparisons": 144
+  },
+  "formal_geometry_produced": false,
+  "fresh_numeric_replay_passed": true,
+  "gpu_workers": 0,
+  "inputs": [
+    {
+      "bytes": 15979,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_geometry_robustness.py",
+      "sha256": "f4f600296771c9f86efbcab1509652224fc491a8da467f66f420025a1ecfcb34"
+    },
+    {
+      "bytes": 15846,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_natural_data.py",
+      "sha256": "cddd19ba7da57781daa237492d80eae757fdca587fc7a6af0bafe0edf74eb896"
+    },
+    {
+      "bytes": 22383,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_v3_geometry.py",
+      "sha256": "3a9f677a1042af9303ae65f918971813f8f076e92ac7fa3dc8fcd5eb95da51db"
+    },
+    {
+      "bytes": 4787,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_geometry_robustness.py",
+      "sha256": "1e42f6b5fbac665ab6727a65fb0d7cfd77699444e14f3fa4e4e746fbcc7957dd"
+    },
+    {
+      "bytes": 2603,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/prepare_dense_v3_geometry.py",
+      "sha256": "3d3ba3b480c1c01ecdff40b6292f7011312eedb95f5b51f1a8579683e4adf97d"
+    },
+    {
+      "bytes": 7052,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 23632,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/corrected_geometry_summary.py",
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    {
+      "bytes": 25648,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/geometry.py",
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    {
+      "bytes": 7184,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/geometry_robustness.py",
+      "sha256": "8816dd6340154cee0375357276f1a872da40fee758dd634f984a08a1ad78b04b"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 28342,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_completion.py",
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    {
+      "bytes": 12568,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_contract.py",
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    {
+      "bytes": 7418,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_geometry_kernels.py",
+      "sha256": "8c26a9c78b7b10b36aacbbe3e7c52b0fae8ae4c0baed96299a5a11975e1f9e5f"
+    },
+    {
+      "bytes": 960,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_geometry_reductions.py",
+      "sha256": "8e47b5eaf10979692a764776bc9c3e6b380cbc0d6b3dfc825e39b88aaa5ee443"
+    },
+    {
+      "bytes": 9267,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_contract.py",
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    {
+      "bytes": 14429,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_geometry.py",
+      "sha256": "e5bb4ed03f36193391a5f9f088bd0fe04e774ee67081cf0eb2d2d79a18488159"
+    },
+    {
+      "bytes": 11657,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_geometry_io.py",
+      "sha256": "3008e45e714fe6a599d77197e86c74db80c664f08155568369af95e308d16696"
+    },
+    {
+      "bytes": 18614,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_outcomes.py",
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    {
+      "bytes": 11060,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_validation_io.py",
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    {
+      "bytes": 12687,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_weight_entries.py",
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    {
+      "bytes": 8806,
+      "path": "/root/embedding-optimizer-story-refactor/tests/test_geometry_robustness.py",
+      "sha256": "71f6f45d57b46a70f9c3a53136edeb4d66204428dde267d382325a56f2df7bd5"
+    },
+    {
+      "bytes": 1226333,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-geometry-chain-v1/rehearsal-v2.json",
+      "sha256": "0bd4d9290fd672229ee2d3a5cd4c891854c3e951fc47286bf8e8424190c5c665"
+    },
+    {
+      "bytes": 238730,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-geometry-chain-v1/validation.json",
+      "sha256": "053866a23b34d7323cbfe7d97ceb0d9ae3f1473227ae01cf1fa0b83b32c39226"
+    },
+    {
+      "bytes": 8987,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_geometry_protocol_v2.json",
+      "sha256": "9b6dad688072c08e8994e45f80c897a7889ab5fbcbccab27b643944c85ae625b"
+    },
+    {
+      "bytes": 7660,
+      "path": "/root/embedding-optimizer-story-refactor/configs/dense_geometry_robustness_protocol.json",
+      "sha256": "e950a43ddf2f947d2e52993fd563e36fa2cffc7897ec00f71e25a051ea71da4b"
+    },
+    {
+      "bytes": 164821,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/result.json",
+      "sha256": "bf6e893e3b9e244242871227e28a3729acc17477dd3c989f7c647308bf332d36"
+    },
+    {
+      "bytes": 1614992,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/dataset/data-00000-of-00001.arrow",
+      "sha256": "d0f67d1f3e87ef7a1e3ddede7db650b36f6adefb03e9ba4874f510f1afadb36d"
+    },
+    {
+      "bytes": 1664,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/dataset/dataset_info.json",
+      "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+    },
+    {
+      "bytes": 247,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/dataset/state.json",
+      "sha256": "a860705de7e924e6cbaa52f6a772bd259b85afc126b891e3d019d8b98d2965ed"
+    },
+    {
+      "bytes": 1016,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/launcher.json",
+      "sha256": "096f4a9f672387bbecd28451fb8279215e58d637e13e2a1abab1c5650e18b516"
+    },
+    {
+      "bytes": 317,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/launcher.log",
+      "sha256": "fd77b15321a8a152e069054f55d7ed890fdabfabef85a85603af657f90929c66"
+    },
+    {
+      "bytes": 348,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/lease.json",
+      "sha256": "d482e452a0c0c0aa180cdb09d25e974e3f6c984d60b18c5dd6e9e7a1083237a7"
+    },
+    {
+      "bytes": 57196,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/prepared.json",
+      "sha256": "1a196d51408d0d09de44143f457356f5e7ecd5331a523aee9281ff9739cc62e7"
+    },
+    {
+      "bytes": 6846,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/0/stderr.log",
+      "sha256": "de8833f32b0079921d95992330710bfc5c6ba89b5f75368589c8715c1bb177fe"
+    },
+    {
+      "bytes": 1468,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/0/stdout.log",
+      "sha256": "78f893059a1f7aed679e5a1190234c6372aa0ac4948d30f1ec111f5bf022d7f5"
+    },
+    {
+      "bytes": 2433,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/1/stderr.log",
+      "sha256": "b8b1ebdd5d998556dd76443d94f6f1cc2a8de272b134f3870069e0b528a9129f"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/1/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2433,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/2/stderr.log",
+      "sha256": "746f4217b8bd60e6fe586ee1e2ab3bcbe199593a2e2b7389d96524265f5518a9"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/2/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 2433,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/3/stderr.log",
+      "sha256": "1ee870d91620af07d18bbeb8933867ce849e8e9ef5b901ddd13b66ec7447cfca"
+    },
+    {
+      "bytes": 0,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/rank-logs/e3b9b29d-937e-47dc-b73b-e3297bb18c7a_8sbt2kkg/attempt_0/3/stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 866,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/accepted_timing.json",
+      "sha256": "3fa71470888436f712079bac806c00400ace03f44a99e8287379a070b1d1c272"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70227,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/README.md",
+      "sha256": "85d1329f4ba5c298bba8b91d6a3f414f45b882d9c0ef1a2bb9678aabbb74e8c6"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3060,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/dense_checkpoint_seal.json",
+      "sha256": "fe91c855f9df6f7e87c3c7b656148263363e96d9d4856b8141742b6c05914804"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/dense_numerical_contract.json",
+      "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 1192229323,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/optimizer.pt",
+      "sha256": "e4c26959608a7638d86baef929da65b8de94e6668935bd67fa18d7c1a7e3a463"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/scheduler.pt",
+      "sha256": "23d33cd9dab8d2cc5658362e95ebb9f51d07afb571457a881a076fca77631908"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/trainer_state.json",
+      "sha256": "7edff4031cf8eb858765492dada0cc36f986df77b497ab7c5e8671e352c841ee"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-1/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70228,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/README.md",
+      "sha256": "fb2384ccf78da9af7272d3d923f5f49edc0da8dd23694100e6ff717f73113d48"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3060,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/dense_checkpoint_seal.json",
+      "sha256": "f82e9c8a919777b023a1b19e671a467c8a419966b02dc19c70503e9342e220f6"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/dense_numerical_contract.json",
+      "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/model.safetensors",
+      "sha256": "784cbbfbe9438a7c43968e0010d3076967b824621249c3960ad1fda8b8b73812"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 1192229323,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/optimizer.pt",
+      "sha256": "9a5e541eeb8a3f4c51efcf9d5812be329a70f111aa3b6bd4c0c59a7bde323d9a"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/scheduler.pt",
+      "sha256": "41ea0d9ed050da2d083d54e2253da60c2428236e3d01cb1a413d19b71cdb5c59"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/trainer_state.json",
+      "sha256": "fd49dd2af08ad6777922ff035e2cc59cf39b6e3edde203376660efeaa6ca4e82"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-2/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70228,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/README.md",
+      "sha256": "2b083d7592a6b1f45cb5f2d336add27d9266d317547af061dc5f53ddf8ae805f"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3060,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "c7c1eef0dba2fdf24ddd2cd63b5cd532aaa7955a30399e91aa5b06dc1d650493"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "83ea0b7d796ac8fb3e92a9b200efcab130eb0bf104ff9b6ec534c865929b97e0"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/model.safetensors",
+      "sha256": "e926322f61461ac2bc06bfb1a6bb26e638554d368dec47076ce0295524a6772d"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 1192229323,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/optimizer.pt",
+      "sha256": "58b03e9bdf683bf79dcb9570c37dc3540a58e22c20b6cd461b530c5cdfb3a57f"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/scheduler.pt",
+      "sha256": "32f2e59210c8e3f86e304a5ce3f92312df3884573302af269d12c6ee366d6682"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint-3/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 137,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/checkpoint_schedule.json",
+      "sha256": "f76ba35b5e88dec855f2f2e81e93b9b6bd196f08d91a703fc29c5347e3a25abe"
+    },
+    {
+      "bytes": 2938,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/completed.json",
+      "sha256": "93b6ea15d0655a2708acec28a165d3fd8a8336b9630e3290a556883248ff6ded"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70228,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/README.md",
+      "sha256": "77f50edbd7fca8f084e6dce68e7b52c45a474f5ff3418bad6fca95f0a525b6d1"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 8308,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/dense_run_contract.json",
+      "sha256": "af323e66cc83f9911099978e3d41688fa040eb7a7352a0fb510bd9f6155e0a70"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/model.safetensors",
+      "sha256": "e926322f61461ac2bc06bfb1a6bb26e638554d368dec47076ce0295524a6772d"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/final/training_args.bin",
+      "sha256": "befe875eec32f73fdd3d3f23f78c52ad4aae44d272c1813cad8e190df0c367d7"
+    },
+    {
+      "bytes": 1184,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/run_config.json",
+      "sha256": "eb2c2d872e297a9b68c6c8c70d192cce92dbda7c75e3bf322b587005aa45e2aa"
+    },
+    {
+      "bytes": 1140,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-adamw/trainer_state_final.json",
+      "sha256": "5cbe42b88d2ca186b8a79962f6ac2851fd4beed4279ebb6c1dad4e018b9be85a"
+    },
+    {
+      "bytes": 868,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/accepted_timing.json",
+      "sha256": "032a117c54334720544dcead1664fcb21fec275dc7299a431ae20c8de2822b2d"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70229,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/README.md",
+      "sha256": "08e9b728b7827933943708c92cbadc56d32c8a63de5aaff8804bf2744301770d"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/dense_checkpoint_seal.json",
+      "sha256": "dfa0646667632106de2036dfeab7f757a96288d1911734a842cb95af129a3d4e"
+    },
+    {
+      "bytes": 1156,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/dense_numerical_contract.json",
+      "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 750992651,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/optimizer.pt",
+      "sha256": "09c439dfecb60544de6ddf3f99db0e462b847243032d3dcea9c2d493a32f4487"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/scheduler.pt",
+      "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/trainer_state.json",
+      "sha256": "7edff4031cf8eb858765492dada0cc36f986df77b497ab7c5e8671e352c841ee"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-1/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/README.md",
+      "sha256": "15786dfc9fd819e5284119121a308712ebdcf7d7a50622d267a2a5c0e49343fe"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/dense_checkpoint_seal.json",
+      "sha256": "49a0ed07ce760f05227a0f5fcf0a662451608ace0439b81e1a03688ef5ab9575"
+    },
+    {
+      "bytes": 1156,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/dense_numerical_contract.json",
+      "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/model.safetensors",
+      "sha256": "f2fa1f1130ffe988137e43c3e421291ce0d97eafcd84deca9daf0c56b529cba7"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 750992651,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/optimizer.pt",
+      "sha256": "5587743dae643f7885e1a753d85f955df88e310df97b63c39c5b2d1c0ac45cb9"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/scheduler.pt",
+      "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/trainer_state.json",
+      "sha256": "fd49dd2af08ad6777922ff035e2cc59cf39b6e3edde203376660efeaa6ca4e82"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-2/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/README.md",
+      "sha256": "4f891e5fee201a7099b127117e976215f6acbe6ca90cc61a5df1ab7655dea58c"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "9b1fce9ddf307816ef1e11c814c7f5052e250895499b5e0fa31aa318e312b5d4"
+    },
+    {
+      "bytes": 1156,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "f79e2d89f170a38ad7a0cad53506239b6077f002ebb2d7e080b60de1654b1bae"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/model.safetensors",
+      "sha256": "0a130f30db62b1f8dfe12548da1dc9e49f531e4039f888303772f69950a1ef95"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 750992651,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/optimizer.pt",
+      "sha256": "e76fa485ef764d70a9b7f67458b2c0c2843a841b7e8db0ac848d5c90b9ccde88"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/scheduler.pt",
+      "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint-3/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 137,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/checkpoint_schedule.json",
+      "sha256": "f76ba35b5e88dec855f2f2e81e93b9b6bd196f08d91a703fc29c5347e3a25abe"
+    },
+    {
+      "bytes": 3004,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/completed.json",
+      "sha256": "b8532072607c040d105e259b1af5332bd014265f7ce2de184452817c0007e934"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/README.md",
+      "sha256": "d78ca39248ee8dd5ff9c8e276caa3adf599a035795a3b3c5459be4bcd204d717"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 8374,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/dense_run_contract.json",
+      "sha256": "7e402facf7c65890f125b19bf33f04b61227d2b298c3ae167d9ef99e9acfddfe"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/model.safetensors",
+      "sha256": "0a130f30db62b1f8dfe12548da1dc9e49f531e4039f888303772f69950a1ef95"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/final/training_args.bin",
+      "sha256": "b9aee974523b20e8a371408a6ae0d93868a5baebb4114ed985351f71472de450"
+    },
+    {
+      "bytes": 1231,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/run_config.json",
+      "sha256": "a82ffd03c709dbb17979129687e0fd92539dfb307563a8d229102739ec57e806"
+    },
+    {
+      "bytes": 1141,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-muon/trainer_state_final.json",
+      "sha256": "aad4892c3c66d4fcddcf178c49fb3d3e6b6945a3c6707fbfc5836ca3322fdb4d"
+    },
+    {
+      "bytes": 868,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/accepted_timing.json",
+      "sha256": "bed8821dc533da3f252b873d2f8083a7a20562901e22420bead9cf452b4f3139"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70229,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/README.md",
+      "sha256": "08e9b728b7827933943708c92cbadc56d32c8a63de5aaff8804bf2744301770d"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/dense_checkpoint_seal.json",
+      "sha256": "8095eb1b766666b0e47853cb7e6ec2c911ab11a78936828041525aa7e645cb8a"
+    },
+    {
+      "bytes": 1205,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/dense_numerical_contract.json",
+      "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 751558603,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/optimizer.pt",
+      "sha256": "2c098a378bb70ea4020a924a4dbeb4aef0793d078858ba50edaa9ab34eed2ba4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/scheduler.pt",
+      "sha256": "bdfbfbaa2bde3c50a5fbc33209c6cdc05974aa64e9113adc0a9dd57af715360f"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/trainer_state.json",
+      "sha256": "7edff4031cf8eb858765492dada0cc36f986df77b497ab7c5e8671e352c841ee"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-1/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/README.md",
+      "sha256": "8a96f3433374965a25108c5798c55623edf8a38b70165d3a42d768ff49c519cb"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/dense_checkpoint_seal.json",
+      "sha256": "6ba6933a53cba0ed99810392f3add3f600155e2504d71981c5c4be434e61b5a1"
+    },
+    {
+      "bytes": 1205,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/dense_numerical_contract.json",
+      "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/model.safetensors",
+      "sha256": "90e49f360e79d1bcc8a0e202552e102eb03c0568d5c1d489858b65d9ce8e5685"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 751558603,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/optimizer.pt",
+      "sha256": "8f22f24773606cfd145755fa1b63c749740343d7022f39f2fdbfac0043a6a17c"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/scheduler.pt",
+      "sha256": "8271dd72f5dacbfd6d248c58fc191c64ea30ddc10aa3aa72b8120787795ab2af"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 930,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/trainer_state.json",
+      "sha256": "fd49dd2af08ad6777922ff035e2cc59cf39b6e3edde203376660efeaa6ca4e82"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-2/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/README.md",
+      "sha256": "df6a4709b6c75b252532e8e183671c203edc009ba5747819156c9be776a3a422"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 3059,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_checkpoint_seal.json",
+      "sha256": "c4084c766bb2a3e080ef8957ff1b9abf6245627ef186c3ac7bb63e0bf960fc70"
+    },
+    {
+      "bytes": 1205,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_numerical_contract.json",
+      "sha256": "3a59fbd870c7c401d711664882a07b6eeefbc064e91abd46b0bf313a9f0618f9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/model.safetensors",
+      "sha256": "98a4cb1c5b6b90a877794090eadbae7fd3bb1ac812464a7a52783440432ea8fc"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 751558603,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/optimizer.pt",
+      "sha256": "018fbad2e60b910184736ad1c34d3f04bf302f07a926ed76a35c3ebe53cf9a1a"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_0.pth",
+      "sha256": "260b7a6cbe44a11aea72ec4be507e9c268ef4ae83dbf73d74e91be7dc26b0743"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_1.pth",
+      "sha256": "5312d58404c5dffa1a8d41cbf32e21fabd040b6e4992cc3fc3c0406b28a349f4"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_2.pth",
+      "sha256": "6d6786f04704acad965916f561c584e5edc05f9b7b046d3a1acf29c9b8bb3461"
+    },
+    {
+      "bytes": 15365,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/rng_state_3.pth",
+      "sha256": "4575e713398913345c9b9b31a55bc5b86b36ea553f5afaca465780322732494f"
+    },
+    {
+      "bytes": 1465,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/scheduler.pt",
+      "sha256": "18f56fbb410b9c2ca81a3caf4157f3d9d73c34cdd38c887dce882a86b43923fc"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 914,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/trainer_state.json",
+      "sha256": "b93bbf37b3328ade739847dede843e98d93ebbf96bf252b4bfce78dfd7c06b8a"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint-3/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 137,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/checkpoint_schedule.json",
+      "sha256": "f76ba35b5e88dec855f2f2e81e93b9b6bd196f08d91a703fc29c5347e3a25abe"
+    },
+    {
+      "bytes": 3069,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/completed.json",
+      "sha256": "1dc7c7fbd17045d29374e3a1dde1c7d622b10eaf7879c89a6ea16e9b1bb26ef2"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 89,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/1_Pooling/config.json",
+      "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc"
+    },
+    {
+      "bytes": 70230,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/README.md",
+      "sha256": "28ea2b80deb83116c515ab12df11a0aba022b9f073a92f4d20a95094de1531cf"
+    },
+    {
+      "bytes": 1951,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/config.json",
+      "sha256": "9ee732c44da25831f20b0dde595d9862ec6d49c8948da336fbd385ae1e01fb08"
+    },
+    {
+      "bytes": 299,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/config_sentence_transformers.json",
+      "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9"
+    },
+    {
+      "bytes": 8442,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/dense_run_contract.json",
+      "sha256": "454c401e70ef776ba95a4a9658212961552b6df0e6c50e142f34411c82c0d3ba"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/model.safetensors",
+      "sha256": "98a4cb1c5b6b90a877794090eadbae7fd3bb1ac812464a7a52783440432ea8fc"
+    },
+    {
+      "bytes": 277,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/modules.json",
+      "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645"
+    },
+    {
+      "bytes": 241,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/sentence_bert_config.json",
+      "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8"
+    },
+    {
+      "bytes": 3583486,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/tokenizer.json",
+      "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d"
+    },
+    {
+      "bytes": 542,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/tokenizer_config.json",
+      "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff"
+    },
+    {
+      "bytes": 5649,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/final/training_args.bin",
+      "sha256": "3c94685b5205c927af7f3a01af4b360773da2a653ad68df06deddd87ab2ab3b9"
+    },
+    {
+      "bytes": 1250,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/run_config.json",
+      "sha256": "31350580d3bdf95c657105ea68ca98ac6201dacf243ae854bba5c1b636572c40"
+    },
+    {
+      "bytes": 1141,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/runs/dense/diagnostic-natural-normuon/trainer_state_final.json",
+      "sha256": "e370d718b1c7ce83555ae5ad1b133174e234afdf2d615a0029e071d3f33a35c5"
+    },
+    {
+      "bytes": 25480,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/selection.json",
+      "sha256": "6bf9c8e2d5462a6a40ed763420e45fc1037f089fdb10495de4a57acf80b21557"
+    },
+    {
+      "bytes": 54338,
+      "path": "/tmp/dense-natural-readiness.a4xZzR/worker-result.json",
+      "sha256": "66432199da62e1c63e5c3a4b0932ab13a6134d7636778ab99424da8df3de33af"
+    },
+    {
+      "bytes": 1519,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/.gitattributes",
+      "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
+    },
+    {
+      "bytes": 312,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/1_Pooling/config.json",
+      "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+    },
+    {
+      "bytes": 15737,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/README.md",
+      "sha256": "27105b9f0e7c4e843a3156bb4cbd527d221256aaabdbe1a452b3afc20a664d7c"
+    },
+    {
+      "bytes": 1208,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/config.json",
+      "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+    },
+    {
+      "bytes": 300,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/config_sentence_transformers.json",
+      "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/model.safetensors",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 229,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/modules.json",
+      "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+    },
+    {
+      "bytes": 57,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/sentence_bert_config.json",
+      "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+    },
+    {
+      "bytes": 694,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/special_tokens_map.json",
+      "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+    },
+    {
+      "bytes": 3583485,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/tokenizer.json",
+      "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+    },
+    {
+      "bytes": 21030,
+      "path": "/tmp/dense-weight-entry-reference.Um8TxW/tokenizer_config.json",
+      "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+    },
+    {
+      "bytes": 4457,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/checkpoint_geometry.csv",
+      "sha256": "ffd907b63cf93d551a7df0be0c59f5be507db4a031639a378a8b6e3cb2debba2"
+    },
+    {
+      "bytes": 11398,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/full-spectrum-controls.json",
+      "sha256": "58ab5529ede841ba57149968298b77e89c3c0b500e9658b54a20f74e05590f66"
+    },
+    {
+      "bytes": 8858,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-best_rate.json",
+      "sha256": "86805aa12f1a84bf326d6e5345eff3f8775d16a7a6c1f7664d4418ffb2587ead"
+    },
+    {
+      "bytes": 8807,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-drop_nonzero_rank.json",
+      "sha256": "5b410b5a46dc82c7bbc5844dff07237851c658b3e911783c81fa85ce67c88df3"
+    },
+    {
+      "bytes": 8987,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-primary.json",
+      "sha256": "70c3b64f0a87233d37800bb7bffcc0928a37ead4ba8c70a7b012312359da3315"
+    },
+    {
+      "bytes": 8986,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-rank.json",
+      "sha256": "60de1c6193ff747f0917ac2535bf3891333953f8d4a9311da9009acf61d71aef"
+    },
+    {
+      "bytes": 8986,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-release.json",
+      "sha256": "addd6e0079d0702e1e2705db7c343d9b0e1b7c969fecc4879fc9a2e60ffc4ff9"
+    },
+    {
+      "bytes": 8981,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-seed.json",
+      "sha256": "a1dc54b697d28f53e381f59df92554e35114f05627f64bb0bcb4a68d10ad3a04"
+    },
+    {
+      "bytes": 6599,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-sources.json",
+      "sha256": "22a84df2613eb8f12558585b3c00a65c39f99d1b4dba4d75a0b5d14140fd8b9d"
+    },
+    {
+      "bytes": 8881,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/invalid-zero_imputation.json",
+      "sha256": "7fbb7d4e0d43b05f53864f0e0558bfeb1b2686b82033bf85eec828a4c33341e8"
+    },
+    {
+      "bytes": 4472,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-adamw-rank64/manifest.json",
+      "sha256": "f9abb0ff7d5cd86ba26be38687a0b220cd0979d192b5f4afd6394155b59ec711"
+    },
+    {
+      "bytes": 120533,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-adamw-rank64/records/checkpoint-1.jsonl",
+      "sha256": "ea581d341d1a8cab307dd6d325110f3ba65b468ba0ff76ae8ab9a339b5e8026f"
+    },
+    {
+      "bytes": 216874,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-adamw-rank64/records/checkpoint-2.jsonl",
+      "sha256": "4b0c657d29db56115c485d768283c6af4f8f82f0f71b48f2862dbebcbfc33718"
+    },
+    {
+      "bytes": 217000,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-adamw-rank64/records/checkpoint-3.jsonl",
+      "sha256": "ad3849fb2e4f08d0c867a49b89bac838053512129cf024775dbaea56c4da2669"
+    },
+    {
+      "bytes": 4511,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-muon-rank64/manifest.json",
+      "sha256": "733916e8926e23f02bce9218abf88a39dd2e3e46614f835c6eba28ab2b20fba6"
+    },
+    {
+      "bytes": 120533,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-muon-rank64/records/checkpoint-1.jsonl",
+      "sha256": "ea581d341d1a8cab307dd6d325110f3ba65b468ba0ff76ae8ab9a339b5e8026f"
+    },
+    {
+      "bytes": 217080,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-muon-rank64/records/checkpoint-2.jsonl",
+      "sha256": "5bff51ef5e93dd82f995f11f17542abbad3b9e0814ac6dbb0468ee3544b3332c"
+    },
+    {
+      "bytes": 217235,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-muon-rank64/records/checkpoint-3.jsonl",
+      "sha256": "860fa8b1dd994f0c2a6fe529239b03c39dba4901de0ea9501d921647ea0a16f4"
+    },
+    {
+      "bytes": 4560,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-normuon-rank64/manifest.json",
+      "sha256": "efbbf3a886001802bc04cb3bc74df5d7d50b0eebf556a336b905210caff1e1d1"
+    },
+    {
+      "bytes": 120533,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-normuon-rank64/records/checkpoint-1.jsonl",
+      "sha256": "ea581d341d1a8cab307dd6d325110f3ba65b468ba0ff76ae8ab9a339b5e8026f"
+    },
+    {
+      "bytes": 217342,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-normuon-rank64/records/checkpoint-2.jsonl",
+      "sha256": "cdacb230d15d2f425ec54a6330cbe495fb902be4b3d0869fddc6389c25f76311"
+    },
+    {
+      "bytes": 217387,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/legacy/dense/diagnostic-natural-normuon-rank64/records/checkpoint-3.jsonl",
+      "sha256": "1bc00f753832cd7dea44360058a37583d9e19b7ffb280e45b3e7bc6e8de5678a"
+    },
+    {
+      "bytes": 1309,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/optimizer_pair_subspace_summary.csv",
+      "sha256": "ee97d686b36e26d1694ab1157e50a9bf75b270c6649999d7ae0029e757064ade"
+    },
+    {
+      "bytes": 3310,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/run_pair_subspace_overlap.csv",
+      "sha256": "3e097dff9fc083ae01df97c7f72c8d3783444699a0b862672f8f3095d440186e"
+    },
+    {
+      "bytes": 168,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-adamw/checkpoint-1-bases.safetensors",
+      "sha256": "40c9a4d619931b9802c6bc7a1303a35fb5d743ec5f24484434ce0e9523cdbd60"
+    },
+    {
+      "bytes": 282138,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-adamw/checkpoint-1.json",
+      "sha256": "783e14e0b85873dbf3ea5b859f09747965b2386cef8d4edc49eba058fe4b7f79"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-adamw/checkpoint-2-bases.safetensors",
+      "sha256": "882c09d2817393298b0c308f85a26da09785e0c31f28e81ccd0af132c3d96be9"
+    },
+    {
+      "bytes": 414724,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-adamw/checkpoint-2.json",
+      "sha256": "d7165521225a6788a5d377848d310781897a2a35b740c08a9da5f81c83bfd544"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-adamw/checkpoint-3-bases.safetensors",
+      "sha256": "1ada03e48405fa88da38857f966cdd7bce876ca16c1f7ca7915c7a4fdee411c5"
+    },
+    {
+      "bytes": 414845,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-adamw/checkpoint-3.json",
+      "sha256": "aaab6ba965c9f2cdfee43be5129728ade9855efef9a3162e483a23b5a9497e4b"
+    },
+    {
+      "bytes": 33313,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-adamw/manifest.json",
+      "sha256": "1e7bcc2780f99de6abb330ce97459f46fdf096962d21939e7a51d61eeda93f9d"
+    },
+    {
+      "bytes": 168,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-muon/checkpoint-1-bases.safetensors",
+      "sha256": "4695476da849b547976e9ca834f9de2630d03ce8b5c03f9bda9d398a18ce6bf3"
+    },
+    {
+      "bytes": 281961,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-muon/checkpoint-1.json",
+      "sha256": "1f0425a6ed24278cbc4e2045d84841055675bd1626240ad14fd1cbfd5697c49e"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-muon/checkpoint-2-bases.safetensors",
+      "sha256": "0c6fc263305dd3367e72d51c83fc2606300e75108941b8c2471af16ed43bf225"
+    },
+    {
+      "bytes": 415307,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-muon/checkpoint-2.json",
+      "sha256": "1b3aa6a8fccffe876f382cc0e1fab06ca0b8643e1222bd728cd01a094cf2f6ef"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-muon/checkpoint-3-bases.safetensors",
+      "sha256": "b2ecd329dfd176a1264242c63bd79cbf00b272203676f86a16db5c9159d317f1"
+    },
+    {
+      "bytes": 415493,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-muon/checkpoint-3.json",
+      "sha256": "ecb526f3ce6533e5ecf5c74e4d936630e7072737fdd40fa7c74a635779b43225"
+    },
+    {
+      "bytes": 33361,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-muon/manifest.json",
+      "sha256": "46b3911d2aa454bbca83edda8097273f2459931380b499e177399536db721dc4"
+    },
+    {
+      "bytes": 168,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-normuon/checkpoint-1-bases.safetensors",
+      "sha256": "0fe229584d40e4ab2a9c07554fe6c74b0378fe47db6684e0b0f60093efd48d3d"
+    },
+    {
+      "bytes": 282495,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-normuon/checkpoint-1.json",
+      "sha256": "f7ecfbd1d279f9ba5438c45667fe7c09394106369371c3c4de2316f9feeb2042"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-normuon/checkpoint-2-bases.safetensors",
+      "sha256": "9a9464e3223251ac55f556310fba63a2a510befa93d850d78fdac193001d6b97"
+    },
+    {
+      "bytes": 416035,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-normuon/checkpoint-2.json",
+      "sha256": "3c8108df8bb7db4bc87064fa8a0c5a88a7e85b95ba630ca77053f50375b72b13"
+    },
+    {
+      "bytes": 27073928,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-normuon/checkpoint-3-bases.safetensors",
+      "sha256": "19b2a8997214fe35ef1954a714970df420b8aa6759ae17ee2f4c4b0e781b3e84"
+    },
+    {
+      "bytes": 416089,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-normuon/checkpoint-3.json",
+      "sha256": "fc5fa7edf7083e12eb6739cfc301677f1cc169f1c9452784f65c473d4b474517"
+    },
+    {
+      "bytes": 33380,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/runs/diagnostic-natural-normuon/manifest.json",
+      "sha256": "a2bbf9cf61f14dbd64de2f1c07f832a4a7ea04c3bafe373abbd8ac637d62c4bc"
+    },
+    {
+      "bytes": 263254,
+      "path": "/tmp/dense-v3-geometry-retry.Pysj3k/subspace_health.csv",
+      "sha256": "6c72e6c3070d69b7ff7192c243ed43cc504c195d68e3697ffabf4157f5d1e1ef"
+    }
+  ],
+  "model_updates": 0,
+  "numerical_controls_passed": true,
+  "observed_at_utc": "2026-09-06T20:25:05.981791+00:00",
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "primary_features_changed": false,
+  "protocol": {
+    "bytes": 7660,
+    "path": "/root/embedding-optimizer-story-refactor/configs/dense_geometry_robustness_protocol.json",
+    "sha256": "e950a43ddf2f947d2e52993fd563e36fa2cffc7897ec00f71e25a051ea71da4b"
+  },
+  "replay_parent": {
+    "bytes": 78744,
+    "path": "/tmp/dense-geometry-robustness.DNQw2T/result.json",
+    "sha256": "ca916d9169d2398bc20e2db1d1393b162671850315930d975d313d1c2d49960c"
+  },
+  "runtime": {
+    "numpy": "2.5.2",
+    "python": "3.12.3",
+    "torch": "2.9.1+cu129",
+    "torch_cpu_threads": 4
+  },
+  "scientific_completion": false,
+  "scope": "engineering_dense_geometry_robustness"
+}

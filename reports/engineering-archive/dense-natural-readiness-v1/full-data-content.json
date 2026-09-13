@@ -1,0 +1,384 @@
+{
+  "actual_materialized_id_linkage": {
+    "every_materialized_id_matches_manifest": true,
+    "mismatch_count": 0,
+    "mismatches": [],
+    "rows_compared": 500000,
+    "source_counts": {
+      "fever": 52489,
+      "fiqa": 2629,
+      "hotpotqa": 40630,
+      "msmarco": 240405,
+      "nq": 72725,
+      "squadv2": 62244,
+      "trivia": 28878
+    }
+  },
+  "all_nine_texts_nonempty": false,
+  "audit_execution_complete": true,
+  "authenticated_inputs_unchanged": [
+    {
+      "bytes": 116863680,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00000-of-00014.arrow",
+      "sha256": "c632e7c6cbf532430844480479e4a397ccb8baa3552fe3f53e18f180a362c073"
+    },
+    {
+      "bytes": 105370976,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00001-of-00014.arrow",
+      "sha256": "c3ff8aef624bb947c250603603b14c2dff76cd9ba7eade8af21bea81176c2c66"
+    },
+    {
+      "bytes": 105476080,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00002-of-00014.arrow",
+      "sha256": "7348990ffc5d5bd35b8eea7a08015d542da88a919f8d2a48b260f0000318f2eb"
+    },
+    {
+      "bytes": 105505264,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00003-of-00014.arrow",
+      "sha256": "f8fa58b66df959f9a14f213c7fd8d9e484b197b709e78d0875ce30f8e4c12ffb"
+    },
+    {
+      "bytes": 105263512,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00004-of-00014.arrow",
+      "sha256": "bb4b8219c0d6deed4aa1422cd785f38428e0bcd6eebbed3eb2bf116842466a31"
+    },
+    {
+      "bytes": 105418072,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00005-of-00014.arrow",
+      "sha256": "db3daf00c744c97e60b51df356c675506ad929339c1a591f10a99a7c7fe6a845"
+    },
+    {
+      "bytes": 105461592,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00006-of-00014.arrow",
+      "sha256": "66186892869b62eb596eb79415306b83fc17c76167c7221ee64976261b268f84"
+    },
+    {
+      "bytes": 107274360,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00007-of-00014.arrow",
+      "sha256": "803ae34007db2b66a7752e2a4c0988fc8a28abb59af537159974893e973d6681"
+    },
+    {
+      "bytes": 136606616,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00008-of-00014.arrow",
+      "sha256": "be5ce6ccb1b95d8766fbf353aa425d6331a0e882a3cde595603090959c1f0de5"
+    },
+    {
+      "bytes": 138911160,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00009-of-00014.arrow",
+      "sha256": "48fc76e9f139bd3f2d4b6b3ba36262fd4382c961cb0b44e6a7606d01d66769ba"
+    },
+    {
+      "bytes": 314517912,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00010-of-00014.arrow",
+      "sha256": "71d17a48a081e0cb4be7cf216929b5d46d5319a0e54ee53656c19c03bd6ce929"
+    },
+    {
+      "bytes": 271418712,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00011-of-00014.arrow",
+      "sha256": "037910f4c1758e08a1a6b8ae4674270be75afd697c17ff6e6a13f71cd825e4f2"
+    },
+    {
+      "bytes": 236114328,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00012-of-00014.arrow",
+      "sha256": "663a46b9928e665a10a464a7883dc1ccb10a73f6c0ed90281ca455f8c4e0ebf8"
+    },
+    {
+      "bytes": 193643808,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/data-00013-of-00014.arrow",
+      "sha256": "f630aac5a2dcc7874090cd7a99012b1c04a82ffda47e41cfa6feb273136219ea"
+    },
+    {
+      "bytes": 1664,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/dataset_info.json",
+      "sha256": "b5664ade14fe9bfd651dfc956c1399c769fe78e15e64a3cbc8b58bd132211c6b"
+    },
+    {
+      "bytes": 1396,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/dataset/state.json",
+      "sha256": "216c6fd12d36c14cb4e410a2c6da63f526f96cdf5d4d68f6c94501407f6b3abe"
+    },
+    {
+      "bytes": 1519,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/a6344aac8c09253b3b630fb776ae94478aa0275b",
+      "sha256": "11ad7efa24975ee4b0c3c3a38ed18737f0658a5f75a0a96787b576a78a023361"
+    },
+    {
+      "bytes": 312,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/b9abff2db3f2536dcda1e821307805f176a8087d",
+      "sha256": "2b1d283d4e7e9a64eef827933051d26478d271766eb234c76012f9012cd97907"
+    },
+    {
+      "bytes": 15737,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/63a4d7a56301350c8dff1f3974912807afa52fe0",
+      "sha256": "27105b9f0e7c4e843a3156bb4cbd527d221256aaabdbe1a452b3afc20a664d7c"
+    },
+    {
+      "bytes": 1208,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/d4a8ff5a8efba181915dd285d33c9eaabac5609b",
+      "sha256": "4994d5d2ad73e9e48cdb2136af8866b79c86d3a90bc8d8ccd7cde382e329e94f"
+    },
+    {
+      "bytes": 300,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/8a128545564077a3696e0d738a579075d2fdbed3",
+      "sha256": "79adf495d93aab53c0cbcd5e23f2df5b56dbf4be42d29c9738ccaa4ee2efcda8"
+    },
+    {
+      "bytes": 596070136,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2",
+      "sha256": "87b1a9f9fe402bded82712e5e06c5d1425cbd5b5e9224d0365324e10812d3bc2"
+    },
+    {
+      "bytes": 229,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/f7640f94e81bb7f4f04daf1668850b38763a13d9",
+      "sha256": "8f4b264b80206c830bebbdcae377e137925650a433b689343a63bdc9b3145460"
+    },
+    {
+      "bytes": 57,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/4eca68d85ecd3034cf4174d8a4033a75344ea62d",
+      "sha256": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529"
+    },
+    {
+      "bytes": 694,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/6bf65ea14185a88eef7e24b41c86a953a58dcbad",
+      "sha256": "ea97ecdbcc73713039d8d64dbb05e3689495c96657fbd9a18f5bed381be81049"
+    },
+    {
+      "bytes": 3583485,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/bafd099d5a9ce6d24f8ef0e4aa66643331b2dcf0",
+      "sha256": "3703d011b3ee259e00b59b60772f8fd54998d79e8fa5a1388d507eff28f8f09e"
+    },
+    {
+      "bytes": 21030,
+      "path": "/root/.cache/huggingface/hub/models--lightonai--DenseOn-unsupervised/blobs/75aeeb2bf3f50aeb2ac86925c08e27f8d7f47226",
+      "sha256": "edfd0094f4f888388e1a0215d2f4a0c800c04c2604b5605dfed3c2cf35f4bf6c"
+    },
+    {
+      "bytes": 980,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/manifest.json",
+      "sha256": "9facc18bcd1cad8378cea94746a95ab09804bdf3610796bf9013cdfcc486aee8"
+    },
+    {
+      "bytes": 105625854,
+      "path": "/root/embedding-optimizer-study/data/denseon-sft-500k-seed42/rows.jsonl",
+      "sha256": "113cc571cfe30d458474c85e3237e6b34d292fffebfeda8d0d7b9b790b86f52a"
+    }
+  ],
+  "boundary": "Exhaustive nine-text eligibility, exact within-group document-text equality and actual Arrow IDs compared with every original manifest row. No row is replaced, dropped, imputed or re-ranked. A repeated negative is reported separately from a positive-negative identity collision; neither is silently redefined as seven distinct negative texts. Exact text equality is not a semantic duplicate detector. These are data checks, not optimizer/retrieval results.",
+  "content": {
+    "affected_rows": [
+      {
+        "equal_nonempty_document_pairs": [],
+        "index": 230,
+        "invalid_text_columns": [
+          "positive"
+        ],
+        "negative_ids": [
+          41916,
+          42330,
+          13029,
+          31029,
+          18757,
+          14200,
+          16280
+        ],
+        "positive_id": 741,
+        "query_id": 5009,
+        "sample_id": 230,
+        "source": "fiqa"
+      },
+      {
+        "equal_nonempty_document_pairs": [],
+        "index": 634,
+        "invalid_text_columns": [
+          "negative_4"
+        ],
+        "negative_ids": [
+          36037,
+          28864,
+          17714,
+          22366,
+          741,
+          20346,
+          25755
+        ],
+        "positive_id": 50183,
+        "query_id": 286,
+        "sample_id": 634,
+        "source": "fiqa"
+      },
+      {
+        "equal_nonempty_document_pairs": [],
+        "index": 750,
+        "invalid_text_columns": [
+          "negative_4"
+        ],
+        "negative_ids": [
+          40536,
+          44025,
+          10352,
+          21050,
+          741,
+          7444,
+          26276
+        ],
+        "positive_id": 31439,
+        "query_id": 2658,
+        "sample_id": 750,
+        "source": "fiqa"
+      },
+      {
+        "equal_nonempty_document_pairs": [],
+        "index": 13096,
+        "invalid_text_columns": [
+          "negative_3"
+        ],
+        "negative_ids": [
+          2855872,
+          444823,
+          595639,
+          104163,
+          633761,
+          4203169,
+          855239
+        ],
+        "positive_id": 3367974,
+        "query_id": 57077,
+        "sample_id": 13096,
+        "source": "hotpotqa"
+      },
+      {
+        "equal_nonempty_document_pairs": [],
+        "index": 336061,
+        "invalid_text_columns": [
+          "negative_3"
+        ],
+        "negative_ids": [
+          25887412,
+          14713042,
+          4840758,
+          2143,
+          2601300,
+          19649299,
+          4373709
+        ],
+        "positive_id": 26678888,
+        "query_id": 282886,
+        "sample_id": 336061,
+        "source": "nq"
+      }
+    ],
+    "affected_rows_union": 5,
+    "by_column": {
+      "negative_0": {
+        "blank_including_empty": 0,
+        "empty_string": 0,
+        "null": 0
+      },
+      "negative_1": {
+        "blank_including_empty": 0,
+        "empty_string": 0,
+        "null": 0
+      },
+      "negative_2": {
+        "blank_including_empty": 0,
+        "empty_string": 0,
+        "null": 0
+      },
+      "negative_3": {
+        "blank_including_empty": 2,
+        "empty_string": 2,
+        "null": 0
+      },
+      "negative_4": {
+        "blank_including_empty": 2,
+        "empty_string": 2,
+        "null": 0
+      },
+      "negative_5": {
+        "blank_including_empty": 0,
+        "empty_string": 0,
+        "null": 0
+      },
+      "negative_6": {
+        "blank_including_empty": 0,
+        "empty_string": 0,
+        "null": 0
+      },
+      "positive": {
+        "blank_including_empty": 1,
+        "empty_string": 1,
+        "null": 0
+      },
+      "query": {
+        "blank_including_empty": 0,
+        "empty_string": 0,
+        "null": 0
+      }
+    },
+    "by_source": {
+      "fever": {
+        "invalid_text_rows": 0,
+        "positive_negative_identical_text_rows": 0,
+        "repeated_negative_text_rows": 0,
+        "rows": 52489
+      },
+      "fiqa": {
+        "invalid_text_rows": 3,
+        "positive_negative_identical_text_rows": 0,
+        "repeated_negative_text_rows": 0,
+        "rows": 2629
+      },
+      "hotpotqa": {
+        "invalid_text_rows": 1,
+        "positive_negative_identical_text_rows": 0,
+        "repeated_negative_text_rows": 0,
+        "rows": 40630
+      },
+      "msmarco": {
+        "invalid_text_rows": 0,
+        "positive_negative_identical_text_rows": 0,
+        "repeated_negative_text_rows": 0,
+        "rows": 240405
+      },
+      "nq": {
+        "invalid_text_rows": 1,
+        "positive_negative_identical_text_rows": 0,
+        "repeated_negative_text_rows": 0,
+        "rows": 72725
+      },
+      "squadv2": {
+        "invalid_text_rows": 0,
+        "positive_negative_identical_text_rows": 0,
+        "repeated_negative_text_rows": 0,
+        "rows": 62244
+      },
+      "trivia": {
+        "invalid_text_rows": 0,
+        "positive_negative_identical_text_rows": 0,
+        "repeated_negative_text_rows": 0,
+        "rows": 28878
+      }
+    },
+    "comparison_rule": "Empty/Unicode-whitespace/null text eligibility; exact nonempty document-text equality only, no case folding, normalization or near-duplicate inference.",
+    "invalid_text_rows": 5,
+    "positive_negative_identical_text_rows": 0,
+    "repeated_negative_text_rows": 0,
+    "rows": 500000,
+    "text_cells": 4500000
+  },
+  "data_modified": false,
+  "observed_at_utc": "2026-09-06T13:04:59.368058+00:00",
+  "scientific_completion": false,
+  "scope": "engineering_dense_full_text_integrity",
+  "source": {
+    "bytes": 8188,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_text_integrity.py",
+    "sha256": "93a949c651823cc86695934e4721ede6f8a4e56f07222efc53e02dec87374e90"
+  },
+  "source_materializer": {
+    "bytes": 14465,
+    "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/data.py",
+    "sha256": "5afe090147492abda341055e580fc626809c973d3a5e49b0a82e8891d925cff1"
+  },
+  "training_executed": false
+}

@@ -1,0 +1,211 @@
+--- completed-native/main.tex
++++ reviewed-candidate/main.tex
+@@ -32,22 +32,22 @@
+ \maketitle
+ 
+ \begin{abstract}
+-Does changing the geometry of optimization make a dense retriever use its representation space
+-more effectively? We compare AdamW, Muon, and NorMuon from one pretrained DenseOn checkpoint on
+-500,000 shared queries, following 12 configurations through five checkpoints and 14 decontaminated
+-BEIR tasks. \CorrectedAbstractFinding{} We distinguish broader weight-space motion from
+-retrieval-useful dimension allocation by linking reached weights to coordinate-deletion effects
+-and testing prediction at held-out learning-rate doses. A crossed continuation from two fixed
+-reached states then tests whether those states respond differently to further optimization.
++Does an optimizer help retrieval through the weight states it reaches or the updates it applies?
++We compare AdamW, Muon, and NorMuon from one pretrained DenseOn checkpoint on 500,000 shared
++queries, following 12 configurations through five checkpoints and 14 decontaminated BEIR tasks.
++\CorrectedAbstractFinding{} Weight-space maps reveal distinct trajectories, but coordinate-use
++and held-out-rate prediction tests do not establish a recipe-robust geometric explanation.
++Crossing two fixed reached states with reset continuation rules separates the source-state
++comparison from the subsequent update-rule comparison.
+ \StateOperatorAbstractFinding{}
+ \end{abstract}
+ 
+ \section{Introduction}
+ 
+ Dense retrieval adapts a pretrained encoder so that a small vector preserves distinctions needed
+-to rank a large corpus. Most adaptation uses AdamW, whose coordinate-wise scaling differs from
+-Muon's approximately orthogonalized matrix updates
+-\citep{loshchilov2019decoupled,liu2025muon}. Changing that rule changes which weight states the
++to rank a large corpus. DenseOn's published adaptation recipe uses AdamW
++\citep{sourty2026denseon}, whose coordinate-wise scaling differs from Muon's approximately
++orthogonalized matrix updates \citep{loshchilov2019decoupled,liu2025muon}. Changing that rule changes which weight states the
+ encoder reaches. The central question is whether the resulting motion creates more useful
+ retrieval representations, rather than simply spreading parameter changes across more directions.
+ 
+@@ -90,20 +90,14 @@
+     \label{fig:weight-space-map}
+ \end{figure*}
+ 
+-The resulting evidence distinguishes three claims that are often conflated: changing the
+-weight spectrum, changing the distribution of helpful ranking sensitivities, and explaining
+-retrieval quality. In this study, visible separation in weight space does not translate into
+-a joint improvement in the functional criteria. Predictive gains also depend on how the
+-training recipe is represented in the comparator. The crossed continuation tests the remaining
+-state-dependent response question without treating a geometric correlation as its answer.
+-
+-The study addresses three connected questions:
+-\begin{itemize}
+-    \item when and across which learning rates optimizer choice changes full-corpus retrieval;
+-    \item which differences between reached weight states translate into distributed, helpful
+-    coordinate contributions and predict retrieval at held-out doses; and
+-    \item whether those reached states respond differently when the continuation optimizer changes.
+-\end{itemize}
++Our results separate reached-state quality from continuation preference. Muon-family recipes
++reach visibly different weight states; validation-selected retrieval gains do not become a
++conclusive all-rate advantage. A native-coordinate participation difference changes sign under
++shared rotations, and no tested state descriptor meets the predictive criterion across all four recipe
++comparators. Yet the crossed continuation retains a positive average Muon-source state contrast
++while its reset-Muon operator contrast is negative. Thus a useful reached state need not favor
++the rule that produced it. This bounded result motivates studying optimizer-dependent weight
++states without attributing their quality to an unverified spectral or dimension-use mechanism.
+ 
+ \section{From Optimizer Updates to Retrieval States}
+ 
+@@ -147,29 +141,36 @@
+ 
+ \section{Related Work}
+ 
+-Dense dual encoders compress queries and documents into single vectors and rank by similarity.
+-BEIR evaluates whether such representations transfer across heterogeneous retrieval tasks
+-\citep{thakur2021beir}. DenseOn provides the unsupervised, not-yet-fine-tuned checkpoint and open
+-training recipe used here \citep{sourty2026denseon}. Representation geometry also matters for
+-retrieval: HIL combines isotropic and anisotropic representations in a late-interaction retriever
+-\citep{kim2024hil}. Its emphasis on their balance motivates studying relevance-sensitive
+-consequences of geometric change, rather than maximizing a spread statistic in isolation.
+-
+-Coordinate ablations provide a more functional view of dimension use. \citet{takeshita2025dimensions}
+-find that text encoders often retain most retrieval quality after random removal of half their
+-dimensions; their tested isotropy, correlation, and outlier measures do not account for the
+-observation, while deleting some individual coordinates improves performance. We use this distinction to ask whether an optimizer
+-merely changes representation rank or changes the distribution of helpful, redundant, and harmful
+-dimensions along its trajectory.
+-
+-Muon has shown attractive scaling in language-model pretraining, while NorMuon augments its
+-matrix-level transform with neuron-wise adaptation \citep{liu2025muon,li2025normuon}. Concurrent
+-work warns that switching an Adam-pretrained model to Muon can disrupt pretrained knowledge as
+-update strength grows \citep{qu2026finetune,liu2026consistency}. Other analyses relate Muon to
+-feature rank or margins, identify risks from spectral equalization, or argue for covariance-aware
+-and layer-dependent matrix geometry \citep{ruan2026features,pang2026htmuon,du2026newtonmuon,
+-massena2026schatten}. Our question is downstream and retrieval-specific: which geometric changes
+-survive optimizer state feedback, preserve unseen scores, and predict corpus ranking?
++Dense dual encoders rank a corpus through vector similarity. BEIR tests transfer across
++retrieval tasks \citep{thakur2021beir}; DenseOn supplies the pretrained checkpoint and open
++adaptation recipe \citep{sourty2026denseon}. HIL combines isotropic and anisotropic
++representations in late-interaction retrieval \citep{kim2024hil}, motivating relevance-sensitive
++evaluation rather than maximizing a spread statistic alone.
++
++\citet{takeshita2025dimensions} study random and single-coordinate removal in text embeddings.
++\citet{wu2026select} learn query-specific dimension selection from positive--negative
++alignment. Relevance-sensitive dimension importance is therefore not itself our contribution.
++We track finite deletion sensitivities along optimizer trajectories and test whether their
++native-coordinate differences survive shared rotations and predict full-corpus retrieval.
++
++Muon scales well in language-model pretraining, and NorMuon adds neuron-wise adaptation
++\citep{liu2025muon,li2025normuon}. Associative-memory and imbalance studies connect spectral
++updates to more balanced learning \citep{wang2025tailmemory,vasudeva2025spectral}; feature-transfer
++benefits have also been reported \citep{ruan2026features}. These are functional explanations,
++not just descriptions of an update rule. Yet spectral descent can lose useful simplicity
++bias \citep{dragutinovic2026simplicity}, and optimizer switching can disrupt pretrained
++knowledge \citep{qu2026finetune,liu2026consistency}. Spectral correction, input covariance,
++and layer-dependent geometry offer further qualifications
++\citep{pang2026htmuon,du2026newtonmuon,massena2026schatten}.
++
++Basis and scale require separate care. Outlier-safe pretraining combines Muon with architectural
++changes \citep{park2025outlier}; parameter-gauge equivariance is distinct from our post-encoding
++rotations \citep{singh2026basis}. Hyperball connects weight and update norms to angular dynamics
++\citep{wen2026hyperball}. Our initial fixed-probe calibration does not match entire trajectories.
++We ask which reached-state measurements predict held-out-rate retrieval beyond the training
++recipe, then separately cross fixed source states with reset continuation rules. Neither a
++spectral fingerprint nor a basis-sensitive coordinate effect alone establishes a retrieval
++mechanism.
+ 
+ \section{Tracing an Optimizer Through Weight Space}
+ 
+@@ -187,7 +188,9 @@
+ The grid contains four learning rates per optimizer: $\{10^{-6},3\!\times\!10^{-6},10^{-5},
+ 3\!\times\!10^{-5}\}$ for AdamW and $\{10^{-4},3\!\times\!10^{-4},10^{-3},3\!\times\!10^{-3}\}$
+ for Muon and NorMuon. Muon-family runs route hidden two-dimensional matrices through the matrix
+-rule and auxiliary parameters through AdamW at $3\!\times\!10^{-6}$. Each run keeps checkpoints at
++rule and auxiliary parameters through AdamW at $3\!\times\!10^{-6}$. Primary AdamW uses its
++grid rate for all trainable parameters. These cells compare complete optimizer recipes, not only
++the hidden-matrix update rule. Each run keeps checkpoints at
+ 20, 40, 60, 80, and 100\% of 3,907 optimizer steps. Every checkpoint is evaluated on the same
+ \NumBEIRTasks-task decontaminated BEIR suite.
+ 
+@@ -345,13 +348,19 @@
+ 
+ \StateOperatorMechanismFinding
+ 
++The direction of the two averaged main effects differs: the Muon-source state retains an
++advantage, but reset Muon continuation does not. This is evidence about reached states under
++further adaptation, not that an AdamW step explains the original Muon result. The source states
++inherit the complete primary recipes, including their different auxiliary learning rates;
++the common auxiliary rule in continuation does not remove that source-history difference.
++
+ \section{Discussion}
+ 
+-\paragraph{Optimizer quality is a property of a trajectory surface.}
+-The all-rate estimand prevents the argument from collapsing onto one fortunate learning rate, while
+-five checkpoint stages reveal whether an advantage emerges early, accumulates gradually, or
+-disappears. The result remains specific to the tested DenseOn adaptation problem; it is stronger
+-than a best-cell comparison and weaker than a universal optimizer ranking.
++\paragraph{The rate surface and the selected recipe answer different questions.}
++The all-rate comparison estimates performance averaged over the specified grids; validation-based
++selection estimates the outcome of choosing a recipe within those grids. Neither defines a
++universal optimizer ranking. Five checkpoint stages show when retrieval differences emerge and
++whether they persist. Conclusions remain specific to DenseOn and the tested rate ranges.
+ 
+ \paragraph{Weight-space separation and functional change need not coincide.}
+ Muon can produce spectrally distinct displacements without improving coordinate utility. Conversely,
+@@ -370,11 +379,10 @@
+ how distributed that utility is, and whether any optimizer difference survives a change of basis.
+ 
+ \paragraph{Continuation tests state-dependent responses, not a gain decomposition.}
+-The crossed design asks whether a source-state advantage persists on average after further
+-adaptation and whether the relative continuation preference changes between the fixed states.
+-Neither an averaged main effect nor an interaction alone establishes benefit within both states,
+-additivity, or full-trajectory co-adaptation. Explaining a particular geometric feature causally
+-would require an intervention on that feature, beyond the present state-level comparison.
++The positive averaged source-state contrast and negative reset-operator contrast demonstrate why
++these are separate questions. The interaction does not resolve whether the continuation preference
++changes between sources. Neither result isolates a measured geometric mediator or decomposes the
++full training gain; that would require intervening on a feature rather than entire source states.
+ 
+ \FloatBarrier
+ 
+@@ -386,11 +394,10 @@
+ 
+ \StateOperatorConclusionFinding
+ 
+-The central distinction is between distributing weight-space motion and distributing useful ranking
+-evidence. Reached-weight measurements, coordinate interventions, held-out-dose prediction, and
+-conditional continuation provide complementary views of that distinction. Together they can narrow
+-an explanation of optimizer-dependent retrieval without treating an intrinsic update property as a
+-new discovery or claiming a causal decomposition of the original gain.
++The central distinction is between the state an optimizer reaches and the rule used to continue
++from it. Weight-space maps and coordinate interventions describe the former, but the proposed
++descriptors do not yet explain retrieval robustly beyond the recipe. The crossed continuation
++provides a state-level result while leaving its geometric mechanism open.
+ 
+ \label{paper-main-end}
+ 
+@@ -401,7 +408,8 @@
+ optimizer, so this is a study of optimizer switching rather than Muon-from-scratch pretraining.
+ Four learning rates provide a broad but finite grid. The all-rate contrast reduces best-cell
+ selection dependence but remains a one-seed, pinned-grid result; the secondary selected-recipe
+-comparison does not replace replication across training views.
++comparison does not replace replication across training views. The selected AdamW rate is the
++upper tested boundary, so the grid does not establish where its optimum lies.
+ 
+ Decontamination reduces known benchmark overlap but cannot establish the absence of every semantic
+ duplicate. Aggregate MTEB outputs lack per-query rankings, so uncertainty is computed over tasks and
+@@ -480,7 +488,7 @@
+ Claim & Required evidence & Insufficient evidence alone \\
+ \midrule
+ Faster adaptation & useful wall time, examples/s, GPU-hours, matched-hardware time-to-quality & lower loss at equal steps \\
+-Better DenseOn optimizer & all-rate contrast over 14 tasks & best BEIR cell alone \\
++Better average over the tested rate grid & all-rate contrast over 14 tasks & best BEIR cell alone \\
+ Weight motion explains retrieval & held-out prediction beyond optimizer, stage, and dose & larger displacement alone \\
+ Dimensions are used more constructively & helpful mass share and normalized participation rise while degrading mass falls, with simultaneous intervals & effective rank alone \\
+ Geometry predicts retrieval & held-out prediction beyond optimizer, stage, and dose & optimizer-identifying geometry \\

@@ -1,0 +1,24 @@
+{
+  "scope": "engineering_terminal_observed_outcome_replay_failure",
+  "session_id": 96360,
+  "exit_code": 1,
+  "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_v3_outcomes.py --repository /root/embedding-optimizer-story-refactor --training-root /tmp/dense-identity-source.8rUgLF --workdir /tmp/dense-v3-outcomes.pMqV0Z",
+  "workdir": "/tmp/dense-v3-outcomes.pMqV0Z",
+  "failed_primary_worker": false,
+  "all_positive_tables_are_synthetic": true,
+  "outer_error": "RuntimeError: Fresh fixture readback failed",
+  "child_error": "ValueError: Outcome differs from fresh evidence/statistical recomputation: all_task_scores.csv",
+  "cause": "CSV field order followed the first dictionary insertion order. Canonical JSON sorts keys, so an independent reload has the same values but a different first-row key order.",
+  "independent_csv_cell_check": {
+    "rows": 840,
+    "every_cell_string_equal": true,
+    "stored_header": ["run_id", "optimizer", "learning_rate", "model_family", "stage", "step", "fraction", "task", "ndcg_at_10"],
+    "json_header": ["fraction", "learning_rate", "model_family", "ndcg_at_10", "optimizer", "run_id", "stage", "step", "task"]
+  },
+  "earlier_tests_did_not_cover_this_condition": true,
+  "original_kernel_or_metric_values_changed": false,
+  "acceptance_tolerance_relaxed": false,
+  "failure_overridden": false,
+  "scientific_completion": false,
+  "recording_boundary": "Terminal-observation handoff, not an independently worker-signed failure log. Original fixture files, source and protocol are preserved."
+}

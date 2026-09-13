@@ -1,0 +1,245 @@
+{
+  "dispatchers": [
+    {
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "dispatchers_after": [
+    {
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "formal_training_started": false,
+  "locks": [
+    {
+      "conclusion": "no_file_not_evidence_of_gpu_availability",
+      "exists": false,
+      "gpu": 0,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-0.lock"
+    },
+    {
+      "conclusion": "no_file_not_evidence_of_gpu_availability",
+      "exists": false,
+      "gpu": 1,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-1.lock"
+    },
+    {
+      "conclusion": "no_file_not_evidence_of_gpu_availability",
+      "exists": false,
+      "gpu": 2,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-2.lock"
+    },
+    {
+      "conclusion": "no_file_not_evidence_of_gpu_availability",
+      "exists": false,
+      "gpu": 3,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-3.lock"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 4,
+      "inode": 151918651,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-4.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 5,
+      "inode": 151919012,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-5.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 6,
+      "inode": 151919013,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-6.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 7,
+      "inode": 151919014,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/tmp/embedding-optimizer-primary-gpu-leases/gpu-7.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 0,
+      "inode": 150811651,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-0.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 1,
+      "inode": 150811652,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-1.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 2,
+      "inode": 150811653,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-2.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 3,
+      "inode": 150811654,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-3.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 4,
+      "inode": 150811655,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-4.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 5,
+      "inode": 150811656,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-5.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 6,
+      "inode": 150811657,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-6.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 0,
+      "device": 2097188,
+      "exists": true,
+      "file_unchanged": true,
+      "gpu": 7,
+      "inode": 150811658,
+      "lock_state": "unheld_at_probe",
+      "metadata_is_not_liveness_proof": true,
+      "path": "/root/embedding-optimizer-study/logs/dense-only-runtime/gpu-leases/gpu-7.lock",
+      "recorded_gpu_tokens": null,
+      "recorded_holder_pid": null,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "method": "exact_existing_project_paths_only_readonly_no_create_no_truncate_nonblocking_flock_then_release",
+  "observed_at_utc": "2026-09-07T15:02:09.011004+00:00"
+}

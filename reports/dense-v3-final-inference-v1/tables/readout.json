@@ -1,0 +1,531 @@
+{
+  "checkpoint_step": 3907,
+  "frozen_sources": {
+    "configs/dense_no_packing_outcome_protocol.json": {
+      "bytes": 8202,
+      "git_blob_sha1": "0bae2c008fcbcbac92eea0b39d11fd4e2b79bb40",
+      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+    },
+    "configs/dense_primary_v3_outcome_protocol.json": {
+      "bytes": 6697,
+      "git_blob_sha1": "a4bbc0f66954b6885af7312c4370b7a333dcafd5",
+      "sha256": "914996b3423ba01329c03844419cca61e2a33452fe026665bb940d5b82e2cffe"
+    },
+    "configs/dense_primary_v3_protocol.json": {
+      "bytes": 19832,
+      "git_blob_sha1": "82778f5b2918a45b98a6a7e0bece0163f9851fa8",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    },
+    "scripts/audit_dense_v3_outcomes.py": {
+      "bytes": 16206,
+      "git_blob_sha1": "c5329c5ee80b7396d9edcec7baa9a278ae996ac5",
+      "sha256": "a66b45b4352b060912a7a33e7b5a5b07571586b1b7c6495e9bb16124f59a968d"
+    },
+    "src/embed_optim/corrected_outcome_summary.py": {
+      "bytes": 19823,
+      "git_blob_sha1": "ccf85b71bd468be7a016950a6ba1fd09459d96f7",
+      "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+    },
+    "src/embed_optim/decontamination.py": {
+      "bytes": 5282,
+      "git_blob_sha1": "641540cdd735d0db883ff59d66f7a903b77cab50",
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    }
+  },
+  "independent_scalar_checks": [
+    {
+      "family": "primary",
+      "interval_numeric_fields_checked": 24,
+      "maximum_absolute_scalar_replay_difference": 1.734723475976807e-18,
+      "support_decisions_checked": 3,
+      "task_optimizer_means_checked": 42
+    },
+    {
+      "family": "secondary",
+      "interval_numeric_fields_checked": 24,
+      "maximum_absolute_scalar_replay_difference": 8.673617379884035e-19,
+      "support_decisions_checked": 3,
+      "task_optimizer_means_checked": 42
+    }
+  ],
+  "inference": {
+    "bootstrap_samples": 50000,
+    "bootstrap_seed": 20260903,
+    "common_resample": "Each replicate uses the same 14 sampled task indices for all three contrasts.",
+    "contrasts": [
+      "muon-adamw",
+      "normuon-adamw",
+      "normuon-muon"
+    ],
+    "max_t_definition": "For each contrast compute its observed across-task standard error. In each common paired-task bootstrap replicate, center the bootstrap mean at the observed mean and divide by that fixed observed standard error. The simultaneous critical value is the 95th percentile of the maximum absolute statistic over the three contrasts.",
+    "nominal_interval": "Paired-task bootstrap 2.5th and 97.5th percentiles are reported for context but cannot determine support.",
+    "primary_estimand": "For each task at stage 5, average nDCG@10 over all four predeclared learning rates within optimizer, then average each of Muon-AdamW, NorMuon-AdamW, and NorMuon-Muon over the 14 paired tasks.",
+    "resampling_unit": "task",
+    "secondary_estimand": "At stage 5, contrast the three independently padded validation-selected optimizer recipes over the same 14 paired tasks.",
+    "simultaneous_interval": "observed mean plus or minus the common max-T critical value times the contrast's observed across-task standard error",
+    "support_rule": "A simultaneous interval wholly above zero is positive; wholly below zero is negative; otherwise inconclusive. Primary superiority additionally requires all four rates for every optimizer to have completed."
+  },
+  "input_root": "/tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/download/corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f",
+  "intermediate_scores_imputed": false,
+  "manifest_sha256": "bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f",
+  "model_execution": false,
+  "numpy_version": "2.5.2",
+  "observed_at_utc": "2026-09-10T17:55:40.927965+00:00",
+  "original_function_sha256": {
+    "_task_effects": "71e94933336f1c7c614269802e414e0e0803a56c065df614f8f2a7e5878fe402",
+    "independent_max_t": "33399b9750635244ec25263b75118ebcb5f068031a21e8e3353a5d43ef591c5d",
+    "paired_max_t_intervals": "7b1f5b0a7dfd218c881a714f42ac3e0700e362a14cadd2e2dd66445e6c648f54"
+  },
+  "original_whole_grid_admission_passed": false,
+  "original_whole_grid_consumer_called": false,
+  "outputs": {
+    "optimizer_means.csv": {
+      "bytes": 380,
+      "git_blob_sha1": "803bf2c564351b7722789b006c09e358369bbc16",
+      "sha256": "8032d62c3a58dac42f918287a239850f1c2ff843c9c6ee4a89641a0668b47031"
+    },
+    "primary_summary.csv": {
+      "bytes": 827,
+      "git_blob_sha1": "22ba1cca6d179d14934912c4a80bc467ec7ca027",
+      "sha256": "023b58de2fd9b099a77f43079fa354b827a2c345a74d35e3752de69a3af5df2b"
+    },
+    "primary_task_effects.csv": {
+      "bytes": 1608,
+      "git_blob_sha1": "ec1c46a9f25903b9327a8218d480d10895517724",
+      "sha256": "99da04887175229df2780b43db4909ac36af89676c0426097d829a88d77de271"
+    },
+    "secondary_summary.csv": {
+      "bytes": 823,
+      "git_blob_sha1": "7cfe0f33282d36073abd9ee48ccfd3e0df20fccd",
+      "sha256": "82eb1c1afab0159c575e6d599a96ae96e9745d8e92e8163d850aac133b93e664"
+    },
+    "secondary_task_effects.csv": {
+      "bytes": 1483,
+      "git_blob_sha1": "43e9d88e5ffa0a6e9dee1decdb04e02f0e1046f6",
+      "sha256": "d546df45330ae45c1f674696084440507ccddc8c2d4521570b8186c1ae11006f"
+    },
+    "summary.md": {
+      "bytes": 1506,
+      "git_blob_sha1": "36ad5fd41de923c0577590a95eaa177b7e5d6c1e",
+      "sha256": "ec7fdfe34d617b58b19be82868e9349d4f758088e0da9b3d5ffce5f99e4f0a74"
+    }
+  },
+  "primary_campaign_complete": false,
+  "runs": 12,
+  "scientific_completion": false,
+  "scope": "complete_final_checkpoint_frozen_inference_readout",
+  "selected": {
+    "adamw": "verified-v3-adamw-3e-5",
+    "muon": "verified-v3-muon-3e-4",
+    "normuon": "verified-v3-normuon-3e-4"
+  },
+  "source": {
+    "bytes": 16160,
+    "git_blob_sha1": "84b6b69ca43e75863f846d0b2594202b1fc8be66",
+    "sha256": "52baa3d3fca7ff9b31574e48d2817d2b9c81a5642fa8822426b73e815fa82ab5"
+  },
+  "source_release": false,
+  "tables": {
+    "optimizer_means.csv": [
+      {
+        "family": "primary",
+        "macro_ndcg_at_10": 0.5815657142857142,
+        "optimizer": "adamw",
+        "rates_per_task": 4,
+        "selected_run_id": "",
+        "tasks": 14
+      },
+      {
+        "family": "primary",
+        "macro_ndcg_at_10": 0.5831348214285714,
+        "optimizer": "muon",
+        "rates_per_task": 4,
+        "selected_run_id": "",
+        "tasks": 14
+      },
+      {
+        "family": "primary",
+        "macro_ndcg_at_10": 0.5836383928571428,
+        "optimizer": "normuon",
+        "rates_per_task": 4,
+        "selected_run_id": "",
+        "tasks": 14
+      },
+      {
+        "family": "secondary",
+        "macro_ndcg_at_10": 0.5892628571428571,
+        "optimizer": "adamw",
+        "rates_per_task": 1,
+        "selected_run_id": "verified-v3-adamw-3e-5",
+        "tasks": 14
+      },
+      {
+        "family": "secondary",
+        "macro_ndcg_at_10": 0.5924307142857143,
+        "optimizer": "muon",
+        "rates_per_task": 1,
+        "selected_run_id": "verified-v3-muon-3e-4",
+        "tasks": 14
+      },
+      {
+        "family": "secondary",
+        "macro_ndcg_at_10": 0.5936371428571429,
+        "optimizer": "normuon",
+        "rates_per_task": 1,
+        "selected_run_id": "verified-v3-normuon-3e-4",
+        "tasks": 14
+      }
+    ],
+    "primary_summary.csv": [
+      {
+        "across_task_standard_error": 0.005748341624247988,
+        "baseline": "adamw",
+        "bootstrap_samples": 50000,
+        "bootstrap_seed": 20260903,
+        "mean_delta_ndcg_at_10": 0.0015691071428571607,
+        "nominal_bootstrap_ci_95_lower": -0.00860559374999997,
+        "nominal_bootstrap_ci_95_upper": 0.013292656250000038,
+        "simultaneous_ci_95_lower": -0.010808336441841229,
+        "simultaneous_ci_95_upper": 0.013946550727555549,
+        "simultaneous_critical_value": 2.153219901281987,
+        "support": "inconclusive",
+        "tasks": 14,
+        "treatment": "muon"
+      },
+      {
+        "across_task_standard_error": 0.005097415550342816,
+        "baseline": "adamw",
+        "bootstrap_samples": 50000,
+        "bootstrap_seed": 20260903,
+        "mean_delta_ndcg_at_10": 0.0020726785714285795,
+        "nominal_bootstrap_ci_95_lower": -0.006809825892857118,
+        "nominal_bootstrap_ci_95_upper": 0.012491263392857152,
+        "simultaneous_ci_95_lower": -0.008903178036673842,
+        "simultaneous_ci_95_upper": 0.013048535179531001,
+        "simultaneous_critical_value": 2.153219901281987,
+        "support": "inconclusive",
+        "tasks": 14,
+        "treatment": "normuon"
+      },
+      {
+        "across_task_standard_error": 0.0011510287059952591,
+        "baseline": "muon",
+        "bootstrap_samples": 50000,
+        "bootstrap_seed": 20260903,
+        "mean_delta_ndcg_at_10": 0.0005035714285714187,
+        "nominal_bootstrap_ci_95_lower": -0.0016117946428571798,
+        "nominal_bootstrap_ci_95_upper": 0.002711267857142845,
+        "simultaneous_ci_95_lower": -0.001974846488124426,
+        "simultaneous_ci_95_upper": 0.0029819893452672636,
+        "simultaneous_critical_value": 2.153219901281987,
+        "support": "inconclusive",
+        "tasks": 14,
+        "treatment": "normuon"
+      }
+    ],
+    "primary_task_effects.csv": [
+      {
+        "adamw_ndcg_at_10": 0.572815,
+        "muon_minus_adamw": -0.03235499999999991,
+        "muon_ndcg_at_10": 0.54046,
+        "normuon_minus_adamw": -0.023424999999999918,
+        "normuon_minus_muon": 0.008929999999999993,
+        "normuon_ndcg_at_10": 0.54939,
+        "task": "ArguAna"
+      },
+      {
+        "adamw_ndcg_at_10": 0.36222,
+        "muon_minus_adamw": 0.05632000000000004,
+        "muon_ndcg_at_10": 0.41854,
+        "normuon_minus_adamw": 0.05030000000000001,
+        "normuon_minus_muon": -0.006020000000000025,
+        "normuon_ndcg_at_10": 0.41252,
+        "task": "ClimateFEVER"
+      },
+      {
+        "adamw_ndcg_at_10": 0.2752875,
+        "muon_minus_adamw": -0.012632500000000046,
+        "muon_ndcg_at_10": 0.26265499999999997,
+        "normuon_minus_adamw": -0.011250000000000038,
+        "normuon_minus_muon": 0.0013825000000000087,
+        "normuon_ndcg_at_10": 0.2640375,
+        "task": "DBPedia"
+      },
+      {
+        "adamw_ndcg_at_10": 0.8968825,
+        "muon_minus_adamw": 0.024329999999999963,
+        "muon_ndcg_at_10": 0.9212125,
+        "normuon_minus_adamw": 0.024379999999999957,
+        "normuon_minus_muon": 4.999999999999449e-05,
+        "normuon_ndcg_at_10": 0.9212625,
+        "task": "FEVER"
+      },
+      {
+        "adamw_ndcg_at_10": 0.5309475,
+        "muon_minus_adamw": 0.006950000000000012,
+        "muon_ndcg_at_10": 0.5378975,
+        "normuon_minus_adamw": 0.0010899999999999244,
+        "normuon_minus_muon": -0.005860000000000087,
+        "normuon_ndcg_at_10": 0.5320374999999999,
+        "task": "FiQA2018"
+      },
+      {
+        "adamw_ndcg_at_10": 0.6737825,
+        "muon_minus_adamw": -0.012014999999999887,
+        "muon_ndcg_at_10": 0.6617675000000001,
+        "normuon_minus_adamw": -0.011822499999999958,
+        "normuon_minus_muon": 0.00019249999999992884,
+        "normuon_ndcg_at_10": 0.66196,
+        "task": "HotpotQA"
+      },
+      {
+        "adamw_ndcg_at_10": 0.54648,
+        "muon_minus_adamw": 0.018615000000000048,
+        "muon_ndcg_at_10": 0.565095,
+        "normuon_minus_adamw": 0.01895750000000007,
+        "normuon_minus_muon": 0.00034250000000002334,
+        "normuon_ndcg_at_10": 0.5654375,
+        "task": "MSMARCO"
+      },
+      {
+        "adamw_ndcg_at_10": 0.286785,
+        "muon_minus_adamw": -0.01635000000000003,
+        "muon_ndcg_at_10": 0.270435,
+        "normuon_minus_adamw": -0.016172500000000034,
+        "normuon_minus_muon": 0.0001774999999999971,
+        "normuon_ndcg_at_10": 0.2706125,
+        "task": "NFCorpus"
+      },
+      {
+        "adamw_ndcg_at_10": 0.936395,
+        "muon_minus_adamw": 0.0036275000000000057,
+        "muon_ndcg_at_10": 0.9400225,
+        "normuon_minus_adamw": 4.750000000008914e-05,
+        "normuon_minus_muon": -0.0035799999999999166,
+        "normuon_ndcg_at_10": 0.9364425000000001,
+        "task": "NQ"
+      },
+      {
+        "adamw_ndcg_at_10": 0.9140874999999999,
+        "muon_minus_adamw": -0.008019999999999916,
+        "muon_ndcg_at_10": 0.9060675,
+        "normuon_minus_adamw": -0.006022499999999931,
+        "normuon_minus_muon": 0.0019974999999999854,
+        "normuon_ndcg_at_10": 0.908065,
+        "task": "QuoraRetrieval"
+      },
+      {
+        "adamw_ndcg_at_10": 0.14575749999999998,
+        "muon_minus_adamw": -0.007574999999999998,
+        "muon_ndcg_at_10": 0.13818249999999999,
+        "normuon_minus_adamw": -0.008924999999999988,
+        "normuon_minus_muon": -0.00134999999999999,
+        "normuon_ndcg_at_10": 0.1368325,
+        "task": "SCIDOCS"
+      },
+      {
+        "adamw_ndcg_at_10": 0.8719975,
+        "muon_minus_adamw": -0.007457500000000006,
+        "muon_ndcg_at_10": 0.86454,
+        "normuon_minus_adamw": -0.002562500000000023,
+        "normuon_minus_muon": 0.004894999999999983,
+        "normuon_ndcg_at_10": 0.869435,
+        "task": "SciFact"
+      },
+      {
+        "adamw_ndcg_at_10": 0.8095,
+        "muon_minus_adamw": -0.00046250000000003233,
+        "muon_ndcg_at_10": 0.8090375,
+        "normuon_minus_adamw": 0.006502499999999967,
+        "normuon_minus_muon": 0.006964999999999999,
+        "normuon_ndcg_at_10": 0.8160025,
+        "task": "TRECCOVID"
+      },
+      {
+        "adamw_ndcg_at_10": 0.3189825,
+        "muon_minus_adamw": 0.008992500000000014,
+        "muon_ndcg_at_10": 0.327975,
+        "normuon_minus_adamw": 0.007919999999999983,
+        "normuon_minus_muon": -0.0010725000000000318,
+        "normuon_ndcg_at_10": 0.3269025,
+        "task": "Touche2020"
+      }
+    ],
+    "secondary_summary.csv": [
+      {
+        "across_task_standard_error": 0.002169027527721249,
+        "baseline": "adamw",
+        "bootstrap_samples": 50000,
+        "bootstrap_seed": 20260903,
+        "mean_delta_ndcg_at_10": 0.003167857142857153,
+        "nominal_bootstrap_ci_95_lower": -0.00038142857142857043,
+        "nominal_bootstrap_ci_95_upper": 0.0077257321428571505,
+        "simultaneous_ci_95_lower": -0.0016307954862677283,
+        "simultaneous_ci_95_upper": 0.007966509771982034,
+        "simultaneous_critical_value": 2.212352110702016,
+        "support": "inconclusive",
+        "tasks": 14,
+        "treatment": "muon"
+      },
+      {
+        "across_task_standard_error": 0.001315729319454505,
+        "baseline": "adamw",
+        "bootstrap_samples": 50000,
+        "bootstrap_seed": 20260903,
+        "mean_delta_ndcg_at_10": 0.004374285714285718,
+        "nominal_bootstrap_ci_95_lower": 0.002054267857142852,
+        "nominal_bootstrap_ci_95_upper": 0.007017857142857147,
+        "simultaneous_ci_95_lower": 0.0014634291772780165,
+        "simultaneous_ci_95_upper": 0.007285142251293419,
+        "simultaneous_critical_value": 2.212352110702016,
+        "support": "positive",
+        "tasks": 14,
+        "treatment": "normuon"
+      },
+      {
+        "across_task_standard_error": 0.001598508785562223,
+        "baseline": "muon",
+        "bootstrap_samples": 50000,
+        "bootstrap_seed": 20260903,
+        "mean_delta_ndcg_at_10": 0.0012064285714285647,
+        "nominal_bootstrap_ci_95_lower": -0.0019171607142857087,
+        "nominal_bootstrap_ci_95_upper": 0.004163571428571414,
+        "simultaneous_ci_95_lower": -0.002330035714285736,
+        "simultaneous_ci_95_upper": 0.004742892857142865,
+        "simultaneous_critical_value": 2.212352110702016,
+        "support": "inconclusive",
+        "tasks": 14,
+        "treatment": "normuon"
+      }
+    ],
+    "secondary_task_effects.csv": [
+      {
+        "adamw_ndcg_at_10": 0.55338,
+        "muon_minus_adamw": 0.007770000000000055,
+        "muon_ndcg_at_10": 0.56115,
+        "normuon_minus_adamw": 0.009120000000000017,
+        "normuon_minus_muon": 0.0013499999999999623,
+        "normuon_ndcg_at_10": 0.5625,
+        "task": "ArguAna"
+      },
+      {
+        "adamw_ndcg_at_10": 0.40662,
+        "muon_minus_adamw": 0.005390000000000006,
+        "muon_ndcg_at_10": 0.41201,
+        "normuon_minus_adamw": -0.00047999999999998044,
+        "normuon_minus_muon": -0.005869999999999986,
+        "normuon_ndcg_at_10": 0.40614,
+        "task": "ClimateFEVER"
+      },
+      {
+        "adamw_ndcg_at_10": 0.27767,
+        "muon_minus_adamw": 0.0010800000000000254,
+        "muon_ndcg_at_10": 0.27875,
+        "normuon_minus_adamw": 0.00274000000000002,
+        "normuon_minus_muon": 0.0016599999999999948,
+        "normuon_ndcg_at_10": 0.28041,
+        "task": "DBPedia"
+      },
+      {
+        "adamw_ndcg_at_10": 0.92138,
+        "muon_minus_adamw": 0.0008299999999999974,
+        "muon_ndcg_at_10": 0.92221,
+        "normuon_minus_adamw": 1.0000000000065512e-05,
+        "normuon_minus_muon": -0.0008199999999999319,
+        "normuon_ndcg_at_10": 0.92139,
+        "task": "FEVER"
+      },
+      {
+        "adamw_ndcg_at_10": 0.54253,
+        "muon_minus_adamw": -0.008639999999999981,
+        "muon_ndcg_at_10": 0.53389,
+        "normuon_minus_adamw": 0.0049600000000000755,
+        "normuon_minus_muon": 0.013600000000000056,
+        "normuon_ndcg_at_10": 0.54749,
+        "task": "FiQA2018"
+      },
+      {
+        "adamw_ndcg_at_10": 0.67613,
+        "muon_minus_adamw": 0.0014899999999999913,
+        "muon_ndcg_at_10": 0.67762,
+        "normuon_minus_adamw": 0.002569999999999961,
+        "normuon_minus_muon": 0.0010799999999999699,
+        "normuon_ndcg_at_10": 0.6787,
+        "task": "HotpotQA"
+      },
+      {
+        "adamw_ndcg_at_10": 0.56811,
+        "muon_minus_adamw": 0.0028200000000000447,
+        "muon_ndcg_at_10": 0.57093,
+        "normuon_minus_adamw": 0.003589999999999982,
+        "normuon_minus_muon": 0.0007699999999999374,
+        "normuon_ndcg_at_10": 0.5717,
+        "task": "MSMARCO"
+      },
+      {
+        "adamw_ndcg_at_10": 0.28824,
+        "muon_minus_adamw": -0.00274000000000002,
+        "muon_ndcg_at_10": 0.2855,
+        "normuon_minus_adamw": -0.0016100000000000003,
+        "normuon_minus_muon": 0.0011300000000000199,
+        "normuon_ndcg_at_10": 0.28663,
+        "task": "NFCorpus"
+      },
+      {
+        "adamw_ndcg_at_10": 0.92545,
+        "muon_minus_adamw": 0.02700999999999998,
+        "muon_ndcg_at_10": 0.95246,
+        "normuon_minus_adamw": 0.014190000000000036,
+        "normuon_minus_muon": -0.012819999999999943,
+        "normuon_ndcg_at_10": 0.93964,
+        "task": "NQ"
+      },
+      {
+        "adamw_ndcg_at_10": 0.9119,
+        "muon_minus_adamw": 0.0008599999999999719,
+        "muon_ndcg_at_10": 0.91276,
+        "normuon_minus_adamw": 0.0008199999999999319,
+        "normuon_minus_muon": -4.0000000000040004e-05,
+        "normuon_ndcg_at_10": 0.91272,
+        "task": "QuoraRetrieval"
+      },
+      {
+        "adamw_ndcg_at_10": 0.14635,
+        "muon_minus_adamw": 0.0019499999999999795,
+        "muon_ndcg_at_10": 0.1483,
+        "normuon_minus_adamw": 0.002129999999999993,
+        "normuon_minus_muon": 0.00018000000000001348,
+        "normuon_ndcg_at_10": 0.14848,
+        "task": "SCIDOCS"
+      },
+      {
+        "adamw_ndcg_at_10": 0.87996,
+        "muon_minus_adamw": -0.0007699999999999374,
+        "muon_ndcg_at_10": 0.87919,
+        "normuon_minus_adamw": 0.0043800000000000505,
+        "normuon_minus_muon": 0.005149999999999988,
+        "normuon_ndcg_at_10": 0.88434,
+        "task": "SciFact"
+      },
+      {
+        "adamw_ndcg_at_10": 0.82808,
+        "muon_minus_adamw": -0.0014399999999999968,
+        "muon_ndcg_at_10": 0.82664,
+        "normuon_minus_adamw": 0.0047999999999999154,
+        "normuon_minus_muon": 0.006239999999999912,
+        "normuon_ndcg_at_10": 0.83288,
+        "task": "TRECCOVID"
+      },
+      {
+        "adamw_ndcg_at_10": 0.32388,
+        "muon_minus_adamw": 0.008740000000000026,
+        "muon_ndcg_at_10": 0.33262,
+        "normuon_minus_adamw": 0.014019999999999977,
+        "normuon_minus_muon": 0.005279999999999951,
+        "normuon_ndcg_at_10": 0.3379,
+        "task": "Touche2020"
+      }
+    ]
+  },
+  "task_cells": 168
+}

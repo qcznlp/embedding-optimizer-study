@@ -1,219 +1,216 @@
-# Better Retrievers from Worse First Steps: paper story and evidence map
+# NAACL paper plan: optimizer-induced weight states in dense retrieval
 
-## The paper in one sentence
+Status: active authorial plan. The authoritative manuscript is `paper/main.tex`.
 
-Muon reaches better DenseOn retrievers across a coherent historical learning-rate region even though
-its norm-matched immediate step is weaker than AdamW's: the paper explains this local-to-global
-reversal as an advantage that emerges along the optimization trajectory, rejects the familiar
-spectral account, and uses the clean independently padded replication to determine whether the
-advantage survives an execution-invariant comparison.
+## Thesis
 
-This is the authorial spine. The title, abstract, first page, result order, and conclusion must all
-state the same progression: **Muon works; its first step is worse; the advantage emerges through
-accumulation; the obvious spectral explanation fails; and a clean selector is required to find the
-useful path.** The paper is not organized as a list of experiments or research questions. Every
-main-text result must advance one link in that progression or protect it from a selection-path
-artifact.
+The paper does not ask whether Muon has a recognizable update spectrum. Orthogonalization makes
+that unsurprising. It asks what retriever Muon creates from a pretrained DenseOn state, how that
+state differs from the one AdamW creates, and how the reached states respond to further optimization.
 
-## The five-beat story
+The central distinction is **weight-space spread versus retrieval-useful dimension allocation**.
+The exact coordinate sum for a cosine margin motivates this distinction; coordinate deletion with
+renormalization measures something different and is not an additive decomposition or new theorem.
+The paper should develop this question through the results, rather than narrate verification gates.
 
-### 1. Muon works
+The explanatory chain is:
 
-Lead with the positive retrieval result rather than the optimizer implementation:
+```text
+optimizer rule
+    → closed-loop trajectory through weight space
+    → reached weights
+    → embedding geometry and dimension utility
+    → full-corpus retrieval
+```
 
-- best final nDCG@10: AdamW 0.5899, Muon 0.5923, NorMuon 0.5934;
-- best-run task wins/losses against AdamW: Muon 10/4, NorMuon 11/3;
-- four-rate final medians: 0.5858, 0.5901, and 0.5910;
-- rates reaching the frozen AdamW reference: 2/4, 3/4, and 3/4; and
-- fastest observed time to that reference: about 1.41 hours for AdamW versus 0.75 hours for each
-  Muon-family optimizer.
+A scientific explanation must cross this chain. An intrinsic update property, a one-step proxy, or
+an optimizer-separating visualization is insufficient by itself.
 
-The speed claim must remain precise. Muon and NorMuon have only 0.95x and 0.93x AdamW throughput on
-this stack. They can reach quality sooner at a good rate; they do not execute each step faster.
+## Central questions
 
-These historical results are exploratory because BEIR reveals the best rate and training used the
-packed path. They are nevertheless coherent evidence across rate, checkpoint, task, and
-time-to-quality views, not a single favorable cell.
+1. Across a predeclared learning-rate surface, do AdamW, Muon, and NorMuon produce different
+   DenseOn retrieval outcomes and learning dynamics?
+2. How do their reached weight states differ in displacement, effective rank, row allocation, and
+   subspace?
+3. Do those states use the 768 embedding dimensions differently—not only in covariance rank, but
+   in helpful, redundant, and degrading contributions to retrieval?
+4. Which weight- or representation-space measurements predict full-corpus retrieval when an entire
+   learning-rate dose is unseen?
+5. After a fixed continuation horizon, does a source-state advantage persist on average, and does
+   the relative continuation preference depend on the reached state?
 
-### 2. The obvious mechanism is wrong
+## Main experiment
 
-If Muon simply provides a better descent direction, then a norm-matched step from identical weights
-should improve the retrieval proxy more. It does not:
+- Model: `lightonai/DenseOn-unsupervised`, pinned revision.
+- Data: one deterministic 500,000-query view.
+- Contrastive group: one positive and seven seeded hard negatives.
+- In-batch and cross-device negatives: disabled.
+- Maximum query/document length: 8,192.
+- Objective: cosine InfoNCE, temperature 0.02.
+- Schedule: one epoch, global batch 128, five retained stages.
+- Optimizers: AdamW, Muon, NorMuon.
+- Surface: four predeclared learning rates per optimizer.
+- Evaluation: exact nDCG@10 on 14 pinned decontaminated BEIR tasks.
+- Compute: two disjoint four-GPU pools.
 
-- matched-step mean margin gains are AdamW 0.0009, Muon 0.0006, and NorMuon 0.0005;
-- Muon/NorMuon have recognizable spectral and row-allocation signatures, but those are operator
-  fingerprints; and
-- the optimizers select different adverse query tails rather than uniformly improving one shared
-  set.
+The primary estimand averages all four learning-rate cells within optimizer at the final stage. It
+is a statement about the tested surface, not the best observed cell. Three pairwise optimizer
+contrasts receive common-resample simultaneous max-T task-level intervals. A validation-selected
+recipe and all five trajectory stages are secondary, fully reported views.
 
-This creates the paper's main scientific puzzle: how does a locally weaker update lead to a better
-full trajectory?
+## Weight-state analysis
 
-### 3. Repeated updates change the problem being optimized
+At each retained checkpoint, measure:
 
-The working answer is an **optimizer-induced trajectory effect**. Committing an update changes later
-weights, gradients, and optimizer state, so a one-step ordering need not persist.
+- saved-checkpoint segment magnitude as the joint displacement Frobenius norm divided by the
+  joint current hidden-weight norm, not an average of matrix-wise ratios;
+- cumulative displacement from the pretrained state;
+- stable- and entropy-effective-rank fractions;
+- row-norm coefficient of variation and top-1% row-energy share;
+- rank-16 left and right subspace overlap over all unordered run pairs at matched stage, with
+  optimizer-pair summaries averaging all rate pairs equally.
 
-Evidence that belongs in the main text:
+The retained-checkpoint segment is not called a per-step optimizer update. These measurements can
+describe how trajectories diverge, but they explain retrieval only if they add out-of-dose
+predictive value.
 
-- AdamW--Muon same-gradient update cosine falls from 0.537 at the pretrained anchor toward 0.463
-  along the Muon trajectory, while Muon--NorMuon remains near 0.971;
-- at terminal anchors, Muon/NorMuon align less with the same terminal gradient than AdamW;
-- in three shared-start seeds, Muon finishes with a positive unseen-margin contrast every time; and
-- Muon-family checkpoints move about twice as far in hidden-weight space for nearly the same
-  fixed-probe score drift.
+Retain the original approximate measurements and the separately defined full-spectrum sensitivity.
+Full-spectrum entropy rank and renormalized truncated-spectrum entropy rank have different
+definitions, not merely different numerical precision. The full-spectrum rank summaries are
+parameter-weighted over nonzero matrices; make that denominator explicit. Neither branch replaces
+the other or silently selects a more favorable descriptor.
 
-The cosine evidence is post hoc and descriptive. The shared-start intervention establishes an
-accumulated functional effect, but its frozen joint tail endpoint is mixed. The paper may say that
-the benefit emerges along the trajectory; it may not claim formal mediation through state feedback.
+## Functional dimension-utilization analysis
 
-### 4. The familiar spectral story fails
+The dimension analysis follows the functional distinction in
+[Takeshita et al. (EMNLP 2025)](https://aclanthology.org/2025.emnlp-main.1410/) while adding a
+change-of-basis control.
 
-Spectral flattening is not the novelty. The study tries to make it explanatory and fails:
+For every checkpoint on a frozen 224-query, 14-task probe:
 
-- early tail spectral energy does not improve leave-one-seed-out prediction of final loss p95 or
-  unseen margin p05;
-- interpolating Muon singular values into the AdamW basis shows neither the required dose response
-  nor tail-band localization;
-- spectrum features do not beat basis controls in held-run prediction of the next BEIR checkpoint;
-  and
-- routing-matched hybrid AdamW changes mean retrieval by only +0.000077, so parameter grouping is not
-  a sufficient recipe explanation.
+- compute query and document covariance stable/effective rank;
+- remove 20 shared random coordinate sets at each of 10%, 25%, 50%, and 75%;
+- delete each coordinate in turn and recompute shortlist nDCG and margin;
+- use task-mean margin deletion effects to compute helpful mass share, normalized helpful
+  participation, and degrading mass; analogous nDCG attributions remain descriptive;
+- repeat endpoint attribution after three shared Haar rotations that preserve full-vector cosine
+  scores.
 
-This negative mechanism result advances the story: Muon's retrieval behavior cannot be reduced to
-the most visually distinctive property of its update. The corrected nine-feature bridge is the only
-route by which a new geometry feature may enter the conclusion. It must lower pooled held-out RMSE
-and improve at least three of four leave-dose-index-out folds beyond optimizer, stage, and dose.
+For each coordinate, average the deletion effect within task before separating its sign. If H is
+total helpful mass and B is total degrading mass, the primary features are H/(H+B),
+H²/(768 × sum of squared helpful effects), and B. Zero denominators are zero by definition.
+Compute these nonlinear summaries within task before averaging tasks. The final-stage inference
+uses all four rates and one nine-contrast fixed-SE max-T family with 50,000 common task resamples.
+These are the existing source/protocol definitions, not a newly selected metric or analysis.
 
-### 5. Selecting Muon is a separate problem from Muon being good
+The paper never equates effective rank with useful dimensionality. High random-removal retention
+can mean redundancy, distributed coding, or cancellation. Native-coordinate effects are explicitly
+basis dependent. A claim that Muon uses coordinates more constructively requires simultaneous
+support for more helpful mass share, broader helpful participation, and less degrading mass. A
+direction stable across the three tested rotations is a robustness result, not proof of invariance
+under arbitrary bases or greater dimensional capacity. The factorial does not intervene on a
+particular geometric feature and cannot by itself establish that feature's causal role.
 
-The historical eight-way validator chooses 3e-3 for Muon and NorMuon, ten times the retrieval-optimal
-rate. Three new training views confirm that those selected recipes lose about 0.03 nDCG@10 to
-AdamW. This is not the main optimizer result; it is a model-selection failure.
+## Retrieval bridge
 
-The candidate-breadth audit first tests whether seven negatives are too narrow. Its prerequisite
-fails: independent padded width-7 scoring cannot reproduce the packed validator. A two-example
-control changes a packed cosine score by as much as 0.211914, versus 0.001953 with forced padding.
-On the padded path, the high-dose advantage is absent before widening from 7 to 2,048 candidates.
+Every candidate feature is added separately to a baseline with:
 
-The consequence is specific:
+- optimizer identity;
+- checkpoint stage;
+- centered log10 learning-rate dose within optimizer.
 
-- do not describe the negative three-seed selected-recipe result as evidence that Muon is bad;
-- do describe it as evidence that a batch-dependent selector can miss Muon's useful region;
-- do not pool historical packed and corrected padded executions; and
-- let the corrected 12-run matrix govern the final optimizer recommendation.
+Four folds each hold out one ordered dose index for all optimizers and stages. Support requires
+lower pooled held-out RMSE and improvement in at least three of four folds. All frozen features are
+reported, including unsupported and unidentified comparisons. Predictive support is not causal
+mediation, and held-out-dose performance is not held-out-task generalization.
 
-## Final paper structure
+## Conditional continuation experiment
 
-1. **Introduction:** the positive Muon result and the locally-weaker/globally-better paradox.
-2. **Why retrieval is different:** shortlist training, corpus ranking, and the four-link evidence
-   chain.
-3. **Controlled study:** only the design needed to follow the argument.
-4. **Muon reaches better retrievers---and validation misses them:** result, task breadth,
-   time-to-quality, then the selection reversal.
-5. **Why model selection hides the useful Muon regime:** candidate-breadth falsification and packed
-   execution audit, ending in the clean replication.
-6. **Corrected independently padded replication:** generated primary all-rate result, secondary
-   selected-recipe result, five-stage dynamics, and the compact systems summary. The three-contrast
-   all-rate table stays in the main narrative; the same source-bound all-rate finding is injected
-   into the abstract and Conclusion; the complete nine-feature bridge and execution-path
-   sensitivity tables are reported in the appendix.
-7. **A trajectory effect, but not a spectral explanation:** same-state step, shared-start
-   accumulation, weight/function distance, failed spectral chain, and corrected predictive bridge.
-8. **Discussion:** optimizer quality versus optimizer selection; time-to-quality versus throughput;
-   geometry fingerprints versus explanations.
-9. **Conclusion:** the source-bound corrected optimizer verdict first, then one mechanism statement
-   and one selection statement. The complete historical packed-selector claim is an audited
-   appendix record, not the main conclusion.
+Take one 60% AdamW-reached state and one matched-stage Muon-reached state. Reset all optimizer
+history and cross each source state with AdamW and Muon continuation:
 
-Protocol inventories, source hashes, scope history, full numerical diagnostics, all learning-rate
-cells, all per-task cells, and LateOn provenance belong in the appendix or repository. They should
-not interrupt the argument.
+| Source state | Reset AdamW | Reset Muon |
+|---|---:|---:|
+| AdamW-reached | A→A | A→M |
+| Muon-reached | M→A | M→M |
 
-## Corrected result branch points
+The hidden update-to-weight ratio is matched on the fixed calibration probe, not on the first
+realized shuffled-batch update or every subsequent step. All cells use the same
+50,000-query horizon under three fixed data-order seeds. The factorial estimates:
 
-The narrative spine stays fixed, but the final wording follows the independently padded matrix:
+- source-state effect: average post-continuation difference between the two fixed reached states;
+- continuation-operator effect: average endpoint difference between reset Muon and reset AdamW;
+- interaction: whether the continuation effect depends on which state was reached.
 
-- **Muon positive:** the historical advantage replicates; headline Muon's all-rate robustness and
-  ask which frozen geometry feature, if any, predicts the gain.
-- **Muon inconclusive:** historical evidence remains promising but execution-sensitive; emphasize
-  that the effect size is smaller than the current design can resolve.
-- **Muon negative:** the historical advantage was specific to packed training; the contribution
-  becomes a strong execution-path result, while retaining the local-to-global trajectory analysis as
-  a bounded historical mechanism study.
+These are contrasts of final scores after 50K continuation, not gains relative to the starting
+checkpoints or a decomposition of the primary 500K result. For endpoint means AA, AM, MA and MM,
+the diagonal difference MM-AA equals the state plus operator contrasts; the interaction is not a
+third additive component. An averaged benefit need not hold within both states or operators, and
+positive interaction may mean less harm rather than benefit. Separate marginal intervals are not
+simultaneous coverage; an inconclusive interval establishes neither equivalence nor dominance of
+another contrast.
 
-No branch may be chosen before all 12 runs, 60 checkpoints, 840 BEIR task units, validation outputs,
-geometry rows, and source-bound audits are complete.
+The [scientific claim review](../reports/paper-review/factorial-claims-v1/README.md) preserves
+counterexamples to the older wording and the original candidate. Its narrower interpretation is
+now integrated in the isolated manuscript/renderer under a separate
+[publication-only amendment](../configs/dense_no_packing_state_operator_claim_wording_amendment.json).
+The numerical design is unchanged, and no runtime deployment has occurred. The experiment remains
+useful for conditional continuation responses, not proof of feature mediation.
 
-## Prospective state-by-operator factorial
+## Main-paper structure
 
-The paper needs a positive explanation only if it survives a direct attempt to separate the state
-reached by an optimizer from the operator applied next. The historical fixed-state interventions
-contain a useful but post-hoc crossover: on AdamW trajectory anchors, a matched Muon step often
-looks better than AdamW, while on Muon trajectory anchors that ordering often reverses. This rejects
-a state-invariant ranking of isolated directions, but it is not yet a mechanism result.
+1. **Introduction:** optimizer choice as weight-state selection; explanatory chain and hypotheses.
+2. **From updates to retrieval states:** why an operator fingerprint is not an outcome.
+3. **Related work:** dense retrieval, matrix optimizers, representation dimensionality.
+4. **Experimental design:** one controlled DenseOn surface and frozen inference.
+5. **Optimizer effects on dense retrieval:** primary contrasts and five-stage dynamics.
+6. **How the optimizers reshape the retriever:** weight trajectories, dimension utility, and
+   out-of-dose bridges.
+7. **How reached states respond to further optimization:** conditional crossed continuation.
+8. **Discussion and conclusion:** result-contingent interpretation, scope, and transfer implications.
 
-The corrected follow-up is frozen in
-`configs/dense_no_packing_state_operator_factorial_protocol.json`. At the 60% checkpoints of the
-historically retrieval-optimal AdamW and Muon rates, it crosses two weight states with two reset
-continuation operators on the same 50K branch view and three fixed order seeds. The fixed
-calibration-probe hidden update is scale matched in every cell; this does not assert that the first
-training batch produces an identical realized update. Final full-corpus BEIR yields three
-predeclared contrasts:
-the carried weight-state effect, the continuation-operator effect, and their interaction.
+Implementation debugging and invalid exploratory runs are excluded from the paper. They remain in
+the repository's engineering provenance but are not scientific results, contributions, limitations,
+or narrative transitions.
 
-Its exact calibration, reset-continuation training, padded probe, final-BEIR, and two-way bootstrap
-implementation is independently source-bound in
-`configs/dense_no_packing_state_operator_factorial_implementation_protocol.json`; execution and
-interpretation commands are documented in `docs/state-operator-factorial.md`.
-The result-independent paper branches and automatic post-main handoff are separately bound in the
-factorial publication and completion protocols. Once its summary exists, the strict paper audit
-rejects a pending or hand-edited mechanism conclusion.
+## Result-contingent interpretation
 
-This factorial decides what the mechanism section is allowed to say:
+- **Muon retrieval gain + source-state effect:** the fixed Muon source has an averaged advantage
+  after continuation; this need not hold under each continuation rule.
+- **Muon retrieval gain + operator effect:** Muon has an averaged continuation benefit for the
+  fixed pair, not necessarily a benefit within both states.
+- **Muon retrieval gain + interaction:** relative continuation preference depends on source state;
+  the sign alone does not prove beneficial co-adaptation or explain the primary gain.
+- **Muon retrieval gain + predictive dimension feature:** representation utility supplies a
+  testable bridge from weight trajectory to corpus ranking.
+- **Muon retrieval gain + no supported bridge/factorial effect:** report the gain and which
+  explanations remain unsupported; lack of support alone does not falsify every mechanism or
+  establish equivalent states.
+- **No established Muon retrieval gain:** distinguish an estimated disadvantage from inconclusive
+  evidence in the fixed primary comparison. Weight-space differences remain descriptive unless
+  independently linked to retrieval; do not infer a universal negative result about Muon.
 
-- a weight-state effect means Muon reaches weights whose advantage survives an optimizer reset;
-- an operator effect means Muon's transform helps from both source states;
-- a positive interaction means the Muon state and Muon continuation reinforce one another, which
-  is the direct evidence needed for a closed-loop state-feedback account; and
-- no stable contrast means the paper keeps the positive retrieval result but makes no positive
-  mechanism claim.
+## Claim firewall
 
-NorMuon is intentionally excluded from this factorial. It remains a secondary optimizer ablation;
-the causal story being tested is the AdamW--Muon comparison that anchors the paper.
-
-## Claim discipline
-
-Use these distinctions consistently:
-
-| Observation | Permitted wording | Forbidden shortcut |
+| Observation | Supports | Does not support alone |
 |---|---|---|
-| Better best/median historical BEIR | promising coherent Muon region | universal Muon superiority |
-| Faster first passage at one good rate | lower observed time-to-quality | faster optimizer implementation |
-| Weaker same-state mean step, better final run | trajectory-level emergence | formal mediation by state feedback |
-| Distinct spectrum/row statistics | optimizer fingerprint | retrieval mechanism |
-| Failed spectral prediction/intervention | tested spectral account rejected | no geometric mechanism can exist |
-| Packed selection failure | validator misses useful region | Muon intrinsically overfits seven negatives |
-| Historical/corrected difference | execution-path sensitivity | randomized causal effect of packing |
-| Corrected geometry prediction | candidate predictive bridge | causal mediation |
+| flatter Muon update spectrum | operator identity and implementation check | better retrieval |
+| larger cumulative displacement | a different optimization path | more useful representation |
+| higher effective rank | broader covariance support | constructive coordinate use |
+| better random-removal retention | robustness to coordinate deletion | basis-independent dimension use |
+| out-of-dose prediction gain | candidate retrieval bridge | causal mediation |
+| source-state factorial effect | averaged post-continuation difference for the fixed pair | benefit under both operators, or decomposition of the primary gain |
+| state-by-operator interaction | a difference in relative continuation responses | benefit in both states or full-trajectory co-adaptation |
 
-## Scope disclosure
+## Submission gates
 
-The active paper is DenseOn-only. LateOn was removed by a user-directed, post-hoc scope amendment
-after some exploratory outputs were visible because it was much slower and less central to the
-intended audience. LateOn is not pooled with DenseOn, used as replication, or allowed to determine
-headline wording. Its complete provenance remains auditable. The dated authoritative record is
-`configs/dense_scope_amendment.json`.
+The paper is submission-ready only when:
 
-## Finalization checklist
-
-- Replace the outcome-neutral corrected paragraph only through the source-bound publication
-  renderer after all corrected audits pass.
-- Verify that the renderer has inserted the same all-rate Muon-versus-AdamW and
-  NorMuon-versus-AdamW finding into both the abstract and main Conclusion.
-- Confirm that main-text figures show the positive retrieval surface and the local-to-global
-  paradox, not a wall of protocol tables.
-- Keep only one compact causal-chain decision table in the main paper; full estimates remain in the
-  appendix.
-- Rebuild the PDF and verify the eight-page main-text boundary, float topology, citations, source
-  hashes, and absence of pending result macros or Type 3 fonts.
+- all 12 primary runs and 60 checkpoints are complete and remotely audited;
+- all 840 checkpoint-task BEIR units are present;
+- corrected weight-state and dimension exports pass source hashes;
+- all dimension contrasts, rotation controls, and retrieval bridges are rendered;
+- all 12 factorial branches, 60 probe checkpoints, and 168 factorial BEIR units are complete;
+- the paper has no pending result macro, exceeds neither the 200-word abstract limit nor the
+  eight-page main-text limit, and contains no unsupported causal language;
+- a clean clone reproduces every manuscript table from the portable evidence closure.

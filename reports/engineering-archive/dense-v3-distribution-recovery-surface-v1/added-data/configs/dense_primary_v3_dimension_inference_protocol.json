@@ -1,0 +1,342 @@
+{
+  "bridge_numerics": {
+    "association": "Exact rational baseline residuals and average-rank ties; zero residual or numerically unresolved nonzero feature/outcome direction has undefined association",
+    "boundary": "Numerical resolution is a declared input-stability convention, not statistical significance or causal identification; tiny exact improvements remain tiny",
+    "display": "80-digit Decimal square roots and cancellation-safe RMSE subtraction converted to finite floats; display precision never decides improvement",
+    "inputs": "Every finite binary64 bridge value is its exact rational value; no decimal rounding or denominator approximation",
+    "ols": "Exact rational eight-column baseline and one-feature Frisch-Waugh-Lovell decomposition; no regularization",
+    "redundancy": "Exactly zero training residual yields baseline-equivalent predictions only if that same relation extends to every held-out row; otherwise augmented prediction is unidentified",
+    "resolution": "Nonzero added direction must have full rank under eps64 * max(rows,9) * leading singular value on the training-standardized augmented design",
+    "standardization": "Training-only affine feature standardization is algebraically eliminated using the intercept; retain its exact mean/variance and display scale",
+    "support": "Compare exact rational MSE; strictly lower pooled MSE and strictly lower in at least three of four folds; identical mathematical RMSE ordering",
+    "undefined": "Any unidentified/unresolved fold makes the full pooled augmented comparison and usefulness flag undefined; retain all rows and never pool only available folds"
+  },
+  "formal_execution_authorized": false,
+  "manuscript_installation_authorized": false,
+  "parents": {
+    "dimensions": {
+      "bytes": 22259,
+      "path": "configs/dense_primary_v3_dimensions_protocol.json",
+      "sha256": "9246f7d15f141ba270eb4c839948c852ccc503de282f09090f58a0efdafe09f2"
+    },
+    "feature_acceptance": {
+      "bytes": 923453,
+      "path": "reports/engineering-archive/dense-v3-dimension-chain-v1/validation.json",
+      "sha256": "b76aaab4a672e6c9b550b559c82e142240152fc4ddfe02d77743a523fe14eaa0"
+    },
+    "named_family_acceptance": {
+      "bytes": 299402,
+      "path": "reports/engineering-archive/dense-v3-exact-bridge-v1/validation.json",
+      "sha256": "f43a9049a4cc2022ef6a6262c18fa80f4f2088d0ee465da8a3d708bbd848a077"
+    },
+    "original_bridge": {
+      "bytes": 8767,
+      "path": "configs/dense_primary_v3_bridge_protocol.json",
+      "sha256": "540c3c3041ea13d9029fb5534283187b4f4141dfc66eba668938a7dc7d8ae803"
+    },
+    "primary": {
+      "bytes": 19832,
+      "path": "configs/dense_primary_v3_protocol.json",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    },
+    "scientific": {
+      "bytes": 7792,
+      "path": "configs/dense_dimension_utilization_protocol.json",
+      "sha256": "de56772ef84745c074940527d621a932a06a20e865a10bc3faad823bcb0e651e"
+    }
+  },
+  "prepared_at_utc": "2026-09-07T01:00:11.788055+00:00",
+  "rules": {
+    "bridge_features": [
+      "margin_helpful_mass_share",
+      "margin_helpful_attribution_participation_ratio",
+      "margin_degrading_attribution_mass",
+      "random_50pct_relative_shortlist_ndcg"
+    ],
+    "constructive": "All three original desired-direction simultaneous intervals must pass; failure of the joint rule is not equivalence",
+    "figures": "68 original all-rate task-first descriptive points; no confidence bands, selected stage/rate or fitted trajectory",
+    "missing_prediction": "Report an undefined usefulness flag distinctly from a false flag; no available-fold pooling",
+    "original_geometry_features": "Authenticate and retain every original geometry/outcome bridge column; add four distinct functional names without substituting legacy slots",
+    "primary_features": [
+      "margin_helpful_mass_share",
+      "margin_helpful_attribution_participation_ratio",
+      "margin_degrading_attribution_mass"
+    ],
+    "rotation": "All three tested rotations must preserve all three required mean directions; descriptive sign stability is not arbitrary-basis invariance",
+    "scope": "The eight-candidate probe is not full-corpus retrieval; dose-held-out prediction is not task-held-out generalization, mediation or causal explanation",
+    "task_family": "Original 14 paired task units, all four rates, one nine-contrast final-stage fixed-SE max-T family; no seed-variability claim",
+    "zero_standard_error": "Preserve the original refusal for any nonpositive standard error; no reduced family or invented zero-width interval"
+  },
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scientific_rules": {
+    "claim_boundary": "This analysis can show that optimizer trajectories redistribute coordinate-level retrieval contributions and can test whether that redistribution predicts corrected BEIR out of dose. It cannot infer semantic independence of dimensions, and native-coordinate ablations are not rotation invariant.",
+    "corrected_primary_comparison": {
+      "bootstrap_samples": 50000,
+      "bootstrap_seed": 20260905,
+      "claim_rule": "Muon may be described as using native dimensions more constructively only if its helpful mass share and helpful participation are both higher and its degrading mass is lower than AdamW with all three simultaneous intervals excluding zero in the required directions.",
+      "co_primary_features": [
+        "margin_helpful_mass_share",
+        "margin_helpful_attribution_participation_ratio",
+        "margin_degrading_attribution_mass"
+      ],
+      "multiplicity_family": "Use one common-resample max-T critical value over all nine combinations of three co-primary features and three optimizer contrasts.",
+      "optimizer_summary": "Average all four predeclared learning-rate cells within optimizer at each retained stage.",
+      "rotation_boundary": "Even if the native-basis rule passes, use the phrase coordinate utilization unless the direction is stable across all three shared rotations.",
+      "trajectory": "Report all optimizer-by-stage means for every metric without selecting a stage.",
+      "uncertainty": "Use common task resamples and simultaneous max-T 95% intervals for Muon minus AdamW, NorMuon minus AdamW, and NorMuon minus Muon at the final stage.",
+      "unit": "BEIR task"
+    },
+    "figure_contract": {
+      "panel_a": "A trajectory map from common pretrained weights through optimizer-specific checkpoints to embedding-space dimensional metrics and full-corpus retrieval.",
+      "panel_b": "All-rate mean random-removal curves for AdamW, Muon, and NorMuon, with the pretrained curve as reference.",
+      "panel_c": "Optimizer-by-stage helpful share, helpful participation, and degrading mass; never show only a selected learning rate.",
+      "panel_d": "The crossed state-by-operator result, visually separated from the observational dimension bridge."
+    },
+    "retrieval_bridge": {
+      "baseline": [
+        "optimizer",
+        "checkpoint_stage",
+        "log10_learning_rate_within_optimizer"
+      ],
+      "candidate_features": [
+        "margin_helpful_mass_share",
+        "margin_helpful_attribution_participation_ratio",
+        "margin_degrading_attribution_mass",
+        "random_50pct_relative_shortlist_ndcg"
+      ],
+      "causal_boundary": "Predictive support is a representation-to-retrieval bridge, not mediation of the optimizer effect.",
+      "folds": "Leave one dose index out across all optimizers, producing four folds.",
+      "support": "A feature must reduce pooled held-out RMSE for mean full-corpus BEIR nDCG@10 and improve at least three of four folds. Report every feature regardless of support."
+    },
+    "rotation_control": {
+      "interpretation": "A native-coordinate difference that disappears or changes sign under shared rotations is basis-dependent and cannot support a coordinate-free claim that one optimizer uses more dimensions.",
+      "invariance_check": "Full cosine scores and ranks must agree before and after rotation to 1e-6 in float64.",
+      "scope": "pretrained state and all 12 final checkpoints",
+      "seeds": [
+        314159,
+        271828,
+        161803
+      ],
+      "transform": "Three shared deterministic Haar-orthogonal 768-by-768 matrices generated by Gaussian QR with sign-standardized diagonals."
+    }
+  },
+  "scope": "dense_primary_v3_functional_inference_preparation",
+  "sources": {
+    "configs/formal_runtime.json": {
+      "bytes": 1019,
+      "sha256": "b90de16b3796bb8e9d0badcedec688da55a037d46244a0d2a7f5838795cfe77a"
+    },
+    "scripts/prepare_dense_v3_bridge.py": {
+      "bytes": 2162,
+      "sha256": "1831fb88d487071c9546a0eec90c19f9a801a174530d138327d05ae50090c51d"
+    },
+    "scripts/prepare_dense_v3_dimension_inference.py": {
+      "bytes": 2537,
+      "sha256": "329a9910be55d23aa3f27a8dcbb82fa8f2545ad96a5a796a9d8d7e9380d327db"
+    },
+    "scripts/prepare_dense_v3_dimensions.py": {
+      "bytes": 2268,
+      "sha256": "9355509de13c7b5d949981aee5df1abde41e4ef89cb18591d88f45f4877982c7"
+    },
+    "scripts/prepare_dense_v3_exact_bridge.py": {
+      "bytes": 2406,
+      "sha256": "f1617a3b510913ccf3fd0e0d517e0da0a1e3f6ec8699b919c80819203db3889d"
+    },
+    "scripts/prepare_dense_v3_exact_geometry.py": {
+      "bytes": 1711,
+      "sha256": "7dc43ef867f1029971af759ab63775f63457fc17460e2642becc123df0ebc00f"
+    },
+    "scripts/prepare_dense_v3_geometry.py": {
+      "bytes": 2603,
+      "sha256": "3d3ba3b480c1c01ecdff40b6292f7011312eedb95f5b51f1a8579683e4adf97d"
+    },
+    "src/embed_optim/bridge_exact_arithmetic.py": {
+      "bytes": 7560,
+      "sha256": "0d66ce6e99aa42b8d93c8295cb0f5f3015ea7b7907a9f10fb095d95be2d646b4"
+    },
+    "src/embed_optim/bridge_named_features.py": {
+      "bytes": 8855,
+      "sha256": "c3106b8b118084b74b1fd9d3fffe6b25252de18ff3cd4ae5aef836c7ec7e564c"
+    },
+    "src/embed_optim/bridge_numerics.py": {
+      "bytes": 10557,
+      "sha256": "ff6c5b5019673d105a6f87cc7241a7b65b7199c2b5ad2cdaf37c5e55c1364c2c"
+    },
+    "src/embed_optim/config.py": {
+      "bytes": 7052,
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "src/embed_optim/corrected_geometry_summary.py": {
+      "bytes": 23632,
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    "src/embed_optim/corrected_input_execution.py": {
+      "bytes": 1255,
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "src/embed_optim/corrected_retrieval_bridge.py": {
+      "bytes": 26258,
+      "sha256": "347331a3c35d12a95188c0927a327b06bd30dd4ffa11b161c432117b4299eb10"
+    },
+    "src/embed_optim/dimension_inference.py": {
+      "bytes": 12992,
+      "sha256": "2ab97f49be1bc0fa57de12917da33553621d48193684848386ed0ab3e00c101c"
+    },
+    "src/embed_optim/dimension_inference_render.py": {
+      "bytes": 4963,
+      "sha256": "ba227baa25fed40c05f1bcb1ae2fb8969822c9593d54182a332ffd65c7bdbc5b"
+    },
+    "src/embed_optim/dimension_intervention_io.py": {
+      "bytes": 4831,
+      "sha256": "e2d3e4ea51857f99937692079c9923eca3da2d80e32d17e03a29d0f3cb33fb13"
+    },
+    "src/embed_optim/dimension_interventions.py": {
+      "bytes": 8825,
+      "sha256": "3728c1cb6155ea3200173c5816098581a787a861ec3598b8a6b49640d37deee4"
+    },
+    "src/embed_optim/dimension_publication.py": {
+      "bytes": 45170,
+      "sha256": "1120d125843789ef7a6aa32fff86d1845eddee16e7ff7d4e3410cd7d8e80761c"
+    },
+    "src/embed_optim/dimension_utilization.py": {
+      "bytes": 30424,
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    "src/embed_optim/exact_bridge_measurements.py": {
+      "bytes": 11728,
+      "sha256": "3060c7dd2a6b135b26d1ca76cd775dcbb33872b8fd2187868ff7d501bdbda50f"
+    },
+    "src/embed_optim/geometry.py": {
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "src/embed_optim/geometry_robustness.py": {
+      "bytes": 7184,
+      "sha256": "8816dd6340154cee0375357276f1a872da40fee758dd634f984a08a1ad78b04b"
+    },
+    "src/embed_optim/gpu_lease.py": {
+      "bytes": 7263,
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "src/embed_optim/optimizers.py": {
+      "bytes": 11839,
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_exact_geometry_kernels.py": {
+      "bytes": 11851,
+      "sha256": "0f2263493a86b44f72ddb7b0564a1f9089f300a5767ffcb5d42eec90c001fed4"
+    },
+    "src/embed_optim/primary_geometry_kernels.py": {
+      "bytes": 7418,
+      "sha256": "8c26a9c78b7b10b36aacbbe3e7c52b0fae8ae4c0baed96299a5a11975e1f9e5f"
+    },
+    "src/embed_optim/primary_geometry_reductions.py": {
+      "bytes": 960,
+      "sha256": "8e47b5eaf10979692a764776bc9c3e6b380cbc0d6b3dfc825e39b88aaa5ee443"
+    },
+    "src/embed_optim/primary_v3_bridge.py": {
+      "bytes": 10965,
+      "sha256": "bea3740f1bde59706b4309e7154a7de1dcc7ba8e3358688011fc4a523010878e"
+    },
+    "src/embed_optim/primary_v3_contract.py": {
+      "bytes": 9267,
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "src/embed_optim/primary_v3_dimension_contract.py": {
+      "bytes": 12569,
+      "sha256": "f00c33e3c33a444ebc1b280264fb2d3e4976457f978ec7646e3da2579174b605"
+    },
+    "src/embed_optim/primary_v3_dimension_exports.py": {
+      "bytes": 12136,
+      "sha256": "f3c7fefbb39ff3aa9ee89d6e134b71a8da7a850fb14e9924e0ec8ee2d36224da"
+    },
+    "src/embed_optim/primary_v3_dimension_inference.py": {
+      "bytes": 9441,
+      "sha256": "6961a5754243dc11bcbcf1462869e791559ff72d79db2456f3b4036d692e7f4e"
+    },
+    "src/embed_optim/primary_v3_dimension_vector_io.py": {
+      "bytes": 9563,
+      "sha256": "ea33869f8cf677ad0c15e8747b6d91045ba55a39301a8bf2c52f09bf642ed858"
+    },
+    "src/embed_optim/primary_v3_dimensions.py": {
+      "bytes": 9064,
+      "sha256": "416ec0a8b787a54693886192cc8ae4b9c4d583960b8aef0cd27d85afb1f8e4c5"
+    },
+    "src/embed_optim/primary_v3_exact_bridge.py": {
+      "bytes": 12426,
+      "sha256": "09fe7e4915d46806ab34bdc225c04ee579cfb2df115711b811538221c0adb140"
+    },
+    "src/embed_optim/primary_v3_exact_geometry.py": {
+      "bytes": 14434,
+      "sha256": "8dd9ee230426664bfd87ab690dd4590dda35564f51960b283fbe1a46a10a0b31"
+    },
+    "src/embed_optim/primary_v3_exact_geometry_io.py": {
+      "bytes": 9666,
+      "sha256": "53c5278380a95de3a706d803668ad4dac4f108763b05f981c4847b537f22e8f6"
+    },
+    "src/embed_optim/primary_v3_geometry.py": {
+      "bytes": 14429,
+      "sha256": "e5bb4ed03f36193391a5f9f088bd0fe04e774ee67081cf0eb2d2d79a18488159"
+    },
+    "src/embed_optim/primary_v3_geometry_io.py": {
+      "bytes": 11657,
+      "sha256": "3008e45e714fe6a599d77197e86c74db80c664f08155568369af95e308d16696"
+    },
+    "src/embed_optim/primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    "src/embed_optim/primary_v3_validation.py": {
+      "bytes": 15105,
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    "src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    "src/embed_optim/primary_weight_entries.py": {
+      "bytes": 12687,
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    "src/embed_optim/probe_export.py": {
+      "bytes": 20602,
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    "src/embed_optim/probes.py": {
+      "bytes": 13945,
+      "sha256": "15a8212e3bf58820e0eaaf22aa8e5f4413d5e4d320036b8f29f761552dd70a8c"
+    },
+    "src/embed_optim/runtime.py": {
+      "bytes": 6928,
+      "sha256": "6c6d143a0adb61f653bbe9e1143166670b8550e49104e41da5745c4c76d1f311"
+    }
+  },
+  "status": "prepared_not_execution_authorized",
+  "table_counts": {
+    "bridge_rows": 60,
+    "feature_prediction_summary": 4,
+    "figure_points": 68,
+    "held_out_predictions": 240,
+    "leave_dose_fold_metrics": 16,
+    "optimizer_stage_metrics": 15,
+    "primary_contrasts": 9,
+    "residual_associations": 4,
+    "rotation_contrasts": 27
+  },
+  "undefined_policy": {
+    "absent_row_or_column": "Error; missing coverage is not an undefined measurement",
+    "baseline": "Retain the exact complete baseline predictions even when a feature is undefined",
+    "input_panel": "Authenticate the complete original bridge panel; additional columns keep their own explicit names and do not replace any legacy feature",
+    "partial_fit": "Never fit on available measurements, drop a stage/rate or synthesize a feature value",
+    "undefined_measurement": "A legitimate None measurement retains every input row; all four augmented folds, complete pooled comparison and association for that feature are undefined"
+  }
+}

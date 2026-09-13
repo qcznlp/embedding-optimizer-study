@@ -1,0 +1,30 @@
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+When using DistributedDataParallel (DDP), it is recommended to set `dataloader_drop_last=True` to avoid hanging issues with an uneven last batch. Setting `dataloader_drop_last=True`.
+Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in ModernBertModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 17195.03it/s]
+/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/src/embed_optim/factorial_v3_factory.py:148: FutureWarning: The `get_sentence_embedding_dimension` method has been renamed to `get_embedding_dimension`.
+  or model.get_sentence_embedding_dimension() != 768
+Computing widget examples:   0%|          | 0/1 [00:00<?, ?example/s]                                                                     Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 15560.26it/s]
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/tmp/dense-v3-paired-backward.lNjcKc0t/probe.py", line 388, in <module>
+[rank2]:     globals()[args.mode](args)
+[rank2]:   File "/tmp/dense-v3-paired-backward.lNjcKc0t/probe.py", line 286, in worker
+[rank2]:     trainer.train(resume_from_checkpoint=binding['path'])
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py", line 1424, in train
+[rank2]:     return inner_training_loop(
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py", line 1506, in _inner_training_loop
+[rank2]:     self._run_epoch(
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py", line 1756, in _run_epoch
+[rank2]:     grad_norm = self._clip_grad_norm(model)
+[rank2]:                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py", line 2493, in _clip_grad_norm
+[rank2]:     return self.accelerator.clip_grad_norm_(model.parameters(), self.args.max_grad_norm)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/tmp/dense-v3-paired-backward.lNjcKc0t/probe.py", line 253, in stop_before_clip
+[rank2]:     losses = paired.repeated_backward(trainer, raw_batches, capture.rng_at_first_input,
+[rank2]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/tmp/dense-v3-paired-backward.lNjcKc0t/paired.py", line 29, in repeated_backward
+[rank2]:     raise ValueError('Require four fixed explicit-loss batches without item-count scaling')
+[rank2]: ValueError: Require four fixed explicit-loss batches without item-count scaling

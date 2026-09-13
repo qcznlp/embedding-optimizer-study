@@ -1,0 +1,767 @@
+{
+  "complete": true,
+  "contract": {
+    "arguments": {
+      "completion_ledger": "/root/embedding-optimizer-study/logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "final_grace_seconds": 180.0,
+      "full_receipt_root": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup",
+      "matrix": "/root/embedding-optimizer-study/configs/dense_no_packing_retrain.yaml",
+      "receipt_root": "/root/embedding-optimizer-study/reports/dense-no-packing/incremental-checkpoint-backup",
+      "remote_prefix": "corrected-dense-no-packing-v1/dense",
+      "repo_id": "qcz/embedding-optimizer-study-checkpoints",
+      "stability_seconds": 2.0
+    },
+    "schema_version": 1,
+    "sha256": "a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7",
+    "sources": [
+      {
+        "bytes": 21720,
+        "path": "src/embed_optim/sealed_checkpoint_supervisor.py",
+        "sha256": "23e564aadf3db8d4386ad4f3a7e83384adfc4268a9397f7526bf10ad6b250299"
+      },
+      {
+        "bytes": 14334,
+        "path": "src/embed_optim/incremental_checkpoint_backup.py",
+        "sha256": "8dd0f34e9fa18bd2c0ebff6665f008cf3f388f34550489a51bc84c028bd27b47"
+      },
+      {
+        "bytes": 1601,
+        "path": "configs/dense_no_packing_retrain.yaml",
+        "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+      }
+    ]
+  },
+  "covered_checkpoints": 60,
+  "cycle_failures": 0,
+  "expected_checkpoints": 60,
+  "finished_at_utc": "2026-09-05T10:44:08Z",
+  "observed_at_utc": "2026-09-05T10:44:08Z",
+  "pending_checkpoints": 0,
+  "runs": {
+    "padded-adamw-1e-5": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "2bdb14b41bf1d7762852ead97d55536696d0aa03",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-5"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "2bdb14b41bf1d7762852ead97d55536696d0aa03",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-5"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "2bdb14b41bf1d7762852ead97d55536696d0aa03",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-5"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "2bdb14b41bf1d7762852ead97d55536696d0aa03",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-5"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "2bdb14b41bf1d7762852ead97d55536696d0aa03",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-5"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "adamw",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-adamw-1e-6": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-6"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-6"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-6"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-6"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "71c58f98367eea5a15464163600a22c2005f7c76",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-1e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-1e-6"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "adamw",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-adamw-3e-5": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "9eced7f36ea2865d1086fb68e369475a461e2995",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-5"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "9eced7f36ea2865d1086fb68e369475a461e2995",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-5"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "9eced7f36ea2865d1086fb68e369475a461e2995",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-5"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "9eced7f36ea2865d1086fb68e369475a461e2995",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-5"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "9eced7f36ea2865d1086fb68e369475a461e2995",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-5.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-5"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "adamw",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-adamw-3e-6": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-6"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-6"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-6"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-6"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "fd47604c588deae679e17411a6acfc0d455613f9",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-adamw-3e-6.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-adamw-3e-6"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "adamw",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-muon-1e-3": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "43d33db0309e6eb60e98e7cdad316140a5f35188",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-3"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "43d33db0309e6eb60e98e7cdad316140a5f35188",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-3"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "43d33db0309e6eb60e98e7cdad316140a5f35188",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-3"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "43d33db0309e6eb60e98e7cdad316140a5f35188",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-3"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "43d33db0309e6eb60e98e7cdad316140a5f35188",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-3"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "muon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-muon-1e-4": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "fc3be88227387b943f0b8ca7207aacd4013cb554",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-4"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "fc3be88227387b943f0b8ca7207aacd4013cb554",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-4"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "fc3be88227387b943f0b8ca7207aacd4013cb554",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-4"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "fc3be88227387b943f0b8ca7207aacd4013cb554",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-4"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "fc3be88227387b943f0b8ca7207aacd4013cb554",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-1e-4"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "muon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-muon-3e-3": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "eace1231635d24ad48a88fa961218945cccc61c0",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-3"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "eace1231635d24ad48a88fa961218945cccc61c0",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-3"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "eace1231635d24ad48a88fa961218945cccc61c0",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-3"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "eace1231635d24ad48a88fa961218945cccc61c0",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-3"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "eace1231635d24ad48a88fa961218945cccc61c0",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-3"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "muon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-muon-3e-4": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "b78f81f89e65180fec08817d152ee72a9ab68ba3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-4"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "b78f81f89e65180fec08817d152ee72a9ab68ba3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-4"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "b78f81f89e65180fec08817d152ee72a9ab68ba3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-4"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "b78f81f89e65180fec08817d152ee72a9ab68ba3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-4"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "b78f81f89e65180fec08817d152ee72a9ab68ba3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-muon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-muon-3e-4"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "muon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-normuon-1e-3": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "8d9209e6eae6aadf3da16ca026d21939c58c2908",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-3"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "8d9209e6eae6aadf3da16ca026d21939c58c2908",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-3"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "8d9209e6eae6aadf3da16ca026d21939c58c2908",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-3"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "8d9209e6eae6aadf3da16ca026d21939c58c2908",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-3"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "8d9209e6eae6aadf3da16ca026d21939c58c2908",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-3"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "normuon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-normuon-1e-4": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "2ba6b3100c163a9f4e31aa6dea49af867987dee4",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-4"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "2ba6b3100c163a9f4e31aa6dea49af867987dee4",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-4"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "2ba6b3100c163a9f4e31aa6dea49af867987dee4",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-4"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "2ba6b3100c163a9f4e31aa6dea49af867987dee4",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-4"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "2ba6b3100c163a9f4e31aa6dea49af867987dee4",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-1e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-1e-4"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "normuon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-normuon-3e-3": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "fdd851584951e60457a2a83bb0380a9c11b969d3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-3"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "fdd851584951e60457a2a83bb0380a9c11b969d3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-3"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "fdd851584951e60457a2a83bb0380a9c11b969d3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-3"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "fdd851584951e60457a2a83bb0380a9c11b969d3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-3"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "fdd851584951e60457a2a83bb0380a9c11b969d3",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-3.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-3"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "normuon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    },
+    "padded-normuon-3e-4": {
+      "checkpoints": {
+        "1563": {
+          "coverage": {
+            "commit_oid": "e0c85c8d8d4e22c76faf660b0fdcd477f37df0ae",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-4"
+          },
+          "status": "covered"
+        },
+        "2345": {
+          "coverage": {
+            "commit_oid": "e0c85c8d8d4e22c76faf660b0fdcd477f37df0ae",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-4"
+          },
+          "status": "covered"
+        },
+        "3126": {
+          "coverage": {
+            "commit_oid": "e0c85c8d8d4e22c76faf660b0fdcd477f37df0ae",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-4"
+          },
+          "status": "covered"
+        },
+        "3907": {
+          "coverage": {
+            "commit_oid": "e0c85c8d8d4e22c76faf660b0fdcd477f37df0ae",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-4"
+          },
+          "status": "covered"
+        },
+        "782": {
+          "coverage": {
+            "commit_oid": "e0c85c8d8d4e22c76faf660b0fdcd477f37df0ae",
+            "kind": "full_run_receipt",
+            "receipt": "/root/embedding-optimizer-study/reports/dense-no-packing/checkpoint-backup/padded-normuon-3e-4.json",
+            "remote_prefix": "corrected-dense-no-packing-v1/dense/padded-normuon-3e-4"
+          },
+          "status": "covered"
+        }
+      },
+      "covered_checkpoints": 5,
+      "expected_steps": [
+        782,
+        1563,
+        2345,
+        3126,
+        3907
+      ],
+      "optimizer": "normuon",
+      "schedule_ready": true,
+      "status": "covered_by_full_run_receipt"
+    }
+  },
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "corrected_dense_no_packing_checkpoint_durability",
+  "started_at_utc": "2026-09-03T22:06:27Z",
+  "status": "complete"
+}

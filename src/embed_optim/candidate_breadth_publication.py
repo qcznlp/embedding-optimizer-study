@@ -515,7 +515,7 @@ def render_candidate_breadth_publication(
     protocol_path: str | Path = "configs/candidate_breadth_probe.json",
     *,
     summary_dir: str | Path = "reports/candidate-breadth",
-    paper_path: str | Path = "paper/generated/candidate-breadth.tex",
+    paper_path: str | Path = "reports/engineering-archive/candidate-breadth-paper-fragment.tex",
     manifest_path: str | Path = "reports/candidate-breadth/publication_manifest.json",
     audit_only: bool = False,
 ) -> dict[str, Any]:
@@ -566,13 +566,17 @@ def render_candidate_breadth_publication(
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Render or audit the post-hoc candidate-breadth paper artifact"
+        description="Render or audit the archived post-hoc candidate-breadth artifact"
     )
     parser.add_argument(
         "--protocol", type=Path, default=Path("configs/candidate_breadth_probe.json")
     )
     parser.add_argument("--summary-dir", type=Path, default=Path("reports/candidate-breadth"))
-    parser.add_argument("--paper", type=Path, default=Path("paper/generated/candidate-breadth.tex"))
+    parser.add_argument(
+        "--paper",
+        type=Path,
+        default=Path("reports/engineering-archive/candidate-breadth-paper-fragment.tex"),
+    )
     parser.add_argument(
         "--manifest",
         type=Path,

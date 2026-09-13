@@ -1,0 +1,440 @@
+{
+  "config": {
+    "bf16": true,
+    "data_seed": 314159,
+    "fp16": false,
+    "gradient_accumulation_steps": 4,
+    "gradient_checkpointing": true,
+    "learning_rate": 0.0001503935010596411,
+    "logging_first_step": true,
+    "logging_steps": 10,
+    "max_grad_norm": 1,
+    "num_train_epochs": 1,
+    "per_device_train_batch_size": 8,
+    "report_to": [
+      "wandb"
+    ],
+    "run_name": "factorial-v3-adamw_state-adamw-seed314159",
+    "seed": 314159,
+    "tf32": true,
+    "warmup_ratio": null,
+    "warmup_steps": 0.1
+  },
+  "config_keys_not_values": [
+    "_name_or_path",
+    "accelerator_config",
+    "adam_beta1",
+    "adam_beta2",
+    "adam_epsilon",
+    "architectures",
+    "attention_bias",
+    "attention_dropout",
+    "auto_find_batch_size",
+    "average_tokens_across_devices",
+    "batch_eval_metrics",
+    "bf16",
+    "bf16_full_eval",
+    "bos_token_id",
+    "chunk_size_feed_forward",
+    "classifier_activation",
+    "classifier_bias",
+    "classifier_dropout",
+    "classifier_pooling",
+    "cls_token_id",
+    "data_seed",
+    "dataloader_drop_last",
+    "dataloader_num_workers",
+    "dataloader_persistent_workers",
+    "dataloader_pin_memory",
+    "dataloader_prefetch_factor",
+    "ddp_backend",
+    "ddp_broadcast_buffers",
+    "ddp_bucket_cap_mb",
+    "ddp_find_unused_parameters",
+    "ddp_timeout",
+    "debug",
+    "decoder_bias",
+    "deepspeed",
+    "deterministic_flash_attn",
+    "disable_tqdm",
+    "do_eval",
+    "do_predict",
+    "do_train",
+    "dtype",
+    "embedding_dropout",
+    "enable_jit_checkpoint",
+    "eos_token_id",
+    "eval_accumulation_steps",
+    "eval_delay",
+    "eval_do_concat_batches",
+    "eval_on_start",
+    "eval_steps",
+    "eval_strategy",
+    "eval_use_gather_object",
+    "factorial_batching_policy",
+    "fp16",
+    "fp16_full_eval",
+    "fsdp",
+    "fsdp_config",
+    "full_determinism",
+    "global_attn_every_n_layers",
+    "gradient_accumulation_steps",
+    "gradient_checkpointing",
+    "gradient_checkpointing_kwargs",
+    "greater_is_better",
+    "hidden_activation",
+    "hidden_size",
+    "hub_always_push",
+    "hub_model_id",
+    "hub_private_repo",
+    "hub_revision",
+    "hub_strategy",
+    "hub_token",
+    "id2label",
+    "ignore_data_skip",
+    "include_for_metrics",
+    "include_num_input_tokens_seen",
+    "initializer_cutoff_factor",
+    "initializer_range",
+    "intermediate_size",
+    "is_encoder_decoder",
+    "label2id",
+    "label_names",
+    "label_smoothing_factor",
+    "layer_norm_eps",
+    "layer_types",
+    "learning_rate",
+    "length_column_name",
+    "liger_kernel_config",
+    "load_best_model_at_end",
+    "local_attention",
+    "local_rank",
+    "log_level",
+    "log_level_replica",
+    "log_on_each_node",
+    "logging_dir",
+    "logging_first_step",
+    "logging_nan_inf_filter",
+    "logging_steps",
+    "logging_strategy",
+    "lr_scheduler_kwargs",
+    "lr_scheduler_type",
+    "max_grad_norm",
+    "max_position_embeddings",
+    "max_steps",
+    "metric_for_best_model",
+    "mlp_bias",
+    "mlp_dropout",
+    "model_type",
+    "multi_dataset_batch_sampler",
+    "neftune_noise_alpha",
+    "norm_bias",
+    "norm_eps",
+    "num_attention_heads",
+    "num_hidden_layers",
+    "num_train_epochs",
+    "optim",
+    "optim_args",
+    "optim_target_modules",
+    "output_attentions",
+    "output_dir",
+    "output_hidden_states",
+    "pad_token_id",
+    "parallelism_config",
+    "per_device_eval_batch_size",
+    "per_device_train_batch_size",
+    "position_embedding_type",
+    "prediction_loss_only",
+    "problem_type",
+    "project",
+    "prompts",
+    "push_to_hub",
+    "remove_unused_columns",
+    "repad_logits_with_grad",
+    "report_to",
+    "restore_callback_states_from_checkpoint",
+    "resume_from_checkpoint",
+    "return_dict",
+    "rope_parameters",
+    "run_name",
+    "save_on_each_node",
+    "save_only_model",
+    "save_steps",
+    "save_strategy",
+    "save_total_limit",
+    "seed",
+    "sep_token_id",
+    "skip_memory_metrics",
+    "sparse_pred_ignore_index",
+    "sparse_prediction",
+    "tf32",
+    "tie_word_embeddings",
+    "torch_compile",
+    "torch_compile_backend",
+    "torch_compile_mode",
+    "torch_empty_cache_steps",
+    "trackio_space_id",
+    "train_sampling_strategy",
+    "transformers_version",
+    "use_cache",
+    "use_cpu",
+    "use_liger_kernel",
+    "vocab_size",
+    "warmup_ratio",
+    "warmup_steps",
+    "weight_decay"
+  ],
+  "group": null,
+  "history": [
+    {
+      "train/global_step": 1,
+      "train/grad_norm": 1.272569179534912,
+      "train/learning_rate": 0,
+      "train/loss": 0.11258143931627274
+    },
+    {
+      "train/global_step": 10,
+      "train/grad_norm": 1.858034372329712,
+      "train/learning_rate": 3.383853773841924e-05,
+      "train/loss": 0.19371537367502847
+    },
+    {
+      "train/global_step": 20,
+      "train/grad_norm": 2.7094526290893555,
+      "train/learning_rate": 7.14369130033295e-05,
+      "train/loss": 0.18926289081573486
+    },
+    {
+      "train/global_step": 30,
+      "train/grad_norm": 1.9553420543670654,
+      "train/learning_rate": 0.00010903528826823977,
+      "train/loss": 0.1990922808647156
+    },
+    {
+      "train/global_step": 40,
+      "train/grad_norm": 1.9296597242355347,
+      "train/learning_rate": 0.00014663366353315005,
+      "train/loss": 0.19025466442108155
+    },
+    {
+      "train/global_step": 50,
+      "train/grad_norm": 2.7681660652160645,
+      "train/learning_rate": 0.00014653725744272718,
+      "train/loss": 0.2163745403289795
+    },
+    {
+      "train/global_step": 60,
+      "train/grad_norm": 2.0270602703094482,
+      "train/learning_rate": 0.0001422525423128229,
+      "train/loss": 0.2304140090942383
+    },
+    {
+      "train/global_step": 70,
+      "train/grad_norm": 1.9472486972808838,
+      "train/learning_rate": 0.00013796782718291859,
+      "train/loss": 0.22464160919189452
+    },
+    {
+      "train/global_step": 80,
+      "train/grad_norm": 1.8352842330932617,
+      "train/learning_rate": 0.00013368311205301427,
+      "train/loss": 0.23699164390563965
+    },
+    {
+      "train/global_step": 90,
+      "train/grad_norm": 2.5951342582702637,
+      "train/learning_rate": 0.00012939839692310996,
+      "train/loss": 0.23312849998474122
+    },
+    {
+      "train/global_step": 100,
+      "train/grad_norm": 2.73127818107605,
+      "train/learning_rate": 0.00012511368179320568,
+      "train/loss": 0.2664820194244385
+    },
+    {
+      "train/global_step": 110,
+      "train/grad_norm": 1.8474746942520142,
+      "train/learning_rate": 0.00012082896666330137,
+      "train/loss": 0.21827034950256347
+    },
+    {
+      "train/global_step": 120,
+      "train/grad_norm": 2.2216849327087402,
+      "train/learning_rate": 0.00011654425153339706,
+      "train/loss": 0.20886566638946533
+    },
+    {
+      "train/global_step": 130,
+      "train/grad_norm": 1.928798794746399,
+      "train/learning_rate": 0.00011225953640349276,
+      "train/loss": 0.26089324951171877
+    },
+    {
+      "train/global_step": 140,
+      "train/grad_norm": 1.9128401279449463,
+      "train/learning_rate": 0.00010797482127358846,
+      "train/loss": 0.22283635139465333
+    },
+    {
+      "train/global_step": 150,
+      "train/grad_norm": 2.6813273429870605,
+      "train/learning_rate": 0.00010369010614368415,
+      "train/loss": 0.25333189964294434
+    },
+    {
+      "train/global_step": 160,
+      "train/grad_norm": 2.408473491668701,
+      "train/learning_rate": 9.940539101377984e-05,
+      "train/loss": 0.24742014408111573
+    },
+    {
+      "train/global_step": 170,
+      "train/grad_norm": 2.4232616424560547,
+      "train/learning_rate": 9.512067588387554e-05,
+      "train/loss": 0.22437310218811035
+    },
+    {
+      "train/global_step": 180,
+      "train/grad_norm": 2.831127166748047,
+      "train/learning_rate": 9.083596075397125e-05,
+      "train/loss": 0.25116887092590334
+    },
+    {
+      "train/global_step": 190,
+      "train/grad_norm": 2.782646656036377,
+      "train/learning_rate": 8.655124562406695e-05,
+      "train/loss": 0.2583186149597168
+    },
+    {
+      "train/global_step": 200,
+      "train/grad_norm": 2.6314315795898438,
+      "train/learning_rate": 8.226653049416264e-05,
+      "train/loss": 0.23245606422424317
+    },
+    {
+      "train/global_step": 210,
+      "train/grad_norm": 2.445970296859741,
+      "train/learning_rate": 7.798181536425833e-05,
+      "train/loss": 0.23520965576171876
+    },
+    {
+      "train/global_step": 220,
+      "train/grad_norm": 2.178658962249756,
+      "train/learning_rate": 7.369710023435403e-05,
+      "train/loss": 0.22646262645721435
+    },
+    {
+      "train/global_step": 230,
+      "train/grad_norm": 2.0676350593566895,
+      "train/learning_rate": 6.941238510444973e-05,
+      "train/loss": 0.2389979600906372
+    },
+    {
+      "train/global_step": 240,
+      "train/grad_norm": 2.2992966175079346,
+      "train/learning_rate": 6.512766997454542e-05,
+      "train/loss": 0.2450312614440918
+    },
+    {
+      "train/global_step": 250,
+      "train/grad_norm": 2.270657777786255,
+      "train/learning_rate": 6.084295484464112e-05,
+      "train/loss": 0.23784251213073732
+    },
+    {
+      "train/global_step": 260,
+      "train/grad_norm": 2.523991823196411,
+      "train/learning_rate": 5.655823971473681e-05,
+      "train/loss": 0.22935497760772705
+    },
+    {
+      "train/global_step": 270,
+      "train/grad_norm": 2.346846580505371,
+      "train/learning_rate": 5.227352458483251e-05,
+      "train/loss": 0.21048252582550048
+    },
+    {
+      "train/global_step": 280,
+      "train/grad_norm": 2.1499078273773193,
+      "train/learning_rate": 4.7988809454928204e-05,
+      "train/loss": 0.22674040794372557
+    },
+    {
+      "train/global_step": 290,
+      "train/grad_norm": 2.3522937297821045,
+      "train/learning_rate": 4.37040943250239e-05,
+      "train/loss": 0.21780359745025635
+    },
+    {
+      "train/global_step": 300,
+      "train/grad_norm": 2.0913197994232178,
+      "train/learning_rate": 3.9419379195119596e-05,
+      "train/loss": 0.21941215991973878
+    },
+    {
+      "train/global_step": 310,
+      "train/grad_norm": 2.046370029449463,
+      "train/learning_rate": 3.513466406521529e-05,
+      "train/loss": 0.22981114387512208
+    },
+    {
+      "train/global_step": 320,
+      "train/grad_norm": 2.508441209793091,
+      "train/learning_rate": 3.084994893531099e-05,
+      "train/loss": 0.2300018310546875
+    },
+    {
+      "train/global_step": 330,
+      "train/grad_norm": 2.6239848136901855,
+      "train/learning_rate": 2.6565233805406683e-05,
+      "train/loss": 0.23740274906158448
+    },
+    {
+      "train/global_step": 340,
+      "train/grad_norm": 1.7959245443344116,
+      "train/learning_rate": 2.228051867550238e-05,
+      "train/loss": 0.2128624439239502
+    },
+    {
+      "train/global_step": 350,
+      "train/grad_norm": 2.8469278812408447,
+      "train/learning_rate": 1.7995803545598078e-05,
+      "train/loss": 0.22642164230346679
+    },
+    {
+      "train/global_step": 360,
+      "train/grad_norm": 2.531292200088501,
+      "train/learning_rate": 1.3711088415693772e-05,
+      "train/loss": 0.22525694370269775
+    },
+    {
+      "train/global_step": 370,
+      "train/grad_norm": 2.2355053424835205,
+      "train/learning_rate": 9.42637328578947e-06,
+      "train/loss": 0.21366510391235352
+    },
+    {
+      "train/global_step": 380,
+      "train/grad_norm": 1.6869169473648071,
+      "train/learning_rate": 5.141658155885165e-06,
+      "train/loss": 0.21648313999176025
+    },
+    {
+      "train/global_step": 390,
+      "train/grad_norm": 1.743534803390503,
+      "train/learning_rate": 8.569430259808608e-07,
+      "train/loss": 0.2076629638671875
+    }
+  ],
+  "id": "factorial-v3-adamw_state-adamw-seed314159",
+  "name": "factorial-v3-adamw_state-adamw-seed314159",
+  "read_only": true,
+  "state": "finished",
+  "summary": {
+    "train/epoch": 1,
+    "train/global_step": 391
+  },
+  "tags": [],
+  "url": "https://wandb.ai/stevezenguom/embedding-optimizer-study/runs/factorial-v3-adamw_state-adamw-seed314159"
+}

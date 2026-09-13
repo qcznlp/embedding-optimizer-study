@@ -1,0 +1,38 @@
+{
+  "scope": "engineering_canonical_reduction_control",
+  "scientific_completion": false,
+  "normalization": {
+    "command": "env CUDA_VISIBLE_DEVICES=0,1,2,3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 TOKENIZERS_PARALLELISM=false WANDB_MODE=disabled OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 HF_HUB_DISABLE_PROGRESS_BARS=1 PYTHONWARNINGS=ignore PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python3 -B -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-canonical-logs.ytoC9D --redirects 3 --tee 3 scripts/audit_dense_gpu_canonical_replay.py --control-output /tmp/dense-canonical-replay.fUn3iy --target normalization --repository /root/embedding-optimizer-story-refactor --workdir /tmp/dense-gpu-normalization.Axkk0D --handoff /tmp/dense-gpu-handoff.4MuYjC/receipt/result.json --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6 --trainer candidate",
+    "torchrun_id": "86ad1b9a-35e1-4932-b616-db39cf3dcd3d",
+    "observed_launcher_exit_code": 0
+  },
+  "same_process": {
+    "command": "env CUDA_VISIBLE_DEVICES=0,1,2,3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 TOKENIZERS_PARALLELISM=false WANDB_MODE=disabled OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 HF_HUB_DISABLE_PROGRESS_BARS=1 PYTHONWARNINGS=ignore PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python3 -B -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-canonical-logs.ky8Phq --redirects 3 --tee 3 scripts/audit_dense_gpu_canonical_replay.py --control-output /tmp/dense-canonical-replay.s4tJbC --target resume --repository /root/embedding-optimizer-story-refactor --workdir /tmp/dense-gpu-resume.15V3UA --handoff /tmp/dense-gpu-handoff.4MuYjC/receipt/result.json --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+    "torchrun_id": "810f6b70-82b0-4e1d-9d1d-168f66b981a0",
+    "observed_launcher_exit_code": 0
+  },
+  "max_context": {
+    "command": "env CUDA_VISIBLE_DEVICES=4,5,6,7 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 TOKENIZERS_PARALLELISM=false WANDB_MODE=disabled OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 HF_HUB_DISABLE_PROGRESS_BARS=1 PYTHONWARNINGS=ignore PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python3 -B -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-canonical-logs.X5zQ73 --redirects 3 --tee 3 scripts/audit_dense_gpu_canonical_max_context.py --control-output /tmp/dense-canonical-replay.PLYOwJ --repository /root/embedding-optimizer-story-refactor --workdir /tmp/dense-gpu-max-context.4NmJMp --handoff /tmp/dense-gpu-handoff.4MuYjC/receipt/result.json --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+    "torchrun_id": "337987c5-5d03-4eaf-84c2-53995ba9d10d",
+    "observed_launcher_exit_code": 0
+  },
+  "fresh_process": {
+    "command": "env CUDA_VISIBLE_DEVICES=0,1,2,3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONDONTWRITEBYTECODE=1 TOKENIZERS_PARALLELISM=false WANDB_MODE=disabled OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 HF_HUB_DISABLE_PROGRESS_BARS=1 PYTHONWARNINGS=ignore PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python3 -B -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 --log-dir /tmp/dense-canonical-logs.I9trYm --redirects 3 --tee 3 scripts/audit_dense_gpu_fresh_replay.py --baseline-control /tmp/dense-canonical-replay.s4tJbC/result.json --baseline-sha256 9bf1ce218071cf67a7a22ca43bb1f81efe912de6d34d9ccc9e18ca8373f6461b --repository /root/embedding-optimizer-story-refactor --workdir /tmp/dense-gpu-fresh-replay.PWPDCN --handoff /tmp/dense-gpu-handoff.4MuYjC/receipt/result.json --download-root /tmp/dense-checkpoint-restore.Og1kZs/download --audit reports/experiment-integrity/huggingface-digest-audit-ten-run.json --audit-sha256 9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6",
+    "torchrun_id": "efdf98cf-651d-4c0c-bb91-4c14f72f4678",
+    "observed_launcher_exit_code": 0
+  },
+  "regression": {
+    "command": "env PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-canonical-logs.ytoC9D/pytest-full.xml",
+    "observed_exit_code": 0,
+    "tests": 1367,
+    "seconds": 136.369
+  },
+  "boundary": "All GPU output directories were separately created with mktemp -d; the GPU parents recheck exact creation-time-owned paused BEIR handles and unchanged ledger. Fresh-process command was launched only after the baseline torchrun exited zero. No broad process inspection or protected helper interaction.",
+  "progress_refresh": {
+    "wrong_working_directory": "/root/embedding-optimizer-story-refactor",
+    "wrong_snapshot": "progress-wrong-checkout.json",
+    "working_directory": "/root/embedding-optimizer-study",
+    "command": "env PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor PYTHONDONTWRITEBYTECODE=1 python3 -B -m embed_optim.corrected_progress --output /root/embedding-optimizer-story-refactor/CURRENT_PROGRESS.json",
+    "uses_unchanged_artifact_reader": true
+  }
+}

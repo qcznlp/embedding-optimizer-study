@@ -1,0 +1,118 @@
+{
+  "actual_gpu_jobs_started": 0,
+  "actual_original_primary_exit_receipts": 8,
+  "actual_tests": {
+    "errors": 0,
+    "failures": 0,
+    "original_tool_exit_code": 0,
+    "run_at_utc": "2026-09-11T06:31:31.051263+00:00",
+    "skipped": 0,
+    "xml_cases": 19
+  },
+  "additional_unchanged_files": {
+    "/root/embedding-optimizer-story-refactor/AGENTS.md": {
+      "bytes": 66893,
+      "sha256": "2ea0ac433747a4406823013f36701f49fb8cd806a5c01bdbad73c88ad93b6946"
+    },
+    "/root/embedding-optimizer-story-refactor/paper/build/main.pdf": {
+      "bytes": 246259,
+      "sha256": "94f47113cbfc0e5651bb0d12ef5d8aa16ae5aceb35991ffd5d96626d59de8a3c"
+    },
+    "/root/embedding-optimizer-story-refactor/paper/main.tex": {
+      "bytes": 26831,
+      "sha256": "45a3d297e08dfbb99908508a68ee71f077f29203bc3da8b017f6564769bc177e"
+    },
+    "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-functional-record-layout-candidate-v1/before/CURRENT_EXPERIMENT.md": {
+      "bytes": 25715,
+      "sha256": "4553b1b8fd951fd51602e14124ee8d8d4d30ba3701fb2a7c9ea6f8115b9aa030"
+    },
+    "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/authorization.json": {
+      "bytes": 6588,
+      "sha256": "2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c"
+    },
+    "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/dispatch.py": {
+      "bytes": 24198,
+      "sha256": "5b8a89bed5e0eaa02a12585ee3f6c883ca3e162b550898d68322321ee41d8427"
+    }
+  },
+  "archive_files": {
+    "README.md": {
+      "bytes": 5033,
+      "sha256": "1db132e87ecd5edec4e0f260953f0f446013300da24da6f97e224ec2d312c988"
+    },
+    "actual/commands.json": {
+      "bytes": 36542,
+      "sha256": "ba40b0b8a3d4435ba2464d0134be2b710ef1b552100f516c68477c8268a4b973"
+    },
+    "actual/native-primary-exits.json": {
+      "bytes": 10836,
+      "sha256": "1b8837e1897b5fb6bf0c8f29e17e47881250a297792ac416412674f98057eba2"
+    },
+    "actual/observations.json": {
+      "bytes": 92380,
+      "sha256": "abee6c7d913a3b596550ab578dcde7cc78fe112bc9609319ed8c8d1beb910c57"
+    },
+    "actual/tests.json": {
+      "bytes": 17751,
+      "sha256": "23976090208aeaa77f8906c69540b1aef28a6adf3f6effc13ee4afb5111701e3"
+    },
+    "actual/tests.xml": {
+      "bytes": 2014,
+      "sha256": "6ea718bebda6f782a6562ec1997e1c00e7b5bf283da799c1cac3a6b04395c1a1"
+    },
+    "before/CURRENT_EXPERIMENT.md": {
+      "bytes": 25715,
+      "sha256": "4553b1b8fd951fd51602e14124ee8d8d4d30ba3701fb2a7c9ea6f8115b9aa030"
+    },
+    "source/record_layout.py": {
+      "bytes": 5274,
+      "sha256": "f16dcc94d5eadc1f2a8da1fe50840b639c49919138b409fa8715fc81dbaaaa89"
+    },
+    "source/test_record_layout.py": {
+      "bytes": 20714,
+      "sha256": "96247338728ecbb417bb3848fcf2b68ae43bafa9b6e5c6e52d7b0d73ddfaf9a2"
+    }
+  },
+  "boundary": "New local file-layout component and mocked original worker lifecycle only. Original numerical/source/release guards remain unchanged. No actual recovery or new model/vector/feature computation.",
+  "current_handoff": {
+    "bytes": 26129,
+    "sha256": "680ee79a4a4e565925b51bf5e6a268e277fa7b5157cef7d7cc1564fa2f966b8c"
+  },
+  "feature_states_accepted": 0,
+  "live_primary_workers": 8,
+  "local_markdown_links_checked": 47,
+  "primary_snapshot_at_utc": "2026-09-11T06:32:34.190728+00:00",
+  "primary_tasks": [
+    348,
+    840
+  ],
+  "protected_functional_files": 66,
+  "raw_vector_states_accepted": 1,
+  "recovery_coordinator_implemented": false,
+  "recovery_execution_authorized": false,
+  "scientific_completion": false,
+  "scope": "offline_candidate_archive_byte_and_synthetic_fixture_readback",
+  "source_or_model_publication": false,
+  "synthetic_fixture_readback": {
+    "file_inventory_sha256": "26f7f21fa34cddf1ff67afff1848c5bff01610a7979ccf13274f816ca3d48c42",
+    "files": 488,
+    "json_records": 366,
+    "log_files": 61,
+    "mock_vector_manifests": 61,
+    "model_or_feature_values_recomputed": false,
+    "root": "/tmp/dense-v3-functional-record-candidate.snYoPDHo/fixtures/case-qpozvjdt",
+    "state_cells": 61,
+    "whole_file_inventory_archived": false
+  },
+  "verified_at_utc": "2026-09-11T06:40:56.790003+00:00",
+  "verification_execution": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nimport datetime as dt, hashlib, json, re, stat, subprocess, xml.etree.ElementTree as ET\nfrom pathlib import Path\nwork=Path('/tmp/dense-v3-functional-record-candidate.snYoPDHo')\nrepo=Path('/root/embedding-optimizer-story-refactor')\narchive=repo/'reports/engineering-archive/dense-v3-functional-record-layout-candidate-v1'\ndef identity(path):\n    path=Path(path)\n    for parent in (*reversed(path.parents),path):\n        if parent.is_symlink(): raise ValueError('Symlink outside permitted fixture inspection')\n    before=path.stat()\n    if not stat.S_ISREG(before.st_mode): raise ValueError('Not a regular bound file')\n    raw=path.read_bytes(); after=path.stat()\n    assert (before.st_dev,before.st_ino,before.st_size,before.st_mtime_ns,before.st_ctime_ns)==(after.st_dev,after.st_ino,after.st_size,after.st_mtime_ns,after.st_ctime_ns)\n    return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}\ndef digest(value): return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':')).encode()).hexdigest()\ntests=json.loads((archive/'actual/tests.json').read_bytes())\nfor source,target in [('record_layout.py','source/record_layout.py'),('test_record_layout.py','source/test_record_layout.py'),('tests.json','actual/tests.json'),('tests.xml','actual/tests.xml')]:\n    assert identity(work/source)==identity(archive/target)\nassert identity(archive/'source/record_layout.py')==tests['candidate_source']\nassert identity(archive/'source/test_record_layout.py')==tests['test_source']\nassert identity(archive/'actual/tests.xml')==tests['junit']\nxml=ET.parse(archive/'actual/tests.xml').getroot()\nassert len(xml.findall('testcase'))==int(xml.attrib['tests'])==tests['tests_run']==19\nassert len({case.attrib['name'] for case in xml.findall('testcase')})==19\nassert all(int(xml.attrib[field])==tests[field]==0 for field in ('failures','errors','skipped'))\nassert not any(xml.findall('.//'+tag) for tag in ('failure','error','skipped'))\nassert tests['protected_sources_and_original_failure_unchanged'] is True\nfor path,expected in tests['protected_files'].items():\n    assert Path(path).name!='gpu.py'\n    assert identity(path)==expected\nassert len(tests['protected_files'])==66\nassert tests['actual_gpu_jobs_launched']==0 and tests['recovery_execution_authorized'] is False\nassert tests['recovery_coordinator_implemented'] is False and tests['scientific_completion'] is False\noriginal=Path('/root/embedding-optimizer-v3-experiment/launch/functional-dimensions')\ninputs=json.loads((original/'inputs.json').read_bytes())\ncells=[job['plan']['state']['cell'] for job in inputs['jobs']]\nassert len(cells)==len(set(cells))==61 and cells==tests['declared_cells']\nlisted=subprocess.run(['rg','--files','-g','*.features-verified.json',str(work/'fixtures')],check=True,capture_output=True,text=True)\nfeature_paths=[Path(line) for line in listed.stdout.splitlines()]\nassert len(feature_paths)==61\ncase_names={path.relative_to(work/'fixtures').parts[0] for path in feature_paths}\nassert len(case_names)==1\nfixture=work/'fixtures'/next(iter(case_names))\njobs=fixture/'run/jobs'; roles=tests['declared_record_families']\nassert roles==['admission','started','exited','encoded','verified','features-verified']\nfixture_files={}\nfor cell in cells:\n    for role in roles:\n        path=jobs/f'{cell}.{role}.json'; record=json.loads(path.read_bytes())\n        assert record['cell']==cell\n        if role in ('admission','encoded'): assert record['scope']=='synthetic_filesystem_test_only'\n        if role in ('started','exited'):\n            assert record['pid']==record['ppid']==record['start_ticks']==-1\n            assert record['synthetic_process_fixture'] is True\n        if role=='exited': assert record['exit_code']==0\n        if role=='features-verified': assert record['synthetic_feature_fixture'] is True\n        fixture_files[str(path.relative_to(fixture))]=identity(path)\n    log=jobs/f'{cell}.log'; assert log.read_bytes()==b''\n    fixture_files[str(log.relative_to(fixture))]=identity(log)\n    manifest=fixture/'output/vectors/states'/cell/'manifest.json'\n    assert json.loads(manifest.read_bytes())=={'cell':cell,'synthetic_model_stub':True}\n    fixture_files[str(manifest.relative_to(fixture))]=identity(manifest)\nassert len(fixture_files)==488\nassert len(list(jobs.glob('*.started.json')))==len(list(jobs.glob('*.features-verified.json')))==1\nassert tests['mocked_execution_counters']=={'lease_closes':63,'lease_enters':63,'mocked_encoder_calls':61,'mocked_inspect_calls':61,'mocked_popen_calls':62,'original_worker_bodies':61}\nnative=json.loads((archive/'actual/native-primary-exits.json').read_bytes())\nassert (native['from_primary_count'],native['to_primary_count'],native['count'])==(340,348,8)\nassert len(native['native_receipts'])==len({row['path'] for row in native['native_receipts']})==8\nfor row in native['native_receipts']:\n    path=Path(row['path'])\n    assert identity(path)=={key:row[key] for key in ('bytes','sha256')}\n    assert json.loads(path.read_bytes())=={key:value for key,value in row.items() if key not in ('path','bytes','sha256')}\n    assert row['exit_code']==0\nobservation=json.loads((archive/'actual/observations.json').read_bytes())['later']\nassert observation['primary_tasks']==[348,840] and observation['baseline_tasks']==[14,14]\nassert observation['observer']['live'] is True\nassert len(observation['worker_observations_from_that_snapshot'])==8\nassert all(row['live'] and row['command_matches'] for row in observation['worker_observations_from_that_snapshot'])\nassert observation['failed_receipt_present'] is False\nprotected_extra={\n repo/'AGENTS.md':'2ea0ac433747a4406823013f36701f49fb8cd806a5c01bdbad73c88ad93b6946',\n repo/'paper/main.tex':'45a3d297e08dfbb99908508a68ee71f077f29203bc3da8b017f6564769bc177e',\n repo/'paper/build/main.pdf':'94f47113cbfc0e5651bb0d12ef5d8aa16ae5aceb35991ffd5d96626d59de8a3c',\n Path('/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/dispatch.py'):'5b8a89bed5e0eaa02a12585ee3f6c883ca3e162b550898d68322321ee41d8427',\n Path('/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/authorization.json'):'2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c',\n archive/'before/CURRENT_EXPERIMENT.md':'4553b1b8fd951fd51602e14124ee8d8d4d30ba3701fb2a7c9ea6f8115b9aa030'}\nfor path,expected in protected_extra.items(): assert identity(path)['sha256']==expected\nlinks=[]\nfor document in (repo/'CURRENT_EXPERIMENT.md',archive/'README.md'):\n    for target in re.findall(r'\\[[^\\]]+\\]\\(([^)]+)\\)',document.read_text()):\n        if target.startswith(('https://','http://','#')): continue\n        path=(document.parent/target.split('#')[0]).resolve()\n        if path==archive/'verification.json': continue\n        assert path.exists(),(document,target)\n        links.append({'document':str(document.relative_to(repo)),'target':target})\nlisting=subprocess.run(['rg','--files',str(archive)],check=True,capture_output=True,text=True)\narchive_files={str(Path(path).relative_to(archive)):identity(path) for path in sorted(listing.stdout.splitlines())}\nassert len(archive_files)==9\nresult={'scope':'offline_candidate_archive_byte_and_synthetic_fixture_readback','verified_at_utc':dt.datetime.now(dt.timezone.utc).isoformat(),'archive_files':archive_files,'current_handoff':identity(repo/'CURRENT_EXPERIMENT.md'),'actual_tests':{'xml_cases':19,'failures':0,'errors':0,'skipped':0,'run_at_utc':tests['observed_at_utc'],'original_tool_exit_code':0},'protected_functional_files':66,'additional_unchanged_files':{str(path):identity(path) for path in protected_extra},'synthetic_fixture_readback':{'root':str(fixture),'state_cells':61,'json_records':366,'log_files':61,'mock_vector_manifests':61,'files':488,'file_inventory_sha256':digest(fixture_files),'whole_file_inventory_archived':False,'model_or_feature_values_recomputed':False},'actual_original_primary_exit_receipts':8,'primary_snapshot_at_utc':observation['task_snapshot_at_utc'],'primary_tasks':[348,840],'live_primary_workers':8,'local_markdown_links_checked':len(links),'raw_vector_states_accepted':1,'feature_states_accepted':0,'recovery_execution_authorized':False,'recovery_coordinator_implemented':False,'actual_gpu_jobs_started':0,'source_or_model_publication':False,'scientific_completion':False,'boundary':'New local file-layout component and mocked original worker lifecycle only. Original numerical/source/release guards remain unchanged. No actual recovery or new model/vector/feature computation.'}\nprint(json.dumps(result,sort_keys=True))\nPY",
+    "result": {
+      "chunk_id": "04fced",
+      "wall_time_seconds": 0.167120747,
+      "exit_code": 0,
+      "original_token_count": 926,
+      "output": "{\"actual_gpu_jobs_started\": 0, \"actual_original_primary_exit_receipts\": 8, \"actual_tests\": {\"errors\": 0, \"failures\": 0, \"original_tool_exit_code\": 0, \"run_at_utc\": \"2026-09-11T06:31:31.051263+00:00\", \"skipped\": 0, \"xml_cases\": 19}, \"additional_unchanged_files\": {\"/root/embedding-optimizer-story-refactor/AGENTS.md\": {\"bytes\": 66893, \"sha256\": \"2ea0ac433747a4406823013f36701f49fb8cd806a5c01bdbad73c88ad93b6946\"}, \"/root/embedding-optimizer-story-refactor/paper/build/main.pdf\": {\"bytes\": 246259, \"sha256\": \"94f47113cbfc0e5651bb0d12ef5d8aa16ae5aceb35991ffd5d96626d59de8a3c\"}, \"/root/embedding-optimizer-story-refactor/paper/main.tex\": {\"bytes\": 26831, \"sha256\": \"45a3d297e08dfbb99908508a68ee71f077f29203bc3da8b017f6564769bc177e\"}, \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-functional-record-layout-candidate-v1/before/CURRENT_EXPERIMENT.md\": {\"bytes\": 25715, \"sha256\": \"4553b1b8fd951fd51602e14124ee8d8d4d30ba3701fb2a7c9ea6f8115b9aa030\"}, \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/authorization.json\": {\"bytes\": 6588, \"sha256\": \"2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c\"}, \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/dispatch.py\": {\"bytes\": 24198, \"sha256\": \"5b8a89bed5e0eaa02a12585ee3f6c883ca3e162b550898d68322321ee41d8427\"}}, \"archive_files\": {\"README.md\": {\"bytes\": 5033, \"sha256\": \"1db132e87ecd5edec4e0f260953f0f446013300da24da6f97e224ec2d312c988\"}, \"actual/commands.json\": {\"bytes\": 36542, \"sha256\": \"ba40b0b8a3d4435ba2464d0134be2b710ef1b552100f516c68477c8268a4b973\"}, \"actual/native-primary-exits.json\": {\"bytes\": 10836, \"sha256\": \"1b8837e1897b5fb6bf0c8f29e17e47881250a297792ac416412674f98057eba2\"}, \"actual/observations.json\": {\"bytes\": 92380, \"sha256\": \"abee6c7d913a3b596550ab578dcde7cc78fe112bc9609319ed8c8d1beb910c57\"}, \"actual/tests.json\": {\"bytes\": 17751, \"sha256\": \"23976090208aeaa77f8906c69540b1aef28a6adf3f6effc13ee4afb5111701e3\"}, \"actual/tests.xml\": {\"bytes\": 2014, \"sha256\": \"6ea718bebda6f782a6562ec1997e1c00e7b5bf283da799c1cac3a6b04395c1a1\"}, \"before/CURRENT_EXPERIMENT.md\": {\"bytes\": 25715, \"sha256\": \"4553b1b8fd951fd51602e14124ee8d8d4d30ba3701fb2a7c9ea6f8115b9aa030\"}, \"source/record_layout.py\": {\"bytes\": 5274, \"sha256\": \"f16dcc94d5eadc1f2a8da1fe50840b639c49919138b409fa8715fc81dbaaaa89\"}, \"source/test_record_layout.py\": {\"bytes\": 20714, \"sha256\": \"96247338728ecbb417bb3848fcf2b68ae43bafa9b6e5c6e52d7b0d73ddfaf9a2\"}}, \"boundary\": \"New local file-layout component and mocked original worker lifecycle only. Original numerical/source/release guards remain unchanged. No actual recovery or new model/vector/feature computation.\", \"current_handoff\": {\"bytes\": 26129, \"sha256\": \"680ee79a4a4e565925b51bf5e6a268e277fa7b5157cef7d7cc1564fa2f966b8c\"}, \"feature_states_accepted\": 0, \"live_primary_workers\": 8, \"local_markdown_links_checked\": 47, \"primary_snapshot_at_utc\": \"2026-09-11T06:32:34.190728+00:00\", \"primary_tasks\": [348, 840], \"protected_functional_files\": 66, \"raw_vector_states_accepted\": 1, \"recovery_coordinator_implemented\": false, \"recovery_execution_authorized\": false, \"scientific_completion\": false, \"scope\": \"offline_candidate_archive_byte_and_synthetic_fixture_readback\", \"source_or_model_publication\": false, \"synthetic_fixture_readback\": {\"file_inventory_sha256\": \"26f7f21fa34cddf1ff67afff1848c5bff01610a7979ccf13274f816ca3d48c42\", \"files\": 488, \"json_records\": 366, \"log_files\": 61, \"mock_vector_manifests\": 61, \"model_or_feature_values_recomputed\": false, \"root\": \"/tmp/dense-v3-functional-record-candidate.snYoPDHo/fixtures/case-qpozvjdt\", \"state_cells\": 61, \"whole_file_inventory_archived\": false}, \"verified_at_utc\": \"2026-09-11T06:40:56.790003+00:00\"}\n"
+    }
+  }
+}

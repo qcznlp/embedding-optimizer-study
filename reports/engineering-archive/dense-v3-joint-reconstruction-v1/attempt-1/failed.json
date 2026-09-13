@@ -1,0 +1,67 @@
+{
+  "after": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "elapsed_seconds": 1028.8596069011837,
+  "passed": false,
+  "scientific_completion": false,
+  "sources": [
+    {
+      "bytes": 12834,
+      "path": "/root/embedding-optimizer-story-refactor/src/embed_optim/primary_v3_joint_reconstruction.py",
+      "sha256": "172266a08691ab9d617590209e9279f99cfd6851b792b702c03d4d05e4766907"
+    },
+    {
+      "bytes": 7523,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/joint_reconstruction_fixture.py",
+      "sha256": "a68c26f0ee4351933f3f111a2d874bf9c6f0ba20c7fcbb4187499c5fbf9418f3"
+    },
+    {
+      "bytes": 4802,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/joint_reconstruction_vectors.py",
+      "sha256": "c8d1a06e5429489c1ac10b5d3cc52d00018dea935d756e50bc308b67ec1a1582"
+    },
+    {
+      "bytes": 5981,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/joint_reconstruction_geometry.py",
+      "sha256": "6baf7a193536f82fd630be6606e8d59fabd3f14d17ccd632c4f267480678953a"
+    }
+  ],
+  "traceback": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-joint-smoke.wXGdbr/run.py\", line 37, in <module>\n    archive, anchor = make(work / 'fixture', contract, progress=lambda row: print(row, flush=True))\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/scripts/joint_reconstruction_fixture.py\", line 106, in make\n    computed, decisions = summarize(\n                          ^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_inference.py\", line 265, in summarize\n    tables = validate_tables(primary, tables, protocol, tasks)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_inference.py\", line 97, in validate_tables\n    require_same({key: row[key] for key in metadata[cell]}, metadata[cell])\n  File \"/root/embedding-optimizer-story-refactor/src/embed_optim/primary_contract.py\", line 98, in require_same\n    raise ValueError(\"Artifact belongs to a different primary identity\")\nValueError: Artifact belongs to a different primary identity\n"
+}

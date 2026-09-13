@@ -1,0 +1,166 @@
+{
+  "scope": "Separately timestamped exact original worker observations",
+  "initial": {
+    "scope": "exact_existing_native_task_observer_status",
+    "observed_at_utc": "2026-09-12T09:10:06.481237+00:00",
+    "observer": {
+      "pid": 60083,
+      "start_ticks": 299816818,
+      "state": "S",
+      "ppid": 1986037,
+      "command_matches": true,
+      "live": true
+    },
+    "task_snapshot_at_utc": "2026-09-12T09:09:40.605638+00:00",
+    "primary_tasks": [
+      772,
+      840
+    ],
+    "baseline_tasks": [
+      14,
+      14
+    ],
+    "worker_observations_from_that_snapshot": [
+      {
+        "command_matches": true,
+        "gpu_token": "3",
+        "group": "primary_a",
+        "job": "verified-v3-adamw-3e-5-3126-HotpotQA",
+        "live": true,
+        "pid": 704353,
+        "ppid": 597,
+        "start_ticks": 317539063,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "2",
+        "group": "primary_a",
+        "job": "verified-v3-muon-1e-4-3126-MSMARCO",
+        "live": true,
+        "pid": 690146,
+        "ppid": 597,
+        "start_ticks": 317366140,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "1",
+        "group": "primary_a",
+        "job": "verified-v3-normuon-1e-4-3126-MSMARCO",
+        "live": true,
+        "pid": 690532,
+        "ppid": 597,
+        "start_ticks": 317372141,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "0",
+        "group": "primary_a",
+        "job": "verified-v3-normuon-3e-4-3126-HotpotQA",
+        "live": true,
+        "pid": 704358,
+        "ppid": 597,
+        "start_ticks": 317539764,
+        "state": "R"
+      }
+    ],
+    "completed_receipt_present": false,
+    "failed_receipt_present": false,
+    "task_snapshot_is_a_separate_timestamped_observation": true,
+    "fresh_native_task_or_model_replay": false,
+    "scientific_completion": false
+  },
+  "final": {
+    "scope": "exact_existing_native_task_observer_status",
+    "observed_at_utc": "2026-09-12T09:11:59.959511+00:00",
+    "observer": {
+      "pid": 60083,
+      "start_ticks": 299816818,
+      "state": "S",
+      "ppid": 1986037,
+      "command_matches": true,
+      "live": true
+    },
+    "task_snapshot_at_utc": "2026-09-12T09:11:41.344397+00:00",
+    "primary_tasks": [
+      772,
+      840
+    ],
+    "baseline_tasks": [
+      14,
+      14
+    ],
+    "worker_observations_from_that_snapshot": [
+      {
+        "command_matches": true,
+        "gpu_token": "3",
+        "group": "primary_a",
+        "job": "verified-v3-adamw-3e-5-3126-HotpotQA",
+        "live": true,
+        "pid": 704353,
+        "ppid": 597,
+        "start_ticks": 317539063,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "2",
+        "group": "primary_a",
+        "job": "verified-v3-muon-1e-4-3126-MSMARCO",
+        "live": true,
+        "pid": 690146,
+        "ppid": 597,
+        "start_ticks": 317366140,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "1",
+        "group": "primary_a",
+        "job": "verified-v3-normuon-1e-4-3126-MSMARCO",
+        "live": true,
+        "pid": 690532,
+        "ppid": 597,
+        "start_ticks": 317372141,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "0",
+        "group": "primary_a",
+        "job": "verified-v3-normuon-3e-4-3126-HotpotQA",
+        "live": true,
+        "pid": 704358,
+        "ppid": 597,
+        "start_ticks": 317539764,
+        "state": "R"
+      }
+    ],
+    "completed_receipt_present": false,
+    "failed_receipt_present": false,
+    "task_snapshot_is_a_separate_timestamped_observation": true,
+    "fresh_native_task_or_model_replay": false,
+    "scientific_completion": false
+  },
+  "actual_results": [
+    {
+      "chunk_id": "0545af",
+      "wall_time_seconds": 0.00000427,
+      "exit_code": 0,
+      "original_token_count": 347,
+      "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-12T09:10:06.481237+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-12T09:09:40.605638+00:00\", \"primary_tasks\": [772, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-3e-5-3126-HotpotQA\", \"live\": true, \"pid\": 704353, \"ppid\": 597, \"start_ticks\": 317539063, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-4-3126-MSMARCO\", \"live\": true, \"pid\": 690146, \"ppid\": 597, \"start_ticks\": 317366140, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-1e-4-3126-MSMARCO\", \"live\": true, \"pid\": 690532, \"ppid\": 597, \"start_ticks\": 317372141, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-3126-HotpotQA\", \"live\": true, \"pid\": 704358, \"ppid\": 597, \"start_ticks\": 317539764, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+    },
+    {
+      "chunk_id": "7c6488",
+      "wall_time_seconds": 0.000003892,
+      "exit_code": 0,
+      "original_token_count": 347,
+      "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-12T09:11:59.959511+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-12T09:11:41.344397+00:00\", \"primary_tasks\": [772, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-3e-5-3126-HotpotQA\", \"live\": true, \"pid\": 704353, \"ppid\": 597, \"start_ticks\": 317539063, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-4-3126-MSMARCO\", \"live\": true, \"pid\": 690146, \"ppid\": 597, \"start_ticks\": 317366140, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-1e-4-3126-MSMARCO\", \"live\": true, \"pid\": 690532, \"ppid\": 597, \"start_ticks\": 317372141, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-3126-HotpotQA\", \"live\": true, \"pid\": 704358, \"ppid\": 597, \"start_ticks\": 317539764, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+    }
+  ],
+  "completed_pool_b_receipt": "actual/pool-b-completed.json",
+  "scientific_completion": false
+}
+

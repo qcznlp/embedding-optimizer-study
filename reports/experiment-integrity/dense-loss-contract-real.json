@@ -1,0 +1,2476 @@
+{
+  "boundary": "Two short synthetic queries per real checkpoint, CPU float32, eval mode with autograd. Checks production collator/feature order, exact prompts, nine encoder calls/eight explicit candidates, float64-reference loss and all trainable gradients, actual MTEB wrapper and length-budget ordering/cosine scoring. No optimizer step, real evaluation corpus, training-mode dropout, distributed accumulation, BF16/FlashAttention equivalence or 8192-token forward pass is tested. These checks supply no retrieval or optimizer-quality result.",
+  "complete_for_cpu_diagnostic": true,
+  "observed_at_utc": "2026-09-05T01:38:05.593023+00:00",
+  "records": [
+    {
+      "checkpoint": "outputs/dense-no-packing-v1/dense/padded-adamw-3e-5/checkpoint-2345",
+      "checkpoint_inventory": {
+        "1_Pooling/config.json": {
+          "git_blob_sha1": "2236c262f1f83c50f7c304e98a8d1413980280df",
+          "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc",
+          "size": 89
+        },
+        "README.md": {
+          "git_blob_sha1": "432dabd0751798a1eb1a9d4b3ed2494c37f588ff",
+          "sha256": "8c803944c3d55314459744d8882b12590282560dd86507fe3cc9a5f66b0b59c9",
+          "size": 121444
+        },
+        "config.json": {
+          "git_blob_sha1": "900c0704284dba27ce63f1740645b3e713931189",
+          "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f",
+          "size": 1952
+        },
+        "config_sentence_transformers.json": {
+          "git_blob_sha1": "465abf9518413ffa3a3d4d2ef6c5ccedc3f66fc7",
+          "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9",
+          "size": 299
+        },
+        "model.safetensors": {
+          "git_blob_sha1": "b3aab7c01d01724a0eb6ae7b210e41005600b378",
+          "sha256": "58b2e344336cbfb16c683209bc4307fdb6cbdeb6531243e2b81f8d9df569243d",
+          "size": 596070136
+        },
+        "modules.json": {
+          "git_blob_sha1": "45d2436b717b3a70d63c0df4ab2c49d5cdb02c5b",
+          "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645",
+          "size": 277
+        },
+        "optimizer.pt": {
+          "git_blob_sha1": "76a941af064ca22bcdab398710ddd71892eb55b7",
+          "sha256": "f106ec450f34b777bfffe892501f1f2b780077f11ac2583cb50ae81e6ffbf7ed",
+          "size": 1192229195
+        },
+        "rng_state_0.pth": {
+          "git_blob_sha1": "ff682b0941116b1521516254fea722443b502c7e",
+          "sha256": "9ec321849313daa7abe8e7f786d8e00569f60493cc516c1b01bb8fe04af46b49",
+          "size": 15365
+        },
+        "rng_state_1.pth": {
+          "git_blob_sha1": "c7c361360c832a5c9fa70c6ba7256c0fb12f3099",
+          "sha256": "761ca4d004707b8a5198304587576e8a1af0d9e76d98047dda744baa714553fd",
+          "size": 15365
+        },
+        "rng_state_2.pth": {
+          "git_blob_sha1": "aac3e29a632af0b33f41953d39c79ba70c7d2827",
+          "sha256": "a16ce4e8eb4433051d6a30c046c098bb2df5899185766aff1882f857e9f81925",
+          "size": 15365
+        },
+        "rng_state_3.pth": {
+          "git_blob_sha1": "a53d83ce1a71d22c8c7b14e4189dace083fb4dc9",
+          "sha256": "a61904aee1e841b24c14ee1f0c686f68219ebbd219bd9b0809cc954d2efa2b1c",
+          "size": 15365
+        },
+        "scheduler.pt": {
+          "git_blob_sha1": "a4959109775e6a39fc4ca0d2793dd0c906b577c0",
+          "sha256": "9ce7b7a6b674d1b720a6fe5e467e5385abadec7322053f2113c2eff3c578da4a",
+          "size": 1465
+        },
+        "sentence_bert_config.json": {
+          "git_blob_sha1": "d2cd15826913bba6e43310063d75883bb0b7b842",
+          "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8",
+          "size": 241
+        },
+        "tokenizer.json": {
+          "git_blob_sha1": "31e99eddb04ca32c7c1f66cde30dc3e54099402f",
+          "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d",
+          "size": 3583486
+        },
+        "tokenizer_config.json": {
+          "git_blob_sha1": "5f39ad215a937472d4c0c4a0a925a8b6406236c0",
+          "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff",
+          "size": 542
+        },
+        "trainer_state.json": {
+          "git_blob_sha1": "32955062b33df57df1ce4ce1aae3b9d3dec4f102",
+          "sha256": "52da84d4d3704bf1d540bbef545a5d665d4fcbbae93d88f999369bc2351cac82",
+          "size": 41875
+        },
+        "training_args.bin": {
+          "git_blob_sha1": "a5fab24932431a15825e8aff026a7df953a4d438",
+          "sha256": "3075855889d813709ab19df4aaaf01c5640e80642217c95000d8406d28284efc",
+          "size": 5649
+        }
+      },
+      "loss_and_gradients": {
+        "candidate_count_per_query": 8,
+        "complete_for_loss_graph": true,
+        "gradient_elements_compared": 149014272,
+        "gradient_errors": [
+          {
+            "elements": 38682624,
+            "max_absolute_error": 3.294451378366148e-10,
+            "name": "0.model.embeddings.tok_embeddings.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.064412612552303e-10,
+            "name": "0.model.embeddings.norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.9636698650747917e-10,
+            "name": "0.model.layers.0.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 6.299084864824778e-11,
+            "name": "0.model.layers.0.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.195700427032321e-10,
+            "name": "0.model.layers.0.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.379051619211708e-11,
+            "name": "0.model.layers.0.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 8.23330639776465e-11,
+            "name": "0.model.layers.0.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.524061155055989e-10,
+            "name": "0.model.layers.1.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.2066638233629874e-10,
+            "name": "0.model.layers.1.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.3967527615353923e-11,
+            "name": "0.model.layers.1.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.2568758256392698e-09,
+            "name": "0.model.layers.1.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.5671680619888662e-10,
+            "name": "0.model.layers.1.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 4.256291499804554e-11,
+            "name": "0.model.layers.1.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 6.19380491340138e-10,
+            "name": "0.model.layers.2.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.413796107436639e-10,
+            "name": "0.model.layers.2.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 3.259640127262209e-11,
+            "name": "0.model.layers.2.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.882511534492039e-10,
+            "name": "0.model.layers.2.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.965466398112241e-11,
+            "name": "0.model.layers.2.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 4.10965567132493e-11,
+            "name": "0.model.layers.2.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.3284597866203285e-09,
+            "name": "0.model.layers.3.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.4442065866002736e-10,
+            "name": "0.model.layers.3.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.6783991691203823e-11,
+            "name": "0.model.layers.3.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.190719213985176e-10,
+            "name": "0.model.layers.3.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.330051232130486e-11,
+            "name": "0.model.layers.3.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.534456498837212e-11,
+            "name": "0.model.layers.3.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 9.533700495722996e-10,
+            "name": "0.model.layers.4.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.618690542188773e-10,
+            "name": "0.model.layers.4.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.1761098131789502e-11,
+            "name": "0.model.layers.4.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.9089041458641987e-09,
+            "name": "0.model.layers.4.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 9.700909520127254e-11,
+            "name": "0.model.layers.4.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 5.511251455203592e-10,
+            "name": "0.model.layers.4.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.199393138255459e-10,
+            "name": "0.model.layers.5.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.5397969010955137e-10,
+            "name": "0.model.layers.5.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.655428918945212e-11,
+            "name": "0.model.layers.5.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.141917364641756e-10,
+            "name": "0.model.layers.5.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.375502986128879e-11,
+            "name": "0.model.layers.5.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 4.056639746341517e-11,
+            "name": "0.model.layers.5.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.869957546231433e-10,
+            "name": "0.model.layers.6.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.7575654820412012e-10,
+            "name": "0.model.layers.6.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.3166845218293144e-11,
+            "name": "0.model.layers.6.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.242133394034454e-10,
+            "name": "0.model.layers.6.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.1019679613255562e-10,
+            "name": "0.model.layers.6.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 6.494642323939814e-11,
+            "name": "0.model.layers.6.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.631233647105603e-10,
+            "name": "0.model.layers.7.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.6289065929431246e-10,
+            "name": "0.model.layers.7.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.3884891500448582e-11,
+            "name": "0.model.layers.7.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.301770134025219e-10,
+            "name": "0.model.layers.7.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.4588399932513596e-10,
+            "name": "0.model.layers.7.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 5.641931019595425e-11,
+            "name": "0.model.layers.7.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.1877405725613244e-09,
+            "name": "0.model.layers.8.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.330476145922077e-10,
+            "name": "0.model.layers.8.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.5162067781848698e-11,
+            "name": "0.model.layers.8.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.4970061008342554e-10,
+            "name": "0.model.layers.8.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.68891825209117e-11,
+            "name": "0.model.layers.8.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 4.704881623185386e-11,
+            "name": "0.model.layers.8.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.386310676312121e-10,
+            "name": "0.model.layers.9.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.298793572690471e-10,
+            "name": "0.model.layers.9.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.0562367780696533e-11,
+            "name": "0.model.layers.9.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.1899098373291395e-09,
+            "name": "0.model.layers.9.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 9.470663142607805e-11,
+            "name": "0.model.layers.9.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 5.7303325279312034e-11,
+            "name": "0.model.layers.9.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.882905220629283e-10,
+            "name": "0.model.layers.10.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.1451369019699342e-10,
+            "name": "0.model.layers.10.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.41835683423286e-11,
+            "name": "0.model.layers.10.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.0930617522220132e-09,
+            "name": "0.model.layers.10.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 9.894017549694212e-11,
+            "name": "0.model.layers.10.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 4.5152038358198254e-11,
+            "name": "0.model.layers.10.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.0483098417113368e-10,
+            "name": "0.model.layers.11.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 9.233583342371787e-11,
+            "name": "0.model.layers.11.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.6481730003302673e-11,
+            "name": "0.model.layers.11.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.897577343676573e-10,
+            "name": "0.model.layers.11.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.1805935395958755e-10,
+            "name": "0.model.layers.11.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.0565150976304949e-09,
+            "name": "0.model.layers.11.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.860355285960736e-10,
+            "name": "0.model.layers.12.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.513103531358695e-10,
+            "name": "0.model.layers.12.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.9095305198169044e-11,
+            "name": "0.model.layers.12.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.955186037162832e-10,
+            "name": "0.model.layers.12.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.538370011024199e-11,
+            "name": "0.model.layers.12.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 5.034794109404217e-11,
+            "name": "0.model.layers.12.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.3126981713316184e-10,
+            "name": "0.model.layers.13.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.2938117244232217e-10,
+            "name": "0.model.layers.13.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.8410917715659956e-11,
+            "name": "0.model.layers.13.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.284893633827892e-10,
+            "name": "0.model.layers.13.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.018507385854079e-11,
+            "name": "0.model.layers.13.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 3.745060858650895e-11,
+            "name": "0.model.layers.13.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.4506143215272687e-10,
+            "name": "0.model.layers.14.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.4570029904792392e-10,
+            "name": "0.model.layers.14.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.347443420203099e-11,
+            "name": "0.model.layers.14.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.848211666517386e-10,
+            "name": "0.model.layers.14.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 9.356436458940465e-11,
+            "name": "0.model.layers.14.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 4.867483499593206e-11,
+            "name": "0.model.layers.14.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.536738538289512e-10,
+            "name": "0.model.layers.15.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.7086249082254312e-10,
+            "name": "0.model.layers.15.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 3.6317445578637475e-11,
+            "name": "0.model.layers.15.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.1136440658532365e-09,
+            "name": "0.model.layers.15.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.0344469031364767e-10,
+            "name": "0.model.layers.15.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.5846169648957584e-10,
+            "name": "0.model.layers.15.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.2967690249675599e-10,
+            "name": "0.model.layers.16.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.3084380801053896e-10,
+            "name": "0.model.layers.16.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.4653538799036525e-11,
+            "name": "0.model.layers.16.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.814500795928382e-10,
+            "name": "0.model.layers.16.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.8397693091198875e-10,
+            "name": "0.model.layers.16.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.5039039458208947e-10,
+            "name": "0.model.layers.16.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.1862623383596116e-10,
+            "name": "0.model.layers.17.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.4562361039249794e-10,
+            "name": "0.model.layers.17.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 4.743250930916432e-11,
+            "name": "0.model.layers.17.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.663138764016139e-10,
+            "name": "0.model.layers.17.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.478404314056661e-10,
+            "name": "0.model.layers.17.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.1824558826821772e-10,
+            "name": "0.model.layers.17.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.3047888042526665e-09,
+            "name": "0.model.layers.18.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.8913483279536791e-10,
+            "name": "0.model.layers.18.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 4.480646062510196e-11,
+            "name": "0.model.layers.18.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.2628827700543752e-09,
+            "name": "0.model.layers.18.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.8616538866034205e-10,
+            "name": "0.model.layers.18.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.6201458230558075e-10,
+            "name": "0.model.layers.18.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.4666895475912156e-10,
+            "name": "0.model.layers.19.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.263875948342985e-10,
+            "name": "0.model.layers.19.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.2633643223524125e-11,
+            "name": "0.model.layers.19.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.6292124860892727e-10,
+            "name": "0.model.layers.19.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.93228478892771e-11,
+            "name": "0.model.layers.19.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.2099690693823106e-10,
+            "name": "0.model.layers.19.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 9.218708574287859e-10,
+            "name": "0.model.layers.20.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.9325076528484715e-10,
+            "name": "0.model.layers.20.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.999529361529362e-11,
+            "name": "0.model.layers.20.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.4659476410550099e-10,
+            "name": "0.model.layers.20.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.448074993248838e-10,
+            "name": "0.model.layers.20.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 3.2716909043051245e-11,
+            "name": "0.model.layers.20.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 9.88114035038734e-10,
+            "name": "0.model.layers.21.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.766821494137872e-10,
+            "name": "0.model.layers.21.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.8763370157891543e-11,
+            "name": "0.model.layers.21.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.2934401327768796e-09,
+            "name": "0.model.layers.21.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.408193644498624e-10,
+            "name": "0.model.layers.21.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.9835867110250547e-10,
+            "name": "0.model.layers.21.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.0808639400172737e-10,
+            "name": "0.model.final_norm.weight"
+          }
+        ],
+        "loss_absolute_error": 1.950972716713295e-10,
+        "parameter_gradients_compared": 134,
+        "query_count": 2
+      },
+      "max_length": 8192,
+      "mteb_encoding": {
+        "complete_for_cpu_mteb_encoding": true,
+        "cosine_score_max_error": 1.1920928955078125e-07,
+        "document_vectors": 16,
+        "engineering_char_budget": 140,
+        "normalized_document_max_error": 2.4260953068733215e-07,
+        "normalized_query_max_error": 0.0,
+        "query_vectors": 2
+      },
+      "run_id": "padded-adamw-3e-5",
+      "temperature": 0.02,
+      "tokenized_columns": [
+        "query",
+        "positive",
+        "negative_0",
+        "negative_1",
+        "negative_2",
+        "negative_3",
+        "negative_4",
+        "negative_5",
+        "negative_6"
+      ]
+    },
+    {
+      "checkpoint": "outputs/dense-no-packing-v1/dense/padded-muon-3e-4/checkpoint-2345",
+      "checkpoint_inventory": {
+        "1_Pooling/config.json": {
+          "git_blob_sha1": "2236c262f1f83c50f7c304e98a8d1413980280df",
+          "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc",
+          "size": 89
+        },
+        "README.md": {
+          "git_blob_sha1": "f20a9e922c1faa393ac6fc7f252b0bb7f72aca58",
+          "sha256": "c0ce12f3f3415137ffddf7e50792eb22f96f05cfb57e044b67f92eb3a6bcc1cf",
+          "size": 121446
+        },
+        "config.json": {
+          "git_blob_sha1": "900c0704284dba27ce63f1740645b3e713931189",
+          "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f",
+          "size": 1952
+        },
+        "config_sentence_transformers.json": {
+          "git_blob_sha1": "465abf9518413ffa3a3d4d2ef6c5ccedc3f66fc7",
+          "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9",
+          "size": 299
+        },
+        "model.safetensors": {
+          "git_blob_sha1": "41ac7057939f4f1933de9651be235115153cf913",
+          "sha256": "ff91fc5e46f84085f552f4e97764ebd64d7afcef59979d2cfc3c5940de1a1e97",
+          "size": 596070136
+        },
+        "modules.json": {
+          "git_blob_sha1": "45d2436b717b3a70d63c0df4ab2c49d5cdb02c5b",
+          "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645",
+          "size": 277
+        },
+        "optimizer.pt": {
+          "git_blob_sha1": "94bd0d5d26f9ce3ea14213ccc84acdf04d20896c",
+          "sha256": "cc05f6ed9e4096c358e04296147ca5db1b760cff909ce70e3701752015c509a5",
+          "size": 750992523
+        },
+        "rng_state_0.pth": {
+          "git_blob_sha1": "ff682b0941116b1521516254fea722443b502c7e",
+          "sha256": "9ec321849313daa7abe8e7f786d8e00569f60493cc516c1b01bb8fe04af46b49",
+          "size": 15365
+        },
+        "rng_state_1.pth": {
+          "git_blob_sha1": "c7c361360c832a5c9fa70c6ba7256c0fb12f3099",
+          "sha256": "761ca4d004707b8a5198304587576e8a1af0d9e76d98047dda744baa714553fd",
+          "size": 15365
+        },
+        "rng_state_2.pth": {
+          "git_blob_sha1": "aac3e29a632af0b33f41953d39c79ba70c7d2827",
+          "sha256": "a16ce4e8eb4433051d6a30c046c098bb2df5899185766aff1882f857e9f81925",
+          "size": 15365
+        },
+        "rng_state_3.pth": {
+          "git_blob_sha1": "a53d83ce1a71d22c8c7b14e4189dace083fb4dc9",
+          "sha256": "a61904aee1e841b24c14ee1f0c686f68219ebbd219bd9b0809cc954d2efa2b1c",
+          "size": 15365
+        },
+        "scheduler.pt": {
+          "git_blob_sha1": "14c36208f54b214cf92737305b0788cb6b27f3b8",
+          "sha256": "f7403e54de2032332db76fc886c0508deeb5626d82bcaa5d966267be07088c41",
+          "size": 1465
+        },
+        "sentence_bert_config.json": {
+          "git_blob_sha1": "d2cd15826913bba6e43310063d75883bb0b7b842",
+          "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8",
+          "size": 241
+        },
+        "tokenizer.json": {
+          "git_blob_sha1": "31e99eddb04ca32c7c1f66cde30dc3e54099402f",
+          "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d",
+          "size": 3583486
+        },
+        "tokenizer_config.json": {
+          "git_blob_sha1": "5f39ad215a937472d4c0c4a0a925a8b6406236c0",
+          "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff",
+          "size": 542
+        },
+        "trainer_state.json": {
+          "git_blob_sha1": "fc630918a15b77e0effd94fb0bc08b4f9c42f1ac",
+          "sha256": "cd09650591bc0a58e23fc47d1bd6399439562297cc1ffcd7afb28608679b24a7",
+          "size": 41879
+        },
+        "training_args.bin": {
+          "git_blob_sha1": "3cd522d75f516ad4614e14ced4e67de6b921469b",
+          "sha256": "02607fe95712483c808eee1f8c2b70e99c007c5a1ffb73fe35de5fa4939c7627",
+          "size": 5649
+        }
+      },
+      "loss_and_gradients": {
+        "candidate_count_per_query": 8,
+        "complete_for_loss_graph": true,
+        "gradient_elements_compared": 149014272,
+        "gradient_errors": [
+          {
+            "elements": 38682624,
+            "max_absolute_error": 1.4569982720313845e-10,
+            "name": "0.model.embeddings.tok_embeddings.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.4900955469521193e-10,
+            "name": "0.model.embeddings.norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.1808462541118558e-10,
+            "name": "0.model.layers.0.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.645322155769847e-11,
+            "name": "0.model.layers.0.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 9.022696478844239e-11,
+            "name": "0.model.layers.0.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.808442103347964e-11,
+            "name": "0.model.layers.0.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.9396825251826186e-11,
+            "name": "0.model.layers.0.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.749679453190495e-11,
+            "name": "0.model.layers.1.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.3723314151725674e-10,
+            "name": "0.model.layers.1.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.0256599389246723e-11,
+            "name": "0.model.layers.1.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.994542640053169e-10,
+            "name": "0.model.layers.1.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.28470331331954e-11,
+            "name": "0.model.layers.1.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.8273138210900264e-11,
+            "name": "0.model.layers.1.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.0224467933704915e-10,
+            "name": "0.model.layers.2.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.0077606804603789e-10,
+            "name": "0.model.layers.2.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.3608354026972691e-11,
+            "name": "0.model.layers.2.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.1708362885064503e-10,
+            "name": "0.model.layers.2.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.9723161432126943e-11,
+            "name": "0.model.layers.2.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.704380907241454e-11,
+            "name": "0.model.layers.2.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.770658312835963e-10,
+            "name": "0.model.layers.3.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.3747786242745974e-10,
+            "name": "0.model.layers.3.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.1167430695457892e-11,
+            "name": "0.model.layers.3.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.4037508922502013e-10,
+            "name": "0.model.layers.3.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.490054079069438e-11,
+            "name": "0.model.layers.3.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.0350506909895252e-11,
+            "name": "0.model.layers.3.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.354358817959536e-10,
+            "name": "0.model.layers.4.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.197772714345291e-10,
+            "name": "0.model.layers.4.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 8.399446069229377e-12,
+            "name": "0.model.layers.4.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.065718093419605e-10,
+            "name": "0.model.layers.4.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.125882621663912e-11,
+            "name": "0.model.layers.4.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.2424374856999663e-10,
+            "name": "0.model.layers.4.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.202814736174119e-10,
+            "name": "0.model.layers.5.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.510074341241733e-11,
+            "name": "0.model.layers.5.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 6.48997782598526e-12,
+            "name": "0.model.layers.5.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.2751177891345833e-10,
+            "name": "0.model.layers.5.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.957591463403908e-11,
+            "name": "0.model.layers.5.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.7157034473691546e-11,
+            "name": "0.model.layers.5.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.762427314146777e-10,
+            "name": "0.model.layers.6.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.220996023349358e-11,
+            "name": "0.model.layers.6.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 6.012577154906884e-12,
+            "name": "0.model.layers.6.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.59900997892737e-10,
+            "name": "0.model.layers.6.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.5468632331457925e-11,
+            "name": "0.model.layers.6.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.7299674673630925e-11,
+            "name": "0.model.layers.6.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.3269457754816472e-10,
+            "name": "0.model.layers.7.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.69607633230207e-11,
+            "name": "0.model.layers.7.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 6.531195289455338e-12,
+            "name": "0.model.layers.7.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.23115811884378e-10,
+            "name": "0.model.layers.7.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.203656602836837e-11,
+            "name": "0.model.layers.7.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.4285946517710322e-11,
+            "name": "0.model.layers.7.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.253506713514099e-10,
+            "name": "0.model.layers.8.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.312340844998431e-11,
+            "name": "0.model.layers.8.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 6.359850146520074e-12,
+            "name": "0.model.layers.8.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.3684250954604238e-10,
+            "name": "0.model.layers.8.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.619497063178656e-11,
+            "name": "0.model.layers.8.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.1739934505382585e-11,
+            "name": "0.model.layers.8.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.5070415748663635e-10,
+            "name": "0.model.layers.9.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.1330259487336605e-11,
+            "name": "0.model.layers.9.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 9.30182406794211e-12,
+            "name": "0.model.layers.9.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.937512620983853e-10,
+            "name": "0.model.layers.9.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.743422238855487e-11,
+            "name": "0.model.layers.9.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.422266727475364e-11,
+            "name": "0.model.layers.9.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.782970184473271e-11,
+            "name": "0.model.layers.10.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.8571043020917415e-11,
+            "name": "0.model.layers.10.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.02651038710877e-11,
+            "name": "0.model.layers.10.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.769540318250165e-10,
+            "name": "0.model.layers.10.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.141133963520005e-11,
+            "name": "0.model.layers.10.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.1650761045099998e-11,
+            "name": "0.model.layers.10.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 7.437560983758473e-11,
+            "name": "0.model.layers.11.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.519108698364249e-11,
+            "name": "0.model.layers.11.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.0739177776220021e-11,
+            "name": "0.model.layers.11.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.7414550357308656e-10,
+            "name": "0.model.layers.11.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.1029368230981476e-11,
+            "name": "0.model.layers.11.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 4.5016518290807994e-10,
+            "name": "0.model.layers.11.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 9.960472030501322e-11,
+            "name": "0.model.layers.12.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.410642849896675e-11,
+            "name": "0.model.layers.12.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 7.503133531150397e-12,
+            "name": "0.model.layers.12.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.490416844442734e-10,
+            "name": "0.model.layers.12.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.669831105668209e-11,
+            "name": "0.model.layers.12.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.2150914782970155e-11,
+            "name": "0.model.layers.12.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.760202285795771e-11,
+            "name": "0.model.layers.13.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.190965712831286e-11,
+            "name": "0.model.layers.13.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.1400914066983514e-11,
+            "name": "0.model.layers.13.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.95102073385911e-10,
+            "name": "0.model.layers.13.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.393105935112217e-11,
+            "name": "0.model.layers.13.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.6058869511947904e-11,
+            "name": "0.model.layers.13.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.056126019971515e-10,
+            "name": "0.model.layers.14.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.16088638438761e-11,
+            "name": "0.model.layers.14.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 9.673908375751328e-12,
+            "name": "0.model.layers.14.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.2124226622667322e-10,
+            "name": "0.model.layers.14.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.136854053760075e-11,
+            "name": "0.model.layers.14.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.012021452224566e-11,
+            "name": "0.model.layers.14.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.818834415358907e-10,
+            "name": "0.model.layers.15.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.316006828128607e-11,
+            "name": "0.model.layers.15.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.638831431671761e-11,
+            "name": "0.model.layers.15.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.748400561638277e-10,
+            "name": "0.model.layers.15.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.4504559759683815e-11,
+            "name": "0.model.layers.15.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.1058677584774301e-10,
+            "name": "0.model.layers.15.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.1371443370267187e-10,
+            "name": "0.model.layers.16.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.5335402926459665e-11,
+            "name": "0.model.layers.16.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 6.8185353196970055e-12,
+            "name": "0.model.layers.16.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.2993134052871085e-10,
+            "name": "0.model.layers.16.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.759713787664936e-11,
+            "name": "0.model.layers.16.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 6.908004029915205e-11,
+            "name": "0.model.layers.16.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.952219289003132e-11,
+            "name": "0.model.layers.17.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.410569297621294e-11,
+            "name": "0.model.layers.17.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.082241844225674e-11,
+            "name": "0.model.layers.17.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.4923049735114944e-10,
+            "name": "0.model.layers.17.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.3977009827303988e-10,
+            "name": "0.model.layers.17.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 9.445900311932931e-11,
+            "name": "0.model.layers.17.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.0045104748002132e-09,
+            "name": "0.model.layers.18.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.163439368935599e-11,
+            "name": "0.model.layers.18.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.9924228933376753e-11,
+            "name": "0.model.layers.18.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.0816219031539731e-09,
+            "name": "0.model.layers.18.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.250133909371016e-11,
+            "name": "0.model.layers.18.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 7.713598509928588e-11,
+            "name": "0.model.layers.18.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 6.106215533208115e-11,
+            "name": "0.model.layers.19.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.278665352048684e-11,
+            "name": "0.model.layers.19.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.0205241166016954e-11,
+            "name": "0.model.layers.19.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.5378612272520797e-10,
+            "name": "0.model.layers.19.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.068412628675187e-11,
+            "name": "0.model.layers.19.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 5.5716001257088976e-11,
+            "name": "0.model.layers.19.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.489113525352195e-10,
+            "name": "0.model.layers.20.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.7575962907301346e-10,
+            "name": "0.model.layers.20.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 9.089808766793439e-12,
+            "name": "0.model.layers.20.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 6.808281716175202e-11,
+            "name": "0.model.layers.20.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.45638195684306e-11,
+            "name": "0.model.layers.20.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.4278812507373395e-11,
+            "name": "0.model.layers.20.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.08763309259308e-10,
+            "name": "0.model.layers.21.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.28762125961579e-10,
+            "name": "0.model.layers.21.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.2248768839484558e-11,
+            "name": "0.model.layers.21.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 6.590800682992892e-10,
+            "name": "0.model.layers.21.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.1308230740691982e-10,
+            "name": "0.model.layers.21.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.312677883058555e-10,
+            "name": "0.model.layers.21.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.446024451376651e-11,
+            "name": "0.model.final_norm.weight"
+          }
+        ],
+        "loss_absolute_error": 8.551737096240686e-11,
+        "parameter_gradients_compared": 134,
+        "query_count": 2
+      },
+      "max_length": 8192,
+      "mteb_encoding": {
+        "complete_for_cpu_mteb_encoding": true,
+        "cosine_score_max_error": 1.1175870895385742e-07,
+        "document_vectors": 16,
+        "engineering_char_budget": 140,
+        "normalized_document_max_error": 2.4586915969848633e-07,
+        "normalized_query_max_error": 0.0,
+        "query_vectors": 2
+      },
+      "run_id": "padded-muon-3e-4",
+      "temperature": 0.02,
+      "tokenized_columns": [
+        "query",
+        "positive",
+        "negative_0",
+        "negative_1",
+        "negative_2",
+        "negative_3",
+        "negative_4",
+        "negative_5",
+        "negative_6"
+      ]
+    },
+    {
+      "checkpoint": "outputs/dense-no-packing-v1/dense/padded-normuon-3e-4/checkpoint-2345",
+      "checkpoint_inventory": {
+        "1_Pooling/config.json": {
+          "git_blob_sha1": "2236c262f1f83c50f7c304e98a8d1413980280df",
+          "sha256": "b7703fedc62cbe2d1e4fd47338d5ba9ee5b2107d49fc42e85ae848484fdd08bc",
+          "size": 89
+        },
+        "README.md": {
+          "git_blob_sha1": "d2fc2eb0e0e5486c83e30489ed5ce10d5ba00ccb",
+          "sha256": "8ae83e49f3e7431f14b1369cfb0d6409bc8eeea70e5fd52e307ab30d9f8361d2",
+          "size": 121446
+        },
+        "config.json": {
+          "git_blob_sha1": "900c0704284dba27ce63f1740645b3e713931189",
+          "sha256": "ff929ae43ab4db7160bcb67120473a110e0039d4aa61f4301621e0275192cf9f",
+          "size": 1952
+        },
+        "config_sentence_transformers.json": {
+          "git_blob_sha1": "465abf9518413ffa3a3d4d2ef6c5ccedc3f66fc7",
+          "sha256": "0bab23432e89ccdc265f8c1f65a02994ec8fc2639d0dea5cc02740483cb396e9",
+          "size": 299
+        },
+        "model.safetensors": {
+          "git_blob_sha1": "bae464792d586748f668918ed53765f7130fe921",
+          "sha256": "1b1ead783ab7365301baee1a09c7c494802864239512aa9c8c7f12be919a1583",
+          "size": 596070136
+        },
+        "modules.json": {
+          "git_blob_sha1": "45d2436b717b3a70d63c0df4ab2c49d5cdb02c5b",
+          "sha256": "e4068aab8a95663636c4c28044a95eafdb6492387397ec8283d8f8b31078d645",
+          "size": 277
+        },
+        "optimizer.pt": {
+          "git_blob_sha1": "d709cdf12f2623ad1329a2aa8819af0b2c4f0775",
+          "sha256": "cdba4be2ea0c2c4d40181d49672ec265b623948fa3c4ff5e2da8a943d6dc0cae",
+          "size": 751558475
+        },
+        "rng_state_0.pth": {
+          "git_blob_sha1": "ff682b0941116b1521516254fea722443b502c7e",
+          "sha256": "9ec321849313daa7abe8e7f786d8e00569f60493cc516c1b01bb8fe04af46b49",
+          "size": 15365
+        },
+        "rng_state_1.pth": {
+          "git_blob_sha1": "c7c361360c832a5c9fa70c6ba7256c0fb12f3099",
+          "sha256": "761ca4d004707b8a5198304587576e8a1af0d9e76d98047dda744baa714553fd",
+          "size": 15365
+        },
+        "rng_state_2.pth": {
+          "git_blob_sha1": "aac3e29a632af0b33f41953d39c79ba70c7d2827",
+          "sha256": "a16ce4e8eb4433051d6a30c046c098bb2df5899185766aff1882f857e9f81925",
+          "size": 15365
+        },
+        "rng_state_3.pth": {
+          "git_blob_sha1": "a53d83ce1a71d22c8c7b14e4189dace083fb4dc9",
+          "sha256": "a61904aee1e841b24c14ee1f0c686f68219ebbd219bd9b0809cc954d2efa2b1c",
+          "size": 15365
+        },
+        "scheduler.pt": {
+          "git_blob_sha1": "14c36208f54b214cf92737305b0788cb6b27f3b8",
+          "sha256": "f7403e54de2032332db76fc886c0508deeb5626d82bcaa5d966267be07088c41",
+          "size": 1465
+        },
+        "sentence_bert_config.json": {
+          "git_blob_sha1": "d2cd15826913bba6e43310063d75883bb0b7b842",
+          "sha256": "3084164002c0bca01b0259c5327123803fce32e660a57feb93184ffead186fc8",
+          "size": 241
+        },
+        "tokenizer.json": {
+          "git_blob_sha1": "31e99eddb04ca32c7c1f66cde30dc3e54099402f",
+          "sha256": "bb637767e8dfb8044597df6c58243bff2e592ae9e3b310c0bbdb8591f6ac543d",
+          "size": 3583486
+        },
+        "tokenizer_config.json": {
+          "git_blob_sha1": "5f39ad215a937472d4c0c4a0a925a8b6406236c0",
+          "sha256": "e977cecfe7160a6ce134c0a91b2842c54bdd5aee1d16fd31baab8dc28bf5cdff",
+          "size": 542
+        },
+        "trainer_state.json": {
+          "git_blob_sha1": "28525c53d353e2e3c3397e8cc642724f4c3d7330",
+          "sha256": "6399feeb5aed5e19c5468b94e17c1c139737b0772457f004207c0b09d2b181e8",
+          "size": 41861
+        },
+        "training_args.bin": {
+          "git_blob_sha1": "2a7d7402578edeacb5a01f47f1605d33a8b86dd7",
+          "sha256": "06d978cf46b4e9483f0bfe31c24eb517cd22aab49e83955d497f7932fb0c0cbd",
+          "size": 5649
+        }
+      },
+      "loss_and_gradients": {
+        "candidate_count_per_query": 8,
+        "complete_for_loss_graph": true,
+        "gradient_elements_compared": 149014272,
+        "gradient_errors": [
+          {
+            "elements": 38682624,
+            "max_absolute_error": 1.7034931798498576e-10,
+            "name": "0.model.embeddings.tok_embeddings.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.003564258945545e-10,
+            "name": "0.model.embeddings.norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.4949851079304466e-10,
+            "name": "0.model.layers.0.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 3.1329123323375896e-11,
+            "name": "0.model.layers.0.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.0368302744145907e-10,
+            "name": "0.model.layers.0.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.701945083285253e-11,
+            "name": "0.model.layers.0.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 3.685922747576065e-11,
+            "name": "0.model.layers.0.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.0567591246513075e-10,
+            "name": "0.model.layers.1.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.7827520015778475e-10,
+            "name": "0.model.layers.1.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.15105520601122e-11,
+            "name": "0.model.layers.1.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 7.061035645072877e-10,
+            "name": "0.model.layers.1.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.023635922338457e-11,
+            "name": "0.model.layers.1.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.1879827810655783e-11,
+            "name": "0.model.layers.1.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.7667954038967935e-10,
+            "name": "0.model.layers.2.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.2111249503288235e-10,
+            "name": "0.model.layers.2.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.6122212939673197e-11,
+            "name": "0.model.layers.2.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.0036493297848068e-10,
+            "name": "0.model.layers.2.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.4796304726469884e-11,
+            "name": "0.model.layers.2.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.1212889084187836e-11,
+            "name": "0.model.layers.2.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 6.344350600429038e-10,
+            "name": "0.model.layers.3.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.6621962140028756e-10,
+            "name": "0.model.layers.3.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.4079543086964463e-11,
+            "name": "0.model.layers.3.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.5242823376590025e-10,
+            "name": "0.model.layers.3.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.1407877127142e-11,
+            "name": "0.model.layers.3.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.2587577681577589e-11,
+            "name": "0.model.layers.3.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.584973234411649e-10,
+            "name": "0.model.layers.4.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.4171899764825469e-10,
+            "name": "0.model.layers.4.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.0344098841374993e-11,
+            "name": "0.model.layers.4.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 9.110395771116941e-10,
+            "name": "0.model.layers.4.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.9495442466795936e-11,
+            "name": "0.model.layers.4.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.688666789207872e-10,
+            "name": "0.model.layers.4.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.2455472203919413e-10,
+            "name": "0.model.layers.5.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.008668645447358e-11,
+            "name": "0.model.layers.5.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 7.460046469454085e-12,
+            "name": "0.model.layers.5.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.1571938679798563e-10,
+            "name": "0.model.layers.5.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.511264543010206e-11,
+            "name": "0.model.layers.5.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.1007751094259675e-11,
+            "name": "0.model.layers.5.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.401523312491662e-10,
+            "name": "0.model.layers.6.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.543173113384483e-11,
+            "name": "0.model.layers.6.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 7.200030502363397e-12,
+            "name": "0.model.layers.6.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.2808079303569e-10,
+            "name": "0.model.layers.6.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.975924880468163e-11,
+            "name": "0.model.layers.6.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 3.1445797354923144e-11,
+            "name": "0.model.layers.6.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.4455908692312391e-10,
+            "name": "0.model.layers.7.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.862338557984572e-11,
+            "name": "0.model.layers.7.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 7.728653654559547e-12,
+            "name": "0.model.layers.7.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.344531041005183e-10,
+            "name": "0.model.layers.7.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.678400193971257e-11,
+            "name": "0.model.layers.7.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.934389189968023e-11,
+            "name": "0.model.layers.7.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.105518230408279e-10,
+            "name": "0.model.layers.8.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.423288290147156e-11,
+            "name": "0.model.layers.8.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 7.86024891008541e-12,
+            "name": "0.model.layers.8.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.6086990073382879e-10,
+            "name": "0.model.layers.8.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.152381910538239e-11,
+            "name": "0.model.layers.8.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.608879605403569e-11,
+            "name": "0.model.layers.8.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.8239235122230468e-10,
+            "name": "0.model.layers.9.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.440886712866245e-11,
+            "name": "0.model.layers.9.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.0712210632424224e-11,
+            "name": "0.model.layers.9.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 6.38009534092987e-10,
+            "name": "0.model.layers.9.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.8979979794250283e-11,
+            "name": "0.model.layers.9.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.8617811245745806e-11,
+            "name": "0.model.layers.9.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 7.501636811735324e-11,
+            "name": "0.model.layers.10.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.87651038941317e-11,
+            "name": "0.model.layers.10.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.252866473760994e-11,
+            "name": "0.model.layers.10.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.918802115090216e-10,
+            "name": "0.model.layers.10.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.1489063013221426e-11,
+            "name": "0.model.layers.10.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.5287900246029338e-11,
+            "name": "0.model.layers.10.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.402489235857729e-10,
+            "name": "0.model.layers.11.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.608585817995504e-11,
+            "name": "0.model.layers.11.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.2921226588691326e-11,
+            "name": "0.model.layers.11.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.1107646186457885e-10,
+            "name": "0.model.layers.11.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.251087841802061e-11,
+            "name": "0.model.layers.11.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 5.28757926332446e-10,
+            "name": "0.model.layers.11.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.1485666584487575e-10,
+            "name": "0.model.layers.12.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.398796852964296e-11,
+            "name": "0.model.layers.12.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 8.698730104284014e-12,
+            "name": "0.model.layers.12.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 3.5150582444742895e-10,
+            "name": "0.model.layers.12.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.4603907373153007e-11,
+            "name": "0.model.layers.12.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.6688342508185414e-11,
+            "name": "0.model.layers.12.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.3845696811287667e-10,
+            "name": "0.model.layers.13.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.219683795771758e-11,
+            "name": "0.model.layers.13.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.3934437805007693e-11,
+            "name": "0.model.layers.13.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.0805701606008142e-10,
+            "name": "0.model.layers.13.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 3.793387132189352e-11,
+            "name": "0.model.layers.13.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.8989173081185307e-11,
+            "name": "0.model.layers.13.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.2449041797424343e-10,
+            "name": "0.model.layers.14.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.374675869975533e-11,
+            "name": "0.model.layers.14.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.1956820950009828e-11,
+            "name": "0.model.layers.14.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.9930194994355332e-10,
+            "name": "0.model.layers.14.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 4.669433589787886e-11,
+            "name": "0.model.layers.14.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 2.4328299791376296e-11,
+            "name": "0.model.layers.14.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.852850898906524e-10,
+            "name": "0.model.layers.15.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 8.567672959980399e-11,
+            "name": "0.model.layers.15.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.0282999238507848e-11,
+            "name": "0.model.layers.15.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.439707573273722e-10,
+            "name": "0.model.layers.15.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 5.185687643183279e-11,
+            "name": "0.model.layers.15.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.3453327341039767e-10,
+            "name": "0.model.layers.15.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.3020032274546622e-10,
+            "name": "0.model.layers.16.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.746840586213665e-11,
+            "name": "0.model.layers.16.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 8.17534755170879e-12,
+            "name": "0.model.layers.16.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 4.564807420948114e-10,
+            "name": "0.model.layers.16.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.0318716714419196e-10,
+            "name": "0.model.layers.16.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 7.957673409109134e-11,
+            "name": "0.model.layers.16.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.7608236877196823e-11,
+            "name": "0.model.layers.17.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.611994368161845e-11,
+            "name": "0.model.layers.17.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.4148009980518026e-11,
+            "name": "0.model.layers.17.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 2.884918970380568e-10,
+            "name": "0.model.layers.17.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.8146506519656214e-10,
+            "name": "0.model.layers.17.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.1013469997100955e-10,
+            "name": "0.model.layers.17.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.2106378122211936e-09,
+            "name": "0.model.layers.18.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 9.718693905202969e-11,
+            "name": "0.model.layers.18.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 2.3664532139422434e-11,
+            "name": "0.model.layers.18.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.2335589216760923e-09,
+            "name": "0.model.layers.18.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 9.673377376895331e-11,
+            "name": "0.model.layers.18.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 8.793700490006273e-11,
+            "name": "0.model.layers.18.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 7.272550617276607e-11,
+            "name": "0.model.layers.19.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 6.271103081267881e-11,
+            "name": "0.model.layers.19.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.203399706273256e-11,
+            "name": "0.model.layers.19.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 1.7881972291799997e-10,
+            "name": "0.model.layers.19.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.5370275325009572e-11,
+            "name": "0.model.layers.19.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 6.48397863178829e-11,
+            "name": "0.model.layers.19.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.177990258786735e-10,
+            "name": "0.model.layers.20.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 2.0090210051115776e-10,
+            "name": "0.model.layers.20.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.047070763426916e-11,
+            "name": "0.model.layers.20.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 7.684146374753453e-11,
+            "name": "0.model.layers.20.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 7.572385773979562e-11,
+            "name": "0.model.layers.20.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.7218240722094436e-11,
+            "name": "0.model.layers.20.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.575859773898628e-10,
+            "name": "0.model.layers.21.attn_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.543427330386038e-10,
+            "name": "0.model.layers.21.attn.Wqkv.weight"
+          },
+          {
+            "elements": 589824,
+            "max_absolute_error": 1.4531657127614395e-11,
+            "name": "0.model.layers.21.attn.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 8.068431478491789e-10,
+            "name": "0.model.layers.21.mlp_norm.weight"
+          },
+          {
+            "elements": 1769472,
+            "max_absolute_error": 1.3923644182067818e-10,
+            "name": "0.model.layers.21.mlp.Wi.weight"
+          },
+          {
+            "elements": 884736,
+            "max_absolute_error": 1.566022311827453e-10,
+            "name": "0.model.layers.21.mlp.Wo.weight"
+          },
+          {
+            "elements": 768,
+            "max_absolute_error": 5.375564576803882e-11,
+            "name": "0.model.final_norm.weight"
+          }
+        ],
+        "loss_absolute_error": 1.0110312587130466e-10,
+        "parameter_gradients_compared": 134,
+        "query_count": 2
+      },
+      "max_length": 8192,
+      "mteb_encoding": {
+        "complete_for_cpu_mteb_encoding": true,
+        "cosine_score_max_error": 7.450580596923828e-08,
+        "document_vectors": 16,
+        "engineering_char_budget": 140,
+        "normalized_document_max_error": 3.948807716369629e-07,
+        "normalized_query_max_error": 0.0,
+        "query_vectors": 2
+      },
+      "run_id": "padded-normuon-3e-4",
+      "temperature": 0.02,
+      "tokenized_columns": [
+        "query",
+        "positive",
+        "negative_0",
+        "negative_1",
+        "negative_2",
+        "negative_3",
+        "negative_4",
+        "negative_5",
+        "negative_6"
+      ]
+    }
+  ],
+  "runtime_deployed": false,
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "engineering_cpu_dense_loss_and_encoding_contract",
+  "source_bindings": [
+    {
+      "bytes": 14125,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_loss_contract.py",
+      "sha256": "6373e1c5987c858f19bc3503a6ad7db47bd00ab5d279ff959b341e919e6ab55f"
+    },
+    {
+      "bytes": 3805,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    {
+      "bytes": 2117,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 26739,
+      "path": "/root/embedding-optimizer-study/scripts/eval/dense_sequential.py",
+      "sha256": "f92a3c9fbfcfed7b7f593dbbf5bdd85571f185087a1170fc3999fcd370b21906"
+    },
+    {
+      "bytes": 11179,
+      "path": "/root/embedding-optimizer-study/scripts/eval/dense_parallel.py",
+      "sha256": "2b476585c17f636fbce604e5ff9ff051c69077d49340ead63916afab426a8c72"
+    },
+    {
+      "bytes": 1104,
+      "path": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "sha256": "89b650c1d10a41eb2999083604a1b1d0c996c45cd02c7dee0028e918f3d4752a"
+    },
+    {
+      "bytes": 1255,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/corrected_input_execution.py",
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    {
+      "bytes": 11262,
+      "path": "/usr/local/lib/python3.12/dist-packages/sentence_transformers/sentence_transformer/trainer.py",
+      "sha256": "44e1847fab2b99e9c997f85c64fc6736352902fa721a05b412caa2f1470009aa"
+    },
+    {
+      "bytes": 18687,
+      "path": "/usr/local/lib/python3.12/dist-packages/mteb/models/sentence_transformer_wrapper.py",
+      "sha256": "12a6a99defc7d34620594fbd03d94a019badf4569ba45ec052b34d34068a2f01"
+    }
+  ],
+  "source_checkpoints_unchanged": true,
+  "synthetic_rows": [
+    {
+      "negative_0": "The museum opens on Tuesday.",
+      "negative_1": "Saturn has rings made of ice. Details follow.",
+      "negative_2": "A violin has four strings. Details follow. Details follow.",
+      "negative_3": "The path crosses a wooden bridge.",
+      "negative_4": "Copper conducts electricity. Details follow.",
+      "negative_5": "An atlas contains maps of many countries. Details follow. Details follow.",
+      "negative_6": "The train arrived after the rain ended.",
+      "positive": "Plants convert sunlight through photosynthesis.",
+      "query": "How do plants convert sunlight into energy?"
+    },
+    {
+      "negative_0": "The museum opens on Tuesday. Details follow.",
+      "negative_1": "Saturn has rings made of ice. Details follow. Details follow.",
+      "negative_2": "A violin has four strings. Details follow. Details follow. Details follow.",
+      "negative_3": "The path crosses a wooden bridge. Details follow.",
+      "negative_4": "Copper conducts electricity. Details follow. Details follow.",
+      "negative_5": "An atlas contains maps of many countries. Details follow. Details follow. Details follow.",
+      "negative_6": "The train arrived after the rain ended. Details follow.",
+      "positive": "Pure water freezes at zero degrees Celsius at ordinary pressure.",
+      "query": "When does water freeze?"
+    }
+  ],
+  "tolerances": {
+    "encoding_atol": 2e-05,
+    "encoding_rtol": 0.0002,
+    "gradient_atol": 3e-06,
+    "gradient_rtol": 0.0003,
+    "loss_atol": 2e-05,
+    "loss_rtol": 1e-05
+  },
+  "versions": {
+    "mteb": "2.18.16",
+    "sentence-transformers": "5.7.0",
+    "torch": "2.9.1+cu129",
+    "transformers": "5.3.0"
+  }
+}

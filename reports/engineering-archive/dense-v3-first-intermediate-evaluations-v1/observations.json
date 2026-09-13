@@ -1,0 +1,28 @@
+{
+  "scope": "separately_timestamped_existing_primary_and_functional_observations",
+  "observations": [
+    {
+      "name": "primary",
+      "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /root/embedding-optimizer-v3-experiment/launch/task-observer/status.py",
+      "result": {
+        "chunk_id": "10e911",
+        "wall_time_seconds": 0.000005277,
+        "exit_code": 0,
+        "original_token_count": 546,
+        "output": "{\"scope\": \"exact_existing_native_task_observer_status\", \"observed_at_utc\": \"2026-09-11T01:43:32.482320+00:00\", \"observer\": {\"pid\": 60083, \"start_ticks\": 299816818, \"state\": \"S\", \"ppid\": 1986037, \"command_matches\": true, \"live\": true}, \"task_snapshot_at_utc\": \"2026-09-11T01:43:15.991512+00:00\", \"primary_tasks\": [268, 840], \"baseline_tasks\": [14, 14], \"worker_observations_from_that_snapshot\": [{\"command_matches\": true, \"gpu_token\": \"3\", \"group\": \"primary_a\", \"job\": \"verified-v3-adamw-3e-5-782-HotpotQA\", \"live\": true, \"pid\": 295832, \"ppid\": 597, \"start_ticks\": 306209375, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"2\", \"group\": \"primary_a\", \"job\": \"verified-v3-muon-1e-4-782-MSMARCO\", \"live\": true, \"pid\": 278642, \"ppid\": 597, \"start_ticks\": 306006648, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"0\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-1e-4-782-MSMARCO\", \"live\": true, \"pid\": 279087, \"ppid\": 597, \"start_ticks\": 306013150, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"1\", \"group\": \"primary_a\", \"job\": \"verified-v3-normuon-3e-4-782-HotpotQA\", \"live\": true, \"pid\": 296557, \"ppid\": 597, \"start_ticks\": 306232679, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"4\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-1e-5-1563-ClimateFEVER\", \"live\": true, \"pid\": 294656, \"ppid\": 598, \"start_ticks\": 306182187, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"6\", \"group\": \"primary_b\", \"job\": \"verified-v3-adamw-3e-6-1563-ClimateFEVER\", \"live\": true, \"pid\": 294670, \"ppid\": 598, \"start_ticks\": 306182794, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"7\", \"group\": \"primary_b\", \"job\": \"verified-v3-muon-3e-4-1563-ClimateFEVER\", \"live\": true, \"pid\": 293653, \"ppid\": 598, \"start_ticks\": 306180282, \"state\": \"R\"}, {\"command_matches\": true, \"gpu_token\": \"5\", \"group\": \"primary_b\", \"job\": \"verified-v3-normuon-1e-3-1563-ClimateFEVER\", \"live\": true, \"pid\": 294658, \"ppid\": 598, \"start_ticks\": 306182307, \"state\": \"R\"}], \"completed_receipt_present\": false, \"failed_receipt_present\": false, \"task_snapshot_is_a_separate_timestamped_observation\": true, \"fresh_native_task_or_model_replay\": false, \"scientific_completion\": false}\n"
+      }
+    },
+    {
+      "name": "functional",
+      "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /root/embedding-optimizer-v3-experiment/launch/functional-dimensions/observe.py",
+      "result": {
+        "chunk_id": "c1b50d",
+        "wall_time_seconds": 0.064067205,
+        "exit_code": 0,
+        "original_token_count": 265,
+        "output": "{\"active_gpu_tokens\": [], \"authorization\": {\"bytes\": 15389, \"sha256\": \"d72527595e2c963eae7fd46b0a1de2bd83d1ea15a863ae467a1065cfc5b2f336\"}, \"completed\": false, \"coordinator\": {\"command_matches\": true, \"pid\": 42916, \"ppid\": 1986037, \"start_ticks\": 299159282, \"state\": \"S\"}, \"coordinator_started\": {\"bytes\": 1267, \"sha256\": \"c1fcac34c21d248c3c7217fa2cc87d63132ff19b71eeb2d8f705bb1aba9f6f41\"}, \"encoded_states\": [], \"failed\": false, \"feature_worker\": null, \"features_completed\": false, \"fresh_model_or_numeric_replay_by_observer\": false, \"inputs\": {\"bytes\": 19515868, \"sha256\": \"be6d92fda2f7f0ba3e86f2c2866fa9dca530f066d29ce92d0887fdad91684067\"}, \"observed_at_utc\": \"2026-09-11T01:43:32.634662+00:00\", \"other_process_or_gpu_process_enumeration\": false, \"scientific_completion\": false, \"scope\": \"exact_read_only_primary_functional_campaign_observation\", \"sources_authenticated\": 53, \"vectors_completed\": false, \"verified_feature_states\": [], \"verified_vector_states\": [], \"waiting_for_validation_record_present\": true, \"workers\": [], \"writes_or_signals\": false}\n"
+      }
+    }
+  ],
+  "scientific_completion": false
+}

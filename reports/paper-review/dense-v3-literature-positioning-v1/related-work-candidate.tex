@@ -1,0 +1,33 @@
+% Deferred replacement, not installed into the authoritative or live paper.
+\section{Related Work}
+
+Dense dual encoders rank a corpus through vector similarity. BEIR tests transfer across
+retrieval tasks \citep{thakur2021beir}; DenseOn supplies the pretrained checkpoint and open
+adaptation recipe \citep{sourty2026denseon}. HIL combines isotropic and anisotropic
+representations in late-interaction retrieval \citep{kim2024hil}, motivating relevance-sensitive
+evaluation rather than maximizing a spread statistic alone.
+
+\citet{takeshita2025dimensions} study random and single-coordinate removal in text embeddings.
+\citet{wu2026select} learn query-specific dimension selection from positive--negative
+alignment. Relevance-sensitive dimension importance is therefore not itself our contribution.
+We track finite deletion sensitivities along optimizer trajectories and test whether their
+native-coordinate differences survive shared rotations and predict full-corpus retrieval.
+
+Muon scales well in language-model pretraining, and NorMuon adds neuron-wise adaptation
+\citep{liu2025muon,li2025normuon}. Associative-memory and imbalance studies connect spectral
+updates to more balanced learning \citep{wang2025tailmemory,vasudeva2025spectral}; feature-transfer
+benefits have also been reported \citep{ruan2026features}. These are functional explanations,
+not just descriptions of an update rule. Yet spectral descent can lose useful simplicity
+bias \citep{dragutinovic2026simplicity}, and optimizer switching can disrupt pretrained
+knowledge \citep{qu2026finetune,liu2026consistency}. Spectral correction, input covariance,
+and layer-dependent geometry offer further qualifications
+\citep{pang2026htmuon,du2026newtonmuon,massena2026schatten}.
+
+Basis and scale require separate care. Outlier-safe pretraining combines Muon with architectural
+changes \citep{park2025outlier}; parameter-gauge equivariance is distinct from our post-encoding
+rotations \citep{singh2026basis}. Hyperball connects weight and update norms to angular dynamics
+\citep{wen2026hyperball}. Our initial fixed-probe calibration does not match entire trajectories.
+We ask which reached-state measurements predict held-out-rate retrieval beyond the training
+recipe, then separately cross fixed source states with reset continuation rules. Neither a
+spectral fingerprint nor a basis-sensitive coordinate effect alone establishes a retrieval
+mechanism.

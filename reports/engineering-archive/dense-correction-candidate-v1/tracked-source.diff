@@ -1,0 +1,366 @@
+diff --git a/src/embed_optim/config.py b/src/embed_optim/config.py
+index af71b26..1897eae 100644
+--- a/src/embed_optim/config.py
++++ b/src/embed_optim/config.py
+@@ -11,6 +11,9 @@ import yaml
+ ModelFamily = Literal["dense", "late"]
+ OptimizerName = Literal["adamw", "hybrid_adamw", "muon", "normuon"]
+ MUON_NS_IMPLEMENTATION = "unfused-bfloat16-v1"
++NORMUON_NS_IMPLEMENTATION = "unfused-bfloat16-additive-eps-v2"
++DENSE_NUMERICAL_POLICY = "single-normalization-deterministic-backward-v1"
++LEGACY_NUMERICAL_POLICY = "legacy-v1"
+ 
+ 
+ @dataclasses.dataclass(frozen=True)
+@@ -29,18 +32,42 @@ class OptimizerConfig:
+     aux_eps: float = 1e-8
+     ns_steps: int = 5
+     adjust_lr_fn: str = "original"
++    ns_implementation: str | None = None
++
++    @property
++    def resolved_ns_implementation(self) -> str | None:
++        if self.name not in {"muon", "normuon"}:
++            if self.ns_implementation is not None:
++                raise ValueError("Only Muon-family optimizers have a Newton-Schulz implementation")
++            return None
++        implementation = (
++            MUON_NS_IMPLEMENTATION if self.ns_implementation is None else self.ns_implementation
++        )
++        allowed = {MUON_NS_IMPLEMENTATION}
++        if self.name == "normuon":
++            allowed.add(NORMUON_NS_IMPLEMENTATION)
++        if not isinstance(implementation, str) or implementation not in allowed:
++            raise ValueError(f"Unsupported optimizer implementation {implementation!r}")
++        return implementation
+ 
+     @classmethod
+     def from_dict(cls, values: dict[str, Any]) -> "OptimizerConfig":
+         values = dict(values)
+-        implementation = values.pop("ns_implementation", None)
+         config = cls(**values)
+-        if implementation is not None and (
+-            config.name not in {"muon", "normuon"} or implementation != MUON_NS_IMPLEMENTATION
+-        ):
+-            raise ValueError(f"Unsupported optimizer implementation {implementation!r}")
++        config.resolved_ns_implementation
++        if config.ns_implementation == MUON_NS_IMPLEMENTATION:
++            config = dataclasses.replace(config, ns_implementation=None)
+         return config
+ 
++    def as_dict(self) -> dict[str, Any]:
++        values = dataclasses.asdict(self)
++        implementation = self.resolved_ns_implementation
++        if implementation is None:
++            values.pop("ns_implementation")
++        else:
++            values["ns_implementation"] = implementation
++        return values
++
+ 
+ @dataclasses.dataclass(frozen=True)
+ class RunConfig:
+@@ -70,6 +97,7 @@ class RunConfig:
+     wandb_project: str = "embedding-optimizer-study"
+     wandb_entity: str | None = None
+     checkpoint_fractions: tuple[float, ...] = (0.2, 0.4, 0.6, 0.8, 1.0)
++    numerical_policy: str = LEGACY_NUMERICAL_POLICY
+ 
+     @property
+     def resolved_temperature(self) -> float:
+@@ -83,8 +111,9 @@ class RunConfig:
+ 
+     def as_dict(self) -> dict[str, Any]:
+         values = dataclasses.asdict(self)
+-        if self.optimizer.name in {"muon", "normuon"}:
+-            values["optimizer"]["ns_implementation"] = MUON_NS_IMPLEMENTATION
++        values["optimizer"] = self.optimizer.as_dict()
++        if self.numerical_policy == LEGACY_NUMERICAL_POLICY:
++            values.pop("numerical_policy")
+         return values
+ 
+     @classmethod
+@@ -93,7 +122,12 @@ class RunConfig:
+         values["optimizer"] = OptimizerConfig.from_dict(values["optimizer"])
+         if "checkpoint_fractions" in values:
+             values["checkpoint_fractions"] = tuple(values["checkpoint_fractions"])
+-        return cls(**values)
++        config = cls(**values)
++        if config.numerical_policy not in {LEGACY_NUMERICAL_POLICY, DENSE_NUMERICAL_POLICY}:
++            raise ValueError("Unknown training numerical policy")
++        if config.numerical_policy == DENSE_NUMERICAL_POLICY and config.model_family != "dense":
++            raise ValueError("The corrected numerical policy is Dense-only")
++        return config
+ 
+ 
+ def _resolve_matrix_path(path: str | Path, prefix: Path | None = None) -> Path:
+@@ -185,6 +219,9 @@ def save_resolved_config(config: RunConfig, path: str | Path) -> None:
+ 
+ 
+ def source_wandb_run_id(config: RunConfig) -> str:
++    if getattr(config, "numerical_policy", LEGACY_NUMERICAL_POLICY) == DENSE_NUMERICAL_POLICY:
++        implementation = config.optimizer.resolved_ns_implementation or "adamw"
++        return f"study-v5-{config.model_family}-{config.run_id}-seed{config.seed}-{implementation}"
+     if config.optimizer.name in {"muon", "normuon"}:
+         version = "v3"
+     elif config.optimizer.name == "hybrid_adamw":
+diff --git a/src/embed_optim/optimizers.py b/src/embed_optim/optimizers.py
+index 16504e6..c048b46 100644
+--- a/src/embed_optim/optimizers.py
++++ b/src/embed_optim/optimizers.py
+@@ -9,7 +9,7 @@ from torch import Tensor, nn
+ from torch.optim import Optimizer
+ from torch.optim import _functional as optim_f
+ 
+-from .config import MUON_NS_IMPLEMENTATION, OptimizerConfig
++from .config import MUON_NS_IMPLEMENTATION, NORMUON_NS_IMPLEMENTATION, OptimizerConfig
+ 
+ _NO_DECAY = re.compile(r"(?:^|\.)(?:bias|.*norm(?:\d+)?\.weight)$", re.IGNORECASE)
+ 
+@@ -65,7 +65,9 @@ def partition_summary(
+     }
+ 
+ 
+-def _zeropower_via_newton_schulz(gradient: Tensor, steps: int, eps: float = 1e-7) -> Tensor:
++def _zeropower_via_newton_schulz(
++    gradient: Tensor, steps: int, eps: float = 1e-7, *, norm_epsilon: str = "clamp"
++) -> Tensor:
+     """Apply Muon's bfloat16 polynomial without the unstable fused ``torch.addmm`` path."""
+     if gradient.ndim != 2:
+         raise ValueError(f"Muon requires 2D tensors, got {tuple(gradient.shape)}")
+@@ -73,7 +75,11 @@ def _zeropower_via_newton_schulz(gradient: Tensor, steps: int, eps: float = 1e-7
+     transposed = update.size(0) > update.size(1)
+     if transposed:
+         update = update.T
+-    update = update / update.norm().clamp_min(eps)
++    if norm_epsilon not in {"clamp", "additive"}:
++        raise ValueError("Unknown Newton-Schulz denominator policy")
++    norm = update.norm()
++    denominator = norm.clamp_min(eps) if norm_epsilon == "clamp" else norm + eps
++    update = update / denominator
+     a, b, c = 3.4445, -4.7750, 2.0315
+     for _ in range(steps):
+         gram = update @ update.T
+@@ -110,10 +116,14 @@ def _normuon_update(
+     momentum: float,
+     beta2: float,
+     ns_steps: int,
++    *,
++    norm_epsilon: str = "clamp",
+ ) -> Tensor:
+     momentum_buffer.lerp_(gradient, 1 - momentum)
+     update = gradient.lerp(momentum_buffer, momentum)
+-    update = _zeropower_via_newton_schulz(update, ns_steps).to(gradient.dtype)
++    update = _zeropower_via_newton_schulz(update, ns_steps, norm_epsilon=norm_epsilon).to(
++        gradient.dtype
++    )
+     original_norm = update.norm()
+     row_second_moment = torch.mean(update.square(), dim=-1, keepdim=True)
+     second_moment.lerp_(row_second_moment, 1 - beta2)
+@@ -207,8 +217,15 @@ class EmbeddingOptimizer(Optimizer):
+             parameter.add_(update, alpha=-adjusted_lr)
+ 
+     def _normuon_step(self, group: dict) -> None:
++        implementation = group.get("ns_implementation", MUON_NS_IMPLEMENTATION)
++        if implementation not in {MUON_NS_IMPLEMENTATION, NORMUON_NS_IMPLEMENTATION}:
++            raise ValueError("Unknown NorMuon implementation in optimizer state")
+         for parameter in group["params"]:
+             if parameter.grad is None:
++                if implementation == NORMUON_NS_IMPLEMENTATION:
++                    raise ValueError(
++                        "The audited NorMuon path requires a gradient for every matrix"
++                    )
+                 continue
+             state = self.state[parameter]
+             if "momentum_buffer" not in state:
+@@ -221,6 +238,7 @@ class EmbeddingOptimizer(Optimizer):
+                 momentum=group["momentum"],
+                 beta2=group["beta2"],
+                 ns_steps=group["ns_steps"],
++                norm_epsilon="additive" if implementation == NORMUON_NS_IMPLEMENTATION else "clamp",
+             )
+             parameter.mul_(1 - group["lr"] * group["weight_decay"])
+             parameter.add_(update, alpha=-group["lr"])
+@@ -295,7 +313,7 @@ def build_optimizer(
+                 "momentum": config.momentum,
+                 "beta2": config.normuon_beta2,
+                 "ns_steps": config.ns_steps,
+-                "ns_implementation": MUON_NS_IMPLEMENTATION,
++                "ns_implementation": config.resolved_ns_implementation,
+                 "adjust_lr_fn": config.adjust_lr_fn,
+                 "weight_decay": config.weight_decay,
+             },
+diff --git a/src/embed_optim/short_branch.py b/src/embed_optim/short_branch.py
+index c96e717..cb2c8f1 100644
+--- a/src/embed_optim/short_branch.py
++++ b/src/embed_optim/short_branch.py
+@@ -1,7 +1,6 @@
+ from __future__ import annotations
+ 
+ import argparse
+-import dataclasses
+ import hashlib
+ import itertools
+ import json
+@@ -329,7 +328,7 @@ def _load_update_metrics(
+ def _optimizer_payload(algorithm: str, learning_rate: float, auxiliary_lr: float) -> dict[str, Any]:
+     name = "hybrid_adamw" if algorithm == "adamw" else algorithm
+     config = OptimizerConfig(name=name, lr=learning_rate, aux_lr=auxiliary_lr)
+-    payload = dataclasses.asdict(config)
++    payload = config.as_dict()
+     if algorithm in {"muon", "normuon"}:
+         payload["ns_implementation"] = "unfused-bfloat16-v1"
+     return payload
+diff --git a/src/embed_optim/train.py b/src/embed_optim/train.py
+index 8b1790d..c320572 100644
+--- a/src/embed_optim/train.py
++++ b/src/embed_optim/train.py
+@@ -17,6 +17,7 @@ from sentence_transformers import (
+ )
+ from transformers import set_seed
+ 
++from . import dense_numerical_contract as numerical
+ from .callbacks import (
+     AcceptedTimingCallback,
+     FractionalCheckpointCallback,
+@@ -28,6 +29,8 @@ from .callbacks import (
+ )
+ from .collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
+ from .config import (
++    DENSE_NUMERICAL_POLICY,
++    LEGACY_NUMERICAL_POLICY,
+     RunConfig,
+     load_matrix,
+     matrix_runtime_spec,
+@@ -40,10 +43,62 @@ from .pylate_compat import configure_pylate_compatibility
+ 
+ 
+ class OptimizerTrainer(SentenceTransformerTrainer):
+-    def __init__(self, *args, optimizer_config, **kwargs) -> None:
++    def __init__(
++        self, *args, optimizer_config, numerical_policy=LEGACY_NUMERICAL_POLICY, **kwargs
++    ) -> None:
+         self.embedding_optimizer_config = optimizer_config
+         self.optimizer_partition_summary = None
++        self.dense_numerical_policy = numerical_policy
++        if numerical_policy not in {LEGACY_NUMERICAL_POLICY, DENSE_NUMERICAL_POLICY}:
++            raise ValueError("Unknown Trainer numerical policy")
++        if numerical_policy == DENSE_NUMERICAL_POLICY:
++            if type(kwargs.get("loss")) is not ExplicitDenseInfoNCELoss:
++                raise ValueError("Corrected Trainer requires the explicit Dense mean loss")
++            numerical.require_optimizer_choice(optimizer_config)
++            numerical.require_backward(kwargs["model"])
+         super().__init__(*args, **kwargs)
++        if numerical_policy == DENSE_NUMERICAL_POLICY and self.compute_loss_func is not None:
++            raise ValueError("Custom compute_loss_func is outside the corrected contract")
++
++    def create_accelerator_and_postprocess(self):
++        corrected = self.dense_numerical_policy == DENSE_NUMERICAL_POLICY
++        if corrected:
++            numerical.verify_stack(type(self))
++        super().create_accelerator_and_postprocess()
++        if corrected:
++            self.normalization_policy = numerical.assign_normalization_owner(self)
++
++    def _numerical_receipt(self):
++        return numerical.receipt(
++            self.embedding_optimizer_config, self.args.gradient_accumulation_steps
++        )
++
++    def _save_checkpoint(self, model, trial):
++        corrected = self.dense_numerical_policy == DENSE_NUMERICAL_POLICY
++        if corrected:
++            numerical.require_optimizer_state(self.optimizer, self.embedding_optimizer_config)
++            numerical.require_backward(self.model)
++        super()._save_checkpoint(model, trial)
++        if corrected and self.args.should_save:
++            output = (
++                Path(self._get_output_dir(trial=trial)) / f"checkpoint-{self.state.global_step}"
++            )
++            with (output / numerical.RECEIPT_NAME).open("x") as handle:
++                json.dump(self._numerical_receipt(), handle, indent=2, sort_keys=True)
++                handle.write("\n")
++
++    def _load_from_checkpoint(self, resume_from_checkpoint):
++        if self.dense_numerical_policy == DENSE_NUMERICAL_POLICY:
++            numerical.require_resume_receipt(resume_from_checkpoint, self._numerical_receipt())
++        return super()._load_from_checkpoint(resume_from_checkpoint)
++
++    def _load_optimizer_and_scheduler(self, checkpoint):
++        corrected = self.dense_numerical_policy == DENSE_NUMERICAL_POLICY
++        if corrected and checkpoint is not None:
++            numerical.require_resume_receipt(checkpoint, self._numerical_receipt())
++        super()._load_optimizer_and_scheduler(checkpoint)
++        if corrected:
++            numerical.require_optimizer_state(self.optimizer, self.embedding_optimizer_config)
+ 
+     def create_optimizer(self, model=None):
+         if self.optimizer is None:
+@@ -51,6 +106,9 @@ class OptimizerTrainer(SentenceTransformerTrainer):
+             self.optimizer, self.optimizer_partition_summary = build_optimizer(
+                 target, self.embedding_optimizer_config
+             )
++            if self.dense_numerical_policy == DENSE_NUMERICAL_POLICY:
++                for group in self.optimizer.param_groups:
++                    group["dense_numerical_policy"] = self.dense_numerical_policy
+             if self.is_world_process_zero():
+                 print(
+                     "Optimizer parameter partition: "
+@@ -112,6 +170,8 @@ def _load_model_and_loss(config: RunConfig):
+         )
+         model.max_seq_length = config.max_length
+         _configure_dense_input_execution(model, config)
++        if config.numerical_policy == DENSE_NUMERICAL_POLICY:
++            numerical.configure_backward(model)
+         loss = ExplicitDenseInfoNCELoss(model, temperature=config.resolved_temperature)
+         collator = DenseGroupCollator(model.preprocess)
+     elif config.model_family == "late":
+@@ -188,6 +248,24 @@ def _training_arguments(config: RunConfig) -> SentenceTransformerTrainingArgumen
+ 
+ 
+ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -> Path:
++    arguments = None
++    if config.model_family == "dense":
++        numerical.require_training_request(config, resume_from_checkpoint)
++        if resume_from_checkpoint:
++            accumulation = config.global_batch_size // (config.micro_batch_size * _world_size())
++            numerical.require_resume_receipt(
++                resume_from_checkpoint, numerical.receipt(config.optimizer, accumulation)
++            )
++        # All ranks must finish their read-only namespace checks before rank zero
++        # creates shared artifacts. TrainingArguments initializes the declared
++        # process group; an explicit barrier also covers an already active group.
++        arguments = _training_arguments(config)
++        if arguments.world_size != _world_size():
++            raise ValueError("Initialized world size differs from the declared launch")
++        if arguments.world_size > 1:
++            if not torch.distributed.is_initialized():
++                raise ValueError("Distributed output setup requires the initialized process group")
++            torch.distributed.barrier()
+     set_seed(config.seed)
+     os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+     os.environ["WANDB_PROJECT"] = config.wandb_project
+@@ -229,12 +307,13 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
+         callbacks.append(StopAfterStepCallback(stop_after_step))
+     trainer = OptimizerTrainer(
+         model=model,
+-        args=_training_arguments(config),
++        args=arguments if arguments is not None else _training_arguments(config),
+         train_dataset=dataset,
+         loss=loss,
+         data_collator=collator,
+         callbacks=callbacks,
+         optimizer_config=config.optimizer,
++        numerical_policy=config.numerical_policy,
+     )
+     if torch.cuda.is_available():
+         torch.cuda.reset_peak_memory_stats()
+@@ -307,6 +386,8 @@ def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -
+                 )
+             },
+         }
++        if config.numerical_policy == DENSE_NUMERICAL_POLICY:
++            completion_payload["numerical_contract"] = trainer._numerical_receipt()
+         optimizer_implementation = config.as_dict()["optimizer"].get("ns_implementation")
+         if optimizer_implementation:
+             completion_payload["optimizer_implementation"] = optimizer_implementation

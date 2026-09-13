@@ -1,0 +1,41 @@
+{
+  "scope": "read_only_named_controller_observation",
+  "controllers": [
+    {
+      "name": "main",
+      "path": "logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "contract": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+      "observed_at_utc": "2026-09-05T06:19:20+00:00",
+      "status": "waiting_for_training",
+      "steps_started": 0,
+      "complete_runs": 10,
+      "covered_checkpoints": null,
+      "cycle_failures": null
+    },
+    {
+      "name": "factorial",
+      "path": "logs/state-operator-factorial/completion/pipeline-ledger.json",
+      "contract": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8",
+      "observed_at_utc": "2026-09-05T06:19:01+00:00",
+      "status": "waiting_for_main_completion",
+      "steps_started": 0,
+      "complete_runs": 0,
+      "covered_checkpoints": null,
+      "cycle_failures": null
+    },
+    {
+      "name": "backup",
+      "path": "logs/dense-no-packing-sealed-backup/state.json",
+      "contract": "a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7",
+      "observed_at_utc": "2026-09-05T06:18:55Z",
+      "status": "watching",
+      "steps_started": 0,
+      "complete_runs": 0,
+      "covered_checkpoints": 54,
+      "cycle_failures": 0
+    }
+  ],
+  "runtime_changed": false,
+  "pause_executed": false,
+  "scientific_completion": false
+}

@@ -22,7 +22,14 @@ def test_active_publication_surface_is_paper_only() -> None:
         paths = (root,) if root.is_file() else (path for path in root.rglob("*") if path.is_file())
         for path in paths:
             relative = path.relative_to(ROOT).as_posix().lower()
-            if relative.startswith("paper/vendor/"):
+            # Upstream style comments are not a study publication. Keep this
+            # exception limited to the four actual vendored style-file paths.
+            if relative in {
+                "paper/vendor/acl.sty",
+                "paper/vendor/acl_natbib.bst",
+                "paper/current/vendor/acl.sty",
+                "paper/current/vendor/acl_natbib.bst",
+            }:
                 continue
             assert retired_token not in relative
             try:

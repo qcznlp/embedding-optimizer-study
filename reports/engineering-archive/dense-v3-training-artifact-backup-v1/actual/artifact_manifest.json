@@ -1,0 +1,757 @@
+{
+  "boundary": "Unchanged complete training observations and metadata only; no raw examples, code release, new model execution, retrieval or functional/causal inference.",
+  "created_at_utc": "2026-09-10T14:00:21.419779+00:00",
+  "files": {
+    "README.md": {
+      "bytes": 3942,
+      "git_blob_sha1": "f3093a42f71cb12929e8a86b874eefbed7be5f5c",
+      "sha256": "497d578cfd2efa5e2dfdb789d805948fc0b8738755ac39ffa0a0299afc956950"
+    },
+    "native/inputs/admission.json": {
+      "bytes": 19515868,
+      "git_blob_sha1": "56562ed51791262bff6c048506e3a4ce03c5c4fc",
+      "sha256": "be6d92fda2f7f0ba3e86f2c2866fa9dca530f066d29ce92d0887fdad91684067"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/accepted_timing.json": {
+      "bytes": 1399,
+      "git_blob_sha1": "b1b961fe55d803d5d7ce7c87dd0564efd020e43b",
+      "sha256": "cfbfad3e8bf3b7511d262e985f8382320544141bdaa1a7d588c54d430db0e1de"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/checkpoint-1563/trainer_state.json": {
+      "bytes": 27994,
+      "git_blob_sha1": "c729f30aaad1c7a773eba0adfca010cbdeb94862",
+      "sha256": "690d39128635ee077fb5f3b5dd72b92020feb52ed142102a39ddee96f3261969"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/checkpoint-2345/trainer_state.json": {
+      "bytes": 41604,
+      "git_blob_sha1": "3532169368eaafe2eccfc8efdd7e5e2027fb6d87",
+      "sha256": "679bfa2223aae17ce9f59ae14c4d899ab70d195316a60cf3ac2defee66527ba9"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/checkpoint-3126/trainer_state.json": {
+      "bytes": 55243,
+      "git_blob_sha1": "2027afffff0aee7a7f24c6168a8b05bb29762f40",
+      "sha256": "a2da0e53e2cba8b2ed60c05dc8f049e07fa504ee808bd331ab448415eb509302"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/checkpoint-3907/trainer_state.json": {
+      "bytes": 68897,
+      "git_blob_sha1": "568022e6ff05a75b23d5d69a68d9856c30ff05f9",
+      "sha256": "44712c23cb2a0491d668e72e9382df7adb653c88dfb2c44212a1ce1de0245ab9"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/checkpoint-782/trainer_state.json": {
+      "bytes": 14404,
+      "git_blob_sha1": "80c9404ada4ea2e1c01ceaa995dc63074a2da8c5",
+      "sha256": "d0f6b8b25bed0162707b8be64cc3f51f27877819998d52b6358b1f3ef9687d37"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/completed.json": {
+      "bytes": 3140,
+      "git_blob_sha1": "cd517b3f057151c24217798ef19d4f16155b23fb",
+      "sha256": "36791f7fc3e93cf7457924a5a7f099e53369bec40531e8dbf4a2d34e871406fe"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/dense_run_contract.json": {
+      "bytes": 10725,
+      "git_blob_sha1": "a443c362dc9c2bafc97c77e0b0a821c02fa51048",
+      "sha256": "82d8008ea08ca815a0eee0e57d9fba34f8aab44ba57222d308bcc66ee601f3ca"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/run_config.json": {
+      "bytes": 1219,
+      "git_blob_sha1": "4f63b4af2c8af131b17c88fb81d25c1b1c58e649",
+      "sha256": "f3c2807295ff4fb5f1a7f4127ee068c05e4211806b36cc683f8370fdc40eea91"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-5/trainer_state_final.json": {
+      "bytes": 69130,
+      "git_blob_sha1": "83e75e048fb952f6a08973e4986c1c4185f3ddbb",
+      "sha256": "c57199138debab94085f1ac96fca71741741b40b9efe3842b94188698ba3e60f"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/accepted_timing.json": {
+      "bytes": 1399,
+      "git_blob_sha1": "23a2509233861ae0670e2e106c6453ec3b39bd30",
+      "sha256": "8be30b0590f196d8320b2305ea831b0f7b68fd40905f1262a1afd509fc754fd0"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/checkpoint-1563/trainer_state.json": {
+      "bytes": 27877,
+      "git_blob_sha1": "71c23b1bc0a8c0fcca435590b29d2a41f16dd690",
+      "sha256": "1fa37da5c4544297a608d9658ba1c0dd161d9dbc035cdd63c4a72b44e6a7290d"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/checkpoint-2345/trainer_state.json": {
+      "bytes": 41406,
+      "git_blob_sha1": "87c9bbfceb2535f75225800abc7fb3bf8481a1d4",
+      "sha256": "e32c5b6fb4172d71bcea86177a0df6dfe09913bfb7de8ecdd5e0c8d7bc67ba5d"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/checkpoint-3126/trainer_state.json": {
+      "bytes": 54996,
+      "git_blob_sha1": "62dcbe0c59ad6ff2689a83fb504377a8022c3a1a",
+      "sha256": "460254c5605d5329172c82005a9d1fe82bcc083c1b92a3b7f427e8466f3c3012"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/checkpoint-3907/trainer_state.json": {
+      "bytes": 68598,
+      "git_blob_sha1": "9e4605e8343dea164fd025cd619a3e22b8f0d560",
+      "sha256": "9eacc7fce30dedc83c6aa786c317b8f658514ae0c5dad7f3bea7534e8b1d5521"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/checkpoint-782/trainer_state.json": {
+      "bytes": 14365,
+      "git_blob_sha1": "5c7aba80504db6242527815870b38ed0ec4b2a28",
+      "sha256": "e540d9d3a9f670559a8f200ae3e571e331d4dc813053178d515a67949313f6e7"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/completed.json": {
+      "bytes": 3140,
+      "git_blob_sha1": "0ab21edf2520a40eadc5f2f569be3c412bc49daf",
+      "sha256": "1187e267f37a50286e1e1185f46b1380ed8371b345074063a98b7f671e947327"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/dense_run_contract.json": {
+      "bytes": 10725,
+      "git_blob_sha1": "684c91ca2c42f6748d3a751e39be09f24957732c",
+      "sha256": "c27a608571055c35c2ff0169bcd21425abde508b44038df302c0f4c3eadac2db"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/run_config.json": {
+      "bytes": 1219,
+      "git_blob_sha1": "0304980c54af9353e32f9edad830c9a4d95f4ab1",
+      "sha256": "22f9621a827bebbf4827c74e3e51a32e15953019b4bba0b6220e93850c399140"
+    },
+    "native/inputs/native/verified-v3-adamw-1e-6/trainer_state_final.json": {
+      "bytes": 68831,
+      "git_blob_sha1": "1879a7eadec1318682ae580b0a2195d563659e21",
+      "sha256": "91923d019fbb450fa54431b0239b46d2734794fa5d3f052bf08011468ab9436c"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/accepted_timing.json": {
+      "bytes": 1399,
+      "git_blob_sha1": "c21e32cf36c3b351c0c09a2b75229dfd81176c07",
+      "sha256": "22eab15bfedb8e17c9cb0f8e209effac910fefd2367e87726863170b54049fb1"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/checkpoint-1563/trainer_state.json": {
+      "bytes": 28137,
+      "git_blob_sha1": "c88d55c65ea86b4ed92f5ff8cca76b31c33e4e50",
+      "sha256": "d6a306b70e4d31e699e854d9fe354eb1b62a8fb04dc8bee4dd40ff195a305e38"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/checkpoint-2345/trainer_state.json": {
+      "bytes": 41789,
+      "git_blob_sha1": "7faf3af75d6828c5f8ecc6da3fbd0fa97fc1d441",
+      "sha256": "b05274e1e9a5a352ce871fdeecb587f7e36c76da84675c1d1d5e631e5f889520"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/checkpoint-3126/trainer_state.json": {
+      "bytes": 55444,
+      "git_blob_sha1": "3e2c1c67717963b74d312b435b00d11b99ab63ff",
+      "sha256": "636b46b38522111443974085e92b4bc27166273450581fa85620c1446f7fb0c1"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/checkpoint-3907/trainer_state.json": {
+      "bytes": 69085,
+      "git_blob_sha1": "a3af95a911fe375a1e04a9dbc3033aa928ccb2f8",
+      "sha256": "7d253fe77e5cb36c9a57325f8bdc51ffbdbf6c3740e8c15910f38f1bd57f9893"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/checkpoint-782/trainer_state.json": {
+      "bytes": 14477,
+      "git_blob_sha1": "4e6403d463f03a57c32535308ed820ef0ee13f74",
+      "sha256": "91e21de54d1c490ee3676f9331dfa03e666da331a87c02d13c138d677ee928e9"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/completed.json": {
+      "bytes": 3140,
+      "git_blob_sha1": "81e10f1efd7b4881607b0f6210bbe6f858171d6b",
+      "sha256": "3e5b00fa4e8e92d69cc39de189971463c8b09b9d9d0387e34c56d53c98193a97"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/dense_run_contract.json": {
+      "bytes": 10725,
+      "git_blob_sha1": "350db2ae592d5416d11b158cb727560710c4fe81",
+      "sha256": "372bb4ef44b7fbe105cfdcbb5bec5a1757222b01bd17c5517554d24832f3d982"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/run_config.json": {
+      "bytes": 1219,
+      "git_blob_sha1": "f9adfb2a46e7453ff2cce0ccb62120b4e0bf5632",
+      "sha256": "4459919aa54a761d5c30d805c7268cddc96d184e3c6c2c4db4d7a71963175548"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-5/trainer_state_final.json": {
+      "bytes": 69319,
+      "git_blob_sha1": "6b1012bdf1b6111ed913bbaf3ebed953a013e9b9",
+      "sha256": "aa2c61f1e7c5a062161c4de502002bd8bd40861f79b254a7e4b4f0bfea126c5f"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/accepted_timing.json": {
+      "bytes": 1398,
+      "git_blob_sha1": "c30c0e0f858fc30c3eb347799370c6f65010bea9",
+      "sha256": "3a7c8708eb5c1a0c03f751fd5e5211c011df228f2ff0c510d06214a4782c13ee"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/checkpoint-1563/trainer_state.json": {
+      "bytes": 28024,
+      "git_blob_sha1": "473e422b71a579ccb87cbc55b7bfda14d67b467f",
+      "sha256": "baf245829241d87ef5e1a54631da01225fa465a15926f37c12dff7f827341f8e"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/checkpoint-2345/trainer_state.json": {
+      "bytes": 41683,
+      "git_blob_sha1": "734a6471cb5fe10ed00a2f4ae85957753491c322",
+      "sha256": "0338357d45232fba34a5c45e1ab1e9ef636d3388c998e8eac619f6fc28c28723"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/checkpoint-3126/trainer_state.json": {
+      "bytes": 55330,
+      "git_blob_sha1": "4ea5c2e869321e7d7c23fd7786268e2c372bdb01",
+      "sha256": "5f5826f84b0f5e7d70d9827913d2d4686989279d208e3321bdc99ea7f0965e44"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/checkpoint-3907/trainer_state.json": {
+      "bytes": 68962,
+      "git_blob_sha1": "81eaf2f87f344ffd73f22671fef56c1437888828",
+      "sha256": "c9e4c88e8543ee9eaa02a48467d9810edffff76765c6bb91e04ef2bf2894b0e6"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/checkpoint-782/trainer_state.json": {
+      "bytes": 14411,
+      "git_blob_sha1": "638f0a7f8ed0eabd28785fe8adce198a19fda031",
+      "sha256": "8b784c2acf25a3342c472f4a4817695e2302f1e99cfea8ede097bfb157c80ff8"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/completed.json": {
+      "bytes": 3139,
+      "git_blob_sha1": "f4458e9c5174697e6233bb8aa7623d4733fad65f",
+      "sha256": "b6e48cff2878f9b3a926dc7c44b0a011956c2d281a3fc9d4fd9bef9f5c7b7cb4"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/dense_run_contract.json": {
+      "bytes": 10725,
+      "git_blob_sha1": "5d32cf0168c83220340c2598c396db5983886b3d",
+      "sha256": "ee0da4533928b1d0ad6672e49e4e316c54c4738bd35827a9eaecb09177034bcc"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/run_config.json": {
+      "bytes": 1219,
+      "git_blob_sha1": "e10a9171ef4931a3857e35c873ec51dbbb788a1e",
+      "sha256": "6a91ea7e05835b7a54e337d181e5b3206702335e045cc25c9fceb68b1892e21d"
+    },
+    "native/inputs/native/verified-v3-adamw-3e-6/trainer_state_final.json": {
+      "bytes": 69195,
+      "git_blob_sha1": "bebfc8fc8dee3885dd7ac64ec6d36403f467cd98",
+      "sha256": "8a95f0f6a3b696c9974863283ca16bcf1c3f0317380676015fc88e4e86c81b93"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/accepted_timing.json": {
+      "bytes": 1398,
+      "git_blob_sha1": "40a530fe45a96fcd6ca2f5da4fcdbee159bd580b",
+      "sha256": "2bf3d16dc6768ddb8c192311d36ae66dd807e7d7837b3804c7ca4c2d5dd3ddae"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/checkpoint-1563/trainer_state.json": {
+      "bytes": 28018,
+      "git_blob_sha1": "d9428530f2924a0ed50f318a834ed88abf5c702d",
+      "sha256": "5400bbce5d94ff31a895871d19fcc60739b755070548ff256dfbfde6f83d1f9c"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/checkpoint-2345/trainer_state.json": {
+      "bytes": 41630,
+      "git_blob_sha1": "2920deae559a2b92e2e85e428e9c1e03fa81bfce",
+      "sha256": "3a57631e7ca16fba35d9b194452c6786baaecbc3d85816339148cf8446202c10"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/checkpoint-3126/trainer_state.json": {
+      "bytes": 55276,
+      "git_blob_sha1": "3181847a20aaaeb9ed38ab70210a34835d13a4ba",
+      "sha256": "5220b8a4b2cba668a2b492ff52939b964c57619b73fcaa0ed71cfa2b2d29edf6"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/checkpoint-3907/trainer_state.json": {
+      "bytes": 68940,
+      "git_blob_sha1": "c069e704f90706dbf2ef0d74d48c44cf7a6f39ce",
+      "sha256": "5a75f7ff5339fa9e577fb07ff865e39be2e4020cb8c36bb3814c3a7215ff8947"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/checkpoint-782/trainer_state.json": {
+      "bytes": 14427,
+      "git_blob_sha1": "a906c4b2a4b13959c4bce67c12d7b75bc4f5b9b0",
+      "sha256": "6e4a42f8b7ba048271a6d672fc9df626ef776c0ae22c9538b5bee978c6c117e1"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/completed.json": {
+      "bytes": 3201,
+      "git_blob_sha1": "a8d42bdbf339dc08d7a5ba6469817268fd3afcf8",
+      "sha256": "f1ad431fce718fe27a9940bf73189bbe152ec62955c832780790f4e9cd2a8637"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/dense_run_contract.json": {
+      "bytes": 10788,
+      "git_blob_sha1": "22284344dc3eb1e53e0e01adf9530f82d993be19",
+      "sha256": "9f7cab9f6e0aa1447d155ffb5ff5bbf7d529ac7abc62a4161b785021e442f567"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/run_config.json": {
+      "bytes": 1265,
+      "git_blob_sha1": "bb7549107e644c233e66c0aa749531fe06ad5db2",
+      "sha256": "95f072be446d22b71597655f8c4710e1ae0b338a750f7ab55f4099fb16e751e3"
+    },
+    "native/inputs/native/verified-v3-muon-1e-3/trainer_state_final.json": {
+      "bytes": 69173,
+      "git_blob_sha1": "367be6adc5cd391dccbb20d9820a6424e1422798",
+      "sha256": "a2f250a73c7f593bd5ceeee49118574e633e27e6494564dba9cd6fb5c38f83df"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/accepted_timing.json": {
+      "bytes": 1396,
+      "git_blob_sha1": "8dfa682461e58067c1fccb79fc776d844b622776",
+      "sha256": "c772dce98808b0b243f1627bf629e26c92994f85a76d5aedc0b746a20850a6b0"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/checkpoint-1563/trainer_state.json": {
+      "bytes": 27976,
+      "git_blob_sha1": "d5bfb8d61708ffac1584ac3ce39d6c5f8dce9dd5",
+      "sha256": "571f0c415fc641b40caa10905c26c8040e681e66cfc74102223888589bf1e7ea"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/checkpoint-2345/trainer_state.json": {
+      "bytes": 41594,
+      "git_blob_sha1": "0a38a8ca9953e4ca93234e2fa2fc4770a5b3bd58",
+      "sha256": "66df0ca2eb4467a9f052dc6487e78f78147b9e5ee01d665d2a3877884d16ba44"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/checkpoint-3126/trainer_state.json": {
+      "bytes": 55254,
+      "git_blob_sha1": "252366c6409fa391a8e038ca34a59c663ad26bf6",
+      "sha256": "f1451503b3842b0c7bb13caede2622ffc2f5b07e4886a0f4004981269621f1ee"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/checkpoint-3907/trainer_state.json": {
+      "bytes": 68922,
+      "git_blob_sha1": "b00be6d791ee7d1d0459d011bdb2cc31f7d96b0f",
+      "sha256": "af86a4c61f251a5ab6e1cb68ba17ff2502656a864e3c518af866175feb70a07e"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/checkpoint-782/trainer_state.json": {
+      "bytes": 14390,
+      "git_blob_sha1": "89030f241d6c9f1f02fe8ad000a23cbe245f4dd0",
+      "sha256": "354d186d59c2c77baea2a96a12a3bcbb32e1dab4d7a5f4915537d1e25a2deeb3"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/completed.json": {
+      "bytes": 3203,
+      "git_blob_sha1": "f6fd28cde15598ac307e3d5594a24a38212c5bd2",
+      "sha256": "e320bc226eae9afba6df49922219b4e682960772fcfaa53f5313721a7a025d85"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/dense_run_contract.json": {
+      "bytes": 10791,
+      "git_blob_sha1": "b826d31741b35500e40f9a9547239d3118dc6fbc",
+      "sha256": "e3abb925b9a7cfad8c07b940ea34e45f772edbc2fe795898af3547aa1dbc0789"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/run_config.json": {
+      "bytes": 1266,
+      "git_blob_sha1": "c867a0f29fa60a53acc38e22df3f02af8096a48f",
+      "sha256": "5108443beeda70e4a6f2a29ec5636b30dd94c37137dcad90d4ad89b0a99adcba"
+    },
+    "native/inputs/native/verified-v3-muon-1e-4/trainer_state_final.json": {
+      "bytes": 69155,
+      "git_blob_sha1": "8179c86194f4db39e678f09252fc09175a2026cf",
+      "sha256": "e8b8f5deffbe0282b49e8c6b2513ba975328c60752d19d5cc4fb994986650df7"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/accepted_timing.json": {
+      "bytes": 1399,
+      "git_blob_sha1": "e8429b198ea853ef71474bcf68ecc1af69b4697a",
+      "sha256": "dfc25e153acd1d1651c2533d41b47825c445f86832ad753dd2d41d7e44dd1a92"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/checkpoint-1563/trainer_state.json": {
+      "bytes": 27911,
+      "git_blob_sha1": "5749bfecc2cd212ca76dace799d3fa4033ac8fa2",
+      "sha256": "99c2f38470373034e27884f843cf177d8ed35b0b837638c4650c8d9915aa478b"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/checkpoint-2345/trainer_state.json": {
+      "bytes": 41458,
+      "git_blob_sha1": "4ff966eb260fe4f89d16f1a4c29c174f82dd1115",
+      "sha256": "b7557176787848dbdc7a6c4448d6ea9185c6b6ddbe6ce98364b6cc410cafc5eb"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/checkpoint-3126/trainer_state.json": {
+      "bytes": 55062,
+      "git_blob_sha1": "1412f04cbc92583658999c2f333732c4e53e02da",
+      "sha256": "fd8dac8c02c1a0fd8169446aa0fe90f5d6f5ac16eeb5dbadd89aff549760f286"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/checkpoint-3907/trainer_state.json": {
+      "bytes": 68694,
+      "git_blob_sha1": "739ade72448c4542dad7dec358aad960c47be188",
+      "sha256": "55e0a611d76be860557bf124d914f9555c8159a3d01b5afa395cc3f6e9326a9a"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/checkpoint-782/trainer_state.json": {
+      "bytes": 14388,
+      "git_blob_sha1": "eab540ca6a1ad6726042664cc79b572762f2abb5",
+      "sha256": "4e62665262e9ef898ecbf515d133e6256cdcd5fdc13715bbe1d3b74c90288198"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/completed.json": {
+      "bytes": 3202,
+      "git_blob_sha1": "ac0a4bc2c36b2133827205a5541f826aef839566",
+      "sha256": "d10e1a7034c9006ba5e84e4a10f0057886d592265cfb18bbd91d400e86cd7df5"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/dense_run_contract.json": {
+      "bytes": 10788,
+      "git_blob_sha1": "00f1a19e0b393c310b0d8c5e3fab5cf0249d302c",
+      "sha256": "58fcdbc5eb7077fafc522236488868402daf03842982f87965098b5d00a4c7e6"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/run_config.json": {
+      "bytes": 1265,
+      "git_blob_sha1": "6d8244cccf6f1e8d0edc68e9e4ec4341ca258612",
+      "sha256": "46585f99dafe92e798bf6c468da1972bfa1c2b5902c3879522b47e8901280eb9"
+    },
+    "native/inputs/native/verified-v3-muon-3e-3/trainer_state_final.json": {
+      "bytes": 68927,
+      "git_blob_sha1": "b4a28e307f3ddf8b678943d752f6c069f6054716",
+      "sha256": "3024f0e5d39852acd5ca70b25d4e8dd101e5db84469fbed74bf053f73ca0501e"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/accepted_timing.json": {
+      "bytes": 1400,
+      "git_blob_sha1": "881ee980481a6bc419bc63ac725d2ad22859a367",
+      "sha256": "1ef0e8d8a58d8e075596b9183d77d1e9d8fcc81fc76b4f97d7a0f0b85ee7ad96"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/checkpoint-1563/trainer_state.json": {
+      "bytes": 28108,
+      "git_blob_sha1": "cd72859880418388cf88a487d56a75317db5b261",
+      "sha256": "6b4517bf6a93f2cdc6513f9cdde053a6af7cf5628353f89235eaa80cdea93c76"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/checkpoint-2345/trainer_state.json": {
+      "bytes": 41767,
+      "git_blob_sha1": "d1cb9a35d099372ca5dbe7d9dbe2e0a761c53e75",
+      "sha256": "bbce04aa9abd9f08ac7a4a7e213c948f865c58d7006daaf6c89360465a305a5c"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/checkpoint-3126/trainer_state.json": {
+      "bytes": 55411,
+      "git_blob_sha1": "409b29cc8e24e65a5806c793d585d772442bab02",
+      "sha256": "0db60941e6cb845ab381d1e6b314a5446e1eb19d4de0efa9d041dddc19f58cf2"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/checkpoint-3907/trainer_state.json": {
+      "bytes": 69066,
+      "git_blob_sha1": "7bb77e6a0bb23f7e38fb4347185097be37cfa052",
+      "sha256": "99acefe0bb3505a8478c6b4e953c7464dfc23a34d91efa8c9cbe7b69eeb7202d"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/checkpoint-782/trainer_state.json": {
+      "bytes": 14457,
+      "git_blob_sha1": "254d3f3573946ab3ef5123c21d0e1a19839619e9",
+      "sha256": "4d170ad2a45873911070e1388399cda374f0a6e66691cdb2c7dfe874f6ed4b26"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/completed.json": {
+      "bytes": 3203,
+      "git_blob_sha1": "06d00a5dc5e5c8fd110392f32b1cdcbdf2bf8f42",
+      "sha256": "a0c45fe3fe20a2649882d136b4c008aea67a8322b3936192e4c3418b354db68e"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/dense_run_contract.json": {
+      "bytes": 10791,
+      "git_blob_sha1": "5ba5faae77bc311b800cf374cf705ca95ab1747e",
+      "sha256": "e4069dd8c2f9aefdc68bd99f199280e6f93e3ba09b71d832697e8dbd3ce8b7ad"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/run_config.json": {
+      "bytes": 1266,
+      "git_blob_sha1": "1cac1f23180b79db148aab8966594b47c4647510",
+      "sha256": "aa6dcc8e94fbe38e5855f818237dd2fe783230a73c0c3db6ed37487940925914"
+    },
+    "native/inputs/native/verified-v3-muon-3e-4/trainer_state_final.json": {
+      "bytes": 69300,
+      "git_blob_sha1": "a95391db3ac17048430b5eb17b10e370cc717551",
+      "sha256": "813aa3842f5b07bdca8ec699ab2cb85824cfa10842df5a664ef180a8af97bff5"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/accepted_timing.json": {
+      "bytes": 1398,
+      "git_blob_sha1": "6c45940d1dc8639b3353aae20973860cdfd920bb",
+      "sha256": "1daa77fc2d7684da05f4c922b415db5dc3998c8d609d5e5ddf11ddfff945ab07"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/checkpoint-1563/trainer_state.json": {
+      "bytes": 28037,
+      "git_blob_sha1": "f0b40fca6a9369f0fa11ebf7ea92ba6a725aa1eb",
+      "sha256": "b44501cfcc9c81c86e08a1d26774e0cfec3143675acaf9d5435e4ca8493b44ff"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/checkpoint-2345/trainer_state.json": {
+      "bytes": 41652,
+      "git_blob_sha1": "841c7e0cc03de726bd47457e327b004c9bdddbd0",
+      "sha256": "2ad0dcc7b19b7c21d561ddea82d0b50a93d5ddaffc5bbfb207a3b750dbf0c179"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/checkpoint-3126/trainer_state.json": {
+      "bytes": 55315,
+      "git_blob_sha1": "f6b167839cff09fcc82579403ab42ddee3b8b4be",
+      "sha256": "c7d205964890c30a7cbd6bceac8c599dc2a1fcda0294efbbd3555f8d5839fb14"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/checkpoint-3907/trainer_state.json": {
+      "bytes": 68994,
+      "git_blob_sha1": "4a3c595a2a448798eeff872ffb94519eadc64561",
+      "sha256": "88439782330628a39a7e8838fc3990df24ed84466f7c04e9708f57d640c78275"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/checkpoint-782/trainer_state.json": {
+      "bytes": 14441,
+      "git_blob_sha1": "7e904205eb776ac49ca6c3358bac5de537359a90",
+      "sha256": "76a03bd6f109b2c36a3c88c1263a898217534d5b6f85cbbfc24149b25496fb50"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/completed.json": {
+      "bytes": 3267,
+      "git_blob_sha1": "b40e296bd8aaddc4bf0ddda3682b766c755ba227",
+      "sha256": "be82516fce2a52d814d23c4898c34c5afdda39c6a81c3f3edae13c3f4ebaed0a"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/dense_run_contract.json": {
+      "bytes": 10856,
+      "git_blob_sha1": "17425c24b65c40a245b7238d36d511af21911222",
+      "sha256": "48823c54320cf5b8176837a3e4619c372b3bcf6f5b91bf8c441b90e274efc20a"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/run_config.json": {
+      "bytes": 1284,
+      "git_blob_sha1": "29d3a4286d4c9a45bbc8e742bf4e5aab58f0ca8e",
+      "sha256": "145cbeb87cafeb844893cef6f91d5e1a5b940439109fa0f473fd8e3ae67347fe"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-3/trainer_state_final.json": {
+      "bytes": 69227,
+      "git_blob_sha1": "2b29521cae20303e1118ff24311e5a2adb532888",
+      "sha256": "323856d58e663c89b0e77fe77741235222d8dfb510d95b9482e8f71d0ec2f74a"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/accepted_timing.json": {
+      "bytes": 1399,
+      "git_blob_sha1": "d0a56cd845f1adcaca3a00655f6efe41d12073b7",
+      "sha256": "f92b14e0326f5b6e21e1ad01a4c2ca34093b566979fd1bc0176806f6cfb366d4"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/checkpoint-1563/trainer_state.json": {
+      "bytes": 27983,
+      "git_blob_sha1": "38e14010e0726d81891ca55d0cac646001afc1c0",
+      "sha256": "08eed352f65730c091d394cfb658317c4d696a32833c9b07c17e83f62d7cf96f"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/checkpoint-2345/trainer_state.json": {
+      "bytes": 41597,
+      "git_blob_sha1": "b282c5c38ecb8c7942b571c609d013f1ac3cb8e5",
+      "sha256": "6db53bafccb2e6cbdd325e126cc24bd0c5cdd70bf901588d8402646bb09854d8"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/checkpoint-3126/trainer_state.json": {
+      "bytes": 55250,
+      "git_blob_sha1": "64caebb25dad149ac609f8f93ffb7e8bd97dc0d3",
+      "sha256": "829d27a39d50eddf60c6da33d12cce6a358536baf830f1febeb98de8c6bc966b"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/checkpoint-3907/trainer_state.json": {
+      "bytes": 68908,
+      "git_blob_sha1": "4b90daa19b8a30e983a887532ec2e3b05407818d",
+      "sha256": "ea894bec2c833c05aab2f55606e095260e487e4ca0f0f6a5237a4064db0ff1fd"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/checkpoint-782/trainer_state.json": {
+      "bytes": 14384,
+      "git_blob_sha1": "e53cac24c3d0a793f0803fc8a8520ecaac8ba8f9",
+      "sha256": "bff3c92c0df84b4e7a94a7212df10ad535422be6ce95acaf83653662e461243b"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/completed.json": {
+      "bytes": 3267,
+      "git_blob_sha1": "392866a09423e52ef7022b3a55b5f0b68147c671",
+      "sha256": "e21618da98952abe8fe17cf3b035b4f4fcf53292965600d6cf89a78b1a777dc8"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/dense_run_contract.json": {
+      "bytes": 10859,
+      "git_blob_sha1": "22bdc3dbe23b338187f842fb7b88fd29fd8987f8",
+      "sha256": "370f3509413f26c74257922cd57fddb92306b6a44d79c856607271e3642fcea8"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/run_config.json": {
+      "bytes": 1285,
+      "git_blob_sha1": "4d9ae110698c942777418f2661c963552f5f98f8",
+      "sha256": "bc35fa6578b5ce00ebd151349fa60d1ca2fc440fb3684ac3eddc49c15cc78686"
+    },
+    "native/inputs/native/verified-v3-normuon-1e-4/trainer_state_final.json": {
+      "bytes": 69141,
+      "git_blob_sha1": "0d8b4582f9b80b0bcbc23dcf11df74918112f502",
+      "sha256": "71bdd6dccb0496a0272c38671892ef582270bd466234c66e84fbf81621e0018f"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/accepted_timing.json": {
+      "bytes": 1400,
+      "git_blob_sha1": "071142c764fef6051027146a24b1b4fcc77d5d7a",
+      "sha256": "488f825f0d1dcf6bead5a7be6d4ecf4aed363d4c7fa308b97654df8e26660dc2"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/checkpoint-1563/trainer_state.json": {
+      "bytes": 27911,
+      "git_blob_sha1": "ccd25894b8f75149a1f76f47e73bfc6c7b57a644",
+      "sha256": "7c770b5a03ebbee5525f83943b8a8c5dfd6eda38754bd9da9754cf4d47521983"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/checkpoint-2345/trainer_state.json": {
+      "bytes": 41485,
+      "git_blob_sha1": "eb790deb203a74fd54d5172ef037434fe2cb253d",
+      "sha256": "53ed49458c3aaee83e02f72e26315f3b81e3844f42ae4d86b6907c451c7dfc17"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/checkpoint-3126/trainer_state.json": {
+      "bytes": 55099,
+      "git_blob_sha1": "948e31c11e49f1991f14572f1aa6fcd22e2cbb84",
+      "sha256": "29a68848b6bbd52fe0820ae38e6bda282eac47ba1fe2ac75c3b49377b099ab17"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/checkpoint-3907/trainer_state.json": {
+      "bytes": 68752,
+      "git_blob_sha1": "7615b3e07a8a772deecc764c270311ed02b6ed97",
+      "sha256": "7f4accee7f0b0b54aa6a5fcb17963604e60c4d8aefef8943e0994b1e29fd153b"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/checkpoint-782/trainer_state.json": {
+      "bytes": 14390,
+      "git_blob_sha1": "91d50445456e243d115ffeaceaac6feb2441fb10",
+      "sha256": "a33e6551e366084e24cf94ff264e9e026e45345b6899f0c1e678516457b94ec0"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/completed.json": {
+      "bytes": 3268,
+      "git_blob_sha1": "c4bc90c74107a1d378b4cd56aa453d3e581e02a8",
+      "sha256": "f9972d555b4d69657eb38591ced85f74d527be7465f45da77f916fe6c70157e1"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/dense_run_contract.json": {
+      "bytes": 10856,
+      "git_blob_sha1": "c9250c44395c46803023e7a784c16a6c7cdbcff2",
+      "sha256": "7a75ba575002a4b719b9f3e2081a043cd435e449d9aec79d34c7c843198b2aa5"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/run_config.json": {
+      "bytes": 1284,
+      "git_blob_sha1": "5d9e65c8c9da24d4d3d632a50d90872bfb08ca34",
+      "sha256": "911d0c843c5b5d583b3ac07595c2a6f6a05039f794401781c11c4f82a382c6c1"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-3/trainer_state_final.json": {
+      "bytes": 68986,
+      "git_blob_sha1": "e195d8011e14ef0275f252a332723981bacec6e3",
+      "sha256": "9e16c793850d71cbdcba3cd46c438644173d7b486ba3b05afa9a5078043f74b2"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/accepted_timing.json": {
+      "bytes": 1399,
+      "git_blob_sha1": "deb0aac76fbfe5a73c141dcc5a1536de1c27f217",
+      "sha256": "b78138dfa3d5c9161de4e016813f85f888ba6a705833f72ded80e9dde868db8a"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/checkpoint-1563/trainer_state.json": {
+      "bytes": 28085,
+      "git_blob_sha1": "825dd7f10c245fe67513a7239f39f8af6dd5e7d4",
+      "sha256": "bee76440c2ddd129bf3f3a6791c18db870958b3569264e1e5f6bcfeb525a9697"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/checkpoint-2345/trainer_state.json": {
+      "bytes": 41757,
+      "git_blob_sha1": "aff4ef58255e1b54e684822a0042e38c079bf20a",
+      "sha256": "57832aad855a4f0d3eb9f46a160f79d7eaea458022d51368b5ed64466e4e9f9a"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/checkpoint-3126/trainer_state.json": {
+      "bytes": 55423,
+      "git_blob_sha1": "7a6538c93e2ec1af50b3dd29eab7467b510f4cba",
+      "sha256": "f77080f93b94f3dd6cfff9dc238db68000b47a11c2e87584a7141edc51a304e3"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/checkpoint-3907/trainer_state.json": {
+      "bytes": 69076,
+      "git_blob_sha1": "e3a0e46c34c89e6e229f301922b7f153ffb8f380",
+      "sha256": "da12883c2c89a8902866413f48d57d70fcb95a51573eef22ea2f0f4da9d3f91c"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/checkpoint-782/trainer_state.json": {
+      "bytes": 14446,
+      "git_blob_sha1": "f64932d37043a0f590f75ed3388b68034e0953ac",
+      "sha256": "cb498a1fd9612735ce313f96c1ad5c14488b91cc53f5a2a50db03aaec7b69cdd"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/checkpoint_schedule.json": {
+      "bytes": 156,
+      "git_blob_sha1": "ccbefdea6df029aef2884b867ee6e9024a890df8",
+      "sha256": "8c8440caab2876cfb19264ab89ee12c0bb4df289db7b3de79e7d683d41b29e89"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/completed.json": {
+      "bytes": 3269,
+      "git_blob_sha1": "c99b2e65f93cabbb6ac5fa9ad633d9b546eb4277",
+      "sha256": "9a444f25ed475ae65925b29aea16d681f9a076911ce2cdc7dc778088b8fa7646"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/dense_run_contract.json": {
+      "bytes": 10859,
+      "git_blob_sha1": "3af12ad7681e4a5dadcfdfa6bf6a00bb9bf1aee8",
+      "sha256": "b16f5c08dc77ea5311a82afdd04d5ae11cbfea2e6347daa421492596cfeb5d5b"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/run_config.json": {
+      "bytes": 1285,
+      "git_blob_sha1": "a342cc3749fb14ba49cc95ef59d41454c9dbca71",
+      "sha256": "d5442c2ff7ca65be6f34fe8c402c52ce654f9d1f561f35adada8000a22e9a99c"
+    },
+    "native/inputs/native/verified-v3-normuon-3e-4/trainer_state_final.json": {
+      "bytes": 69310,
+      "git_blob_sha1": "e22c3279474ab51c23c553f3714d115635bbc92a",
+      "sha256": "516808e8f60aa4b0115dd826a6f0b61b7ce5fcfc36dcbff82fd6e8a34023c603"
+    },
+    "native/logged_training.csv": {
+      "bytes": 603471,
+      "git_blob_sha1": "b23cf84e47e6e25d62a2e7e02bd1c60568c3d91f",
+      "sha256": "5fea1926b0d28a819bb3f2ef84f6122a2d53eed9a0909c70a225efe50ed6d691"
+    },
+    "native/manifest.json": {
+      "bytes": 25227,
+      "git_blob_sha1": "0be884a88e37da19dd8aec51d2b39c33b9744b44",
+      "sha256": "98e3a7cae491d4bb06ae949a909f9466690e8f5d40edb600a3e5ce1e2ba17205"
+    },
+    "native/run_summary.csv": {
+      "bytes": 2354,
+      "git_blob_sha1": "ba4edcce1f3b36a9435e072855ae65a08d8acfe7",
+      "sha256": "620911507377dbd9412bd39c30a21ba241acdf54960feecfcf20c0a6154e5f83"
+    },
+    "native/stage_training.csv": {
+      "bytes": 10286,
+      "git_blob_sha1": "d0e5e5e59a2220ea7f6b1af8ff1cec358392b5ed",
+      "sha256": "ae0a143745d0f673960b85dec0790be22d70fa428f04263ce339d9048df3f7b2"
+    },
+    "native/systems.csv": {
+      "bytes": 2534,
+      "git_blob_sha1": "258fe04bc7f91c50e7883498f08a3aad37bf90d6",
+      "sha256": "872313328b8169d9f3fc62613c2478639f26667531de3c585e389323176d4c73"
+    },
+    "native/tables.json": {
+      "bytes": 1703497,
+      "git_blob_sha1": "aef06c02328cc603b49920ed15c3d9295acff2f8",
+      "sha256": "5f07d775f72e6743690ac266f6f85e993e4fc1999215f22d323d7d4df688265b"
+    },
+    "native/timing_segments.csv": {
+      "bytes": 10412,
+      "git_blob_sha1": "f77bce08a072479d7ac80704b8a2c6f317c0aafd",
+      "sha256": "111d1457c2723bd17a4fc9d266cbd08917070fc632f1e175f3cf8f090f1ffe79"
+    },
+    "native/training-trajectories.pdf": {
+      "bytes": 103411,
+      "git_blob_sha1": "15bde4a3a74281cd5c2b681226fe0de4f541c6fb",
+      "sha256": "9402337232d5327f273a70728f7679fffae883fafc4b135e337786fa7d9b6948"
+    },
+    "native/training-trajectories.png": {
+      "bytes": 629587,
+      "git_blob_sha1": "f9d033ca172937694b4fbec712d456c73ccf1d3c",
+      "sha256": "08550ac83332e22490ced6752cc1d002a77de8141c3cc401ac6d4d8b0b3496f4"
+    },
+    "native/training-trajectories.svg": {
+      "bytes": 284750,
+      "git_blob_sha1": "b74890aa48410e55b06282d448f5e1668118840d",
+      "sha256": "64bf2aa1cd027e158a34c88cee27953b70f06c0f1ff335135bfb8c77c97c48a4"
+    },
+    "provenance/independent-first.json": {
+      "bytes": 3459,
+      "git_blob_sha1": "e65fc5d181ba238f1b2ae9ac9e89233491a2179d",
+      "sha256": "1202fc9a82d784fdb03fff2eaffab9e5c15dba539d1774c8ca3546bb5fe8deb7"
+    },
+    "provenance/independent-replay-first.json": {
+      "bytes": 3459,
+      "git_blob_sha1": "c7a14419137f3eba3719ed75143f0cac606bab0e",
+      "sha256": "d12ca5d9f894e65d2a11dd50251dbccff68a880cde7c805aeda6e69e9895180b"
+    },
+    "provenance/primary-v3-checkpoints.json": {
+      "bytes": 507809,
+      "git_blob_sha1": "1e132731e0cbf74e280a5bde0f83681828a2ba43",
+      "sha256": "76e1253373e24525044ebbb459aadcb56afa76da3db629e5b00a652ed44dbe89"
+    },
+    "provenance/verification.json": {
+      "bytes": 7217,
+      "git_blob_sha1": "418670d0ac8615b89a4fd74a5cba72235b13b5fa",
+      "sha256": "ec8ddef1ec072bc95e1021b186d6d03a13cdb1ee0149262282c3e2f4cd5837e9"
+    }
+  },
+  "logged_observations": 4692,
+  "native_files": 143,
+  "payload_bytes": 26947096,
+  "payload_files": 148,
+  "primary_protocol_sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b",
+  "runs": 12,
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "complete-primary-v3-native-training-artifact-backup",
+  "source_code_included": false,
+  "stages_per_run": 5
+}

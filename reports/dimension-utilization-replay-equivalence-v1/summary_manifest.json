@@ -1,0 +1,788 @@
+{
+  "analysis_role": "exploratory_method_development",
+  "claim_boundary": "This analysis can show that optimizer trajectories redistribute coordinate-level retrieval contributions and can test whether that redistribution predicts corrected BEIR out of dose. It cannot infer semantic independence of dimensions, and native-coordinate ablations are not rotation invariant.",
+  "coverage": {
+    "checkpoint_exports": 60,
+    "dimensions": 768,
+    "pretrained_exports": 1,
+    "random_removal_rows": 68320,
+    "rotation_rows": 546,
+    "task_checkpoint_rows": 854,
+    "tasks": 14
+  },
+  "implementation": {
+    "bytes": 29992,
+    "path": "src/embed_optim/dimension_utilization.py",
+    "sha256": "27e6482e21c13e5ceada718b98a0a0f79865470131c2d08121f12262503b94a7"
+  },
+  "inputs": [
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/pretrained.npz",
+        "sha256": "3442b9643f87cea385fa3797a8b873bba955283ff1efd8036f8c8b83558b55d6"
+      },
+      "manifest": {
+        "bytes": 3719,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/pretrained.npz.manifest.json",
+        "sha256": "1291ec76ea3e0a5e2a6666c4ca669ab661ce80e6a782ad5663512fc8ae3bd05c"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-1563.npz",
+        "sha256": "5e48f00bd2281c175a959413296455492a8507700471b909c22e9dd0b3f45b71"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-1563.npz.manifest.json",
+        "sha256": "6eeb9358b21bd01688537df9ff02bd6ebb98a0dac9a712baa243ccf4baa73f58"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-2345.npz",
+        "sha256": "13e30a1ddb7124df26b2e3fe617b0480db6e8b0b750d4f1a608e2ef5ec05070b"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-2345.npz.manifest.json",
+        "sha256": "f87b2ba558dfedbc786abcafebe954db2a79a40432e5a4e14c2317072f6d5494"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-3126.npz",
+        "sha256": "f7105b41d0e5e19b7ec4e12f9887dfb5f2fbd54508c72712d5037cf39de0d9bd"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-3126.npz.manifest.json",
+        "sha256": "526472705473b4b904639b08c2b142aac34c92183bd0c0235bf5481da46bd155"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-3907.npz",
+        "sha256": "5520d2e7adfa3253209f6973f40ef61dd63b734306a2eb9d62487deaa2a32294"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-3907.npz.manifest.json",
+        "sha256": "71f93611b0d46a80bf6d239c60fce4cd20c0388fa21676231a1f6a88e3c89ab5"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-782.npz",
+        "sha256": "c9d49de124191a693a2ecd10ee3811c0f37a22fe2c51b36da01a1cbf05f26aa4"
+      },
+      "manifest": {
+        "bytes": 3857,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-5/checkpoint-782.npz.manifest.json",
+        "sha256": "0c2aad4182bb59bb3a203f1322b61f2775f4ae0429956f901952bcb12488015d"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-1563.npz",
+        "sha256": "7ed29e2aafd140a659f0d8f297569f03f97f869a6cd2e25ac9c490296a3d4338"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-1563.npz.manifest.json",
+        "sha256": "0901804425bbb63909b76c4d8b6a13b5a94e7b76f822432f23612bf8c54ec65b"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-2345.npz",
+        "sha256": "6c1df13ecfd6f3e0b4796670ff344b5fa5d075861ae43b1d07440d60a77587e2"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-2345.npz.manifest.json",
+        "sha256": "793e5fe35876d4ac363c171a72700b09b6c6a9677d994136e27e1436615c6d99"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-3126.npz",
+        "sha256": "cca43e4ca935a9a3665530ee44eff4a20a385d2ccf81df2cbd71bbc671076d01"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-3126.npz.manifest.json",
+        "sha256": "c0b2e763c15c2bae911f4c386841495f3da017a5d01fe05fddabddc083cf42cb"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-3907.npz",
+        "sha256": "42d6abe96c6f030427b0a494792882ae05550d3900243ef13b6dc1003a8fb6f0"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-3907.npz.manifest.json",
+        "sha256": "12b8796cbfb59be26c86822e5618fe0b47765b535eee53c1be4a120e5418968c"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-782.npz",
+        "sha256": "04e0050e02af6f5da4b5083195681eb5e7d4168c8e769524243dfab8e265f0f1"
+      },
+      "manifest": {
+        "bytes": 3857,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr1e-6/checkpoint-782.npz.manifest.json",
+        "sha256": "7e1acac066a5df0c2468bc5aa967f0e6fa7b29a1c88f11c809345162c4323858"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-1563.npz",
+        "sha256": "a3fe57002cc66f2366f26df5338cc220baeb6d46c4a207f6a73a60e631aad66c"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-1563.npz.manifest.json",
+        "sha256": "f675d92ede3286fddcf468695531d3448956d7a8d75c71b471ed0907d656d094"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-2345.npz",
+        "sha256": "8e6f448f6f2835d2ec2d8450a0cdeb7b44dbf3d53a2f41dc7e783ba7e241bc74"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-2345.npz.manifest.json",
+        "sha256": "b9b56d567c15e01707b5de1f67af8f42358a6736adddb545ea5afbbe570249d1"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-3126.npz",
+        "sha256": "ec0f9db738fd034838430b6634f9409a6a39131e3883d25c5c4034d928d99e74"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-3126.npz.manifest.json",
+        "sha256": "2f19421b66861dc6862405d442b5c264e9767b1fcac21025ca4bafdc1209e80f"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-3907.npz",
+        "sha256": "b136450a41dd5632c5e49fd83ce2cd13d572fc9786e1ada54c66857af4f4aae0"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-3907.npz.manifest.json",
+        "sha256": "58460987cc63bc8fc8ce0c2e417ffd85b6fb540b11beb1075dc0adbff939bb89"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-782.npz",
+        "sha256": "e2578475c1f524f377307afe297c1a64f7bcaf570383cb3521f51d045627a265"
+      },
+      "manifest": {
+        "bytes": 3857,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-5/checkpoint-782.npz.manifest.json",
+        "sha256": "bb378b70fc05a3fb01edf231bf6c1097453597a791740c007ae1aabdfbb9b7b9"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-1563.npz",
+        "sha256": "76cef2132880bee2e511c60c470b2d5fb66b8c69362f7206674f9b464652bb57"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-1563.npz.manifest.json",
+        "sha256": "93c5c07cccbcd92c0103018dd602124e24d07e92a0b5d82d07dca5b95e6cda69"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-2345.npz",
+        "sha256": "d9831c2250c065d961807d472914d129a770a0fd7b05d63f868972c75d759f32"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-2345.npz.manifest.json",
+        "sha256": "c91d990df78975b469d4819262ab4130deaf8661948cedd27f87985377d3ab95"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-3126.npz",
+        "sha256": "14012c1df55b873c35e5a9a491a66e1c795e9e6958b1e436046a1f1c14c879a4"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-3126.npz.manifest.json",
+        "sha256": "5f9cafb47f6bdbc38d2a2aa38e2cba02e356a1698d752a27e268045385a4bb18"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-3907.npz",
+        "sha256": "eff5bbc00a2dd65b173aeddedf034746d94fc0f423d979f6c9683e0c5d7722da"
+      },
+      "manifest": {
+        "bytes": 3859,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-3907.npz.manifest.json",
+        "sha256": "87fc19fb323054eb71606f6593c3ff2b6ff9aca767bdb4807f151ca27a01a084"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-782.npz",
+        "sha256": "fdc2aaf302a10e81715dbd3d810a456d6118931ee7c77b3777e3abe169ecc7ea"
+      },
+      "manifest": {
+        "bytes": 3857,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/adamw-lr3e-6/checkpoint-782.npz.manifest.json",
+        "sha256": "beb1c119f35c4512d8afcae7f8c08a390bc0ed59f39c8606546a3da7c0797089"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-1563.npz",
+        "sha256": "9964b24bca95aa09e96b1555486e68de0f4ac57f60ca27bde9373666cd2161ae"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-1563.npz.manifest.json",
+        "sha256": "8dd4201964af9fdc2d7cf57671c4cfc7cd19ef672c677a5a06f22aba57adf401"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-2345.npz",
+        "sha256": "44252dabbb1cf2bb849fb8c9b2a9b0b06fc70d37be4fa5d45ae75dc53c2b7663"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-2345.npz.manifest.json",
+        "sha256": "646b96fc27c87965b57c8eb3a5e8300b7094061acef5b34890047f094c4aa13e"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-3126.npz",
+        "sha256": "2fb9baae2fd1fdaf5ee7f373227d4ebec3f8b15df96cc2954538dc7f830c6617"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-3126.npz.manifest.json",
+        "sha256": "13eaac45db62822df1c39506da4c30f59de0d13bd3dd1a02c167504619917f35"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-3907.npz",
+        "sha256": "6558d9402852416908b9a6594143247f8af61bc0952609bc6ac766327704f865"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-3907.npz.manifest.json",
+        "sha256": "cc5c714902c732b76b7b2057e18b19261ce095bdfa309dbd2d6320200dbbc2ce"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-782.npz",
+        "sha256": "90f64c47ba4190e3064f35a825579709ae3cf635ead6e382b789b05f88c0843d"
+      },
+      "manifest": {
+        "bytes": 3854,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-3/checkpoint-782.npz.manifest.json",
+        "sha256": "73cecbd0ba596e4409b2eb14cc6cb9885375aa63b412508ba17e9492fe1b915a"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-1563.npz",
+        "sha256": "4c85e7090e40f289009b256a8dd780bc4f035c18cf5f66e6805e6dce77928a12"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-1563.npz.manifest.json",
+        "sha256": "be2e46d6a9bb456a4522b5871bff8332edeffdac1874f06c6fa0d43a9b788c1b"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-2345.npz",
+        "sha256": "db183c6c7cec6fbf6c6cf3b8a8d2b366f148d4c748f87c5b13c75412a54a93e0"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-2345.npz.manifest.json",
+        "sha256": "7a02e3a068c5a81538656b0e8cb984bf2c1de5674a47ff5f75bd4d7612650664"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-3126.npz",
+        "sha256": "7b43a6cd62b2143ede572809a6fcd1fe42b797b926cea108ef8bbc7876e2edc9"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-3126.npz.manifest.json",
+        "sha256": "b71e92b3bdcd742c23d12d488ebd860689a84dbf3e4c3bdad526ac424d9cdb14"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-3907.npz",
+        "sha256": "505c3f348b120f9011ac5ef118b170f3f1fa87687683910f0150f1e7d879b8f5"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-3907.npz.manifest.json",
+        "sha256": "bfc79faaf679ff43e4e99c3091a0722480069ebf298dc2bd2015bc85a3e329d1"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-782.npz",
+        "sha256": "79c2696adaac8178b3d9b51e419039877870cdad8c788aa70a8aa56e9c325c3c"
+      },
+      "manifest": {
+        "bytes": 3854,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr1e-4/checkpoint-782.npz.manifest.json",
+        "sha256": "36ffe28669356f5802a790c3c39b33bc53e88d4da9b04184c0e893f9bd170e15"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-1563.npz",
+        "sha256": "f0466b8593bc2317ed47e8abc3a3e34b3c8787451f05d8c5afa9d02613691a14"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-1563.npz.manifest.json",
+        "sha256": "6e8d1ee38b949932341c79e114124ccdd481c70579ac0ae0a7d1ed1ff2308a03"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-2345.npz",
+        "sha256": "c4a45befabba82d8b6e2754a4f5151fd34ab672c2c1257a7a4176861cfabc516"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-2345.npz.manifest.json",
+        "sha256": "f5ff10bb71ca28d6c7ab9a531f277fac0573e39324d46d3d34606090fbddcb50"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-3126.npz",
+        "sha256": "c62f88127a366f746f53a56b10238d69e186fc9fbac1518abd686bc1b8a34f3b"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-3126.npz.manifest.json",
+        "sha256": "96b9d618535476905aacb7ea0bdfc4fafad307cc37e11ec6019b3dc5b4479fa5"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-3907.npz",
+        "sha256": "b0f5fc9fcae1eeb8911791f78870c0909bacc2a1e49681dd8c07f715d4635bbc"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-3907.npz.manifest.json",
+        "sha256": "3e136c3e66a5c1e33e8425b6c67b1769e5649cbe97f8a3ca07e7fa4430bffac7"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-782.npz",
+        "sha256": "1ea49713d9506e4d3ebf661318c35222d8c2913f1e47a28b7ee2bc4d35feb0e1"
+      },
+      "manifest": {
+        "bytes": 3854,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-3/checkpoint-782.npz.manifest.json",
+        "sha256": "8c86a841b091cd791ea5f0c53ae4fdb434048a9c973cb20469e6d60f13077e64"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-1563.npz",
+        "sha256": "d175b82131b8d64073f9af7cc44d51a1a1af15323ef80d0ffe44112051bd1f8f"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-1563.npz.manifest.json",
+        "sha256": "df742d5a8aaef21db4a585a090cbdb8d70e1960d9348acc66fa216072eb87436"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-2345.npz",
+        "sha256": "9500339f18984553f1cbfa5d123d22a1ec3b4dc9bc944505553dd6c2bb3dbd0d"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-2345.npz.manifest.json",
+        "sha256": "39070e1f4d4e74a71485f6f8460a19c31455baa99f48a0d5ed9ef9e78da48550"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-3126.npz",
+        "sha256": "bcdf8fc6ac37ede293115b0e84f6d2b2bd5127cce02cb355b13abb6d837b9537"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-3126.npz.manifest.json",
+        "sha256": "45c8d7a0bc0632380e280674b3286747f858209c52d47110b32ce68e9c55c022"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-3907.npz",
+        "sha256": "62d0b8033bdce46e1f1b7fb0fb19220171ef97149896668cc1beef45ed4e7360"
+      },
+      "manifest": {
+        "bytes": 3856,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-3907.npz.manifest.json",
+        "sha256": "f49b2c222e382a44aac1bae304541ef6c0e5c91aeec545db4d0979b4fb9efb95"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-782.npz",
+        "sha256": "9fd08d8cf208dd1f4fc407d12760fe3ebff32be414532ce34c513a665fb64a40"
+      },
+      "manifest": {
+        "bytes": 3854,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/muon-lr3e-4/checkpoint-782.npz.manifest.json",
+        "sha256": "6b83e248c59fcba521368990f25c3e018b3454207867b5bd9901312b4eae255a"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-1563.npz",
+        "sha256": "bd21ded1e390e4736d03822ca6d22d36e78b8764683d9302587fdea80d80ff9a"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-1563.npz.manifest.json",
+        "sha256": "90e5d2d21fb8186db0d883affe9203eaebe1e3bc5b008a6dcaaec30040bfbe07"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-2345.npz",
+        "sha256": "9f8281c2720263ed5c5ef4a4f20177744d548a519feeda59671a7426bd622d8f"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-2345.npz.manifest.json",
+        "sha256": "0e4e4f12e6808c79b3840022522ae69701b59eb726680f69ad3aa97d5d8fcac6"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-3126.npz",
+        "sha256": "510457c7b90f46c3898dc676efb4184575061bf376c6b86d0ff0ce05e7a7d1bc"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-3126.npz.manifest.json",
+        "sha256": "428ee7e3e0ea68459f86ebfcb15c63bdec1fc1c90eb317e386314f62c58fe75a"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-3907.npz",
+        "sha256": "6f56f22bed57952c311ca9a334c46113e160c57c9ad9e96819da56df0b72abd7"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-3907.npz.manifest.json",
+        "sha256": "263a7af654e0de7e74c71868791bb8bb85f576bb0c321d8e0cd602369b878030"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-782.npz",
+        "sha256": "f5832446708000d4e2ab0370923f64c4c1fb618a60b59477b87297ef6e0ef23d"
+      },
+      "manifest": {
+        "bytes": 3863,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-3/checkpoint-782.npz.manifest.json",
+        "sha256": "06dac09015b869535f96e278fb385fce65dbe1b7e1754f21a8b5f5aa390b9fd7"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-1563.npz",
+        "sha256": "f1d84146b9243ed3bfad516d4b3cdc05c938717af747318735c5b19d09b46996"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-1563.npz.manifest.json",
+        "sha256": "8293566dea433739e91122702bb0fdd8f0415588616327b896dc19823522cec2"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-2345.npz",
+        "sha256": "588b8903ce00ad4d4c51197e781cb1827ce3562b933279cf51998f868ca1f809"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-2345.npz.manifest.json",
+        "sha256": "93b9470b16986476dfd2d64aaeaa82b0a8fb894ebc2c3a5f3457bc241162d747"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-3126.npz",
+        "sha256": "8061ff9c22f95e4f8f1ae3e00882b46a514399acca5dce09e3699bf05b3cd8d4"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-3126.npz.manifest.json",
+        "sha256": "ca9341f995f8677ad742d1fcac39b7e16ee806ecc7129f1ebe27358ec363e2cc"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-3907.npz",
+        "sha256": "fad4b856d573b5a9d8ae54cfab6889a2ad5e09a1b705ce606a8329a98528eec8"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-3907.npz.manifest.json",
+        "sha256": "ef3da0e9a061764fa136b3bb8bea660855052b38fee80712655705c22d1f35ff"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-782.npz",
+        "sha256": "e8e04786da357cec8929c03b566d7041fb75a0da3e925b1a5aa61e66dfe9df99"
+      },
+      "manifest": {
+        "bytes": 3863,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr1e-4/checkpoint-782.npz.manifest.json",
+        "sha256": "804603674412c99ea8cc4fb4df0aae0b36f5835a25e86bdbc00b194236fe72e1"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-1563.npz",
+        "sha256": "bf4060ad93f8f5addc40c903ba12c6a979c4eb7b7ea139aa45b6e88fbb32b01b"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-1563.npz.manifest.json",
+        "sha256": "b7915a63860015b19e8c111f5123c810ddf5572dccbe7f4b4f33a97442964013"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-2345.npz",
+        "sha256": "53e301601b7868230fb4bb6b1e91416e2c9fb70ea965c91fe12321af3f5fc1d3"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-2345.npz.manifest.json",
+        "sha256": "48ae45679f7f085912bc0c95d3c3cfd2d903ba0ce7ebd5c4d504b04bf31057e1"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-3126.npz",
+        "sha256": "967896bf7b3c5554e5b7d48ce31db422a12662999254d8bbdb5f6542666b2e6d"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-3126.npz.manifest.json",
+        "sha256": "a0e9bb581885b67dceff5833472080746d4fcb6d2c2ffd6ea19bcae2f9434526"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-3907.npz",
+        "sha256": "516bfaf07bd03140870a6cca93f0cb4091dfb6501a3210a02d2b523ba6ae0584"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-3907.npz.manifest.json",
+        "sha256": "946b2d1f6b4a782bbabfc92f3c353af5fc01e693f92b687752caec3e557dcf42"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-782.npz",
+        "sha256": "a2de004c28493c47530a594dc1edde4704a97356023cb7d4b049e9db4a0a5b8e"
+      },
+      "manifest": {
+        "bytes": 3863,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-3/checkpoint-782.npz.manifest.json",
+        "sha256": "f29f5e67dfa6fdcc4982fb2cd73390fe276d38893b6c4b8daa42e9c21cfd2bbe"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-1563.npz",
+        "sha256": "b4ef0dba0dd7d4b282d0fc748c377e32282674fe1f6b62fcab35eec69bdb07af"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-1563.npz.manifest.json",
+        "sha256": "e28e1a74195dd797dd3123536ed76eb79c93702066186445ea561e8db7d48649"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-2345.npz",
+        "sha256": "395055227a7d66b31b0a93e3e40af4b8230683f33bdb8accd79e5a23b7314093"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-2345.npz.manifest.json",
+        "sha256": "bbec2d8e3cde8a442b947992a67f6d4fa62b090dcbfe1937df9b59fcc047619f"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-3126.npz",
+        "sha256": "3f14ce18c91f27d7d4e498cd04e37a935ddf50022062b4064b949ac0024b321b"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-3126.npz.manifest.json",
+        "sha256": "93f9063967de4d524c9c5778f405fffa25006dcdbeeb8534c39c4b8fcad3998c"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-3907.npz",
+        "sha256": "8c38e108e041c10ad1cafefb22e1f15a2eb93e51d6e7f9a4999ba3fe860533e6"
+      },
+      "manifest": {
+        "bytes": 3865,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-3907.npz.manifest.json",
+        "sha256": "23d135a5af131e6cb8747ab9e36ed2005f6b99d96bfbb29e50a5ed1759ce7129"
+      }
+    },
+    {
+      "archive": {
+        "bytes": 3111978,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-782.npz",
+        "sha256": "905ca1edfb02ace77dad795c6216c121938fb59fc09e3f240f773676b9c9a99e"
+      },
+      "manifest": {
+        "bytes": 3863,
+        "path": "/root/embedding-optimizer-study/results/representation-space/decontaminated-beir/exports/dense/normuon-lr3e-4/checkpoint-782.npz.manifest.json",
+        "sha256": "5c71e692a80629ecd6ec1e9b1055c890e1da14a57818342d9e8317b521af108b"
+      }
+    }
+  ],
+  "outputs": {
+    "checkpoint_summary": {
+      "bytes": 29043,
+      "path": "reports/dimension-utilization-replay-equivalence-v1/checkpoint_summary.csv",
+      "sha256": "569ae22fcd604efdae0fa800a6f3940a1b82fbbd07153a37251611c2590b792e"
+    },
+    "coordinate_attribution": {
+      "bytes": 2492252,
+      "path": "reports/dimension-utilization-replay-equivalence-v1/coordinate_attribution.npz",
+      "sha256": "97942a015331277ac1115c08f1585335c797d63f07a6ee53d549f7870105ecfa"
+    },
+    "random_removal": {
+      "bytes": 7265426,
+      "path": "reports/dimension-utilization-replay-equivalence-v1/random_removal.csv",
+      "sha256": "8781a05ca7994695e89447eece5c5838aad88a3a887dbdc73ad31ff97b3574b0"
+    },
+    "rotation_summary": {
+      "bytes": 130340,
+      "path": "reports/dimension-utilization-replay-equivalence-v1/rotation_summary.csv",
+      "sha256": "ae960ee2fb60566bfff23d87778de997590aa1b66768c058a33864ca94040ca1"
+    },
+    "task_summary": {
+      "bytes": 196692,
+      "path": "reports/dimension-utilization-replay-equivalence-v1/task_summary.csv",
+      "sha256": "13aa3f8c6d521d279952467a75160093067f011da75540fd9dc06e285ed02e0a"
+    }
+  },
+  "primary_export_handoff": null,
+  "protocol": {
+    "bytes": 7792,
+    "path": "configs/dense_dimension_utilization_protocol.json",
+    "sha256": "de56772ef84745c074940527d621a932a06a20e865a10bc3faad823bcb0e651e"
+  },
+  "schema_version": 1,
+  "scope": "historical_dense_dimension_utilization",
+  "status": "complete"
+}

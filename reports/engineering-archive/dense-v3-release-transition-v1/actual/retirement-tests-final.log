@@ -1,0 +1,19 @@
+........................................................................ [ 61%]
+..............................................                           [100%]
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63
+  /usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+    import pynvml  # type: ignore[import]
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+../../usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7
+  /usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7: DeprecationWarning: Importing from 'sentence_transformers.models' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.modules' instead.
+    from sentence_transformers.models import Pooling, Transformer
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

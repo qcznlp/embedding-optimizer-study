@@ -364,9 +364,31 @@ generated sections. The complete rendering contract was frozen before any
 corrected validation, BEIR, geometry, outcome, bridge, or sensitivity output existed in
 `configs/dense_no_packing_publication_protocol.json`.
 
-If only one four-GPU training job remains, the other disjoint pool may evaluate already completed
-runs by passing their IDs and the idle GPU list to `corrected_beir_evaluation`. Do not overlap an
-evaluation GPU with the active training pool.
+### Early evaluation requires a coordinated handoff
+
+The owner's instruction is to start evaluation on the idle pool when only one training run remains.
+`corrected_beir_evaluation --run-ids ...` accepts deeply complete runs before the full matrix is
+finished. However, a disjoint training pool is not the only requirement: the existing completion
+controller requests **all eight GPUs** for validation as soon as the twelfth run completes, then
+for BEIR. Neither evaluator shares a GPU lease with that controller. Starting a manual subset while
+the controller remains active can therefore collide with it after the last training completion.
+The result-manifest locks protect metadata writes, not GPU ownership or duplicate task execution.
+
+Do not start a concurrent evaluator under the current live controller. Before using the idle pool,
+arrange a verified, single-owner handoff of the completion controller, preserving its exact ledger
+and source contract. Confirm terminal state/released ownership from the specific controller handle;
+a stale timestamp or an assumed idle GPU is insufficient. Do not signal training jobs or inspect
+the external GPU keeper. Evaluate only declared completed runs/stages on the verified idle pool,
+and wait for those evaluator workers to exit before returning all eight GPUs to the sole main
+controller. Resume must use the current verified contract, including any separately deployed
+publication-only migration; never bypass a contract mismatch. This coordination has not yet been
+performed and the current 8/12 training state does not meet the early-evaluation condition.
+
+Subset input identities can be extended when the full evaluator later runs; the same checkpoint
+must retain its exact content identity. All 840 primary task units remain required, and early scores
+cannot change the frozen grid, validation selection rule or scientific analysis. Note that BEIR
+`--dry-run` still performs data/checkpoint/runtime validation and writes input/runtime manifests:
+use a new engineering-only output directory for a readiness check, not the production result root.
 
 ## Interpretation boundary
 

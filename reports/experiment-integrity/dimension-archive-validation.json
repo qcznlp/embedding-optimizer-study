@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-04T21:31:36.030020+00:00",
+  "status": "implementation_checks_passed",
+  "scientific_completion": false,
+  "primary_inference_executed": false,
+  "primary_archive_uploaded": false,
+  "runtime_transition_deployed": false,
+  "sources": {
+    "src/embed_optim/dimension_archive.py": {
+      "path": "src/embed_optim/dimension_archive.py",
+      "bytes": 15499,
+      "sha256": "2798ed5aace4f565a21b7c87e77354f1e324a787e84bd709c54fb957144fc0f3"
+    },
+    "src/embed_optim/dimension_release.py": {
+      "path": "src/embed_optim/dimension_release.py",
+      "bytes": 6824,
+      "sha256": "2695b45bc7f92f3d2593cd329e656f425e454909b7f0822c0568ba9bad33998c"
+    },
+    "src/embed_optim/state_operator_factorial_completion.py": {
+      "path": "src/embed_optim/state_operator_factorial_completion.py",
+      "bytes": 27658,
+      "sha256": "6a9702eca542f67ece7f7a39ed2c58d7444635ee5d5fe6df6c49bb976c3cb2f4"
+    },
+    "configs/dense_primary_dimension_archive_protocol.json": {
+      "path": "configs/dense_primary_dimension_archive_protocol.json",
+      "bytes": 4406,
+      "sha256": "e8a0949e3b9e030922f4057bb240d7efc388af7aea1af2e29c281202f9ac5c26"
+    },
+    "configs/dense_primary_dimension_handoff_protocol.json": {
+      "path": "configs/dense_primary_dimension_handoff_protocol.json",
+      "bytes": 8068,
+      "sha256": "7083187d30b255101fe54bff270ac343e76ee1b6ad1ebdc27c1d8b4326fb645b"
+    },
+    "configs/dense_no_packing_state_operator_factorial_completion_protocol.json": {
+      "path": "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+      "bytes": 8091,
+      "sha256": "39eb7df0e012f6b390800fe53cd244c714a286087c7f345571da32a8d5f441c0"
+    },
+    "configs/dense_no_packing_state_operator_factorial_publication_protocol.json": {
+      "path": "configs/dense_no_packing_state_operator_factorial_publication_protocol.json",
+      "bytes": 5875,
+      "sha256": "f0f96831449f5f3fc4e70c3e538049f453c52e31673adce9db90b55cd76b42f1"
+    },
+    "tests/test_dimension_archive.py": {
+      "path": "tests/test_dimension_archive.py",
+      "bytes": 10135,
+      "sha256": "b67c9693093fc2b183c1839d43b4b81a1e0e3bc9966b366e77f24b1a9b0b06e7"
+    },
+    "tests/test_dimension_release.py": {
+      "path": "tests/test_dimension_release.py",
+      "bytes": 11720,
+      "sha256": "e70dfe0cfa9d8d4326413e9037de90c105401fcb3bfaf10abc88212b2ae505e8"
+    },
+    "tests/test_state_operator_factorial_completion.py": {
+      "path": "tests/test_state_operator_factorial_completion.py",
+      "bytes": 18430,
+      "sha256": "642d8e1e016365c22b52cfb36053a8740cafb22b349455e9b31164a3c3e8a0a3"
+    },
+    "pyproject.toml": {
+      "path": "pyproject.toml",
+      "bytes": 18343,
+      "sha256": "103424569da78e7dd340d42ac4dd8f863492c19e21d16808b058be56d41045da"
+    }
+  },
+  "full_tests": {
+    "command": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 PYTHONPATH=src /usr/bin/python3 -m pytest -q -o faulthandler_timeout=120 --junitxml=/tmp/dimension-archive-full-tests.xml --tb=short",
+    "receipt": {
+      "path": "reports/experiment-integrity/dimension-archive-full-tests.xml",
+      "bytes": 130151,
+      "sha256": "fdc6a46471ae9bef1d7ae42ecf5527e638b64ebc8d599c6a0ea5060c159132ec"
+    },
+    "suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "955",
+        "time": "116.389",
+        "timestamp": "2026-09-05T05:26:46.932045+08:00",
+        "hostname": "mlflow-training-zl8wuc-496809-n3-master-0"
+      }
+    ],
+    "excluded_tests": []
+  },
+  "read_only_47_step_plan": {
+    "path": "reports/experiment-integrity/dimension-archive-factorial-plan.json",
+    "bytes": 19100,
+    "sha256": "4b919854b0b188e0cd703f59e99e30ba98aff13172fb5c93ff9092b5f85f4967"
+  },
+  "training_snapshot": {
+    "path": "reports/experiment-integrity/dimension-archive-progress.json",
+    "bytes": 7551,
+    "sha256": "50529b6a37f7656814f6142b66b25713a058006184c2a326f16cf2bdf4e0d64f"
+  },
+  "live_destination_read_only_check": {
+    "repo_id": "qcz/embedding-optimizer-study-analysis-artifacts",
+    "repo_type": "dataset",
+    "private": false,
+    "revision": "54135027f4dec5e48c3822ad43f5f852fdef7d07",
+    "primary_dimension_prefix": "absent",
+    "prefix_entries": 0,
+    "upload_performed": false
+  },
+  "unchanged_live_controllers": [
+    {
+      "path": "logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "status": "waiting_for_training",
+      "complete": false,
+      "executed_steps": 0,
+      "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789"
+    },
+    {
+      "path": "logs/state-operator-factorial/completion/pipeline-ledger.json",
+      "status": "waiting_for_main_completion",
+      "complete": false,
+      "executed_steps": 0,
+      "contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8"
+    }
+  ],
+  "archive_validation_scope": [
+    "Full-source authoring audit precedes remote work",
+    "Source-derived publication closure plus exact 61 raw-vector cells",
+    "Private staged copies are hashed before atomic additions-only upload with parent-commit precondition",
+    "Exact immutable-revision path/size/LFS-SHA256/Git-blob-SHA1 comparisons",
+    "No overwrite of conflicting content-addressed prefixes",
+    "Original verified commit retained after remote head advances",
+    "Lost receipt recovery labels immutable verified snapshot accurately",
+    "Offline manifest and payload verification with trusted receipt hash and no producer fallback",
+    "Real publication statistics/closure selector exercised with synthetic vectors",
+    "Read-only pre-output plan uses no network and reports the three missing prerequisite manifests"
+  ],
+  "additional_checks": {
+    "ruff_check": "passed",
+    "ruff_format": "249 files already formatted",
+    "git_diff_check": "passed",
+    "historical_portable_inventory": {
+      "complete": true,
+      "files": 2785,
+      "bytes": 107442256
+    }
+  },
+  "remaining": [
+    "Finish primary training and complete primary BEIR/analysis",
+    "Deploy controlled zero-step transition after exact main completion",
+    "Execute real primary exports, feature computation, inference and remote archive",
+    "Add relocation-aware raw-feature replay from verified vectors",
+    "Complete crossed intervention and final paper release"
+  ],
+  "boundary": "Synthetic archive and publication integration tests plus live read-only destination/progress checks. No primary result or upload was produced, and no active source contract or unrelated GPU process was changed."
+}

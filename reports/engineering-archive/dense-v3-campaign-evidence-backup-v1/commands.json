@@ -1,0 +1,128 @@
+{
+  "failed_first_prepare": {
+    "work": "/tmp/dense-v3-campaign-evidence-backup.qS8N6o3U",
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-campaign-evidence-backup.qS8N6o3U/backup.py prepare --workdir /tmp/dense-v3-campaign-evidence-backup.qS8N6o3U",
+    "result": {
+      "chunk_id": "f786a8",
+      "wall_time_seconds": 0.000004604,
+      "exit_code": 1,
+      "original_token_count": 184,
+      "output": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-campaign-evidence-backup.qS8N6o3U/backup.py\", line 209, in <module>\n    result = prepared(t, args.workdir)[0] if args.action == 'check' else {\n                                                                         ^\n  File \"/tmp/dense-v3-campaign-evidence-backup.qS8N6o3U/backup.py\", line 82, in prepare\n    reader.verify(dest, ident['sha256'])\n  File \"/tmp/dense-v3-campaign-evidence-backup.qS8N6o3U/verify_recovered.py\", line 269, in verify\n    require(set(ident) == {'bytes','sha256'}, 'Wrong identity schema')\n  File \"/tmp/dense-v3-campaign-evidence-backup.qS8N6o3U/verify_recovered.py\", line 170, in require\n    raise ValueError(message)\nValueError: Wrong identity schema\n"
+    },
+    "reason": "Local reader schema omitted existing transport git_blob_sha1 identity; no preflight or upload receipt created, no remote mutation."
+  },
+  "prepare": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/backup.py prepare --workdir /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N",
+    "result": {
+      "chunk_id": "cb95b8",
+      "wall_time_seconds": 0.000004355,
+      "exit_code": 0,
+      "original_token_count": 341,
+      "output": "{\"bytes\": 342406, \"files\": 41, \"helper_sha256\": \"bebdfd3d773e550665660ec12fe7451f70e7e5fd419b1ef21814f774762ef33e\", \"manifest\": {\"bytes\": 9565, \"git_blob_sha1\": \"43578c93db0b7476c8b71786f95c37abaa62f1a7\", \"sha256\": \"5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95\"}, \"parent_revision\": \"37702ccb55820dbf5956a57257c5582d56733da9\", \"parent_transport_sha256\": \"ab565206b22d0138c8227fef3f26eb28e2abeb7653c6f7137b7b532a289ec046\", \"prefix\": \"corrected-dense-correctness-v3/training-completion-evidence/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95\", \"prepared_at_utc\": \"2026-09-12T04:08:41.348474+00:00\", \"remote_mutations\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"scientific_completion\": false, \"sources\": {\"ARTIFACT_README.md\": {\"bytes\": 2003, \"git_blob_sha1\": \"1df2bc75a78f9aabfca2ca3ba20d5541d0bf1aa5\", \"sha256\": \"5570f4b0c9c64bee6190375585c2534ce012d1a28bfcbc4eb556fe72b73e0fe9\"}, \"backup.py\": {\"bytes\": 11689, \"git_blob_sha1\": \"7a1e709adbea12dfedc435264af4bebf26ef51ef\", \"sha256\": \"b49615a1f4c79e9ea1ab3276002ead0838547b55c97fe09034350d5596bd2b72\"}, \"verify_recovered.py\": {\"bytes\": 12090, \"git_blob_sha1\": \"989fd6f6581babce38548cf20f1f2f8af54bb3e4\", \"sha256\": \"8c7be8089a7b816ef053ee477a5a0a294a15db7b25c3b1877c0b4cfd0467845e\"}}}\n"
+    }
+  },
+  "tests": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/test_backup.py",
+    "result": {
+      "chunk_id": "3f7197",
+      "wall_time_seconds": 0.355658982,
+      "exit_code": 0,
+      "original_token_count": 466,
+      "output": "test_accepted_complete_snapshot (__main__.SnapshotTests.test_accepted_complete_snapshot) ... ok\ntest_each_payload_corruption_refused (__main__.SnapshotTests.test_each_payload_corruption_refused) ... ok\ntest_empty_extra_directory_refused (__main__.SnapshotTests.test_empty_extra_directory_refused) ... ok\ntest_extra_file_refused (__main__.SnapshotTests.test_extra_file_refused) ... ok\ntest_git_identity_is_verified_not_ignored (__main__.SnapshotTests.test_git_identity_is_verified_not_ignored) ... ok\ntest_missing_external_anchor (__main__.SnapshotTests.test_missing_external_anchor) ... ok\ntest_original_input_copies_match (__main__.SnapshotTests.test_original_input_copies_match) ... ok\ntest_prepared_source_and_inventory (__main__.SnapshotTests.test_prepared_source_and_inventory) ... ok\ntest_symlink_root_refused (__main__.SnapshotTests.test_symlink_root_refused) ... ok\ntest_wrong_external_anchor (__main__.SnapshotTests.test_wrong_external_anchor) ... ok\ntest_additional_source_file_refused (__main__.UploadBoundaryTests.test_additional_source_file_refused) ... ok\ntest_exact_regular_modes_allowed (__main__.UploadBoundaryTests.test_exact_regular_modes_allowed) ... ok\ntest_existing_remote_object_refused (__main__.UploadBoundaryTests.test_existing_remote_object_refused) ... ok\ntest_ignored_file_refused (__main__.UploadBoundaryTests.test_ignored_file_refused) ... ok\ntest_missing_remote_entry_refused (__main__.UploadBoundaryTests.test_missing_remote_entry_refused) ... ok\ntest_other_lfs_refused (__main__.UploadBoundaryTests.test_other_lfs_refused) ... ok\ntest_preserves_ten_subtrees_and_root (__main__.UploadBoundaryTests.test_preserves_ten_subtrees_and_root) ... ok\ntest_readme_lfs_refused (__main__.UploadBoundaryTests.test_readme_lfs_refused) ... ok\n\n----------------------------------------------------------------------\nRan 18 tests in 0.429s\n\nOK\n"
+    }
+  },
+  "staging_read": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/verify_recovered.py /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/staging 5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95",
+    "result": {
+      "chunk_id": "e4635f",
+      "wall_time_seconds": 0.000004609,
+      "exit_code": 0,
+      "original_token_count": 84,
+      "output": "{\"checkpoint_states\": 60, \"files\": 41, \"metadata_only_not_fresh_training_or_tensor_verification\": true, \"original_exit_unobserved_runs\": 2, \"original_exit_zero_runs\": 10, \"original_records\": 39, \"scientific_completion\": false, \"scope\": \"original-training-completion-data-readback\", \"source_code_included\": false, \"training_runs\": 12}\n"
+    }
+  },
+  "upload": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/backup.py upload --workdir /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N",
+    "initial": {
+      "chunk_id": "bdcbb5",
+      "wall_time_seconds": 1.001369028,
+      "session_id": 76334,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "terminal": {
+      "chunk_id": "f15832",
+      "wall_time_seconds": 0.00000294,
+      "exit_code": 0,
+      "original_token_count": 1704,
+      "output": "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n{\"durability_verified\": true, \"files\": 41, \"manifest\": {\"bytes\": 9565, \"git_blob_sha1\": \"43578c93db0b7476c8b71786f95c37abaa62f1a7\", \"sha256\": \"5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95\"}, \"old_corrected_subtrees_unchanged\": 10, \"old_root_entries_unchanged\": 20, \"prefix\": \"corrected-dense-correctness-v3/training-completion-evidence/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95\", \"remote_inventory\": {\"README.md\": {\"bytes\": 2003, \"digest\": \"1df2bc75a78f9aabfca2ca3ba20d5541d0bf1aa5\", \"kind\": \"git_blob_sha1\"}, \"anchors/evaluation-authorization.json\": {\"bytes\": 6588, \"digest\": \"1340287a33e2588cc5d080764677765618ad0628\", \"kind\": \"git_blob_sha1\"}, \"anchors/input-view-audit.json\": {\"bytes\": 4463, \"digest\": \"b2c6be48e2593a9a229b00cc7e2052bbbeb91992\", \"kind\": \"git_blob_sha1\"}, \"anchors/source-assembly.json\": {\"bytes\": 15970, \"digest\": \"7ec90c5e88733b9a7c01586d95f5f91f6b77d2d3\", \"kind\": \"git_blob_sha1\"}, \"artifact_manifest.json\": {\"bytes\": 9565, \"digest\": \"43578c93db0b7476c8b71786f95c37abaa62f1a7\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-1e-5.exited.json\": {\"bytes\": 112, \"digest\": \"cdb51f8ebae1bd20b4e969b06de8be54b9973483\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-1e-5.proof.json\": {\"bytes\": 23764, \"digest\": \"2d705d92505a0b058aa079d48edeaf165344b28d\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-1e-5.started.json\": {\"bytes\": 1086, \"digest\": \"573c89f7472132ec8c6f193f34d448f8d483cfbb\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-1e-6.exited.json\": {\"bytes\": 112, \"digest\": \"7d5fd2234d60b502cf87b04bab2b707a9d6dd757\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-1e-6.proof.json\": {\"bytes\": 23764, \"digest\": \"04d375ae91f286d18c5b4ff0dc0c3b853592e088\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-1e-6.started.json\": {\"bytes\": 1086, \"digest\": \"f8e92626b9d1bb3de8655154e3952a886ecbc22b\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-3e-5.exited.json\": {\"bytes\": 112, \"digest\": \"4df5f871905fadfd12696e8c1eeb2736ff085de1\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-3e-5.proof.json\": {\"bytes\": 23764, \"digest\": \"c9f93f59fcd22c6a65256c10ca9f4f0d5b9e26bb\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-3e-5.started.json\": {\"bytes\": 984, \"digest\": \"d099bd39f697525fc258cd8bfea54cddf6d32f97\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-3e-6.exited.json\": {\"bytes\": 112, \"digest\": \"6f0b582ca5f708d079df75ac38f76d69ba8c34f8\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-3e-6.proof.json\": {\"bytes\": 23763, \"digest\": \"0c836866c90724c812c939e8a58165b7f47905fc\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-adamw-3e-6.started.json\": {\"bytes\": 1086, \"digest\": \"ada0572d1ed3ab95d5a6df3c9167248b72ec05ce\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-1e-3.exited.json\": {\"bytes\": 111, \"digest\": \"e53c6bd84a06a27e7e964fce3cba2aa63b7c4a91\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-1e-3.proof.json\": {\"bytes\": 23807, \"digest\": \"23e1d8aec74d10fd6b45de126ccf4d2c4be39c87\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-1e-3.started.json\": {\"bytes\": 1084, \"digest\": \"97ebd6750ef00c113aaa6b4fef352bb407ef935c\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-1e-4.exited.json\": {\"bytes\": 111, \"digest\": \"6cd53824bdc6b339e7c465763aab2ec1401c1e7b\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-1e-4.proof.json\": {\"bytes\": 23808, \"digest\": \"e6460a5ca4d0c63aa54c83242e78c767e11082f7\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-1e-4.started.json\": {\"bytes\": 1084, \"digest\": \"f1f58c3a326185b4d05ffc595bcd62304dafabb0\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-3e-3.exited.json\": {\"bytes\": 111, \"digest\": \"bc4c6fddbe65d091f7588252ffaed6424906f313\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-3e-3.proof.json\": {\"bytes\": 23808, \"digest\": \"e77d5693bed633805d1e83ea2297dc0a0c95a627\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-3e-3.started.json\": {\"bytes\": 1084, \"digest\": \"9b12c475477d567d1adde64a4e1ef5d48bb5f92e\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-3e-4.exited.json\": {\"bytes\": 111, \"digest\": \"561d5aec5fd557b17b4ab857603c0343a96488b6\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-3e-4.proof.json\": {\"bytes\": 23808, \"digest\": \"b6e9a95ce2a5ec14211cb430200b04e1fb0ea13d\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-muon-3e-4.started.json\": {\"bytes\": 982, \"digest\": \"b4c1a36cb27c91d34c63e9b445709dfe3486584d\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-1e-3.exited.json\": {\"bytes\": 114, \"digest\": \"26570a90f36296269daab602c0587f2649e6ef5e\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-1e-3.proof.json\": {\"bytes\": 23811, \"digest\": \"ed87f5959ef90dd27dbbfd372678437479380668\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-1e-3.started.json\": {\"bytes\": 1090, \"digest\": \"f2cbdafc9ca109f5849050fb036065724149ecd3\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-1e-4.proof.json\": {\"bytes\": 25230, \"digest\": \"87145b516f40d59aa5d2b981c4bc8d201d214e3e\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-1e-4.started.json\": {\"bytes\": 1090, \"digest\": \"3e87106a0946ba078f4c8dbc2b0581b8f025281f\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-1e-4.terminated.json\": {\"bytes\": 745, \"digest\": \"d6992358ce2bbb719cc6f4b56dff848e59e3a2b1\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-3e-3.proof.json\": {\"bytes\": 25232, \"digest\": \"b61737c46d60bdd1e737ee16978d578e9360760f\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-3e-3.started.json\": {\"bytes\": 1090, \"digest\": \"047578b63ca974307edbbc1624799c513a63ecae\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-3e-3.terminated.json\": {\"bytes\": 745, \"digest\": \"775cb9077e987b772cf7a065628c2d349f7aab5a\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-3e-4.exited.json\": {\"bytes\": 114, \"digest\": \"5a0d95f3c77959b3333a271607286d7c13e157cc\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-3e-4.proof.json\": {\"bytes\": 23812, \"digest\": \"9e7ea7d06ecd56cc97387aba2a393852d6d6527c\", \"kind\": \"git_blob_sha1\"}, \"receipts/verified-v3-normuon-3e-4.started.json\": {\"bytes\": 1090, \"digest\": \"f44efe4679236d0d43d96b073265d99186b42a72\", \"kind\": \"git_blob_sha1\"}}, \"remote_paths_deleted_or_overwritten\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"revision\": \"9b2925acd9339b5ce25fd332ab8840ac50319407\", \"root_attributes_unchanged\": true, \"scientific_completion\": false, \"source_code_uploaded\": false, \"uploaded_at_utc\": \"2026-09-12T04:09:41.144839+00:00\", \"verified_at_utc\": \"2026-09-12T04:09:41.978927+00:00\"}\n"
+    }
+  },
+  "recover": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/backup.py recover --workdir /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N",
+    "initial": {
+      "chunk_id": "3a4aaf",
+      "wall_time_seconds": 1.001103631,
+      "session_id": 20201,
+      "original_token_count": 35,
+      "output": "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"
+    },
+    "terminal": {
+      "chunk_id": "002f1e",
+      "wall_time_seconds": 0.000002581,
+      "exit_code": 0,
+      "original_token_count": 305,
+      "output": "{\"all_payload_hashes_match\": true, \"anonymous_download\": true, \"bytes\": 342406, \"completed_at_utc\": \"2026-09-12T04:10:23.101398+00:00\", \"downloaded_root\": \"/tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/download/corrected-dense-correctness-v3/training-completion-evidence/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95\", \"files\": 41, \"manifest\": {\"bytes\": 9565, \"git_blob_sha1\": \"43578c93db0b7476c8b71786f95c37abaa62f1a7\", \"sha256\": \"5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95\"}, \"prefix\": \"corrected-dense-correctness-v3/training-completion-evidence/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95\", \"readback\": {\"checkpoint_states\": 60, \"files\": 41, \"metadata_only_not_fresh_training_or_tensor_verification\": true, \"original_exit_unobserved_runs\": 2, \"original_exit_zero_runs\": 10, \"original_records\": 39, \"scientific_completion\": false, \"scope\": \"original-training-completion-data-readback\", \"source_code_included\": false, \"training_runs\": 12}, \"revision\": \"9b2925acd9339b5ce25fd332ab8840ac50319407\", \"same_physical_host\": true}\n"
+    }
+  },
+  "anonymous_read": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/verify_recovered.py /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/download/corrected-dense-correctness-v3/training-completion-evidence/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95 5cc7e43868457775f2335fb19c38ff868549fdc5f9013cd846540e5baa86db95",
+    "result": {
+      "chunk_id": "11a64f",
+      "wall_time_seconds": 0.000004634,
+      "exit_code": 0,
+      "original_token_count": 84,
+      "output": "{\"checkpoint_states\": 60, \"files\": 41, \"metadata_only_not_fresh_training_or_tensor_verification\": true, \"original_exit_unobserved_runs\": 2, \"original_exit_zero_runs\": 10, \"original_records\": 39, \"scientific_completion\": false, \"scope\": \"original-training-completion-data-readback\", \"source_code_included\": false, \"training_runs\": 12}\n"
+    }
+  },
+  "extract": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nimport hashlib,json,shutil\nfrom pathlib import Path\nwork=Path('/tmp/dense-v3-campaign-evidence-backup.QBUi2g7N')\nr=json.loads((work/'download-verified.json').read_bytes());root=Path(r['downloaded_root']);target=work/'recovered-additional'\nassert r['all_payload_hashes_match'] is True and r['files']==41 and not target.exists()\nexpected=json.loads((work/'staging/artifact_manifest.json').read_bytes())['files']\ntarget.mkdir()\ncount=0\nfor name,b in expected.items():\n if name=='README.md':continue\n assert name.startswith(('anchors/','receipts/'))\n raw=(root/name).read_bytes();assert len(raw)==b['bytes'] and hashlib.sha256(raw).hexdigest()==b['sha256']\n p=target/name;p.parent.mkdir(parents=True,exist_ok=True);assert not p.exists();shutil.copyfile(root/name,p);count+=1\nassert count==39\nprint(json.dumps({'downloaded_original_records':count,'target':str(target),'unchanged_full_download_preserved':True}))\nPY",
+    "result": {
+      "chunk_id": "f8674a",
+      "wall_time_seconds": 0.000002918,
+      "exit_code": 0,
+      "original_token_count": 41,
+      "output": "{\"downloaded_original_records\": 39, \"target\": \"/tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/recovered-additional\", \"unchanged_full_download_preserved\": true}\n"
+    }
+  },
+  "compose": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-campaign-evidence-candidate-v1/source/assemble_snapshot.py /tmp/dense-v3-training-artifact-backup.j8qukV/download/corrected-dense-correctness-v3/training-dynamics/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/9a69191e47b25eca459a08eb1a3ddb2958d0f652e94b3c089e1c5685a3cf7d6e /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/recovered-additional /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/reconstructed-172",
+    "result": {
+      "chunk_id": "b73658",
+      "wall_time_seconds": 1.100098077,
+      "exit_code": 0,
+      "original_token_count": 282,
+      "output": "{\"boundary\": \"Previously accepted evidence replay only. No training/evaluation, tensor checks, functional recovery, scientific admission or publication. Original flags, fingerprints and unknown exit codes remain unchanged.\", \"checkpoints\": 60, \"committed_source_release\": false, \"files_authenticated\": 172, \"formal_primary_contract_admission\": false, \"fresh_model_or_data_validation\": false, \"native_metadata_files\": 132, \"original_absolute_paths_opened\": false, \"original_evidence_authenticated\": true, \"original_exit_unobserved_runs\": [\"verified-v3-normuon-1e-4\", \"verified-v3-normuon-3e-3\"], \"original_exit_zero_runs\": [\"verified-v3-adamw-1e-6\", \"verified-v3-adamw-3e-6\", \"verified-v3-adamw-1e-5\", \"verified-v3-adamw-3e-5\", \"verified-v3-muon-1e-4\", \"verified-v3-muon-3e-4\", \"verified-v3-muon-1e-3\", \"verified-v3-muon-3e-3\", \"verified-v3-normuon-3e-4\", \"verified-v3-normuon-1e-3\"], \"original_single_selection_guard_passed\": false, \"primary_protocol_sha256\": \"4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b\", \"runs\": 12, \"scientific_completion\": false, \"scope\": \"primary-v3-local-role-training-evidence-v1\"}\n"
+    }
+  },
+  "composed_read": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-campaign-evidence-candidate-v1/source/verify_relocated.py /tmp/dense-v3-campaign-evidence-backup.QBUi2g7N/reconstructed-172 /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-campaign-evidence-candidate-v1/source/campaign_evidence.py",
+    "result": {
+      "chunk_id": "d67991",
+      "wall_time_seconds": 0.371123649,
+      "exit_code": 0,
+      "original_token_count": 362,
+      "output": "{\"absolute_reads_limited_to_relocated_root\": true, \"all_original_rows_sha256\": \"58a01f3cbfe05755a739bda4503cb0518fc2115ffe783efbf6ca6154f5d57f44\", \"file_open_events\": 708, \"numerical_or_project_imports\": [], \"reader_write_network_or_child_attempts\": 0, \"result\": {\"boundary\": \"Previously accepted evidence replay only. No training/evaluation, tensor checks, functional recovery, scientific admission or publication. Original flags, fingerprints and unknown exit codes remain unchanged.\", \"checkpoints\": 60, \"committed_source_release\": false, \"files_authenticated\": 172, \"formal_primary_contract_admission\": false, \"fresh_model_or_data_validation\": false, \"native_metadata_files\": 132, \"original_absolute_paths_opened\": false, \"original_evidence_authenticated\": true, \"original_exit_unobserved_runs\": [\"verified-v3-normuon-1e-4\", \"verified-v3-normuon-3e-3\"], \"original_exit_zero_runs\": [\"verified-v3-adamw-1e-6\", \"verified-v3-adamw-3e-6\", \"verified-v3-adamw-1e-5\", \"verified-v3-adamw-3e-5\", \"verified-v3-muon-1e-4\", \"verified-v3-muon-3e-4\", \"verified-v3-muon-1e-3\", \"verified-v3-muon-3e-3\", \"verified-v3-normuon-3e-4\", \"verified-v3-normuon-1e-3\"], \"original_single_selection_guard_passed\": false, \"primary_protocol_sha256\": \"4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b\", \"runs\": 12, \"scientific_completion\": false, \"scope\": \"primary-v3-local-role-training-evidence-v1\"}, \"scope\": \"isolated-relocated-training-evidence-read\"}\n"
+    }
+  },
+  "archive_copy": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nfrom pathlib import Path\nimport shutil,json\nwork=Path('/tmp/dense-v3-campaign-evidence-backup.QBUi2g7N');failed=Path('/tmp/dense-v3-campaign-evidence-backup.qS8N6o3U')\narchive=Path('/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-campaign-evidence-backup-v1');archive.mkdir()\npairs=[]\nfor name in ('backup.py','verify_recovered.py','test_backup.py','ARTIFACT_README.md'):pairs.append((work/name,archive/'source'/name))\nfor name in ('preflight.json','upload-mode-preflight.json','upload-started.json','upload.json','remote-audit.json','download-verified.json'):pairs.append((work/name,archive/'actual'/name))\npairs.append((work/'staging/artifact_manifest.json',archive/'actual/artifact_manifest.json'))\nfor name in ('backup.py','verify_recovered.py','ARTIFACT_README.md'):pairs.append((failed/name,archive/'failed-first/source'/name))\npairs.append((failed/'staging/artifact_manifest.json',archive/'failed-first/artifact_manifest.json'))\npairs.append((Path('/root/embedding-optimizer-story-refactor/CURRENT_EXPERIMENT.md'),archive/'before/CURRENT_EXPERIMENT.md'))\nfor source,target in pairs:\n assert source.is_file() and not source.is_symlink() and not target.exists()\n target.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,target)\nprint(json.dumps({'copied_files':len(pairs),'archive':str(archive),'original_failed_attempt_preserved':str(failed),'new_snapshot_source_code_uploaded':False}))\nPY",
+    "result": {
+      "chunk_id": "777a32",
+      "wall_time_seconds": 0.000003839,
+      "exit_code": 0,
+      "original_token_count": 69,
+      "output": "{\"copied_files\": 16, \"archive\": \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-campaign-evidence-backup-v1\", \"original_failed_attempt_preserved\": \"/tmp/dense-v3-campaign-evidence-backup.qS8N6o3U\", \"new_snapshot_source_code_uploaded\": false}\n"
+    }
+  }
+}

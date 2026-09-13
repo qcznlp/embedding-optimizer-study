@@ -1,0 +1,170 @@
+{
+  "artifacts": [
+    {
+      "bytes": 92060,
+      "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-anchor.json",
+      "sha256": "f9c50344e9f4aa537f4fae000cc775437a0b0b6af1a1b203d012a2e84ba22d88"
+    },
+    {
+      "bytes": 92060,
+      "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-count.json",
+      "sha256": "5168e0f800aec7d7cf14fc5b81bea63d032cd96143312fa7307ae876430e9074"
+    },
+    {
+      "bytes": 91968,
+      "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-definition.json",
+      "sha256": "b5ae55eec08b5a89a96c2d9284b58df06376b1e1a6e6b192ea36660121e46616"
+    },
+    {
+      "bytes": 92060,
+      "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-denominator.json",
+      "sha256": "94be8f5d1c92d1c84d6d50164b4ee74219311dbe839dbaad6607e5188b8d87f9"
+    },
+    {
+      "bytes": 92054,
+      "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-duplicate.json",
+      "sha256": "904b4db29f85fa95550dd59206be109db22980314441c2a05037eda273497354"
+    },
+    {
+      "bytes": 91787,
+      "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-missing.json",
+      "sha256": "8543f80f915492e6f679250edea97a32d3571b515d8a02598900641b36701184"
+    }
+  ],
+  "boundary": "Independent array comparisons on all saved diagnostic entries, not primary outcomes or functional dimension utility.",
+  "changed_cases": [
+    {
+      "artifact": {
+        "bytes": 92060,
+        "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-anchor.json",
+        "sha256": "f9c50344e9f4aa537f4fae000cc775437a0b0b6af1a1b203d012a2e84ba22d88"
+      },
+      "case": "anchor",
+      "error_type": "ValueError",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 92060,
+        "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-denominator.json",
+        "sha256": "94be8f5d1c92d1c84d6d50164b4ee74219311dbe839dbaad6607e5188b8d87f9"
+      },
+      "case": "denominator",
+      "error_type": "ValueError",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 92054,
+        "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-duplicate.json",
+        "sha256": "904b4db29f85fa95550dd59206be109db22980314441c2a05037eda273497354"
+      },
+      "case": "duplicate",
+      "error_type": "ValueError",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 91787,
+        "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-missing.json",
+        "sha256": "8543f80f915492e6f679250edea97a32d3571b515d8a02598900641b36701184"
+      },
+      "case": "missing",
+      "error_type": "ValueError",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 91968,
+        "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-definition.json",
+        "sha256": "b5ae55eec08b5a89a96c2d9284b58df06376b1e1a6e6b192ea36660121e46616"
+      },
+      "case": "definition",
+      "error_type": "ValueError",
+      "rejected": true
+    },
+    {
+      "artifact": {
+        "bytes": 92060,
+        "path": "/tmp/dense-weight-entry-replay.a9BFoN/invalid-census-count.json",
+        "sha256": "5168e0f800aec7d7cf14fc5b81bea63d032cd96143312fa7307ae876430e9074"
+      },
+      "case": "count",
+      "error_type": "AssertionError",
+      "rejected": true
+    }
+  ],
+  "checkpoints": 9,
+  "formal_geometry_produced": false,
+  "fresh_cpu_replay_passed": true,
+  "gpu_workers": 0,
+  "independent_numpy_count_comparisons": 1584,
+  "model_updates": 0,
+  "models": 3,
+  "observed_at_utc": "2026-09-06T18:50:20.831588+00:00",
+  "post_execution_dispatchers": [
+    {
+      "children": [
+        870313
+      ],
+      "entrypoint": "embed_optim.corrected_completion_pipeline",
+      "pid": 196647,
+      "ppid": 1,
+      "start_ticks": 246327790,
+      "state": "T"
+    },
+    {
+      "children": [
+        870864
+      ],
+      "entrypoint": "embed_optim.corrected_beir_evaluation",
+      "pid": 870313,
+      "ppid": 196647,
+      "start_ticks": 257721545,
+      "state": "T"
+    },
+    {
+      "children": [
+        1044801,
+        1044867,
+        1047768,
+        1047908,
+        1049914,
+        1052182,
+        1053047,
+        1054761
+      ],
+      "entrypoint": "/root/embedding-optimizer-study/scripts/eval/dense_no_packing_parallel.py",
+      "pid": 870864,
+      "ppid": 870313,
+      "start_ticks": 257733056,
+      "state": "T"
+    }
+  ],
+  "records": [
+    {
+      "algorithm": "adamw",
+      "numpy_count_comparisons": 528
+    },
+    {
+      "algorithm": "muon",
+      "numpy_count_comparisons": 528
+    },
+    {
+      "algorithm": "normuon",
+      "numpy_count_comparisons": 528
+    }
+  ],
+  "rehearsal": {
+    "bytes": 80399,
+    "path": "/tmp/dense-weight-entry-census-retry.DgbmCc/result.json",
+    "sha256": "a269aa6f60ad931a5bd7998c6009b9af8f5a5e93d7f23acc33fd3ea586f84b49"
+  },
+  "scientific_completion": false,
+  "scope": "engineering_dense_weight_entry_fresh_cpu_replay",
+  "source": {
+    "bytes": 7045,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/replay_dense_weight_entries.py",
+    "sha256": "b3c4aee3b979ad1c4ad9e5661722789289be4494380956c5fa7fa93fe786c0c2"
+  }
+}

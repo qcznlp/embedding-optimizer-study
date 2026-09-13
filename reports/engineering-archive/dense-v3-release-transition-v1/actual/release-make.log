@@ -1,0 +1,13 @@
+make: Entering directory '/root/embedding-optimizer-story-refactor/paper'
+mkdir -p "/tmp/dense-v3-release-transition.zFMpOKti/"
+CUDA_VISIBLE_DEVICES='' /usr/bin/python -m embed_optim.paper_reproduction \
+	--numerical-bundle "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed" \
+	--paper-dir "/root/embedding-optimizer-story-refactor/paper/current" --output "/tmp/dense-v3-release-transition.zFMpOKti/release-paper"
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+{
+  "complete": true,
+  "pdf": "/tmp/dense-v3-release-transition.zFMpOKti/release-paper/reviewed/paper/build/main.pdf",
+  "repository_publication_complete": false
+}
+make: Leaving directory '/root/embedding-optimizer-story-refactor/paper'

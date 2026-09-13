@@ -1,0 +1,25 @@
+% Generated only from the complete, source-bound state-by-operator summary.
+\newcommand{\StateOperatorAbstractFinding}{%
+At the 50K continuation endpoint, state, operator, and interaction contrasts are +0.0032 [+0.0005, +0.0068], -0.0053 [-0.0090, -0.0019], and +0.0021 [-0.0012, +0.0056] nDCG@10. They do not decompose the primary-training contrast.}
+\newcommand{\StateOperatorMechanismFinding}{%
+Averaged over continuation operators, the Muon-reached versus AdamW-reached state changes final nDCG@10 by +0.0032 [+0.0005, +0.0068] (positive); averaged over source states, Muon versus AdamW continuation changes it by -0.0053 [-0.0090, -0.0019] (negative). The state--operator interaction is +0.0021 [-0.0012, +0.0056] (inconclusive). The averaged post-continuation source-state contrast favors the Muon-reached state. This does not establish its dominance over the other contrasts; inconclusive intervals are not equivalence to zero.}
+\newcommand{\StateOperatorConclusionFinding}{%
+After optimizer-state reset and calibration-probe scale matching, the crossed 50K continuation finds state, operator, and interaction contrasts of +0.0032 [+0.0005, +0.0068], -0.0053 [-0.0090, -0.0019], and +0.0021 [-0.0012, +0.0056]. The averaged post-continuation source-state contrast favors the Muon-reached state. This does not establish its dominance over the other contrasts; inconclusive intervals are not equivalence to zero.}
+\newcommand{\StateOperatorAppendixTable}{%
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrl}
+\toprule
+Factorial contrast & Effect & 95\% CI & Decision \\
+\midrule
+Muon-state $-$ AdamW-state & +0.0032 & [+0.0005, +0.0068] & positive \\
+Muon operator $-$ AdamW operator & -0.0053 & [-0.0090, -0.0019] & negative \\
+State $\times$ operator interaction & +0.0021 & [-0.0012, +0.0056] & inconclusive \\
+\bottomrule
+\end{tabular}
+\caption{Prospective reset-state factorial on final decontaminated-BEIR nDCG@10. Effects average the fixed three order seeds and 14 tasks; intervals use the frozen two-way seed/task cluster bootstrap. These are marginal 95\% intervals, not simultaneous family-wise intervals.}
+\label{tab:state-operator-factorial}
+\end{table*}%
+}

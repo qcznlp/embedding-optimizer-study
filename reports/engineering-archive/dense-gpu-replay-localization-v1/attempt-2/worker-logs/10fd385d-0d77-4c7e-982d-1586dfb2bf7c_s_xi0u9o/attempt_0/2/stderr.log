@@ -1,0 +1,34 @@
+Flash Attention 2 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in ModernBertModel is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", dtype=torch.float16)`
+Computing widget examples:   0%|          | 0/1 [00:00<?, ?example/s]                                                                     Computing widget examples:   0%|          | 0/1 [00:00<?, ?example/s]                                                                     [rank2]: Traceback (most recent call last):
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_replay_update.py", line 348, in <module>
+[rank2]:     main()
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_replay_update.py", line 322, in main
+[rank2]:     campaign.main()
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_resume.py", line 130, in main
+[rank2]:     restored, restored_metadata = resume.train_segment(
+[rank2]:                                   ^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/lib/python3.12/unittest/mock.py", line 1134, in __call__
+[rank2]:     return self._mock_call(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/lib/python3.12/unittest/mock.py", line 1138, in _mock_call
+[rank2]:     return self._execute_mock_call(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/usr/lib/python3.12/unittest/mock.py", line 1199, in _execute_mock_call
+[rank2]:     result = effect(*args, **kwargs)
+[rank2]:              ^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_replay_update.py", line 284, in segment
+[rank2]:     measured = analyze(config, reference, snapshot, **topology, output=output, rank=rank)
+[rank2]:                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_replay_update.py", line 183, in analyze
+[rank2]:     exact_update(left_update, reference["entry_states"][2])
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_replay_update.py", line 159, in exact_update
+[rank2]:     replay.assert_exact_tree(actual[key], expected[key], f"direct_post_update/{key}")
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_resume.py", line 62, in assert_exact_tree
+[rank2]:     assert_exact_tree(left[key], right[key], f"{name}/{key}")
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_resume.py", line 67, in assert_exact_tree
+[rank2]:     assert_exact_tree(a, b, f"{name}/{index}")
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_resume.py", line 62, in assert_exact_tree
+[rank2]:     assert_exact_tree(left[key], right[key], f"{name}/{key}")
+[rank2]:   File "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_resume.py", line 69, in assert_exact_tree
+[rank2]:     raise AssertionError(f"{name}: different scalar values")
+[rank2]: AssertionError: direct_post_update/optimizer/param_groups/0/lr: different scalar values

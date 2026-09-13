@@ -1,0 +1,680 @@
+{
+  "scope": "Genuine original native task exits across the bounded observation intervals",
+  "primary_before": [
+    398,
+    840
+  ],
+  "primary_after": [
+    436,
+    840
+  ],
+  "new_exit_zero_tasks": 38,
+  "intervals": [
+    {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T11:49:01.646977+00:00' '2026-09-11T11:50:01.845111+00:00' '1' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "0b96b9",
+        "wall_time_seconds": 0.000004356,
+        "exit_code": 0,
+        "original_token_count": 188,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T11:49:01.646977+00:00\", \"through_utc\": \"2026-09-11T11:50:01.845111+00:00\", \"expected_primary_count_change\": 1, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-TRECCOVID.exited.json\", \"bytes\": 206, \"sha256\": \"15dd266d42705e7a873a0f0454fb97af21c701924569a38899316d7a6adbb34c\", \"elapsed_seconds\": 159.0449565043673, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:49:19.428264+00:00\", \"job\": [\"verified-v3-muon-3e-4\", 1563, \"TRECCOVID\"], \"pid\": 414369}], \"count\": 1, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verified": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T11:49:01.646977+00:00",
+        "through_utc": "2026-09-11T11:50:01.845111+00:00",
+        "expected_primary_count_change": 1,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-TRECCOVID.exited.json",
+            "bytes": 206,
+            "sha256": "15dd266d42705e7a873a0f0454fb97af21c701924569a38899316d7a6adbb34c",
+            "elapsed_seconds": 159.0449565043673,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:49:19.428264+00:00",
+            "job": [
+              "verified-v3-muon-3e-4",
+              1563,
+              "TRECCOVID"
+            ],
+            "pid": 414369
+          }
+        ],
+        "count": 1,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    },
+    {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T11:50:01.845111+00:00' '2026-09-11T11:52:32.401490+00:00' '6' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "aee5d2",
+        "wall_time_seconds": 0.000004791,
+        "exit_code": 0,
+        "original_token_count": 702,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T11:50:01.845111+00:00\", \"through_utc\": \"2026-09-11T11:52:32.401490+00:00\", \"expected_primary_count_change\": 6, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-TRECCOVID.exited.json\", \"bytes\": 208, \"sha256\": \"36ad548924e3fbee1105cb865f13ee963993d3084920917ec5faeddbf4ad2e3f\", \"elapsed_seconds\": 157.04519606381655, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:50:48.447988+00:00\", \"job\": [\"verified-v3-adamw-1e-5\", 1563, \"TRECCOVID\"], \"pid\": 414945}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-TRECCOVID.exited.json\", \"bytes\": 210, \"sha256\": \"d87c5e270b13847d72cd8c2006b492749e29e2c2d964903a48f28260bcceb707\", \"elapsed_seconds\": 158.04544968064874, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:50:51.456698+00:00\", \"job\": [\"verified-v3-normuon-1e-3\", 1563, \"TRECCOVID\"], \"pid\": 414984}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-TRECCOVID.exited.json\", \"bytes\": 208, \"sha256\": \"1776c7736e68ac2fd299372b32060d45b32a9993604e66444606935f28a5dce9\", \"elapsed_seconds\": 158.04518775176257, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:51:01.465996+00:00\", \"job\": [\"verified-v3-adamw-3e-6\", 1563, \"TRECCOVID\"], \"pid\": 415032}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-TRECCOVID.exited.json\", \"bytes\": 207, \"sha256\": \"3e1f912d58ecbc0076f5e70fa0b6753a710f8f1dc6baf7d865d3478e0e7706ba\", \"elapsed_seconds\": 158.05717780906707, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:51:57.493364+00:00\", \"job\": [\"verified-v3-muon-3e-3\", 1563, \"TRECCOVID\"], \"pid\": 415774}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-FiQA2018.exited.json\", \"bytes\": 205, \"sha256\": \"6cd0fd01e68d62fd96c7aa0512d41dc039235cecd68f12e29ff610ffc0142b8a\", \"elapsed_seconds\": 81.04141221940517, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:52:12.505896+00:00\", \"job\": [\"verified-v3-muon-3e-4\", 1563, \"FiQA2018\"], \"pid\": 416437}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-FiQA2018.exited.json\", \"bytes\": 206, \"sha256\": \"19bbf334340ba124454ae4fc82a30ab3bcc5e9ab960cdf431d9b9b7429f49505\", \"elapsed_seconds\": 81.03082145005465, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:52:22.516991+00:00\", \"job\": [\"verified-v3-adamw-1e-5\", 1563, \"FiQA2018\"], \"pid\": 416518}], \"count\": 6, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verified": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T11:50:01.845111+00:00",
+        "through_utc": "2026-09-11T11:52:32.401490+00:00",
+        "expected_primary_count_change": 6,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-TRECCOVID.exited.json",
+            "bytes": 208,
+            "sha256": "36ad548924e3fbee1105cb865f13ee963993d3084920917ec5faeddbf4ad2e3f",
+            "elapsed_seconds": 157.04519606381655,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:50:48.447988+00:00",
+            "job": [
+              "verified-v3-adamw-1e-5",
+              1563,
+              "TRECCOVID"
+            ],
+            "pid": 414945
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-TRECCOVID.exited.json",
+            "bytes": 210,
+            "sha256": "d87c5e270b13847d72cd8c2006b492749e29e2c2d964903a48f28260bcceb707",
+            "elapsed_seconds": 158.04544968064874,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:50:51.456698+00:00",
+            "job": [
+              "verified-v3-normuon-1e-3",
+              1563,
+              "TRECCOVID"
+            ],
+            "pid": 414984
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-TRECCOVID.exited.json",
+            "bytes": 208,
+            "sha256": "1776c7736e68ac2fd299372b32060d45b32a9993604e66444606935f28a5dce9",
+            "elapsed_seconds": 158.04518775176257,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:51:01.465996+00:00",
+            "job": [
+              "verified-v3-adamw-3e-6",
+              1563,
+              "TRECCOVID"
+            ],
+            "pid": 415032
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-TRECCOVID.exited.json",
+            "bytes": 207,
+            "sha256": "3e1f912d58ecbc0076f5e70fa0b6753a710f8f1dc6baf7d865d3478e0e7706ba",
+            "elapsed_seconds": 158.05717780906707,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:51:57.493364+00:00",
+            "job": [
+              "verified-v3-muon-3e-3",
+              1563,
+              "TRECCOVID"
+            ],
+            "pid": 415774
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-FiQA2018.exited.json",
+            "bytes": 205,
+            "sha256": "6cd0fd01e68d62fd96c7aa0512d41dc039235cecd68f12e29ff610ffc0142b8a",
+            "elapsed_seconds": 81.04141221940517,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:52:12.505896+00:00",
+            "job": [
+              "verified-v3-muon-3e-4",
+              1563,
+              "FiQA2018"
+            ],
+            "pid": 416437
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-FiQA2018.exited.json",
+            "bytes": 206,
+            "sha256": "19bbf334340ba124454ae4fc82a30ab3bcc5e9ab960cdf431d9b9b7429f49505",
+            "elapsed_seconds": 81.03082145005465,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:52:22.516991+00:00",
+            "job": [
+              "verified-v3-adamw-1e-5",
+              1563,
+              "FiQA2018"
+            ],
+            "pid": 416518
+          }
+        ],
+        "count": 6,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    },
+    {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T11:52:32.401490+00:00' '2026-09-11T11:54:32.822279+00:00' '7' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "135cae",
+        "wall_time_seconds": 0.000003905,
+        "exit_code": 0,
+        "original_token_count": 803,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T11:52:32.401490+00:00\", \"through_utc\": \"2026-09-11T11:54:32.822279+00:00\", \"expected_primary_count_change\": 7, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-FiQA2018.exited.json\", \"bytes\": 208, \"sha256\": \"9b4a42c5120700dc3b10840bb11be5e783b84c74843bab707459c6e2b69910bd\", \"elapsed_seconds\": 81.02939156349748, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:53:18.533126+00:00\", \"job\": [\"verified-v3-normuon-1e-3\", 1563, \"FiQA2018\"], \"pid\": 417308}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-TRECCOVID.exited.json\", \"bytes\": 210, \"sha256\": \"b8251141c0482d42e7814cced8ccd7759998066f37723fa50c0e0fe4d519c034\", \"elapsed_seconds\": 158.08626401610672, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:53:26.542264+00:00\", \"job\": [\"verified-v3-normuon-3e-3\", 1563, \"TRECCOVID\"], \"pid\": 416402}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-FiQA2018.exited.json\", \"bytes\": 206, \"sha256\": \"2254a577b2f468778c8bdd06167ddb0ca55d4b406713bebf334056e684c13e70\", \"elapsed_seconds\": 81.03785572014749, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:53:33.551498+00:00\", \"job\": [\"verified-v3-adamw-3e-6\", 1563, \"FiQA2018\"], \"pid\": 417548}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-FiQA2018.exited.json\", \"bytes\": 205, \"sha256\": \"fe3e9c112a75d98e3297f0ac105b78861c7a131c231ee7ebc9869529bd563a00\", \"elapsed_seconds\": 82.03577817231417, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:53:44.561225+00:00\", \"job\": [\"verified-v3-muon-3e-3\", 1563, \"FiQA2018\"], \"pid\": 417570}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-ArguAna.exited.json\", \"bytes\": 204, \"sha256\": \"e5bffc09e28ee7084d6ccd3ce0651df1eb3a20e4ebca0a8fc56bf159840a9cce\", \"elapsed_seconds\": 37.02130340971053, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:54:03.571609+00:00\", \"job\": [\"verified-v3-muon-3e-4\", 1563, \"ArguAna\"], \"pid\": 418269}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-ArguAna.exited.json\", \"bytes\": 205, \"sha256\": \"1326da88054551f155ffa308c064d708571784cb818fcbab7c6a8e031b2e0405\", \"elapsed_seconds\": 37.02119796350598, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:54:10.580713+00:00\", \"job\": [\"verified-v3-adamw-1e-5\", 1563, \"ArguAna\"], \"pid\": 418520}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-ArguAna.exited.json\", \"bytes\": 208, \"sha256\": \"dcdec36255eabbcc36c3126550dbb5ab94f660445092f5b597364c01ed623a8d\", \"elapsed_seconds\": 36.021268762648106, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:54:20.590208+00:00\", \"job\": [\"verified-v3-normuon-1e-3\", 1563, \"ArguAna\"], \"pid\": 418782}], \"count\": 7, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verified": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T11:52:32.401490+00:00",
+        "through_utc": "2026-09-11T11:54:32.822279+00:00",
+        "expected_primary_count_change": 7,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-FiQA2018.exited.json",
+            "bytes": 208,
+            "sha256": "9b4a42c5120700dc3b10840bb11be5e783b84c74843bab707459c6e2b69910bd",
+            "elapsed_seconds": 81.02939156349748,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:53:18.533126+00:00",
+            "job": [
+              "verified-v3-normuon-1e-3",
+              1563,
+              "FiQA2018"
+            ],
+            "pid": 417308
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-TRECCOVID.exited.json",
+            "bytes": 210,
+            "sha256": "b8251141c0482d42e7814cced8ccd7759998066f37723fa50c0e0fe4d519c034",
+            "elapsed_seconds": 158.08626401610672,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:53:26.542264+00:00",
+            "job": [
+              "verified-v3-normuon-3e-3",
+              1563,
+              "TRECCOVID"
+            ],
+            "pid": 416402
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-FiQA2018.exited.json",
+            "bytes": 206,
+            "sha256": "2254a577b2f468778c8bdd06167ddb0ca55d4b406713bebf334056e684c13e70",
+            "elapsed_seconds": 81.03785572014749,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:53:33.551498+00:00",
+            "job": [
+              "verified-v3-adamw-3e-6",
+              1563,
+              "FiQA2018"
+            ],
+            "pid": 417548
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-FiQA2018.exited.json",
+            "bytes": 205,
+            "sha256": "fe3e9c112a75d98e3297f0ac105b78861c7a131c231ee7ebc9869529bd563a00",
+            "elapsed_seconds": 82.03577817231417,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:53:44.561225+00:00",
+            "job": [
+              "verified-v3-muon-3e-3",
+              1563,
+              "FiQA2018"
+            ],
+            "pid": 417570
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-ArguAna.exited.json",
+            "bytes": 204,
+            "sha256": "e5bffc09e28ee7084d6ccd3ce0651df1eb3a20e4ebca0a8fc56bf159840a9cce",
+            "elapsed_seconds": 37.02130340971053,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:54:03.571609+00:00",
+            "job": [
+              "verified-v3-muon-3e-4",
+              1563,
+              "ArguAna"
+            ],
+            "pid": 418269
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-ArguAna.exited.json",
+            "bytes": 205,
+            "sha256": "1326da88054551f155ffa308c064d708571784cb818fcbab7c6a8e031b2e0405",
+            "elapsed_seconds": 37.02119796350598,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:54:10.580713+00:00",
+            "job": [
+              "verified-v3-adamw-1e-5",
+              1563,
+              "ArguAna"
+            ],
+            "pid": 418520
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-ArguAna.exited.json",
+            "bytes": 208,
+            "sha256": "dcdec36255eabbcc36c3126550dbb5ab94f660445092f5b597364c01ed623a8d",
+            "elapsed_seconds": 36.021268762648106,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:54:20.590208+00:00",
+            "job": [
+              "verified-v3-normuon-1e-3",
+              1563,
+              "ArguAna"
+            ],
+            "pid": 418782
+          }
+        ],
+        "count": 7,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    },
+    {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T11:54:32.822279+00:00' '2026-09-11T11:57:03.412050+00:00' '21' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "c4b0b4",
+        "wall_time_seconds": 0.000003692,
+        "exit_code": 0,
+        "original_token_count": 2230,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T11:54:32.822279+00:00\", \"through_utc\": \"2026-09-11T11:57:03.412050+00:00\", \"expected_primary_count_change\": 21, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-FiQA2018.exited.json\", \"bytes\": 206, \"sha256\": \"fe08be018063e0184682d9b128ee8fa2605a708fe15d395567760ff0d3781edc\", \"elapsed_seconds\": 82.060058997944, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:54:40.600993+00:00\", \"job\": [\"verified-v3-normuon-3e-3\", 1563, \"FiQA2018\"], \"pid\": 418226}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-ArguAna.exited.json\", \"bytes\": 205, \"sha256\": \"fb77884cede3f6cf7a31b16f142e0bbfce108d988d0aa27c8a258dcfa320076d\", \"elapsed_seconds\": 37.02216637972742, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:54:40.601713+00:00\", \"job\": [\"verified-v3-adamw-3e-6\", 1563, \"ArguAna\"], \"pid\": 419261}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-ArguAna.exited.json\", \"bytes\": 204, \"sha256\": \"be264dc1fe7e02ae8201b8a6c7d7c157b59e107d6bfb4a704666f5d8190e27f0\", \"elapsed_seconds\": 36.02815721835941, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:54:46.616814+00:00\", \"job\": [\"verified-v3-muon-3e-3\", 1563, \"ArguAna\"], \"pid\": 419306}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-ArguAna.exited.json\", \"bytes\": 207, \"sha256\": \"ac646d4cf58bdd872d22f9867d40ba17fd1ba78bf4ad0977492fa3ac71ddec2e\", \"elapsed_seconds\": 36.03058866597712, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:54:56.628865+00:00\", \"job\": [\"verified-v3-normuon-3e-3\", 1563, \"ArguAna\"], \"pid\": 419553}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-SCIDOCS.exited.json\", \"bytes\": 203, \"sha256\": \"3fc7d2f80ec83486756c229e1c553e4dd8f355c7693fce46c06b2ab76c782cb7\", \"elapsed_seconds\": 40.0307285618037, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:20.639998+00:00\", \"job\": [\"verified-v3-muon-3e-4\", 1563, \"SCIDOCS\"], \"pid\": 420085}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-SCIDOCS.exited.json\", \"bytes\": 205, \"sha256\": \"c3604790b31151b3db95d1d6cb57e6498995b4cd16f5100f5c061fbcfa71ac5a\", \"elapsed_seconds\": 40.02508203871548, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:20.640799+00:00\", \"job\": [\"verified-v3-adamw-1e-5\", 1563, \"SCIDOCS\"], \"pid\": 420086}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-SCIDOCS.exited.json\", \"bytes\": 207, \"sha256\": \"05a97eb9745d3bca6fa9ba2d180e82282223b5a4f1df1b2581b2ee2c6cddc723\", \"elapsed_seconds\": 39.02878769673407, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:25.656094+00:00\", \"job\": [\"verified-v3-normuon-1e-3\", 1563, \"SCIDOCS\"], \"pid\": 420093}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-SCIDOCS.exited.json\", \"bytes\": 205, \"sha256\": \"ee7331315ac3b99a851a92d3540133b94b59eb16055cd2170fa24e41b48a5225\", \"elapsed_seconds\": 38.03093946073204, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:34.667646+00:00\", \"job\": [\"verified-v3-adamw-3e-6\", 1563, \"SCIDOCS\"], \"pid\": 420558}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-NFCorpus.exited.json\", \"bytes\": 206, \"sha256\": \"f6f31c109fdb94bc9edd835bd0859b3db491c8f6a4e11c060f0ecc4f462d465e\", \"elapsed_seconds\": 24.011239482089877, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:49.677450+00:00\", \"job\": [\"verified-v3-muon-3e-4\", 1563, \"NFCorpus\"], \"pid\": 421145}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-NFCorpus.exited.json\", \"bytes\": 206, \"sha256\": \"57d3763066b455b67021e332be8558f5625f120d7d22149c30bb44ede19bd927\", \"elapsed_seconds\": 23.01210699789226, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:57.687435+00:00\", \"job\": [\"verified-v3-adamw-1e-5\", 1563, \"NFCorpus\"], \"pid\": 421439}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-SCIDOCS.exited.json\", \"bytes\": 204, \"sha256\": \"38488f373a03ac52decfd4be86a39a43f49f1a6c0727e4523b5cd9ad4216cb22\", \"elapsed_seconds\": 38.04750481713563, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:58.696005+00:00\", \"job\": [\"verified-v3-muon-3e-3\", 1563, \"SCIDOCS\"], \"pid\": 421137}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-SCIDOCS.exited.json\", \"bytes\": 207, \"sha256\": \"c2c45da67e44fa62fb292b2e819aee548244a1099255eded5ebacb882d6e3177\", \"elapsed_seconds\": 39.12962544336915, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:55:59.784740+00:00\", \"job\": [\"verified-v3-normuon-3e-3\", 1563, \"SCIDOCS\"], \"pid\": 421138}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-NFCorpus.exited.json\", \"bytes\": 209, \"sha256\": \"4fe1c844a3b516ce4c339ff3c959a92ec45a2214b8c4a22dbce93ed9ae0c86b6\", \"elapsed_seconds\": 24.109580343589187, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:13.794688+00:00\", \"job\": [\"verified-v3-normuon-1e-3\", 1563, \"NFCorpus\"], \"pid\": 422144}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-NFCorpus.exited.json\", \"bytes\": 206, \"sha256\": \"6067339d55c3075b01912a0f733ef9fd9e8babb7b26ebf9994a5e174efddb935\", \"elapsed_seconds\": 24.10820118803531, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:21.803779+00:00\", \"job\": [\"verified-v3-adamw-3e-6\", 1563, \"NFCorpus\"], \"pid\": 422223}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-NFCorpus.exited.json\", \"bytes\": 205, \"sha256\": \"48d6d2ce969d2668a8812dfb93e337e04e1be1b82379baff702f0013a75f226c\", \"elapsed_seconds\": 23.02013440988958, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:21.804447+00:00\", \"job\": [\"verified-v3-muon-3e-3\", 1563, \"NFCorpus\"], \"pid\": 422227}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-NFCorpus.exited.json\", \"bytes\": 209, \"sha256\": \"7f33c234c6ac7b90d5deca152287bc1697fc588744c88933c626a2e77dd1153e\", \"elapsed_seconds\": 23.026454346254468, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:22.819218+00:00\", \"job\": [\"verified-v3-normuon-3e-3\", 1563, \"NFCorpus\"], \"pid\": 422236}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-SciFact.exited.json\", \"bytes\": 205, \"sha256\": \"64d92b972a3e38eabf6f4d777e088e6e5ba31900759f4bee34b0d9f8608c9556\", \"elapsed_seconds\": 23.026531422510743, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:36.829005+00:00\", \"job\": [\"verified-v3-muon-3e-4\", 1563, \"SciFact\"], \"pid\": 422992}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-SciFact.exited.json\", \"bytes\": 206, \"sha256\": \"4a64ac3a0ab01233e463949f4fe0189c0c51a2a4bc91d1ac7b80d8f234a0a6bc\", \"elapsed_seconds\": 23.413468501530588, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:45.225614+00:00\", \"job\": [\"verified-v3-adamw-1e-5\", 1563, \"SciFact\"], \"pid\": 423225}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-SciFact.exited.json\", \"bytes\": 207, \"sha256\": \"6ccd3083f559ec2ee983b50c3e64ee720a10a6564aee4e8479706bb8ec6cecb2\", \"elapsed_seconds\": 26.61932842899114, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:48.438116+00:00\", \"job\": [\"verified-v3-normuon-1e-3\", 1563, \"SciFact\"], \"pid\": 423226}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-SciFact.exited.json\", \"bytes\": 205, \"sha256\": \"fb45e2c7770312a0a053a36408d5f6a268f7e4117ef562ee502f514cd2e69b9d\", \"elapsed_seconds\": 28.16902628634125, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:56:50.996059+00:00\", \"job\": [\"verified-v3-adamw-3e-6\", 1563, \"SciFact\"], \"pid\": 423230}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-SciFact.exited.json\", \"bytes\": 204, \"sha256\": \"d68d29864028d5c2ebe81363d3576684c2894b6d4ccdaf26cb45cc086531d80a\", \"elapsed_seconds\": 22.74027960561216, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:57:01.964861+00:00\", \"job\": [\"verified-v3-muon-3e-3\", 1563, \"SciFact\"], \"pid\": 424150}], \"count\": 21, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verified": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T11:54:32.822279+00:00",
+        "through_utc": "2026-09-11T11:57:03.412050+00:00",
+        "expected_primary_count_change": 21,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-FiQA2018.exited.json",
+            "bytes": 206,
+            "sha256": "fe08be018063e0184682d9b128ee8fa2605a708fe15d395567760ff0d3781edc",
+            "elapsed_seconds": 82.060058997944,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:54:40.600993+00:00",
+            "job": [
+              "verified-v3-normuon-3e-3",
+              1563,
+              "FiQA2018"
+            ],
+            "pid": 418226
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-ArguAna.exited.json",
+            "bytes": 205,
+            "sha256": "fb77884cede3f6cf7a31b16f142e0bbfce108d988d0aa27c8a258dcfa320076d",
+            "elapsed_seconds": 37.02216637972742,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:54:40.601713+00:00",
+            "job": [
+              "verified-v3-adamw-3e-6",
+              1563,
+              "ArguAna"
+            ],
+            "pid": 419261
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-ArguAna.exited.json",
+            "bytes": 204,
+            "sha256": "be264dc1fe7e02ae8201b8a6c7d7c157b59e107d6bfb4a704666f5d8190e27f0",
+            "elapsed_seconds": 36.02815721835941,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:54:46.616814+00:00",
+            "job": [
+              "verified-v3-muon-3e-3",
+              1563,
+              "ArguAna"
+            ],
+            "pid": 419306
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-ArguAna.exited.json",
+            "bytes": 207,
+            "sha256": "ac646d4cf58bdd872d22f9867d40ba17fd1ba78bf4ad0977492fa3ac71ddec2e",
+            "elapsed_seconds": 36.03058866597712,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:54:56.628865+00:00",
+            "job": [
+              "verified-v3-normuon-3e-3",
+              1563,
+              "ArguAna"
+            ],
+            "pid": 419553
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-SCIDOCS.exited.json",
+            "bytes": 203,
+            "sha256": "3fc7d2f80ec83486756c229e1c553e4dd8f355c7693fce46c06b2ab76c782cb7",
+            "elapsed_seconds": 40.0307285618037,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:20.639998+00:00",
+            "job": [
+              "verified-v3-muon-3e-4",
+              1563,
+              "SCIDOCS"
+            ],
+            "pid": 420085
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-SCIDOCS.exited.json",
+            "bytes": 205,
+            "sha256": "c3604790b31151b3db95d1d6cb57e6498995b4cd16f5100f5c061fbcfa71ac5a",
+            "elapsed_seconds": 40.02508203871548,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:20.640799+00:00",
+            "job": [
+              "verified-v3-adamw-1e-5",
+              1563,
+              "SCIDOCS"
+            ],
+            "pid": 420086
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-SCIDOCS.exited.json",
+            "bytes": 207,
+            "sha256": "05a97eb9745d3bca6fa9ba2d180e82282223b5a4f1df1b2581b2ee2c6cddc723",
+            "elapsed_seconds": 39.02878769673407,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:25.656094+00:00",
+            "job": [
+              "verified-v3-normuon-1e-3",
+              1563,
+              "SCIDOCS"
+            ],
+            "pid": 420093
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-SCIDOCS.exited.json",
+            "bytes": 205,
+            "sha256": "ee7331315ac3b99a851a92d3540133b94b59eb16055cd2170fa24e41b48a5225",
+            "elapsed_seconds": 38.03093946073204,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:34.667646+00:00",
+            "job": [
+              "verified-v3-adamw-3e-6",
+              1563,
+              "SCIDOCS"
+            ],
+            "pid": 420558
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-NFCorpus.exited.json",
+            "bytes": 206,
+            "sha256": "f6f31c109fdb94bc9edd835bd0859b3db491c8f6a4e11c060f0ecc4f462d465e",
+            "elapsed_seconds": 24.011239482089877,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:49.677450+00:00",
+            "job": [
+              "verified-v3-muon-3e-4",
+              1563,
+              "NFCorpus"
+            ],
+            "pid": 421145
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-NFCorpus.exited.json",
+            "bytes": 206,
+            "sha256": "57d3763066b455b67021e332be8558f5625f120d7d22149c30bb44ede19bd927",
+            "elapsed_seconds": 23.01210699789226,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:57.687435+00:00",
+            "job": [
+              "verified-v3-adamw-1e-5",
+              1563,
+              "NFCorpus"
+            ],
+            "pid": 421439
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-SCIDOCS.exited.json",
+            "bytes": 204,
+            "sha256": "38488f373a03ac52decfd4be86a39a43f49f1a6c0727e4523b5cd9ad4216cb22",
+            "elapsed_seconds": 38.04750481713563,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:58.696005+00:00",
+            "job": [
+              "verified-v3-muon-3e-3",
+              1563,
+              "SCIDOCS"
+            ],
+            "pid": 421137
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-SCIDOCS.exited.json",
+            "bytes": 207,
+            "sha256": "c2c45da67e44fa62fb292b2e819aee548244a1099255eded5ebacb882d6e3177",
+            "elapsed_seconds": 39.12962544336915,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:55:59.784740+00:00",
+            "job": [
+              "verified-v3-normuon-3e-3",
+              1563,
+              "SCIDOCS"
+            ],
+            "pid": 421138
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-NFCorpus.exited.json",
+            "bytes": 209,
+            "sha256": "4fe1c844a3b516ce4c339ff3c959a92ec45a2214b8c4a22dbce93ed9ae0c86b6",
+            "elapsed_seconds": 24.109580343589187,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:13.794688+00:00",
+            "job": [
+              "verified-v3-normuon-1e-3",
+              1563,
+              "NFCorpus"
+            ],
+            "pid": 422144
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-NFCorpus.exited.json",
+            "bytes": 206,
+            "sha256": "6067339d55c3075b01912a0f733ef9fd9e8babb7b26ebf9994a5e174efddb935",
+            "elapsed_seconds": 24.10820118803531,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:21.803779+00:00",
+            "job": [
+              "verified-v3-adamw-3e-6",
+              1563,
+              "NFCorpus"
+            ],
+            "pid": 422223
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-NFCorpus.exited.json",
+            "bytes": 205,
+            "sha256": "48d6d2ce969d2668a8812dfb93e337e04e1be1b82379baff702f0013a75f226c",
+            "elapsed_seconds": 23.02013440988958,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:21.804447+00:00",
+            "job": [
+              "verified-v3-muon-3e-3",
+              1563,
+              "NFCorpus"
+            ],
+            "pid": 422227
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-NFCorpus.exited.json",
+            "bytes": 209,
+            "sha256": "7f33c234c6ac7b90d5deca152287bc1697fc588744c88933c626a2e77dd1153e",
+            "elapsed_seconds": 23.026454346254468,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:22.819218+00:00",
+            "job": [
+              "verified-v3-normuon-3e-3",
+              1563,
+              "NFCorpus"
+            ],
+            "pid": 422236
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-4-1563-SciFact.exited.json",
+            "bytes": 205,
+            "sha256": "64d92b972a3e38eabf6f4d777e088e6e5ba31900759f4bee34b0d9f8608c9556",
+            "elapsed_seconds": 23.026531422510743,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:36.829005+00:00",
+            "job": [
+              "verified-v3-muon-3e-4",
+              1563,
+              "SciFact"
+            ],
+            "pid": 422992
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-1e-5-1563-SciFact.exited.json",
+            "bytes": 206,
+            "sha256": "4a64ac3a0ab01233e463949f4fe0189c0c51a2a4bc91d1ac7b80d8f234a0a6bc",
+            "elapsed_seconds": 23.413468501530588,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:45.225614+00:00",
+            "job": [
+              "verified-v3-adamw-1e-5",
+              1563,
+              "SciFact"
+            ],
+            "pid": 423225
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-1e-3-1563-SciFact.exited.json",
+            "bytes": 207,
+            "sha256": "6ccd3083f559ec2ee983b50c3e64ee720a10a6564aee4e8479706bb8ec6cecb2",
+            "elapsed_seconds": 26.61932842899114,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:48.438116+00:00",
+            "job": [
+              "verified-v3-normuon-1e-3",
+              1563,
+              "SciFact"
+            ],
+            "pid": 423226
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-adamw-3e-6-1563-SciFact.exited.json",
+            "bytes": 205,
+            "sha256": "fb45e2c7770312a0a053a36408d5f6a268f7e4117ef562ee502f514cd2e69b9d",
+            "elapsed_seconds": 28.16902628634125,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:56:50.996059+00:00",
+            "job": [
+              "verified-v3-adamw-3e-6",
+              1563,
+              "SciFact"
+            ],
+            "pid": 423230
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-muon-3e-3-1563-SciFact.exited.json",
+            "bytes": 204,
+            "sha256": "d68d29864028d5c2ebe81363d3576684c2894b6d4ccdaf26cb45cc086531d80a",
+            "elapsed_seconds": 22.74027960561216,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:57:01.964861+00:00",
+            "job": [
+              "verified-v3-muon-3e-3",
+              1563,
+              "SciFact"
+            ],
+            "pid": 424150
+          }
+        ],
+        "count": 21,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    },
+    {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T11:57:03.412050+00:00' '2026-09-11T11:58:03.626864+00:00' '1' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "4327f3",
+        "wall_time_seconds": 0.000004146,
+        "exit_code": 0,
+        "original_token_count": 188,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T11:57:03.412050+00:00\", \"through_utc\": \"2026-09-11T11:58:03.626864+00:00\", \"expected_primary_count_change\": 1, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-SciFact.exited.json\", \"bytes\": 208, \"sha256\": \"e320ba99505da4786b446399b6678047ee9c7cfbe570dcaeee09f95e704cf9df\", \"elapsed_seconds\": 23.307236794382334, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T11:57:17.530157+00:00\", \"job\": [\"verified-v3-normuon-3e-3\", 1563, \"SciFact\"], \"pid\": 424390}], \"count\": 1, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verified": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T11:57:03.412050+00:00",
+        "through_utc": "2026-09-11T11:58:03.626864+00:00",
+        "expected_primary_count_change": 1,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs/verified-v3-normuon-3e-3-1563-SciFact.exited.json",
+            "bytes": 208,
+            "sha256": "e320ba99505da4786b446399b6678047ee9c7cfbe570dcaeee09f95e704cf9df",
+            "elapsed_seconds": 23.307236794382334,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T11:57:17.530157+00:00",
+            "job": [
+              "verified-v3-normuon-3e-3",
+              1563,
+              "SciFact"
+            ],
+            "pid": 424390
+          }
+        ],
+        "count": 1,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    },
+    {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - '2026-09-11T11:58:03.626864+00:00' '2026-09-11T12:06:05.423537+00:00' '2' <<'PY'\nimport datetime as dt, hashlib, json, re, subprocess, sys\nfrom pathlib import Path\nlower=dt.datetime.fromisoformat(sys.argv[1])\nupper=dt.datetime.fromisoformat(sys.argv[2])\nexpected=int(sys.argv[3])\nroots=[\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs',\n'/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-b/jobs']\nlisted=subprocess.run(['rg','--files','-g','*.exited.json',*roots],check=True,capture_output=True,text=True)\nreceipts=[]\nfor line in listed.stdout.splitlines():\n    path=Path(line)\n    if str(path.parent) not in roots or path.is_symlink() or not re.fullmatch(r'verified-v3-[A-Za-z0-9-]+\\.exited\\.json',path.name):\n        raise ValueError('Unexpected native exit receipt target')\n    raw=path.read_bytes()\n    record=json.loads(raw)\n    finished=dt.datetime.fromisoformat(record['finished_at_utc'])\n    if not lower < finished <= upper:\n        continue\n    run,step,task=record['job']\n    if path.name != f'{run}-{step}-{task}.exited.json':\n        raise ValueError('Native exit receipt job/path mismatch')\n    receipts.append({'path':str(path),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),**record})\nreceipts.sort(key=lambda row:row['finished_at_utc'])\nprint(json.dumps({'scope':'existing_native_exit_records_between_observer_snapshots','from_utc':lower.isoformat(),'through_utc':upper.isoformat(),'expected_primary_count_change':expected,'native_receipts':receipts,'count':len(receipts),'all_exit_zero':all(row['exit_code']==0 for row in receipts),'count_matches_observed_change':len(receipts)==expected,'new_worker_or_observer_started':False},ensure_ascii=False))\nPY",
+      "result": {
+        "chunk_id": "b0b395",
+        "wall_time_seconds": 0.000004501,
+        "exit_code": 0,
+        "original_token_count": 289,
+        "output": "{\"scope\": \"existing_native_exit_records_between_observer_snapshots\", \"from_utc\": \"2026-09-11T11:58:03.626864+00:00\", \"through_utc\": \"2026-09-11T12:06:05.423537+00:00\", \"expected_primary_count_change\": 2, \"native_receipts\": [{\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-muon-1e-3-1563-MSMARCO.exited.json\", \"bytes\": 204, \"sha256\": \"b06c8f45ef03d216c11bd6f0d8d9d4be42956239603d595b0aa429a9808cc94d\", \"elapsed_seconds\": 3217.432243794203, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:00:38.253223+00:00\", \"job\": [\"verified-v3-muon-1e-3\", 1563, \"MSMARCO\"], \"pid\": 401809}, {\"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-adamw-1e-6-1563-MSMARCO.exited.json\", \"bytes\": 206, \"sha256\": \"067f3327c03f25450743607bfca1c30e85228bc17daa3f67d9f9683182e5e637\", \"elapsed_seconds\": 3256.4370130747557, \"exit_code\": 0, \"finished_at_utc\": \"2026-09-11T12:02:25.275156+00:00\", \"job\": [\"verified-v3-adamw-1e-6\", 1563, \"MSMARCO\"], \"pid\": 402140}], \"count\": 2, \"all_exit_zero\": true, \"count_matches_observed_change\": true, \"new_worker_or_observer_started\": false}\n"
+      },
+      "verified": {
+        "scope": "existing_native_exit_records_between_observer_snapshots",
+        "from_utc": "2026-09-11T11:58:03.626864+00:00",
+        "through_utc": "2026-09-11T12:06:05.423537+00:00",
+        "expected_primary_count_change": 2,
+        "native_receipts": [
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-muon-1e-3-1563-MSMARCO.exited.json",
+            "bytes": 204,
+            "sha256": "b06c8f45ef03d216c11bd6f0d8d9d4be42956239603d595b0aa429a9808cc94d",
+            "elapsed_seconds": 3217.432243794203,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:00:38.253223+00:00",
+            "job": [
+              "verified-v3-muon-1e-3",
+              1563,
+              "MSMARCO"
+            ],
+            "pid": 401809
+          },
+          {
+            "path": "/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/pool-a/jobs/verified-v3-adamw-1e-6-1563-MSMARCO.exited.json",
+            "bytes": 206,
+            "sha256": "067f3327c03f25450743607bfca1c30e85228bc17daa3f67d9f9683182e5e637",
+            "elapsed_seconds": 3256.4370130747557,
+            "exit_code": 0,
+            "finished_at_utc": "2026-09-11T12:02:25.275156+00:00",
+            "job": [
+              "verified-v3-adamw-1e-6",
+              1563,
+              "MSMARCO"
+            ],
+            "pid": 402140
+          }
+        ],
+        "count": 2,
+        "all_exit_zero": true,
+        "count_matches_observed_change": true,
+        "new_worker_or_observer_started": false
+      }
+    }
+  ],
+  "new_worker_or_observer_started": false
+}
+

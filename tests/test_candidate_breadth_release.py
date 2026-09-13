@@ -116,7 +116,7 @@ def _args(repository: Path) -> Namespace:
         protocol=Path("configs/candidate_breadth_probe.json"),
         data_output=Path("data/candidate-breadth"),
         summary_dir=Path("reports/candidate-breadth"),
-        paper=Path("paper/generated/candidate-breadth.tex"),
+        paper=Path("reports/engineering-archive/candidate-breadth-paper-fragment.tex"),
         publication_manifest=Path("reports/candidate-breadth/publication_manifest.json"),
         log_dir=Path("logs/candidate-release"),
         python="/usr/bin/python3",
@@ -374,21 +374,19 @@ def test_completion_gates_require_the_posthoc_release_after_canonical_finalizati
     )
 
 
-def test_publication_keeps_candidate_breadth_claim_boundaries_visible() -> None:
+def test_candidate_breadth_is_archived_outside_the_scientific_manuscript() -> None:
     root = Path(__file__).parents[1]
     paper = (root / "paper/main.tex").read_text(encoding="utf-8")
 
     normalized = " ".join(paper.split()).lower()
-    assert "designed after" in normalized
-    assert "unjudged relevant" in normalized
-    assert "formal mediation" in normalized
-    assert "Muon-family high-dose ordering reverses with candidate breadth" in paper
-    assert "width-2,048 endpoint reversals" in paper
-    assert "directly supports missing-candidate coverage as the mechanism" not in paper
-    assert r"\CandidateBreadthDiscussion" in paper
-    assert r"\CandidateBreadthConclusion" in paper
-    assert r"\CandidateBreadthFigure" in paper
-    generated = (root / "paper/generated/candidate-breadth.tex").read_text(encoding="utf-8")
+    assert "candidate breadth" not in normalized
+    assert "candidate-breadth" not in normalized
+    assert r"\CandidateBreadthDiscussion" not in paper
+    assert r"\CandidateBreadthConclusion" not in paper
+    assert r"\CandidateBreadthFigure" not in paper
+    generated = (
+        root / "reports/engineering-archive/candidate-breadth-paper-fragment.tex"
+    ).read_text(encoding="utf-8")
     assert "prerequisite width-7 bridge failed" in generated
     assert "Missing-candidate coverage therefore does not explain" in generated
-    assert "batch-composition" in paper
+    assert "batch-composition" not in paper

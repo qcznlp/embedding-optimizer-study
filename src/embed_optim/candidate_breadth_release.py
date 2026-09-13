@@ -666,7 +666,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--data-output", type=Path, default=Path("data/candidate-breadth-224-seed20260901")
     )
     parser.add_argument("--summary-dir", type=Path, default=Path("reports/candidate-breadth"))
-    parser.add_argument("--paper", type=Path, default=Path("paper/generated/candidate-breadth.tex"))
+    parser.add_argument(
+        "--paper",
+        type=Path,
+        default=Path("reports/engineering-archive/candidate-breadth-paper-fragment.tex"),
+    )
     parser.add_argument(
         "--publication-manifest",
         type=Path,

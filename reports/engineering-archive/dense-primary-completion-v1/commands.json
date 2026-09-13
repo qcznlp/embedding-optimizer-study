@@ -1,0 +1,61 @@
+{
+  "scope": "engineering_dense_primary_completion_commands",
+  "scientific_completion": false,
+  "production_deployed": false,
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "commands": [
+    {
+      "purpose": "Whole-run reader initial compatibility failure",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_primary_completion --repository /root/embedding-optimizer-story-refactor --output /tmp/dense-primary-completion.96oDoX/initial.json",
+      "observed_exit": 1
+    },
+    {
+      "purpose": "Whole-run reader intermediate pass",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_primary_completion --repository /root/embedding-optimizer-story-refactor --output /tmp/dense-primary-completion.96oDoX/second.json",
+      "observed_exit": 0
+    },
+    {
+      "purpose": "One actual SciFact GPU worker; evaluator exit 0, initial reader exit 1",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_primary_task --repository /root/embedding-optimizer-story-refactor --workdir /tmp/dense-primary-task.arBdZO",
+      "observed_exit": 1
+    },
+    {
+      "purpose": "Initial CPU-only re-read; no second GPU work",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.replay_dense_primary_task_reader --repository /root/embedding-optimizer-story-refactor --producer /tmp/dense-primary-task.arBdZO/result.json --output /tmp/dense-primary-completion.96oDoX/task-reader.json",
+      "observed_exit": 0
+    },
+    {
+      "purpose": "Final exact-source whole-run reader",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.audit_dense_primary_completion --repository /root/embedding-optimizer-story-refactor --output /tmp/dense-primary-completion.96oDoX/final.json",
+      "observed_exit": 0
+    },
+    {
+      "purpose": "Final exact-source CPU-only task reader",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m scripts.replay_dense_primary_task_reader --repository /root/embedding-optimizer-story-refactor --producer /tmp/dense-primary-task.arBdZO/result.json --output /tmp/dense-primary-completion.96oDoX/task-reader-final.json",
+      "observed_exit": 0
+    },
+    {
+      "purpose": "Initial 55 focused cases",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_primary_completion.py --junitxml=/tmp/dense-primary-completion.96oDoX/focused-first.xml",
+      "observed_exit": 0
+    },
+    {
+      "purpose": "Final 63 focused cases",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q tests/test_primary_completion.py --junitxml=/tmp/dense-primary-completion.96oDoX/focused-final.xml",
+      "observed_exit": 0
+    },
+    {
+      "purpose": "Full 1538-case isolated suite",
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python3 -B -m pytest -q --junitxml=/tmp/dense-primary-completion.96oDoX/full-final.xml",
+      "observed_exit": 0
+    }
+  ],
+  "notes": [
+    "The first whole-run failure is KeyError: materialization_manifest for a synthetic fixture; actual primary manifest admission is retained.",
+    "Pinned LambdaLR uses empty dictionaries for partial-function state; inspected with weights_only=True after trusted digest authentication.",
+    "The GPU evaluator itself exited zero. Only the initial reader rejected six unused auxiliary nAUC NaNs. No task result or primary score was changed.",
+    "The initial replay script had one import-spacing lint warning; exact source and receipt are retained, the formatting was corrected, and final CPU replay was executed against the corrected source.",
+    "Actual matrix readiness refusal and compatibility with the original nDCG reader are executed and recorded by validate_dense_primary_completion.py.",
+    "No exclusions, formal training/evaluation, GitHub write retry, commit/push, HF write/deletion or protected GPU-helper interaction."
+  ]
+}

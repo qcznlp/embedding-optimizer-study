@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import posixpath
 import re
@@ -62,11 +63,12 @@ def test_public_governance_reproduces_release_checks_and_private_reporting() -> 
         "uv run cffconvert --validate --infile CITATION.cff",
         "uv build",
         "uv run embed-optim-audit-distribution",
-        "uv run pytest",
+        "uv run python scripts/test_source_roles.py",
         "uv run ruff check src tests scripts",
         "uv run ruff format --check src tests scripts",
-        "uv run embed-optim-render-paper-results",
-        "uv run embed-optim-audit-paper",
+        "make -C paper release",
+        "NUMERICAL_BUNDLE=",
+        "RELEASE_OUTPUT=",
     )
     for command in required_commands:
         assert command in contributing
@@ -332,22 +334,16 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
     installed = _installed_data_paths()
     paper_files = (
         "paper/Makefile",
+        "paper/legacy.Makefile",
         "paper/README.md",
         "paper/main.tex",
         "paper/references.bib",
         "paper/results.tex",
     )
     result_tables = (
-        "paper/generated/causal-chain.tex",
-        "paper/generated/candidate-breadth.tex",
-        "paper/generated/common-state.tex",
-        "paper/generated/confirmation.tex",
-        "paper/generated/diagnostics.tex",
-        "paper/generated/discovery.tex",
-        "paper/generated/intervention.tex",
-        "paper/generated/per-task.tex",
-        "paper/generated/representation.tex",
-        "paper/generated/retrieval-dynamics-extension.tex",
+        "paper/generated/optimizer-primary.tex",
+        "paper/generated/dimension-utilization.tex",
+        "paper/generated/state-operator-factorial.tex",
     )
     for source in paper_files:
         assert installed[source] == PurePosixPath(
@@ -359,17 +355,8 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         ) / PurePosixPath(source)
 
     main = (ROOT / "paper/main.tex").read_text()
-    makefile = (ROOT / "paper/Makefile").read_text()
-    assert (
-        "EXTENDED_RESULT_FIGURE := $(wildcard "
-        "../reports/dense-retrieval-dynamics/five_stage_retrieval_dynamics.pdf)" in makefile
-    )
-    assert "$(EXTENDED_RESULT_FIGURE)" in makefile
-    assert (
-        "CANDIDATE_BREADTH_FIGURE := $(wildcard "
-        "../reports/candidate-breadth/candidate_breadth_calibration.pdf)" in makefile
-    )
-    assert "$(CANDIDATE_BREADTH_FIGURE)" in makefile
+    makefile = (ROOT / "paper/legacy.Makefile").read_text()
+    assert "figures/optimizer-weight-dimension-map.pdf" in makefile
     for source in result_tables:
         table = PurePosixPath(source).stem
         assert f"\\input{{generated/{table}}}" in main
@@ -379,6 +366,20 @@ def test_distribution_bundles_result_safe_paper_sources() -> None:
         # non-empty tables; strict pending/final consistency is owned by the
         # paper-results manifest and paper audit.
         assert (ROOT / source).read_text().strip()
+
+    # The default entry now uses a separately authenticated complete v3 paper.
+    # Retain every old assertion above against its unchanged historical source.
+    current_make = (ROOT / "paper/Makefile").read_text()
+    assert ".DEFAULT_GOAL := current" in current_make
+    assert "embed_optim.current_paper" in current_make
+    assert "embed_optim.paper_reproduction" in current_make
+    snapshot = json.loads((ROOT / "paper/current/document-snapshot.json").read_text())
+    assert len(snapshot["inputs"]) == 12
+    for name, binding in snapshot["inputs"].items():
+        source = "paper/current/" + name
+        assert installed[source] == PurePosixPath("share/embedding-optimizer-study") / source
+        raw = (ROOT / source).read_bytes()
+        assert {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()} == binding
 
 
 def test_distribution_bundles_project_governance_documents() -> None:

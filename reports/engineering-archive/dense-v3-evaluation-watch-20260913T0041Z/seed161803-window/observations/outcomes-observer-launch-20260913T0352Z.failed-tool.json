@@ -1,0 +1,9 @@
+{
+  "scope": "Read-only observer invocation; not a native outcome-worker failure",
+  "command": "/usr/bin/python /tmp/dense-v3-factorial-outcome-durability.cq4oNAJ7/observe.py --output /tmp/dense-v3-evaluation-monitor.tljylP9V/outcomes-20260913T0353Z.json",
+  "tool_chunk_id": "e4616a",
+  "exit_code": 1,
+  "output": "Traceback (most recent call last):\n  File \"/tmp/dense-v3-factorial-outcome-durability.cq4oNAJ7/observe.py\", line 37, in <module>\n    main()\n  File \"/tmp/dense-v3-factorial-outcome-durability.cq4oNAJ7/observe.py\", line 16, in main\n    t = o.transport()\n        ^^^^^^^^^^^^^\n  File \"/tmp/dense-v3-factorial-outcome-durability.cq4oNAJ7/outcomes.py\", line 62, in transport\n    need(os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'Hide CUDA')\n  File \"/tmp/dense-v3-factorial-outcome-durability.cq4oNAJ7/outcomes.py\", line 52, in need\n    raise ValueError(message)\nValueError: Hide CUDA\n",
+  "cause": "The observer invocation omitted the required empty CUDA_VISIBLE_DEVICES environment variable.",
+  "correction": "Set the original required environment variable for the read-only observer; do not edit the guard, restart a worker, or alter its authority."
+}

@@ -1,0 +1,178 @@
+{
+  "bindings": [
+    {
+      "bytes": 13141,
+      "path": "scripts/audit_checkpoint_download.py",
+      "sha256": "54b4fc3bc2733b0e3e03fbfcf19a70fda38acad92b535fd8b03e673e061d4019"
+    },
+    {
+      "bytes": 7114,
+      "path": "tests/test_checkpoint_download.py",
+      "sha256": "00ef33522d7a13c6bed3146b717a8c3f5ceec92a3a73f0ee8104b38d78b8d751"
+    },
+    {
+      "bytes": 13249,
+      "path": "scripts/audit_checkpoint_optimizer_resume.py",
+      "sha256": "feefdccff094f9dfe2e90256f48aef5cf7d68e5dacc8ee25092db75fcfe83ef9"
+    },
+    {
+      "bytes": 1971,
+      "path": "src/embed_optim/artifact_inventory.py",
+      "sha256": "856f9fcfaf1a4f0c89062a22d8771eef0e3543995881ac89097e688e82fd2e6b"
+    },
+    {
+      "bytes": 7194,
+      "path": "docs/checkpoint-restoration.md",
+      "sha256": "f537a3e7ff05f25510c0615c9b5c8ea60cfdf7c92f6a5257970268d928d86588"
+    },
+    {
+      "bytes": 3478,
+      "path": "reports/engineering-archive/checkpoint-restoration-v1/README.md",
+      "sha256": "ec293a4626b34de6540a71fde71b06346a39552f3b84f0323639a5a5bdf8167e"
+    },
+    {
+      "bytes": 19319,
+      "path": "reports/experiment-integrity/checkpoint-download-normuon-3126.json",
+      "sha256": "e44ba6a348d6c256b33271997a6ef57ac80a5631ec75c9b1da4fe62be63bed47"
+    },
+    {
+      "bytes": 4204,
+      "path": "reports/experiment-integrity/checkpoint-download-focused-tests.xml",
+      "sha256": "517425f07244d4021ce0cbf73e7eb7987cf401a1d01881654ddb808e9fcf24c9"
+    },
+    {
+      "bytes": 159266,
+      "path": "reports/experiment-integrity/checkpoint-download-full-tests.xml",
+      "sha256": "a2efa9a19122953bde4edca5a8d8768bc3aa77337107ed5c9a140001a8aaec3d"
+    },
+    {
+      "bytes": 19641,
+      "path": "reports/experiment-integrity/checkpoint-download-documentation-tests.xml",
+      "sha256": "89f35442e3a8034fdcef9cf875c46d6e92d876fe18b496b7e9416c2d274da13f"
+    },
+    {
+      "bytes": 7670,
+      "path": "reports/experiment-integrity/checkpoint-download-progress-snapshot.json",
+      "sha256": "1ca632a83ca05255c071c4abbe9e302d5d5640f542e99fa77f02381f781d22f6"
+    },
+    {
+      "bytes": 451,
+      "path": "reports/experiment-integrity/checkpoint-download-wandb-observation.json",
+      "sha256": "3664b4a6ee638f9741fa8e4017d42dedb6b80bc3584026d7ca9df326370da770"
+    },
+    {
+      "bytes": 443183,
+      "path": "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+      "sha256": "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6"
+    },
+    {
+      "bytes": 28486,
+      "path": "reports/experiment-integrity/issue-41-checkpoint-restoration-update.md",
+      "sha256": "1b5d1e44b9ec3dd2619fb7dc387d9a65fa80400071aff743ae3b050170ae2712"
+    },
+    {
+      "bytes": 11506,
+      "path": "reports/experiment-integrity/main-recovery-successor-validation.json",
+      "sha256": "b12dd48de2961b0f63923288d1faa8b620a59586d512e90203394f72f3ca50a8"
+    },
+    {
+      "bytes": 39891,
+      "path": "/usr/local/lib/python3.12/dist-packages/transformers/optimization.py",
+      "sha256": "7843431ccb72648c47a9c8cd24532d2d111e8857e48edceb5c6e8122abd9b513"
+    }
+  ],
+  "boundary": "A fresh forced anonymous public HF download followed by offline CPU verification on the same physical host. This consolidates exact file checks, short encoding and existing synthetic-gradient serialization tests; it is not a second-host/distributed resume, primary evaluation, full experiment certification or scientific optimizer result. Source publication, runtime handoff and erroneous-result withdrawal approvals remain unresolved.",
+  "checks": {
+    "final_documentation": {
+      "errors": 0,
+      "exclusions": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 142,
+      "time_seconds": 13.594
+    },
+    "focused": {
+      "errors": 0,
+      "exclusions": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 31,
+      "time_seconds": 4.284
+    },
+    "full": {
+      "errors": 0,
+      "exclusions": 0,
+      "failures": 0,
+      "skipped": 0,
+      "tests": 1150,
+      "time_seconds": 152.477
+    }
+  },
+  "environment": {
+    "executable": "/usr/bin/python",
+    "packages": {
+      "huggingface-hub": "1.28.0",
+      "safetensors": "0.8.0",
+      "sentence-transformers": "5.7.0",
+      "torch": "2.9.1+cu129",
+      "transformers": "5.3.0"
+    },
+    "python": "3.12.3"
+  },
+  "hf_mutations": false,
+  "live_observation": [
+    {
+      "complete_runs": 10,
+      "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+      "covered_checkpoints": null,
+      "observed_at_utc": "2026-09-05T03:44:14+00:00",
+      "path": "/root/embedding-optimizer-study/logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "sha256_at_observation": "b679d6c694da1c6978bd61155515206456c673652e5fd165e01fb1d967bab0cd",
+      "status": "waiting_for_training",
+      "steps": 0
+    },
+    {
+      "complete_runs": null,
+      "contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8",
+      "covered_checkpoints": null,
+      "observed_at_utc": "2026-09-05T03:44:01+00:00",
+      "path": "/root/embedding-optimizer-study/logs/state-operator-factorial/completion/pipeline-ledger.json",
+      "sha256_at_observation": "2b735dd2e0d643fc437290511470d8807ab1920975f705884e7ba7e1cac36920",
+      "status": "waiting_for_main_completion",
+      "steps": 0
+    },
+    {
+      "complete_runs": null,
+      "contract_sha256": "a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7",
+      "covered_checkpoints": 50,
+      "observed_at_utc": "2026-09-05T03:44:19Z",
+      "path": "/root/embedding-optimizer-study/logs/dense-no-packing-sealed-backup/state.json",
+      "sha256_at_observation": "782aabe421023e334e2d913a5b685f10a5556011012b65933b9a25e3d8b11c94",
+      "status": "watching",
+      "steps": 0
+    }
+  ],
+  "observed_at_utc": "2026-09-05T03:44:36.037760+00:00",
+  "restoration": {
+    "bytes": 1351464827,
+    "documentation_links_checked": 31,
+    "files": 18,
+    "frozen_config_optimizer_reload_sources_match_live": true,
+    "git_diff_check": "pass",
+    "parameters_and_optimizer_states": 134,
+    "prior_recovery_receipt_bindings_preserved": 31,
+    "receipt_sha256": "e44ba6a348d6c256b33271997a6ef57ac80a5631ec75c9b1da4fe62be63bed47",
+    "ruff_check": "pass",
+    "ruff_format_check": "pass",
+    "source_bindings_rechecked": 7
+  },
+  "runtime_deployed": false,
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "independent_checkpoint_download_and_cpu_restoration_validation",
+  "issue_update": {
+    "url": "https://github.com/qcznlp/embedding-optimizer-study/issues/41",
+    "updated_at_utc": "2026-09-05T03:42:58Z",
+    "body_readback_matches": true
+  }
+}

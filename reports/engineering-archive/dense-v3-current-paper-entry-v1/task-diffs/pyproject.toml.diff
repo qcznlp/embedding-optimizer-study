@@ -1,0 +1,47 @@
+--- before/pyproject.toml
++++ after/pyproject.toml
+@@ -149,6 +149,7 @@
+ embed-optim-release-dimension-utilization = "embed_optim.dimension_release:main"
+ embed-optim-archive-dimension-utilization = "embed_optim.dimension_archive:main"
+ embed-optim-replay-dimension-utilization = "embed_optim.dimension_replay:main"
++embed-optim-build-current-paper = "embed_optim.current_paper:main"
+ 
+ [project.urls]
+ Repository = "https://github.com/qcznlp/embedding-optimizer-study"
+@@ -281,6 +282,7 @@
+ "share/embedding-optimizer-study/docs" = [
+   "docs/checkpoint-restoration.md",
+   "docs/continuation-probe-restoration.md",
++  "docs/continuation-outcomes-restoration.md",
+   "docs/endpoint-statistics-restoration.md",
+   "docs/evaluation-analysis-restoration.md",
+   "docs/first-stage-evaluation-restoration.md",
+@@ -317,6 +319,28 @@
+   "paper/generated/dimension-utilization.tex",
+   "paper/generated/state-operator-factorial.tex",
+ ]
++"share/embedding-optimizer-study/paper/current" = [
++  "paper/current/README.md",
++  "paper/current/document-snapshot.json",
++  "paper/current/main.tex",
++  "paper/current/references.bib",
++  "paper/current/results.tex",
++]
++"share/embedding-optimizer-study/paper/current/generated" = [
++  "paper/current/generated/optimizer-primary.tex",
++  "paper/current/generated/dimension-utilization.tex",
++  "paper/current/generated/recipe-sensitivity.tex",
++  "paper/current/generated/state-operator-factorial.tex",
++]
++"share/embedding-optimizer-study/paper/current/figures" = [
++  "paper/current/figures/optimizer-weight-dimension-map.pdf",
++  "paper/current/figures/weight-to-retrieval-map.pdf",
++  "paper/current/figures/full-rate-retrieval-trajectories.pdf",
++]
++"share/embedding-optimizer-study/paper/current/vendor" = [
++  "paper/current/vendor/acl.sty",
++  "paper/current/vendor/acl_natbib.bst",
++]
+ "share/embedding-optimizer-study/reports/state-operator-factorial" = [
+   "reports/state-operator-factorial/*.csv",
+   "reports/state-operator-factorial/*.json",

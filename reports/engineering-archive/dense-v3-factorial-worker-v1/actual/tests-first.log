@@ -1,0 +1,139 @@
+.....................................F.......FF......                    [100%]
+=================================== FAILURES ===================================
+__________________ test_fresh_factory_controls[short_context] __________________
+
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2025/test_fresh_factory_controls_sh0')
+problem = 'short_context'
+
+    @pytest.mark.parametrize("problem", (
+        "step", "epoch", "optimizer", "scheduler", "resume_binding", "resume_step",
+        "gradient", "creation_recipe", "creation_authority", "cpu_loading", "short_context",
+    ))
+    def test_fresh_factory_controls(tmp_path, problem):
+        args, kwargs = parameters(tmp_path)
+        declared = worker.request(*args, **kwargs)
+        sources = worker.require_sources(args[0], args[5], kwargs["expected_worker_source"])
+        trainer, creation, _ = created_fixture(declared)
+        if problem == "step":
+            trainer.state.global_step = 1
+        elif problem == "epoch":
+            trainer.state.epoch = 0.2
+        elif problem == "optimizer":
+            trainer.optimizer = object()
+        elif problem == "scheduler":
+            trainer.lr_scheduler = object()
+        elif problem == "resume_binding":
+            trainer._resume_binding = {}
+        elif problem == "resume_step":
+            trainer._resume_step = 79
+        elif problem == "gradient":
+            trainer.model.parameters = lambda: [SimpleNamespace(grad=1)]
+        elif problem == "creation_recipe":
+            creation["recipe"]["max_length"] = 512
+        elif problem == "creation_authority":
+            creation["execution_authorized"] = True
+        elif problem == "cpu_loading":
+            creation["loaded_model"]["diagnostic_cpu"] = True
+        else:
+            creation["loaded_model"]["maximum_context"] = 512
+>       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE <class 'ValueError'>
+
+tests/test_factorial_v3_worker.py:239: Failed
+_____ test_fresh_reader_controls_even_after_rehash[changed_factory_recipe] _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2828571880>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2025/test_fresh_reader_controls_eve0')
+problem = 'changed_factory_recipe'
+
+    @pytest.mark.parametrize("problem", (
+        "changed_factory_recipe", "changed_factory_arguments", "extra_failure", "claimed_exit",
+        "changed_native", "changed_rank", "missing_calibration_on_real_reader",
+    ))
+    def test_fresh_reader_controls_even_after_rehash(monkeypatch, tmp_path, problem):
+        original_native = worker._read_native
+        args, kwargs, declared, _, _, _, _ = mocked_worker(monkeypatch, tmp_path)
+        binding = worker.run_branch(*args, **kwargs)
+        records = Path(declared["record_root"])
+        complete = read_json(records / worker.COMPLETE)
+        if problem.startswith("changed_factory_"):
+            value = read_json(records / "factory.json")
+            if problem == "changed_factory_recipe":
+                value["creation"]["recipe"]["max_length"] = 512
+            else:
+                value["creation"]["requested_arguments"]["max_steps"] = 10
+            replace_json(records / "factory.json", value)
+            complete["factory_record"] = file_identity(records / "factory.json")
+        elif problem == "extra_failure":
+            worker._write_new(records / "rank-1-failed.json", {"synthetic_failure": True})
+        elif problem == "claimed_exit":
+            complete["process_exit_observed"] = True
+        elif problem == "changed_native":
+            complete["native_readback"]["explicitly_mocked_native_read"] = False
+        elif problem == "changed_rank":
+            complete["rank_results"][0]["global_step"] = 300
+        else:
+            monkeypatch.setattr(worker, "_read_native", original_native)
+        replace_json(records / worker.COMPLETE, complete)
+        binding = file_identity(records / worker.COMPLETE)
+>       with pytest.raises((ValueError, FileNotFoundError)):
+E       Failed: DID NOT RAISE any of (<class 'ValueError'>, <class 'FileNotFoundError'>)
+
+tests/test_factorial_v3_worker.py:321: Failed
+___ test_fresh_reader_controls_even_after_rehash[changed_factory_arguments] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f2828578590>
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2025/test_fresh_reader_controls_eve1')
+problem = 'changed_factory_arguments'
+
+    @pytest.mark.parametrize("problem", (
+        "changed_factory_recipe", "changed_factory_arguments", "extra_failure", "claimed_exit",
+        "changed_native", "changed_rank", "missing_calibration_on_real_reader",
+    ))
+    def test_fresh_reader_controls_even_after_rehash(monkeypatch, tmp_path, problem):
+        original_native = worker._read_native
+        args, kwargs, declared, _, _, _, _ = mocked_worker(monkeypatch, tmp_path)
+        binding = worker.run_branch(*args, **kwargs)
+        records = Path(declared["record_root"])
+        complete = read_json(records / worker.COMPLETE)
+        if problem.startswith("changed_factory_"):
+            value = read_json(records / "factory.json")
+            if problem == "changed_factory_recipe":
+                value["creation"]["recipe"]["max_length"] = 512
+            else:
+                value["creation"]["requested_arguments"]["max_steps"] = 10
+            replace_json(records / "factory.json", value)
+            complete["factory_record"] = file_identity(records / "factory.json")
+        elif problem == "extra_failure":
+            worker._write_new(records / "rank-1-failed.json", {"synthetic_failure": True})
+        elif problem == "claimed_exit":
+            complete["process_exit_observed"] = True
+        elif problem == "changed_native":
+            complete["native_readback"]["explicitly_mocked_native_read"] = False
+        elif problem == "changed_rank":
+            complete["rank_results"][0]["global_step"] = 300
+        else:
+            monkeypatch.setattr(worker, "_read_native", original_native)
+        replace_json(records / worker.COMPLETE, complete)
+        binding = file_identity(records / worker.COMPLETE)
+>       with pytest.raises((ValueError, FileNotFoundError)):
+E       Failed: DID NOT RAISE any of (<class 'ValueError'>, <class 'FileNotFoundError'>)
+
+tests/test_factorial_v3_worker.py:321: Failed
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63
+  /usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+    import pynvml  # type: ignore[import]
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_factorial_v3_worker.py::test_fresh_factory_controls[short_context]
+FAILED tests/test_factorial_v3_worker.py::test_fresh_reader_controls_even_after_rehash[changed_factory_recipe]
+FAILED tests/test_factorial_v3_worker.py::test_fresh_reader_controls_even_after_rehash[changed_factory_arguments]
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

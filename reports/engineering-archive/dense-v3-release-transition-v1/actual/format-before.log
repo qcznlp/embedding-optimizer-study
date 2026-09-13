@@ -1,0 +1,1160 @@
+unformatted: File would be reformatted
+  --> scripts/audit_dimension_deletion_boundary.py:23:24
+   |
+22 |             np.asarray([[1.0, 2.0**-30, 2.0**-30]]),
+   -             np.asarray(
+   -                 [[[1.0, -(2.0**-30), -(2.0**-30)]] + [[1.0, 2.0**-30, 2.0**-30]] * 7]
+   -             ),
+23 +             np.asarray([[[1.0, -(2.0**-30), -(2.0**-30)]] + [[1.0, 2.0**-30, 2.0**-30]] * 7]),
+24 |         ),
+--------------------------------------------------------------------------------
+39 |                 raise ValueError("Undefined cosine after literal coordinate deletion")
+   -             scores.append(
+   -                 math.fsum((x / qnorm) * (y / dnorm) for x, y in zip(q, d, strict=True))
+   -             )
+40 +             scores.append(math.fsum((x / qnorm) * (y / dnorm) for x, y in zip(q, d, strict=True)))
+41 |         rank = 1 + sum(value > scores[0] for value in scores[1:])
+   |
+
+unformatted: File would be reformatted
+  --> scripts/joint_reconstruction_oracle.py:35:1
+   |
+34 |     """Direct identities/means, without calling production panel-assembly helpers."""
+35 +
+36 |     def key(row):
+37 |         return row["run_id"], row["stage"]
+38 +
+39 |     states = {key(row): row for row in geometry}
+   |
+
+unformatted: File would be reformatted
+   --> scripts/restore_factorial_probes.py:7:1
+    |
+6   | """
+7   +
+8   | from __future__ import annotations
+--------------------------------------------------------------------------------
+17  |
+    - REPO = 'qcz/embedding-optimizer-study-analysis-artifacts'
+    - REVISION = 'cff3f190e169548931fbd33eadcf1279439798e1'
+    - MANIFEST_SHA = 'bcb092fe16e11150abc678a6b1e977497afbc6bf977b9dd9085cebff37004081'
+    - PREFIX = 'corrected-dense-correctness-v3/continuation-probes-v1/' + MANIFEST_SHA
+18  + REPO = "qcz/embedding-optimizer-study-analysis-artifacts"
+19  + REVISION = "cff3f190e169548931fbd33eadcf1279439798e1"
+20  + MANIFEST_SHA = "bcb092fe16e11150abc678a6b1e977497afbc6bf977b9dd9085cebff37004081"
+21  + PREFIX = "corrected-dense-correctness-v3/continuation-probes-v1/" + MANIFEST_SHA
+22  | MANIFEST_BYTES = 169018
+23  | TOTAL_FILES = 638
+24  | TOTAL_BYTES = 586119383
+    - MODEL_REPO = 'qcz/embedding-optimizer-study-checkpoints'
+    - TRAIN_AUTH = '00c52f0bec979fb163a734ad0f9eadcd6ea09f7393133fd35c65bc62878ce11f'
+25  + MODEL_REPO = "qcz/embedding-optimizer-study-checkpoints"
+26  + TRAIN_AUTH = "00c52f0bec979fb163a734ad0f9eadcd6ea09f7393133fd35c65bc62878ce11f"
+27  | STEPS = (79, 157, 235, 313, 391)
+    - RUNS = tuple(f'factorial-v3-{state}-{operator}-seed{seed}'
+    -              for state in ('adamw_state', 'muon_state')
+    -              for operator in ('adamw', 'muon') for seed in (314159, 271828, 161803))
+    - MODEL_FILES = {'1_Pooling/config.json', 'README.md', 'config.json', 'config_sentence_transformers.json',
+    -     'factorial_trainer_component.json', 'model.safetensors', 'modules.json', 'optimizer.pt',
+    -     'rng_state_0.pth', 'rng_state_1.pth', 'rng_state_2.pth', 'rng_state_3.pth', 'scheduler.pt',
+    -     'sentence_bert_config.json', 'tokenizer.json', 'tokenizer_config.json', 'trainer_state.json', 'training_args.bin'}
+28  + RUNS = tuple(
+29  +     f"factorial-v3-{state}-{operator}-seed{seed}"
+30  +     for state in ("adamw_state", "muon_state")
+31  +     for operator in ("adamw", "muon")
+32  +     for seed in (314159, 271828, 161803)
+33  + )
+34  + MODEL_FILES = {
+35  +     "1_Pooling/config.json",
+36  +     "README.md",
+37  +     "config.json",
+38  +     "config_sentence_transformers.json",
+39  +     "factorial_trainer_component.json",
+40  +     "model.safetensors",
+41  +     "modules.json",
+42  +     "optimizer.pt",
+43  +     "rng_state_0.pth",
+44  +     "rng_state_1.pth",
+45  +     "rng_state_2.pth",
+46  +     "rng_state_3.pth",
+47  +     "scheduler.pt",
+48  +     "sentence_bert_config.json",
+49  +     "tokenizer.json",
+50  +     "tokenizer_config.json",
+51  +     "trainer_state.json",
+52  +     "training_args.bin",
+53  + }
+54  |
+--------------------------------------------------------------------------------
+61  | def safe_name(name):
+    -     need(isinstance(name, str), 'Snapshot path must be a string')
+62  +     need(isinstance(name, str), "Snapshot path must be a string")
+63  |     path = PurePosixPath(name)
+    -     need(path.parts and not path.is_absolute() and path.as_posix() == name
+    -          and all(p not in ('.', '..') for p in path.parts) and '\\' not in name, 'Unsafe snapshot path')
+64  +     need(
+65  +         path.parts
+66  +         and not path.is_absolute()
+67  +         and path.as_posix() == name
+68  +         and all(p not in (".", "..") for p in path.parts)
+69  +         and "\\" not in name,
+70  +         "Unsafe snapshot path",
+71  +     )
+72  |     return name
+73  |
+74  |
+75  | def verify_file(path, expected):
+    -     need(path.is_file() and not any(p.is_symlink() for p in (path, *path.parents)), 'Missing or symlinked payload')
+76  +     need(
+77  +         path.is_file() and not any(p.is_symlink() for p in (path, *path.parents)),
+78  +         "Missing or symlinked payload",
+79  +     )
+80  |     first = path.stat()
+    -     with path.open('rb') as stream:
+    -         digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+81  +     with path.open("rb") as stream:
+82  +         digest = hashlib.file_digest(stream, "sha256").hexdigest()
+83  |     last = path.stat()
+    -     need(all(getattr(first, k) == getattr(last, k) for k in ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns')),
+    -          'Payload changed while reading')
+    -     need(last.st_size == expected['bytes'] and digest == expected['sha256'], 'Payload checksum differs: ' + str(path))
+84  +     need(
+85  +         all(
+86  +             getattr(first, k) == getattr(last, k)
+87  +             for k in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")
+88  +         ),
+89  +         "Payload changed while reading",
+90  +     )
+91  +     need(
+92  +         last.st_size == expected["bytes"] and digest == expected["sha256"],
+93  +         "Payload checksum differs: " + str(path),
+94  +     )
+95  |
+96  |
+97  | def files(root):
+    -     manifest = root / 'artifact_manifest.json'
+    -     verify_file(manifest, {'bytes': MANIFEST_BYTES, 'sha256': MANIFEST_SHA})
+98  +     manifest = root / "artifact_manifest.json"
+99  +     verify_file(manifest, {"bytes": MANIFEST_BYTES, "sha256": MANIFEST_SHA})
+100 |     value = json.loads(manifest.read_text())
+    -     need(value['scope'] == 'actual-dense-v3-complete-continuation-probe-durability-v1'
+    -          and value['source_code_included'] is False and value['raw_example_text_included'] is False
+    -          and value['continuation_runs'] == 12 and value['checkpoint_probes'] == 60
+    -          and value['reference_states'] == 1 and value['stage_steps'] == list(STEPS), 'Wrong snapshot scope')
+    -     result = value['files']
+101 +     need(
+102 +         value["scope"] == "actual-dense-v3-complete-continuation-probe-durability-v1"
+103 +         and value["source_code_included"] is False
+104 +         and value["raw_example_text_included"] is False
+105 +         and value["continuation_runs"] == 12
+106 +         and value["checkpoint_probes"] == 60
+107 +         and value["reference_states"] == 1
+108 +         and value["stage_steps"] == list(STEPS),
+109 +         "Wrong snapshot scope",
+110 +     )
+111 +     result = value["files"]
+112 |     for name in result:
+113 |         safe_name(name)
+    -     result = {**result, 'artifact_manifest.json': {'bytes': MANIFEST_BYTES, 'sha256': MANIFEST_SHA}}
+    -     need(len(result) == TOTAL_FILES and sum(r['bytes'] for r in result.values()) == TOTAL_BYTES,
+    -          'Incomplete immutable snapshot inventory')
+114 +     result = {**result, "artifact_manifest.json": {"bytes": MANIFEST_BYTES, "sha256": MANIFEST_SHA}}
+115 +     need(
+116 +         len(result) == TOTAL_FILES and sum(r["bytes"] for r in result.values()) == TOTAL_BYTES,
+117 +         "Incomplete immutable snapshot inventory",
+118 +     )
+119 |     return result
+--------------------------------------------------------------------------------
+123 |     expected = files(root)
+    -     need(not any(p.is_symlink() for p in root.rglob('*')), 'Symlinked snapshot')
+    -     need({p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()} == set(expected),
+    -          'Missing or extra snapshot file')
+124 +     need(not any(p.is_symlink() for p in root.rglob("*")), "Symlinked snapshot")
+125 +     need(
+126 +         {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()} == set(expected),
+127 +         "Missing or extra snapshot file",
+128 +     )
+129 |     for name, binding in sorted(expected.items()):
+130 |         verify_file(root / name, binding)
+    -     return {'scope': 'complete-continuation-probe-artifact-integrity',
+    -         'verified_at_utc': datetime.now(timezone.utc).isoformat(), 'repo_id': REPO,
+    -         'revision': REVISION, 'prefix': PREFIX, 'files': TOTAL_FILES, 'bytes': TOTAL_BYTES,
+    -         'all_checksums_match': True, 'source_release': False, 'gpu_execution': False,
+    -         'scientific_completion': False}
+131 +     return {
+132 +         "scope": "complete-continuation-probe-artifact-integrity",
+133 +         "verified_at_utc": datetime.now(timezone.utc).isoformat(),
+134 +         "repo_id": REPO,
+135 +         "revision": REVISION,
+136 +         "prefix": PREFIX,
+137 +         "files": TOTAL_FILES,
+138 +         "bytes": TOTAL_BYTES,
+139 +         "all_checksums_match": True,
+140 +         "source_release": False,
+141 +         "gpu_execution": False,
+142 +         "scientific_completion": False,
+143 +     }
+144 |
+145 |
+146 | def download(destination):
+    -     need(not destination.exists() and not any(p.is_symlink() for p in (destination, *destination.parents)),
+    -          'Use a new destination; preserve partial attempts')
+147 +     need(
+148 +         not destination.exists()
+149 +         and not any(p.is_symlink() for p in (destination, *destination.parents)),
+150 +         "Use a new destination; preserve partial attempts",
+151 +     )
+152 |     destination.mkdir(parents=True, exist_ok=False)
+153 |     from huggingface_hub import hf_hub_download
+154 +
+155 |     def fetch(name):
+    -         path = Path(hf_hub_download(REPO, PREFIX + '/' + name, repo_type='dataset', revision=REVISION,
+    -                                     token=False, local_dir=destination))
+    -         need(path == destination / PREFIX / name, 'Unexpected downloaded location')
+156 +         path = Path(
+157 +             hf_hub_download(
+158 +                 REPO,
+159 +                 PREFIX + "/" + name,
+160 +                 repo_type="dataset",
+161 +                 revision=REVISION,
+162 +                 token=False,
+163 +                 local_dir=destination,
+164 +             )
+165 +         )
+166 +         need(path == destination / PREFIX / name, "Unexpected downloaded location")
+167 |         return path
+    -     root = fetch('artifact_manifest.json').parent
+168 +
+169 +     root = fetch("artifact_manifest.json").parent
+170 |     expected = files(root)
+171 +
+172 |     def transfer(name):
+173 |         verify_file(fetch(name), expected[name])
+174 +
+175 |     with ThreadPoolExecutor(max_workers=2) as pool:
+    -         list(pool.map(transfer, sorted(set(expected) - {'artifact_manifest.json'})))
+176 +         list(pool.map(transfer, sorted(set(expected) - {"artifact_manifest.json"})))
+177 |     return root, verify(root)
+--------------------------------------------------------------------------------
+184 |     for run in RUNS:
+    -         directory = root / 'checkpoints' / run
+    -         for filename in ('artifact_manifest.json', 'verified.json'):
+    -             name = 'checkpoints/' + run + '/' + filename
+185 +         directory = root / "checkpoints" / run
+186 +         for filename in ("artifact_manifest.json", "verified.json"):
+187 +             name = "checkpoints/" + run + "/" + filename
+188 |             verify_file(directory / filename, expected[name])
+    -         manifest = json.loads((directory / 'artifact_manifest.json').read_text())
+    -         remote = json.loads((directory / 'verified.json').read_text())
+    -         need(manifest['run_id'] == run and manifest['training_authorization_sha256'] == TRAIN_AUTH
+    -              and manifest['scientific_completion'] is False
+    -              and remote['all_five_checkpoints'] is True and remote['anonymous_remote_metadata_verified'] is True
+    -              and re.fullmatch('[0-9a-f]{40}', remote['commit_oid']) is not None,
+    -              'Incorrect original checkpoint scope or immutable revision')
+    -         need(remote['prefix'] == 'dense-v3-state-operator-v1/' + TRAIN_AUTH + '/' + run,
+    -              'Wrong checkpoint remote prefix')
+    -         verify_file(directory / 'artifact_manifest.json', remote['artifact_manifest'])
+189 +         manifest = json.loads((directory / "artifact_manifest.json").read_text())
+190 +         remote = json.loads((directory / "verified.json").read_text())
+191 +         need(
+192 +             manifest["run_id"] == run
+193 +             and manifest["training_authorization_sha256"] == TRAIN_AUTH
+194 +             and manifest["scientific_completion"] is False
+195 +             and remote["all_five_checkpoints"] is True
+196 +             and remote["anonymous_remote_metadata_verified"] is True
+197 +             and re.fullmatch("[0-9a-f]{40}", remote["commit_oid"]) is not None,
+198 +             "Incorrect original checkpoint scope or immutable revision",
+199 +         )
+200 +         need(
+201 +             remote["prefix"] == "dense-v3-state-operator-v1/" + TRAIN_AUTH + "/" + run,
+202 +             "Wrong checkpoint remote prefix",
+203 +         )
+204 +         verify_file(directory / "artifact_manifest.json", remote["artifact_manifest"])
+205 |         for step in STEPS:
+    -             prefix = f'run/checkpoint-{step}/'
+    -             selected = {name.removeprefix(prefix): value for name, value in manifest['files'].items() if name.startswith(prefix)}
+    -             need(set(selected) == MODEL_FILES, 'Incomplete checkpoint payload inventory')
+206 +             prefix = f"run/checkpoint-{step}/"
+207 +             selected = {
+208 +                 name.removeprefix(prefix): value
+209 +                 for name, value in manifest["files"].items()
+210 +                 if name.startswith(prefix)
+211 +             }
+212 +             need(set(selected) == MODEL_FILES, "Incomplete checkpoint payload inventory")
+213 |             for name, binding in selected.items():
+214 |                 safe_name(name)
+    -                 need(type(binding['bytes']) is int and binding['bytes'] > 0
+    -                      and re.fullmatch('[0-9a-f]{64}', binding['sha256']) is not None,
+    -                      'Invalid original checkpoint size or hash')
+    -             rows.append({'run_id': run, 'step': step, 'repo_id': MODEL_REPO,
+    -                 'revision': remote['commit_oid'], 'prefix': remote['prefix'] + '/' + prefix.rstrip('/'),
+    -                 'files': selected, 'bytes': sum(item['bytes'] for item in selected.values())})
+    -     need(len(rows) == 60, 'Missing a checkpoint link')
+215 +                 need(
+216 +                     type(binding["bytes"]) is int
+217 +                     and binding["bytes"] > 0
+218 +                     and re.fullmatch("[0-9a-f]{64}", binding["sha256"]) is not None,
+219 +                     "Invalid original checkpoint size or hash",
+220 +                 )
+221 +             rows.append(
+222 +                 {
+223 +                     "run_id": run,
+224 +                     "step": step,
+225 +                     "repo_id": MODEL_REPO,
+226 +                     "revision": remote["commit_oid"],
+227 +                     "prefix": remote["prefix"] + "/" + prefix.rstrip("/"),
+228 +                     "files": selected,
+229 +                     "bytes": sum(item["bytes"] for item in selected.values()),
+230 +                 }
+231 +             )
+232 +     need(len(rows) == 60, "Missing a checkpoint link")
+233 |     return rows
+--------------------------------------------------------------------------------
+237 |     parser = argparse.ArgumentParser(description=__doc__)
+    -     parser.add_argument('action', choices=('download', 'verify', 'list-checkpoints'))
+    -     parser.add_argument('--path', type=Path, required=True,
+    -                         help='download: a new directory; verify/list-checkpoints: snapshot containing artifact_manifest.json')
+    -     parser.add_argument('--receipt', type=Path)
+238 +     parser.add_argument("action", choices=("download", "verify", "list-checkpoints"))
+239 +     parser.add_argument(
+240 +         "--path",
+241 +         type=Path,
+242 +         required=True,
+243 +         help="download: a new directory; verify/list-checkpoints: snapshot containing artifact_manifest.json",
+244 +     )
+245 +     parser.add_argument("--receipt", type=Path)
+246 |     args = parser.parse_args()
+247 |     if args.receipt:
+    -         need(not args.receipt.exists(), 'Preserve any earlier receipt')
+    -     if args.action == 'download':
+248 +         need(not args.receipt.exists(), "Preserve any earlier receipt")
+249 +     if args.action == "download":
+250 |         root, result = download(args.path.absolute())
+    -         result['downloaded_anonymously'] = True
+    -     elif args.action == 'verify':
+251 +         result["downloaded_anonymously"] = True
+252 +     elif args.action == "verify":
+253 |         root, result = args.path.absolute(), verify(args.path.absolute())
+254 |     else:
+255 |         root = args.path.absolute()
+256 |         rows = checkpoint_index(root)
+    -         result = {'scope': 'existing-immutable-continuation-checkpoint-links',
+    -             'checkpoints': [{k: v for k, v in row.items() if k != 'files'} for row in rows],
+    -             'complete_checkpoint_links': 60, 'model_payloads_downloaded_here': False,
+    -             'scientific_completion': False}
+    -     result['snapshot_root'] = str(root)
+257 +         result = {
+258 +             "scope": "existing-immutable-continuation-checkpoint-links",
+259 +             "checkpoints": [{k: v for k, v in row.items() if k != "files"} for row in rows],
+260 +             "complete_checkpoint_links": 60,
+261 +             "model_payloads_downloaded_here": False,
+262 +             "scientific_completion": False,
+263 +         }
+264 +     result["snapshot_root"] = str(root)
+265 |     if args.receipt:
+    -         with args.receipt.open('x') as stream:
+    -             stream.write(json.dumps(result, indent=2, sort_keys=True) + '\n')
+266 +         with args.receipt.open("x") as stream:
+267 +             stream.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
+268 |     print(json.dumps(result, indent=2, sort_keys=True))
+269 |
+270 |
+    - if __name__ == '__main__':
+271 + if __name__ == "__main__":
+272 |     main()
+    |
+
+unformatted: File would be reformatted
+   --> scripts/restore_functional_analysis.py:6:1
+    |
+5   | """
+6   +
+7   | import argparse
+--------------------------------------------------------------------------------
+13  |
+    - REPO = 'qcz/embedding-optimizer-study-analysis-artifacts'
+    - REVISION = '9b182d77b31c93277457a578c16389935bc3fdb9'
+    - MANIFEST_SHA = '0b498557040c2329e6935fdc539bce6d029b8bbf02f8ffcbc194912203b8cc38'
+    - PREFIX = 'corrected-dense-correctness-v3/functional-and-calibration-v1/' + MANIFEST_SHA
+14  + REPO = "qcz/embedding-optimizer-study-analysis-artifacts"
+15  + REVISION = "9b182d77b31c93277457a578c16389935bc3fdb9"
+16  + MANIFEST_SHA = "0b498557040c2329e6935fdc539bce6d029b8bbf02f8ffcbc194912203b8cc38"
+17  + PREFIX = "corrected-dense-correctness-v3/functional-and-calibration-v1/" + MANIFEST_SHA
+18  | MANIFEST_BYTES = 161464
+--------------------------------------------------------------------------------
+28  | def verify_file(path, expected):
+    -     need(path.is_file() and not any(p.is_symlink() for p in (path, *path.parents)), 'Missing or symlinked payload')
+29  +     need(
+30  +         path.is_file() and not any(p.is_symlink() for p in (path, *path.parents)),
+31  +         "Missing or symlinked payload",
+32  +     )
+33  |     first = path.stat()
+    -     with path.open('rb') as stream:
+    -         digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+34  +     with path.open("rb") as stream:
+35  +         digest = hashlib.file_digest(stream, "sha256").hexdigest()
+36  |     last = path.stat()
+    -     need(all(getattr(first, k) == getattr(last, k) for k in ('st_dev', 'st_ino', 'st_size', 'st_mtime_ns', 'st_ctime_ns')),
+    -          'Payload changed during read')
+    -     need(last.st_size == expected['bytes'] and digest == expected['sha256'], 'Payload checksum differs: ' + str(path))
+37  +     need(
+38  +         all(
+39  +             getattr(first, k) == getattr(last, k)
+40  +             for k in ("st_dev", "st_ino", "st_size", "st_mtime_ns", "st_ctime_ns")
+41  +         ),
+42  +         "Payload changed during read",
+43  +     )
+44  +     need(
+45  +         last.st_size == expected["bytes"] and digest == expected["sha256"],
+46  +         "Payload checksum differs: " + str(path),
+47  +     )
+48  |
+49  |
+50  | def files(root):
+    -     manifest = root / 'artifact_manifest.json'
+51  +     manifest = root / "artifact_manifest.json"
+52  |     verify_file(manifest, dict(bytes=MANIFEST_BYTES, sha256=MANIFEST_SHA))
+53  |     value = json.loads(manifest.read_text())
+    -     need(value['scope'] == 'actual-dense-v3-functional-and-calibration-durability-v1'
+    -          and value['source_code_included'] is False and value['scientific_completion'] is False,
+    -          'Unexpected snapshot scope')
+    -     result = value['files']
+54  +     need(
+55  +         value["scope"] == "actual-dense-v3-functional-and-calibration-durability-v1"
+56  +         and value["source_code_included"] is False
+57  +         and value["scientific_completion"] is False,
+58  +         "Unexpected snapshot scope",
+59  +     )
+60  +     result = value["files"]
+61  |     for name in result:
+62  |         path = PurePosixPath(name)
+    -         need(path.parts and not path.is_absolute() and path.as_posix() == name and
+    -              all(p not in ('.', '..') for p in path.parts) and '\\' not in name, 'Unsafe payload path')
+    -     result = {**result, 'artifact_manifest.json': dict(bytes=MANIFEST_BYTES, sha256=MANIFEST_SHA)}
+    -     need(len(result) == TOTAL_FILES and sum(r['bytes'] for r in result.values()) == TOTAL_BYTES, 'Incomplete snapshot inventory')
+63  +         need(
+64  +             path.parts
+65  +             and not path.is_absolute()
+66  +             and path.as_posix() == name
+67  +             and all(p not in (".", "..") for p in path.parts)
+68  +             and "\\" not in name,
+69  +             "Unsafe payload path",
+70  +         )
+71  +     result = {**result, "artifact_manifest.json": dict(bytes=MANIFEST_BYTES, sha256=MANIFEST_SHA)}
+72  +     need(
+73  +         len(result) == TOTAL_FILES and sum(r["bytes"] for r in result.values()) == TOTAL_BYTES,
+74  +         "Incomplete snapshot inventory",
+75  +     )
+76  |     return result
+--------------------------------------------------------------------------------
+80  |     expected = files(root)
+    -     need(not any(p.is_symlink() for p in root.rglob('*')), 'Symlinked snapshot')
+    -     need({p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file()} == set(expected),
+    -          'Missing or extra snapshot payload')
+81  +     need(not any(p.is_symlink() for p in root.rglob("*")), "Symlinked snapshot")
+82  +     need(
+83  +         {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()} == set(expected),
+84  +         "Missing or extra snapshot payload",
+85  +     )
+86  |     for name, binding in sorted(expected.items()):
+87  |         verify_file(root / name, binding)
+    -     return dict(scope='actual-functional-calibration-artifact-integrity-verification',
+    -         verified_at_utc=datetime.now(timezone.utc).isoformat(), repo_id=REPO, revision=REVISION,
+    -         prefix=PREFIX, files=TOTAL_FILES, bytes=TOTAL_BYTES, all_checksums_match=True,
+    -         source_release=False, gpu_execution=False, scientific_completion=False)
+88  +     return dict(
+89  +         scope="actual-functional-calibration-artifact-integrity-verification",
+90  +         verified_at_utc=datetime.now(timezone.utc).isoformat(),
+91  +         repo_id=REPO,
+92  +         revision=REVISION,
+93  +         prefix=PREFIX,
+94  +         files=TOTAL_FILES,
+95  +         bytes=TOTAL_BYTES,
+96  +         all_checksums_match=True,
+97  +         source_release=False,
+98  +         gpu_execution=False,
+99  +         scientific_completion=False,
+100 +     )
+101 |
+102 |
+103 | def download(destination):
+    -     need(not destination.exists() and not any(p.is_symlink() for p in (destination, *destination.parents)),
+    -          'Use a new destination; preserve partial attempts')
+104 +     need(
+105 +         not destination.exists()
+106 +         and not any(p.is_symlink() for p in (destination, *destination.parents)),
+107 +         "Use a new destination; preserve partial attempts",
+108 +     )
+109 |     destination.mkdir(parents=True, exist_ok=False)
+110 |     from huggingface_hub import hf_hub_download
+111 |
+112 |     def fetch(name):
+    -         path = Path(hf_hub_download(REPO, PREFIX + '/' + name, repo_type='dataset',
+    -             revision=REVISION, token=False, local_dir=destination))
+    -         need(path == destination / PREFIX / name, 'Unexpected downloaded location')
+113 +         path = Path(
+114 +             hf_hub_download(
+115 +                 REPO,
+116 +                 PREFIX + "/" + name,
+117 +                 repo_type="dataset",
+118 +                 revision=REVISION,
+119 +                 token=False,
+120 +                 local_dir=destination,
+121 +             )
+122 +         )
+123 +         need(path == destination / PREFIX / name, "Unexpected downloaded location")
+124 |         return path
+125 |
+    -     root = fetch('artifact_manifest.json').parent
+126 +     root = fetch("artifact_manifest.json").parent
+127 |     expected = files(root)
+--------------------------------------------------------------------------------
+132 |     with ThreadPoolExecutor(max_workers=2) as pool:
+    -         list(pool.map(transfer, sorted(set(expected) - {'artifact_manifest.json'})))
+133 +         list(pool.map(transfer, sorted(set(expected) - {"artifact_manifest.json"})))
+134 |     return root, verify(root)
+--------------------------------------------------------------------------------
+138 |     parser = argparse.ArgumentParser(description=__doc__)
+    -     parser.add_argument('action', choices=('verify', 'download'))
+    -     parser.add_argument('--path', type=Path, required=True,
+    -         help='verify: snapshot directory containing artifact_manifest.json; download: new destination')
+    -     parser.add_argument('--receipt', type=Path)
+139 +     parser.add_argument("action", choices=("verify", "download"))
+140 +     parser.add_argument(
+141 +         "--path",
+142 +         type=Path,
+143 +         required=True,
+144 +         help="verify: snapshot directory containing artifact_manifest.json; download: new destination",
+145 +     )
+146 +     parser.add_argument("--receipt", type=Path)
+147 |     args = parser.parse_args()
+148 |     if args.receipt:
+    -         need(not args.receipt.exists(), 'Preserve previous verification receipt')
+    -     if args.action == 'download':
+149 +         need(not args.receipt.exists(), "Preserve previous verification receipt")
+150 +     if args.action == "download":
+151 |         root, result = download(args.path.absolute())
+152 |     else:
+153 |         root = args.path.absolute()
+154 |         result = verify(root)
+    -     result['snapshot_root'] = str(root)
+155 +     result["snapshot_root"] = str(root)
+156 |     if args.receipt:
+    -         with args.receipt.open('x') as stream:
+    -             stream.write(json.dumps(result, indent=2, sort_keys=True) + '\n')
+157 +         with args.receipt.open("x") as stream:
+158 +             stream.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
+159 |     print(json.dumps(result, indent=2, sort_keys=True))
+160 |
+161 |
+    - if __name__ == '__main__':
+162 + if __name__ == "__main__":
+163 |     main()
+    |
+
+unformatted: File would be reformatted
+   --> src/embed_optim/complete_paper_document.py:7:1
+    |
+6   | """
+7   +
+8   | from __future__ import annotations
+--------------------------------------------------------------------------------
+23  | RESULT_FILES = (
+    -     'generated/optimizer-primary.tex',
+    -     'generated/dimension-utilization.tex',
+    -     'generated/recipe-sensitivity.tex',
+    -     'generated/state-operator-factorial.tex',
+24  +     "generated/optimizer-primary.tex",
+25  +     "generated/dimension-utilization.tex",
+26  +     "generated/recipe-sensitivity.tex",
+27  +     "generated/state-operator-factorial.tex",
+28  | )
+29  | EXTERNAL_FIGURES = (
+    -     'figures/optimizer-weight-dimension-map.pdf',
+    -     'figures/weight-to-retrieval-map.pdf',
+    -     'figures/full-rate-retrieval-trajectories.pdf',
+30  +     "figures/optimizer-weight-dimension-map.pdf",
+31  +     "figures/weight-to-retrieval-map.pdf",
+32  +     "figures/full-rate-retrieval-trajectories.pdf",
+33  + )
+34  + BUILD_INPUTS = (
+35  +     "main.tex",
+36  +     "results.tex",
+37  +     *RESULT_FILES,
+38  +     "references.bib",
+39  +     "vendor/acl.sty",
+40  +     "vendor/acl_natbib.bst",
+41  +     *EXTERNAL_FIGURES,
+42  + )
+43  + TEX_INPUTS = set(BUILD_INPUTS) - {"references.bib", "vendor/acl_natbib.bst"}
+44  + MAIN_LABELS = (
+45  +     "fig:weight-space-map",
+46  +     "tab:optimizer-primary",
+47  +     "fig:observed-weight-retrieval",
+48  +     "fig:dimension-utility",
+49  + )
+50  + APPENDIX_LABELS = (
+51  +     "tab:corrected-bridge",
+52  +     "tab:exact-geometry-sensitivity",
+53  +     "tab:dimension-utilization",
+54  +     "tab:weight-recipe-sensitivity",
+55  +     "tab:functional-recipe-sensitivity",
+56  +     "tab:state-operator-factorial",
+57  +     "tab:claim-firewall",
+58  +     "fig:all-rate-retrieval-trajectories",
+59  | )
+    - BUILD_INPUTS = ('main.tex', 'results.tex', *RESULT_FILES, 'references.bib',
+    -                 'vendor/acl.sty', 'vendor/acl_natbib.bst', *EXTERNAL_FIGURES)
+    - TEX_INPUTS = set(BUILD_INPUTS) - {'references.bib', 'vendor/acl_natbib.bst'}
+    - MAIN_LABELS = ('fig:weight-space-map', 'tab:optimizer-primary',
+    -                'fig:observed-weight-retrieval', 'fig:dimension-utility')
+    - APPENDIX_LABELS = ('tab:corrected-bridge', 'tab:exact-geometry-sensitivity',
+    -     'tab:dimension-utilization', 'tab:weight-recipe-sensitivity',
+    -     'tab:functional-recipe-sensitivity', 'tab:state-operator-factorial',
+    -     'tab:claim-firewall', 'fig:all-rate-retrieval-trajectories')
+    - CONTROL_MACROS = ('RecipeSensitivityFinding', 'WeightRecipeSensitivityTable',
+    -                   'FunctionalRecipeSensitivityTable')
+60  + CONTROL_MACROS = (
+61  +     "RecipeSensitivityFinding",
+62  +     "WeightRecipeSensitivityTable",
+63  +     "FunctionalRecipeSensitivityTable",
+64  + )
+65  |
+--------------------------------------------------------------------------------
+73  |     root = original.ordinary(root, directory=True)
+    -     paper = original.ordinary(root / 'paper', directory=True)
+74  +     paper = original.ordinary(root / "paper", directory=True)
+75  |     require_same(sorted(expected_includes), sorted(RESULT_FILES))
+    -     expected = {'results.tex': constants, **expected_includes}
+    -     need(all(type(value) is bytes for value in expected.values()), 'Fresh generated bytes required')
+76  +     expected = {"results.tex": constants, **expected_includes}
+77  +     need(all(type(value) is bytes for value in expected.values()), "Fresh generated bytes required")
+78  |     paths = {name: original.ordinary(paper / name) for name in BUILD_INPUTS}
+79  |     bindings = {name: file_identity(path) for name, path in paths.items()}
+80  |     texts = {}
+    -     for name in ('main.tex', *expected):
+81  +     for name in ("main.tex", *expected):
+82  |         raw = paths[name].read_bytes()
+    -         need(name not in expected or raw == expected[name], 'Generated evidence differs: ' + name)
+    -         texts[name] = original_audit._strip_latex_comments(raw.decode('utf-8'))
+    -     main = texts['main.tex']
+    -     need(not original.definitions(main) and not re.search(r'\\let(?![A-Za-z@])', main),
+    -          'Main text may not redefine generated findings')
+    -     need(tuple(m[2] for m in original.INPUT.finditer(main)) ==
+    -          ('results', *(name.removesuffix('.tex') for name in RESULT_FILES)),
+    -          'Complete current input topology differs')
+    -     need(not re.search(r'\\(?:input|include)(?![A-Za-z@])', original.INPUT.sub('', main)),
+    -          'Indirect or unbraced document input')
+    -     need(original.INCLUDEGRAPHICS.findall(main) == list(EXTERNAL_FIGURES),
+    -          'Complete current external figure topology differs')
+    -     need(original_audit._paper_main_topology_complete(root), 'Original scientific section order differs')
+83  +         need(name not in expected or raw == expected[name], "Generated evidence differs: " + name)
+84  +         texts[name] = original_audit._strip_latex_comments(raw.decode("utf-8"))
+85  +     main = texts["main.tex"]
+86  +     need(
+87  +         not original.definitions(main) and not re.search(r"\\let(?![A-Za-z@])", main),
+88  +         "Main text may not redefine generated findings",
+89  +     )
+90  +     need(
+91  +         tuple(m[2] for m in original.INPUT.finditer(main))
+92  +         == ("results", *(name.removesuffix(".tex") for name in RESULT_FILES)),
+93  +         "Complete current input topology differs",
+94  +     )
+95  +     need(
+96  +         not re.search(r"\\(?:input|include)(?![A-Za-z@])", original.INPUT.sub("", main)),
+97  +         "Indirect or unbraced document input",
+98  +     )
+99  +     need(
+100 +         original.INCLUDEGRAPHICS.findall(main) == list(EXTERNAL_FIGURES),
+101 +         "Complete current external figure topology differs",
+102 +     )
+103 +     need(
+104 +         original_audit._paper_main_topology_complete(root),
+105 +         "Original scientific section order differs",
+106 +     )
+107 |     # New control material must remain between the original bridge and factorial,
+108 |     # with the two full comparison tables in the appendix; not hidden or uncalled.
+    -     positions = [main.find(token) for token in (
+    -         r'\DimensionRetrievalBridgeFinding', r'\RecipeSensitivityFinding',
+    -         r'\StateOperatorMechanismFinding', r'\appendix',
+    -         r'\WeightRecipeSensitivityTable', r'\FunctionalRecipeSensitivityTable',
+    -         r'\StateOperatorAppendixTable')]
+    -     need(all(pos >= 0 for pos in positions) and positions == sorted(positions),
+    -          'Complete exploratory result ordering differs')
+    -     need(all(len(re.findall(r'\\' + name + r'(?![A-Za-z@])', main)) == 1
+    -              for name in CONTROL_MACROS), 'Missing or duplicated control finding/table')
+109 +     positions = [
+110 +         main.find(token)
+111 +         for token in (
+112 +             r"\DimensionRetrievalBridgeFinding",
+113 +             r"\RecipeSensitivityFinding",
+114 +             r"\StateOperatorMechanismFinding",
+115 +             r"\appendix",
+116 +             r"\WeightRecipeSensitivityTable",
+117 +             r"\FunctionalRecipeSensitivityTable",
+118 +             r"\StateOperatorAppendixTable",
+119 +         )
+120 +     ]
+121 +     need(
+122 +         all(pos >= 0 for pos in positions) and positions == sorted(positions),
+123 +         "Complete exploratory result ordering differs",
+124 +     )
+125 +     need(
+126 +         all(len(re.findall(r"\\" + name + r"(?![A-Za-z@])", main)) == 1 for name in CONTROL_MACROS),
+127 +         "Missing or duplicated control finding/table",
+128 +     )
+129 |     for name, text in texts.items():
+    -         need(r'\ResultPending' not in text and not re.search(r'\b(?:PENDING|TODO|TBD)\b', text),
+    -              'Unresolved active manuscript finding: ' + name)
+130 +         need(
+131 +             r"\ResultPending" not in text and not re.search(r"\b(?:PENDING|TODO|TBD)\b", text),
+132 +             "Unresolved active manuscript finding: " + name,
+133 +         )
+134 |         for label, pattern in original_audit.MANUSCRIPT_ENGINEERING_PATTERNS.items():
+    -             need(not pattern.search(text), 'Implementation narrative: ' + label)
+    -         inspected = original.INPUT.sub('', text) if name == 'main.tex' else text
+    -         need(not original.FORBIDDEN_CONTROL.search(inspected), 'Unsafe or indirect manuscript control')
+    -         need(name == 'main.tex' or not original.INCLUDEGRAPHICS.search(text),
+    -              'Generated include cannot add an unbound external figure')
+135 +             need(not pattern.search(text), "Implementation narrative: " + label)
+136 +         inspected = original.INPUT.sub("", text) if name == "main.tex" else text
+137 +         need(
+138 +             not original.FORBIDDEN_CONTROL.search(inspected),
+139 +             "Unsafe or indirect manuscript control",
+140 +         )
+141 +         need(
+142 +             name == "main.tex" or not original.INCLUDEGRAPHICS.search(text),
+143 +             "Generated include cannot add an unbound external figure",
+144 +         )
+145 |     requirements = {**original.RESULT_MACROS, RESULT_FILES[2]: CONTROL_MACROS}
+--------------------------------------------------------------------------------
+149 |             values = macros.get(macro, [])
+    -             wrapped = macro in {'CorrectedGeometryBridgeFinding', 'CorrectedGeometryBridgeTable'}
+    -             need(len(values) == (2 if wrapped else 1)
+    -                  and all(v['arity'] == 0 and v['body'].strip() for v in values)
+    -                  and values[0]['kind'] == r'\newcommand'
+    -                  and (not wrapped or values[1]['kind'] == r'\renewcommand'),
+    -                  'Absent, empty, parameterized or redefined result macro: ' + macro)
+    -     values = original.definitions(texts['results.tex'])
+150 +             wrapped = macro in {"CorrectedGeometryBridgeFinding", "CorrectedGeometryBridgeTable"}
+151 +             need(
+152 +                 len(values) == (2 if wrapped else 1)
+153 +                 and all(v["arity"] == 0 and v["body"].strip() for v in values)
+154 +                 and values[0]["kind"] == r"\newcommand"
+155 +                 and (not wrapped or values[1]["kind"] == r"\renewcommand"),
+156 +                 "Absent, empty, parameterized or redefined result macro: " + macro,
+157 +             )
+158 +     values = original.definitions(texts["results.tex"])
+159 |     require_same(sorted(values), sorted(original.CONSTANTS))
+160 |     for name, value in original.CONSTANTS.items():
+    -         require_same(values[name], [{'kind': r'\newcommand', 'arity': 0,
+    -                                     'body': f'{value:,}'.replace(',', '{,}')}])
+    -         need(all(name not in original.definitions(text) for path, text in texts.items()
+    -                  if path != 'results.tex'), 'Constant redefined outside clean constants file')
+161 +         require_same(
+162 +             values[name],
+163 +             [{"kind": r"\newcommand", "arity": 0, "body": f"{value:,}".replace(",", "{,}")}],
+164 +         )
+165 +         need(
+166 +             all(
+167 +                 name not in original.definitions(text)
+168 +                 for path, text in texts.items()
+169 +                 if path != "results.tex"
+170 +             ),
+171 +             "Constant redefined outside clean constants file",
+172 +         )
+173 |     abstract = original.abstract_readout(main, [texts[name] for name in RESULT_FILES])
+174 |     conservative = original_audit._abstract_word_budget(root)
+    -     need(conservative['complete'], 'Original conservative abstract reserve fails')
+175 +     need(conservative["complete"], "Original conservative abstract reserve fails")
+176 |     for name, path in paths.items():
+177 |         verify_file(path, bindings[name])
+    -     return {'scope': 'current_dense_complete_document_component_v1', 'inputs': bindings,
+    -         'actual_abstract': abstract, 'conservative_abstract_budget': conservative,
+    -         'expected_generated_sha256': {name: hashlib.sha256(raw).hexdigest() for name, raw in expected.items()},
+    -         'upstream_scientific_admission_performed': False, 'final_release_verified': False}
+178 +     return {
+179 +         "scope": "current_dense_complete_document_component_v1",
+180 +         "inputs": bindings,
+181 +         "actual_abstract": abstract,
+182 +         "conservative_abstract_budget": conservative,
+183 +         "expected_generated_sha256": {
+184 +             name: hashlib.sha256(raw).hexdigest() for name, raw in expected.items()
+185 +         },
+186 +         "upstream_scientific_admission_performed": False,
+187 +         "final_release_verified": False,
+188 +     }
+189 |
+190 |
+191 | def caption_inventory(aux, main_end_page, pdf_pages):
+    -     observed = {'figure': [], 'table': []}
+    -     for match in re.finditer(r'\\@writefile\{(lof|lot)\}', aux):
+192 +     observed = {"figure": [], "table": []}
+193 +     for match in re.finditer(r"\\@writefile\{(lof|lot)\}", aux):
+194 |         body, _ = original.brace_group(aux, match.end())
+    -         prefix = re.match(r'\\contentsline\s*', body)
+    -         need(prefix is not None, 'Malformed compiled caption')
+195 +         prefix = re.match(r"\\contentsline\s*", body)
+196 +         need(prefix is not None, "Malformed compiled caption")
+197 |         kind, pos = original.brace_group(body, prefix.end())
+198 |         caption, pos = original.brace_group(body, pos)
+199 |         page, _ = original.brace_group(body, pos)
+    -         numberline = re.match(r'\\numberline\s*', caption)
+    -         need(kind == {'lof': 'figure', 'lot': 'table'}[match[1]] and numberline is not None,
+    -              'Compiled caption kind differs')
+200 +         numberline = re.match(r"\\numberline\s*", caption)
+201 +         need(
+202 +             kind == {"lof": "figure", "lot": "table"}[match[1]] and numberline is not None,
+203 +             "Compiled caption kind differs",
+204 +         )
+205 |         number, _ = original.brace_group(caption, numberline.end())
+    -         need(all(x.isascii() and x.isdecimal() for x in (number, page)), 'Invalid caption number/page')
+206 +         need(
+207 +             all(x.isascii() and x.isdecimal() for x in (number, page)),
+208 +             "Invalid caption number/page",
+209 +         )
+210 |         number, page = int(number), int(page)
+    -         need(number > 0 and 1 <= page <= pdf_pages, 'Caption outside current PDF')
+    -         observed[kind].append({'number': number, 'page': page, 'caption_tex': caption})
+    -     require_same([r['number'] for r in observed['figure']], list(range(1, 5)))
+    -     require_same([r['number'] for r in observed['table']], list(range(1, 10)))
+    -     need(all(r['page'] <= main_end_page for r in observed['figure'][:3])
+    -          and observed['figure'][3]['page'] > main_end_page, 'Figure in wrong document region')
+    -     need(observed['table'][0]['page'] <= main_end_page
+    -          and all(r['page'] > main_end_page for r in observed['table'][1:]),
+    -          'Table in wrong document region')
+211 +         need(number > 0 and 1 <= page <= pdf_pages, "Caption outside current PDF")
+212 +         observed[kind].append({"number": number, "page": page, "caption_tex": caption})
+213 +     require_same([r["number"] for r in observed["figure"]], list(range(1, 5)))
+214 +     require_same([r["number"] for r in observed["table"]], list(range(1, 10)))
+215 +     need(
+216 +         all(r["page"] <= main_end_page for r in observed["figure"][:3])
+217 +         and observed["figure"][3]["page"] > main_end_page,
+218 +         "Figure in wrong document region",
+219 +     )
+220 +     need(
+221 +         observed["table"][0]["page"] <= main_end_page
+222 +         and all(r["page"] > main_end_page for r in observed["table"][1:]),
+223 +         "Table in wrong document region",
+224 +     )
+225 |     return observed
+226 |
+227 |
+228 | def layout(paper, pdf_pages):
+    -     aux_path = original.ordinary(paper / 'build/main.aux')
+229 +     aux_path = original.ordinary(paper / "build/main.aux")
+230 |     aux = aux_path.read_text()
+231 |     main_end = original_layout._page_for_unique_label(aux, original_layout.MAIN_END_LABEL, aux_path)
+    -     need(1 <= main_end <= original_layout.DEFAULT_MAX_MAIN_PAGE, 'Main text exceeds unchanged eight pages')
+    -     require_same(sorted(original_layout._observed_float_labels(aux)), sorted((*MAIN_LABELS, *APPENDIX_LABELS)))
+    -     main = {name: original_layout._page_for_unique_label(aux, name, aux_path) for name in MAIN_LABELS}
+    -     appendix = {name: original_layout._page_for_unique_label(aux, name, aux_path) for name in APPENDIX_LABELS}
+    -     need(all(1 <= page <= main_end for page in main.values()), 'Main label outside main paper')
+    -     need(all(main_end < page <= pdf_pages for page in appendix.values()), 'Appendix label outside appendix')
+    -     return {'main_end_page': main_end, 'max_main_page': original_layout.DEFAULT_MAX_MAIN_PAGE,
+    -         'main_float_pages': main, 'appendix_float_pages': appendix,
+    -         'all_captions': caption_inventory(aux, main_end, pdf_pages)}
+232 +     need(
+233 +         1 <= main_end <= original_layout.DEFAULT_MAX_MAIN_PAGE,
+234 +         "Main text exceeds unchanged eight pages",
+235 +     )
+236 +     require_same(
+237 +         sorted(original_layout._observed_float_labels(aux)),
+238 +         sorted((*MAIN_LABELS, *APPENDIX_LABELS)),
+239 +     )
+240 +     main = {
+241 +         name: original_layout._page_for_unique_label(aux, name, aux_path) for name in MAIN_LABELS
+242 +     }
+243 +     appendix = {
+244 +         name: original_layout._page_for_unique_label(aux, name, aux_path)
+245 +         for name in APPENDIX_LABELS
+246 +     }
+247 +     need(all(1 <= page <= main_end for page in main.values()), "Main label outside main paper")
+248 +     need(
+249 +         all(main_end < page <= pdf_pages for page in appendix.values()),
+250 +         "Appendix label outside appendix",
+251 +     )
+252 +     return {
+253 +         "main_end_page": main_end,
+254 +         "max_main_page": original_layout.DEFAULT_MAX_MAIN_PAGE,
+255 +         "main_float_pages": main,
+256 +         "appendix_float_pages": appendix,
+257 +         "all_captions": caption_inventory(aux, main_end, pdf_pages),
+258 +     }
+259 |
+260 |
+261 | def recorded_inputs(paper, text):
+    -     need([line for line in text.splitlines() if line.startswith('PWD ')] == ['PWD ' + str(paper)],
+    -          'Compiler did not run in the fresh document directory')
+262 +     need(
+263 +         [line for line in text.splitlines() if line.startswith("PWD ")] == ["PWD " + str(paper)],
+264 +         "Compiler did not run in the fresh document directory",
+265 +     )
+266 |     selected, systems, generated = {}, {}, set()
+267 |     for line in text.splitlines():
+    -         if not line.startswith('INPUT '):
+268 +         if not line.startswith("INPUT "):
+269 |             continue
+--------------------------------------------------------------------------------
+278 |                 selected[name] = file_identity(path)
+    -             elif name in {'build/main.aux', 'build/main.out', 'build/main.bbl'}:
+279 +             elif name in {"build/main.aux", "build/main.out", "build/main.bbl"}:
+280 |                 generated.add(name)
+281 |             else:
+    -                 raise ValueError('Undeclared local compiler dependency: ' + name)
+282 +                 raise ValueError("Undeclared local compiler dependency: " + name)
+283 |         elif any(resolved.is_relative_to(root) for root in original_build.SYSTEM_TEX_ROOTS):
+    -             need(resolved.is_file(), 'Invalid system TeX dependency')
+284 +             need(resolved.is_file(), "Invalid system TeX dependency")
+285 |             systems[str(resolved)] = file_identity(resolved)
+286 |         else:
+    -             raise ValueError('Undeclared external compiler dependency')
+287 +             raise ValueError("Undeclared external compiler dependency")
+288 |     require_same(sorted(selected), sorted(TEX_INPUTS))
+    -     need(bool(systems) and 'build/main.bbl' in generated, 'Incomplete source/bibliography recorder')
+    -     return {'document': selected, 'system': systems, 'generated': sorted(generated)}
+289 +     need(bool(systems) and "build/main.bbl" in generated, "Incomplete source/bibliography recorder")
+290 +     return {"document": selected, "system": systems, "generated": sorted(generated)}
+291 |
+292 |
+293 | def compile_fresh(root, expected_includes, constants):
+294 |     """No prior build files, old audit patching, or upstream success arguments."""
+    -     need(os.environ.get('CUDA_VISIBLE_DEVICES') == '', 'CPU-only document build required')
+295 +     need(os.environ.get("CUDA_VISIBLE_DEVICES") == "", "CPU-only document build required")
+296 |     root = original.ordinary(root, directory=True)
+297 |     before = inspect_sources(root, expected_includes, constants)
+    -     paper = root / 'paper'
+    -     need(not (paper / 'build').exists(), 'Preserve any prior compiled attempt')
+    -     command = ['latexmk', '-pdf', '-bibtex', '-no-shell-escape', '-interaction=nonstopmode',
+    -                '-halt-on-error', '-recorder', '-outdir=build', 'main.tex']
+    -     env = {**os.environ, 'TEXINPUTS': str(paper / 'vendor') + '//:',
+    -            'BSTINPUTS': str(paper / 'vendor') + '//:'}
+    -     result = subprocess.run(command, cwd=paper, env=env, capture_output=True, text=True, timeout=180)
+    -     for name, text in (('compile-stdout.txt', result.stdout), ('compile-stderr.txt', result.stderr)):
+    -         with (root / name).open('x') as stream:
+298 +     paper = root / "paper"
+299 +     need(not (paper / "build").exists(), "Preserve any prior compiled attempt")
+300 +     command = [
+301 +         "latexmk",
+302 +         "-pdf",
+303 +         "-bibtex",
+304 +         "-no-shell-escape",
+305 +         "-interaction=nonstopmode",
+306 +         "-halt-on-error",
+307 +         "-recorder",
+308 +         "-outdir=build",
+309 +         "main.tex",
+310 +     ]
+311 +     env = {
+312 +         **os.environ,
+313 +         "TEXINPUTS": str(paper / "vendor") + "//:",
+314 +         "BSTINPUTS": str(paper / "vendor") + "//:",
+315 +     }
+316 +     result = subprocess.run(
+317 +         command, cwd=paper, env=env, capture_output=True, text=True, timeout=180
+318 +     )
+319 +     for name, text in (
+320 +         ("compile-stdout.txt", result.stdout),
+321 +         ("compile-stderr.txt", result.stderr),
+322 +     ):
+323 +         with (root / name).open("x") as stream:
+324 |             stream.write(text)
+    -     write_new(root / 'compiler-exited.json', {'exit_code': result.returncode, 'command': command})
+    -     need(result.returncode == 0, 'Actual fresh compiler failed; retain logs')
+    -     build = paper / 'build'
+    -     log = original.ordinary(build / 'main.log').read_text()
+    -     need('Overfull' not in log and not re.search(
+    -         r'(?:Citation|Reference) .+ undefined|There were undefined references', log),
+    -         'Overflow or unresolved reference in actual fresh PDF')
+    -     blg = original.ordinary(build / 'main.blg').read_text()
+    -     require_same(re.findall(r'^Database file #\d+: (.+)$', blg, re.MULTILINE), ['references.bib'])
+    -     require_same(re.findall(r'^The style file: (.+)$', blg, re.MULTILINE), ['acl_natbib.bst'])
+    -     pdf = original.ordinary(build / 'main.pdf')
+325 +     write_new(root / "compiler-exited.json", {"exit_code": result.returncode, "command": command})
+326 +     need(result.returncode == 0, "Actual fresh compiler failed; retain logs")
+327 +     build = paper / "build"
+328 +     log = original.ordinary(build / "main.log").read_text()
+329 +     need(
+330 +         "Overfull" not in log
+331 +         and not re.search(
+332 +             r"(?:Citation|Reference) .+ undefined|There were undefined references", log
+333 +         ),
+334 +         "Overflow or unresolved reference in actual fresh PDF",
+335 +     )
+336 +     blg = original.ordinary(build / "main.blg").read_text()
+337 +     require_same(re.findall(r"^Database file #\d+: (.+)$", blg, re.MULTILINE), ["references.bib"])
+338 +     require_same(re.findall(r"^The style file: (.+)$", blg, re.MULTILINE), ["acl_natbib.bst"])
+339 +     pdf = original.ordinary(build / "main.pdf")
+340 +
+341 |     def output(tool):
+    -         return subprocess.run([tool, str(pdf)], capture_output=True, text=True, check=True, timeout=30).stdout
+    -     font_text, info = output('pdffonts'), output('pdfinfo')
+    -     pages = re.findall(r'^Pages:\s+(\d+)\s*$', info, re.MULTILINE)
+    -     need(len(pages) == 1, 'Missing current PDF page count')
+342 +         return subprocess.run(
+343 +             [tool, str(pdf)], capture_output=True, text=True, check=True, timeout=30
+344 +         ).stdout
+345 +
+346 +     font_text, info = output("pdffonts"), output("pdfinfo")
+347 +     pages = re.findall(r"^Pages:\s+(\d+)\s*$", info, re.MULTILINE)
+348 +     need(len(pages) == 1, "Missing current PDF page count")
+349 |     fonts = original_build.font_inventory(font_text)
+350 |     topology = layout(paper, int(pages[0]))
+    -     inputs = recorded_inputs(paper, original.ordinary(build / 'main.fls').read_text())
+    -     require_same(inputs['document'], {name: before['inputs'][name] for name in TEX_INPUTS})
+351 +     inputs = recorded_inputs(paper, original.ordinary(build / "main.fls").read_text())
+352 +     require_same(inputs["document"], {name: before["inputs"][name] for name in TEX_INPUTS})
+353 |     require_same(inspect_sources(root, expected_includes, constants), before)
+    -     for path, binding in inputs['system'].items():
+354 +     for path, binding in inputs["system"].items():
+355 |         verify_file(path, binding)
+    -     for name, text in (('fonts.txt', font_text), ('pdfinfo.txt', info)):
+    -         with (root / name).open('x') as stream:
+356 +     for name, text in (("fonts.txt", font_text), ("pdfinfo.txt", info)):
+357 +         with (root / name).open("x") as stream:
+358 |             stream.write(text)
+    -     receipt = {'scope': 'current_dense_complete_document_component_v1', 'compiled_pdf_verified': True,
+    -         'source_inspection': before, 'layout': topology, 'font_count': len(fonts),
+    -         'pdf_pages': int(pages[0]), 'compiler_inputs': inputs,
+    -         'upstream_scientific_admission_performed': False, 'final_release_verified': False,
+    -         'artifacts': {p.relative_to(root).as_posix(): file_identity(p) for p in sorted(root.rglob('*')) if p.is_file()}}
+    -     write_new(root / 'document.json', receipt)
+359 +     receipt = {
+360 +         "scope": "current_dense_complete_document_component_v1",
+361 +         "compiled_pdf_verified": True,
+362 +         "source_inspection": before,
+363 +         "layout": topology,
+364 +         "font_count": len(fonts),
+365 +         "pdf_pages": int(pages[0]),
+366 +         "compiler_inputs": inputs,
+367 +         "upstream_scientific_admission_performed": False,
+368 +         "final_release_verified": False,
+369 +         "artifacts": {
+370 +             p.relative_to(root).as_posix(): file_identity(p)
+371 +             for p in sorted(root.rglob("*"))
+372 +             if p.is_file()
+373 +         },
+374 +     }
+375 +     write_new(root / "document.json", receipt)
+376 |     return receipt
+    |
+
+unformatted: File would be reformatted
+  --> src/embed_optim/optimizer_state_devices.py:18:1
+   |
+17 |
+   - The caller supplies the independently authenticated checkpoint step. Validate
+   - the entire named state before moving anything; leave moments and group fields
+   - untouched. An error is a failed restore, never permission to initialize state.
+   - """
+18 +     The caller supplies the independently authenticated checkpoint step. Validate
+19 +     the entire named state before moving anything; leave moments and group fields
+20 +     untouched. An error is a failed restore, never permission to initialize state.
+21 +     """
+22 |     if type(expected_step) is not int or expected_step <= 0:
+--------------------------------------------------------------------------------
+33 |         for name, parameter in zip(labels, members, strict=True):
+   -             if not isinstance(name, str) or not name or name in names or id(parameter) in parameters:
+34 +             if (
+35 +                 not isinstance(name, str)
+36 +                 or not name
+37 +                 or name in names
+38 +                 or id(parameter) in parameters
+39 +             ):
+40 |                 raise ValueError("Duplicate or invalid named parameter")
+--------------------------------------------------------------------------------
+48 |             if not isinstance(values, dict) or set(values) != {"step", "exp_avg", "exp_avg_sq"}:
+   -                 raise ValueError("Require complete original Adam state; never initialize missing moments")
+49 +                 raise ValueError(
+50 +                     "Require complete original Adam state; never initialize missing moments"
+51 +                 )
+52 |             step = values["step"]
+--------------------------------------------------------------------------------
+70 |                 ):
+   -                     raise ValueError("Original loader did not place the named Adam moments correctly")
+71 +                     raise ValueError(
+72 +                         "Original loader did not place the named Adam moments correctly"
+73 +                     )
+74 |             plan.append((name, parameter, values, step))
+--------------------------------------------------------------------------------
+85 |         values["step"] = placed
+   -         rows.append({
+   -             "name": name,
+   -             "from_device": str(before.device),
+   -             "to_device": str(placed.device),
+   -             "moved": before.device != placed.device,
+   -             "counter_fp32_bytes_hex": original_bits.hex(),
+   -         })
+86 +         rows.append(
+87 +             {
+88 +                 "name": name,
+89 +                 "from_device": str(before.device),
+90 +                 "to_device": str(placed.device),
+91 +                 "moved": before.device != placed.device,
+92 +                 "counter_fp32_bytes_hex": original_bits.hex(),
+93 +             }
+94 +         )
+95 |     return {
+   |
+
+unformatted: File would be reformatted
+  --> tests/test_optimizer_state_devices.py:2:1
+   |
+1  | """CPU adapter controls; real four-GPU resume equivalence is a separate check."""
+2  +
+3  | import copy
+--------------------------------------------------------------------------------
+14 |     groups = [
+   -         {"params": [first], "param_names": ["hidden"], "algorithm": "muon" if muon else "adamw", "lr": 0.01},
+15 +         {
+16 +             "params": [first],
+17 +             "param_names": ["hidden"],
+18 +             "algorithm": "muon" if muon else "adamw",
+19 +             "lr": 0.01,
+20 +         },
+21 |         {"params": [second], "param_names": ["norm"], "algorithm": "adamw", "lr": 0.001},
+--------------------------------------------------------------------------------
+27 |                 {"momentum_buffer": torch.ones_like(parameter)}
+   -                 if group["algorithm"] == "muon" else
+   -                 {"step": torch.tensor(313.0), "exp_avg": torch.ones_like(parameter), "exp_avg_sq": torch.full_like(parameter, 2)}
+28 +                 if group["algorithm"] == "muon"
+29 +                 else {
+30 +                     "step": torch.tensor(313.0),
+31 +                     "exp_avg": torch.ones_like(parameter),
+32 +                     "exp_avg_sq": torch.full_like(parameter, 2),
+33 +                 }
+34 |             )
+--------------------------------------------------------------------------------
+41 |     before = copy.deepcopy(optimizer.state_dict())
+   -     pointers = {id(p): {key: id(value) for key, value in state.items()} for p, state in optimizer.state.items()}
+42 +     pointers = {
+43 +         id(p): {key: id(value) for key, value in state.items()}
+44 +         for p, state in optimizer.state.items()
+45 +     }
+46 |     report = place_adam_step_counters(optimizer, expected_step=313)
+--------------------------------------------------------------------------------
+54 |             assert torch.equal(tensor, after["state"][pid][key])
+   -     assert pointers == {id(p): {key: id(value) for key, value in state.items()} for p, state in optimizer.state.items()}
+55 +     assert pointers == {
+56 +         id(p): {key: id(value) for key, value in state.items()}
+57 +         for p, state in optimizer.state.items()
+58 +     }
+59 |     assert not torch.cuda.is_initialized()
+--------------------------------------------------------------------------------
+68 |
+   - @pytest.mark.parametrize("bad_step", [313, torch.tensor([313.0]), torch.tensor(313.0, dtype=torch.float64),
+   -                                       torch.tensor(float("nan")), torch.tensor(float("inf"))])
+69 + @pytest.mark.parametrize(
+70 +     "bad_step",
+71 +     [
+72 +         313,
+73 +         torch.tensor([313.0]),
+74 +         torch.tensor(313.0, dtype=torch.float64),
+75 +         torch.tensor(float("nan")),
+76 +         torch.tensor(float("inf")),
+77 +     ],
+78 + )
+79 | def test_invalid_counter_rejected(bad_step):
+   |
+
+7 files would be reformatted, 580 files already formatted

@@ -1,0 +1,117 @@
+{
+  "read_at_utc": "2026-09-05T05:32:42.645360+00:00",
+  "observation": "exact_named_atomic_ledgers_only",
+  "scientific_completion": false,
+  "controllers": {
+    "main": {
+      "path": "logs/dense-no-packing-finalization/pipeline-ledger.json",
+      "bytes": 26698,
+      "sha256": "6c5998aa90177b3e9b03bfe4e64f2b81c688f04005a050398f887d49efa1ce8f",
+      "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+      "status": "waiting_for_training",
+      "complete": false,
+      "observed_at_utc": "2026-09-05T05:32:19+00:00",
+      "executed_steps": 0,
+      "live_contract_sources_checked": [
+        {
+          "bytes": 20348,
+          "path": "src/embed_optim/corrected_completion_pipeline.py",
+          "sha256": "7f3e6f440d4b79b2a7aea3d5336b9458fbeb8cb61c5537fdda13fea72d591972"
+        },
+        {
+          "bytes": 7953,
+          "path": "src/embed_optim/corrected_checkpoint_backup.py",
+          "sha256": "29935e16ad8469fb75efa4272c215c235e60bda15ad5d1be1fe7a5ec9e1b1727"
+        },
+        {
+          "bytes": 1601,
+          "path": "configs/dense_no_packing_retrain.yaml",
+          "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+        },
+        {
+          "bytes": 6054,
+          "path": "configs/dense_no_packing_execution_protocol.json",
+          "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5"
+        },
+        {
+          "bytes": 4838,
+          "path": "configs/dense_no_packing_evaluation_protocol.json",
+          "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98"
+        },
+        {
+          "bytes": 8282,
+          "path": "configs/dense_no_packing_analysis_protocol.json",
+          "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+        },
+        {
+          "bytes": 7666,
+          "path": "configs/dense_no_packing_outcome_protocol.json",
+          "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319"
+        },
+        {
+          "bytes": 6499,
+          "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+          "sha256": "ccf81a94026b8198e97877bfea995914f74ad9d8137885bf60de0f0fe86245ae"
+        },
+        {
+          "bytes": 5032,
+          "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+          "sha256": "99a2a967e162e96fe24d1edd74f6c8b15a7e7ccc26056f4063e5799c9e35b7f3"
+        },
+        {
+          "bytes": 9404,
+          "path": "configs/dense_no_packing_publication_protocol.json",
+          "sha256": "c815e8dfb52ac71350d8c1e7384bdf122ce549ec92fbc2fe883a9a4866e6d71c"
+        }
+      ],
+      "complete_runs": 10,
+      "complete_backups": 10
+    },
+    "factorial": {
+      "path": "logs/state-operator-factorial/completion/pipeline-ledger.json",
+      "bytes": 14432,
+      "sha256": "d12d1aa4b35498d3a2c1be17fd6aab27051e76fed733cacad7852ddb3de949f9",
+      "contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8",
+      "status": "waiting_for_main_completion",
+      "complete": false,
+      "observed_at_utc": "2026-09-05T05:32:01+00:00",
+      "executed_steps": 0,
+      "live_contract_sources_checked": [],
+      "live_protocol_checked": {
+        "bytes": 7023,
+        "path": "configs/dense_no_packing_state_operator_factorial_completion_protocol.json",
+        "sha256": "9cbd31c61cb4e62c26a9d01f9b880dbdff4bfeafdaa0a732c63ea20f76bd23a0"
+      }
+    },
+    "sealed_backup": {
+      "path": "logs/dense-no-packing-sealed-backup/state.json",
+      "bytes": 28245,
+      "sha256": "0abf2ea565946bc1e7b7cea460a38bd4a4a590f632fff897150e5144ec4ab324",
+      "contract_sha256": "a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7",
+      "status": "watching",
+      "complete": false,
+      "observed_at_utc": "2026-09-05T05:32:12Z",
+      "executed_steps": 0,
+      "live_contract_sources_checked": [
+        {
+          "bytes": 21720,
+          "path": "src/embed_optim/sealed_checkpoint_supervisor.py",
+          "sha256": "23e564aadf3db8d4386ad4f3a7e83384adfc4268a9397f7526bf10ad6b250299"
+        },
+        {
+          "bytes": 14334,
+          "path": "src/embed_optim/incremental_checkpoint_backup.py",
+          "sha256": "8dd0f34e9fa18bd2c0ebff6665f008cf3f388f34550489a51bc84c028bd27b47"
+        },
+        {
+          "bytes": 1601,
+          "path": "configs/dense_no_packing_retrain.yaml",
+          "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+        }
+      ],
+      "covered_checkpoints": 52,
+      "expected_checkpoints": 60,
+      "cycle_failures": 0
+    }
+  }
+}

@@ -1,0 +1,136 @@
+........................................................................ [ 48%]
+...............F........................................................ [ 96%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+_____ test_complete_synthetic_candidate_paper_compiles_within_layout_gate ______
+
+paper_dir = PosixPath('/tmp/pytest-of-root/pytest-2067/test_complete_synthetic_candid0/synthetic-claim-review-only/paper')
+
+    def audit_paper_layout(
+        paper_dir: str | Path = "paper",
+        *,
+        max_main_page: int = DEFAULT_MAX_MAIN_PAGE,
+        label: str = MAIN_END_LABEL,
+    ) -> dict[str, Any]:
+        if isinstance(max_main_page, bool) or max_main_page < 1:
+            raise ValueError("Maximum main-text page must be a positive integer")
+        paper = Path(paper_dir).resolve()
+        aux_path = paper / "build/main.aux"
+        try:
+>           aux_text = aux_path.read_text(encoding="utf-8")
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/embed_optim/paper_layout.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-root/pytest-2067/test_complete_synthetic_candid0/synthetic-claim-review-only/paper/build/main.aux')
+mode = 'r', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileNotFoundError: [Errno 2] No such file or directory: '/tmp/pytest-of-root/pytest-2067/test_complete_synthetic_candid0/synthetic-claim-review-only/paper/build/main.aux'
+
+/usr/lib/python3.12/pathlib.py:1015: FileNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+candidate = <module 'embed_optim.state_operator_factorial_publication' from '/root/embedding-optimizer-story-refactor/src/embed_optim/state_operator_factorial_publication.py'>
+cases = {'positive_interaction_but_muon_harms_both_states': {'cell_order': ['AA', 'AM', 'MA', 'MM'], 'current_abstract': '% Ge...herited in the Muon-reached weight state, not in a universally better local Muon direction.', 'effect_rows': 126, ...}}
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-2067/test_complete_synthetic_candid0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fcded9fefc0>
+
+    def test_complete_synthetic_candidate_paper_compiles_within_layout_gate(
+        candidate, cases, tmp_path, monkeypatch
+    ):
+        from test_corrected_publication import _evidence
+        from test_dimension_publication import synthetic_publication
+    
+        from embed_optim.corrected_publication import render_latex
+        from embed_optim.paper_layout import audit_paper_layout
+    
+        assert shutil.which("latexmk") and shutil.which("make"), "Require the actual paper toolchain"
+        args, _, _, _ = synthetic_publication.__wrapped__(tmp_path / "dimension-fixture", monkeypatch)
+        paper = tmp_path / "synthetic-claim-review-only" / "paper"
+        shutil.copytree(ROOT.parents[2] / "paper", paper, ignore=shutil.ignore_patterns("build"))
+        text = (
+            (REPOSITORY / "paper/main.tex")
+            .read_text()
+            .replace(
+                r"\maketitle",
+                r"\maketitle\begin{center}\textbf{SYNTHETIC CLAIM/LAYOUT TEST -- NOT EXPERIMENT RESULTS}\end{center}",
+            )
+        )
+        (paper / "main.tex").write_text(text)
+        (paper / "generated/dimension-utilization.tex").write_text(args.paper_output.read_text())
+        (paper / "generated/optimizer-primary.tex").write_text(render_latex(_evidence()))
+        rows = cases["positive_main_effects_with_supported_negative_interaction"]["estimands"]
+        (paper / "generated/state-operator-factorial.tex").write_text(candidate._render_latex(rows))
+        result = subprocess.run(
+            ["make", "all", f"PYTHON={sys.executable}"],
+            cwd=paper,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            env={
+                **os.environ,
+                "TEXINPUTS": f"{paper / 'vendor'}//:",
+                "BSTINPUTS": f"{paper / 'vendor'}//:",
+            },
+        )
+        assert result.returncode == 0, result.stdout[-7000:] + result.stderr[-2000:]
+>       layout = audit_paper_layout(paper)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_state_operator_claim_wording.py:195: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+paper_dir = PosixPath('/tmp/pytest-of-root/pytest-2067/test_complete_synthetic_candid0/synthetic-claim-review-only/paper')
+
+    def audit_paper_layout(
+        paper_dir: str | Path = "paper",
+        *,
+        max_main_page: int = DEFAULT_MAX_MAIN_PAGE,
+        label: str = MAIN_END_LABEL,
+    ) -> dict[str, Any]:
+        if isinstance(max_main_page, bool) or max_main_page < 1:
+            raise ValueError("Maximum main-text page must be a positive integer")
+        paper = Path(paper_dir).resolve()
+        aux_path = paper / "build/main.aux"
+        try:
+            aux_text = aux_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError) as error:
+>           raise ValueError(f"Paper layout audit cannot read {aux_path}") from error
+E           ValueError: Paper layout audit cannot read /tmp/pytest-of-root/pytest-2067/test_complete_synthetic_candid0/synthetic-claim-review-only/paper/build/main.aux
+
+src/embed_optim/paper_layout.py:70: ValueError
+=============================== warnings summary ===============================
+../../usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63
+  /usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+    import pynvml  # type: ignore[import]
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+../../usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7
+  /usr/local/lib/python3.12/dist-packages/mteb/models/model_implementations/bmretriever_models.py:7: DeprecationWarning: Importing from 'sentence_transformers.models' is deprecated and will be removed in a future version. Please use 'sentence_transformers.sentence_transformer.modules' instead.
+    from sentence_transformers.models import Pooling, Transformer
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_state_operator_claim_wording.py::test_complete_synthetic_candidate_paper_compiles_within_layout_gate
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute

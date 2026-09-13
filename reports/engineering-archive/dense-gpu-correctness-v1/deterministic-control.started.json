@@ -1,0 +1,31 @@
+{
+  "boundary": "After a failed default-kernel long-input gradient comparison, change only the 22 owned attention instances and config deterministic_flash_attn=False to True. Both actual and manual-reference model copies use this control. No file/library/operator formula/precision/loss/data/tolerance is changed; this does not turn the default-path failure into a pass.",
+  "command_arguments": [
+    "--repository",
+    "/root/embedding-optimizer-story-refactor",
+    "--workdir",
+    "/tmp/dense-gpu-max-context.b9OZNY",
+    "--handoff",
+    "/tmp/dense-gpu-handoff.4MuYjC/receipt/result.json",
+    "--download-root",
+    "/tmp/dense-checkpoint-restore.Og1kZs/download",
+    "--audit",
+    "reports/experiment-integrity/huggingface-digest-audit-ten-run.json",
+    "--audit-sha256",
+    "9e1cfceea1d3a821bbe7c6e4881f2b7dbe5faa5b21c92d107bec4eb4c995c5d6"
+  ],
+  "production_deployed": false,
+  "scientific_completion": false,
+  "scope": "engineering_paired_deterministic_flash_backward_control",
+  "source": {
+    "bytes": 4446,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_gpu_deterministic_control.py",
+    "sha256": "4a5875c938198899927db13503d257640c3ee2bddcc16c1558361f9bc1acb073"
+  },
+  "source_hashes": {
+    "/usr/local/lib/python3.12/dist-packages/flash_attn/flash_attn_interface.py": "d8eaf989a5401fedd23d11a336a7f38e67596d0a4d5a279df14cbe2d7de2ed75",
+    "/usr/local/lib/python3.12/dist-packages/transformers/modeling_flash_attention_utils.py": "2c5b839ceae298a7d995f2b8ae88cc5f8151ee00a8ddccceed1be3bd1ef9bb72",
+    "/usr/local/lib/python3.12/dist-packages/transformers/models/modernbert/modeling_modernbert.py": "d657e768ab419cb4101d3564d346cfe95b69149dd45e1d2f3e0b2fb138c6700b"
+  },
+  "started_at_utc": "2026-09-06T06:22:59.382741+00:00"
+}

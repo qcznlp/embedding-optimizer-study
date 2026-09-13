@@ -1,0 +1,60 @@
+{
+  "scope": "engineering_terminal_command_handoff",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "recording_boundary": "Terminal-observation handoff, not a new worker-produced receipt. Full shell commands are retained where recorded; named entrypoints and output artifacts for the other completed sessions are not claimed as byte-exact shell transcripts.",
+  "completed_sessions": [
+    {
+      "session_id": 20954,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= WORLD_SIZE=4 EMBED_OPTIM_MAX_STEPS=-1 EMBED_OPTIM_STOP_AFTER_STEP=-1 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/dense-identity-source.8rUgLF/src:/root/embedding-optimizer-story-refactor:/tmp/dense-identity-source.8rUgLF python3 -B scripts/prepare_dense_revised_inputs.py --repository /root/embedding-optimizer-story-refactor --candidate-root /tmp/dense-identity-source.8rUgLF --prepared-data /tmp/dense-partition-candidate.kHXoGW --workdir /tmp/dense-revised-inputs.l7RdSx",
+      "result": "/tmp/dense-revised-inputs.l7RdSx/result.json"
+    },
+    {
+      "session_id": 78847,
+      "exit_code": 0,
+      "entrypoint": "scripts/prepare_dense_data_amendment.py",
+      "result": "configs/dense_primary_v3_data_amendment.json",
+      "model_updates": 0
+    },
+    {
+      "session_id": 82182,
+      "exit_code": 0,
+      "entrypoint": "pytest tests/test_primary_data_revision.py",
+      "junit": "/tmp/dense-revised-inputs.l7RdSx/focused-tests.xml",
+      "passed_cases": 30
+    },
+    {
+      "session_id": 19292,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= HF_DATASETS_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_revised_natural.py --repository /root/embedding-optimizer-story-refactor --amendment /root/embedding-optimizer-story-refactor/configs/dense_primary_v3_data_amendment.json --workdir /tmp/dense-natural-readiness.a4xZzR",
+      "result": "/tmp/dense-natural-readiness.a4xZzR/result.json",
+      "actual_training_calls": 3,
+      "diagnostic_checkpoints": 9
+    },
+    {
+      "session_id": 12456,
+      "exit_code": 0,
+      "entrypoint": "pytest -q",
+      "junit": "/tmp/dense-revised-inputs.l7RdSx/full-tests.xml",
+      "passed_cases": 1662
+    },
+    {
+      "session_id": 51323,
+      "exit_code": 0,
+      "entrypoint": "scripts/audit_dense_data_amendment.py",
+      "result": "/tmp/dense-amendment-admission.S6EZ7T/result.json",
+      "actual_changed_files_rejected": 21,
+      "model_updates": 0
+    },
+    {
+      "session_id": 3017,
+      "exit_code": 0,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/audit_dense_natural_data.py --verify /tmp/dense-natural-readiness.a4xZzR/result.json --receipt-sha256 bf6e893e3b9e244242871227e28a3729acc17477dd3c989f7c647308bf332d36",
+      "observed_verified": true,
+      "model_updates": 0
+    }
+  ],
+  "scientific_completion": false,
+  "formal_replication_ready": false,
+  "source_published": false
+}

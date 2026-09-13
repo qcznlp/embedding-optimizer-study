@@ -1,0 +1,964 @@
+{
+  "created_at_utc": "2026-09-13T06:45:17.719721+00:00",
+  "files": {
+    "expected-paper/figures/full-rate-retrieval-trajectories.pdf": {
+      "bytes": 21132,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/figures/full-rate-retrieval-trajectories.pdf",
+      "sha256": "3dffcb3c3f31f5715b00dcfbe6d8cf5d4d9417f7be07c4ff7b0f32f95eda1c7c"
+    },
+    "expected-paper/figures/optimizer-weight-dimension-map.pdf": {
+      "bytes": 42948,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/figures/optimizer-weight-dimension-map.pdf",
+      "sha256": "b8e390ae4e2c3b1fdaea873374a16b5b0724e41e65b947e96cf015a871be764f"
+    },
+    "expected-paper/figures/weight-to-retrieval-map.pdf": {
+      "bytes": 23177,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/figures/weight-to-retrieval-map.pdf",
+      "sha256": "ce84cea59e0ed8932b100c5b6cc0763ab26963d8e7c8c0464e13bc48e6657753"
+    },
+    "expected-paper/generated/dimension-utilization.tex": {
+      "bytes": 8401,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/generated/dimension-utilization.tex",
+      "sha256": "8b51361a713c3fb4bff5a8cbb7a53d2cd52da1fb9901342baa7d9a101df78987"
+    },
+    "expected-paper/generated/optimizer-primary.tex": {
+      "bytes": 6305,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/generated/optimizer-primary.tex",
+      "sha256": "28ec761320c9792917a2b19c5e6c14264730abc9a59370ec37982909da375ca5"
+    },
+    "expected-paper/generated/recipe-sensitivity.tex": {
+      "bytes": 4071,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/generated/recipe-sensitivity.tex",
+      "sha256": "dbe9cb7c0dc30710b35802249e301846fa9275995b75b82311e15008b88cae41"
+    },
+    "expected-paper/generated/state-operator-factorial.tex": {
+      "bytes": 2209,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/generated/state-operator-factorial.tex",
+      "sha256": "d9f9908381ae93fba359f4872af76b02082d451fdf274d9365b5c826ed5048cb"
+    },
+    "expected-paper/main.tex": {
+      "bytes": 30533,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/main.tex",
+      "sha256": "36a6b3509d1ad71a0c9609832e37869bde97379daf34bf69832af0f68f7f95fe"
+    },
+    "expected-paper/references.bib": {
+      "bytes": 5685,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/references.bib",
+      "sha256": "fca6bf5762a2cecab795a1a60c1338ab4eb999acb5d78c437b9df0e5f3553218"
+    },
+    "expected-paper/results.tex": {
+      "bytes": 330,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/results.tex",
+      "sha256": "61abd9b96efebb3d186d80e24a51b2012ecfb9393985c01c15e8b7b3692f7034"
+    },
+    "expected-paper/vendor/acl.sty": {
+      "bytes": 11615,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/vendor/acl.sty",
+      "sha256": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de"
+    },
+    "expected-paper/vendor/acl_natbib.bst": {
+      "bytes": 45442,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/paper/vendor/acl_natbib.bst",
+      "sha256": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e"
+    },
+    "factorial/beir_seed_task_scores.csv": {
+      "bytes": 63862,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/beir_seed_task_scores.csv",
+      "sha256": "818274c99399c5335804472e613e22df531c532dca246eff12cf7e2f05acae1b"
+    },
+    "factorial/estimand_seed_task_contrasts.csv": {
+      "bytes": 7566,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/estimand_seed_task_contrasts.csv",
+      "sha256": "c81d710ce2e7de7625a1d1a20179d2808aa7b549216ce1914749d2081eed778b"
+    },
+    "factorial/estimand_summary.csv": {
+      "bytes": 515,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/estimand_summary.csv",
+      "sha256": "cc6e215393a0407e9e35ff563b1af49f85c9fc575141876c0da486bf2da3f604"
+    },
+    "factorial/factorial_cell_summary.csv": {
+      "bytes": 300,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/factorial_cell_summary.csv",
+      "sha256": "9d8957668894eebb5002c7fd7f073c04ac4d4df0a0a628d5f91e6949829d128c"
+    },
+    "factorial/independent_verification.json": {
+      "bytes": 772,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/independent_verification.json",
+      "sha256": "2b4471ab1903b87f771002d65561577056dde4c7eb354bee4317a22e7af2199e"
+    },
+    "factorial/native/beir.exited.json": {
+      "bytes": 79,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/beir.exited.json",
+      "sha256": "b363bf8253631c1ca9ac0659ba6a8319902e554149bba3cf5da6df6d2ca35883"
+    },
+    "factorial/native/beir.json": {
+      "bytes": 450919,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/beir.json",
+      "sha256": "d327a15fd843c2a0dbb971255d099172ddf4ae4e74c87d5c22b4b1b54efcee0e"
+    },
+    "factorial/native/beir.started.json": {
+      "bytes": 423,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/beir.started.json",
+      "sha256": "07c794adf64abd7a05ee6124d934f1d82ab4aab52334b88885f0738576da7e6b"
+    },
+    "factorial/native/completed.json": {
+      "bytes": 396,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/completed.json",
+      "sha256": "fd8595aecee3ad86fbec85cd2382cbbbee5ede30ee87ebe38178e25086d213c9"
+    },
+    "factorial/native/probe.exited.json": {
+      "bytes": 79,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/probe.exited.json",
+      "sha256": "67d6d78c64709e7d59dc293a3bf7e4ca73b9bbba3ce08560bb9f0f00fac3cca0"
+    },
+    "factorial/native/probe.json": {
+      "bytes": 651434,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/probe.json",
+      "sha256": "c9b418a4f193a13f61d167207809ce48ec56328929da1759cb78e3389aea6519"
+    },
+    "factorial/native/probe.started.json": {
+      "bytes": 425,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/probe.started.json",
+      "sha256": "5efdbc42e7834be94bd8523a1ed94fcf0f2261dccc199499399a6e40954fcf15"
+    },
+    "factorial/probe_checkpoint_metrics.csv": {
+      "bytes": 12672,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/probe_checkpoint_metrics.csv",
+      "sha256": "f80a446d246e1b777d068dc875856d5ae1ffce8aa6d456e3472ee0885a227857"
+    },
+    "factorial/probe_task_metrics.csv": {
+      "bytes": 152176,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/probe_task_metrics.csv",
+      "sha256": "bba4468e079f0eeca8766cb27675afe3f5f636cdd38f3ad0c3b22d27bdad6de4"
+    },
+    "factorial/readout.json": {
+      "bytes": 2455,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/readout.json",
+      "sha256": "b6b69d9b087a6797c54330064316aa9f9fe71887797ef59313efce8c3214781d"
+    },
+    "factorial/summary-authority.json": {
+      "bytes": 2131,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/authorization.json",
+      "sha256": "47485b8a16af1b0be419e67c4cf45ede08cdacbd01059e42357e16c97b9eb92c"
+    },
+    "factorial/tables.json": {
+      "bytes": 590056,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/tables.json",
+      "sha256": "607d01946f10cbf95522a820227cd0d84768079b1e20dde4918b72cd4dcb8e59"
+    },
+    "factorial/training-authority.json": {
+      "bytes": 511616,
+      "origin": "/root/embedding-optimizer-v3-experiment/launch/factorial-training-v1/authorization.json",
+      "sha256": "00c52f0bec979fb163a734ad0f9eadcd6ea09f7393133fd35c65bc62878ce11f"
+    },
+    "native-document/completed.json": {
+      "bytes": 1084,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/completed.json",
+      "sha256": "41b6e7918fbb066ad4979e021165dff4a793e8f689360a7c6686af4509d05f5d"
+    },
+    "native-document/document.json": {
+      "bytes": 67133,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/document.json",
+      "sha256": "fd477eda08d870a6a9be5bbc66a9e1551ffebf114142f84c99dbc05629bb9ccb"
+    },
+    "native-document/factorial-readout.json": {
+      "bytes": 2803,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/factorial-readout.json",
+      "sha256": "5fad08670c609f7e188f269a1a1cc833d71467f94bd663f2a6c2bcac38abf0e5"
+    },
+    "native-document/pdf-text.txt": {
+      "bytes": 78968,
+      "origin": "pdftotext -layout of actual strict native PDF",
+      "sha256": "6a5a7ad062a298457d8b55194ef820f5acbe28a7a4eccf74816c1b4fc41997e4"
+    },
+    "native-document/primary-native-reuse.json": {
+      "bytes": 873,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/primary-native-reuse.json",
+      "sha256": "7ae622a1385b13e6c4751eb01ce1b8c1164546710668549459f88387585bff39"
+    },
+    "native-document/scientific-input-bindings.json": {
+      "bytes": 39852,
+      "origin": "/tmp/dense-v3-document-integration.Xz1qvTME/actual-complete-paper/scientific-input-bindings.json",
+      "sha256": "660884a8b626a74e844862de4736a3e09f17c5b8689eccfe4f1721a4d99d88b5"
+    },
+    "native-factorial-bindings/000-beir_seed_task_scores.csv": {
+      "bytes": 63862,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/beir_seed_task_scores.csv",
+      "sha256": "818274c99399c5335804472e613e22df531c532dca246eff12cf7e2f05acae1b"
+    },
+    "native-factorial-bindings/001-estimand_seed_task_contrasts.csv": {
+      "bytes": 7566,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/estimand_seed_task_contrasts.csv",
+      "sha256": "c81d710ce2e7de7625a1d1a20179d2808aa7b549216ce1914749d2081eed778b"
+    },
+    "native-factorial-bindings/002-estimand_summary.csv": {
+      "bytes": 515,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/estimand_summary.csv",
+      "sha256": "cc6e215393a0407e9e35ff563b1af49f85c9fc575141876c0da486bf2da3f604"
+    },
+    "native-factorial-bindings/003-factorial_cell_summary.csv": {
+      "bytes": 300,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/factorial_cell_summary.csv",
+      "sha256": "9d8957668894eebb5002c7fd7f073c04ac4d4df0a0a628d5f91e6949829d128c"
+    },
+    "native-factorial-bindings/004-independent_verification.json": {
+      "bytes": 772,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/independent_verification.json",
+      "sha256": "2b4471ab1903b87f771002d65561577056dde4c7eb354bee4317a22e7af2199e"
+    },
+    "native-factorial-bindings/005-probe_checkpoint_metrics.csv": {
+      "bytes": 12672,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/probe_checkpoint_metrics.csv",
+      "sha256": "f80a446d246e1b777d068dc875856d5ae1ffce8aa6d456e3472ee0885a227857"
+    },
+    "native-factorial-bindings/006-probe_task_metrics.csv": {
+      "bytes": 152176,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/probe_task_metrics.csv",
+      "sha256": "bba4468e079f0eeca8766cb27675afe3f5f636cdd38f3ad0c3b22d27bdad6de4"
+    },
+    "native-factorial-bindings/007-readout.json": {
+      "bytes": 2455,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/readout.json",
+      "sha256": "b6b69d9b087a6797c54330064316aa9f9fe71887797ef59313efce8c3214781d"
+    },
+    "native-factorial-bindings/008-tables.json": {
+      "bytes": 590056,
+      "origin": "/root/embedding-optimizer-v3-experiment/analyses/dense-v3-factorial-inference-v1/tables.json",
+      "sha256": "607d01946f10cbf95522a820227cd0d84768079b1e20dde4918b72cd4dcb8e59"
+    },
+    "native-factorial-bindings/009-completed.json": {
+      "bytes": 1288,
+      "origin": "/tmp/dense-v3-factorial-evaluation.IOV7MK93/run/pool-a/completed.json",
+      "sha256": "d4134a29622bbc10a46042a9c6621614885d3af24a640822be15c9fa5ca41c89"
+    },
+    "native-factorial-bindings/010-completed.json": {
+      "bytes": 1288,
+      "origin": "/tmp/dense-v3-factorial-evaluation.IOV7MK93/run/pool-b/completed.json",
+      "sha256": "0ccc2cc8897b0c64b0e63bef3eb64cfa185e57efaf1160f4a4b957530cb807f3"
+    },
+    "native-factorial-bindings/011-completed.json": {
+      "bytes": 7133,
+      "origin": "/tmp/dense-v3-factorial-probe.ryorjXJK/run/pool-a/completed.json",
+      "sha256": "7a60e29948f8d06755f88a07ad919d6905d95d43ba5405eca0e6904e5e1db726"
+    },
+    "native-factorial-bindings/012-completed.json": {
+      "bytes": 7133,
+      "origin": "/tmp/dense-v3-factorial-probe.ryorjXJK/run/pool-b/completed.json",
+      "sha256": "4a5089f69ac5b1fac2318f6edb53c4c1f1c84a5f67ab6811974440eafd8b99a0"
+    },
+    "native-factorial-bindings/013-beir.exited.json": {
+      "bytes": 79,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/beir.exited.json",
+      "sha256": "b363bf8253631c1ca9ac0659ba6a8319902e554149bba3cf5da6df6d2ca35883"
+    },
+    "native-factorial-bindings/014-beir.json": {
+      "bytes": 450919,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/beir.json",
+      "sha256": "d327a15fd843c2a0dbb971255d099172ddf4ae4e74c87d5c22b4b1b54efcee0e"
+    },
+    "native-factorial-bindings/015-beir.started.json": {
+      "bytes": 423,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/beir.started.json",
+      "sha256": "07c794adf64abd7a05ee6124d934f1d82ab4aab52334b88885f0738576da7e6b"
+    },
+    "native-factorial-bindings/016-completed.json": {
+      "bytes": 396,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/completed.json",
+      "sha256": "fd8595aecee3ad86fbec85cd2382cbbbee5ede30ee87ebe38178e25086d213c9"
+    },
+    "native-factorial-bindings/017-probe.exited.json": {
+      "bytes": 79,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/probe.exited.json",
+      "sha256": "67d6d78c64709e7d59dc293a3bf7e4ca73b9bbba3ce08560bb9f0f00fac3cca0"
+    },
+    "native-factorial-bindings/018-probe.json": {
+      "bytes": 651434,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/probe.json",
+      "sha256": "c9b418a4f193a13f61d167207809ce48ec56328929da1759cb78e3389aea6519"
+    },
+    "native-factorial-bindings/019-probe.started.json": {
+      "bytes": 425,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/run/probe.started.json",
+      "sha256": "5efdbc42e7834be94bd8523a1ed94fcf0f2261dccc199499399a6e40954fcf15"
+    },
+    "primary/inputs/functional/decisions.json": {
+      "bytes": 18281,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/decisions.json",
+      "sha256": "f41bf2a43853611f46655bb08d5313c39ac677ab45beca44c947e028e637fddc"
+    },
+    "primary/inputs/functional/features/checkpoint_summary.csv": {
+      "bytes": 29589,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/features/checkpoint_summary.csv",
+      "sha256": "a681480e9482ea8fff435ffa21079489c6a0ff802fb44c12737ecd3e7672cf7d"
+    },
+    "primary/inputs/functional/features/random_removal.csv": {
+      "bytes": 7869965,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/features/random_removal.csv",
+      "sha256": "9072d9ec319f2b207d78c9679ac200eb9b068292388f83cb48d819750851b024"
+    },
+    "primary/inputs/functional/features/rotation_summary.csv": {
+      "bytes": 134603,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/features/rotation_summary.csv",
+      "sha256": "ec5f2915b6baabef2eab645958ad1fe489bcaa6a94977305417fc1bddceaa063"
+    },
+    "primary/inputs/functional/features/task_summary.csv": {
+      "bytes": 204866,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/features/task_summary.csv",
+      "sha256": "0f2b733445750d75867c835d3c27dc5615340edb53af48d4b7223931c8800f13"
+    },
+    "primary/inputs/functional/original_panel.json": {
+      "bytes": 51161,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/original_panel.json",
+      "sha256": "382dbda7941e6965890e98bced0af8575d7e657dcf78a391dfac21ca5666ffcc"
+    },
+    "primary/inputs/functional/scientific_protocol.json": {
+      "bytes": 7906,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/scientific_protocol.json",
+      "sha256": "8a9dc1115bfe3f5eae09a3e4eee4e7093295b4562630b9516963ab41b60b77d2"
+    },
+    "primary/inputs/functional/tables.json": {
+      "bytes": 307483,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional/tables.json",
+      "sha256": "62449b38c3d1c1207cc883502a0835631a400d3a76acbe90a3960f1d43e17441"
+    },
+    "primary/inputs/functional_controls.json": {
+      "bytes": 1699415,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/functional_controls.json",
+      "sha256": "f45414aa65319ed7cb67f129228e9f3c40333aa1376f4e6e0533db2ce36a5a0f"
+    },
+    "primary/inputs/map-readout.json": {
+      "bytes": 1480,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/map-readout.json",
+      "sha256": "c94d3c0bc986308b64ddf898d516c338942832635c0f16021d81f26d0e4cab4f"
+    },
+    "primary/inputs/native-functional/decisions.json": {
+      "bytes": 18281,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/native-functional/decisions.json",
+      "sha256": "f41bf2a43853611f46655bb08d5313c39ac677ab45beca44c947e028e637fddc"
+    },
+    "primary/inputs/native-functional/tables.json": {
+      "bytes": 307483,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/native-functional/tables.json",
+      "sha256": "62449b38c3d1c1207cc883502a0835631a400d3a76acbe90a3960f1d43e17441"
+    },
+    "primary/inputs/native-geometry/tables.json": {
+      "bytes": 17991762,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/native-geometry/tables.json",
+      "sha256": "35f91dfd8fff7ebaeb9c38cd2d9232f99a17ec3c00d90b4b882b80281a68c8ef"
+    },
+    "primary/inputs/native-primary/evidence.json": {
+      "bytes": 2500065,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/native-primary/evidence.json",
+      "sha256": "4915423f782a5ce952bc6c253f85568d691e435908542b93d2bf0154b4d26317"
+    },
+    "primary/inputs/recipe-catalog.json": {
+      "bytes": 255320,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/recipe-catalog.json",
+      "sha256": "45ff9c985014fe980ec23359929dee5e311b7cdf713fee3f4c9772ce0b9a1a64"
+    },
+    "primary/inputs/scientific-publication-v3/completed.json": {
+      "bytes": 11902,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/scientific-publication-v3/completed.json",
+      "sha256": "1941d86b42972a53dbca8ff86c8cc346282cc10f17446d62f66d67fcedb826cc"
+    },
+    "primary/inputs/scientific-publication-v3/exact-publication/evidence.json": {
+      "bytes": 22108772,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/scientific-publication-v3/exact-publication/evidence.json",
+      "sha256": "d24edbde53b756284b7ad13acc1854875579799bef0ca1d378496c99d32a197c"
+    },
+    "primary/inputs/scientific-publication-v3/exact-publication/tables.json": {
+      "bytes": 14528393,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/scientific-publication-v3/exact-publication/tables.json",
+      "sha256": "eab3db61a8e20193ff45d572224f670335320ef00ba9c9cb00a5110d4ef15660"
+    },
+    "primary/inputs/scientific-publication-v3/original-publication/evidence.json": {
+      "bytes": 21976359,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/scientific-publication-v3/original-publication/evidence.json",
+      "sha256": "4325329668a6f2787775c62d2c0eed418c93f177e643829ba78070906df63230"
+    },
+    "primary/inputs/scientific-publication-v3/outcomes.json": {
+      "bytes": 264586,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/scientific-publication-v3/outcomes.json",
+      "sha256": "48378c40be9cfba20094a31afeaf96364e04a268a3bc644f7565a3404f25b47e"
+    },
+    "primary/inputs/weight_controls.json": {
+      "bytes": 5793671,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/inputs/weight_controls.json",
+      "sha256": "cf833f34871369eb5b93d9da5d05bb3bce34037314697eb617d4158871d357dc"
+    },
+    "primary/manifest.json": {
+      "bytes": 40919,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/manifest.json",
+      "sha256": "88861e52218f56b860851489106cd30e35dd79bb038eb9082967e3376db6457d"
+    },
+    "primary/maps/render_trajectory_maps.py": {
+      "bytes": 7905,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/maps/render_trajectory_maps.py",
+      "sha256": "403b5f599ab7a909c651495d660f8226f0f9d6a461f69932dc10516cbaca0ebc"
+    },
+    "primary/maps/scientific-publication-v3/completed.json": {
+      "bytes": 11902,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/maps/scientific-publication-v3/completed.json",
+      "sha256": "1941d86b42972a53dbca8ff86c8cc346282cc10f17446d62f66d67fcedb826cc"
+    },
+    "primary/maps/scientific-publication-v3/exact-publication/tables.json": {
+      "bytes": 14528393,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/maps/scientific-publication-v3/exact-publication/tables.json",
+      "sha256": "eab3db61a8e20193ff45d572224f670335320ef00ba9c9cb00a5110d4ef15660"
+    },
+    "primary/paper-inputs/figures/full-rate-retrieval-trajectories.pdf": {
+      "bytes": 21132,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/figures/full-rate-retrieval-trajectories.pdf",
+      "sha256": "3dffcb3c3f31f5715b00dcfbe6d8cf5d4d9417f7be07c4ff7b0f32f95eda1c7c"
+    },
+    "primary/paper-inputs/figures/optimizer-weight-dimension-map.pdf": {
+      "bytes": 42948,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/figures/optimizer-weight-dimension-map.pdf",
+      "sha256": "b8e390ae4e2c3b1fdaea873374a16b5b0724e41e65b947e96cf015a871be764f"
+    },
+    "primary/paper-inputs/figures/weight-to-retrieval-map.pdf": {
+      "bytes": 23177,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/figures/weight-to-retrieval-map.pdf",
+      "sha256": "ce84cea59e0ed8932b100c5b6cc0763ab26963d8e7c8c0464e13bc48e6657753"
+    },
+    "primary/paper-inputs/generated/dimension-utilization.tex": {
+      "bytes": 8401,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/generated/dimension-utilization.tex",
+      "sha256": "8b51361a713c3fb4bff5a8cbb7a53d2cd52da1fb9901342baa7d9a101df78987"
+    },
+    "primary/paper-inputs/generated/optimizer-primary.tex": {
+      "bytes": 6305,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/generated/optimizer-primary.tex",
+      "sha256": "28ec761320c9792917a2b19c5e6c14264730abc9a59370ec37982909da375ca5"
+    },
+    "primary/paper-inputs/generated/recipe-sensitivity.tex": {
+      "bytes": 4071,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/generated/recipe-sensitivity.tex",
+      "sha256": "dbe9cb7c0dc30710b35802249e301846fa9275995b75b82311e15008b88cae41"
+    },
+    "primary/paper-inputs/main.tex": {
+      "bytes": 30533,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/main.tex",
+      "sha256": "36a6b3509d1ad71a0c9609832e37869bde97379daf34bf69832af0f68f7f95fe"
+    },
+    "primary/paper-inputs/references.bib": {
+      "bytes": 5685,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/references.bib",
+      "sha256": "fca6bf5762a2cecab795a1a60c1338ab4eb999acb5d78c437b9df0e5f3553218"
+    },
+    "primary/paper-inputs/results.tex": {
+      "bytes": 330,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/results.tex",
+      "sha256": "61abd9b96efebb3d186d80e24a51b2012ecfb9393985c01c15e8b7b3692f7034"
+    },
+    "primary/paper-inputs/vendor/acl.sty": {
+      "bytes": 11615,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/vendor/acl.sty",
+      "sha256": "19dfeddc2c0e448f3926a0bef048a9db3f3611b46265b760caabd7ada4f361de"
+    },
+    "primary/paper-inputs/vendor/acl_natbib.bst": {
+      "bytes": 45442,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/paper-inputs/vendor/acl_natbib.bst",
+      "sha256": "6fbb306202290f4b68e74ac1460a8b27398500cb6dfeb4492e74c457eae7cd1e"
+    },
+    "primary/provenance/document-authorization.json": {
+      "bytes": 40622,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/provenance/document-authorization.json",
+      "sha256": "ca7a0503b9324d51ce62a9c19cd1ec380e06311a0ff498b84ea30e683670e0e4"
+    },
+    "primary/provenance/functional-readout.json": {
+      "bytes": 147431,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/provenance/functional-readout.json",
+      "sha256": "608965f5297fc196adcce6ca7417bd40e7f35d05e26133f20c0811dd1fd7027e"
+    },
+    "primary/replay.py": {
+      "bytes": 13746,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/replay.py",
+      "sha256": "455b6c344beb349e9f1a79c14f44ca37f09329e8ce2fde2845f65741235cd01e"
+    },
+    "primary/run_isolated.py": {
+      "bytes": 3838,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/run_isolated.py",
+      "sha256": "ac0a4ec4b9e939b7da76b069596044f7d7031ef57556a1430c38612e7ff395bc"
+    },
+    "primary/source/control_rendering.py": {
+      "bytes": 19058,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/source/control_rendering.py",
+      "sha256": "2c9c0a8b0580b35e25b8debf008e0e2e01ffbcc6eca3a2c01d838b9e1c3dcdea"
+    },
+    "primary/source/document_component.py": {
+      "bytes": 14405,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/source/document_component.py",
+      "sha256": "dbed8e2d4d418ce89d5d56d75da4e433e9b9b0888194a9c44ca053dd03d2684b"
+    },
+    "primary/source/functional_controls.py": {
+      "bytes": 9816,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/source/functional_controls.py",
+      "sha256": "0e98fbf4c768ef10bcae2cf6c660e37c583c88863055229ccdd65c0109661013"
+    },
+    "primary/source/weight_controls.py": {
+      "bytes": 17180,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/source/weight_controls.py",
+      "sha256": "6a87b441917c95d1fb0355c340beb8715acee89e66c102b51ecdfce6265d9141"
+    },
+    "primary/src/embed_optim/__init__.py": {
+      "bytes": 84,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/__init__.py",
+      "sha256": "ddfea072915535be4c693c1263f18e17a47ecc7c25d2f6dbe86ff6d2fad7646e"
+    },
+    "primary/src/embed_optim/aggregate.py": {
+      "bytes": 111685,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/aggregate.py",
+      "sha256": "c5f09041c0464b8fdb90eb2f1d440cdad3a23f12c35bbc24a0f0d022271581ac"
+    },
+    "primary/src/embed_optim/basis_sensitivity.py": {
+      "bytes": 52385,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/basis_sensitivity.py",
+      "sha256": "a8237bce7faff372f4f6d22a051bf9d2b28dcb6c6617a00be78d38370dfc5347"
+    },
+    "primary/src/embed_optim/bridge_exact_arithmetic.py": {
+      "bytes": 7560,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/bridge_exact_arithmetic.py",
+      "sha256": "0d66ce6e99aa42b8d93c8295cb0f5f3015ea7b7907a9f10fb095d95be2d646b4"
+    },
+    "primary/src/embed_optim/bridge_named_features.py": {
+      "bytes": 8855,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/bridge_named_features.py",
+      "sha256": "c3106b8b118084b74b1fd9d3fffe6b25252de18ff3cd4ae5aef836c7ec7e564c"
+    },
+    "primary/src/embed_optim/bridge_numerics.py": {
+      "bytes": 10557,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/bridge_numerics.py",
+      "sha256": "ff6c5b5019673d105a6f87cc7241a7b65b7199c2b5ad2cdaf37c5e55c1364c2c"
+    },
+    "primary/src/embed_optim/causal_chain_rendering.py": {
+      "bytes": 39062,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/causal_chain_rendering.py",
+      "sha256": "423c2561e3d7f16ddf03b5c56d1b90f15ed9bc9b646e654de1574ba7fe152ce0"
+    },
+    "primary/src/embed_optim/causal_chain_reporting.py": {
+      "bytes": 66816,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/causal_chain_reporting.py",
+      "sha256": "9c611c41c074717b456561fd35fba4dceaddfe78de909773b26c23cc856c79a1"
+    },
+    "primary/src/embed_optim/collators.py": {
+      "bytes": 2117,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    "primary/src/embed_optim/config.py": {
+      "bytes": 7052,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    "primary/src/embed_optim/corrected_beir_evaluation.py": {
+      "bytes": 9893,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_beir_evaluation.py",
+      "sha256": "01c2f871b55b1629898c060f8024a6226d186aa9d270f7c764e5267461036b91"
+    },
+    "primary/src/embed_optim/corrected_geometry_summary.py": {
+      "bytes": 23632,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_geometry_summary.py",
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    "primary/src/embed_optim/corrected_input_execution.py": {
+      "bytes": 1255,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_input_execution.py",
+      "sha256": "ae3a7df56165a288a679760b3de34723b08de74a050775acfa1df3a51d2e48a0"
+    },
+    "primary/src/embed_optim/corrected_outcome_summary.py": {
+      "bytes": 19823,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_outcome_summary.py",
+      "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+    },
+    "primary/src/embed_optim/corrected_publication.py": {
+      "bytes": 40493,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_publication.py",
+      "sha256": "fd69b84b2440ce5277f1952e42fda28fc22cf46f8451e68a2026f205207e82df"
+    },
+    "primary/src/embed_optim/corrected_retrieval_bridge.py": {
+      "bytes": 26258,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_retrieval_bridge.py",
+      "sha256": "347331a3c35d12a95188c0927a327b06bd30dd4ffa11b161c432117b4299eb10"
+    },
+    "primary/src/embed_optim/corrected_validation_evaluation.py": {
+      "bytes": 3533,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_validation_evaluation.py",
+      "sha256": "ef2b254d577ac0b70fbae8dccfdc427e5c1697d180f842d1d39893022f4cd03c"
+    },
+    "primary/src/embed_optim/corrected_validation_matrix.py": {
+      "bytes": 8315,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/corrected_validation_matrix.py",
+      "sha256": "3604920cbd5c1b55b5f39c265345e77a71c279bbcc0668e4d4b46b2efaaeed50"
+    },
+    "primary/src/embed_optim/data.py": {
+      "bytes": 14465,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/data.py",
+      "sha256": "5afe090147492abda341055e580fc626809c973d3a5e49b0a82e8891d925cff1"
+    },
+    "primary/src/embed_optim/decontamination.py": {
+      "bytes": 5282,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/decontamination.py",
+      "sha256": "58ecb5e44f0d9c9d2c3b8f63905299cd77ed94802e9da9024ed9b93b32ca71b6"
+    },
+    "primary/src/embed_optim/dense_retrieval_dynamics_publication.py": {
+      "bytes": 14185,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/dense_retrieval_dynamics_publication.py",
+      "sha256": "fea464624f1c64a525b5c83c6007841f3829bd979915703e4ecc9a3c0d00d311"
+    },
+    "primary/src/embed_optim/dimension_inference.py": {
+      "bytes": 12992,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/dimension_inference.py",
+      "sha256": "2ab97f49be1bc0fa57de12917da33553621d48193684848386ed0ab3e00c101c"
+    },
+    "primary/src/embed_optim/dimension_inference_render.py": {
+      "bytes": 4963,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/dimension_inference_render.py",
+      "sha256": "ba227baa25fed40c05f1bcb1ae2fb8969822c9593d54182a332ffd65c7bdbc5b"
+    },
+    "primary/src/embed_optim/dimension_intervention_io.py": {
+      "bytes": 4831,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/dimension_intervention_io.py",
+      "sha256": "e2d3e4ea51857f99937692079c9923eca3da2d80e32d17e03a29d0f3cb33fb13"
+    },
+    "primary/src/embed_optim/dimension_interventions.py": {
+      "bytes": 8825,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/dimension_interventions.py",
+      "sha256": "3728c1cb6155ea3200173c5816098581a787a861ec3598b8a6b49640d37deee4"
+    },
+    "primary/src/embed_optim/dimension_publication.py": {
+      "bytes": 45170,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/dimension_publication.py",
+      "sha256": "1120d125843789ef7a6aa32fff86d1845eddee16e7ff7d4e3410cd7d8e80761c"
+    },
+    "primary/src/embed_optim/dimension_utilization.py": {
+      "bytes": 30424,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/dimension_utilization.py",
+      "sha256": "b07d77c32fb061a6c8e4d5384a5943846146de79a06093fe8973170897f6a9cb"
+    },
+    "primary/src/embed_optim/evaluate_matrix.py": {
+      "bytes": 27491,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/evaluate_matrix.py",
+      "sha256": "7db687b3e1d701045aeb24ea26da1ddf7bfecf0304284eb27a404b0f350d2cf2"
+    },
+    "primary/src/embed_optim/evaluation_source_archive.py": {
+      "bytes": 68836,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/evaluation_source_archive.py",
+      "sha256": "2c2953a64bcdff1dab7db2b4b6176b2b32cfa290e4cf3b2474c7470815004c27"
+    },
+    "primary/src/embed_optim/evaluation_source_provenance.py": {
+      "bytes": 13809,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/evaluation_source_provenance.py",
+      "sha256": "235a9c1cf78597b11e41436003dba5a19eca689b1c4d8394c3da4e0a307f3cba"
+    },
+    "primary/src/embed_optim/evaluation_utils.py": {
+      "bytes": 6170,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/evaluation_utils.py",
+      "sha256": "529436e73759051b5c3000579fe9d66ce12c4444132eca4e7a26827054683e53"
+    },
+    "primary/src/embed_optim/exact_bridge_measurements.py": {
+      "bytes": 11728,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/exact_bridge_measurements.py",
+      "sha256": "3060c7dd2a6b135b26d1ca76cd775dcbb33872b8fd2187868ff7d501bdbda50f"
+    },
+    "primary/src/embed_optim/functional_intervention.py": {
+      "bytes": 24547,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/functional_intervention.py",
+      "sha256": "830248dd2ef82003fcf11ddaec013e2b2f66385c98d7e4913e32a9292016d325"
+    },
+    "primary/src/embed_optim/geometry.py": {
+      "bytes": 25648,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/geometry.py",
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "primary/src/embed_optim/geometry_robustness.py": {
+      "bytes": 7184,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/geometry_robustness.py",
+      "sha256": "8816dd6340154cee0375357276f1a872da40fee758dd634f984a08a1ad78b04b"
+    },
+    "primary/src/embed_optim/gpu_lease.py": {
+      "bytes": 7263,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/gpu_lease.py",
+      "sha256": "9a78ebd14049438410d6c15b709dbd7b2b025f0e07491e2cfbc9af5c730b50e1"
+    },
+    "primary/src/embed_optim/gradient_probe.py": {
+      "bytes": 25320,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/gradient_probe.py",
+      "sha256": "3e06f35eb3a6a294be0da6b78ca6ae6846357c6ff2aac70a54bd99e4d384ddac"
+    },
+    "primary/src/embed_optim/losses.py": {
+      "bytes": 3805,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    "primary/src/embed_optim/mechanism_report.py": {
+      "bytes": 52148,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/mechanism_report.py",
+      "sha256": "183698c675f0c77604c1ecf384cc55257e915d2b9d99c745c0e17662142f904c"
+    },
+    "primary/src/embed_optim/optimizers.py": {
+      "bytes": 11839,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "primary/src/embed_optim/outcome_report.py": {
+      "bytes": 53134,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/outcome_report.py",
+      "sha256": "c723de92cd11ace631d90e54cc8d670b77455cad31f9254f1d184b7b0d632f6d"
+    },
+    "primary/src/embed_optim/paper_audit.py": {
+      "bytes": 121763,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/paper_audit.py",
+      "sha256": "916042ad8469f069cd06caff4f66e2c323be5ca284658fad5daaa71b6645bb8a"
+    },
+    "primary/src/embed_optim/paper_layout.py": {
+      "bytes": 5054,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/paper_layout.py",
+      "sha256": "eb9d2bb4406c1cdd25f220e94d364283b15570b22dd3e09127388440c5d4afcc"
+    },
+    "primary/src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_completion.py",
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "primary/src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_contract.py",
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "primary/src/embed_optim/primary_exact_geometry_kernels.py": {
+      "bytes": 11851,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_exact_geometry_kernels.py",
+      "sha256": "0f2263493a86b44f72ddb7b0564a1f9089f300a5767ffcb5d42eec90c001fed4"
+    },
+    "primary/src/embed_optim/primary_geometry_kernels.py": {
+      "bytes": 7418,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_geometry_kernels.py",
+      "sha256": "8c26a9c78b7b10b36aacbbe3e7c52b0fae8ae4c0baed96299a5a11975e1f9e5f"
+    },
+    "primary/src/embed_optim/primary_geometry_reductions.py": {
+      "bytes": 960,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_geometry_reductions.py",
+      "sha256": "8e47b5eaf10979692a764776bc9c3e6b380cbc0d6b3dfc825e39b88aaa5ee443"
+    },
+    "primary/src/embed_optim/primary_io.py": {
+      "bytes": 10609,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_io.py",
+      "sha256": "5b4411a54b2cdbc5c0d7a2a55b1a469c31d7eca65f772fccf84f83d263163250"
+    },
+    "primary/src/embed_optim/primary_v3_bridge.py": {
+      "bytes": 10965,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_bridge.py",
+      "sha256": "bea3740f1bde59706b4309e7154a7de1dcc7ba8e3358688011fc4a523010878e"
+    },
+    "primary/src/embed_optim/primary_v3_completion.py": {
+      "bytes": 6368,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_completion.py",
+      "sha256": "fa9168911a84dd05ead48ff1a497701f88ae99caa16393c9bc3fbc7115fbed9f"
+    },
+    "primary/src/embed_optim/primary_v3_contract.py": {
+      "bytes": 9267,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_contract.py",
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "primary/src/embed_optim/primary_v3_dimension_contract.py": {
+      "bytes": 12569,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_dimension_contract.py",
+      "sha256": "f00c33e3c33a444ebc1b280264fb2d3e4976457f978ec7646e3da2579174b605"
+    },
+    "primary/src/embed_optim/primary_v3_dimension_exports.py": {
+      "bytes": 12136,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_dimension_exports.py",
+      "sha256": "f3c7fefbb39ff3aa9ee89d6e134b71a8da7a850fb14e9924e0ec8ee2d36224da"
+    },
+    "primary/src/embed_optim/primary_v3_dimension_inference.py": {
+      "bytes": 9441,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_dimension_inference.py",
+      "sha256": "6961a5754243dc11bcbcf1462869e791559ff72d79db2456f3b4036d692e7f4e"
+    },
+    "primary/src/embed_optim/primary_v3_dimension_vector_io.py": {
+      "bytes": 9563,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_dimension_vector_io.py",
+      "sha256": "ea33869f8cf677ad0c15e8747b6d91045ba55a39301a8bf2c52f09bf642ed858"
+    },
+    "primary/src/embed_optim/primary_v3_dimensions.py": {
+      "bytes": 9064,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_dimensions.py",
+      "sha256": "416ec0a8b787a54693886192cc8ae4b9c4d583960b8aef0cd27d85afb1f8e4c5"
+    },
+    "primary/src/embed_optim/primary_v3_exact_bridge.py": {
+      "bytes": 12426,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_exact_bridge.py",
+      "sha256": "09fe7e4915d46806ab34bdc225c04ee579cfb2df115711b811538221c0adb140"
+    },
+    "primary/src/embed_optim/primary_v3_exact_geometry.py": {
+      "bytes": 14434,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_exact_geometry.py",
+      "sha256": "8dd9ee230426664bfd87ab690dd4590dda35564f51960b283fbe1a46a10a0b31"
+    },
+    "primary/src/embed_optim/primary_v3_exact_geometry_io.py": {
+      "bytes": 9666,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_exact_geometry_io.py",
+      "sha256": "53c5278380a95de3a706d803668ad4dac4f108763b05f981c4847b537f22e8f6"
+    },
+    "primary/src/embed_optim/primary_v3_exact_publication.py": {
+      "bytes": 11020,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_exact_publication.py",
+      "sha256": "f3973c84a410669a78c8d8d1615fd547e89433482d4e2c1ffbdace68786ea187"
+    },
+    "primary/src/embed_optim/primary_v3_exact_publication_contract.py": {
+      "bytes": 5498,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_exact_publication_contract.py",
+      "sha256": "5492a7f72a33b1073f693aef8f8ceaa7e45e91e88af76d299a26530c21c9f1cc"
+    },
+    "primary/src/embed_optim/primary_v3_exact_publication_render.py": {
+      "bytes": 7660,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_exact_publication_render.py",
+      "sha256": "a85603529bb2f1b2feb76ec0c0c486dae3bf9506d848bc03f79957cde6901980"
+    },
+    "primary/src/embed_optim/primary_v3_geometry.py": {
+      "bytes": 14429,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_geometry.py",
+      "sha256": "e5bb4ed03f36193391a5f9f088bd0fe04e774ee67081cf0eb2d2d79a18488159"
+    },
+    "primary/src/embed_optim/primary_v3_geometry_io.py": {
+      "bytes": 11657,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_geometry_io.py",
+      "sha256": "3008e45e714fe6a599d77197e86c74db80c664f08155568369af95e308d16696"
+    },
+    "primary/src/embed_optim/primary_v3_io.py": {
+      "bytes": 10641,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_io.py",
+      "sha256": "c71120f6c691dbb57cb9a70476a108b011077b850fb6819c306b6e0196a4009c"
+    },
+    "primary/src/embed_optim/primary_v3_manuscript.py": {
+      "bytes": 14980,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_manuscript.py",
+      "sha256": "ac34d0feaab05a0ad76e5590f32ff55af3ae5108a891df6124a766e11af5b84c"
+    },
+    "primary/src/embed_optim/primary_v3_manuscript_build.py": {
+      "bytes": 11027,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_manuscript_build.py",
+      "sha256": "c0b9ae35759abe3661444be06585e8737cdd945bcd3b8ad620187d48ac4ccec8"
+    },
+    "primary/src/embed_optim/primary_v3_outcomes.py": {
+      "bytes": 18614,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_outcomes.py",
+      "sha256": "b97aaf812cd76b4ab4e852b7a13b7d5e66a680c638bf42c90b89108d66ace837"
+    },
+    "primary/src/embed_optim/primary_v3_paper_layout.py": {
+      "bytes": 2740,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_paper_layout.py",
+      "sha256": "a1fd89065f339215cf4c6c66a654a4f297792f14f2124cdf5bf551fa847a97da"
+    },
+    "primary/src/embed_optim/primary_v3_publication.py": {
+      "bytes": 10453,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_publication.py",
+      "sha256": "c16e102c6ac8df22fd3e9a38dc81bf9d574e7628febabeda37e10f1b4c67e1a8"
+    },
+    "primary/src/embed_optim/primary_v3_publication_bridge.py": {
+      "bytes": 4926,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_publication_bridge.py",
+      "sha256": "ae687d602b77421a25d25550c159fdb34f0e45a8364f35cd6378e0a2dc099ea4"
+    },
+    "primary/src/embed_optim/primary_v3_publication_contract.py": {
+      "bytes": 6375,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_publication_contract.py",
+      "sha256": "9e69f3ccbbe0f376da64136c993a31735ad9051e45b0c1560a884f2a1a0398a9"
+    },
+    "primary/src/embed_optim/primary_v3_publication_render.py": {
+      "bytes": 3879,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_publication_render.py",
+      "sha256": "3cf00b88afc7cbaec8687ef1edd48a8d9d0e1f8cd93a4575f60aaa0992417891"
+    },
+    "primary/src/embed_optim/primary_v3_publication_tables.py": {
+      "bytes": 5230,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_publication_tables.py",
+      "sha256": "07da505f721646a34a9f0c9e998cd33e672e6db9756c44c143547a434e3798ad"
+    },
+    "primary/src/embed_optim/primary_v3_validation.py": {
+      "bytes": 15105,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_validation.py",
+      "sha256": "ceb02460e121b14e92ff73923d9b4cd05eafed2552dc50fd81d8fd13f82f2777"
+    },
+    "primary/src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_v3_validation_io.py",
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    "primary/src/embed_optim/primary_weight_entries.py": {
+      "bytes": 12687,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/primary_weight_entries.py",
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    },
+    "primary/src/embed_optim/probe_export.py": {
+      "bytes": 20602,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/probe_export.py",
+      "sha256": "0afc8f84d22a3f91e9491e85b6b5ff437aa85d3734996fea3bc513d6fe39ad26"
+    },
+    "primary/src/embed_optim/probes.py": {
+      "bytes": 13945,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/probes.py",
+      "sha256": "15a8212e3bf58820e0eaaf22aa8e5f4413d5e4d320036b8f29f761552dd70a8c"
+    },
+    "primary/src/embed_optim/scope.py": {
+      "bytes": 5200,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/scope.py",
+      "sha256": "f6a8e3661062da7e52c5943d3303e359df287a8c3ff949e181b4a56ecdcfbd99"
+    },
+    "primary/src/embed_optim/state_operator_factorial_publication.py": {
+      "bytes": 18564,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/state_operator_factorial_publication.py",
+      "sha256": "83b7a92e43711ce55647aef8084bd507ae2ea8bec01d14b15754a45d15ec18d0"
+    },
+    "primary/src/embed_optim/update_geometry.py": {
+      "bytes": 23435,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/update_geometry.py",
+      "sha256": "93c295cad852fbeb3e065077442f7f94740d7b6981dd16e4c141fc4377c3fbb4"
+    },
+    "primary/src/embed_optim/validation_data.py": {
+      "bytes": 22754,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/validation_data.py",
+      "sha256": "ae1311e7cae7c5b8a1a6991e687be6709358bec77b4592d2cd63cbfd98f5ec2d"
+    },
+    "primary/src/embed_optim/validation_evaluation.py": {
+      "bytes": 9141,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/validation_evaluation.py",
+      "sha256": "f3d3c0a6f4327bedc80c9375d4a66c0786972dd2e87aa3e4a72fb4b4d5cee856"
+    },
+    "primary/src/embed_optim/validation_matrix.py": {
+      "bytes": 10961,
+      "origin": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-closed-primary-paper-replay-v1/closed-primary/src/embed_optim/validation_matrix.py",
+      "sha256": "c1e03dc73f4b9174647d2a66d3932569aadc5a080605105e4ce84660c1e2c8e6"
+    },
+    "replay_complete.py": {
+      "bytes": 28762,
+      "origin": "/tmp/dense-v3-combined-paper-replay.URO4uk9L/combined.py",
+      "sha256": "1a9c50dba2f58cc68b110749ccbc40d427445d53f0dc6c994b8f78c02096d566"
+    },
+    "source/native_summary.py": {
+      "bytes": 17041,
+      "origin": "/tmp/dense-v3-factorial-summary.BQ08HjeP/summarize.py",
+      "sha256": "4be265ce12cc649a595afaec9e5ef8b68a50eaa347ccb583d4d32ba3e100c5a1"
+    },
+    "source/original_summary.py": {
+      "bytes": 22605,
+      "origin": "/root/embedding-optimizer-story-refactor/src/embed_optim/state_operator_factorial_summary.py",
+      "sha256": "d6d4d8481404e38b0e7ab9291680c39a99909fc3fb87959bc42be49f4361cc27"
+    }
+  },
+  "fresh_native_model_admission": false,
+  "full_goal_complete": false,
+  "native_document_completion": {
+    "bytes": 1084,
+    "sha256": "41b6e7918fbb066ad4979e021165dff4a793e8f689360a7c6686af4509d05f5d"
+  },
+  "native_factorial_readout": {
+    "bytes": 2455,
+    "sha256": "b6b69d9b087a6797c54330064316aa9f9fe71887797ef59313efce8c3214781d"
+  },
+  "native_primary_manifest_sha256": "88861e52218f56b860851489106cd30e35dd79bb038eb9082967e3376db6457d",
+  "physical_second_host": false,
+  "scope": "actual-combined-dense-paper-numerical-portability-v1",
+  "source_release": false
+}

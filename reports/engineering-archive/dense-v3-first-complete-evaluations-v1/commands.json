@@ -1,0 +1,81 @@
+{
+  "scope": "actual_complete_checkpoint_native_readback_and_raw_score_table_reconstruction",
+  "work": "/tmp/dense-v3-complete-task-readback.R7JMZYjf",
+  "native_first": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-primary-v3/src:/root/embedding-optimizer-primary-v3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /usr/bin/python -B /tmp/dense-v3-complete-task-readback.R7JMZYjf/readback.py --output /tmp/dense-v3-complete-task-readback.R7JMZYjf/first-complete.json",
+    "launch": {
+      "chunk_id": "673b0d",
+      "wall_time_seconds": 1.001009583,
+      "session_id": 6325,
+      "original_token_count": 80,
+      "output": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\n"
+    },
+    "poll": {
+      "chunk_id": "773743",
+      "wall_time_seconds": 0.000002633,
+      "exit_code": 0,
+      "original_token_count": 232,
+      "output": "{\"output\": \"/tmp/dense-v3-complete-task-readback.R7JMZYjf/first-complete.json\", \"observed_at_utc\": \"2026-09-10T14:57:37.121707+00:00\", \"checkpoints\": [{\"run_id\": \"verified-v3-adamw-1e-5\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.58863, \"macro_score_0_to_100\": 58.863}, {\"run_id\": \"verified-v3-muon-3e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5571792857142857, \"macro_score_0_to_100\": 55.71792857142857}, {\"run_id\": \"verified-v3-normuon-1e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5914471428571428, \"macro_score_0_to_100\": 59.14471428571429}, {\"run_id\": \"verified-v3-muon-3e-4\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5924307142857143, \"macro_score_0_to_100\": 59.243071428571426}, {\"run_id\": \"verified-v3-adamw-3e-6\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5834164285714286, \"macro_score_0_to_100\": 58.34164285714286}], \"scientific_completion\": false}\n"
+    },
+    "terminal": {
+      "chunk_id": "773743",
+      "wall_time_seconds": 0.000002633,
+      "exit_code": 0,
+      "original_token_count": 232,
+      "output": "{\"output\": \"/tmp/dense-v3-complete-task-readback.R7JMZYjf/first-complete.json\", \"observed_at_utc\": \"2026-09-10T14:57:37.121707+00:00\", \"checkpoints\": [{\"run_id\": \"verified-v3-adamw-1e-5\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.58863, \"macro_score_0_to_100\": 58.863}, {\"run_id\": \"verified-v3-muon-3e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5571792857142857, \"macro_score_0_to_100\": 55.71792857142857}, {\"run_id\": \"verified-v3-normuon-1e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5914471428571428, \"macro_score_0_to_100\": 59.14471428571429}, {\"run_id\": \"verified-v3-muon-3e-4\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5924307142857143, \"macro_score_0_to_100\": 59.243071428571426}, {\"run_id\": \"verified-v3-adamw-3e-6\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5834164285714286, \"macro_score_0_to_100\": 58.34164285714286}], \"scientific_completion\": false}\n"
+    },
+    "unique_checkpoints": 5
+  },
+  "native_first_six": {
+    "command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-primary-v3/src:/root/embedding-optimizer-primary-v3 HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /usr/bin/python -B /tmp/dense-v3-complete-task-readback.R7JMZYjf/readback.py --output /tmp/dense-v3-complete-task-readback.R7JMZYjf/first-six-complete.json",
+    "launch": {
+      "chunk_id": "e3f676",
+      "wall_time_seconds": 1.001263374,
+      "session_id": 6748,
+      "original_token_count": 80,
+      "output": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\n"
+    },
+    "terminal": {
+      "chunk_id": "b9861e",
+      "wall_time_seconds": 0.000002381,
+      "exit_code": 0,
+      "original_token_count": 272,
+      "output": "{\"output\": \"/tmp/dense-v3-complete-task-readback.R7JMZYjf/first-six-complete.json\", \"observed_at_utc\": \"2026-09-10T14:59:43.227818+00:00\", \"checkpoints\": [{\"run_id\": \"verified-v3-adamw-1e-5\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.58863, \"macro_score_0_to_100\": 58.863}, {\"run_id\": \"verified-v3-muon-3e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5571792857142857, \"macro_score_0_to_100\": 55.71792857142857}, {\"run_id\": \"verified-v3-normuon-1e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5914471428571428, \"macro_score_0_to_100\": 59.14471428571429}, {\"run_id\": \"verified-v3-muon-3e-4\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5924307142857143, \"macro_score_0_to_100\": 59.243071428571426}, {\"run_id\": \"verified-v3-normuon-3e-3\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5584957142857143, \"macro_score_0_to_100\": 55.84957142857143}, {\"run_id\": \"verified-v3-adamw-3e-6\", \"step\": 3907, \"task_count\": 14, \"macro_ndcg_at_10\": 0.5834164285714286, \"macro_score_0_to_100\": 58.34164285714286}], \"scientific_completion\": false}\n"
+    },
+    "unique_checkpoints": 6,
+    "includes_five_previously_read_checkpoints": true,
+    "not_eleven_independent_experiments": true
+  },
+  "raw_score_reconstruction": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /tmp/dense-v3-complete-task-readback.R7JMZYjf/export_tables.py --input /tmp/dense-v3-complete-task-readback.R7JMZYjf/first-six-complete.json --output /tmp/dense-v3-complete-task-readback.R7JMZYjf/tables-first",
+    "terminal": {
+      "chunk_id": "ab7f18",
+      "wall_time_seconds": 0.000004389,
+      "exit_code": 0,
+      "original_token_count": 273,
+      "output": "{\"complete_checkpoints\": 6, \"independent_raw_score_reconstruction_passed\": true, \"input\": {\"bytes\": 1296459, \"path\": \"/tmp/dense-v3-complete-task-readback.R7JMZYjf/first-six-complete.json\", \"sha256\": \"bc57005e4adf883b19a426fe461b05197585b413eb7de15512e30eb5d39a8e3b\"}, \"optimizer_ranking_or_selection\": false, \"original_queue\": {\"bytes\": 6588, \"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/authorization.json\", \"sha256\": \"2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c\"}, \"outputs\": {\"summary.csv\": {\"bytes\": 544, \"sha256\": \"5f265267b91674036c0da610e598b1be83c59ea0cec6351ef75fe3e3ade4f5d5\"}, \"summary.md\": {\"bytes\": 1105, \"sha256\": \"65091e6e064e9b3da736fc6ad61aa9fade51ca03190ae30937e4dbd057abac69\"}, \"task-scores.csv\": {\"bytes\": 4879, \"sha256\": \"7c141c35d8a7d320af03ca70a805917ce9cc21846dc2874ad2cb5321365a0374\"}}, \"scientific_completion\": false, \"source\": {\"bytes\": 8062, \"path\": \"/tmp/dense-v3-complete-task-readback.R7JMZYjf/export_tables.py\", \"sha256\": \"d94ae90aa5ce4cbb1ca175f6e74a5715f93ec51b340ea87043d76eced598b2a4\"}, \"task_rows\": 84}\n"
+    }
+  },
+  "preexecution": {
+    "readback_lint_final": {
+      "chunk_id": "11e0ee",
+      "wall_time_seconds": 0.000004496,
+      "exit_code": 0,
+      "original_token_count": 5,
+      "output": "All checks passed!\n"
+    },
+    "initial_import_sorting_refusals_retained_in_source_before_copies": true,
+    "export_jsonl_handling_and_exact_pool_b_check_added_before_any_export_execution": true,
+    "initial_read_only_path_probe": {
+      "tool_chunk": "dd375c",
+      "exit_code": 1,
+      "reason": "primary_admission.json was looked for inside the worker dense-model folder; the native plan is in its enclosing content-addressed cache root. No producer or source was changed."
+    },
+    "one_arithmetic_fixture_is_not_a_retrieval_result": true
+  },
+  "archived_documented_entry": {"command":"CUDA_VISIBLE_DEVICES='' /usr/bin/python -B source/export_tables.py --input actual/first-six-complete.json --output /tmp/dense-v3-complete-task-readback.R7JMZYjf/tables-from-archive","working_directory":"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-first-complete-evaluations-v1","terminal":{"chunk_id":"acc4dc","wall_time_seconds":0.000004851,"exit_code":0,"original_token_count":281,"output":"{\"complete_checkpoints\": 6, \"independent_raw_score_reconstruction_passed\": true, \"input\": {\"bytes\": 1296459, \"path\": \"actual/first-six-complete.json\", \"sha256\": \"bc57005e4adf883b19a426fe461b05197585b413eb7de15512e30eb5d39a8e3b\"}, \"optimizer_ranking_or_selection\": false, \"original_queue\": {\"bytes\": 6588, \"path\": \"/root/embedding-optimizer-v3-experiment/launch/evaluation-handoff/authorization.json\", \"sha256\": \"2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c\"}, \"outputs\": {\"summary.csv\": {\"bytes\": 544, \"sha256\": \"5f265267b91674036c0da610e598b1be83c59ea0cec6351ef75fe3e3ade4f5d5\"}, \"summary.md\": {\"bytes\": 1105, \"sha256\": \"65091e6e064e9b3da736fc6ad61aa9fade51ca03190ae30937e4dbd057abac69\"}, \"task-scores.csv\": {\"bytes\": 4879, \"sha256\": \"7c141c35d8a7d320af03ca70a805917ce9cc21846dc2874ad2cb5321365a0374\"}}, \"scientific_completion\": false, \"source\": {\"bytes\": 8062, \"path\": \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-first-complete-evaluations-v1/source/export_tables.py\", \"sha256\": \"d94ae90aa5ce4cbb1ca175f6e74a5715f93ec51b340ea87043d76eced598b2a4\"}, \"task_rows\": 84}\n"},"actual_three_output_files_byte_identical":true,"native_common_records_byte_value_identical":5,"scientific_completion":false},
+  "documentation_update": {"context_mismatch_refusals_occurred":true,"failed_hunks_not_applied":true,"only_intended_dated_CURRENT_EXPERIMENT_update_applied":true,"no_generated_scores_or_manuscript_changed":true},
+  "all_own_numerical_and_export_calls_terminal": true,
+  "original_evaluations_not_restarted": true,
+  "scientific_completion": false
+}

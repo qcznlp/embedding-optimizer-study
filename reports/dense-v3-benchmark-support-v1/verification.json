@@ -1,0 +1,100 @@
+{
+  "archive_files": {
+    "README.md": {
+      "bytes": 8953,
+      "sha256": "9954a70052370f8adcea16276b32f176b33305c8c5d4a1aca79748e600cd5a57"
+    },
+    "analyze.py": {
+      "bytes": 12756,
+      "sha256": "a3dbbc872010dff123add98e03b08a46a290af7bd8062c3bc14ff2fc1feae596"
+    },
+    "before/CURRENT_EXPERIMENT.md": {
+      "bytes": 19943,
+      "sha256": "6e0cdaa9a5c69e774af7b9ee6b5259a707aa4ec731e423dc59bcf833d41a9e45"
+    },
+    "commands.json": {
+      "bytes": 18932,
+      "sha256": "a9ce5d070b4fed3b3ff5f8253938fef83e37d7a0255ca3611edbc888c6280eac"
+    },
+    "observations.json": {
+      "bytes": 8753,
+      "sha256": "748ced0f99300ea2c8a5b6a158e5e525d87c77bbe35b71ee88ed92669ba797cd"
+    },
+    "tables/benchmark_sizes.csv": {
+      "bytes": 1174,
+      "sha256": "62b1c3a6e873759a2494aa8d2b0c8c7b5bc77d0ec12c4dc32581d9d4fd3b798f"
+    },
+    "tables/contrast_summary.csv": {
+      "bytes": 848,
+      "sha256": "318a2399dd772d3d2519ac6bad781c201f61e045221fca4667526dcb923aece0"
+    },
+    "tables/readout.json": {
+      "bytes": 11514,
+      "sha256": "80db28367aeae6a453e3d2c188f84f2e2c5d18a731bd699833118bf709aba6fa"
+    },
+    "tables/task_contributions.csv": {
+      "bytes": 8468,
+      "sha256": "088f2c18091416c59598af24cd9824af9c3eb5e982173f129584990af1975dd7"
+    },
+    "test_analyze.py": {
+      "bytes": 2166,
+      "sha256": "da3b9682e0b68176e00ffea8c38176731136b42623ea804fda16a19373c9ef95"
+    },
+    "verification-attempt-1.json": {
+      "bytes": 6771,
+      "sha256": "8f22fcfbf4ce5c75fe7aa24f3f92a786bb54b852b4d12ab455517affa1c35346"
+    }
+  },
+  "component_tests": 8,
+  "copied_generated_files_byte_identical": 4,
+  "dispatch_authorization_files_unchanged": 6,
+  "independent_decimal_task_contributions": 84,
+  "independent_polars_count_fields": 70,
+  "live_files": {
+    "CURRENT_EXPERIMENT.md": {
+      "bytes": 21044,
+      "sha256": "8185ee7dd0491326f2d24f2edf7606561db7d69f4b2a89576c19da74a8a15a5a"
+    }
+  },
+  "local_links_checked": [
+    "tables/readout.json",
+    "tables/benchmark_sizes.csv",
+    "tables/task_contributions.csv",
+    "tables/contrast_summary.csv",
+    "../../docs/evaluation-analysis-restoration.md",
+    "commands.json",
+    "verification-attempt-1.json",
+    "observations.json",
+    "before/CURRENT_EXPERIMENT.md"
+  ],
+  "manuscript_unchanged": true,
+  "model_execution": false,
+  "native_endpoint_revisions_checked": 168,
+  "new_inference": false,
+  "observed_at_utc": "2026-09-10T22:31:28.986922+00:00",
+  "passed_in_declared_scope": true,
+  "primary_assemblies_unchanged": [
+    {
+      "files_checked": 56,
+      "root": "/root/embedding-optimizer-primary-v3"
+    },
+    {
+      "files_checked": 56,
+      "root": "/root/embedding-optimizer-v3-experiment/launch/source-snapshot"
+    }
+  ],
+  "prior_endpoint_archive_files_unchanged": 27,
+  "protected_helper_access": false,
+  "query_qrel_files_authenticated_by_actual_analysis": 28,
+  "resource_handoff": false,
+  "scientific_completion": false,
+  "scope": "benchmark_support_readout_preservation_and_installation_check",
+  "source_release": false,
+  "whole_840_cell_consumer_called": false,
+  "whole_goal_complete": false,
+  "actual_verification_call": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nimport csv,hashlib,json,re\nfrom datetime import datetime,timezone\nfrom pathlib import Path\n\nstory=Path('/root/embedding-optimizer-story-refactor')\nreport=story/'reports/dense-v3-benchmark-support-v1'\nwork=Path('/tmp/dense-v3-benchmark-support.LtaKgNMD/actual')\ndef identity(path):\n    raw=path.read_bytes()\n    return {'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()}\ndef check(path, expected):\n    actual=identity(path)\n    assert all(actual[k]==expected[k] for k in ('bytes','sha256')),str(path)\n    return actual\nreceipt=json.loads((report/'tables/readout.json').read_text())\nassert identity(report/'tables/readout.json')['sha256']=='80db28367aeae6a453e3d2c188f84f2e2c5d18a731bd699833118bf709aba6fa'\ncheck(report/'analyze.py',receipt['source'])\nfor name, expected in receipt['outputs'].items():\n    check(report/'tables'/name,expected)\n    assert (report/'tables'/name).read_bytes()==(work/name).read_bytes()\nassert (report/'tables/readout.json').read_bytes()==(work/'readout.json').read_bytes()\nassert identity(report/'before/CURRENT_EXPERIMENT.md')['sha256']=='6e0cdaa9a5c69e774af7b9ee6b5259a707aa4ec731e423dc59bcf833d41a9e45'\n\nold=story/'reports/dense-v3-final-inference-v1'\nold_receipt=json.loads((old/'verification.json').read_text())\nassert identity(old/'verification.json')['sha256']=='63865889287feab7a7eccd71f6c7f9b4601ce8bc099ae15cfe426ca0334e9911'\nfor name, expected in old_receipt['archive_files'].items():\n    check(old/name,expected)\nassert len(old_receipt['archive_files'])==27\n\nassembly_results=[]\nfor root in (Path('/root/embedding-optimizer-primary-v3'),Path('/root/embedding-optimizer-v3-experiment/launch/source-snapshot')):\n    assert identity(root/'source-assembly.json')['sha256']=='e603ef175c0f691a1dd83c4d8b474d90da2fc67c8c65f5a77f3c3180e78332b8'\n    assembly=json.loads((root/'source-assembly.json').read_text())\n    for name, item in assembly['files'].items(): check(root/name,item['identity'])\n    assert len(assembly['files'])==56\n    assembly_results.append({'root':str(root),'files_checked':56})\n\nlaunch=Path('/root/embedding-optimizer-v3-experiment/launch')\nfrozen={\n'evaluation-handoff/dispatch.py':'5b8a89bed5e0eaa02a12585ee3f6c883ca3e162b550898d68322321ee41d8427',\n'evaluation-handoff/authorization.json':'2351e225387f42fe607d7e002a0717de79a78cba9f3c93f66652510083f0be7c',\n'validation-handoff/validation.py':'d2fc55c67670ea5b42cacb055f48379ef278a465ce86d95808231ab86049d913',\n'validation-handoff/authorization.json':'6a8dcdd579bd6c2f6ea82e3f4cd808f88e92e9a28b9e97f41ffa6447eb0e1f6f',\n'functional-dimensions/dispatch.py':'3b02f1d8486f3c2b41d0403cbf291580d0ca32868b8b29cb05514a22770257f5',\n'functional-dimensions/authorization.json':'d72527595e2c963eae7fd46b0a1de2bd83d1ea15a863ae467a1065cfc5b2f336'}\nfor name,digest in frozen.items(): assert identity(launch/name)['sha256']==digest\nfor name,digest in {\n'AGENTS.md':'2ea0ac433747a4406823013f36701f49fb8cd806a5c01bdbad73c88ad93b6946',\n'paper/main.tex':'45a3d297e08dfbb99908508a68ee71f077f29203bc3da8b017f6564769bc177e',\n'paper/build/main.pdf':'94f47113cbfc0e5651bb0d12ef5d8aa16ae5aceb35991ffd5d96626d59de8a3c'}.items():\n    assert identity(story/name)['sha256']==digest\n\ncommands=json.loads((report/'commands.json').read_text())\nfor name in ('analysis','component_tests','independent_decimal_and_polars_readback'):\n    assert commands[name]['result']['exit_code']==0 and 'session_id' not in commands[name]['result']\nassert commands['initial_read_only_inspection_with_manifest_filename_failure']['exit_code']==1\nfor item in commands['mteb_source_observations']['sources']:\n    assert identity(Path(item['path']))['sha256']==item['sha256']\n\nwith (report/'tables/benchmark_sizes.csv').open() as handle:\n    sizes={r['task']:r for r in csv.DictReader(handle)}\nreadme=(report/'README.md').read_text()\nfor task, row in sizes.items():\n    expected='| '+task+' | '+format(int(row['qrel_covered_queries']),',')+' | '+format(int(row['queries_with_positive_qrel']),',')+' |'\n    assert expected in readme\nlinks=[]\nfor target in re.findall(r'\\]\\(([^)]+)\\)',readme):\n    if '://' not in target and not target.startswith('#'):\n        assert (report/target.split('#')[0]).exists(),target\n        links.append(target)\n\nnames=['README.md','analyze.py','test_analyze.py','commands.json','observations.json','before/CURRENT_EXPERIMENT.md',\n       'verification-attempt-1.json','tables/benchmark_sizes.csv','tables/task_contributions.csv','tables/contrast_summary.csv','tables/readout.json']\nfiles={name:identity(report/name) for name in names}\nfor name in names:\n    text=(report/name).read_text()\n    assert re.search(r'(?:wandb_v1_[A-Za-z0-9_-]{20,}|hf_[A-Za-z0-9]{20,})',text) is None,name\nresult={'scope':'benchmark_support_readout_preservation_and_installation_check','observed_at_utc':datetime.now(timezone.utc).isoformat(),\n'passed_in_declared_scope':True,'archive_files':files,'live_files':{'CURRENT_EXPERIMENT.md':identity(story/'CURRENT_EXPERIMENT.md')},\n'primary_assemblies_unchanged':assembly_results,'dispatch_authorization_files_unchanged':len(frozen),'prior_endpoint_archive_files_unchanged':27,\n'copied_generated_files_byte_identical':4,'query_qrel_files_authenticated_by_actual_analysis':28,'native_endpoint_revisions_checked':168,\n'independent_decimal_task_contributions':84,'independent_polars_count_fields':70,'component_tests':8,'local_links_checked':links,\n'manuscript_unchanged':True,'protected_helper_access':False,'model_execution':False,'new_inference':False,'resource_handoff':False,\n'whole_840_cell_consumer_called':False,'source_release':False,'scientific_completion':False,'whole_goal_complete':False}\nprint(json.dumps(result,sort_keys=True))\nPY",
+    "tool_chunk": "91189b",
+    "exit_code": 0
+  }
+}

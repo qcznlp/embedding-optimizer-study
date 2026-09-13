@@ -118,6 +118,40 @@ def test_evaluation_input_manifest_will_not_adopt_unbound_cached_results(tmp_pat
         evaluate_matrix._record_evaluation_inputs(tmp_path / "results", {"dense": [checkpoint]})
 
 
+@pytest.mark.parametrize("mutate_first", [False, True])
+def test_early_subset_can_extend_without_rebinding_prior_checkpoints(tmp_path, mutate_first):
+    """Metadata reuse is safe; this does not claim shared GPU scheduling ownership."""
+    checkpoints = []
+    for index in range(2):
+        checkpoint = tmp_path / f"run-{index}" / "checkpoint-5"
+        checkpoint.mkdir(parents=True)
+        (checkpoint.parent / "completed.json").write_text(
+            json.dumps({"model_family": "dense", "run_id": f"run-{index}"})
+        )
+        (checkpoint / "model.safetensors").write_bytes(f"payload-{index}".encode())
+        checkpoints.append(checkpoint)
+    results = tmp_path / "results"
+    results.mkdir()
+    evaluate_matrix._record_evaluation_inputs(results, {"dense": checkpoints[:1]})
+    manifest = results / "evaluation_inputs.json"
+    before = manifest.read_bytes()
+
+    if mutate_first:
+        (checkpoints[0] / "model.safetensors").write_bytes(b"changed old input")
+        with pytest.raises(RuntimeError, match="content changed"):
+            evaluate_matrix._record_evaluation_inputs(results, {"dense": checkpoints[::-1]})
+        assert manifest.read_bytes() == before
+        return
+
+    evaluate_matrix._record_evaluation_inputs(results, {"dense": checkpoints[::-1]})
+    recorded = json.loads(manifest.read_text())["checkpoints"]
+    key = str(checkpoints[0].resolve())
+    assert recorded[key] == json.loads(before)["checkpoints"][key]
+    assert evaluate_matrix.audit_evaluation_inputs(results, checkpoints)["checkpoints"] == 2
+    with pytest.raises(ValueError, match="exact checkpoints"):
+        evaluate_matrix.audit_evaluation_inputs(results, checkpoints[:1])
+
+
 def test_formal_result_file_audit_rejects_unselected_json(tmp_path):
     root = tmp_path / "results"
     selected = root / "run-a" / "SciFactDecontaminated.json"

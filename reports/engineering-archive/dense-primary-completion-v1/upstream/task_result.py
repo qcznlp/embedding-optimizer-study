@@ -1,0 +1,1120 @@
+from __future__ import annotations
+
+import datetime
+import json
+import logging
+from collections import defaultdict
+from functools import cached_property
+from importlib.metadata import version
+from typing import TYPE_CHECKING, Any, cast
+
+import numpy as np
+from huggingface_hub import EvalResult
+from packaging.version import InvalidVersion, Version
+from pydantic import BaseModel, field_validator, model_validator
+from typing_extensions import deprecated
+
+from mteb._helpful_enum import HelpfulStrEnum
+from mteb._hf_integration.eval_result_model import (
+    HFEvalResult,
+    HFEvalResultDataset,
+    HFEvalResults,
+    HFEvalResultSource,
+)
+from mteb._log_once import LogOnce
+from mteb.abstasks import AbsTaskClassification
+from mteb.abstasks.abstask import AbsTask
+from mteb.abstasks.task_metadata import TaskMetadata
+from mteb.languages import LanguageScripts
+from mteb.models.model_meta import ScoringFunction
+from mteb.timing import PhaseTiming, TimingStack
+from mteb.types import (
+    ScoresDict,
+    SplitName,
+)
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable, Mapping
+    from pathlib import Path
+
+    from typing_extensions import Self
+
+    from mteb.abstasks.task_metadata import TaskDomain
+    from mteb.types import (
+        HFSubset,
+        ISOLanguage,
+        ISOLanguageScript,
+        Score,
+    )
+
+logger = logging.getLogger(__name__)
+log_once = LogOnce(logger)
+
+
+class Criteria(HelpfulStrEnum):
+    """Enum for criteria to check when merging TaskResult objects."""
+
+    MTEB_VERSION = "mteb_version"
+    DATASET_REVISION = "dataset_revision"
+
+
+class ScalaNbClassificationDummy(AbsTaskClassification):
+    """A dummy task for loading historic results from before v1.11.0"""
+
+    metadata = TaskMetadata(
+        name="ScalaNbClassification",
+        description="A dummy",
+        main_score="accuracy",
+        type="Classification",
+        eval_langs=["nob-Latn"],
+        dataset={"path": "not/exists", "revision": "revision_not_applicable"},
+    )
+
+
+class ScalaNnClassificationDummy(AbsTaskClassification):
+    """A dummy task for loading historic results from before v1.11.0"""
+
+    metadata = TaskMetadata(
+        name="ScalaNnClassification",
+        description="A dummy",
+        main_score="accuracy",
+        type="Classification",
+        eval_langs=["nob-Latn"],
+        dataset={"path": "not/exists", "revision": "revision_not_applicable"},
+    )
+
+
+class ScalaDaClassificationDummy(AbsTaskClassification):
+    """A dummy task for loading historic results from before v1.11.0"""
+
+    metadata = TaskMetadata(
+        name="ScalaDaClassification",
+        description="A dummy",
+        main_score="accuracy",
+        type="Classification",
+        eval_langs=["dan-Latn"],
+        dataset={"path": "not/exists", "revision": "revision_not_applicable"},
+    )
+
+
+class ScalaSvClassificationDummy(AbsTaskClassification):
+    """A dummy task for loading historic results from before v1.11.0"""
+
+    metadata = TaskMetadata(
+        name="ScalaSvClassification",
+        description="A dummy",
+        main_score="accuracy",
+        type="Classification",
+        eval_langs=["swe-Latn"],
+        dataset={"path": "not/exists", "revision": "revision_not_applicable"},
+    )
+
+
+outdated_tasks: dict[str, type[AbsTask]] = {
+    "ScalaNbClassification": ScalaNbClassificationDummy,
+    "ScalaNnClassification": ScalaNnClassificationDummy,
+    "ScalaDaClassification": ScalaDaClassificationDummy,
+    "ScalaSvClassification": ScalaSvClassificationDummy,
+}
+
+renamed_tasks = {
+    "NorwegianParliament": "NorwegianParliamentClassification",
+    "CMedQAv2": "CMedQAv2-reranking",
+    "CMedQAv1": "CMedQAv1-reranking",
+    "8TagsClustering": "EightTagsClustering",
+    "PPC": "PpcPC",
+}
+
+
+class TaskResult(BaseModel):  # noqa: PLR0904
+    """A class to represent the MTEB result.
+
+    Attributes:
+        task_name: The name of the MTEB task.
+        dataset_revision: The revision dataset for the task on HuggingFace dataset hub.
+        mteb_version: The version of the MTEB used to evaluate the model.
+        scores: The scores of the model on the dataset. The scores is a dictionary with the following structure; dict[SplitName, list[Scores]].
+            Where Scores is a dictionary with the following structure; dict[str, Any]. Where the keys and values are scores. Split is the split of
+            the dataset.
+        evaluation_time: The time taken to evaluate the model.
+        kg_co2_emissions: The kg of CO2 emissions produced by the model during evaluation.
+
+    Examples:
+        >>> scores = {
+        ...     "evaluation_time": 100,
+        ...     "train": {
+        ...         "en-de": {
+        ...             "main_score": 0.5,
+        ...         },
+        ...         "en-fr": {
+        ...             "main_score": 0.6,
+        ...         },
+        ...     },
+        ... }
+        >>> sample_task = ... # some MTEB task
+        >>> mteb_results = TaskResult.from_task_results(sample_task, scores)
+        >>> mteb_results.get_score()  # get the main score for all languages
+        0.55
+        >>> mteb_results.get_score(languages=["fra"])  # get the main score for French
+        0.6
+        >>> mteb_results.to_dict()
+        {'dataset_revision': '1.0', 'task_name': 'sample_task', 'mteb_version': '1.0.0', 'evaluation_time': 100, 'scores': {'train':
+            [
+                {'main_score': 0.5, 'hf_subset': 'en-de', 'languages': ['eng-Latn', 'deu-Latn']},
+                {'main_score': 0.6, 'hf_subset': 'en-fr', 'languages': ['eng-Latn', 'fra-Latn']}
+            ]}
+        }
+    """
+
+    dataset_revision: str
+    task_name: str
+    mteb_version: str | None
+    scores: dict[SplitName, list[ScoresDict]]
+    evaluation_time: float | None
+    kg_co2_emissions: float | None = None
+    date: datetime.datetime | None = None
+    evaluation_phases: list[PhaseTiming] | None = None
+
+    @classmethod
+    def from_task_results(
+        cls,
+        task: AbsTask | type[AbsTask],
+        scores: Mapping[SplitName, Mapping[HFSubset, ScoresDict]],
+        evaluation_time: float,
+        kg_co2_emissions: float | None = None,
+        date: datetime.datetime | None = None,
+        evaluation_phases: list[PhaseTiming] | None = None,
+    ) -> TaskResult:
+        """Create a TaskResult from the task and scores.
+
+        Args:
+            task: The task to create the TaskResult from.
+            scores: The scores of the model on the dataset. The scores is a dictionary with the following structure; dict[SplitName, dict[HFSubset, Scores]].
+                Where Scores is a dictionary with the following structure; dict[str, Any]. Where the keys and values are scores. Split is the split of
+                the dataset.
+            evaluation_time: The time taken to evaluate the model.
+            kg_co2_emissions: The kg of CO2 emissions produced by the model during evaluation.
+            date: The date the model was trained on.
+            evaluation_phases: A list of dicts describing the start, end, and name of each phase.
+        """
+        task_meta = task.metadata
+        subset2langscripts = task_meta.hf_subsets_to_langscripts
+        mteb_ver = version("mteb")
+        flat_scores: dict[SplitName, list[ScoresDict]] = defaultdict(list)
+        for split, hf_subset_scores in scores.items():
+            for hf_subset, hf_scores in hf_subset_scores.items():
+                if hf_subset in subset2langscripts:
+                    eval_langs = subset2langscripts[hf_subset]
+                else:
+                    # For aggregated tasks, scores may use "default" subset
+                    # which isn't in the per-subset langscript mapping.
+                    # Collect all languages from the mapping.
+                    all_langs: list[str] = []
+                    for langs in subset2langscripts.values():
+                        all_langs.extend(
+                            lang for lang in langs if lang not in all_langs
+                        )
+                    eval_langs = all_langs
+                _scores = {
+                    **hf_scores,
+                    "hf_subset": hf_subset,
+                    "languages": eval_langs,
+                    "mteb_version": hf_scores.get("mteb_version", mteb_ver),
+                }
+                flat_scores[split].append(_scores)
+
+        return TaskResult(
+            dataset_revision=task.metadata.revision,
+            task_name=task.metadata.name,
+            mteb_version=cls._compute_top_level_mteb_version(flat_scores) or mteb_ver,
+            scores=flat_scores,
+            evaluation_time=evaluation_time,
+            kg_co2_emissions=kg_co2_emissions,
+            date=date,
+            evaluation_phases=evaluation_phases,
+        )
+
+    @field_validator("scores")
+    @classmethod
+    def _validate_scores(
+        cls, v: dict[SplitName, list[ScoresDict]]
+    ) -> dict[SplitName, list[ScoresDict]]:
+        for split, hf_subset_scores in v.items():
+            for hf_subset_score in hf_subset_scores:
+                if not isinstance(hf_subset_score, dict):
+                    raise ValueError("Scores should be a dictionary")
+                cls._validate_scores_dict(hf_subset_score)
+        return v
+
+    @model_validator(mode="after")
+    def _backfill_per_subset_mteb_version(self) -> Self:
+        """Backfill mteb_version from top-level into subsets that lack it."""
+        if self.mteb_version is None:
+            return self
+        for split_scores in self.scores.values():
+            for subset_scores in split_scores:
+                if "mteb_version" not in subset_scores:
+                    subset_scores["mteb_version"] = self.mteb_version  # type: ignore[index]
+        return self
+
+    @staticmethod
+    def _validate_scores_dict(scores: ScoresDict) -> None:
+        if "main_score" not in scores:
+            raise ValueError("'main_score' should be in scores")
+        if "hf_subset" not in scores or not isinstance(scores["hf_subset"], str):
+            raise ValueError("hf_subset should be in scores and should be a string")
+        if "languages" not in scores or not isinstance(scores["languages"], list):
+            raise ValueError("languages should be in scores and should be a list")
+
+        # check that it is json serializable
+        try:
+            _ = json.dumps(scores)
+        except Exception as e:
+            raise ValueError(f"Scores are not json serializable: {e}")
+
+    @property
+    def languages(self) -> list[str]:
+        """The languages present in the scores."""
+        langs = []
+        for split, split_res in self.scores.items():
+            for entry in split_res:
+                langs.extend([lang.split("-")[0] for lang in entry["languages"]])
+        return list(set(langs))
+
+    @cached_property
+    def task(self) -> AbsTask:
+        """The task associated with the result."""
+        from mteb.get_tasks import get_task
+
+        return get_task(self.task_name)
+
+    @property
+    def domains(self) -> list[TaskDomain]:
+        """The domains of the task."""
+        doms = self.task.metadata.domains
+        if doms is None:
+            doms = []
+        return doms
+
+    @property
+    def task_type(self) -> str:
+        """The type of the task."""
+        return cast("str", self.task.metadata.type)
+
+    @property
+    def is_public(self) -> bool:
+        """Check if the task is public."""
+        return self.task.metadata.is_public
+
+    @property
+    def main_score(self) -> float:
+        """The main score of the result."""
+        return self.get_score()
+
+    @property
+    def hf_subsets(self) -> list[str]:
+        """The hf_subsets present in the scores."""
+        hf_subsets = set()
+        for split, split_res in self.scores.items():
+            for entry in split_res:
+                hf_subsets.add(entry["hf_subset"])
+        return list(hf_subsets)
+
+    @property
+    def eval_splits(self) -> list[str]:
+        """The eval splits present in the scores."""
+        return list(self.scores.keys())
+
+    def plot_evaluation_phases(self) -> str:
+        """Plots a text-based bar chart of the recorded evaluation phases."""
+        ts = TimingStack()
+        if self.evaluation_phases:
+            ts.phases = self.evaluation_phases
+        return ts.plot()
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert the TaskResult to a dictionary.
+
+        Returns:
+            The TaskResult as a dictionary.
+        """
+        return self.model_dump()
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> Self:
+        """Create a TaskResult from a dictionary.
+
+        Args:
+            data: The dictionary to create the TaskResult from.
+
+        Returns:
+            The created TaskResult object.
+        """
+        return cls.model_validate(data)
+
+    def _round_scores(self, scores: dict[SplitName, list[ScoresDict]], n: int) -> None:
+        """Recursively round scores to n decimal places"""
+        for key, value in scores.items():
+            if isinstance(value, dict):
+                self._round_scores(value, n)
+            elif isinstance(value, list):
+                for i, v in enumerate(value):
+                    if isinstance(v, dict):
+                        self._round_scores(v, n)
+                    elif isinstance(v, float):
+                        value[i] = round(v, n)  # type: ignore[call-overload]
+
+            elif isinstance(value, float):
+                scores[key] = round(value, n)
+
+    def to_disk(self, path: Path) -> None:
+        """Save TaskResult to disk.
+
+        Args:
+            path: The path to the file to save.
+        """
+        json_obj = self.model_dump()
+        json_obj["date"] = self.date.timestamp() if self.date else None
+        self._round_scores(json_obj["scores"], 6)
+
+        with path.open("w") as f:  # noqa: PLW1514
+            json.dump(json_obj, f, indent=2)
+
+    @classmethod
+    def from_disk(cls, path: Path, load_historic_data: bool = True) -> TaskResult:
+        """Load TaskResult from disk.
+
+        Args:
+            path: The path to the file to load.
+            load_historic_data: Whether to attempt to load historic data from before v1.11.0.
+
+        Returns:
+            The loaded TaskResult object.
+        """
+        with path.open("r", encoding="utf-8") as f:
+            json_str = f.read()
+
+        if not load_historic_data:
+            try:
+                return cls.model_validate_json(json_str)
+            except Exception as e:
+                raise ValueError(
+                    f"Error loading TaskResult from disk. You can try to load historic data by setting `load_historic_data=True`. Error: {e}"
+                )
+        data = json.loads(json_str)
+        min_version = cls._parse_mteb_version_min(data.get("mteb_version"))
+        pre_1_11_load = (
+            (min_version is not None and min_version < Version("1.11.0"))
+            or "mteb_version" not in data
+        )  # assume it is before 1.11.0 if the version is not present
+
+        try:
+            obj: TaskResult = cls.model_validate_json(json_str)
+        except Exception as e:
+            if not pre_1_11_load:
+                raise e
+            logger.debug(
+                f"Could not load TaskResult from disk, got error: {e}. Attempting to load from disk using format from before v1.11.0"
+            )
+            obj = cls._convert_from_before_v1_11_0(data)
+
+        pre_v_12_48 = min_version is not None and min_version < Version("1.12.48")
+
+        if pre_v_12_48:
+            cls._fix_pair_classification_scores(obj)
+
+        return obj
+
+    @classmethod
+    def _fix_pair_classification_scores(cls, obj: TaskResult) -> None:
+        from mteb import get_task
+
+        task_name = obj.task_name
+        task: AbsTask | type[AbsTask]
+        if task_name in outdated_tasks:
+            task = outdated_tasks[task_name]
+        else:
+            task = get_task(obj.task_name)
+
+        if task.metadata.type == "PairClassification":  # noqa: PLR1702
+            for split, split_scores in obj.scores.items():
+                for hf_subset_scores in split_scores:
+                    # concatenate score e.g. ["max"]["ap"] -> ["max_ap"]
+                    for key in list(hf_subset_scores.keys()):
+                        if isinstance(hf_subset_scores[key], dict):
+                            for k, v in hf_subset_scores[key].items():
+                                hf_subset_scores[f"{key}_{k}"] = v  # type: ignore[index]
+                            hf_subset_scores.pop(key)  # type: ignore[attr-defined]
+
+    @classmethod
+    def _convert_from_before_v1_11_0(cls, data: dict[str, Any]) -> TaskResult:
+        from mteb.get_tasks import _TASKS_REGISTRY
+
+        # in case the task name is not found in the registry, try to find a lower case version
+        lower_case_registry = {k.lower(): v for k, v in _TASKS_REGISTRY.items()}
+
+        scores = {**data}
+
+        dataset_revision = scores.pop(
+            "dataset_revision", "dataset revision not available"
+        )
+        task_name = scores.pop("mteb_dataset_name")
+        mteb_version = scores.pop("mteb_version", "mteb version not available")
+
+        # calculate evaluation time across all splits (move to top level)
+        evaluation_time = 0
+        for split, split_score in scores.items():
+            if "evaluation_time" in split_score:
+                evaluation_time += split_score.pop("evaluation_time")
+
+        # normalize the scores to always be {split: {hf_subset: scores}}
+        contains_hf_subset = any(
+            isinstance(hf_subset_scores, dict)
+            for split_scores in scores.values()
+            for k, hf_subset_scores in split_scores.items()
+            if k
+            not in {"v_measures", "cos_sim", "euclidean", "manhattan", "dot", "max"}
+        )
+        if not contains_hf_subset:
+            for split, split_score in scores.items():
+                scores[split] = {"default": split_score.copy()}
+
+        if task_name in outdated_tasks:
+            logger.debug(
+                f"Loading {task_name} as a dummy task as it no longer exists within MTEB. To avoid this set `load_historic_data=False`"
+            )
+            task = outdated_tasks[task_name]
+        else:
+            if task_name in renamed_tasks:
+                task_name = renamed_tasks[task_name]
+            task = _TASKS_REGISTRY.get(
+                task_name, lower_case_registry[task_name.lower()]
+            )
+
+        # make sure that main score exists
+        main_score = task.metadata.main_score
+        for split, split_score in scores.items():
+            for hf_subset, hf_subset_scores in split_score.items():
+                for name, prev_name in [
+                    (ScoringFunction.COSINE.value, "cos_sim"),
+                    (ScoringFunction.MANHATTAN.value, "manhattan"),
+                    (ScoringFunction.EUCLIDEAN.value, "euclidean"),
+                    (ScoringFunction.DOT_PRODUCT.value, "dot"),
+                    ("max", "max"),
+                    ("similarity", "similarity"),
+                ]:
+                    prev_name_scores = hf_subset_scores.pop(prev_name, None)
+                    if prev_name_scores is not None:
+                        for k, v in prev_name_scores.items():
+                            hf_subset_scores[f"{name}_{k}"] = v
+
+                if "main_score" not in hf_subset_scores:
+                    if main_score in hf_subset_scores:
+                        hf_subset_scores["main_score"] = hf_subset_scores[main_score]
+                    else:
+                        log_once.warning(f"Main score {main_score} not found in scores")
+                        hf_subset_scores["main_score"] = None
+
+        # specific fixes:
+        if task_name == "MLSUMClusteringP2P" and mteb_version in [  # noqa: PLR6201
+            "1.1.2.dev0",
+            "1.1.3.dev0",
+        ]:  # back then it was only the french subsection which was implemented
+            scores["test"]["fr"] = scores["test"].pop("default")
+        if task_name == "MLSUMClusteringS2S" and mteb_version in [  # noqa: PLR6201
+            "1.1.2.dev0",
+            "1.1.3.dev0",
+        ]:
+            scores["test"]["fr"] = scores["test"].pop("default")
+        if task_name == "XPQARetrieval":  # subset were renamed from "fr" to "fra-fra"
+            if "test" in scores and "fr" in scores["test"]:
+                scores["test"]["fra-fra"] = scores["test"].pop("fr")
+
+        result: TaskResult = TaskResult.from_task_results(
+            task,
+            scores,
+            evaluation_time,
+            kg_co2_emissions=None,
+            evaluation_phases=data.get("evaluation_phases"),
+        )
+        result.dataset_revision = dataset_revision
+        result.mteb_version = mteb_version
+        return result
+
+    def get_score(
+        self,
+        splits: list[SplitName] | None = None,
+        languages: list[ISOLanguage | ISOLanguageScript] | None = None,
+        scripts: list[ISOLanguageScript] | None = None,
+        getter: Callable[[ScoresDict], Score] = lambda scores: scores["main_score"],
+        aggregation: Callable[[list[Score]], float] = np.mean,
+    ) -> float:
+        """Get a score for the specified splits, languages, scripts and aggregation function.
+
+        Args:
+            splits: The splits to consider.
+            languages: The languages to consider. Can be ISO language codes or ISO language script codes.
+            scripts: The scripts to consider.
+            getter: A function that takes a scores dictionary and returns a score e.g. "main_score" or "evaluation_time".
+            aggregation: The aggregation function to use.
+
+        Returns:
+            The result of the aggregation function on the scores.
+        """
+        if splits is None:
+            splits = list(self.scores.keys())
+
+        lang_scripts = LanguageScripts.from_languages_and_scripts(languages, scripts)
+
+        values = []
+        for split in splits:
+            if split not in self.scores:
+                raise ValueError(f"Split {split} not found in scores")
+
+            for scores in self.scores[split]:
+                eval_langs = scores["languages"]
+                for lang in eval_langs:
+                    if lang_scripts.contains_language(lang):
+                        values.append(getter(scores))
+                        break
+
+        return aggregation(values)
+
+    def _get_score_fast(
+        self,
+        splits: Iterable[str] | None = None,
+        languages: list[ISOLanguage | ISOLanguageScript] | None = None,
+        subsets: Iterable[str] | None = None,
+    ) -> float:
+        """Sped up version of get_score that will be used if no aggregation, script or getter needs to be specified.
+
+        Args:
+            splits: The splits to consider.
+            languages: The languages to consider. Can be ISO language codes or ISO language script codes.
+            subsets: The hf_subsets to consider.
+
+        Returns:
+            The mean main score for the specified splits, languages and subsets.
+        """
+        if splits is None:
+            splits = self.scores.keys()
+        val_sum = 0
+        n_val = 0
+        for split in splits:
+            if split not in self.scores:
+                raise ValueError(f"Split missing from scores: {split}")
+
+            for scores in self.scores[split]:
+                langs = scores["languages"]
+                hf_subset = scores["hf_subset"]
+                main_score = scores.get("main_score", None)
+                if main_score is None:
+                    raise ValueError(f"Missing main score for subset: {hf_subset}")
+                if subsets and hf_subset not in subsets:
+                    continue
+                elif subsets:
+                    val_sum += main_score
+                    n_val += 1
+                    continue
+
+                if languages is None:
+                    val_sum += main_score
+                    n_val += 1
+                    continue
+                for lang in langs:
+                    if lang.split("-")[0] in languages:
+                        val_sum += main_score
+                        n_val += 1
+                        logger.info(f"{val_sum=}, {n_val=}")
+                        break
+        if n_val == 0:
+            raise ValueError("No splits had scores for the specified languages.")
+        return val_sum / n_val
+
+    @classmethod
+    def from_validated(cls, **data: Any) -> TaskResult:
+        """Create a TaskResult from validated data.
+
+        Returns:
+            The created TaskResult object.
+        """
+        return cls.model_construct(**data)
+
+    def __repr__(self) -> str:
+        return f"TaskResult(task_name={self.task_name}, main_score={self.main_score:.2f}, scores=..., ...)"
+
+    def only_main_score(self) -> TaskResult:
+        """Return a new TaskResult object with only the main score.
+
+        Returns:
+            A new TaskResult object with only the main score.
+        """
+        new_scores: dict[str, list[Score]] = {}
+        for split in self.scores:
+            new_scores[split] = []
+            for subset_scores in self.scores[split]:
+                new_scores[split].append(
+                    {
+                        "hf_subset": subset_scores.get("hf_subset", "default"),
+                        "main_score": subset_scores.get("main_score", np.nan),
+                        "languages": subset_scores.get("languages", []),
+                    }
+                )
+        new_res = {**self.to_dict(), "scores": new_scores}
+        return TaskResult.from_validated(**new_res)
+
+    def validate_and_filter_scores(
+        self,
+        task: AbsTask | None = None,
+    ) -> TaskResult:
+        """Validate and filter the scores against the task metadata.
+
+        This ensures that the scores are correct for the given task, by removing any splits besides those specified in the task metadata.
+        Additionally it also ensure that all of the splits required as well as the languages are present in the scores.
+        Returns new TaskResult object.
+
+        Args:
+            task: The task to validate the scores against. E.g. if the task supplied is limited to certain splits and languages,
+                the scores will be filtered to only include those splits and languages. If None it will attempt to get the task from the task_name.
+
+        Returns:
+            A new TaskResult object with the validated and filtered scores.
+        """
+        from mteb.get_tasks import get_task
+
+        if task is None:
+            task = get_task(self.task_name)
+
+        splits = task.eval_splits
+        hf_subsets = set(task.hf_subsets)  # Convert to set once
+
+        new_scores: dict[str, list[Score]] = {}
+        seen_splits = set()
+        for split in self.scores:
+            if split not in splits:
+                continue
+            seen_subsets = set()
+            if task.is_aggregate:
+                # aggregate tasks only have the default subset, but in metadata can be multiple
+                new_scores[split] = [
+                    _scores
+                    for _scores in self.scores[split]
+                    if _scores["hf_subset"] == "default"
+                ]
+                seen_subsets = {"default"}
+            else:
+                new_scores[split] = [
+                    _scores
+                    for _scores in self.scores[split]
+                    if _scores["hf_subset"] in hf_subsets
+                ]
+            for _scores in new_scores[split]:
+                seen_subsets.add(_scores["hf_subset"])
+
+            if seen_subsets != hf_subsets and not (
+                task.is_aggregate and "default" in seen_subsets
+            ):
+                missing_subsets = hf_subsets - seen_subsets
+                if len(missing_subsets) > 2:
+                    subset1, subset2 = list(missing_subsets)[:2]
+                    missing_subsets_str = f"{{'{subset1}', '{subset2}', ...}}"
+                else:
+                    missing_subsets_str = str(missing_subsets)
+
+                log_once.warning(
+                    f"{task.metadata.name}: Missing subsets {missing_subsets_str} for split {split}"
+                )
+                for missing_subset in missing_subsets:
+                    new_scores[split].append(
+                        {
+                            "hf_subset": missing_subset,
+                            "main_score": np.nan,
+                            "languages": task.metadata.hf_subsets_to_langscripts.get(
+                                missing_subset, []
+                            ),
+                        }
+                    )
+            seen_splits.add(split)
+        if seen_splits != set(splits):
+            log_once.warning(
+                f"{task.metadata.name}: Missing splits {set(splits) - seen_splits}"
+            )
+            for missing_split in set(splits) - seen_splits:
+                new_scores[missing_split] = []
+                for missing_subset in hf_subsets:
+                    new_scores[missing_split].append(
+                        {
+                            "hf_subset": missing_subset,
+                            "main_score": np.nan,
+                            "languages": task.metadata.hf_subsets_to_langscripts.get(
+                                missing_subset, []
+                            ),
+                        }
+                    )
+        data = self.model_dump()
+        data["scores"] = new_scores
+        return type(self).model_construct(**data)
+
+    def is_mergeable(
+        self,
+        result: TaskResult | AbsTask,
+        criteria: list[str] | list[Criteria] = [
+            "dataset_revision",
+        ],
+        raise_error: bool = False,
+    ) -> bool:
+        """Checks if the TaskResult object can be merged with another TaskResult or Task.
+
+        Args:
+            result: The TaskResult or Task object to check against.
+            criteria: Additional criteria to check for merging. Can be "dataset_revision" or "mteb_version" (opt-in).
+                It will always check that the task name match.
+            raise_error: If True, raises an error if the objects cannot be merged. If False, returns False.
+
+        Returns:
+            True if the TaskResult object can be merged with the other object, False otherwise.
+        """
+        criteria = [Criteria.from_str(c) if isinstance(c, str) else c for c in criteria]
+        if isinstance(result, TaskResult):
+            name = result.task_name
+            revision = result.dataset_revision
+            mteb_version = result.mteb_version
+        elif isinstance(result, AbsTask):
+            mteb_version = version("mteb")
+            name = result.metadata.name
+            revision = result.metadata.revision
+        else:
+            msg = "result must be a TaskResult or AbsTask object"
+            if raise_error:
+                raise ValueError(msg)
+            logger.debug(msg)
+            return False
+
+        if self.task_name != name:
+            msg = f"Cannot merge TaskResult objects as they are derived from different tasks ({self.task_name} and {name})"
+            if raise_error:
+                raise ValueError(msg)
+            logger.debug(msg)
+            return False
+
+        if Criteria.MTEB_VERSION in criteria and self.mteb_version != mteb_version:
+            msg = f"Cannot merge TaskResult objects as they are derived from different MTEB versions ({self.mteb_version} (loaded) and {mteb_version} (current))"
+            if raise_error:
+                raise ValueError(msg)
+            logger.debug(msg)
+            return False
+
+        if Criteria.DATASET_REVISION in criteria and self.dataset_revision != revision:
+            msg = f"Cannot merge TaskResult objects as they are derived from different dataset revisions ({self.dataset_revision} and {revision})"
+            if raise_error:
+                raise ValueError(msg)
+            logger.debug(msg)
+            return False
+
+        return True
+
+    def merge(
+        self,
+        new_results: TaskResult,
+        criteria: list[str] | list[Criteria] = [
+            "dataset_revision",
+        ],
+    ) -> TaskResult:
+        """Merges two TaskResult objects.
+
+        Args:
+            new_results: The new TaskResult object to merge with the current one.
+            criteria: Additional criteria to check for merging. Can be "mteb_version" or "dataset_revision".
+                It will always check that the task name match.
+
+        Returns:
+            A new TaskResult object with the merged scores.
+        """
+        self.is_mergeable(new_results, criteria=criteria, raise_error=True)
+
+        merged_scores = self.scores.copy()
+
+        for split, scores in new_results.scores.items():
+            if split in merged_scores:
+                merged_scores[split] = self._merge_split_scores(
+                    merged_scores[split], scores
+                )
+            else:
+                merged_scores[split] = scores
+
+        existing_kg_co2_emissions = (
+            self.kg_co2_emissions if self.kg_co2_emissions else 0
+        )
+        new_kg_co2_emissions = (
+            new_results.kg_co2_emissions if new_results.kg_co2_emissions else 0
+        )
+        merged_kg_co2_emissions = None
+        if (
+            self.kg_co2_emissions is not None
+            or new_results.kg_co2_emissions is not None
+        ):
+            merged_kg_co2_emissions = existing_kg_co2_emissions + new_kg_co2_emissions
+
+        merged_evaluation_time = None
+        if self.evaluation_time is not None or new_results.evaluation_time is not None:
+            merged_evaluation_time = (self.evaluation_time or 0.0) + (
+                new_results.evaluation_time or 0.0
+            )
+
+        merged_evaluation_phases: list[PhaseTiming] | None = None
+        if (
+            self.evaluation_phases is not None
+            or new_results.evaluation_phases is not None
+        ):
+            merged_evaluation_phases = []
+            if self.evaluation_phases is not None:
+                merged_evaluation_phases.extend(self.evaluation_phases)
+            if new_results.evaluation_phases is not None:
+                offset = self.evaluation_time or (
+                    max(p["end"] for p in self.evaluation_phases)
+                    if self.evaluation_phases
+                    else 0.0
+                )
+                for phase in new_results.evaluation_phases:
+                    merged_phase = phase.copy()
+                    merged_phase["start"] += offset
+                    merged_phase["end"] += offset
+                    merged_evaluation_phases.append(merged_phase)
+
+        date = self.date
+
+        if new_results.date is not None and (date is None or new_results.date > date):
+            date = new_results.date
+        mteb_ver = self._compute_top_level_mteb_version(merged_scores)
+
+        merged_results = TaskResult(
+            dataset_revision=new_results.dataset_revision,
+            task_name=new_results.task_name,
+            mteb_version=mteb_ver,
+            scores=merged_scores,
+            evaluation_time=merged_evaluation_time,
+            kg_co2_emissions=merged_kg_co2_emissions,
+            date=date,
+            evaluation_phases=merged_evaluation_phases,
+        )
+
+        return merged_results
+
+    @staticmethod
+    def _parse_mteb_version_min(version_str: str | None) -> Version | None:
+        """Parse a stored mteb_version, which may be a range like "2.12.16-2.15.4".
+
+        Returns the minimum version of the range, or the parsed version for a
+        single version string. Returns None if the input is None or unparsable.
+        """
+        if version_str is None:
+            return None
+        try:
+            return Version(version_str)
+        except InvalidVersion:
+            pass
+        if "-" in version_str:
+            try:
+                return Version(version_str.split("-", 1)[0])
+            except InvalidVersion:
+                return None
+        return None
+
+    @staticmethod
+    def _compute_top_level_mteb_version(
+        scores: dict[SplitName, list[ScoresDict]],
+    ) -> str | None:
+        """Compute the top-level mteb_version from per-subset versions.
+
+        Returns a version range (e.g. "2.12.0-2.12.19") if subsets were
+        evaluated with different versions, a single version if all match,
+        or None if no per-subset versions are present.
+        """
+        versions: set[str] = set()
+        for split_scores in scores.values():
+            for subset_scores in split_scores:
+                v = subset_scores.get("mteb_version")
+                if v is not None:
+                    versions.add(v)
+        if not versions:
+            return None
+        min_ver = str(min(Version(v) for v in versions))
+        max_ver = str(max(Version(v) for v in versions))
+        if min_ver == max_ver:
+            return min_ver
+        return f"{min_ver}-{max_ver}"
+
+    @staticmethod
+    def _merge_split_scores(
+        existing_scores: list[ScoresDict], new_scores: list[ScoresDict]
+    ) -> list[ScoresDict]:
+        merged = {score["hf_subset"]: score for score in existing_scores}
+        for score in new_scores:
+            merged[score["hf_subset"]] = score
+        return list(merged.values())
+
+    def get_missing_evaluations(self, task: AbsTask) -> dict[str, list[str]]:
+        """Checks which splits and subsets are missing from the results.
+
+        Args:
+            task: The task to check against.
+
+        Returns:
+            A dictionary with the splits as keys and a list of missing subsets as values.
+        """
+        missing_splits = {}
+        for splits in task.eval_splits:
+            if splits not in self.scores:  # split it fully missing
+                missing_splits[splits] = task.hf_subsets
+            if splits in self.scores:
+                hf_subsets = {score["hf_subset"] for score in self.scores[splits]}
+                missing_subsets = list(set(task.hf_subsets) - hf_subsets)
+                if missing_subsets:
+                    missing_splits[splits] = missing_subsets
+
+        return missing_splits
+
+    @deprecated(
+        "HF deprecated `EvalResults` in favor of `Benchmarks` and it's results. "
+        "To push new results use ModelMeta.push_eval_results()."
+    )
+    def get_hf_eval_results(self) -> list[EvalResult]:
+        """Create HF evaluation results objects from TaskResult objects.
+
+        Returns:
+            List of EvalResult objects for each split and subset.
+        """
+        task_metadata = self.task.metadata
+        task_type = task_metadata._hf_task_type()[0]
+        results = []
+        for split, scores in self.scores.items():
+            for subset_results in scores:
+                subset = subset_results.get("hf_subset", "default")
+                results.append(
+                    EvalResult(
+                        task_type=task_type,
+                        task_name=task_metadata.type,
+                        dataset_type=task_metadata.dataset["path"],
+                        dataset_name=f"{task_metadata.name} ({subset})",
+                        dataset_config=subset,
+                        dataset_split=split,
+                        dataset_revision=task_metadata.dataset["revision"],
+                        metric_type=task_metadata.main_score,
+                        metric_name=task_metadata.main_score,
+                        metric_value=subset_results["main_score"],
+                        source_name="MTEB",
+                        source_url="https://github.com/embeddings-benchmark/mteb/",
+                    )
+                )
+        return results
+
+    def _to_hf_benchmark_result(self, user: str | None = None) -> HFEvalResults:
+        from mteb.get_tasks import get_task
+
+        task_metadata = get_task(self.task_name).metadata
+        dataset_id = task_metadata.dataset["path"]
+        dataset_revision = task_metadata.dataset["revision"]
+        eval_results = []
+        evaluated_splits = set(self.scores.keys())
+        evaluated_subsets = set()
+
+        notes = f"Obtained using MTEB v{self.mteb_version}"
+        source = HFEvalResultSource(
+            url="https://github.com/embeddings-benchmark/mteb/",
+            name=notes,
+            user=user,
+        )
+
+        for split, split_results in self.scores.items():
+            for subset_results in split_results:
+                subset_name = subset_results.get("hf_subset", "default")
+                task_id = f"{self.task_name}_{subset_name}_{split}"
+                eval_results.append(
+                    HFEvalResult(
+                        dataset=HFEvalResultDataset(
+                            id=dataset_id,
+                            task_id=task_id,
+                            revision=dataset_revision,
+                        ),
+                        value=round(subset_results["main_score"] * 100, 5),
+                        source=source,
+                        date=self.date,
+                        notes=notes,
+                    )
+                )
+                evaluated_subsets.add(subset_name)
+
+        if len(evaluated_splits) == len(task_metadata.eval_splits) and len(
+            evaluated_subsets
+        ) == len(task_metadata.hf_subsets):
+            # overall score
+            eval_results.append(
+                HFEvalResult(
+                    dataset=HFEvalResultDataset(
+                        id=dataset_id,
+                        task_id=task_metadata.name,
+                        revision=dataset_revision,
+                    ),
+                    value=round(self.get_score() * 100, 5),
+                    source=source,
+                    date=self.date,
+                    notes=notes,
+                )
+            )
+        return HFEvalResults.model_validate(eval_results)
+
+
+class TaskError(BaseModel):
+    """A class to represent an error that occurred during the evaluation of a task.
+
+    Attributes:
+        task_name: The name of the MTEB task.
+        exception: The error message that occurred during the evaluation.
+    """
+
+    task_name: str
+    exception: str
+
+
+def _read_run_settings_from_file(path: Path) -> list[dict[str, Any]]:
+    """Read run settings entries from a JSONL file."""
+    if not path.exists():
+        return []
+
+    run_settings: list[dict[str, Any]] = []
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            stripped_line = line.strip()
+            if not stripped_line:
+                continue
+            try:
+                parsed = json.loads(stripped_line)
+            except Exception as e:
+                logger.warning(
+                    f"Could not parse run_settings line '{stripped_line}': {e}"
+                )
+                continue
+            if isinstance(parsed, dict):
+                run_settings.append(parsed)
+    return run_settings
+
+
+def _write_and_merge_keyed_json(
+    path: Path,
+    entries: list[dict[str, Any]],
+    *,
+    key_fields: tuple[str, str, str] = ("task", "split", "subset"),
+) -> None:
+    """Write entries to `.jsonl`, if it already exist it will merge it, replacing any existing entries with the same key."""
+    existing_entries = _read_run_settings_from_file(path)
+    new_keys = {tuple(entry.get(field) for field in key_fields) for entry in entries}
+    filtered_existing = [
+        entry
+        for entry in existing_entries
+        if tuple(entry.get(field) for field in key_fields) not in new_keys
+    ]
+    all_entries = filtered_existing + entries
+
+    with path.open("w", encoding="utf-8") as f:
+        for entry in all_entries:
+            f.write(json.dumps(entry, default=str) + "\n")

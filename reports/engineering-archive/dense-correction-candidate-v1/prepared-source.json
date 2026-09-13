@@ -1,0 +1,133 @@
+{
+  "scope": "preparation_only_dense_numerical_correction",
+  "candidate_root": "/tmp/dense-correction-source.0YHywN",
+  "base_commit": "f231a6430712388778f32ad1736a4cb6de3bec3e",
+  "scientific_completion": false,
+  "production_deployed": false,
+  "candidate_sources": [
+    {
+      "relative_path": "src/embed_optim/config.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/config.py",
+        "bytes": 8704,
+        "sha256": "aab6eecbdab54f1267608bc31b290a63bb28e2eb3e7ebd08f5ff6a73f60014ce"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/optimizers.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/optimizers.py",
+        "bytes": 12765,
+        "sha256": "7d7d4f200c410cb1b24e1773ae72811582f43a0c794a5d1b2af269c123e69b1e"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/train.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/train.py",
+        "bytes": 20518,
+        "sha256": "b808382af027bf45bbf2492a3e0e20b96b084960d67f86846a935642b59e9010"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/dense_numerical_contract.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/dense_numerical_contract.py",
+        "bytes": 7315,
+        "sha256": "207d8545f7d329979ebbe0e90317f95f6ca01bb310eeff040fe3de461956d8f4"
+      }
+    },
+    {
+      "relative_path": "src/embed_optim/artifact_inventory.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/src/embed_optim/artifact_inventory.py",
+        "bytes": 1971,
+        "sha256": "856f9fcfaf1a4f0c89062a22d8771eef0e3543995881ac89097e688e82fd2e6b"
+      }
+    },
+    {
+      "relative_path": "configs/dense_correctness_candidate.yaml",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/configs/dense_correctness_candidate.yaml",
+        "bytes": 2009,
+        "sha256": "6a2183f20d6110f09d0d3df125cea2ae95174f08f9eefdc75a5544fefbf251ae"
+      }
+    },
+    {
+      "relative_path": "tests/test_dense_numerical_contract.py",
+      "identity": {
+        "path": "/tmp/dense-correction-source.0YHywN/tests/test_dense_numerical_contract.py",
+        "bytes": 7919,
+        "sha256": "c1201a89f4de89f9274bffcec8de2c8b83234b3fa52c14d113ab8f9c0c1952de"
+      }
+    }
+  ],
+  "matrix_source": {
+    "path": "/tmp/dense-correction-source.0YHywN/configs/dense_no_packing_retrain.yaml",
+    "bytes": 1601,
+    "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+  },
+  "matrix_field_checks": [
+    {
+      "old": "padded-adamw-1e-6",
+      "new": "verified-adamw-1e-6",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-adamw-3e-6",
+      "new": "verified-adamw-3e-6",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-adamw-1e-5",
+      "new": "verified-adamw-1e-5",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-adamw-3e-5",
+      "new": "verified-adamw-3e-5",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-1e-4",
+      "new": "verified-muon-1e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-3e-4",
+      "new": "verified-muon-3e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-1e-3",
+      "new": "verified-muon-1e-3",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-muon-3e-3",
+      "new": "verified-muon-3e-3",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-1e-4",
+      "new": "verified-normuon-1e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-3e-4",
+      "new": "verified-normuon-3e-4",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-1e-3",
+      "new": "verified-normuon-1e-3",
+      "all_other_scientific_fields_equal": true
+    },
+    {
+      "old": "padded-normuon-3e-3",
+      "new": "verified-normuon-3e-3",
+      "all_other_scientific_fields_equal": true
+    }
+  ],
+  "proposal_boundary": "Explicit numerical-policy and NorMuon denominator correction, new output/run/WandB namespaces; unchanged seed, data, positive/negative groups, base model revision, optimizer hyperparameter grid, context, batch, clipping and five checkpoint fractions. Not a frozen formal execution authorization."
+}

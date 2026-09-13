@@ -1,0 +1,65 @@
+{
+  "paper_portability_builder": {
+    "chunk_id": "c31081",
+    "wall_time_seconds": 1.001802737,
+    "session_id": 35880,
+    "original_token_count": 80,
+    "output": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\n"
+  },
+  "paper_portability_builder_terminal": {
+    "chunk_id": "a0ec00",
+    "wall_time_seconds": 0.000003788,
+    "exit_code": 0,
+    "original_token_count": 68,
+    "output": "{\"bundle\": \"/tmp/dense-v3-complete-paper-portability.XENPo1CK/closed-primary\", \"manifest\": {\"bytes\": 40919, \"sha256\": \"88861e52218f56b860851489106cd30e35dd79bb038eb9082967e3376db6457d\"}, \"source_modules\": 86, \"files\": 129, \"bytes\": 112631759, \"full_goal_complete\": false}\n"
+  },
+  "paper_portability_replay_start": {
+    "chunk_id": "8d6a3c",
+    "wall_time_seconds": 1.001747034,
+    "session_id": 84136,
+    "original_token_count": 80,
+    "output": "/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.\n  import pynvml  # type: ignore[import]\n"
+  },
+  "paper_portability_replay_latest": {
+    "chunk_id": "4444b0",
+    "wall_time_seconds": 0.000002546,
+    "exit_code": 0,
+    "original_token_count": 444,
+    "output": "{\"phase\": \"original-complete-primary-outcomes\", \"task_units\": 840}\n{\"phase\": \"original-and-exact-weight-prediction\", \"states\": 60}\n{\"phase\": \"complete-functional-inference\", \"states_including_reference\": 61}\n{\"phase\": \"all-post-result-controls\", \"comparisons\": 108}\n{\"baseline\": \"B0_original\", \"conditioned\": false, \"completed_comparisons\": 14}\n{\"baseline\": \"B0_original\", \"conditioned\": true, \"completed_comparisons\": 28}\n{\"baseline\": \"B1_raw_rate\", \"conditioned\": false, \"completed_comparisons\": 42}\n{\"baseline\": \"B2_optimizer_stage_rate\", \"conditioned\": false, \"completed_comparisons\": 56}\n{\"baseline\": \"B3_nominal_schedule\", \"conditioned\": false, \"completed_comparisons\": 70}\n{\"baseline\": \"B3_nominal_schedule\", \"conditioned\": true, \"completed_comparisons\": 84}\n{\"baseline\": \"B0_original\", \"conditioned_on_displacement\": false, \"completed_comparisons\": 4}\n{\"baseline\": \"B0_original\", \"conditioned_on_displacement\": true, \"completed_comparisons\": 8}\n{\"baseline\": \"B1_raw_rate\", \"conditioned_on_displacement\": false, \"completed_comparisons\": 12}\n{\"baseline\": \"B2_optimizer_stage_rate\", \"conditioned_on_displacement\": false, \"completed_comparisons\": 16}\n{\"baseline\": \"B3_nominal_schedule\", \"conditioned_on_displacement\": false, \"completed_comparisons\": 20}\n{\"baseline\": \"B3_nominal_schedule\", \"conditioned_on_displacement\": true, \"completed_comparisons\": 24}\n{\"phase\": \"all-sixty-state-empirical-figures\"}\n{\"display_complete\": true, \"states_per_figure\": 60, \"output\": \"/tmp/dense-v3-complete-paper-portability.XENPo1CK/actual-primary/reconstructed/figures\"}\n{\"current_primary_graph_reconstructed\": true, \"completion\": {\"bytes\": 22792, \"sha256\": \"cc980ed44ed7a3681a35d8d40f84d8d14bf0c42a17996fae75c0e060a773e41a\"}, \"loaded_project_modules\": 84, \"full_goal_complete\": false}\n"
+  },
+  "paper_portability_controls": {
+    "chunk_id": "f451dd",
+    "wall_time_seconds": 0.174677399,
+    "exit_code": 0,
+    "original_token_count": 308,
+    "output": "test_additional_file (__main__.InputIntegrity.test_additional_file) ... ok\ntest_changed_payload (__main__.InputIntegrity.test_changed_payload) ... ok\ntest_integrity_only_positive_is_not_scientific_admission (__main__.InputIntegrity.test_integrity_only_positive_is_not_scientific_admission) ... ok\ntest_missing_payload (__main__.InputIntegrity.test_missing_payload) ... ok\ntest_nonlocal_role_even_with_new_manifest_digest (__main__.InputIntegrity.test_nonlocal_role_even_with_new_manifest_digest) ... ok\ntest_symlink (__main__.InputIntegrity.test_symlink) ... ok\ntest_wrong_external_anchor (__main__.InputIntegrity.test_wrong_external_anchor) ... ok\ntest_bad_external_anchor_preserves_absent_output (__main__.RuntimeBoundary.test_bad_external_anchor_preserves_absent_output) ... ok\ntest_existing_attempt_is_preserved (__main__.RuntimeBoundary.test_existing_attempt_is_preserved) ... ok\ntest_network_refused_before_connection (__main__.RuntimeBoundary.test_network_refused_before_connection) ... ok\ntest_old_producer_read_refused_before_file_lookup (__main__.RuntimeBoundary.test_old_producer_read_refused_before_file_lookup) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.250s\n\nOK\n"
+  },
+  "paper_portability_observe_evaluation": {
+    "chunk_id": "ceea05",
+    "wall_time_seconds": 0.000003908,
+    "exit_code": 0,
+    "original_token_count": 594,
+    "output": "{\"observed_at_utc\": \"2026-09-12T21:43:04.717604+00:00\", \"pools\": {\"a\": {\"coordinator\": {\"pid\": 802691, \"start_ticks\": 320351837, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"training_pool_admitted\": true, \"completed_tasks\": 1, \"task_workers\": [{\"job\": [\"factorial-v3-adamw_state-adamw-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 842265, \"start_ticks\": 321529385, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-adamw_state-adamw-seed314159\", 391, \"SciFact\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 842272, \"start_ticks\": 321529494, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 847222, \"start_ticks\": 321606006, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-muon_state-muon-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 842266, \"start_ticks\": 321529440, \"ppid\": 802691, \"state\": \"R\", \"command_matches\": true}}], \"failure_receipt\": false, \"complete\": null}, \"b\": {\"coordinator\": {\"pid\": 802714, \"start_ticks\": 320351956, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"training_pool_admitted\": true, \"completed_tasks\": 1, \"task_workers\": [{\"job\": [\"factorial-v3-adamw_state-adamw-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 843436, \"start_ticks\": 321535357, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 843431, \"start_ticks\": 321535246, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-adamw_state-muon-seed314159\", 391, \"SciFact\"], \"observation\": {\"terminal\": true, \"exit_code\": 0}}, {\"job\": [\"factorial-v3-muon_state-adamw-seed314159\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 843435, \"start_ticks\": 321535302, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}, {\"job\": [\"factorial-v3-muon_state-muon-seed271828\", 391, \"ClimateFEVER\"], \"observation\": {\"pid\": 847575, \"start_ticks\": 321608172, \"ppid\": 802714, \"state\": \"R\", \"command_matches\": true}}], \"failure_receipt\": false, \"complete\": null}}, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+  },
+  "paper_portability_observe_summary": {
+    "chunk_id": "a906f4",
+    "wall_time_seconds": 0.000001012,
+    "exit_code": 0,
+    "original_token_count": 119,
+    "output": "{\"observed_at_utc\": \"2026-09-12T21:43:04.761195+00:00\", \"coordinator\": {\"pid\": 813139, \"start_ticks\": 320676124, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"collectors\": {\"beir\": {\"started\": false}, \"probe\": {\"started\": false}}, \"failed\": false, \"complete\": false, \"expected\": {\"beir_tasks\": 168, \"checkpoint_probes\": 60, \"probe_task_rows\": 840, \"estimands\": 3}, \"gpu_access\": false, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+  },
+  "paper_portability_observe_document": {
+    "chunk_id": "a0ea70",
+    "wall_time_seconds": 0.000001928,
+    "exit_code": 0,
+    "original_token_count": 93,
+    "output": "{\"observed_at_utc\": \"2026-09-12T21:43:04.730627+00:00\", \"coordinator\": {\"pid\": 850717, \"start_ticks\": 321699320, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"complete\": false, \"failed\": false, \"factorial_inference_complete\": false, \"document_output_started\": false, \"gpu_access\": false, \"read_only_exact_registered_handle\": true, \"full_goal_complete\": false}\n"
+  },
+  "paper_portability_observe_resume": {
+    "chunk_id": "be56a8",
+    "wall_time_seconds": 0.000001561,
+    "exit_code": 0,
+    "original_token_count": 151,
+    "output": "{\"observed_at_utc\": \"2026-09-12T21:43:04.744587+00:00\", \"pools\": {\"a\": {\"started\": true, \"coordinator\": {\"pid\": 824762, \"start_ticks\": 321051396, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"ranks\": [], \"reader\": null, \"gpu_admission\": false, \"failure\": false, \"completion\": null}, \"b\": {\"started\": true, \"coordinator\": {\"pid\": 824763, \"start_ticks\": 321051398, \"ppid\": 1986037, \"state\": \"S\", \"command_matches\": true}, \"ranks\": [], \"reader\": null, \"gpu_admission\": false, \"failure\": false, \"completion\": null}}, \"read_only_exact_registered_handles\": true, \"scientific_completion\": false}\n"
+  }
+}

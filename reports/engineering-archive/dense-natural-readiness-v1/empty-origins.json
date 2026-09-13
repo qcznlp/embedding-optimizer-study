@@ -1,0 +1,96 @@
+{
+  "affected_training_cells": [
+    {
+      "column": "positive",
+      "document_id": 741,
+      "index": 230,
+      "source": "fiqa"
+    },
+    {
+      "column": "negative_4",
+      "document_id": 741,
+      "index": 634,
+      "source": "fiqa"
+    },
+    {
+      "column": "negative_4",
+      "document_id": 741,
+      "index": 750,
+      "source": "fiqa"
+    },
+    {
+      "column": "negative_3",
+      "document_id": 104163,
+      "index": 13096,
+      "source": "hotpotqa"
+    },
+    {
+      "column": "negative_3",
+      "document_id": 2143,
+      "index": 336061,
+      "source": "nq"
+    }
+  ],
+  "audit_source": {
+    "bytes": 5870,
+    "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_empty_text_origins.py",
+    "sha256": "23fcf9404a7544e9e722954e80fbb55a3ce4bf3e3f582737ab67f7087cbba0b3"
+  },
+  "authenticated_upstream_files": {
+    "documents/fiqa-00000-of-00001.parquet": {
+      "bytes": 28063113,
+      "independent_hf_lfs_sha256": "2ef15a8976aacac9a4466134eb388298475d8b0b80551a4be5f811255bb5256a",
+      "local_path": "/root/.cache/huggingface/hub/datasets--lightonai--embeddings-fine-tuning/blobs/2ef15a8976aacac9a4466134eb388298475d8b0b80551a4be5f811255bb5256a",
+      "sha256": "2ef15a8976aacac9a4466134eb388298475d8b0b80551a4be5f811255bb5256a"
+    },
+    "documents/hotpotqa-00000-of-00003.parquet": {
+      "bytes": 346114954,
+      "independent_hf_lfs_sha256": "4ee25ff4df5ae6c307a99db2722134d0facebc1e882d467353fd1855f537e6af",
+      "local_path": "/root/.cache/huggingface/hub/datasets--lightonai--embeddings-fine-tuning/blobs/4ee25ff4df5ae6c307a99db2722134d0facebc1e882d467353fd1855f537e6af",
+      "sha256": "4ee25ff4df5ae6c307a99db2722134d0facebc1e882d467353fd1855f537e6af"
+    },
+    "documents/nq-00000-of-00007.parquet": {
+      "bytes": 201530618,
+      "independent_hf_lfs_sha256": "acdac70058be2193e81e8012918463729b79422c5511ef66413afe97c8267fdb",
+      "local_path": "/root/.cache/huggingface/hub/datasets--lightonai--embeddings-fine-tuning/blobs/acdac70058be2193e81e8012918463729b79422c5511ef66413afe97c8267fdb",
+      "sha256": "acdac70058be2193e81e8012918463729b79422c5511ef66413afe97c8267fdb"
+    }
+  },
+  "boundary": "The five observed empty document cells map to three distinct exact-empty upstream documents. Authentication is against immutable HF file LFS digests, not only local metadata. No resampling, alternative-positive selection or dataset repair is performed, and no optimizer effect is inferred.",
+  "content_audit": {
+    "bytes": 13274,
+    "path": "/tmp/dense-natural-checks.MDyv0J/full-data-content.json",
+    "sha256": "fbfc06240961e943bfa6869cec9a70b40c7ea98415fb8963e495915faa1ac66d"
+  },
+  "files_modified": false,
+  "observed_at_utc": "2026-09-06T13:07:42.573932+00:00",
+  "origin_audit_passed": true,
+  "scientific_completion": false,
+  "scope": "engineering_exact_empty_document_origins",
+  "source_repo": "lightonai/embeddings-fine-tuning",
+  "source_revision": "1ca463331ed637d25c1058567e932e0d3bad2983",
+  "training_executed": false,
+  "upstream_documents": [
+    {
+      "document_id": 741,
+      "document_is_exact_empty_string": true,
+      "path": "documents/fiqa-00000-of-00001.parquet",
+      "row_group": 0,
+      "source": "fiqa"
+    },
+    {
+      "document_id": 104163,
+      "document_is_exact_empty_string": true,
+      "path": "documents/hotpotqa-00000-of-00003.parquet",
+      "row_group": 0,
+      "source": "hotpotqa"
+    },
+    {
+      "document_id": 2143,
+      "document_is_exact_empty_string": true,
+      "path": "documents/nq-00000-of-00007.parquet",
+      "row_group": 0,
+      "source": "nq"
+    }
+  ]
+}

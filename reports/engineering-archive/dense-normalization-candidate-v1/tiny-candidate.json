@@ -1,0 +1,4221 @@
+{
+  "boundary": "Prospective single-normalization subclass of the unchanged study Trainer. Four CPU/Gloo ranks, tiny two-layer random ModernBERT, FP32/SDPA, zero dropout, non-reentrant gradient checkpointing, three optimizer steps on 288 distinct synthetic queries: 128 + 128 + 32. Independent raw/clipped full-batch gradients and actual LR cadence. Not GPU/full-model/8192-token/resume validation or a scientific result; no production code or library modification.",
+  "complete_for_cpu_fixture": true,
+  "negative_control_constant_tail": false,
+  "observed_at_utc": "2026-09-05T06:49:22.813198+00:00",
+  "records": [
+    {
+      "checks": [
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 9.673046112060547,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.1175870895385742e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.1175870895385742e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.585629984736443e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.280568540096283e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.979039320256561e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.092726157978177e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 9.458744898438454e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 5.029505700804293e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.1059455573558807e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.092726157978177e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.3655745685100555e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.2005330063402653e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 8.149072527885437e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            6,
+            255,
+            242,
+            112,
+            90,
+            133,
+            154,
+            207,
+            14,
+            217,
+            171,
+            225,
+            47,
+            283,
+            170,
+            66,
+            59,
+            140,
+            123,
+            61,
+            139,
+            54,
+            11,
+            278,
+            265,
+            45,
+            269,
+            287,
+            138,
+            155,
+            135,
+            213,
+            78,
+            137,
+            268,
+            245,
+            206,
+            17,
+            235,
+            115,
+            122,
+            98,
+            181,
+            167,
+            51,
+            197,
+            117,
+            221,
+            88,
+            161,
+            200,
+            131,
+            143,
+            74,
+            266,
+            281,
+            96,
+            237,
+            94,
+            253,
+            5,
+            119,
+            104,
+            72,
+            275,
+            85,
+            75,
+            0,
+            53,
+            218,
+            57,
+            34,
+            141,
+            28,
+            58,
+            150,
+            282,
+            277,
+            142,
+            129,
+            71,
+            193,
+            204,
+            12,
+            238,
+            101,
+            145,
+            234,
+            151,
+            184,
+            65,
+            134,
+            260,
+            232,
+            189,
+            246,
+            203,
+            164,
+            55,
+            81,
+            215,
+            178,
+            4,
+            241,
+            199,
+            251,
+            116,
+            230,
+            110,
+            91,
+            114,
+            223,
+            243,
+            20,
+            157,
+            99,
+            177,
+            92,
+            169,
+            258,
+            43,
+            273,
+            102,
+            239,
+            220,
+            219,
+            201,
+            262
+          ],
+          "global_query_count": 128,
+          "global_step_before_update": 0,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                6,
+                255,
+                242,
+                112,
+                90,
+                133,
+                154,
+                207
+              ],
+              [
+                14,
+                217,
+                171,
+                225,
+                47,
+                283,
+                170,
+                66
+              ],
+              [
+                59,
+                140,
+                123,
+                61,
+                139,
+                54,
+                11,
+                278
+              ],
+              [
+                265,
+                45,
+                269,
+                287,
+                138,
+                155,
+                135,
+                213
+              ]
+            ],
+            [
+              [
+                78,
+                137,
+                268,
+                245,
+                206,
+                17,
+                235,
+                115
+              ],
+              [
+                122,
+                98,
+                181,
+                167,
+                51,
+                197,
+                117,
+                221
+              ],
+              [
+                88,
+                161,
+                200,
+                131,
+                143,
+                74,
+                266,
+                281
+              ],
+              [
+                96,
+                237,
+                94,
+                253,
+                5,
+                119,
+                104,
+                72
+              ]
+            ],
+            [
+              [
+                275,
+                85,
+                75,
+                0,
+                53,
+                218,
+                57,
+                34
+              ],
+              [
+                141,
+                28,
+                58,
+                150,
+                282,
+                277,
+                142,
+                129
+              ],
+              [
+                71,
+                193,
+                204,
+                12,
+                238,
+                101,
+                145,
+                234
+              ],
+              [
+                151,
+                184,
+                65,
+                134,
+                260,
+                232,
+                189,
+                246
+              ]
+            ],
+            [
+              [
+                203,
+                164,
+                55,
+                81,
+                215,
+                178,
+                4,
+                241
+              ],
+              [
+                199,
+                251,
+                116,
+                230,
+                110,
+                91,
+                114,
+                223
+              ],
+              [
+                243,
+                20,
+                157,
+                99,
+                177,
+                92,
+                169,
+                258
+              ],
+              [
+                43,
+                273,
+                102,
+                239,
+                220,
+                219,
+                201,
+                262
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.9073486328125e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.7881393432617188e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 7.799826562404633e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.1641532182693481e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.820766091346741e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.238689482212067e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.3969838619232178e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.3655745685100555e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.752088665962219e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.0710209608078003e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.3655745685100555e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.384208634495735e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.3387762010097504e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.043081283569336e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 9.673052787780762,
+          "scale_diagnostic": {
+            "actual_norm": 9.67305102283532,
+            "actual_to_reference_norm_ratio": 0.9999993171198039,
+            "cosine": 0.9999999999996737,
+            "least_squares_scale": 0.9999993171194802,
+            "max_residual_after_fitted_scale": 1.0843058926290894e-06,
+            "reference_norm": 9.67305762837481
+          },
+          "scheduler": {
+            "factor": 0.0,
+            "groups": [
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-05,
+                "lr": 0.0
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-05,
+                "lr": 0.0
+              }
+            ],
+            "last_epoch": 0
+          },
+          "used_trainer_divisor": 4
+        },
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 13.673811912536621,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.648440957069397e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.916241884231567e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.149072527885437e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.6880221664905548e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.979039320256561e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 6.366462912410498e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.0163603292312473e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.456079866737127e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.402842700481415e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.0618350643198937e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.9117155615240335e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.775291356258094e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 7.275957614183426e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.1641532182693481e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            187,
+            49,
+            257,
+            9,
+            77,
+            107,
+            280,
+            37,
+            166,
+            70,
+            211,
+            32,
+            31,
+            50,
+            227,
+            64,
+            264,
+            108,
+            176,
+            231,
+            174,
+            3,
+            244,
+            240,
+            148,
+            82,
+            248,
+            186,
+            226,
+            18,
+            41,
+            153,
+            152,
+            52,
+            198,
+            252,
+            191,
+            249,
+            128,
+            67,
+            270,
+            42,
+            144,
+            76,
+            274,
+            254,
+            35,
+            130,
+            80,
+            147,
+            106,
+            79,
+            195,
+            25,
+            267,
+            127,
+            103,
+            26,
+            120,
+            285,
+            36,
+            180,
+            118,
+            185,
+            247,
+            95,
+            158,
+            16,
+            196,
+            163,
+            124,
+            259,
+            21,
+            86,
+            276,
+            132,
+            236,
+            69,
+            97,
+            208,
+            105,
+            272,
+            56,
+            165,
+            46,
+            149,
+            162,
+            7,
+            60,
+            229,
+            175,
+            39,
+            33,
+            30,
+            10,
+            224,
+            216,
+            256,
+            87,
+            83,
+            222,
+            40,
+            29,
+            202,
+            113,
+            188,
+            160,
+            172,
+            19,
+            179,
+            100,
+            159,
+            126,
+            44,
+            1,
+            214,
+            62,
+            183,
+            48,
+            192,
+            15,
+            190,
+            23,
+            8,
+            182,
+            168,
+            125,
+            121
+          ],
+          "global_query_count": 128,
+          "global_step_before_update": 1,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                187,
+                49,
+                257,
+                9,
+                77,
+                107,
+                280,
+                37
+              ],
+              [
+                166,
+                70,
+                211,
+                32,
+                31,
+                50,
+                227,
+                64
+              ],
+              [
+                264,
+                108,
+                176,
+                231,
+                174,
+                3,
+                244,
+                240
+              ],
+              [
+                148,
+                82,
+                248,
+                186,
+                226,
+                18,
+                41,
+                153
+              ]
+            ],
+            [
+              [
+                152,
+                52,
+                198,
+                252,
+                191,
+                249,
+                128,
+                67
+              ],
+              [
+                270,
+                42,
+                144,
+                76,
+                274,
+                254,
+                35,
+                130
+              ],
+              [
+                80,
+                147,
+                106,
+                79,
+                195,
+                25,
+                267,
+                127
+              ],
+              [
+                103,
+                26,
+                120,
+                285,
+                36,
+                180,
+                118,
+                185
+              ]
+            ],
+            [
+              [
+                247,
+                95,
+                158,
+                16,
+                196,
+                163,
+                124,
+                259
+              ],
+              [
+                21,
+                86,
+                276,
+                132,
+                236,
+                69,
+                97,
+                208
+              ],
+              [
+                105,
+                272,
+                56,
+                165,
+                46,
+                149,
+                162,
+                7
+              ],
+              [
+                60,
+                229,
+                175,
+                39,
+                33,
+                30,
+                10,
+                224
+              ]
+            ],
+            [
+              [
+                216,
+                256,
+                87,
+                83,
+                222,
+                40,
+                29,
+                202
+              ],
+              [
+                113,
+                188,
+                160,
+                172,
+                19,
+                179,
+                100,
+                159
+              ],
+              [
+                126,
+                44,
+                1,
+                214,
+                62,
+                183,
+                48,
+                192
+              ],
+              [
+                15,
+                190,
+                23,
+                8,
+                182,
+                168,
+                125,
+                121
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 2.384185791015625e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.341104507446289e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 1.257285475730896e-08,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 2.2118911147117615e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.275069270282984e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 9.458744898438454e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.5133991837501526e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.220055416226387e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 9.546056389808655e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.5366822481155396e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.639755494892597e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 7.639755494892597e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.1641532182693481e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.862645149230957e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 13.673815727233887,
+          "scale_diagnostic": {
+            "actual_norm": 13.673815728788512,
+            "actual_to_reference_norm_ratio": 0.9999997036619276,
+            "cosine": 0.9999999999996302,
+            "least_squares_scale": 0.9999997036615553,
+            "max_residual_after_fitted_scale": 2.2502418865755214e-06,
+            "reference_norm": 13.673819780861908
+          },
+          "scheduler": {
+            "factor": 1.0,
+            "groups": [
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-05,
+                "lr": 3e-05
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-05,
+                "lr": 3e-05
+              }
+            ],
+            "last_epoch": 1
+          },
+          "used_trainer_divisor": 4
+        },
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 12.277859687805176,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.5273690223693848e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.1175870895385742e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 5.820766091346741e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.457920006942004e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.7284841053187847e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 7.275957614183426e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.1641532182693481e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.637978807091713e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.984919309616089e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.4551915228366852e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.410960733977845e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.3655745685100555e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 6.548361852765083e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 9.778887033462524e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            233,
+            205,
+            279,
+            73,
+            146,
+            27,
+            228,
+            136,
+            156,
+            68,
+            263,
+            194,
+            84,
+            271,
+            22,
+            2,
+            250,
+            212,
+            286,
+            284,
+            38,
+            13,
+            173,
+            63,
+            210,
+            89,
+            209,
+            109,
+            24,
+            261,
+            93,
+            111
+          ],
+          "global_query_count": 32,
+          "global_step_before_update": 2,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              1
+            ],
+            [
+              1
+            ],
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                233,
+                205,
+                279,
+                73,
+                146,
+                27,
+                228,
+                136
+              ]
+            ],
+            [
+              [
+                156,
+                68,
+                263,
+                194,
+                84,
+                271,
+                22,
+                2
+              ]
+            ],
+            [
+              [
+                250,
+                212,
+                286,
+                284,
+                38,
+                13,
+                173,
+                63
+              ]
+            ],
+            [
+              [
+                210,
+                89,
+                209,
+                109,
+                24,
+                261,
+                93,
+                111
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 2.1457672119140625e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.7136335372924805e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 7.916241884231567e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.7855199985206127e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.637978807091713e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 7.712515071034431e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.5425030142068863e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.2014213502407074e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 9.778887033462524e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.885928213596344e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 9.117684385273606e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 6.984919309616089e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 9.89530235528946e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.4901161193847656e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 12.277863502502441,
+          "scale_diagnostic": {
+            "actual_norm": 12.277861448001731,
+            "actual_to_reference_norm_ratio": 0.9999996691103816,
+            "cosine": 0.9999999999995227,
+            "least_squares_scale": 0.999999669109903,
+            "max_residual_after_fitted_scale": 1.92182658853568e-06,
+            "reference_norm": 12.277865510619964
+          },
+          "scheduler": {
+            "factor": 0.5,
+            "groups": [
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-05,
+                "lr": 1.5e-05
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-05,
+                "lr": 1.5e-05
+              }
+            ],
+            "last_epoch": 2
+          },
+          "used_trainer_divisor": 1
+        }
+      ],
+      "consumed_unique_rows": 288,
+      "cpu_fixture_argument_overrides": {
+        "bf16": false,
+        "dataloader_num_workers": 0,
+        "dataloader_persistent_workers": false,
+        "dataloader_pin_memory": false,
+        "dataloader_prefetch_factor": null,
+        "ddp_backend": "gloo",
+        "ddp_timeout": 90,
+        "disable_tqdm": true,
+        "logging_strategy": "no",
+        "max_steps": 3,
+        "output_dir": "/tmp/dense-normalization-audit.Nzu8Oh/padded-adamw-3e-5",
+        "report_to": [],
+        "tf32": false,
+        "use_cpu": true
+      },
+      "final_scheduler": {
+        "factor": 0.0,
+        "groups": [
+          {
+            "algorithm": "adamw",
+            "initial_lr": 3e-05,
+            "lr": 0.0
+          },
+          {
+            "algorithm": "adamw",
+            "initial_lr": 3e-05,
+            "lr": 0.0
+          }
+        ],
+        "last_epoch": 3
+      },
+      "global_batch_sizes": [
+        128,
+        128,
+        32
+      ],
+      "identical_final_weights_across_ranks": true,
+      "normalization_policy": {
+        "accelerator_divisor_after": 1,
+        "accelerator_divisor_before": 4,
+        "owner": "Trainer.training_step/current_gradient_accumulation_steps",
+        "runtime_deployed": false,
+        "trainer_scheduled_accumulation": 4
+      },
+      "normalization_source_bindings": [
+        {
+          "name": "trainer",
+          "path": "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py",
+          "sha256": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+        },
+        {
+          "name": "accelerator",
+          "path": "/usr/local/lib/python3.12/dist-packages/accelerate/accelerator.py",
+          "sha256": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23"
+        },
+        {
+          "name": "sentence_loss",
+          "path": "/usr/local/lib/python3.12/dist-packages/sentence_transformers/base/trainer.py",
+          "sha256": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59"
+        },
+        {
+          "name": "study_trainer",
+          "path": "/root/embedding-optimizer-study/src/embed_optim/train.py",
+          "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+        }
+      ],
+      "optimizer_partition": {
+        "aux_decay": {
+          "parameters": 10048,
+          "tensors": 1
+        },
+        "aux_no_decay": {
+          "parameters": 160,
+          "tensors": 5
+        },
+        "hidden": {
+          "parameters": 20480,
+          "tensors": 8
+        }
+      },
+      "optimizer_steps": 3,
+      "run_id": "padded-adamw-3e-5"
+    },
+    {
+      "checks": [
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 9.673046112060547,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.1175870895385742e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.1175870895385742e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.585629984736443e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.280568540096283e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.979039320256561e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.092726157978177e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 9.458744898438454e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 5.029505700804293e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.1059455573558807e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.092726157978177e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.3655745685100555e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.2005330063402653e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 8.149072527885437e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            6,
+            255,
+            242,
+            112,
+            90,
+            133,
+            154,
+            207,
+            14,
+            217,
+            171,
+            225,
+            47,
+            283,
+            170,
+            66,
+            59,
+            140,
+            123,
+            61,
+            139,
+            54,
+            11,
+            278,
+            265,
+            45,
+            269,
+            287,
+            138,
+            155,
+            135,
+            213,
+            78,
+            137,
+            268,
+            245,
+            206,
+            17,
+            235,
+            115,
+            122,
+            98,
+            181,
+            167,
+            51,
+            197,
+            117,
+            221,
+            88,
+            161,
+            200,
+            131,
+            143,
+            74,
+            266,
+            281,
+            96,
+            237,
+            94,
+            253,
+            5,
+            119,
+            104,
+            72,
+            275,
+            85,
+            75,
+            0,
+            53,
+            218,
+            57,
+            34,
+            141,
+            28,
+            58,
+            150,
+            282,
+            277,
+            142,
+            129,
+            71,
+            193,
+            204,
+            12,
+            238,
+            101,
+            145,
+            234,
+            151,
+            184,
+            65,
+            134,
+            260,
+            232,
+            189,
+            246,
+            203,
+            164,
+            55,
+            81,
+            215,
+            178,
+            4,
+            241,
+            199,
+            251,
+            116,
+            230,
+            110,
+            91,
+            114,
+            223,
+            243,
+            20,
+            157,
+            99,
+            177,
+            92,
+            169,
+            258,
+            43,
+            273,
+            102,
+            239,
+            220,
+            219,
+            201,
+            262
+          ],
+          "global_query_count": 128,
+          "global_step_before_update": 0,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                6,
+                255,
+                242,
+                112,
+                90,
+                133,
+                154,
+                207
+              ],
+              [
+                14,
+                217,
+                171,
+                225,
+                47,
+                283,
+                170,
+                66
+              ],
+              [
+                59,
+                140,
+                123,
+                61,
+                139,
+                54,
+                11,
+                278
+              ],
+              [
+                265,
+                45,
+                269,
+                287,
+                138,
+                155,
+                135,
+                213
+              ]
+            ],
+            [
+              [
+                78,
+                137,
+                268,
+                245,
+                206,
+                17,
+                235,
+                115
+              ],
+              [
+                122,
+                98,
+                181,
+                167,
+                51,
+                197,
+                117,
+                221
+              ],
+              [
+                88,
+                161,
+                200,
+                131,
+                143,
+                74,
+                266,
+                281
+              ],
+              [
+                96,
+                237,
+                94,
+                253,
+                5,
+                119,
+                104,
+                72
+              ]
+            ],
+            [
+              [
+                275,
+                85,
+                75,
+                0,
+                53,
+                218,
+                57,
+                34
+              ],
+              [
+                141,
+                28,
+                58,
+                150,
+                282,
+                277,
+                142,
+                129
+              ],
+              [
+                71,
+                193,
+                204,
+                12,
+                238,
+                101,
+                145,
+                234
+              ],
+              [
+                151,
+                184,
+                65,
+                134,
+                260,
+                232,
+                189,
+                246
+              ]
+            ],
+            [
+              [
+                203,
+                164,
+                55,
+                81,
+                215,
+                178,
+                4,
+                241
+              ],
+              [
+                199,
+                251,
+                116,
+                230,
+                110,
+                91,
+                114,
+                223
+              ],
+              [
+                243,
+                20,
+                157,
+                99,
+                177,
+                92,
+                169,
+                258
+              ],
+              [
+                43,
+                273,
+                102,
+                239,
+                220,
+                219,
+                201,
+                262
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.9073486328125e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.7881393432617188e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 7.799826562404633e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.1641532182693481e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.820766091346741e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.238689482212067e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.3969838619232178e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.3655745685100555e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.752088665962219e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.0710209608078003e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.3655745685100555e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.384208634495735e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.3387762010097504e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.043081283569336e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 9.673052787780762,
+          "scale_diagnostic": {
+            "actual_norm": 9.67305102283532,
+            "actual_to_reference_norm_ratio": 0.9999993171198039,
+            "cosine": 0.9999999999996737,
+            "least_squares_scale": 0.9999993171194802,
+            "max_residual_after_fitted_scale": 1.0843058926290894e-06,
+            "reference_norm": 9.67305762837481
+          },
+          "scheduler": {
+            "factor": 0.0,
+            "groups": [
+              {
+                "algorithm": "muon",
+                "initial_lr": 0.0003,
+                "lr": 0.0
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 0.0
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 0.0
+              }
+            ],
+            "last_epoch": 0
+          },
+          "used_trainer_divisor": 4
+        },
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 13.673811912536621,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.648440957069397e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.916241884231567e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.149072527885437e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.6880221664905548e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.979039320256561e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 6.366462912410498e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.0163603292312473e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.456079866737127e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.402842700481415e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.0618350643198937e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.9117155615240335e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.775291356258094e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 7.275957614183426e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.1641532182693481e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            187,
+            49,
+            257,
+            9,
+            77,
+            107,
+            280,
+            37,
+            166,
+            70,
+            211,
+            32,
+            31,
+            50,
+            227,
+            64,
+            264,
+            108,
+            176,
+            231,
+            174,
+            3,
+            244,
+            240,
+            148,
+            82,
+            248,
+            186,
+            226,
+            18,
+            41,
+            153,
+            152,
+            52,
+            198,
+            252,
+            191,
+            249,
+            128,
+            67,
+            270,
+            42,
+            144,
+            76,
+            274,
+            254,
+            35,
+            130,
+            80,
+            147,
+            106,
+            79,
+            195,
+            25,
+            267,
+            127,
+            103,
+            26,
+            120,
+            285,
+            36,
+            180,
+            118,
+            185,
+            247,
+            95,
+            158,
+            16,
+            196,
+            163,
+            124,
+            259,
+            21,
+            86,
+            276,
+            132,
+            236,
+            69,
+            97,
+            208,
+            105,
+            272,
+            56,
+            165,
+            46,
+            149,
+            162,
+            7,
+            60,
+            229,
+            175,
+            39,
+            33,
+            30,
+            10,
+            224,
+            216,
+            256,
+            87,
+            83,
+            222,
+            40,
+            29,
+            202,
+            113,
+            188,
+            160,
+            172,
+            19,
+            179,
+            100,
+            159,
+            126,
+            44,
+            1,
+            214,
+            62,
+            183,
+            48,
+            192,
+            15,
+            190,
+            23,
+            8,
+            182,
+            168,
+            125,
+            121
+          ],
+          "global_query_count": 128,
+          "global_step_before_update": 1,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                187,
+                49,
+                257,
+                9,
+                77,
+                107,
+                280,
+                37
+              ],
+              [
+                166,
+                70,
+                211,
+                32,
+                31,
+                50,
+                227,
+                64
+              ],
+              [
+                264,
+                108,
+                176,
+                231,
+                174,
+                3,
+                244,
+                240
+              ],
+              [
+                148,
+                82,
+                248,
+                186,
+                226,
+                18,
+                41,
+                153
+              ]
+            ],
+            [
+              [
+                152,
+                52,
+                198,
+                252,
+                191,
+                249,
+                128,
+                67
+              ],
+              [
+                270,
+                42,
+                144,
+                76,
+                274,
+                254,
+                35,
+                130
+              ],
+              [
+                80,
+                147,
+                106,
+                79,
+                195,
+                25,
+                267,
+                127
+              ],
+              [
+                103,
+                26,
+                120,
+                285,
+                36,
+                180,
+                118,
+                185
+              ]
+            ],
+            [
+              [
+                247,
+                95,
+                158,
+                16,
+                196,
+                163,
+                124,
+                259
+              ],
+              [
+                21,
+                86,
+                276,
+                132,
+                236,
+                69,
+                97,
+                208
+              ],
+              [
+                105,
+                272,
+                56,
+                165,
+                46,
+                149,
+                162,
+                7
+              ],
+              [
+                60,
+                229,
+                175,
+                39,
+                33,
+                30,
+                10,
+                224
+              ]
+            ],
+            [
+              [
+                216,
+                256,
+                87,
+                83,
+                222,
+                40,
+                29,
+                202
+              ],
+              [
+                113,
+                188,
+                160,
+                172,
+                19,
+                179,
+                100,
+                159
+              ],
+              [
+                126,
+                44,
+                1,
+                214,
+                62,
+                183,
+                48,
+                192
+              ],
+              [
+                15,
+                190,
+                23,
+                8,
+                182,
+                168,
+                125,
+                121
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 2.384185791015625e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.341104507446289e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 1.257285475730896e-08,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 2.2118911147117615e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.275069270282984e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 9.458744898438454e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.5133991837501526e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.220055416226387e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 9.546056389808655e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.5366822481155396e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.639755494892597e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 7.639755494892597e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.1641532182693481e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.862645149230957e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 13.673815727233887,
+          "scale_diagnostic": {
+            "actual_norm": 13.673815728788512,
+            "actual_to_reference_norm_ratio": 0.9999997036619276,
+            "cosine": 0.9999999999996302,
+            "least_squares_scale": 0.9999997036615553,
+            "max_residual_after_fitted_scale": 2.2502418865755214e-06,
+            "reference_norm": 13.673819780861908
+          },
+          "scheduler": {
+            "factor": 1.0,
+            "groups": [
+              {
+                "algorithm": "muon",
+                "initial_lr": 0.0003,
+                "lr": 0.0003
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 3e-06
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 3e-06
+              }
+            ],
+            "last_epoch": 1
+          },
+          "used_trainer_divisor": 4
+        },
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 13.18323802947998,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 2.1979212760925293e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.234002411365509e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.548361852765083e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.3751559890806675e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.789058039023075e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 7.889866537880152e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 9.822542779147625e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.001776687800884e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.003553375601768e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.57160684466362e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.156675004196586e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 6.548361852765083e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.0913936421275139e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.6763806343078613e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            233,
+            205,
+            279,
+            73,
+            146,
+            27,
+            228,
+            136,
+            156,
+            68,
+            263,
+            194,
+            84,
+            271,
+            22,
+            2,
+            250,
+            212,
+            286,
+            284,
+            38,
+            13,
+            173,
+            63,
+            210,
+            89,
+            209,
+            109,
+            24,
+            261,
+            93,
+            111
+          ],
+          "global_query_count": 32,
+          "global_step_before_update": 2,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              1
+            ],
+            [
+              1
+            ],
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                233,
+                205,
+                279,
+                73,
+                146,
+                27,
+                228,
+                136
+              ]
+            ],
+            [
+              [
+                156,
+                68,
+                263,
+                194,
+                84,
+                271,
+                22,
+                2
+              ]
+            ],
+            [
+              [
+                250,
+                212,
+                286,
+                284,
+                38,
+                13,
+                173,
+                63
+              ]
+            ],
+            [
+              [
+                210,
+                89,
+                209,
+                109,
+                24,
+                261,
+                93,
+                111
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 3.4570693969726562e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.086162567138672e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 1.1641532182693481e-08,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 2.0489096641540527e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.275957614183426e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 1.2223608791828156e-09,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.6007106751203537e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.0745362639427185e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 1.3271346688270569e-08,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 2.3050233721733093e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 6.184563972055912e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 1.2223608791828156e-09,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.862645149230957e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.7567148208618164e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 13.183248519897461,
+          "scale_diagnostic": {
+            "actual_norm": 13.183237657401076,
+            "actual_to_reference_norm_ratio": 0.999999109366017,
+            "cosine": 0.9999999999994361,
+            "least_squares_scale": 0.9999991093654509,
+            "max_residual_after_fitted_scale": 2.811270992553183e-06,
+            "reference_norm": 13.183249398850997
+          },
+          "scheduler": {
+            "factor": 0.5,
+            "groups": [
+              {
+                "algorithm": "muon",
+                "initial_lr": 0.0003,
+                "lr": 0.00015
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 1.5e-06
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 1.5e-06
+              }
+            ],
+            "last_epoch": 2
+          },
+          "used_trainer_divisor": 1
+        }
+      ],
+      "consumed_unique_rows": 288,
+      "cpu_fixture_argument_overrides": {
+        "bf16": false,
+        "dataloader_num_workers": 0,
+        "dataloader_persistent_workers": false,
+        "dataloader_pin_memory": false,
+        "dataloader_prefetch_factor": null,
+        "ddp_backend": "gloo",
+        "ddp_timeout": 90,
+        "disable_tqdm": true,
+        "logging_strategy": "no",
+        "max_steps": 3,
+        "output_dir": "/tmp/dense-normalization-audit.Nzu8Oh/padded-muon-3e-4",
+        "report_to": [],
+        "tf32": false,
+        "use_cpu": true
+      },
+      "final_scheduler": {
+        "factor": 0.0,
+        "groups": [
+          {
+            "algorithm": "muon",
+            "initial_lr": 0.0003,
+            "lr": 0.0
+          },
+          {
+            "algorithm": "adamw",
+            "initial_lr": 3e-06,
+            "lr": 0.0
+          },
+          {
+            "algorithm": "adamw",
+            "initial_lr": 3e-06,
+            "lr": 0.0
+          }
+        ],
+        "last_epoch": 3
+      },
+      "global_batch_sizes": [
+        128,
+        128,
+        32
+      ],
+      "identical_final_weights_across_ranks": true,
+      "normalization_policy": {
+        "accelerator_divisor_after": 1,
+        "accelerator_divisor_before": 4,
+        "owner": "Trainer.training_step/current_gradient_accumulation_steps",
+        "runtime_deployed": false,
+        "trainer_scheduled_accumulation": 4
+      },
+      "normalization_source_bindings": [
+        {
+          "name": "trainer",
+          "path": "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py",
+          "sha256": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+        },
+        {
+          "name": "accelerator",
+          "path": "/usr/local/lib/python3.12/dist-packages/accelerate/accelerator.py",
+          "sha256": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23"
+        },
+        {
+          "name": "sentence_loss",
+          "path": "/usr/local/lib/python3.12/dist-packages/sentence_transformers/base/trainer.py",
+          "sha256": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59"
+        },
+        {
+          "name": "study_trainer",
+          "path": "/root/embedding-optimizer-study/src/embed_optim/train.py",
+          "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+        }
+      ],
+      "optimizer_partition": {
+        "aux_decay": {
+          "parameters": 10048,
+          "tensors": 1
+        },
+        "aux_no_decay": {
+          "parameters": 160,
+          "tensors": 5
+        },
+        "hidden": {
+          "parameters": 20480,
+          "tensors": 8
+        }
+      },
+      "optimizer_steps": 3,
+      "run_id": "padded-muon-3e-4"
+    },
+    {
+      "checks": [
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 9.673046112060547,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.1175870895385742e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.1175870895385742e-08,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.585629984736443e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.280568540096283e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.979039320256561e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.092726157978177e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 9.458744898438454e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.9103830456733704e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 5.029505700804293e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.1059455573558807e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.092726157978177e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.3655745685100555e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.2005330063402653e-10,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 8.149072527885437e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            6,
+            255,
+            242,
+            112,
+            90,
+            133,
+            154,
+            207,
+            14,
+            217,
+            171,
+            225,
+            47,
+            283,
+            170,
+            66,
+            59,
+            140,
+            123,
+            61,
+            139,
+            54,
+            11,
+            278,
+            265,
+            45,
+            269,
+            287,
+            138,
+            155,
+            135,
+            213,
+            78,
+            137,
+            268,
+            245,
+            206,
+            17,
+            235,
+            115,
+            122,
+            98,
+            181,
+            167,
+            51,
+            197,
+            117,
+            221,
+            88,
+            161,
+            200,
+            131,
+            143,
+            74,
+            266,
+            281,
+            96,
+            237,
+            94,
+            253,
+            5,
+            119,
+            104,
+            72,
+            275,
+            85,
+            75,
+            0,
+            53,
+            218,
+            57,
+            34,
+            141,
+            28,
+            58,
+            150,
+            282,
+            277,
+            142,
+            129,
+            71,
+            193,
+            204,
+            12,
+            238,
+            101,
+            145,
+            234,
+            151,
+            184,
+            65,
+            134,
+            260,
+            232,
+            189,
+            246,
+            203,
+            164,
+            55,
+            81,
+            215,
+            178,
+            4,
+            241,
+            199,
+            251,
+            116,
+            230,
+            110,
+            91,
+            114,
+            223,
+            243,
+            20,
+            157,
+            99,
+            177,
+            92,
+            169,
+            258,
+            43,
+            273,
+            102,
+            239,
+            220,
+            219,
+            201,
+            262
+          ],
+          "global_query_count": 128,
+          "global_step_before_update": 0,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                6,
+                255,
+                242,
+                112,
+                90,
+                133,
+                154,
+                207
+              ],
+              [
+                14,
+                217,
+                171,
+                225,
+                47,
+                283,
+                170,
+                66
+              ],
+              [
+                59,
+                140,
+                123,
+                61,
+                139,
+                54,
+                11,
+                278
+              ],
+              [
+                265,
+                45,
+                269,
+                287,
+                138,
+                155,
+                135,
+                213
+              ]
+            ],
+            [
+              [
+                78,
+                137,
+                268,
+                245,
+                206,
+                17,
+                235,
+                115
+              ],
+              [
+                122,
+                98,
+                181,
+                167,
+                51,
+                197,
+                117,
+                221
+              ],
+              [
+                88,
+                161,
+                200,
+                131,
+                143,
+                74,
+                266,
+                281
+              ],
+              [
+                96,
+                237,
+                94,
+                253,
+                5,
+                119,
+                104,
+                72
+              ]
+            ],
+            [
+              [
+                275,
+                85,
+                75,
+                0,
+                53,
+                218,
+                57,
+                34
+              ],
+              [
+                141,
+                28,
+                58,
+                150,
+                282,
+                277,
+                142,
+                129
+              ],
+              [
+                71,
+                193,
+                204,
+                12,
+                238,
+                101,
+                145,
+                234
+              ],
+              [
+                151,
+                184,
+                65,
+                134,
+                260,
+                232,
+                189,
+                246
+              ]
+            ],
+            [
+              [
+                203,
+                164,
+                55,
+                81,
+                215,
+                178,
+                4,
+                241
+              ],
+              [
+                199,
+                251,
+                116,
+                230,
+                110,
+                91,
+                114,
+                223
+              ],
+              [
+                243,
+                20,
+                157,
+                99,
+                177,
+                92,
+                169,
+                258
+              ],
+              [
+                43,
+                273,
+                102,
+                239,
+                220,
+                219,
+                201,
+                262
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.9073486328125e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.7881393432617188e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 7.799826562404633e-09,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.1641532182693481e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.820766091346741e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.238689482212067e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.3969838619232178e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.3655745685100555e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.752088665962219e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.0710209608078003e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.3655745685100555e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.384208634495735e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.3387762010097504e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.043081283569336e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 9.673052787780762,
+          "scale_diagnostic": {
+            "actual_norm": 9.67305102283532,
+            "actual_to_reference_norm_ratio": 0.9999993171198039,
+            "cosine": 0.9999999999996737,
+            "least_squares_scale": 0.9999993171194802,
+            "max_residual_after_fitted_scale": 1.0843058926290894e-06,
+            "reference_norm": 9.67305762837481
+          },
+          "scheduler": {
+            "factor": 0.0,
+            "groups": [
+              {
+                "algorithm": "normuon",
+                "initial_lr": 0.0003,
+                "lr": 0.0
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 0.0
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 0.0
+              }
+            ],
+            "last_epoch": 0
+          },
+          "used_trainer_divisor": 4
+        },
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 13.673811912536621,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.648440957069397e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.916241884231567e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.149072527885437e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.6880221664905548e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.979039320256561e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 6.366462912410498e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.0163603292312473e-10,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.456079866737127e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 6.402842700481415e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.0618350643198937e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.9117155615240335e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.775291356258094e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 7.275957614183426e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.1641532182693481e-08,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            187,
+            49,
+            257,
+            9,
+            77,
+            107,
+            280,
+            37,
+            166,
+            70,
+            211,
+            32,
+            31,
+            50,
+            227,
+            64,
+            264,
+            108,
+            176,
+            231,
+            174,
+            3,
+            244,
+            240,
+            148,
+            82,
+            248,
+            186,
+            226,
+            18,
+            41,
+            153,
+            152,
+            52,
+            198,
+            252,
+            191,
+            249,
+            128,
+            67,
+            270,
+            42,
+            144,
+            76,
+            274,
+            254,
+            35,
+            130,
+            80,
+            147,
+            106,
+            79,
+            195,
+            25,
+            267,
+            127,
+            103,
+            26,
+            120,
+            285,
+            36,
+            180,
+            118,
+            185,
+            247,
+            95,
+            158,
+            16,
+            196,
+            163,
+            124,
+            259,
+            21,
+            86,
+            276,
+            132,
+            236,
+            69,
+            97,
+            208,
+            105,
+            272,
+            56,
+            165,
+            46,
+            149,
+            162,
+            7,
+            60,
+            229,
+            175,
+            39,
+            33,
+            30,
+            10,
+            224,
+            216,
+            256,
+            87,
+            83,
+            222,
+            40,
+            29,
+            202,
+            113,
+            188,
+            160,
+            172,
+            19,
+            179,
+            100,
+            159,
+            126,
+            44,
+            1,
+            214,
+            62,
+            183,
+            48,
+            192,
+            15,
+            190,
+            23,
+            8,
+            182,
+            168,
+            125,
+            121
+          ],
+          "global_query_count": 128,
+          "global_step_before_update": 1,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ],
+            [
+              4,
+              4,
+              4,
+              4
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                187,
+                49,
+                257,
+                9,
+                77,
+                107,
+                280,
+                37
+              ],
+              [
+                166,
+                70,
+                211,
+                32,
+                31,
+                50,
+                227,
+                64
+              ],
+              [
+                264,
+                108,
+                176,
+                231,
+                174,
+                3,
+                244,
+                240
+              ],
+              [
+                148,
+                82,
+                248,
+                186,
+                226,
+                18,
+                41,
+                153
+              ]
+            ],
+            [
+              [
+                152,
+                52,
+                198,
+                252,
+                191,
+                249,
+                128,
+                67
+              ],
+              [
+                270,
+                42,
+                144,
+                76,
+                274,
+                254,
+                35,
+                130
+              ],
+              [
+                80,
+                147,
+                106,
+                79,
+                195,
+                25,
+                267,
+                127
+              ],
+              [
+                103,
+                26,
+                120,
+                285,
+                36,
+                180,
+                118,
+                185
+              ]
+            ],
+            [
+              [
+                247,
+                95,
+                158,
+                16,
+                196,
+                163,
+                124,
+                259
+              ],
+              [
+                21,
+                86,
+                276,
+                132,
+                236,
+                69,
+                97,
+                208
+              ],
+              [
+                105,
+                272,
+                56,
+                165,
+                46,
+                149,
+                162,
+                7
+              ],
+              [
+                60,
+                229,
+                175,
+                39,
+                33,
+                30,
+                10,
+                224
+              ]
+            ],
+            [
+              [
+                216,
+                256,
+                87,
+                83,
+                222,
+                40,
+                29,
+                202
+              ],
+              [
+                113,
+                188,
+                160,
+                172,
+                19,
+                179,
+                100,
+                159
+              ],
+              [
+                126,
+                44,
+                1,
+                214,
+                62,
+                183,
+                48,
+                192
+              ],
+              [
+                15,
+                190,
+                23,
+                8,
+                182,
+                168,
+                125,
+                121
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 2.384185791015625e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.341104507446289e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 1.257285475730896e-08,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 2.2118911147117615e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.275069270282984e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 9.458744898438454e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.5133991837501526e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 4.220055416226387e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 9.546056389808655e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.5366822481155396e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.639755494892597e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 7.639755494892597e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.1641532182693481e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.862645149230957e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 13.673815727233887,
+          "scale_diagnostic": {
+            "actual_norm": 13.673815728788512,
+            "actual_to_reference_norm_ratio": 0.9999997036619276,
+            "cosine": 0.9999999999996302,
+            "least_squares_scale": 0.9999997036615553,
+            "max_residual_after_fitted_scale": 2.2502418865755214e-06,
+            "reference_norm": 13.673819780861908
+          },
+          "scheduler": {
+            "factor": 1.0,
+            "groups": [
+              {
+                "algorithm": "normuon",
+                "initial_lr": 0.0003,
+                "lr": 0.0003
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 3e-06
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 3e-06
+              }
+            ],
+            "last_epoch": 1
+          },
+          "used_trainer_divisor": 4
+        },
+        {
+          "accelerator_divisor": 1,
+          "actual_raw_gradient_norm": 13.190995216369629,
+          "clipped_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 1.7508864402770996e-07,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 8.149072527885437e-09,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 8.294591680169106e-10,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.2223608791828156e-09,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.723243935382925e-12,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 5.411493475548923e-11,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 7.275957614183426e-11,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 2.523847797419876e-11,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 7.130438461899757e-10,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.673470251262188e-09,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.410605131648481e-12,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 4.9112713895738125e-11,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 8.731149137020111e-11,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 7.450580596923828e-09,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "global_example_ids": [
+            233,
+            205,
+            279,
+            73,
+            146,
+            27,
+            228,
+            136,
+            156,
+            68,
+            263,
+            194,
+            84,
+            271,
+            22,
+            2,
+            250,
+            212,
+            286,
+            284,
+            38,
+            13,
+            173,
+            63,
+            210,
+            89,
+            209,
+            109,
+            24,
+            261,
+            93,
+            111
+          ],
+          "global_query_count": 32,
+          "global_step_before_update": 2,
+          "identical_raw_gradients_across_ranks": true,
+          "observed_trainer_divisors": [
+            [
+              1
+            ],
+            [
+              1
+            ],
+            [
+              1
+            ],
+            [
+              1
+            ]
+          ],
+          "rank_microbatch_ids": [
+            [
+              [
+                233,
+                205,
+                279,
+                73,
+                146,
+                27,
+                228,
+                136
+              ]
+            ],
+            [
+              [
+                156,
+                68,
+                263,
+                194,
+                84,
+                271,
+                22,
+                2
+              ]
+            ],
+            [
+              [
+                250,
+                212,
+                286,
+                284,
+                38,
+                13,
+                173,
+                63
+              ]
+            ],
+            [
+              [
+                210,
+                89,
+                209,
+                109,
+                24,
+                261,
+                93,
+                111
+              ]
+            ]
+          ],
+          "raw_gradient_errors": [
+            {
+              "elements": 10048,
+              "max_absolute_error": 2.7418136596679688e-06,
+              "name": "0.model.embeddings.tok_embeddings.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.0803341865539551e-07,
+              "name": "0.model.embeddings.norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 1.123407855629921e-08,
+              "name": "0.model.layers.0.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 1.792795956134796e-08,
+              "name": "0.model.layers.0.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 5.820766091346741e-11,
+              "name": "0.model.layers.0.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 7.712515071034431e-10,
+              "name": "0.model.layers.0.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.1641532182693481e-09,
+              "name": "0.model.layers.0.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.5652192309498787e-10,
+              "name": "0.model.layers.1.attn_norm.weight"
+            },
+            {
+              "elements": 3072,
+              "max_absolute_error": 9.080395102500916e-09,
+              "name": "0.model.layers.1.attn.Wqkv.weight"
+            },
+            {
+              "elements": 1024,
+              "max_absolute_error": 2.3283064365386963e-08,
+              "name": "0.model.layers.1.attn.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 3.2741809263825417e-11,
+              "name": "0.model.layers.1.mlp_norm.weight"
+            },
+            {
+              "elements": 4096,
+              "max_absolute_error": 9.022187441587448e-10,
+              "name": "0.model.layers.1.mlp.Wi.weight"
+            },
+            {
+              "elements": 2048,
+              "max_absolute_error": 1.4551915228366852e-09,
+              "name": "0.model.layers.1.mlp.Wo.weight"
+            },
+            {
+              "elements": 32,
+              "max_absolute_error": 1.4156103134155273e-07,
+              "name": "0.model.final_norm.weight"
+            }
+          ],
+          "reference_raw_gradient_norm": 13.19100284576416,
+          "scale_diagnostic": {
+            "actual_norm": 13.190996952932224,
+            "actual_to_reference_norm_ratio": 0.9999994312682216,
+            "cosine": 0.9999999999996643,
+            "least_squares_scale": 0.9999994312678833,
+            "max_residual_after_fitted_scale": 2.3291725154139797e-06,
+            "reference_norm": 13.191004455075648
+          },
+          "scheduler": {
+            "factor": 0.5,
+            "groups": [
+              {
+                "algorithm": "normuon",
+                "initial_lr": 0.0003,
+                "lr": 0.00015
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 1.5e-06
+              },
+              {
+                "algorithm": "adamw",
+                "initial_lr": 3e-06,
+                "lr": 1.5e-06
+              }
+            ],
+            "last_epoch": 2
+          },
+          "used_trainer_divisor": 1
+        }
+      ],
+      "consumed_unique_rows": 288,
+      "cpu_fixture_argument_overrides": {
+        "bf16": false,
+        "dataloader_num_workers": 0,
+        "dataloader_persistent_workers": false,
+        "dataloader_pin_memory": false,
+        "dataloader_prefetch_factor": null,
+        "ddp_backend": "gloo",
+        "ddp_timeout": 90,
+        "disable_tqdm": true,
+        "logging_strategy": "no",
+        "max_steps": 3,
+        "output_dir": "/tmp/dense-normalization-audit.Nzu8Oh/padded-normuon-3e-4",
+        "report_to": [],
+        "tf32": false,
+        "use_cpu": true
+      },
+      "final_scheduler": {
+        "factor": 0.0,
+        "groups": [
+          {
+            "algorithm": "normuon",
+            "initial_lr": 0.0003,
+            "lr": 0.0
+          },
+          {
+            "algorithm": "adamw",
+            "initial_lr": 3e-06,
+            "lr": 0.0
+          },
+          {
+            "algorithm": "adamw",
+            "initial_lr": 3e-06,
+            "lr": 0.0
+          }
+        ],
+        "last_epoch": 3
+      },
+      "global_batch_sizes": [
+        128,
+        128,
+        32
+      ],
+      "identical_final_weights_across_ranks": true,
+      "normalization_policy": {
+        "accelerator_divisor_after": 1,
+        "accelerator_divisor_before": 4,
+        "owner": "Trainer.training_step/current_gradient_accumulation_steps",
+        "runtime_deployed": false,
+        "trainer_scheduled_accumulation": 4
+      },
+      "normalization_source_bindings": [
+        {
+          "name": "trainer",
+          "path": "/usr/local/lib/python3.12/dist-packages/transformers/trainer.py",
+          "sha256": "060eda6fcd587e79caeca7c3f246ea7bab1af410479c9776584470b8f4ac48a8"
+        },
+        {
+          "name": "accelerator",
+          "path": "/usr/local/lib/python3.12/dist-packages/accelerate/accelerator.py",
+          "sha256": "85fe1ad1f0061598313f8566868e9f53434ac9c1d5e24089c3d03da772d40f23"
+        },
+        {
+          "name": "sentence_loss",
+          "path": "/usr/local/lib/python3.12/dist-packages/sentence_transformers/base/trainer.py",
+          "sha256": "3ffc94ef7c3acea812ecbbed5b2ea968abf5e8bf48c881929e22e3e36b3bdd59"
+        },
+        {
+          "name": "study_trainer",
+          "path": "/root/embedding-optimizer-study/src/embed_optim/train.py",
+          "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+        }
+      ],
+      "optimizer_partition": {
+        "aux_decay": {
+          "parameters": 10048,
+          "tensors": 1
+        },
+        "aux_no_decay": {
+          "parameters": 160,
+          "tensors": 5
+        },
+        "hidden": {
+          "parameters": 20480,
+          "tensors": 8
+        }
+      },
+      "optimizer_steps": 3,
+      "run_id": "padded-normuon-3e-4"
+    }
+  ],
+  "runtime_deployed": false,
+  "scientific_completion": false,
+  "scope": "engineering_four_rank_cpu_normalization_candidate_with_epoch_tail",
+  "source_bindings": [
+    {
+      "bytes": 16943,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_trainer_normalization.py",
+      "sha256": "92bb2965f4be570e221cfdf7861bc03c63986195840c4cd4213228783067106f"
+    },
+    {
+      "bytes": 4389,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/dense_trainer_normalization_candidate.py",
+      "sha256": "08d7c58df2e8f8f1d537cc76ee514781f6ceb7a73b1d2eff72e688f383d1a761"
+    },
+    {
+      "bytes": 21023,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_ddp_accumulation.py",
+      "sha256": "55b09ad9cc483334e1d0af9f7c6101448f11a0fc3dd5eae7a65233b72eaaf2f5"
+    },
+    {
+      "bytes": 14125,
+      "path": "/root/embedding-optimizer-story-refactor/scripts/audit_dense_loss_contract.py",
+      "sha256": "6373e1c5987c858f19bc3503a6ad7db47bd00ab5d279ff959b341e919e6ab55f"
+    },
+    {
+      "bytes": 16750,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/train.py",
+      "sha256": "e52cfcb5857aa64d4fb826c1f0b12eabe547506de25241a93b88ef1969d1720d"
+    },
+    {
+      "bytes": 3805,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/losses.py",
+      "sha256": "57a3ce29a1fc8cf36bccfcd702524fa7f2ce2e5e34859b4441fa943d4cce1ddf"
+    },
+    {
+      "bytes": 2117,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/collators.py",
+      "sha256": "0c28cac7f7bf3aab7b5f6bd71b1a887251d1d9e5d0d35f3c5160e8a555affb60"
+    },
+    {
+      "bytes": 11839,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/optimizers.py",
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    {
+      "bytes": 7052,
+      "path": "/root/embedding-optimizer-study/src/embed_optim/config.py",
+      "sha256": "8f9d0ab7251b4051c06a5b9a30bea5d8fa47b51513eae78bc205c953facab91a"
+    },
+    {
+      "bytes": 1601,
+      "path": "/root/embedding-optimizer-study/configs/dense_no_packing_retrain.yaml",
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7"
+    }
+  ],
+  "tolerances": {
+    "gradient_atol": 5e-06,
+    "gradient_rtol": 0.0005
+  },
+  "versions": {
+    "accelerate": "1.13.0",
+    "datasets": "4.8.4",
+    "sentence-transformers": "5.7.0",
+    "torch": "2.9.1+cu129",
+    "transformers": "5.3.0"
+  }
+}

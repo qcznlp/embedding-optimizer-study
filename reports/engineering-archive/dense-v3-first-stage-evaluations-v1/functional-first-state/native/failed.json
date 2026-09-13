@@ -1,0 +1,12 @@
+{
+  "authorization_sha256": "d72527595e2c963eae7fd46b0a1de2bd83d1ea15a863ae467a1065cfc5b2f336",
+  "automatic_retry_authorized": false,
+  "error": "[Errno 2] No such file or directory: '/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/run/jobs/verified-v3-adamw-1e-5/checkpoint-782.admission.json'",
+  "error_type": "FileNotFoundError",
+  "failed_at_utc": "2026-09-11T03:17:40.699222+00:00",
+  "preserve_partial_outputs": true,
+  "scientific_completion": false,
+  "scope": "owner_authorized_content_bound_primary_functional_dimensions_20260910",
+  "source_sha256": "3b02f1d8486f3c2b41d0403cbf291580d0ca32868b8b29cb05514a22770257f5",
+  "traceback": "Traceback (most recent call last):\n  File \"/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/dispatch.py\", line 420, in coordinate\n    states[job['plan']['state']['cell']] = encode_one(args, entry, context, job)\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/dispatch.py\", line 255, in encode_one\n    context.geometry.write_new(RUN / 'jobs' / f'{cell}.admission.json', {\n  File \"/root/embedding-optimizer-v3-experiment/launch/weight-geometry/run_geometry.py\", line 69, in write_new\n    with Path(path).open('xb') as stream:\n         ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/run/jobs/verified-v3-adamw-1e-5/checkpoint-782.admission.json'\n"
+}

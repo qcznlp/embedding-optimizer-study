@@ -1,0 +1,129 @@
+{
+  "accelerator_divisor": 1,
+  "global_example_ids": [
+    233,
+    205,
+    279,
+    73,
+    146,
+    27,
+    228,
+    136,
+    156,
+    68,
+    263,
+    194,
+    84,
+    271,
+    22,
+    2,
+    250,
+    212,
+    286,
+    284,
+    38,
+    13,
+    173,
+    63,
+    210,
+    89,
+    209,
+    109,
+    24,
+    261,
+    93,
+    111
+  ],
+  "global_query_count": 32,
+  "global_step_before_update": 2,
+  "identical_raw_gradients_across_ranks": true,
+  "observed_trainer_divisors": [
+    [
+      1
+    ],
+    [
+      1
+    ],
+    [
+      1
+    ],
+    [
+      1
+    ]
+  ],
+  "rank_microbatch_ids": [
+    [
+      [
+        233,
+        205,
+        279,
+        73,
+        146,
+        27,
+        228,
+        136
+      ]
+    ],
+    [
+      [
+        156,
+        68,
+        263,
+        194,
+        84,
+        271,
+        22,
+        2
+      ]
+    ],
+    [
+      [
+        250,
+        212,
+        286,
+        284,
+        38,
+        13,
+        173,
+        63
+      ]
+    ],
+    [
+      [
+        210,
+        89,
+        209,
+        109,
+        24,
+        261,
+        93,
+        111
+      ]
+    ]
+  ],
+  "scale_diagnostic": {
+    "actual_norm": 3.069465362000433,
+    "actual_to_reference_norm_ratio": 0.2499999172775954,
+    "cosine": 0.9999999999995227,
+    "least_squares_scale": 0.24999991727747575,
+    "max_residual_after_fitted_scale": 4.8045664713392e-07,
+    "reference_norm": 12.277865510619964
+  },
+  "scheduler": {
+    "factor": 0.5,
+    "groups": [
+      {
+        "algorithm": "adamw",
+        "initial_lr": 3e-05,
+        "lr": 1.5e-05
+      },
+      {
+        "algorithm": "adamw",
+        "initial_lr": 3e-05,
+        "lr": 1.5e-05
+      }
+    ],
+    "last_epoch": 2
+  },
+  "used_trainer_divisor": 4
+}

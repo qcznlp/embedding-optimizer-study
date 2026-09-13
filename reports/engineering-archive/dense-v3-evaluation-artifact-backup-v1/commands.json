@@ -1,0 +1,149 @@
+{
+  "scope": "actual_evaluation_artifact_transfer_and_replay_commands",
+  "records": {
+    "evaluationDurabilityRemoteReadLaunch": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nfrom huggingface_hub import HfApi\nimport json\napi=HfApi(endpoint='https://huggingface.co',token=False)\nrepo='qcz/embedding-optimizer-study-analysis-artifacts'\ninfo=api.repo_info(repo,repo_type='dataset',token=False)\nassert info.sha=='3c95da08a4c817d5bcd58b5c84df777716a02ca9' and info.private is False\nroot=[]\nfor item in api.list_repo_tree(repo,repo_type='dataset',revision=info.sha,recursive=False,token=False):\n root.append({'path':item.path,'kind':type(item).__name__,'tree_id':getattr(item,'tree_id',None),'blob_id':getattr(item,'blob_id',None),'bytes':getattr(item,'size',None)})\nprint(json.dumps({'repo_id':repo,'revision':info.sha,'private':info.private,'root':root,'remote_write':False}))\nPY",
+      "result": {
+        "chunk_id": "a97f58",
+        "wall_time_seconds": 0.813033217,
+        "exit_code": 0,
+        "original_token_count": 780,
+        "output": "{\"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"revision\": \"3c95da08a4c817d5bcd58b5c84df777716a02ca9\", \"private\": false, \"root\": [{\"path\": \"candidate-breadth\", \"kind\": \"RepoFolder\", \"tree_id\": \"5be58871092c1b378b741081bad0c4fd8505db5d\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"common-state-spectra\", \"kind\": \"RepoFolder\", \"tree_id\": \"982188738914075966b2736569bfa72063eec02e\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"common-state\", \"kind\": \"RepoFolder\", \"tree_id\": \"0f253eab4a4433e1e80c389b460762857d9cd206\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"confirmatory-beir-dynamics\", \"kind\": \"RepoFolder\", \"tree_id\": \"fe4f64b3c525b5ee02c59d96c3069f973f3d4f46\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"confirmatory-beir\", \"kind\": \"RepoFolder\", \"tree_id\": \"e000fbbd1619f49e2a8bd424485d8e94dabdfb6c\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"corrected-dense-correctness-v3\", \"kind\": \"RepoFolder\", \"tree_id\": \"bff971b24e864f22c93217ba91de71105f6e6e42\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"corrected-dense-no-packing-v1\", \"kind\": \"RepoFolder\", \"tree_id\": \"491f716e4f2ab2ba118629fd04604492960d6ab7\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"decontaminated-beir\", \"kind\": \"RepoFolder\", \"tree_id\": \"73e0dc7f2ae5426e58a7fbe8c057c8ffef65a1f8\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"functional-intervention\", \"kind\": \"RepoFolder\", \"tree_id\": \"d5468504a72b53a4aa4c398cf23fb7e3f1245cda\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"hybrid-adamw-beir-dynamics\", \"kind\": \"RepoFolder\", \"tree_id\": \"ac4642bf04f918ec9c581f6017a8192b08a2f853\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"hybrid-adamw-beir\", \"kind\": \"RepoFolder\", \"tree_id\": \"7017ec551dae227049048828a0aedffd084b5a9d\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"project\", \"kind\": \"RepoFolder\", \"tree_id\": \"cb32f850735e6c69a2c429f419caf45f9b00e6b6\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"recipe-validation\", \"kind\": \"RepoFolder\", \"tree_id\": \"e1835dc96e54a182d69f6afe259b615edbb02bff\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"representation-space\", \"kind\": \"RepoFolder\", \"tree_id\": \"d42a8edea50df97244b0e86c84f292bfa3d42f9b\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"short-branch\", \"kind\": \"RepoFolder\", \"tree_id\": \"f9585ea1983d5eeb9c006cb20922e0929ff1c474\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"smoke-dense\", \"kind\": \"RepoFolder\", \"tree_id\": \"4e5f587f72d6ea765bde6b74202bd738f5669d14\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"smoke-late\", \"kind\": \"RepoFolder\", \"tree_id\": \"1ddaeb2a92d7d045c407ac8a6f112a4b3b0cd2cc\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"spectral-transplant\", \"kind\": \"RepoFolder\", \"tree_id\": \"d7dca74c7f849c8ae98b032e08b0cff4ae1a835e\", \"blob_id\": null, \"bytes\": null}, {\"path\": \"weight-space\", \"kind\": \"RepoFolder\", \"tree_id\": \"59350ffd3d22c15473b9dfa5d65cb0706db3da84\", \"blob_id\": null, \"bytes\": null}, {\"path\": \".gitattributes\", \"kind\": \"RepoFile\", \"tree_id\": null, \"blob_id\": \"012d079632f27fb26d636af9b4a81396d09670cd\", \"bytes\": 3237}, {\"path\": \"README.md\", \"kind\": \"RepoFile\", \"tree_id\": null, \"blob_id\": \"d63b44ef7f198cc7332ca09249ab302ae2cc7032\", \"bytes\": 1615}], \"remote_write\": false}\n"
+      }
+    },
+    "evaluationDurabilityPrepareLaunch": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/backup.py prepare --workdir /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW",
+      "result": {
+        "chunk_id": "4ff184",
+        "wall_time_seconds": 1.000999701,
+        "session_id": 1841,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    "evaluationDurabilityPrepareTerminal": {
+      "chunk_id": "83d173",
+      "wall_time_seconds": 0.000002381,
+      "exit_code": 0,
+      "original_token_count": 262,
+      "output": "{\"helper_sha256\": \"bebdfd3d773e550665660ec12fe7451f70e7e5fd419b1ef21814f774762ef33e\", \"manifest\": {\"bytes\": 204139, \"git_blob_sha1\": \"2f23630a7e91c6ccc2086f23e937399273070540\", \"sha256\": \"bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\"}, \"native_measurement_files\": 264, \"parent_revision\": \"3c95da08a4c817d5bcd58b5c84df777716a02ca9\", \"prefix\": \"corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\", \"prepared_at_utc\": \"2026-09-10T17:17:45.049907+00:00\", \"remote_mutations\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"repo_type\": \"dataset\", \"scientific_completion\": false, \"scope\": \"source-bound-additions-only-complete-evaluation-backup-preflight\", \"source\": {\"bytes\": 23707, \"git_blob_sha1\": \"e521eeb1d78a9620621ea40658814ea7399acdb4\", \"sha256\": \"ab565206b22d0138c8227fef3f26eb28e2abeb7653c6f7137b7b532a289ec046\"}, \"upload_bytes\": 29526987, \"upload_files\": 660}\n"
+    },
+    "evaluationDurabilityTestsLaunch": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/test_evaluation_backup.py --junitxml=/tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/transport-tests.xml",
+      "result": {
+        "chunk_id": "ffb931",
+        "wall_time_seconds": 0.254476419,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "........................................                                 [100%]\n40 passed in 0.06s\n"
+      }
+    },
+    "evaluationDurabilityUploadLaunch": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' HF_HUB_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/backup.py upload --workdir /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW",
+      "result": {
+        "chunk_id": "f13059",
+        "wall_time_seconds": 1.000869637,
+        "session_id": 17235,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    "evaluationDurabilityUploadPoll1": {
+      "chunk_id": "2a1421",
+      "wall_time_seconds": 0.000002416,
+      "exit_code": 0,
+      "original_token_count": 231,
+      "output": "{\"corrected_root_tree_changed_only_by_new_evaluation_subtree\": true, \"durability_verified\": true, \"files\": 660, \"manifest\": {\"bytes\": 204139, \"git_blob_sha1\": \"2f23630a7e91c6ccc2086f23e937399273070540\", \"sha256\": \"bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\"}, \"old_corrected_subtrees_unchanged\": 2, \"old_root_entries_unchanged\": 20, \"prefix\": \"corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\", \"remote_paths_deleted_or_overwritten\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"repo_type\": \"dataset\", \"revision\": \"3883b677f87b1982f06016e9fadb8bb95e0cfc96\", \"scientific_completion\": false, \"source_code_uploaded\": false, \"uploaded_at_utc\": \"2026-09-10T17:21:06.219903+00:00\", \"verified_at_utc\": \"2026-09-10T17:21:08.225016+00:00\"}\n"
+    },
+    "evaluationDurabilityDownloadLaunch": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' HF_HUB_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/backup.py download-verify --workdir /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW",
+      "result": {
+        "chunk_id": "8dc611",
+        "wall_time_seconds": 1.001549075,
+        "session_id": 13628,
+        "original_token_count": 0,
+        "output": ""
+      }
+    },
+    "evaluationDurabilityDownloadPoll1": {
+      "chunk_id": "74f476",
+      "wall_time_seconds": 5.001031312,
+      "session_id": 13628,
+      "original_token_count": 35,
+      "output": "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n"
+    },
+    "evaluationDurabilityDownloadPoll2": {
+      "chunk_id": "7fcb25",
+      "wall_time_seconds": 5.000234434,
+      "session_id": 13628,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "evaluationDurabilityDownloadPoll3": {
+      "chunk_id": "dd39c6",
+      "wall_time_seconds": 5.000810135,
+      "session_id": 13628,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "evaluationDurabilityDownloadPoll4": {
+      "chunk_id": "287679",
+      "wall_time_seconds": 0.000002517,
+      "exit_code": 0,
+      "original_token_count": 202,
+      "output": "{\"all_payload_hashes_match\": true, \"bytes\": 29526987, \"completed_at_utc\": \"2026-09-10T17:28:18.393001+00:00\", \"download_root\": \"/tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/download\", \"files\": 660, \"gpu_or_model_execution\": false, \"manifest\": {\"bytes\": 204139, \"git_blob_sha1\": \"2f23630a7e91c6ccc2086f23e937399273070540\", \"sha256\": \"bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\"}, \"prefix\": \"corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\", \"revision\": \"3883b677f87b1982f06016e9fadb8bb95e0cfc96\", \"same_physical_host\": true, \"scientific_completion\": false, \"scope\": \"actual-complete-anonymous-evaluation-artifact-download-verification\"}\n"
+    },
+    "evaluationDurabilityStagedReplayLaunch": {
+      "cmd": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/replay_scores.py --root /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/staging --output /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/staged-score-replay.json",
+      "result": {
+        "chunk_id": "52113d",
+        "wall_time_seconds": 0.867868777,
+        "exit_code": 0,
+        "original_token_count": 275,
+        "output": "{\"beir_endpoint_means\": 12, \"beir_task_scores\": 168, \"input_root\": \"/tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/staging\", \"manifest_sha256\": \"bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\", \"maximum_scalar_replay_absolute_errors\": {\"contrastive_loss\": 5.588763638542105e-07, \"hardest_negative_score\": 0.0, \"positive_margin\": 0.0, \"positive_score\": 0.0, \"reciprocal_rank\": 9.934107481068821e-09, \"top1_accuracy\": 0.0}, \"model_forward_or_query_level_beir_recomputed\": false, \"network_access\": false, \"numeric_replay_passed\": true, \"observed_at_utc\": \"2026-09-10T17:24:42.419662+00:00\", \"raw_query_document_text_reconstructed\": false, \"scalar_validation_checks\": 294912, \"scientific_completion\": false, \"scope\": \"offline_complete_recovered_endpoint_and_validation_score_reconstruction\", \"selected\": {\"adamw\": \"verified-v3-adamw-3e-5\", \"muon\": \"verified-v3-muon-3e-4\", \"normuon\": \"verified-v3-normuon-3e-4\"}, \"selected_endpoint_rows\": 3, \"source_publication\": false, \"tables_verified\": 4, \"validation_group_metric_means\": 576, \"validation_rows\": 49152, \"verified_files\": 660}\n"
+      }
+    },
+    "evaluationDurabilityRecoveredReplayLaunch": {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/replay_scores.py --root /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/download/corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f --output /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/recovered-score-replay.json",
+      "result": {
+        "chunk_id": "ff2c5a",
+        "wall_time_seconds": 0.861763389,
+        "exit_code": 0,
+        "original_token_count": 323,
+        "output": "{\"beir_endpoint_means\": 12, \"beir_task_scores\": 168, \"input_root\": \"/tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/download/corrected-dense-correctness-v3/complete-endpoint-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\", \"manifest_sha256\": \"bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\", \"maximum_scalar_replay_absolute_errors\": {\"contrastive_loss\": 5.588763638542105e-07, \"hardest_negative_score\": 0.0, \"positive_margin\": 0.0, \"positive_score\": 0.0, \"reciprocal_rank\": 9.934107481068821e-09, \"top1_accuracy\": 0.0}, \"model_forward_or_query_level_beir_recomputed\": false, \"network_access\": false, \"numeric_replay_passed\": true, \"observed_at_utc\": \"2026-09-10T17:37:09.818182+00:00\", \"raw_query_document_text_reconstructed\": false, \"scalar_validation_checks\": 294912, \"scientific_completion\": false, \"scope\": \"offline_complete_recovered_endpoint_and_validation_score_reconstruction\", \"selected\": {\"adamw\": \"verified-v3-adamw-3e-5\", \"muon\": \"verified-v3-muon-3e-4\", \"normuon\": \"verified-v3-normuon-3e-4\"}, \"selected_endpoint_rows\": 3, \"source_publication\": false, \"tables_verified\": 4, \"validation_group_metric_means\": 576, \"validation_rows\": 49152, \"verified_files\": 660}\n"
+      }
+    },
+    "evaluationDurabilityGuideOffline": {
+      "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nimport ast, contextlib, hashlib, io, json, re\nfrom pathlib import Path\nwork=Path('/tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW')\nraw=(work/'RESTORATION_GUIDE.md').read_text()\nblocks=re.findall(r'```python\\n(.*?)\\n```',raw,re.S)\nassert len(blocks)==2\nfor block in blocks: compile(block,'restoration-guide','exec')\nimports=[]\nfor node in ast.walk(ast.parse(blocks[1])):\n if isinstance(node,ast.Import): imports.extend(a.name for a in node.names)\n if isinstance(node,ast.ImportFrom): imports.append(node.module)\nassert set(imports)=={'hashlib','json','pathlib'}\nassert blocks[1].count('/absolute/path/to/new-evaluation-download')==1\nsource=blocks[1].replace('/absolute/path/to/new-evaluation-download',str(work/'download'))\noutput=io.StringIO()\nwith contextlib.redirect_stdout(output): exec(compile(source,'restoration-guide-offline','exec'),{})\nverified=json.loads(output.getvalue())\nassert verified['verified_files']==660\nstaged=json.loads((work/'staged-score-replay.json').read_text())\nrecovered=json.loads((work/'recovered-score-replay.json').read_text())\nfor value in (staged,recovered):\n value.pop('input_root'); value.pop('observed_at_utc')\nassert staged==recovered\nprint(json.dumps({'scope':'actual_guide_offline_block_on_anonymous_recovery','guide_sha256':hashlib.sha256(raw.encode()).hexdigest(),'download_block_syntax_checked_only':True,'offline_block_executed':True,'download_repeated':False,'only_standard_library_imports':sorted(imports),'verification':verified,'staged_and_recovered_numeric_receipts_match_excluding_path_time':True,'staging_replay_is_not_anonymous_recovery':True,'gpu_or_model_execution':False,'scientific_completion':False}))\nPY",
+      "result": {
+        "chunk_id": "cd3cea",
+        "wall_time_seconds": 0.010757064,
+        "exit_code": 0,
+        "original_token_count": 158,
+        "output": "{\"scope\": \"actual_guide_offline_block_on_anonymous_recovery\", \"guide_sha256\": \"b51bb32cb823e08228e4bb0395e6a8facd90936dab53fbd0d645945632c6d7dd\", \"download_block_syntax_checked_only\": true, \"offline_block_executed\": true, \"download_repeated\": false, \"only_standard_library_imports\": [\"hashlib\", \"json\", \"pathlib\"], \"verification\": {\"verified_files\": 660, \"manifest_sha256\": \"bf443d5623c1312f8661a918ab93f9aea5f119058307733d477c8eac0c6da74f\"}, \"staged_and_recovered_numeric_receipts_match_excluding_path_time\": true, \"staging_replay_is_not_anonymous_recovery\": true, \"gpu_or_model_execution\": false, \"scientific_completion\": false}\n"
+      }
+    }
+  },
+  "staged_replay_is_staging_only": true,
+  "download_and_recovered_replay_same_physical_host": true,
+  "diagnostic_inspections_not_training_failures": [
+    {
+      "command": "jq '{scope,checks,created_at_utc,archive_files,live_files}' reports/engineering-archive/dense-v3-validation-selection-readback-v1/verification.json",
+      "workdir": "/root/embedding-optimizer-story-refactor",
+      "result": {
+        "chunk_id": "77e7ef",
+        "exit_code": 127,
+        "output": "/bin/bash: line 1: jq: command not found\n"
+      }
+    },
+    {
+      "command": "jq '{scope,revision,pre_upload_revision,all_files_verified,unchanged_root_entries,files,bytes}' /tmp/dense-v3-evaluation-artifact-backup.NyzIC4XW/remote-audit.json",
+      "result": {
+        "chunk_id": "8a7236",
+        "exit_code": 127,
+        "output": "/bin/bash: line 1: jq: command not found\n"
+      }
+    }
+  ],
+  "scientific_completion": false
+}

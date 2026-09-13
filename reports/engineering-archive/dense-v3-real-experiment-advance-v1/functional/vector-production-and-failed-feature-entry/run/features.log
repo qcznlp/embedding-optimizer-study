@@ -1,0 +1,14 @@
+/usr/local/lib/python3.12/dist-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+{"event": "functional_features_verified", "cell": "pretrained", "verified_states": 1}
+Traceback (most recent call last):
+  File "/root/embedding-optimizer-v3-experiment/launch/functional-dimensions-recovery-v1/recovery.py", line 478, in <module>
+    main()
+  File "/root/embedding-optimizer-v3-experiment/launch/functional-dimensions-recovery-v1/recovery.py", line 474, in main
+    print(json.dumps(function(args), sort_keys=True, allow_nan=False), flush=True)
+                     ^^^^^^^^^^^^^^
+  File "/root/embedding-optimizer-v3-experiment/launch/functional-dimensions-recovery-v1/recovery.py", line 332, in feature_worker
+    context.feature_io.save_state(location, current, result)
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/dimension_intervention_io.py", line 108, in save_state
+    raise ValueError("Use a new state bundle under an existing explicit parent")
+ValueError: Use a new state bundle under an existing explicit parent

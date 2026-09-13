@@ -1,0 +1,74 @@
+{
+  "boundary": "The original matrix-level proxy remains in old source/artifacts. This component computes the intended individual-entry statistic from actual saved values, using the existing base and checkpoint anchors. Full geometry/dimension/publication integration remains required. It creates no optimizer finding.",
+  "formal_execution_authorized": false,
+  "measurement": {
+    "comparison": "Exact saved-value inequality after lossless conversion to float64; no tolerance, threshold, norm or gradient",
+    "cumulative_anchor": "The same immutable untrained initialization for every stage",
+    "denominator": "All individual parameters in all 88 hidden matrices, including unchanged entries and zero-displacement matrices",
+    "legacy_artifacts_rewritten": false,
+    "numerator": "Number of individual hidden-matrix parameters whose saved values differ from the declared anchor",
+    "old_proxy": "Parameter mass of matrices having any nonzero displacement; not the fraction of individual parameters changed",
+    "saved_segment_anchor": "Initialization at the first retained stage, otherwise the immediately preceding retained checkpoint",
+    "training_or_primary_retrieval_estimand_changed": false
+  },
+  "parents": {
+    "analysis": {
+      "bytes": 8282,
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a"
+    },
+    "outcome_acceptance": {
+      "bytes": 201604,
+      "path": "reports/engineering-archive/dense-v3-outcomes-v1/validation.json",
+      "sha256": "58d328af52a6fc94e06c5ef514c9f53c2fb28e71dbb833f569cea7861c5ee5db"
+    }
+  },
+  "prepared_at_utc": "2026-09-06T18:34:08.926079+00:00",
+  "primary": {
+    "bytes": 19832,
+    "path": "configs/dense_primary_v3_protocol.json",
+    "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+  },
+  "schema_version": 1,
+  "scientific_completion": false,
+  "scope": "dense_primary_v3_weight_entry_census",
+  "sources": {
+    "scripts/prepare_dense_weight_entries.py": {
+      "bytes": 2115,
+      "sha256": "2f15998ee27a71b26557027e84f396bbde9e45ba22f974bd7b880ca719e7bd75"
+    },
+    "src/embed_optim/corrected_geometry_summary.py": {
+      "bytes": 23632,
+      "sha256": "f6336d18fc7980582f2f35b926ed2507bab033778a974051d5b1f72b9ac2fc55"
+    },
+    "src/embed_optim/geometry.py": {
+      "bytes": 25648,
+      "sha256": "9d39395aa7ec0c5b8511d5de5560e79af45222375eab846c376201a0bd70ccec"
+    },
+    "src/embed_optim/optimizers.py": {
+      "bytes": 11839,
+      "sha256": "12158eee448b4a7cc4ae5d4dd9e2b3492f52e452b0cb7ed4b2a96e996e71d3a6"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    },
+    "src/embed_optim/primary_contract.py": {
+      "bytes": 12568,
+      "sha256": "e49f55d5d01408de001b8e1d56244fbcaf189de45c0209caffa0b4e34f828e19"
+    },
+    "src/embed_optim/primary_v3_contract.py": {
+      "bytes": 9267,
+      "sha256": "086731a256ac158cba05ef2a667da27a60f790faaec38fe3fd4765a8533df994"
+    },
+    "src/embed_optim/primary_v3_validation_io.py": {
+      "bytes": 11060,
+      "sha256": "6491e7feed5e17014f12fc6a4a7b3acbdd49a0dafe5cb75e44e9bd5c813aacc7"
+    },
+    "src/embed_optim/primary_weight_entries.py": {
+      "bytes": 12687,
+      "sha256": "130281a37698c93e62db7f988f6c4880525fff6273af5bc5bf575cbde18d7c48"
+    }
+  },
+  "status": "prepared_not_execution_authorized"
+}

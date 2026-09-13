@@ -400,7 +400,7 @@ def test_publication_contract_requires_wandb_before_distribution_and_tracks_rece
 
     command_sets = (
         (
-            ROOT / "README.md",
+            ROOT / "reports/engineering-archive/dense-v3-reader-first-readme-v1/before/README.md",
             "embed-optim-audit-wandb-dense-sources",
             "embed-optim-sync-wandb",
         ),

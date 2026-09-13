@@ -131,14 +131,14 @@ def test_public_docs_record_compute_and_acceleration_contract() -> None:
 
     for document in (readme, paper, gates):
         normalized = document.lower()
-        assert "eight h100-equivalent gpus" in normalized
+        assert "eight nvidia l20z gpus" in normalized
         assert "two disjoint four-gpu" in normalized
     compact_paper = " ".join(paper.split())
     assert "Retrieval evaluation is task-parallel" in compact_paper
     assert "exact retrieval rather than approximate ranking" in compact_paper
     assert "fused CUDA AdamW" in compact_paper
     assert "decomposed-bfloat16" in compact_paper
-    assert "None of these systems optimizations introduces in-batch negatives" in compact_paper
+    assert "no in-batch or cross-device negatives" in compact_paper
 
 
 def test_hybrid_adamw_matrix_is_an_eight_run_routing_control():

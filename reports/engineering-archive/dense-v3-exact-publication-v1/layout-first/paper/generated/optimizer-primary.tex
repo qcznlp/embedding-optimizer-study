@@ -1,0 +1,70 @@
+% Generated v3 primary evidence; no manuscript installation authorized.
+\newcommand{\CorrectedAbstractFinding}{Across the four-rate surface, Muon versus AdamW is positive at +0.0064 [+0.0056, +0.0071] nDCG@10, and NorMuon versus AdamW is positive at +0.0154 [+0.0131, +0.0178].}
+\newcommand{\CorrectedConclusionFinding}{Across the four-rate surface, Muon versus AdamW is positive at +0.0064 [+0.0056, +0.0071] nDCG@10, and NorMuon versus AdamW is positive at +0.0154 [+0.0131, +0.0178].}
+\newcommand{\CorrectedWeightSpaceFinding}{At the final stage, all-rate mean cumulative hidden-weight displacement relative to weight norm is AdamW 0.217725, Muon 0.426456, NorMuon 0.540762; the corresponding last-segment ratios are AdamW 0.108831, Muon 0.213417, NorMuon 0.270603.}
+% Generated v3 original-bridge evidence; no manuscript installation authorized.
+\newcommand{\CorrectedGeometryBridgeFinding}{The declared out-of-dose predictive criterion supports: log segment/weight norm, cumulative/weight norm, cumulative stable-rank fraction. All nine features and all four folds are retained. Undefined folds are not pooled as available cases. This is prediction outside a learning-rate dose on the same task suite, not causal mediation, statistical significance or evidence of equivalence.}
+\newcommand{\CorrectedGeometryBridgeTable}{%
+\begin{table*}[t]
+\centering\small
+\begin{tabular}{lrrrll}\toprule
+Geometry feature & RMSE reduction & Improved & Defined & Criterion & Residual $\rho$ \\
+\midrule
+log segment/weight norm & +0.000355457 & 3/4 & 4/4 & supported & -0.809 \\
+segment stable-rank fraction & +1.18898e-07 & 2/4 & 4/4 & not supported & -0.077 \\
+segment effective-rank fraction & +1.18898e-07 & 2/4 & 4/4 & not supported & -0.077 \\
+segment row-norm CV & +1.18898e-07 & 2/4 & 4/4 & not supported & -0.077 \\
+segment top-1\% row energy & +1.18898e-07 & 2/4 & 4/4 & not supported & -0.077 \\
+cumulative/weight norm & +6.63813e-05 & 3/4 & 4/4 & supported & -0.393 \\
+cumulative stable-rank fraction & +1.63128e-06 & 3/4 & 4/4 & supported & -0.064 \\
+segment subspace overlap to AdamW & -0.000335231 & 0/4 & 4/4 & not supported & +0.139 \\
+cumulative subspace overlap to AdamW & -0.000335231 & 0/4 & 4/4 & not supported & +0.139 \\
+\bottomrule\end{tabular}
+\caption{Every original weight-space predictor under four-fold leave-dose-index-out prediction. Decisions use exact MSE comparisons, not displayed RMSE. A missing correlation is undefined, not zero; baseline equivalence is distinct from an unidentified or numerically unresolved prediction.}
+\label{tab:corrected-bridge}
+\end{table*}%
+}
+\newcommand{\CorrectedMainSection}{%
+\section{Optimizer Effects on Dense Retrieval}
+\label{sec:optimizer-retrieval}
+The primary estimand averages all four declared rates within optimizer from a common model, dataset, training schedule, and evaluation suite.
+
+\begin{table}[t]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrl}\toprule
+Contrast & Mean & 95\% CI & Decision \\
+\midrule
+Muon - AdamW & +0.0064 & [+0.0056, +0.0071] & positive \\
+NorMuon - AdamW & +0.0154 & [+0.0131, +0.0178] & positive \\
+NorMuon - Muon & +0.0091 & [+0.0075, +0.0107] & positive \\
+\bottomrule\end{tabular}
+\caption{Final-stage retrieval over 14 decontaminated BEIR tasks, with simultaneous paired-task intervals for all three optimizer contrasts.}
+\label{tab:optimizer-primary}
+\end{table}
+\paragraph{Primary comparison.} Across the four-rate surface, Muon versus AdamW is positive at +0.0064 [+0.0056, +0.0071] nDCG@10, and NorMuon versus AdamW is positive at +0.0154 [+0.0131, +0.0178]. Validation-selected comparisons are secondary: Muon versus AdamW positive at +0.0090 [+0.0081, +0.0100]; NorMuon versus AdamW positive at +0.0185 [+0.0158, +0.0211]; NorMuon versus Muon positive at +0.0094 [+0.0077, +0.0111]. These are one-seed, pinned-grid results; learning rates are not independent training seeds. An inconclusive interval is not evidence of equivalence.
+}
+
+% Generated exact-measurement sensitivity; no manuscript installation authorized.
+\newcommand{\ExactGeometrySensitivityFinding}{None of the 5 exact-measurement counterparts with a defined four-fold comparison meets the declared predictive criterion. These checks do not replace the original nine-feature analysis; all five paired comparisons are reported in the appendix.}
+\newcommand{\ExactGeometrySensitivityTable}{%
+\begin{table*}[t]
+\centering\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllrrr}\toprule
+Measurement & Original criterion & Exact criterion & Exact RMSE gain & Defined & Error difference \\
+\midrule
+Segment stable rank & not supported & not supported & -2.01664e-05 & 4/4 & -2.02853e-05 \\
+Segment entropy rank & not supported & not supported & -2.01745e-05 & 4/4 & -2.02934e-05 \\
+Cumulative stable rank & supported & not supported & -2.8673e-06 & 4/4 & -4.49858e-06 \\
+Segment overlap to AdamW & not supported & not supported & -5.89535e-05 & 4/4 & +0.000276278 \\
+Cumulative overlap to AdamW & not supported & not supported & -5.89535e-05 & 4/4 & +0.000276278 \\
+\bottomrule\end{tabular}
+\caption{Every original/exact counterpart under the same four held-out learning-rate doses. RMSE gain compares the exact predictor with the nuisance-only baseline; error difference is original-predictor RMSE minus exact-predictor RMSE. Decisions use exact MSE, not rounded display values. Dashes denote undefined comparisons. These are measurement-sensitivity comparisons, not uniformly pure approximation-error tests: entropy uses the full singular spectrum, and rank/entropy averages expose their nonzero-matrix denominators. Every declared correspondence and all four folds are retained. Undefined comparisons are not available-case averages. Predictive support is not causal mediation, statistical significance, equivalence, or evidence of useful embedding dimensions.}
+\label{tab:exact-geometry-sensitivity}
+\end{table*}%
+}
+\let\OriginalWeightGeometryFinding\CorrectedGeometryBridgeFinding
+\renewcommand{\CorrectedGeometryBridgeFinding}{%
+\OriginalWeightGeometryFinding{} \ExactGeometrySensitivityFinding}
+\let\OriginalWeightGeometryTable\CorrectedGeometryBridgeTable
+\renewcommand{\CorrectedGeometryBridgeTable}{%
+\OriginalWeightGeometryTable\ExactGeometrySensitivityTable}

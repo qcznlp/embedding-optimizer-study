@@ -1,0 +1,13 @@
+{
+  "scope": "preserved-first-functional-durability-preparation-attempt",
+  "first_source": "backup-first.py",
+  "first_source_sha256": "dcea378b263d50c6cde9ffefe42724d820705bcca6078afb6d9ddb16c7edc206",
+  "actual_session": 67352,
+  "actual_exit_code": 1,
+  "actual_terminal": "54e193",
+  "reason": "The known coordinator-completion hash was assigned to the separate worker-completion filename. The unchanged content comparator refused it before creating a preflight or making external calls.",
+  "successor_change": "Bind the original coordinator file at its actual name, then consume its existing worker-completion binding. Both files are preserved and backed up; no guard or evidence is changed.",
+  "remote_mutations": false,
+  "gpu_access": false,
+  "scientific_completion": false
+}

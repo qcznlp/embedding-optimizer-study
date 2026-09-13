@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="11.634" timestamp="2026-09-07T19:44:44.150825+08:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_primary_v3_exact_publication" name="test_input_changed_after_inspection_cannot_be_authenticated_as_new_input[original_publication]" time="1.013"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">primary = PrimaryV3Contract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_protocol.json'), r...andidate.kHXoGW/validation', 'rows': 4096}}, sha256='4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b')
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1998/test_input_changed_after_inspe0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7f8af0f478c0&gt;
+target = 'original_publication'
+
+    @pytest.mark.parametrize("target", ["original_publication", "exact_bundle"])
+    def test_input_changed_after_inspection_cannot_be_authenticated_as_new_input(
+        primary, tmp_path, monkeypatch, target
+    ):
+        # Explicitly mocked upstream admission isolates the real adapter's snapshot timing.
+        # No output from this control is a model admission or numerical generation proof.
+        contract = contract_for(primary, tmp_path)
+        common = {"scope": "synthetic_timing_control"}
+        old = {name: b"synthetic timing control\n" for name in publication.original.OUTPUTS}
+        old["evidence.json"] = json.dumps(
+            {"functional_evidence": {"original_bridge_evidence": common}}
+        ).encode()
+        original_root, exact_root = tmp_path / "original", tmp_path / "exact"
+        publication.original.save(original_root, {}, old)
+        exact_root.mkdir()
+        for name in ["manifest.json", "evidence.json", *(name + ".csv" for name in exact.TABLE_COUNTS)]:
+            (exact_root / name).write_bytes(b"synthetic source timing control\n")
+        diagnostics = {"numerical_diagnostics": {}, "measurement_coverage": []}
+        exact_evidence = {"original_bridge_evidence": common, "source_bindings": [], **diagnostics}
+    
+        def second_gather(*args):
+            if target == "original_publication":
+                path = original_root / "findings.json"
+                path.write_bytes(path.read_bytes() + b"changed after first inspection\n")
+                manifest = read_json(original_root / "manifest.json")
+                manifest["outputs"]["findings.json"] = {"path": "findings.json", **file_identity(path)}
+                (original_root / "manifest.json").write_text(json.dumps(manifest))
+            return {}, exact_evidence, {}
+    
+        def decode(*args):
+            if target == "exact_bundle":
+                path = exact_root / "bridge_rows.csv"
+                path.write_bytes(path.read_bytes() + b"changed after exact inspection\n")
+            return {}
+    
+        monkeypatch.setattr(publication.original, "gather", lambda *args: ({}, old, []))
+        monkeypatch.setattr(publication.exact, "gather", second_gather)
+        monkeypatch.setattr(publication, "inspect_bundle", lambda *args: {})
+        monkeypatch.setattr(publication, "read_exact_tables", decode)
+        monkeypatch.setattr(publication.original, "read_tables", lambda *args: {})
+        monkeypatch.setattr(
+            publication,
+            "generate",
+            lambda *args: {"exact-summary.json": json.dumps({"diagnostics": diagnostics}).encode()},
+        )
+        args = SimpleNamespace(
+            publication_root=original_root,
+            exact_bridge_root=exact_root,
+            exact_geometry_root=tmp_path / "geometry",
+        )
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_exact_publication.py:312: Failed</failure></testcase><testcase classname="tests.test_primary_v3_exact_publication" name="test_input_changed_after_inspection_cannot_be_authenticated_as_new_input[exact_bundle]" time="0.970"><failure message="Failed: DID NOT RAISE &lt;class 'ValueError'&gt;">primary = PrimaryV3Contract(path=PosixPath('/root/embedding-optimizer-story-refactor/configs/dense_primary_v3_protocol.json'), r...andidate.kHXoGW/validation', 'rows': 4096}}, sha256='4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b')
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-1998/test_input_changed_after_inspe1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7f8af0eb2720&gt;
+target = 'exact_bundle'
+
+    @pytest.mark.parametrize("target", ["original_publication", "exact_bundle"])
+    def test_input_changed_after_inspection_cannot_be_authenticated_as_new_input(
+        primary, tmp_path, monkeypatch, target
+    ):
+        # Explicitly mocked upstream admission isolates the real adapter's snapshot timing.
+        # No output from this control is a model admission or numerical generation proof.
+        contract = contract_for(primary, tmp_path)
+        common = {"scope": "synthetic_timing_control"}
+        old = {name: b"synthetic timing control\n" for name in publication.original.OUTPUTS}
+        old["evidence.json"] = json.dumps(
+            {"functional_evidence": {"original_bridge_evidence": common}}
+        ).encode()
+        original_root, exact_root = tmp_path / "original", tmp_path / "exact"
+        publication.original.save(original_root, {}, old)
+        exact_root.mkdir()
+        for name in ["manifest.json", "evidence.json", *(name + ".csv" for name in exact.TABLE_COUNTS)]:
+            (exact_root / name).write_bytes(b"synthetic source timing control\n")
+        diagnostics = {"numerical_diagnostics": {}, "measurement_coverage": []}
+        exact_evidence = {"original_bridge_evidence": common, "source_bindings": [], **diagnostics}
+    
+        def second_gather(*args):
+            if target == "original_publication":
+                path = original_root / "findings.json"
+                path.write_bytes(path.read_bytes() + b"changed after first inspection\n")
+                manifest = read_json(original_root / "manifest.json")
+                manifest["outputs"]["findings.json"] = {"path": "findings.json", **file_identity(path)}
+                (original_root / "manifest.json").write_text(json.dumps(manifest))
+            return {}, exact_evidence, {}
+    
+        def decode(*args):
+            if target == "exact_bundle":
+                path = exact_root / "bridge_rows.csv"
+                path.write_bytes(path.read_bytes() + b"changed after exact inspection\n")
+            return {}
+    
+        monkeypatch.setattr(publication.original, "gather", lambda *args: ({}, old, []))
+        monkeypatch.setattr(publication.exact, "gather", second_gather)
+        monkeypatch.setattr(publication, "inspect_bundle", lambda *args: {})
+        monkeypatch.setattr(publication, "read_exact_tables", decode)
+        monkeypatch.setattr(publication.original, "read_tables", lambda *args: {})
+        monkeypatch.setattr(
+            publication,
+            "generate",
+            lambda *args: {"exact-summary.json": json.dumps({"diagnostics": diagnostics}).encode()},
+        )
+        args = SimpleNamespace(
+            publication_root=original_root,
+            exact_bridge_root=exact_root,
+            exact_geometry_root=tmp_path / "geometry",
+        )
+&gt;       with pytest.raises(ValueError):
+E       Failed: DID NOT RAISE &lt;class 'ValueError'&gt;
+
+tests/test_primary_v3_exact_publication.py:312: Failed</failure></testcase></testsuite></testsuites>

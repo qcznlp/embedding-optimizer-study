@@ -1,0 +1,296 @@
+# Current DenseOn experiment and handoff
+
+Last observed **2026-09-11 01:43 UTC** (observer-reported timestamp). This is a dated execution snapshot, not a
+live heartbeat or a scientific conclusion. Exact separately timestamped process
+observations are in the [latest snapshot](reports/engineering-archive/dense-v3-first-intermediate-evaluations-v1/observations.json);
+the [paper-framing snapshot](reports/paper-review/dense-v3-retrieval-usefulness-v1/observations.json) is unchanged.
+Read [AGENTS.md](AGENTS.md) before acting; its safety and authority limits still apply.
+
+## Goal
+
+Deliver a defensible **NAACL paper and reproducible repository/model-analysis
+artifacts** about how AdamW, Muon and NorMuon change DenseOn weight space and
+retrieval. DenseOn is the only active architecture. No new LateOn work or blog.
+
+The evidence chain is: complete retrieval comparison → reached weight states and
+trajectories → functional dimension utility → held-out-dose prediction, with a
+separately bounded state-by-reset-operator continuation. Spectral fingerprints
+alone are not an embedding-specific explanation; prediction is not mediation.
+
+## Current evidence
+
+| Component | Verified state | What remains |
+| --- | --- | --- |
+| Corrected primary training | **12 / 12 complete**, no training run queued | Do not retrain these completed recipes |
+| Native training dynamics | **12 / 12**, all 4,692 logged observations and 60 stage summaries independently replayed | Descriptive curves/timing, not retrieval or mechanism inference |
+| Training-artifact durability | **149 / 149**, 26.99 MB, anonymous recovery and recovered-native numerical replay verified | Original root-byte exception retained; see recovery caveat below |
+| Primary checkpoint durability | **60 / 60**, 1,200 files, 89,889,820,336 logical bytes | Final source/analysis release remains separate |
+| Zero-update baseline | **14 / 14 full-corpus tasks complete** | Reference only, not an optimizer comparison |
+| Primary BEIR | **268 / 840 task cells**, eight exact primary workers live in this snapshot | All 12 rates × five stages × 14 tasks; no partial-task mean |
+| Complete primary checkpoint BEIR | **[18 / 60](reports/engineering-archive/dense-v3-first-intermediate-evaluations-v1/README.md)**, all twelve finals plus six step-782 states; native readback and all 252 raw task values verified | 42 intermediate checkpoints remain; the first-stage all-rate grid is still incomplete |
+| Validation-only LR selection | **12 / 12 complete**, native all-row readback and fixed selector verified | Coordinator terminal; do not poll its stale live-only handle or rerun validation |
+| Frozen final-checkpoint inference | **All six contrasts computed**: primary four-rate averages inconclusive; selected NorMuon−AdamW +0.437 points, simultaneous interval [+0.146, +0.729] | Secondary, task-level support only; full trajectory, seed robustness and mechanism remain separate |
+| Benchmark support / endpoint decomposition | **14 tasks, 28 query/qrel files, 84 signed task contributions** checked; independent counts/arithmetic agree | Post-hoc description; no new inference, task exclusion or query-level uncertainty estimate |
+| Endpoint-statistics durability | **16 / 16 files**, 218,466 bytes, including every contrast and PDF/PNG/SVG figure; complete anonymous recovery and independent numeric mapping verified | Existing analysis transported, not new inference or source publication |
+| Endpoint/validation artifact durability | **660 / 660 files**, 29.53 MB, complete anonymous recovery and offline score reconstruction verified | Final checkpoints only; intermediate evaluations and source release remain separate |
+| Weight geometry and update map | Both geometry branches **60 / 60**; all-state map/readback complete | Link to complete functional/retrieval outcomes |
+| Weight-artifact durability | **298 / 298 files**, 4.98 GB, immutable public backup and complete anonymous recovery verified | Not a source release or second-host experiment |
+| Functional dimension analysis | **0 / 61** encoded states, coordinator live/S | Validation gate satisfied; original queue awaits an available GPU; vectors, interventions and inference pending |
+| Crossed continuation | **0 / 12 formal branches** | GPU calibration/admission, worker handoff, branches and complete outcomes |
+| Paper / source release | Narrative/method definitions revised; draft builds, **not complete** | Verified generated findings, portable reconstruction and release gates |
+
+The training/durability evidence is the content-bound
+`launch/observations/all-twelve-training-sixty-checkpoints-evaluation-running-20260910.json`
+in the experiment tree, SHA-256
+`1d5aa49c6ec8c89c4454b4b9b641aa5e1bffc09a9967dbac6320cbe129d505f3`.
+Ten original worker exits are observed zero; the final two have verified complete
+artifacts and observed termination, with OS exit codes **unobserved/null**.
+Do not manufacture exit records or weaken the preserved original guards.
+
+The complete final-checkpoint score grid and its fixed validation-selected comparison
+are now available. A full-trajectory optimizer verdict and useful-dimension mechanism
+are not established.
+Current weight displacements differ in spectral concentration,
+but that is not proof of more useful embedding dimensions. Learning-rate cells
+are not independent training seeds. Historical scores cannot fill missing v3 cells.
+
+The [complete final-checkpoint readback](reports/engineering-archive/dense-v3-all-final-evaluations-v1/README.md)
+now contains every declared optimizer/rate cell at step 3907. The unchanged native
+reader verifies all twelve original complete receipts; independent raw-score
+reconstruction verifies all 168 task values and all twelve means. An archived
+table replay reproduces the CSV/Markdown bytes. The first six-record archive is
+preserved and overlaps this cohort; it is not six additional runs. No manuscript
+result, validation-based selection, significance test or mechanism conclusion
+was installed by this descriptive endpoint milestone.
+
+The subsequent [first intermediate-checkpoint readback](reports/engineering-archive/dense-v3-first-intermediate-evaluations-v1/README.md)
+completed at **2026-09-11 01:39:29 UTC**. Six step-782 checkpoints, exactly the
+original pool-B cohort, now have complete fourteen-task results. The unchanged
+native reader verifies all eighteen currently complete checkpoint records;
+independent raw-score reconstruction checks all 252 task values and exact means.
+Only six states / 84 task values are new; the twelve previous final records remain
+unchanged overlapping evidence. This is not the full first-stage rate grid and
+does not support an optimizer-wide partial-cohort comparison. Forty-two intermediate
+checkpoints remain required. Pool B has naturally moved to step 1563; no source,
+scheduling, selection, inference rule or manuscript finding was changed.
+
+The subsequent [complete validation readback](reports/engineering-archive/dense-v3-validation-selection-readback-v1/README.md)
+verifies all 49,152 scored rows and the original loss-only selection: AdamW 3e-5,
+Muon 3e-4, NorMuon 3e-4. The [selected endpoint table](reports/engineering-archive/dense-v3-validation-selection-readback-v1/tables/selected-endpoints.md)
+joins BEIR only after fixing those choices. It is a descriptive comparison, not
+a significance test, multi-seed result or mechanism finding. All 48 original
+per-row validation output files remain at their authenticated experiment paths.
+The small native readback archive is unchanged; a subsequent separate
+[immutable evaluation backup](docs/evaluation-analysis-restoration.md) now preserves
+all raw final BEIR/validation outputs and original worker records off host.
+All 660 files were anonymously recovered, and the recovered scores reproduce all
+168 task values, twelve endpoint means, validation metrics and fixed choices.
+This is aggregate-score reconstruction, not a new model forward or significance test.
+
+The subsequent [frozen endpoint statistical readout](reports/dense-v3-final-inference-v1/README.md)
+now computes both predeclared families using all 168 final task cells. All three
+four-rate-average contrasts are inconclusive. For validation-selected recipes,
+NorMuon−AdamW is +0.4374 points with a simultaneous 95% interval [+0.1463, +0.7285];
+Muon−AdamW and NorMuon−Muon remain inconclusive. The unchanged procedure uses
+50,000 paired-task draws, seed 20260903, and three contrasts per family.
+Independent scalar replay and source-relocated reconstruction pass. These are
+task-level intervals for one training seed, not seed-robustness or causal evidence.
+One positive comparison and one inconclusive comparison do not imply that the
+two treatments differ. The original whole-840-cell outcome reader and manuscript
+acceptance remain unchanged and unpassed; no missing intermediate result is imputed.
+
+Those unchanged endpoint statistics and all three figure formats now have a
+separate [immutable recovery entry](docs/endpoint-statistics-restoration.md).
+All sixteen files were anonymously recovered at 18:54:17 UTC; independent byte
+and table/figure checks passed at 18:55:02. All six comparisons, including the
+inconclusive ones, are retained. This is transport of the preceding actual
+analysis, not new statistical evidence, model execution or source release.
+
+The [complete native training curves and tables](reports/engineering-archive/dense-v3-training-observations-v1/README.md)
+now include every rate, all five stages and original timing/system records. The
+independent native numerical read and a fresh copied-input replay pass; all 143
+files, including nine outputs and the manifest, reproduce byte-for-byte on this
+host. The 35 focused guard tests also pass. Logged loss ends at step 3900, not
+3907; sampled gradient norms are not an every-update clipping count. Accepted
+times include checkpoint saves and do not demonstrate a large whole-training
+speed advantage. That observation milestone did not change source/admission flags or install
+manuscript findings.
+
+The [paper-framing revision](reports/paper-review/dense-v3-retrieval-usefulness-v1/README.md)
+develops the distinction between weight-space spread and retrieval-useful coordinate allocation.
+It specifies task-first margin attribution, helpful mass share, 768-normalized participation,
+and the different definitions of truncated- and full-spectrum entropy. Numerical sources,
+protocols, generated result includes and active dispatchers are unchanged. The ordinary draft
+build has a six-page main text and retains all pending result markers; it is not a completed
+paper or a source release. Prior manuscript/handoff bindings remain available in exact before-copies.
+
+A separate [coordinate-sensitivity interpretation check](reports/paper-review/coordinate-utility-interpretation-v1/README.md)
+now supplies exact identities and a reproducible dense 768-dimensional counterexample: all three
+raw utility features can move in the desired directions while every full-vector shortlist score
+and the query/document span rank remain unchanged. This is a synthetic logical boundary, **not a
+Muon/AdamW result or training defect**. It supports the existing requirement to connect sensitivities
+to full-corpus outcomes; it does not change metrics, statistical rules, required experiments, or
+manuscript findings. Do not treat its deterministic numerical bounds as statistical intervals.
+
+The [benchmark-support readout](reports/dense-v3-benchmark-support-v1/README.md),
+completed at **22:25 UTC**, authenticates query/qrel support against the exact
+revisions in all 168 native final results. NQ has **26 qrel-covered test queries**
+(not 26 rows in its 3,127-row query file), versus FEVER's 6,571; each task still
+has fixed macro weight 1/14. DBPedia and SCIDOCS also retain 85 and 71 queries,
+respectively, with no positive judgment in their pinned qrels. Nothing is excluded.
+Selected Muon−AdamW's NQ contribution is +0.19293 macro points, **60.90% of its
+net +0.31679 difference**; this is a post-hoc arithmetic decomposition, not a
+query-level, causal or significance claim. All six contrasts, negative task
+contributions and original inference decisions remain visible. No paper finding,
+new inferential rule, GPU rerun or public source release was installed.
+
+## Which experiment and source are current?
+
+The fixed [v3 primary protocol](configs/dense_primary_v3_protocol.json) has SHA
+`4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b`.
+All runs use the same revised 500K groups, seed 42, one positive/seven negatives,
+no in-batch negatives, temperature 0.02, length 8192 and global batch 128.
+AdamW rates are 1e-6 / 3e-6 / 1e-5 / 3e-5; Muon and NorMuon rates are
+1e-4 / 3e-4 / 1e-3 / 3e-3. Steps are 782 / 1563 / 2345 / 3126 / 3907.
+
+These are fresh full-horizon `verified-v3-*` runs from the same pretrained base,
+not continuations of the older scientifically held campaign. The owner's
+training-priority exception allowed the frozen, content-bound execution while
+deferring code publication. It did not erase draft/release gates or authorize
+unreviewed controller, source, HF-deletion or GitHub transitions.
+
+Host-specific paths below are locations, not commands to execute on another host:
+
+| Role | Current location |
+| --- | --- |
+| Development / paper / handoff | `/root/embedding-optimizer-story-refactor` |
+| Frozen 56-file primary assembly | `/root/embedding-optimizer-primary-v3` |
+| Actual data / runs / evaluations / active launch records | `/root/embedding-optimizer-v3-experiment` |
+| Historical experiment and retained source data | `/root/embedding-optimizer-study` — not the current trainer |
+| Primary local models | Experiment `outputs/dense-correctness-v3/dense/verified-v3-*/checkpoint-*` |
+| Primary HF models | The **60 exact entries** in [the download index](docs/primary-v3-checkpoints.json) |
+
+The independent primary assembly SHA is
+`e603ef175c0f691a1dd83c4d8b474d90da2fc67c8c65f5a77f3c3180e78332b8`.
+The current interpreter on this host is `/usr/bin/python`, not the old `.venv`.
+The [formal runtime](configs/formal_runtime.json) and imported source identities
+must match; a development installation does not certify a formal worker.
+
+## Safe current observations
+
+These **read existing observers**; they do not create jobs, take leases or resume
+anything. They are host-specific. If a handle is missing, inspect original
+receipts before proposing any action; an observation timeout is not termination.
+
+```bash
+CUDA_VISIBLE_DEVICES='' /usr/bin/python -B \
+  /root/embedding-optimizer-v3-experiment/launch/task-observer/status.py
+
+CUDA_VISIBLE_DEVICES='' /usr/bin/python -B \
+  /root/embedding-optimizer-v3-experiment/launch/functional-dimensions/observe.py
+```
+
+The baseline and weight-geometry jobs are terminal; do not poll their stale
+live-only handles or rerun them. Validation is also terminal: its former exact
+PID 13007/start 298006520 is gone, all twelve original worker exits are zero and
+the original completion/selection pass native readback. The coordinator's own
+OS exit code is unobserved, not invented. Do not call its old live-only inspector,
+restart its watch loop or repeat its empty-pilot preflight. Existing primary
+evaluation dispatchers retain their queues. Functional encoding now satisfies
+the original validation-priority gate and awaits a free leased GPU; its preserved
+waiting-for-validation file records an earlier event. No scheduling change was
+made for either readback. The one-GPU priority question is
+**unanswered, not approved**. Do not re-ask it, infer approval from an automatic
+continuation, stop a lease-holding parent or force-unlock a slot.
+
+## Next actions, in scope
+
+1. Finish the existing full 840-cell evaluation matrix without changing corpora,
+   scoring, context or frozen workers. The twelve validations and fixed selection
+   are complete; preserve them rather than rerunning them.
+2. Complete all 61 functional states and the original interventions/inference;
+   join the full outcomes to the already completed weight measurements.
+3. Complete the separately gated crossed continuation: two fixed source states
+   at step 2345 × two reset operators × three order seeds, all twelve 50K runs,
+   five stages each and 168 final full-corpus retrieval units. The current
+   [fresh-worker component](reports/engineering-archive/dense-v3-factorial-worker-v1/README.md)
+   connects the unchanged factory, full 391-step Trainer, five-stage finalization
+   and deep native run reader. Its 57 new / 194 combined checks are bounded CPU
+   source/refusal tests and explicitly mocked orchestration, not GPU calibration,
+   default-topology GPU admission or a formal run. The 69 parent files remain
+   unchanged. No admitted launcher, resource handoff or implicit resume is supplied.
+4. Reconstruct the complete scientific outputs from their original artifacts,
+   generate the paper's results and figures, then pass the full publication,
+   portability, clean-source and authorized release requirements. Do not hand-edit
+   generated findings, remove pending markers or replace failed historical hashes.
+
+Keep all rates, stages, tasks, original features and frozen inference rules. A
+null or inconclusive result remains reportable; do not select a preferred story.
+No implementation/debugging narrative belongs anywhere in the manuscript.
+
+## Recovery and handoff
+
+Use [checkpoint-restoration.md](docs/checkpoint-restoration.md), the authenticated
+60-entry index and the standalone recovery script for a new machine. They avoid
+the moving HF default branch and the historical checkpoint namespace. File
+verification does not deserialize models or prove whole-run/bitwise resumption.
+Complete analysis also needs the exact code, data/probes and unfinished outcomes.
+
+The [completed recovery evidence](reports/engineering-archive/dense-v3-recovery-entry-v1/README.md)
+includes all-60 anonymous remote metadata verification and one real 20-file,
+1.35-GB checkpoint download with independent offline file/seal verification.
+It does not claim a second-host experiment or complete source publication.
+
+The complete native weight measurements also have a separately verified
+[public snapshot and restoration guide](docs/weight-analysis-restoration.md):
+all original spectra, bases, tables, map arrays and figures, at dataset revision
+`209b4517e64ac5373db47b04ada39104e9080016`. All 298 files were actually recovered
+anonymously and independently verified offline. The
+[original backup evidence](reports/engineering-archive/dense-v3-weight-artifact-backup-v1/README.md)
+preserves the scope, original metadata and each actual execution record.
+
+The complete [training-observation recovery guide](docs/training-analysis-restoration.md)
+now addresses 149 immutable public files at dataset revision
+`3c95da08a4c817d5bcd58b5c84df777716a02ca9`. Full anonymous recovery, independent
+offline hashing and numerical replay from the recovered inputs pass. The original
+upload process nevertheless exited 1 at its unchanged-root check: two literal
+new-file LFS rules were appended to `.gitattributes`. A separate read-only check
+verifies the exact additions, unchanged old rules/payloads/card/weight subtree,
+and every new payload. The original root-byte guard stays failed; no receipt was
+forged and no second remote write was made. Read the
+[complete evidence and caveat](reports/engineering-archive/dense-v3-training-artifact-backup-v1/README.md).
+No program source was published, and this is not a physical second-host experiment.
+
+The [endpoint/validation recovery guide](docs/evaluation-analysis-restoration.md)
+now addresses 660 immutable public files at dataset revision
+`3883b677f87b1982f06016e9fadb8bb95e0cfc96`. Full anonymous download completed at
+17:28:18 UTC and independent recovered-input numerical replay passed at 17:37:09.
+The new addition preserved all twenty other root entries and both earlier corrected
+subtrees; its strict unchanged-root audit passed without overwriting/deleting any
+old payload. This does not erase the earlier training-backup caveat. Read the
+[actual backup/replay evidence](reports/engineering-archive/dense-v3-evaluation-artifact-backup-v1/README.md).
+BEIR task aggregates cannot reconstruct per-query rankings, and the dataset does
+not publish executable source or unfinished intermediate/functional outcomes.
+
+The [endpoint-statistics recovery guide](docs/endpoint-statistics-restoration.md)
+adds all six interval comparisons, their task tables and PDF/PNG/SVG figures at
+revision `13b110a0d067948ff518a0f720ee84c2e2f8c6b1`. All sixteen files / 218,466
+bytes passed actual anonymous recovery and an independent standard-library
+check of forty CSV rows, 246 numeric table fields, 24 figure fields and all six
+interval mappings. The original root entries and three earlier corrected
+subtrees stayed unchanged. The first metadata-cache symlink refusal occurred
+before any upload and is retained with its exact source; the successful new
+attempt materialized ordinary metadata files without weakening the hash guard.
+Read the [complete archive](reports/engineering-archive/dense-v3-endpoint-statistics-backup-v1/README.md).
+The original endpoint readout and its historical handoff binding are preserved.
+
+The current local WIP has **not** been published as a complete GitHub release.
+Do not retry the recorded GitHub 403 through another identity. Historical HF
+withdrawal was rejected: do not retry, split or bypass it. Never touch `gpu.py`
+or its processes; no broad process/GPU-process inspection. Preserve the exact
+old stopped controller chain and every original/failed artifact. Detailed
+identities, source scopes and remaining authority are in [AGENTS.md](AGENTS.md).
+
+The former default recovery guide and README are preserved in the
+[before-copy](reports/engineering-archive/dense-v3-recovery-entry-v1/before/).
+They are historical evidence, not instructions to execute the active experiment.

@@ -1,0 +1,70 @@
+{
+  "scope": "actual isolated campaign-evidence preparation and verification",
+  "prepare": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8/prepare_snapshot.py /tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8/snapshot > /tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8/prepare.json",
+    "result": {
+      "chunk_id": "914d44",
+      "wall_time_seconds": 1.063009325,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "first_actual": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8/campaign_evidence.py /tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8/snapshot",
+    "result": {
+      "chunk_id": "2d036d",
+      "wall_time_seconds": 0.358890727,
+      "exit_code": 0,
+      "original_token_count": 282,
+      "output": "{\"boundary\": \"Previously accepted evidence replay only. No training/evaluation, tensor checks, functional recovery, scientific admission or publication. Original flags, fingerprints and unknown exit codes remain unchanged.\", \"checkpoints\": 60, \"committed_source_release\": false, \"files_authenticated\": 172, \"formal_primary_contract_admission\": false, \"fresh_model_or_data_validation\": false, \"native_metadata_files\": 132, \"original_absolute_paths_opened\": false, \"original_evidence_authenticated\": true, \"original_exit_unobserved_runs\": [\"verified-v3-normuon-1e-4\", \"verified-v3-normuon-3e-3\"], \"original_exit_zero_runs\": [\"verified-v3-adamw-1e-6\", \"verified-v3-adamw-3e-6\", \"verified-v3-adamw-1e-5\", \"verified-v3-adamw-3e-5\", \"verified-v3-muon-1e-4\", \"verified-v3-muon-3e-4\", \"verified-v3-muon-1e-3\", \"verified-v3-muon-3e-3\", \"verified-v3-normuon-3e-4\", \"verified-v3-normuon-1e-3\"], \"original_single_selection_guard_passed\": false, \"primary_protocol_sha256\": \"4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b\", \"runs\": 12, \"scientific_completion\": false, \"scope\": \"primary-v3-local-role-training-evidence-v1\"}\n"
+    }
+  },
+  "tests": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B /tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8/test_campaign_evidence.py",
+    "initial": {
+      "chunk_id": "aefd49",
+      "wall_time_seconds": 10.000942805,
+      "session_id": 97227,
+      "original_token_count": 403,
+      "output": "test_anchor_population_order_and_missing_run (__main__.EvidenceTests.test_anchor_population_order_and_missing_run) ... ok\ntest_both_native_proof_types (__main__.EvidenceTests.test_both_native_proof_types) ... ok\ntest_changed_recorded_source (__main__.EvidenceTests.test_changed_recorded_source) ... ok\ntest_changed_run_identity (__main__.EvidenceTests.test_changed_run_identity) ... ok\ntest_changed_saved_step (__main__.EvidenceTests.test_changed_saved_step) ... ok\ntest_duplicate_json_and_nonfinite (__main__.EvidenceTests.test_duplicate_json_and_nonfinite) ... ok\ntest_file_and_parent_symlinks (__main__.EvidenceTests.test_file_and_parent_symlinks) ... ok\ntest_full_reader_tree_refusals_and_relocation (__main__.EvidenceTests.test_full_reader_tree_refusals_and_relocation) ... ok\ntest_historical_flags_preserved (__main__.EvidenceTests.test_historical_flags_preserved) ... ok\ntest_local_path_refusals (__main__.EvidenceTests.test_local_path_refusals) ... ok\ntest_missing_checkpoint (__main__.EvidenceTests.test_missing_checkpoint) ... ok\ntest_missing_equivalence_flag (__main__.EvidenceTests.test_missing_equivalence_flag) ... ok\ntest_missing_optimizer_inventory (__main__.EvidenceTests.test_missing_optimizer_inventory) ... ok\ntest_missing_tensor_state_proof (__main__.EvidenceTests.test_missing_tensor_state_proof) ... ok\ntest_no_original_path_fallback (__main__.EvidenceTests.test_no_original_path_fallback) ... ok\ntest_observed_nonzero_and_boolean_exit (__main__.EvidenceTests.test_observed_nonzero_and_boolean_exit) ... ok\ntest_real_full_population (__main__.EvidenceTests.test_real_full_population) ... "
+    },
+    "terminal": {
+      "chunk_id": "0eba12",
+      "wall_time_seconds": 0.000002421,
+      "exit_code": 0,
+      "original_token_count": 169,
+      "output": "ok\ntest_terminal_exit_cannot_be_inferred (__main__.EvidenceTests.test_terminal_exit_cannot_be_inferred) ... ok\ntest_terminal_forged_original_exit (__main__.EvidenceTests.test_terminal_forged_original_exit) ... ok\ntest_terminal_pid_reuse (__main__.EvidenceTests.test_terminal_pid_reuse) ... ok\ntest_view_audit_not_sampled_or_rewritten (__main__.EvidenceTests.test_view_audit_not_sampled_or_rewritten) ... ok\ntest_wrong_actual_fingerprint (__main__.EvidenceTests.test_wrong_actual_fingerprint) ... ok\ntest_wrong_proof_type (__main__.EvidenceTests.test_wrong_proof_type) ... ok\n\n----------------------------------------------------------------------\nRan 23 tests in 12.691s\n\nOK\n"
+    }
+  },
+  "relocation_copy": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nfrom pathlib import Path\nimport shutil\nsource=Path('/tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8')\ndestination=Path('/tmp/dense-v3-campaign-evidence-relocated.qHfOKfLS')\nassert destination.is_dir() and not any(destination.iterdir())\nshutil.copytree(source/'snapshot',destination/'evidence')\nshutil.copyfile(source/'campaign_evidence.py',destination/'campaign_evidence.py')\nprint('Copied 172 data-only files and the unchanged standalone reader to a new local root')\nPY",
+    "result": {
+      "chunk_id": "57fc24",
+      "wall_time_seconds": 0.000005031,
+      "exit_code": 0,
+      "original_token_count": 21,
+      "output": "Copied 172 data-only files and the unchanged standalone reader to a new local root\n"
+    }
+  },
+  "isolated_relocated": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8/verify_relocated.py /tmp/dense-v3-campaign-evidence-relocated.qHfOKfLS/evidence /tmp/dense-v3-campaign-evidence-relocated.qHfOKfLS/campaign_evidence.py",
+    "result": {
+      "chunk_id": "bf8975",
+      "wall_time_seconds": 0.370946211,
+      "exit_code": 0,
+      "original_token_count": 362,
+      "output": "{\"absolute_reads_limited_to_relocated_root\": true, \"all_original_rows_sha256\": \"58a01f3cbfe05755a739bda4503cb0518fc2115ffe783efbf6ca6154f5d57f44\", \"file_open_events\": 708, \"numerical_or_project_imports\": [], \"reader_write_network_or_child_attempts\": 0, \"result\": {\"boundary\": \"Previously accepted evidence replay only. No training/evaluation, tensor checks, functional recovery, scientific admission or publication. Original flags, fingerprints and unknown exit codes remain unchanged.\", \"checkpoints\": 60, \"committed_source_release\": false, \"files_authenticated\": 172, \"formal_primary_contract_admission\": false, \"fresh_model_or_data_validation\": false, \"native_metadata_files\": 132, \"original_absolute_paths_opened\": false, \"original_evidence_authenticated\": true, \"original_exit_unobserved_runs\": [\"verified-v3-normuon-1e-4\", \"verified-v3-normuon-3e-3\"], \"original_exit_zero_runs\": [\"verified-v3-adamw-1e-6\", \"verified-v3-adamw-3e-6\", \"verified-v3-adamw-1e-5\", \"verified-v3-adamw-3e-5\", \"verified-v3-muon-1e-4\", \"verified-v3-muon-3e-4\", \"verified-v3-muon-1e-3\", \"verified-v3-muon-3e-3\", \"verified-v3-normuon-3e-4\", \"verified-v3-normuon-1e-3\"], \"original_single_selection_guard_passed\": false, \"primary_protocol_sha256\": \"4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b\", \"runs\": 12, \"scientific_completion\": false, \"scope\": \"primary-v3-local-role-training-evidence-v1\"}, \"scope\": \"isolated-relocated-training-evidence-read\"}\n"
+    }
+  },
+  "archive_copy": {
+    "command": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -B - <<'PY'\nimport hashlib,json,shutil\nfrom pathlib import Path\nwork=Path('/tmp/dense-v3-campaign-evidence-candidate.PTIrpEN8')\narchive=Path('/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-campaign-evidence-candidate-v1')\nmanifest=json.loads((work/'prepare.json').read_bytes())\nwanted={n:b for n,b in manifest['copied_files'].items() if n.startswith('receipts/') or (n.startswith('anchors/') and n!='anchors/admission.json')}\nassert len(wanted)==39\nfor name,b in wanted.items():\n source=work/'snapshot'/name;raw=source.read_bytes()\n assert len(raw)==b['bytes'] and hashlib.sha256(raw).hexdigest()==b['sha256']\n target=archive/'additional-records'/name;target.parent.mkdir(parents=True,exist_ok=True)\n assert not target.exists();shutil.copyfile(source,target)\nfor name in ('campaign_evidence.py','prepare_snapshot.py','test_campaign_evidence.py','verify_relocated.py','assemble_snapshot.py'):\n target=archive/'source'/name;target.parent.mkdir(exist_ok=True)\n assert not target.exists();shutil.copyfile(work/name,target)\nfor source,target in [(work/'prepare.json',archive/'prepare.json'),(Path('/root/embedding-optimizer-story-refactor/CURRENT_EXPERIMENT.md'),archive/'before/CURRENT_EXPERIMENT.md')]:\n target.parent.mkdir(exist_ok=True);assert not target.exists();shutil.copyfile(source,target)\nprint(json.dumps({'additional_records':39,'additional_bytes':sum(x['bytes'] for x in wanted.values()),'code_files':5,'archive':str(archive)}))\nPY",
+    "result": {
+      "chunk_id": "ef88f6",
+      "wall_time_seconds": 0.000003945,
+      "exit_code": 0,
+      "original_token_count": 49,
+      "output": "{\"additional_records\": 39, \"additional_bytes\": 330838, \"code_files\": 5, \"archive\": \"/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-campaign-evidence-candidate-v1\"}\n"
+    }
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "scope": "actual_one_shot_fourth_stage_transport_and_complete_anonymous_reconstruction_commands",
+  "records": {
+    "goalCompleteFourthStageBackupTestsCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q -p no:cacheprovider /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/source/test_backup.py --junitxml=/tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/adapter-tests.xml",
+    "goalCompleteFourthStageBackupTestsInitialResult": {
+      "chunk_id": "ea6b79",
+      "wall_time_seconds": 0.755032828,
+      "exit_code": 0,
+      "original_token_count": 25,
+      "output": "..................................................                       [100%]\n50 passed in 0.56s\n"
+    },
+    "goalCompleteFourthStageBackupPrepareCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/source/backup.py prepare --workdir /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3",
+    "goalCompleteFourthStageBackupPrepareResult": {
+      "chunk_id": "85d38a",
+      "wall_time_seconds": 0.373149456,
+      "exit_code": 0,
+      "original_token_count": 235,
+      "output": "{\"manifest\": {\"bytes\": 178694, \"git_blob_sha1\": \"ef2d8698f38816cfc9da5fc0e73696c8ca152381\", \"sha256\": \"21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\"}, \"parent_revision\": \"dd16fe4cfe3e21ba8c8b4583038ed93fe4ce6e92\", \"parent_transport_sha256\": \"ab565206b22d0138c8227fef3f26eb28e2abeb7653c6f7137b7b532a289ec046\", \"prefix\": \"corrected-dense-correctness-v3/complete-fourth-stage-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\", \"remote_mutations\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"scientific_completion\": false, \"scope\": \"complete-primary-v3-fourth-stage-beir-artifact-backup\", \"source\": {\"bytes\": 23131, \"git_blob_sha1\": \"2010d53d8e78fff983c81c31f53d13db77a23a31\", \"sha256\": \"41809cb39859c3d3d1686adef7812d37bc7eb9a76e41444b0fd5a008da631b14\"}, \"upload_bytes\": 1959719, \"upload_files\": 557}\n"
+    },
+    "goalCompleteFourthStageBackupReaderTestsCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B -m pytest -q -p no:cacheprovider /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/source/test_verify_recovered.py --junitxml=/tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/reader-tests.xml",
+    "goalCompleteFourthStageBackupReaderTestsResult": {
+      "chunk_id": "60fe12",
+      "wall_time_seconds": 1.001141448,
+      "session_id": 12227,
+      "original_token_count": 3,
+      "output": "..........."
+    },
+    "goalCompleteFourthStageBackupReaderTestsTerminalResult": {
+      "chunk_id": "5150ed",
+      "wall_time_seconds": 0.000003659,
+      "exit_code": 0,
+      "original_token_count": 22,
+      "output": ".......                                                       [100%]\n18 passed in 1.63s\n"
+    },
+    "goalCompleteFourthStageBackupCheckCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/source/backup.py check --workdir /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3",
+    "goalCompleteFourthStageBackupCheckResult": {
+      "chunk_id": "188e6b",
+      "wall_time_seconds": 0.253483098,
+      "exit_code": 0,
+      "original_token_count": 261,
+      "output": "{\"preflight\": {\"manifest\": {\"bytes\": 178694, \"git_blob_sha1\": \"ef2d8698f38816cfc9da5fc0e73696c8ca152381\", \"sha256\": \"21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\"}, \"parent_revision\": \"dd16fe4cfe3e21ba8c8b4583038ed93fe4ce6e92\", \"parent_transport_sha256\": \"ab565206b22d0138c8227fef3f26eb28e2abeb7653c6f7137b7b532a289ec046\", \"prefix\": \"corrected-dense-correctness-v3/complete-fourth-stage-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\", \"remote_mutations\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"scientific_completion\": false, \"scope\": \"complete-primary-v3-fourth-stage-beir-artifact-backup\", \"source\": {\"bytes\": 23131, \"git_blob_sha1\": \"2010d53d8e78fff983c81c31f53d13db77a23a31\", \"sha256\": \"41809cb39859c3d3d1686adef7812d37bc7eb9a76e41444b0fd5a008da631b14\"}, \"upload_bytes\": 1959719, \"upload_files\": 557}, \"prepared_files_verified\": 557, \"remote_mutations\": false, \"scientific_completion\": false}\n"
+    },
+    "goalCompleteFourthStageBackupUploadCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/source/backup.py upload --workdir /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3",
+    "goalCompleteFourthStageBackupUploadInitialResult": {
+      "chunk_id": "b4a5da",
+      "wall_time_seconds": 1.000722599,
+      "session_id": 43126,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "goalCompleteFourthStageBackupUploadTerminalResult": {
+      "chunk_id": "2ef58a",
+      "wall_time_seconds": 0.000002609,
+      "exit_code": 0,
+      "original_token_count": 252,
+      "output": "Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.\n{\"durability_verified\": true, \"files\": 557, \"manifest\": {\"bytes\": 178694, \"git_blob_sha1\": \"ef2d8698f38816cfc9da5fc0e73696c8ca152381\", \"sha256\": \"21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\"}, \"old_corrected_subtrees_unchanged\": 12, \"old_root_entries_unchanged\": 20, \"prefix\": \"corrected-dense-correctness-v3/complete-fourth-stage-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\", \"remote_paths_deleted_or_overwritten\": false, \"repo_id\": \"qcz/embedding-optimizer-study-analysis-artifacts\", \"revision\": \"5eb4cceed5c3dbee05d46850ec0d76aedff7d4cc\", \"root_attributes_unchanged\": true, \"scientific_completion\": false, \"source_code_uploaded\": false, \"uploaded_at_utc\": \"2026-09-12T11:20:17.209140+00:00\", \"verified_at_utc\": \"2026-09-12T11:20:18.432952+00:00\"}\n"
+    },
+    "goalCompleteFourthStageBackupDownloadCommand": "CUDA_VISIBLE_DEVICES='' OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor /usr/bin/python -B /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/source/backup.py download-verify --workdir /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3",
+    "goalCompleteFourthStageBackupDownloadInitialResult": {
+      "chunk_id": "84e480",
+      "wall_time_seconds": 1.001242119,
+      "session_id": 81413,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "goalCompleteFourthStageBackupDownloadTerminalResult": {
+      "chunk_id": "71847f",
+      "wall_time_seconds": 0.000002389,
+      "exit_code": 0,
+      "original_token_count": 266,
+      "output": "{\"recovered_files\": 550, \"required_files\": 557}\n{\"all_payload_hashes_match\": true, \"bytes\": 1959719, \"downloaded_root\": \"/tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/download/corrected-dense-correctness-v3/complete-fourth-stage-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\", \"files\": 557, \"manifest\": {\"bytes\": 178694, \"git_blob_sha1\": \"ef2d8698f38816cfc9da5fc0e73696c8ca152381\", \"sha256\": \"21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\"}, \"new_model_or_statistical_execution\": false, \"observed_at_utc\": \"2026-09-12T11:23:59.915011+00:00\", \"prefix\": \"corrected-dense-correctness-v3/complete-fourth-stage-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\", \"revision\": \"5eb4cceed5c3dbee05d46850ec0d76aedff7d4cc\", \"same_physical_host\": true, \"scientific_completion\": false, \"scope\": \"actual-complete-anonymous-fourth-stage-beir-recovery\"}\n"
+    },
+    "goalCompleteFourthStageBackupIndependentReadCommand": "CUDA_VISIBLE_DEVICES='' /usr/bin/python -I -B /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/source/verify_recovered.py --root /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/download/corrected-dense-correctness-v3/complete-fourth-stage-evaluations/4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b/21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c --manifest-sha256 21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c --output /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/isolated-reconstruction.json",
+    "goalCompleteFourthStageBackupIndependentReadResult": {
+      "chunk_id": "9a9368",
+      "wall_time_seconds": 0.062134507,
+      "exit_code": 0,
+      "original_token_count": 314,
+      "output": "{\"bytes_verified\": 1959719, \"complete_checkpoint_means_reconstructed\": 12, \"csv_rows_reconstructed\": 180, \"files_verified\": 557, \"fourth_stage_means_0_to_100\": {\"verified-v3-adamw-1e-5\": 58.7965, \"verified-v3-adamw-1e-6\": 56.33707142857143, \"verified-v3-adamw-3e-5\": 58.876, \"verified-v3-adamw-3e-6\": 58.40192857142857, \"verified-v3-muon-1e-3\": 58.856928571428575, \"verified-v3-muon-1e-4\": 59.034214285714285, \"verified-v3-muon-3e-3\": 54.837428571428575, \"verified-v3-muon-3e-4\": 59.13621428571429, \"verified-v3-normuon-1e-3\": 58.96921428571429, \"verified-v3-normuon-1e-4\": 58.98942857142857, \"verified-v3-normuon-3e-3\": 55.180285714285716, \"verified-v3-normuon-3e-4\": 59.07228571428571}, \"manifest\": {\"bytes\": 178694, \"git_blob_sha1\": \"ef2d8698f38816cfc9da5fc0e73696c8ca152381\", \"sha256\": \"21f7c01540162767e86180ca3119e81df41e5b95e55b3044614fd9aeec0f604c\"}, \"native_exit_zero_workers_checked\": 168, \"network_transport_verified_by_this_program\": false, \"new_model_or_statistical_execution\": false, \"observed_at_utc\": \"2026-09-12T11:25:49.214161+00:00\", \"raw_task_scores_reconstructed\": 168, \"reads_only_supplied_snapshot\": true, \"scientific_completion\": false, \"scope\": \"independent-supplied-complete-fourth-stage-snapshot-byte-and-score-reconstruction\"}\n"
+    },
+    "goalCompleteFourthStageBackupArchiveCopyCommand": "set -e\nmkdir /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1\nmkdir /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/actual /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/before\ncp -a /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/source /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/source\ncp /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/preflight.json /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/adapter-tests.xml /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/reader-tests.xml /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/upload-mode-preflight.json /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/upload-started.json /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/upload.json /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/remote-audit.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/actual/\ncp /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/staging/artifact_manifest.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/actual/\ncp /tmp/dense-v3-complete-fourth-stage-artifact-backup.Gh7ngvO3/staging/provenance/acceptance.json /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/actual/\ncp /root/embedding-optimizer-story-refactor/CURRENT_EXPERIMENT.md /root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-fourth-stage-artifact-backup-v1/before/",
+    "goalCompleteFourthStageBackupArchiveCopyResult": {
+      "chunk_id": "478989",
+      "wall_time_seconds": 0.000003465,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  }
+}

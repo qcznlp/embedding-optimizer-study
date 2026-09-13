@@ -1,0 +1,97 @@
+{
+  "accepted_endpoint": {
+    "bytes": 20319,
+    "path": "/root/embedding-optimizer-story-refactor/reports/dense-v3-final-inference-v1/tables/readout.json",
+    "sha256": "592c902f94b8f190f3165f4075dfddc1e8c3f52add760805da639b541d27716f"
+  },
+  "actual_complete_checkpoints_checked": 54,
+  "actual_task_scores_checked": 756,
+  "candidate_source": {
+    "bytes": 21540,
+    "sha256": "2edad21becd9e442ca055bcf693e0b82ec5297290d933940e9a0b85450f785d4"
+  },
+  "frozen_dynamics": {
+    "claim_boundary": "Dynamics are descriptive; the final-stage primary interval remains the inferential endpoint.",
+    "observed_auc": "Trapezoidal area over retained normalized progress 0.2 through 1.0. Also divide by 0.8 to report the observed-range mean. No unobserved initialization score is imputed.",
+    "reported_units": "All 840 run-by-stage-by-task values, 60 run-stage means, and 15 optimizer-stage summaries."
+  },
+  "frozen_sources": {
+    "configs/dense_no_packing_outcome_protocol.json": {
+      "bytes": 8202,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/source-original/configs/dense_no_packing_outcome_protocol.json",
+      "sha256": "7f321f44b73bf18e88321204781814ff143e4072acf1f26780db17c341188b35"
+    },
+    "configs/dense_primary_v3_outcome_protocol.json": {
+      "bytes": 6697,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/source-original/configs/dense_primary_v3_outcome_protocol.json",
+      "sha256": "914996b3423ba01329c03844419cca61e2a33452fe026665bb940d5b82e2cffe"
+    },
+    "configs/dense_primary_v3_protocol.json": {
+      "bytes": 19832,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/source-original/configs/dense_primary_v3_protocol.json",
+      "sha256": "4400f1ce26ef423873a4eb509db48e046a07b90159f6d5ef10da084f5171107b"
+    },
+    "src/embed_optim/corrected_outcome_summary.py": {
+      "bytes": 19823,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/source-original/src/embed_optim/corrected_outcome_summary.py",
+      "sha256": "b22f5a9b14f3be0bb31c750aa2d32f220948e2f7a08d88c55617d1a6a47732d0"
+    },
+    "src/embed_optim/primary_completion.py": {
+      "bytes": 28342,
+      "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-trajectory-candidate-v1/source/source-original/src/embed_optim/primary_completion.py",
+      "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+    }
+  },
+  "full_grid_summary_executed": false,
+  "incomplete_grid_refused": true,
+  "input": {
+    "bytes": 11218622,
+    "path": "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-fourth-stage-pool-b-evaluations-v1/actual/complete-checkpoint-readback.json",
+    "sha256": "7d12ba8f36caa05d890a75c3598176324086433408f3a322ed45c75eb66521f5"
+  },
+  "missing_checkpoint_states": [
+    {
+      "run_id": "verified-v3-adamw-1e-6",
+      "step": 3126
+    },
+    {
+      "run_id": "verified-v3-adamw-3e-5",
+      "step": 3126
+    },
+    {
+      "run_id": "verified-v3-muon-1e-3",
+      "step": 3126
+    },
+    {
+      "run_id": "verified-v3-muon-1e-4",
+      "step": 3126
+    },
+    {
+      "run_id": "verified-v3-normuon-1e-4",
+      "step": 3126
+    },
+    {
+      "run_id": "verified-v3-normuon-3e-4",
+      "step": 3126
+    }
+  ],
+  "new_model_or_retrieval_execution": false,
+  "observed_at_utc": "2026-09-12T09:55:11.560082+00:00",
+  "original_validation_selection": {
+    "adamw": "verified-v3-adamw-3e-5",
+    "muon": "verified-v3-muon-3e-4",
+    "normuon": "verified-v3-normuon-3e-4"
+  },
+  "refusal": "Require all 60 checkpoints and 840 task cells; missing states are not imputed",
+  "scientific_completion": false,
+  "scope": "complete_trajectory_adapter_available_input_check",
+  "source_release": false,
+  "trajectory_tables_or_figures_generated": false,
+  "unchanged_function_sha256": {
+    "_index_score_rows": "08aab50d7593af312ad614dad99d0f4b3a0114de7dd129542ab9a859d206011a",
+    "_task_effects": "71e94933336f1c7c614269802e414e0e0803a56c065df614f8f2a7e5878fe402",
+    "_validate_matrix": "a151fb9fe2a952bc782966ca4f61ddb6986b0331ef981f02f69cdd1f16345916",
+    "paired_max_t_intervals": "7b1f5b0a7dfd218c881a714f42ac3e0700e362a14cadd2e2dd66445e6c648f54",
+    "summarize_score_rows": "96665bd5597572c914f7f04c20e02148f2bc061c0ad32acee10f075178731d2a"
+  }
+}

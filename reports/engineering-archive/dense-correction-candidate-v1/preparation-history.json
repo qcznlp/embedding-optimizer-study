@@ -1,0 +1,60 @@
+{
+  "scope": "preparation_attempt_history_not_raw_execution_log",
+  "startup_failures": [
+    {
+      "device": "cpu",
+      "tool_session": 10225,
+      "exit_code": 1,
+      "exception": "ModuleNotFoundError: No module named 'embed_optim.artifact_inventory'",
+      "update_loop_entered": false
+    },
+    {
+      "device": "cuda",
+      "tool_session": 99531,
+      "exit_code": 1,
+      "exception": "ModuleNotFoundError: No module named 'embed_optim.artifact_inventory'",
+      "update_loop_entered": false
+    }
+  ],
+  "startup_failure_evidence_boundary": "Transcribed from observed tool outputs; no separate original stderr file was produced by those two early imports. This receipt is not represented as a raw subprocess log.",
+  "resolution": "Copied the already existing isolated artifact_inventory.py support module byte-for-byte into the preparation worktree. The reference auditor and numerical source were unchanged for the retry.",
+  "reference_retries": {
+    "cpu_exit_code": 0,
+    "cuda_exit_code": 0,
+    "cpu_updates": 96,
+    "cuda_updates": 96
+  },
+  "v1_source_recovery": {
+    "reconstructed_from_recorded_subsequent_edits": [
+      "src/embed_optim/config.py",
+      "src/embed_optim/train.py",
+      "tests/test_dense_numerical_contract.py"
+    ],
+    "unchanged_exact_copies": [
+      "src/embed_optim/optimizers.py",
+      "src/embed_optim/dense_numerical_contract.py",
+      "src/embed_optim/artifact_inventory.py",
+      "configs/dense_correctness_candidate.yaml"
+    ],
+    "acceptance": "All seven files match the SHA-256 and byte counts in the pre-existing prepared-source.json; the old manifest was not rewritten."
+  },
+  "candidate_tests": [
+    {
+      "receipt": "tests/candidate-base-full.xml",
+      "tests": 911,
+      "failures": 17,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "receipt": "tests/candidate-base-full-v2.xml",
+      "tests": 923,
+      "failures": 11,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "protocol_gates_waived": false,
+  "scientific_completion": false,
+  "production_deployed": false
+}

@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "scope": "engineering_dense_loss_and_checkpoint_durability_validation",
+  "observed_at_utc": "2026-09-05T01:48:24.770757+00:00",
+  "scientific_completion": false,
+  "runtime_deployed": false,
+  "source_commit_or_merge_performed": false,
+  "hf_mutations_performed": false,
+  "bindings": [
+    {
+      "path": "scripts/audit_dense_loss_contract.py",
+      "bytes": 14125,
+      "sha256": "6373e1c5987c858f19bc3503a6ad7db47bd00ab5d279ff959b341e919e6ab55f"
+    },
+    {
+      "path": "tests/test_dense_loss_contract_audit.py",
+      "bytes": 4338,
+      "sha256": "ad4b3f9a1856df2fc4d940333209c7161debec55ed5a12056ba7bba0efdf20c2"
+    },
+    {
+      "path": "src/embed_optim/incremental_checkpoint_backup.py",
+      "bytes": 14334,
+      "sha256": "8dd0f34e9fa18bd2c0ebff6665f008cf3f388f34550489a51bc84c028bd27b47"
+    },
+    {
+      "path": "reports/engineering-archive/dense-loss-check/token-comparison-diagnostic-before.py",
+      "bytes": 13608,
+      "sha256": "9c70601a400c9b1848d925070dd9a1a736ebacf699cbe51e7aaad2ad6e804da7"
+    },
+    {
+      "path": "reports/engineering-archive/dense-loss-check/hf-3126-audit-command.py",
+      "bytes": 2030,
+      "sha256": "9b6a8b89e3c5ac10913b996cbcc75fbf1b1de505980e7cabd29018afdcc1f615"
+    },
+    {
+      "path": "reports/experiment-integrity/dense-loss-contract-real.json",
+      "bytes": 87167,
+      "sha256": "1f7cd4bbe9f39044adba39e1251327a7de44ca6e39b72591624fc96e4194276a"
+    },
+    {
+      "path": "reports/experiment-integrity/dense-loss-contract-tests-v2.xml",
+      "bytes": 1976,
+      "sha256": "6f1f9998a9a2ad483699016c5b0e8571f61458804a98a3b8fcb97751e34e9de4"
+    },
+    {
+      "path": "reports/experiment-integrity/dense-loss-contract-full-tests.xml",
+      "bytes": 149059,
+      "sha256": "3856ceb347fdcd2d613568c9d0edb8c0dd7a00d71a0c2d0acd97668d1ea3b258"
+    },
+    {
+      "path": "reports/experiment-integrity/dense-loss-contract-documentation-tests.xml",
+      "bytes": 2096,
+      "sha256": "572387d3ffd437216a15b9ff256bec2558bb04ce120526e8b978cc936cd1e318"
+    },
+    {
+      "path": "reports/experiment-integrity/dense-loss-contract-live-wandb.json",
+      "bytes": 563,
+      "sha256": "dac4209711f5574535cd058f62d35cad8954b8f5dcb7610b9ff33b74e258d6ce"
+    },
+    {
+      "path": "reports/experiment-integrity/dense-loss-contract-progress.json",
+      "bytes": 7635,
+      "sha256": "453db4b407fd5cc0eddc995cea3da7ca7f06bc4ef9eddcb6f0118f8ee275b0f3"
+    },
+    {
+      "path": "reports/experiment-integrity/normuon-3126-hf-digest-audit.json",
+      "bytes": 15553,
+      "sha256": "2f679a11c1325acf7c1d1192ba1b8c0d96da69ba24f0da4c1ae97c9be72a6506"
+    },
+    {
+      "path": "reports/dense-no-packing/incremental-checkpoint-backup/padded-normuon-1e-4-checkpoint-3126.json",
+      "bytes": 1755,
+      "sha256": "a0bb1bbef03c7a53fa4ef0521b016e0ec9093ef34280f01b220cbed42d37df89"
+    },
+    {
+      "path": "reports/dense-no-packing/incremental-checkpoint-backup/padded-normuon-3e-4-checkpoint-3126.json",
+      "bytes": 1755,
+      "sha256": "00406d4b73c2b9bebe165fc2ac51f8c7a41d321eed963861c4baf88d1b0c3385"
+    }
+  ],
+  "tests": {
+    "dense-loss-contract-tests-v2.xml": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "dense-loss-contract-full-tests.xml": {
+      "tests": 1081,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "dense-loss-contract-documentation-tests.xml": {
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "full_suite_exclusions": 0,
+  "executed_numerical_sources_verified": 9,
+  "preexecution_tolerances_unchanged": true,
+  "first_real_attempt": {
+    "exit_code": 1,
+    "scope": "diagnostic_only",
+    "before_loss_evaluation": true,
+    "error": "Boolean value of Tensor with more than one value is ambiguous",
+    "resolution": "Use explicit tensor equality and test both tensor/list token IDs. Formal training/evaluation sources and tolerances remain unchanged.",
+    "archived_source": "reports/engineering-archive/dense-loss-check/token-comparison-diagnostic-before.py"
+  },
+  "verified_cpu_contract": {
+    "real_checkpoints": 3,
+    "short_synthetic_queries_per_checkpoint": 2,
+    "explicit_candidates_per_query": 8,
+    "parameter_gradient_tensors_per_model": [
+      134,
+      134,
+      134
+    ],
+    "model_updates_performed": false,
+    "all_checkpoint_inventories_unchanged": true,
+    "production_collator_and_trainer_extraction": true,
+    "mteb_encoder_wrapper_and_length_budget_ordering": true,
+    "claim_boundary": "Two short synthetic queries per real checkpoint, CPU float32, eval mode with autograd. Checks production collator/feature order, exact prompts, nine encoder calls/eight explicit candidates, float64-reference loss and all trainable gradients, actual MTEB wrapper and length-budget ordering/cosine scoring. No optimizer step, real evaluation corpus, training-mode dropout, distributed accumulation, BF16/FlashAttention equivalence or 8192-token forward pass is tested. These checks supply no retrieval or optimizer-quality result."
+  },
+  "new_stage_durability": {
+    "checkpoints": 2,
+    "step": 3126,
+    "files": 34,
+    "bytes": 2702927254,
+    "all_digests_match_original_upload_commits": true,
+    "original_receipts_byte_identical": true
+  },
+  "progress": {
+    "observed_at_utc": "2026-09-05T01:44:05+00:00",
+    "complete_runs": 8,
+    "expected_runs": 12,
+    "resumable_checkpoints": 48,
+    "fatal_artifact_markers": {
+      "cuda_oom": 0,
+      "nccl_error": 0,
+      "non_finite": 0,
+      "traceback": 0
+    }
+  },
+  "remaining": [
+    "Four primary runs are not complete; all 840 primary BEIR units and complete primary/dimension/factorial findings remain pending.",
+    "Exact narrow live repair and successor transition are not deployed; no controller or GPU process was inspected or signaled.",
+    "HF cleanup is awaiting exact-scope approval; current content and history remain untouched.",
+    "Owner approval for explicitly WIP source publication remains unanswered."
+  ]
+}

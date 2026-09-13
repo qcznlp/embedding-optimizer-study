@@ -1,0 +1,15 @@
+{
+  "scope": "preserved-prelaunch-source-closure-attempt",
+  "original_source": "probe-first.py",
+  "original_source_sha256": "6f1f09b9e75123c8c7957175fab6200915460e4900e03e933728bf5097f30d1c",
+  "original_tests": "tests-first.json",
+  "tests_passed": 18,
+  "prepare_session": 61537,
+  "prepare_terminal": "7bedf0",
+  "prepare_exit_code": 1,
+  "failure": "The inference-only copied source closure does not include embed_optim.data, imported by probe_export through probes.",
+  "failure_before_model_read_or_output_creation": true,
+  "gpu_work_launched": false,
+  "correction": "Use a new local copy of the union of the unchanged original encoder and inference closures, with both original external source bindings checked. No numerical function or previous archive is changed.",
+  "scientific_completion": false
+}

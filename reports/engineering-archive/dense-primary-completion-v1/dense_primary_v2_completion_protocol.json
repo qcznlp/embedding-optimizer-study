@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "scope": "prepared_dense_primary_completion_lock",
+  "status": "prepared_not_execution_authorized",
+  "scientific_completion": false,
+  "production_deployed": false,
+  "parent_protocol": {
+    "path": "configs/dense_primary_v2_protocol.json",
+    "bytes": 11246,
+    "sha256": "e21a7226c09740d38d49855738267c080f615f8d4f60c2abf9dbf3ccd874edd2"
+  },
+  "reader_source": {
+    "path": "src/embed_optim/primary_completion.py",
+    "bytes": 28342,
+    "sha256": "a1aa61058654bd46afb41710ed606992355dab95d7c8b171a7485a8ac24d0cd5"
+  },
+  "required_grid": {
+    "runs": 12,
+    "stages": 5,
+    "tasks": 14,
+    "cells": 840
+  },
+  "purpose": "New exact-source whole-run, complete-task and full-grid readers; does not activate training or alter the predeclared nDCG estimand.",
+  "boundaries": [
+    "A continuation-only directory must retain its full earlier checkpoint/timing prefix before whole-run acceptance. No timing is zero-imputed or inferred from another branch.",
+    "All five model/optimizer/scheduler payloads are deeply checked after content authentication; exact final inference weights and model/tokenizer semantics must match the terminal checkpoint.",
+    "The result reader requires finite normalized nDCG@10/main_score and exact task/model/runtime metadata. Upstream undefined unused nAUC is preserved and explicitly disclosed, not used or imputed.",
+    "All 12 complete runs precede any full-grid collection; all 840 distinct task cells are required. No missing optimizer/rate is dropped.",
+    "This is artifact acceptance only; new validation selection, outcome/statistical and mechanism/publication integration, natural-data execution readiness and the reviewed runtime handoff remain required."
+  ]
+}

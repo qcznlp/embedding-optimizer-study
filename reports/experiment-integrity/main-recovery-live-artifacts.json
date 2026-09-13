@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-09-05T02:47:34.196330+00:00",
+  "scope": "artifact_only_current_main_recovery_boundary",
+  "scientific_completion": false,
+  "live_sources": [
+    {
+      "path": "configs/dense_no_packing_analysis_protocol.json",
+      "bytes": 8282,
+      "sha256": "91d7fa09ebb7e609afc5eb584f499b97baf9718d8cc23ff67eb295adfdd9f27a",
+      "unchanged": true
+    },
+    {
+      "path": "configs/dense_no_packing_bridge_implementation_protocol_v2.json",
+      "bytes": 6499,
+      "sha256": "ccf81a94026b8198e97877bfea995914f74ad9d8137885bf60de0f0fe86245ae",
+      "unchanged": true
+    },
+    {
+      "path": "configs/dense_no_packing_evaluation_protocol.json",
+      "bytes": 4838,
+      "sha256": "4af85ab67731f9c4417a84684dc6291d9e1fb66dbaa14d6c455b120c817fcf98",
+      "unchanged": true
+    },
+    {
+      "path": "configs/dense_no_packing_execution_protocol.json",
+      "bytes": 6054,
+      "sha256": "eb106341c72a372d97c0be2064102577c5fbfcd83dd04ea213e05b21fbf991a5",
+      "unchanged": true
+    },
+    {
+      "path": "configs/dense_no_packing_outcome_protocol.json",
+      "bytes": 7666,
+      "sha256": "8280ae041ad4385965650ae0febdcbdac1f9ce00d17fba06628d62292e08f319",
+      "unchanged": true
+    },
+    {
+      "path": "configs/dense_no_packing_publication_protocol.json",
+      "bytes": 9404,
+      "sha256": "c815e8dfb52ac71350d8c1e7384bdf122ce549ec92fbc2fe883a9a4866e6d71c",
+      "unchanged": true
+    },
+    {
+      "path": "configs/dense_no_packing_retrain.yaml",
+      "bytes": 1601,
+      "sha256": "aa0e3e231d022dcca672ecfd47fc369381c6984b34375eed7e0b6fd340386dd7",
+      "unchanged": true
+    },
+    {
+      "path": "configs/dense_no_packing_sensitivity_implementation_protocol.json",
+      "bytes": 5032,
+      "sha256": "99a2a967e162e96fe24d1edd74f6c8b15a7e7ccc26056f4063e5799c9e35b7f3",
+      "unchanged": true
+    },
+    {
+      "path": "src/embed_optim/corrected_checkpoint_backup.py",
+      "bytes": 7953,
+      "sha256": "29935e16ad8469fb75efa4272c215c235e60bda15ad5d1be1fe7a5ec9e1b1727",
+      "unchanged": true
+    },
+    {
+      "path": "src/embed_optim/corrected_completion_pipeline.py",
+      "bytes": 20348,
+      "sha256": "7f3e6f440d4b79b2a7aea3d5336b9458fbeb8cb61c5537fdda13fea72d591972",
+      "unchanged": true
+    },
+    {
+      "path": "src/embed_optim/corrected_publication.py",
+      "bytes": 38709,
+      "sha256": "a2f9aaed850373a0bc54466769f0513944eb7c8e54c76c2a6d0c1aaddcc364e6",
+      "unchanged": true
+    },
+    {
+      "path": "src/embed_optim/evaluation_source_provenance.py",
+      "bytes": 12947,
+      "sha256": "fec4c185af25e973894f69626fe6361ba59a211a2044986e2edad69862125f6d",
+      "unchanged": true
+    }
+  ],
+  "controllers": {
+    "main": {
+      "observed_at_utc": "2026-09-05T02:46:40+00:00",
+      "status": "waiting_for_training",
+      "complete": false,
+      "training_runs_complete": 9,
+      "covered_checkpoints": null,
+      "cycle_failures": null,
+      "contract_sha256": "4152531e354bdf325411c7f4d6de044ea68b6d5f26a59fbf5914f8b55f3c9789",
+      "steps": 0,
+      "complete_backups": 9
+    },
+    "factorial": {
+      "observed_at_utc": "2026-09-05T02:47:01+00:00",
+      "status": "waiting_for_main_completion",
+      "complete": false,
+      "training_runs_complete": null,
+      "covered_checkpoints": null,
+      "cycle_failures": null,
+      "contract_sha256": "6605090d5e03f79d1bb240c56ea77a214211470a718d6f603a46ba6668e9deb8",
+      "steps": 0,
+      "complete_backups": 0
+    },
+    "sealed_backup": {
+      "observed_at_utc": "2026-09-05T02:47:19Z",
+      "status": "watching",
+      "complete": false,
+      "training_runs_complete": null,
+      "covered_checkpoints": 49,
+      "cycle_failures": 0,
+      "contract_sha256": "a65074bc3e3898dedb0849cbc6f6a7e428105ce74280213c5f5b30554a7d89b7",
+      "steps": 0,
+      "complete_backups": 0
+    }
+  },
+  "progress": {
+    "observed_at_utc": "2026-09-05T02:41:02+00:00",
+    "complete_runs": 9,
+    "pending_runs": 1,
+    "resumable_checkpoints": 49,
+    "planned_runs": 12,
+    "planned_checkpoints": 60,
+    "error_markers": {
+      "cuda_oom": 0,
+      "nccl_error": 0,
+      "non_finite": 0,
+      "traceback": 0
+    }
+  },
+  "runtime_transition_performed": false
+}

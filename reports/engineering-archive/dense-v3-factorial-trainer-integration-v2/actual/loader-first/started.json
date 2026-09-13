@@ -1,0 +1,48 @@
+{
+  "command": [
+    "/usr/bin/python",
+    "-B",
+    "-m",
+    "torch.distributed.run",
+    "--standalone",
+    "--nnodes=1",
+    "--nproc-per-node=4",
+    "/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/source-first/reports/engineering-archive/dense-v3-factorial-trainer-v1/worker.py",
+    "--output",
+    "/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/loader-first/output",
+    "--mode",
+    "loader",
+    "--optimizer",
+    "hybrid_adamw",
+    "--seed",
+    "314159",
+    "--stop",
+    "0"
+  ],
+  "cwd": "/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/source-first",
+  "declared_environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "HF_HUB_OFFLINE": "1",
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/source-first/src:/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/source-first",
+    "TOKENIZERS_PARALLELISM": "false",
+    "TRANSFORMERS_OFFLINE": "1",
+    "WANDB_MODE": "disabled"
+  },
+  "nice": 10,
+  "pid": 66652,
+  "ppid": 66651,
+  "resume_binding": null,
+  "scientific_admission": false,
+  "scope": "cpu-only-factorial-trainer-diagnostic",
+  "source_manifest": {
+    "bytes": 15846,
+    "path": "/tmp/dense-v3-factorial-trainer-integration.dmkUEso6/source-first.json",
+    "sha256": "9a0362b0c4f5dc31b65889891ae274b2cd6761746862338be7e71df05328d363"
+  },
+  "start_ticks": 299993100,
+  "started_at_utc": "2026-09-10T08:16:20.412481+00:00"
+}

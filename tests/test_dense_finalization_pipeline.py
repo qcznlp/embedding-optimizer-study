@@ -270,11 +270,11 @@ def test_steps_expand_to_dense_only_release_contract(tmp_path: Path):
     assert steps[-1].name == "distribution-audit"
 
 
-def test_release_build_rejects_a_causal_source_removed_after_strict_audit(tmp_path: Path):
+def test_release_rechecks_primary_source_removed_after_an_earlier_audit(tmp_path: Path):
     paper = tmp_path / "paper"
     paper.mkdir()
-    (paper / "Makefile").write_bytes((ROOT / "paper/Makefile").read_bytes())
-    causal_source = tmp_path / "reports/temporal-short-branch/loso_predictions.csv"
+    (paper / "Makefile").write_bytes((ROOT / "paper/legacy.Makefile").read_bytes())
+    causal_source = tmp_path / "reports/dense-no-packing-outcomes/primary_summary.csv"
     causal_source.parent.mkdir(parents=True)
     causal_source.write_text("held_out_prediction\nvalid\n", encoding="utf-8")
     fake_cli = tmp_path / "fake_paper_cli.py"
@@ -289,13 +289,10 @@ module = arguments[arguments.index("-m") + 1]
 source = Path(os.environ["CAUSAL_SOURCE"])
 if module == "embed_optim.paper_audit":
     if "--strict" not in arguments or not source.is_file():
+        print("strict audit rejected missing primary source")
         raise SystemExit(40)
-elif module == "embed_optim.paper_results":
-    if "--if-ready" in arguments:
-        print("if-ready would retain stale tables")
-    elif not source.is_file():
-        print("strict renderer rejected missing causal source")
-        raise SystemExit(41)
+elif module == "embed_optim.paper_layout":
+    print("synthetic layout check passed")
 else:
     raise SystemExit(42)
 """,
@@ -315,6 +312,9 @@ else:
             "-C",
             str(paper),
             "release",
+            # This test isolates the post-build audit; the full synthetic paper test
+            # separately executes the actual Makefile, LaTeX compiler and layout gate.
+            "MAKE=true",
             f"PYTHON={sys.executable} {fake_cli}",
         ],
         check=False,
@@ -325,17 +325,21 @@ else:
 
     output = result.stdout + result.stderr
     assert result.returncode != 0
-    assert "strict renderer rejected missing causal source" in output
-    assert "if-ready would retain stale tables" not in output
+    assert "strict audit rejected missing primary source" in output
+    assert output.index("synthetic layout check passed") < output.index("strict audit rejected")
+    assert "embed_optim.paper_results" not in output
 
 
-def test_makefile_keeps_if_ready_only_for_the_developer_build():
-    makefile = (ROOT / "paper/Makefile").read_text(encoding="utf-8")
+def test_makefile_draft_build_is_independent_of_historical_headline_generation():
+    makefile = (ROOT / "paper/legacy.Makefile").read_text(encoding="utf-8")
     release_recipe = makefile.split("\nrelease:\n", 1)[1].split("\n\n", 1)[0]
-    developer_recipe = makefile.split("\nheadlines:\n", 1)[1].split("\n\n", 1)[0]
+    developer_recipe = makefile.split("\nall:", 1)[1].split("\n\n", 1)[0]
 
     assert "--if-ready" not in release_recipe
-    assert "--if-ready" in developer_recipe
+    assert "--strict" in release_recipe
+    assert "$(BUILD)/main.pdf" in developer_recipe
+    assert "embed_optim.paper_results" not in makefile
+    assert "headlines" not in developer_recipe
 
 
 def test_wandb_audits_are_mandatory_dense_only_and_precede_distribution(tmp_path: Path):

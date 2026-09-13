@@ -1,0 +1,207 @@
+{
+  "scope": "separately_timestamped_first_stage_and_functional_terminal_handoff",
+  "primary": {
+    "scope": "exact_existing_native_task_observer_status",
+    "observed_at_utc": "2026-09-11T03:26:25.207167+00:00",
+    "observer": {
+      "pid": 60083,
+      "start_ticks": 299816818,
+      "state": "S",
+      "ppid": 1986037,
+      "command_matches": true,
+      "live": true
+    },
+    "task_snapshot_at_utc": "2026-09-11T03:26:01.476524+00:00",
+    "primary_tasks": [
+      336,
+      840
+    ],
+    "baseline_tasks": [
+      14,
+      14
+    ],
+    "worker_observations_from_that_snapshot": [
+      {
+        "command_matches": true,
+        "gpu_token": "0",
+        "group": "primary_a",
+        "job": "verified-v3-adamw-1e-6-1563-ClimateFEVER",
+        "live": true,
+        "pid": 326744,
+        "ppid": 597,
+        "start_ticks": 306841463,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "3",
+        "group": "primary_a",
+        "job": "verified-v3-adamw-3e-5-1563-ClimateFEVER",
+        "live": true,
+        "pid": 326204,
+        "ppid": 597,
+        "start_ticks": 306839802,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "1",
+        "group": "primary_a",
+        "job": "verified-v3-muon-1e-3-1563-ClimateFEVER",
+        "live": true,
+        "pid": 326507,
+        "ppid": 597,
+        "start_ticks": 306841203,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "2",
+        "group": "primary_a",
+        "job": "verified-v3-normuon-3e-4-1563-ClimateFEVER",
+        "live": true,
+        "pid": 326465,
+        "ppid": 597,
+        "start_ticks": 306840750,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "4",
+        "group": "primary_b",
+        "job": "verified-v3-adamw-1e-5-1563-ClimateFEVER",
+        "live": true,
+        "pid": 294656,
+        "ppid": 598,
+        "start_ticks": 306182187,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "6",
+        "group": "primary_b",
+        "job": "verified-v3-adamw-3e-6-1563-ClimateFEVER",
+        "live": true,
+        "pid": 294670,
+        "ppid": 598,
+        "start_ticks": 306182794,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "7",
+        "group": "primary_b",
+        "job": "verified-v3-muon-3e-4-1563-ClimateFEVER",
+        "live": true,
+        "pid": 293653,
+        "ppid": 598,
+        "start_ticks": 306180282,
+        "state": "R"
+      },
+      {
+        "command_matches": true,
+        "gpu_token": "5",
+        "group": "primary_b",
+        "job": "verified-v3-normuon-1e-3-1563-ClimateFEVER",
+        "live": true,
+        "pid": 294658,
+        "ppid": 598,
+        "start_ticks": 306182307,
+        "state": "R"
+      }
+    ],
+    "completed_receipt_present": false,
+    "failed_receipt_present": false,
+    "task_snapshot_is_a_separate_timestamped_observation": true,
+    "fresh_native_task_or_model_replay": false,
+    "scientific_completion": false
+  },
+  "functional_terminal_observation": {
+    "active_gpu_tokens": [],
+    "authorization": {
+      "bytes": 15389,
+      "sha256": "d72527595e2c963eae7fd46b0a1de2bd83d1ea15a863ae467a1065cfc5b2f336"
+    },
+    "completed": false,
+    "coordinator": {
+      "pid": 42916,
+      "start_ticks": 299159282,
+      "state": "missing_reconcile_with_terminal_records"
+    },
+    "coordinator_started": {
+      "bytes": 1267,
+      "sha256": "c1fcac34c21d248c3c7217fa2cc87d63132ff19b71eeb2d8f705bb1aba9f6f41"
+    },
+    "encoded_states": [
+      {
+        "cell": "pretrained",
+        "receipt": {
+          "bytes": 1594,
+          "path": "/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/run/jobs/pretrained.encoded.json",
+          "sha256": "d668916f56dfd7c4f8ee35f6f5f189a4f397e7c08f09456e0bca4e4d477d32c5"
+        }
+      }
+    ],
+    "failed": true,
+    "feature_worker": null,
+    "features_completed": false,
+    "fresh_model_or_numeric_replay_by_observer": false,
+    "inputs": {
+      "bytes": 19515868,
+      "sha256": "be6d92fda2f7f0ba3e86f2c2866fa9dca530f066d29ce92d0887fdad91684067"
+    },
+    "observed_at_utc": "2026-09-11T03:18:24.511921+00:00",
+    "other_process_or_gpu_process_enumeration": false,
+    "scientific_completion": false,
+    "scope": "exact_read_only_primary_functional_campaign_observation",
+    "sources_authenticated": 53,
+    "vectors_completed": false,
+    "verified_feature_states": [],
+    "verified_vector_states": [
+      {
+        "cell": "pretrained",
+        "receipt": {
+          "bytes": 1441,
+          "path": "/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/run/jobs/pretrained.verified.json",
+          "sha256": "8867643a9309af31b73e9b4f6bd9b3b8329389bb687b1e967d5043482cdd1dcb"
+        }
+      }
+    ],
+    "waiting_for_validation_record_present": true,
+    "workers": [
+      {
+        "cell": "pretrained",
+        "exit_code": 0,
+        "exited": {
+          "bytes": 793,
+          "path": "/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/run/jobs/pretrained.exited.json",
+          "sha256": "8a82b1f85a96e67f07e7e03ef9ae457bebed7b3c9d5e463d798bd504ae9b4e76"
+        },
+        "gpu_token": "0",
+        "started": {
+          "bytes": 926,
+          "path": "/root/embedding-optimizer-v3-experiment/launch/functional-dimensions/run/jobs/pretrained.started.json",
+          "sha256": "2da0ecee9ab23c2dcd87f77e41587c6c24d3285aafdc52b95f8c289cda4c3722"
+        },
+        "terminal": true
+      }
+    ],
+    "writes_or_signals": false
+  },
+  "original_functional_coordinator_session": {
+    "session_id": 39956,
+    "exit_code": 1,
+    "terminal_evidence_chunk": "6fb4b3"
+  },
+  "native_readback_observed_at_utc": "2026-09-11T03:20:45.029339+00:00",
+  "complete_checkpoint_readbacks": 24,
+  "remaining_intermediate_checkpoints": 36,
+  "accepted_functional_vector_states": 1,
+  "complete_functional_feature_states": 0,
+  "required_functional_states": 61,
+  "coordinator_failed": true,
+  "recovery_authorized": false,
+  "active_primary_workers": 8,
+  "no_new_dispatch_or_numerical_replay_by_observers": true,
+  "full_goal_complete": false
+}

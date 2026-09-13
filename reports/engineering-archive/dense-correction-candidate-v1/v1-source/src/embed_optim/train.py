@@ -1,0 +1,463 @@
+from __future__ import annotations
+
+import argparse
+import importlib.metadata
+import json
+import os
+import shutil
+import time
+from pathlib import Path
+
+import torch
+from datasets import Dataset
+from sentence_transformers import (
+    SentenceTransformer,
+    SentenceTransformerTrainer,
+    SentenceTransformerTrainingArguments,
+)
+from transformers import set_seed
+
+from . import dense_numerical_contract as numerical
+from .callbacks import (
+    AcceptedTimingCallback,
+    FractionalCheckpointCallback,
+    PyLateCheckpointCompatibilityCallback,
+    StopAfterStepCallback,
+    WandbExperimentConfigCallback,
+    accepted_timing_summary,
+    sanitize_pylate_checkpoint,
+)
+from .collators import TEXT_COLUMNS, DenseGroupCollator, LateGroupCollator
+from .config import (
+    DENSE_NUMERICAL_POLICY,
+    LEGACY_NUMERICAL_POLICY,
+    RunConfig,
+    load_matrix,
+    matrix_runtime_spec,
+    save_resolved_config,
+    source_wandb_run_id,
+)
+from .losses import ExplicitDenseInfoNCELoss, ExplicitLateInfoNCELoss
+from .optimizers import build_optimizer
+from .pylate_compat import configure_pylate_compatibility
+
+
+class OptimizerTrainer(SentenceTransformerTrainer):
+    def __init__(
+        self, *args, optimizer_config, numerical_policy=LEGACY_NUMERICAL_POLICY, **kwargs
+    ) -> None:
+        self.embedding_optimizer_config = optimizer_config
+        self.optimizer_partition_summary = None
+        self.dense_numerical_policy = numerical_policy
+        if numerical_policy not in {LEGACY_NUMERICAL_POLICY, DENSE_NUMERICAL_POLICY}:
+            raise ValueError("Unknown Trainer numerical policy")
+        if numerical_policy == DENSE_NUMERICAL_POLICY:
+            if type(kwargs.get("loss")) is not ExplicitDenseInfoNCELoss:
+                raise ValueError("Corrected Trainer requires the explicit Dense mean loss")
+            numerical.require_optimizer_choice(optimizer_config)
+            numerical.require_backward(kwargs["model"])
+        super().__init__(*args, **kwargs)
+        if numerical_policy == DENSE_NUMERICAL_POLICY and self.compute_loss_func is not None:
+            raise ValueError("Custom compute_loss_func is outside the corrected contract")
+
+    def create_accelerator_and_postprocess(self):
+        corrected = self.dense_numerical_policy == DENSE_NUMERICAL_POLICY
+        if corrected:
+            numerical.verify_stack(type(self))
+        super().create_accelerator_and_postprocess()
+        if corrected:
+            self.normalization_policy = numerical.assign_normalization_owner(self)
+
+    def _numerical_receipt(self):
+        return numerical.receipt(
+            self.embedding_optimizer_config, self.args.gradient_accumulation_steps
+        )
+
+    def _save_checkpoint(self, model, trial):
+        corrected = self.dense_numerical_policy == DENSE_NUMERICAL_POLICY
+        if corrected:
+            numerical.require_optimizer_state(self.optimizer, self.embedding_optimizer_config)
+            numerical.require_backward(self.model)
+        super()._save_checkpoint(model, trial)
+        if corrected and self.args.should_save:
+            output = (
+                Path(self._get_output_dir(trial=trial)) / f"checkpoint-{self.state.global_step}"
+            )
+            with (output / numerical.RECEIPT_NAME).open("x") as handle:
+                json.dump(self._numerical_receipt(), handle, indent=2, sort_keys=True)
+                handle.write("\n")
+
+    def _load_from_checkpoint(self, resume_from_checkpoint):
+        if self.dense_numerical_policy == DENSE_NUMERICAL_POLICY:
+            numerical.require_resume_receipt(resume_from_checkpoint, self._numerical_receipt())
+        return super()._load_from_checkpoint(resume_from_checkpoint)
+
+    def _load_optimizer_and_scheduler(self, checkpoint):
+        corrected = self.dense_numerical_policy == DENSE_NUMERICAL_POLICY
+        if corrected and checkpoint is not None:
+            numerical.require_resume_receipt(checkpoint, self._numerical_receipt())
+        super()._load_optimizer_and_scheduler(checkpoint)
+        if corrected:
+            numerical.require_optimizer_state(self.optimizer, self.embedding_optimizer_config)
+
+    def create_optimizer(self, model=None):
+        if self.optimizer is None:
+            target = self.model if model is None else model
+            self.optimizer, self.optimizer_partition_summary = build_optimizer(
+                target, self.embedding_optimizer_config
+            )
+            if self.dense_numerical_policy == DENSE_NUMERICAL_POLICY:
+                for group in self.optimizer.param_groups:
+                    group["dense_numerical_policy"] = self.dense_numerical_policy
+            if self.is_world_process_zero():
+                print(
+                    "Optimizer parameter partition: "
+                    + json.dumps(self.optimizer_partition_summary, sort_keys=True),
+                    flush=True,
+                )
+        return self.optimizer
+
+
+def _world_size() -> int:
+    return int(os.environ.get("WORLD_SIZE", "1"))
+
+
+def _model_kwargs(config: RunConfig) -> dict:
+    return {
+        "dtype": torch.float32,
+        "attn_implementation": "flash_attention_2" if config.flash_attention else "sdpa",
+    }
+
+
+def _configure_dense_input_execution(model, config: RunConfig) -> None:
+    """Apply and verify the matrix-declared SentenceTransformers input mode."""
+
+    first_module = model._first_module()
+    if not hasattr(first_module, "can_flatten_inputs"):
+        raise RuntimeError(
+            "Dense transformer does not expose can_flatten_inputs; refusing to run an "
+            "unverifiable input-execution contract"
+        )
+    first_module.can_flatten_inputs = config.dense_can_flatten_inputs
+    if bool(first_module.can_flatten_inputs) != config.dense_can_flatten_inputs:
+        raise RuntimeError("Dense transformer did not retain the declared input-execution mode")
+
+
+def _input_execution_receipt(model, config: RunConfig) -> dict:
+    if config.model_family == "dense":
+        first_module = model._first_module()
+        if not hasattr(first_module, "can_flatten_inputs"):
+            raise RuntimeError("Dense input-execution mode is no longer observable")
+        observed = bool(first_module.can_flatten_inputs)
+        if observed != config.dense_can_flatten_inputs:
+            raise RuntimeError(
+                "Dense input-execution mode changed during training: "
+                f"declared={config.dense_can_flatten_inputs}, observed={observed}"
+            )
+        return {
+            "mode": "flattened_packed" if observed else "independently_padded",
+            "sentence_transformers_can_flatten_inputs": observed,
+        }
+    return {"mode": "pylate_dynamic_padding"}
+
+
+def _load_model_and_loss(config: RunConfig):
+    if config.model_family == "dense":
+        model = SentenceTransformer(
+            config.model_name,
+            revision=config.model_revision,
+            model_kwargs=_model_kwargs(config),
+        )
+        model.max_seq_length = config.max_length
+        _configure_dense_input_execution(model, config)
+        if config.numerical_policy == DENSE_NUMERICAL_POLICY:
+            numerical.configure_backward(model)
+        loss = ExplicitDenseInfoNCELoss(model, temperature=config.resolved_temperature)
+        collator = DenseGroupCollator(model.preprocess)
+    elif config.model_family == "late":
+        models = configure_pylate_compatibility()
+        model = models.ColBERT(
+            config.model_name,
+            revision=config.model_revision,
+            query_length=config.max_length,
+            document_length=config.max_length,
+            do_query_expansion=False,
+            trust_remote_code=True,
+            model_kwargs=_model_kwargs(config),
+        )
+        # PyLate 1.6's save method still reads the pre-ST-5 private field. The
+        # public replacement contains the same base metadata; PyLate appends its
+        # query/document settings during save.
+        if not hasattr(model, "_model_config"):
+            model._model_config = model._get_model_config()
+        loss = ExplicitLateInfoNCELoss(model, temperature=config.resolved_temperature)
+        collator = LateGroupCollator(model)
+    else:
+        raise ValueError(f"Unsupported model family {config.model_family!r}")
+    if config.gradient_checkpointing:
+        model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
+    return model, loss, collator
+
+
+def _training_arguments(config: RunConfig) -> SentenceTransformerTrainingArguments:
+    world_size = _world_size()
+    micro_global = config.micro_batch_size * world_size
+    if config.global_batch_size % micro_global:
+        raise ValueError(
+            f"global_batch_size={config.global_batch_size} must be divisible by "
+            f"micro_batch_size*world_size={micro_global}"
+        )
+    accumulation = config.global_batch_size // micro_global
+    return SentenceTransformerTrainingArguments(
+        output_dir=str(config.output_dir),
+        num_train_epochs=config.epochs,
+        max_steps=int(os.environ.get("EMBED_OPTIM_MAX_STEPS", "-1")),
+        per_device_train_batch_size=config.micro_batch_size,
+        gradient_accumulation_steps=accumulation,
+        learning_rate=config.optimizer.lr,
+        lr_scheduler_type="linear",
+        warmup_steps=config.warmup_ratio,
+        max_grad_norm=config.max_grad_norm,
+        save_strategy="no",
+        logging_strategy="steps",
+        logging_steps=10,
+        logging_first_step=True,
+        report_to=["wandb"],
+        run_name=f"{config.model_family}-{config.run_id}",
+        project=config.wandb_project,
+        bf16=True,
+        tf32=True,
+        fp16=False,
+        seed=config.seed,
+        data_seed=config.seed,
+        full_determinism=False,
+        gradient_checkpointing=config.gradient_checkpointing,
+        gradient_checkpointing_kwargs={"use_reentrant": False},
+        dataloader_num_workers=config.dataloader_workers,
+        dataloader_pin_memory=True,
+        dataloader_persistent_workers=config.dataloader_workers > 0,
+        dataloader_prefetch_factor=4 if config.dataloader_workers > 0 else None,
+        # Keep the serialized runtime contract explicit instead of relying on
+        # SentenceTransformers to mutate this setting after it detects DDP.
+        dataloader_drop_last=True,
+        train_sampling_strategy="group_by_length",
+        length_column_name="length",
+        remove_unused_columns=False,
+        ddp_find_unused_parameters=False,
+    )
+
+
+def run_training(config: RunConfig, resume_from_checkpoint: str | None = None) -> Path:
+    if config.model_family == "dense":
+        numerical.require_training_request(config, resume_from_checkpoint)
+        if resume_from_checkpoint:
+            accumulation = config.global_batch_size // (config.micro_batch_size * _world_size())
+            numerical.require_resume_receipt(
+                resume_from_checkpoint, numerical.receipt(config.optimizer, accumulation)
+            )
+    set_seed(config.seed)
+    os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+    os.environ["WANDB_PROJECT"] = config.wandb_project
+    if config.wandb_entity:
+        os.environ["WANDB_ENTITY"] = config.wandb_entity
+    os.environ.setdefault("WANDB_RUN_ID", source_wandb_run_id(config))
+    os.environ.setdefault("WANDB_RESUME", "allow")
+    os.environ.setdefault("WANDB_RUN_GROUP", config.model_family)
+    os.environ.setdefault(
+        "WANDB_TAGS",
+        f"{config.model_family},{config.optimizer.name},seed-{config.seed}",
+    )
+    output_dir = config.output_dir.resolve()
+    if int(os.environ.get("RANK", "0")) == 0:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        save_resolved_config(config, output_dir / "run_config.json")
+
+    dataset_root = Path(config.dataset_path)
+    dataset_path = dataset_root
+    if (dataset_path / "dataset").is_dir():
+        dataset_path = dataset_path / "dataset"
+    dataset = Dataset.load_from_disk(str(dataset_path))
+    required = [*TEXT_COLUMNS, "length"]
+    missing = [column for column in required if column not in dataset.column_names]
+    if missing:
+        raise ValueError(f"Dataset {dataset_path} is missing columns: {missing}")
+    dataset = dataset.select_columns(required)
+    if int(os.environ.get("RANK", "0")) == 0 and (dataset_root / "manifest.json").is_file():
+        shutil.copy2(dataset_root / "manifest.json", output_dir / "dataset_manifest.json")
+
+    model, loss, collator = _load_model_and_loss(config)
+    callback = FractionalCheckpointCallback(config.checkpoint_fractions, output_dir)
+    callbacks = [callback, WandbExperimentConfigCallback(config.as_dict())]
+    if config.model_family == "late":
+        callbacks.append(PyLateCheckpointCompatibilityCallback())
+    callbacks.append(AcceptedTimingCallback(output_dir))
+    stop_after_step = int(os.environ.get("EMBED_OPTIM_STOP_AFTER_STEP", "-1"))
+    if stop_after_step > 0:
+        callbacks.append(StopAfterStepCallback(stop_after_step))
+    trainer = OptimizerTrainer(
+        model=model,
+        args=_training_arguments(config),
+        train_dataset=dataset,
+        loss=loss,
+        data_collator=collator,
+        callbacks=callbacks,
+        optimizer_config=config.optimizer,
+        numerical_policy=config.numerical_policy,
+    )
+    if torch.cuda.is_available():
+        torch.cuda.reset_peak_memory_stats()
+    started_at = time.monotonic()
+    train_result = trainer.train(resume_from_checkpoint=resume_from_checkpoint)
+    wall_time_seconds = time.monotonic() - started_at
+
+    # Record the slowest rank and largest per-rank CUDA footprint. The collectives
+    # run on every rank before rank zero writes the shared completion manifest.
+    local_system = torch.tensor(
+        [
+            wall_time_seconds,
+            float(torch.cuda.max_memory_allocated()) if torch.cuda.is_available() else 0.0,
+            float(torch.cuda.max_memory_reserved()) if torch.cuda.is_available() else 0.0,
+        ],
+        device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),
+        dtype=torch.float64,
+    )
+    if torch.distributed.is_available() and torch.distributed.is_initialized():
+        torch.distributed.all_reduce(local_system, op=torch.distributed.ReduceOp.MAX)
+    wall_time_seconds, peak_allocated_bytes, peak_reserved_bytes = local_system.tolist()
+
+    final_dir = output_dir / "final"
+    trainer.save_model(str(final_dir))
+    if trainer.is_world_process_zero():
+        if config.model_family == "late":
+            sanitize_pylate_checkpoint(final_dir)
+        trainer.state.save_to_json(str(output_dir / "trainer_state_final.json"))
+        accepted_timing = accepted_timing_summary(
+            output_dir / "accepted_timing.json", trainer.state.global_step
+        )
+        checkpoint_bytes = {
+            path.name: sum(item.stat().st_size for item in path.rglob("*") if item.is_file())
+            for path in sorted(output_dir.glob("checkpoint-*"))
+            if path.is_dir()
+        }
+        optimizer_state_bytes = {
+            path.name: (path / "optimizer.pt").stat().st_size
+            for path in sorted(output_dir.glob("checkpoint-*"))
+            if (path / "optimizer.pt").is_file()
+        }
+        completion_payload = {
+            "run_id": config.run_id,
+            "model_family": config.model_family,
+            "global_step": trainer.state.global_step,
+            "checkpoints": sorted(callback.requested),
+            "optimizer_partition": trainer.optimizer_partition_summary,
+            "dataset_rows": len(dataset),
+            "dataset_fingerprint": dataset._fingerprint,
+            "input_execution": _input_execution_receipt(model, config),
+            "system_metrics": {
+                "wall_time_seconds_max_rank": wall_time_seconds,
+                "peak_allocated_bytes_max_rank": int(peak_allocated_bytes),
+                "peak_reserved_bytes_max_rank": int(peak_reserved_bytes),
+                "checkpoint_bytes": checkpoint_bytes,
+                "optimizer_state_bytes": optimizer_state_bytes,
+                "trainer": train_result.metrics,
+                "gpu_name": torch.cuda.get_device_name() if torch.cuda.is_available() else None,
+                "world_size": _world_size(),
+            },
+            "accepted_timing": accepted_timing,
+            "versions": {
+                package: importlib.metadata.version(package)
+                for package in (
+                    "torch",
+                    "transformers",
+                    "sentence-transformers",
+                    "pylate",
+                    "late-interaction-kernels",
+                )
+            },
+        }
+        if config.numerical_policy == DENSE_NUMERICAL_POLICY:
+            completion_payload["numerical_contract"] = trainer._numerical_receipt()
+        optimizer_implementation = config.as_dict()["optimizer"].get("ns_implementation")
+        if optimizer_implementation:
+            completion_payload["optimizer_implementation"] = optimizer_implementation
+        completion_name = "completed.json"
+        if stop_after_step > 0:
+            completion_payload["diagnostic_stop_after_step"] = stop_after_step
+            completion_name = "diagnostic_completed.json"
+        completion = json.dumps(completion_payload, indent=2) + "\n"
+        temporary = output_dir / f"{completion_name}.tmp"
+        temporary.write_text(completion)
+        temporary.replace(output_dir / completion_name)
+    return final_dir
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Train one optimizer/model configuration")
+    parser.add_argument("--matrix", default="configs/experiment.yaml")
+    parser.add_argument("--model-family", choices=["dense", "late"], required=True)
+    parser.add_argument("--run-id", required=True)
+    parser.add_argument("--resume-from-checkpoint")
+    parser.add_argument("--max-steps", type=int, help="Smoke-test override")
+    parser.add_argument(
+        "--stop-after-step",
+        type=int,
+        help="Diagnostic stop that preserves the full scheduler horizon",
+    )
+    parser.add_argument("--global-batch-size", type=int, help="Smoke-test override")
+    parser.add_argument("--micro-batch-size", type=int, help="Smoke-test override")
+    parser.add_argument("--no-wandb", action="store_true")
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> None:
+    args = parse_args(argv)
+    if runtime_spec := matrix_runtime_spec(args.matrix):
+        from .runtime import verify_runtime_spec
+
+        runtime = verify_runtime_spec(runtime_spec)
+        if int(os.environ.get("RANK", "0")) == 0:
+            print(
+                f"formal runtime verified: {runtime['python_executable']} | "
+                f"torch={runtime['packages']['torch']} cuda={runtime['torch_cuda']}",
+                flush=True,
+            )
+    matches = [
+        config
+        for config in load_matrix(args.matrix)
+        if config.model_family == args.model_family and config.run_id == args.run_id
+    ]
+    if len(matches) != 1:
+        raise ValueError(f"Expected one matching run, found {len(matches)}")
+    config = matches[0]
+    overrides = {}
+    if args.global_batch_size:
+        overrides["global_batch_size"] = args.global_batch_size
+    if args.micro_batch_size:
+        overrides["micro_batch_size"] = args.micro_batch_size
+    if args.max_steps:
+        # TrainingArguments is the only max-step owner; a tiny temporary dataset keeps
+        # smoke tests on the exact same code path.
+        overrides["epochs"] = 1.0
+    if overrides:
+        import dataclasses
+
+        config = dataclasses.replace(config, **overrides)
+    if args.no_wandb:
+        os.environ["WANDB_MODE"] = "disabled"
+    if args.max_steps:
+        os.environ["EMBED_OPTIM_MAX_STEPS"] = str(args.max_steps)
+    if args.stop_after_step:
+        os.environ["EMBED_OPTIM_STOP_AFTER_STEP"] = str(args.stop_after_step)
+    try:
+        run_training(config, resume_from_checkpoint=args.resume_from_checkpoint)
+    finally:
+        # Trainer/Accelerate initializes the process group but does not always
+        # tear it down before the module exits. Explicit cleanup avoids the
+        # otherwise harmless ProcessGroupNCCL resource-leak warning and also
+        # releases distributed resources when training raises.
+        if torch.distributed.is_available() and torch.distributed.is_initialized():
+            torch.distributed.destroy_process_group()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,53 @@
+{
+  "scope": "engineering_dense_data_candidate_actual_commands",
+  "working_directory": "/root/embedding-optimizer-story-refactor",
+  "commands": [
+    {
+      "session_id": 21678,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B -m pytest -q tests/test_dense_partition_revision.py --junitxml=/tmp/dense-data-revision.qaPjm8/revision-tests.xml",
+      "exit_code": 0,
+      "tests": 20
+    },
+    {
+      "session_id": 48432,
+      "command": "env CUDA_VISIBLE_DEVICES= HF_DATASETS_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/materialize_dense_partition_revision.py --repository /root/embedding-optimizer-story-refactor --experiment-root /root/embedding-optimizer-study --snapshot /root/.cache/huggingface/hub/datasets--lightonai--embeddings-fine-tuning/snapshots/1ca463331ed637d25c1058567e932e0d3bad2983 --output /tmp/dense-partition-candidate.m7TVgF",
+      "exit_code": 1,
+      "termination": "Control-C through this owned session; partial source/decisions preserved, no full selection/data"
+    },
+    {
+      "session_id": 51011,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B -m pytest -q --junitxml=/tmp/dense-data-revision.qaPjm8/full-revision-tests.xml",
+      "exit_code": 0,
+      "tests": 1626
+    },
+    {
+      "session_id": 71405,
+      "command": "env CUDA_VISIBLE_DEVICES= PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B -m pytest -q tests/test_dense_partition_revision.py tests/test_dense_partition_cache.py --junitxml=/tmp/dense-data-revision.qaPjm8/revision-cached-tests.xml",
+      "exit_code": 0,
+      "tests": 21
+    },
+    {
+      "session_id": 71869,
+      "command": "env CUDA_VISIBLE_DEVICES= HF_DATASETS_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/materialize_dense_partition_revision.py --repository /root/embedding-optimizer-story-refactor --experiment-root /root/embedding-optimizer-study --snapshot /root/.cache/huggingface/hub/datasets--lightonai--embeddings-fine-tuning/snapshots/1ca463331ed637d25c1058567e932e0d3bad2983 --output /tmp/dense-partition-candidate.kHXoGW",
+      "exit_code": 0
+    },
+    {
+      "session_id": 7178,
+      "command": "env CUDA_VISIBLE_DEVICES= HF_DATASETS_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B -m pytest -q tests/test_dense_partition_reconstruction.py --junitxml=/tmp/dense-data-revision.qaPjm8/reconstruction-tests.xml",
+      "exit_code": 0,
+      "tests": 5
+    },
+    {
+      "session_id": 68998,
+      "command": "env CUDA_VISIBLE_DEVICES= HF_DATASETS_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B -m pytest -q --junitxml=/tmp/dense-data-revision.qaPjm8/full-candidate-tests.xml",
+      "exit_code": 0,
+      "tests": 1632
+    },
+    {
+      "session_id": 63385,
+      "command": "env CUDA_VISIBLE_DEVICES= HF_DATASETS_DISABLE_PROGRESS_BARS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/root/embedding-optimizer-story-refactor/src:/root/embedding-optimizer-story-refactor python3 -B scripts/replay_dense_partition_revision.py --repository /root/embedding-optimizer-story-refactor --prepared /tmp/dense-partition-candidate.kHXoGW --producer-sha256 cec0ccee8c3ebda9bf24690badc50c153c58523373664fcdc79ed270c04fde49 --snapshot /root/.cache/huggingface/hub/datasets--lightonai--embeddings-fine-tuning/snapshots/1ca463331ed637d25c1058567e932e0d3bad2983 --output /tmp/dense-partition-reconstruction.HsE86I",
+      "exit_code": 0
+    }
+  ],
+  "boundary": "No GPU worker, formal training, old controller transition, publication or HF mutation. These are CPU preparation/reconstruction and tests, not scientific results."
+}
