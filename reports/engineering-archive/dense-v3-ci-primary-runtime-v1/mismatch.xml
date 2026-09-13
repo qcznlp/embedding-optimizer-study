@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="3" time="8.208" timestamp="2026-09-13T15:44:39.174659+00:00" hostname="mlflow-training-zl8wuc-496809-n3-master-0"><testcase classname="tests.test_current_primary_source" name="test_current_tree_matches_all_twelve_original_primary_sources" time="0.017"><failure message="AssertionError: assert {'local_files...1.28.0', ...}} == {'local_files...1.29.0', ...}}&#10;  &#10;  Omitting 2 identical items, use -vv to show&#10;  Differing items:&#10;  {'packages': {'accelerate': '1.13.0', 'datasets': '4.8.4', 'flash-attn': '2.7.4.post1', 'huggingface-hub': '1.28.0', ...}} != {'packages': {'accelerate': '1.13.0', 'datasets': '4.8.4', 'flash-attn': '2.7.4.post1', 'huggingface-hub': '1.29.0', ...}}&#10;  Use -v to get more diff">def test_current_tree_matches_all_twelve_original_primary_sources():
+        contract = current_contract()
+        source = dense_run_contract.source_identity()
+        assert contract.repository == contract.training_root == ROOT
+        assert len(contract.inputs["runs"]) == 12
+        for run in contract.inputs["runs"]:
+&gt;           assert contract.expected_identity(run["run_id"])["source"] == source
+E           AssertionError: assert {'local_files...1.28.0', ...}} == {'local_files...1.29.0', ...}}
+E             
+E             Omitting 2 identical items, use -vv to show
+E             Differing items:
+E             {'packages': {'accelerate': '1.13.0', 'datasets': '4.8.4', 'flash-attn': '2.7.4.post1', 'huggingface-hub': '1.28.0', ...}} != {'packages': {'accelerate': '1.13.0', 'datasets': '4.8.4', 'flash-attn': '2.7.4.post1', 'huggingface-hub': '1.29.0', ...}}
+E             Use -v to get more diff
+
+tests/test_current_primary_source.py:27: AssertionError</failure></testcase><testcase classname="tests.test_current_primary_source" name="test_integration_does_not_release_the_historical_draft" time="0.011" /><testcase classname="tests.test_current_primary_source" name="test_actual_primary_inspect_cli_uses_one_checkout" time="0.085" /></testsuite></testsuites>

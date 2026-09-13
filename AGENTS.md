@@ -110,6 +110,13 @@ were anonymously downloaded and verified. No GPU execution or scientific change.
 Do not repeat that build/upload. Complete hosted tests and numerical/paper execution
 remain pending; check the current exact GitHub run and /tmp/dense-v3-flash-wheel.L7A0IiP0.
 
+Run 34765504737 then passed authentic runtime installation (38 seconds) and both
+historical roles, but one of 3800 tests failed: original formal Hub 1.29.0 differs
+from all twelve actual primary source receipts' Hub 1.28.0. The explicit hashed
+requirements-primary-replay.txt restores the recorded version. Real isolated
+packages reproduce failure at 1.29 and pass unchanged source checks at 1.28.
+All original locks/guards/results remain unchanged. Full replacement CI is pending.
+
 One earlier requested cleanup is unresolved: the safety-denied historical HF
 withdrawal was never executed. Do not retry, split or bypass that denial. It
 requires separate exact-scope direction and current/shared-artifact protection,

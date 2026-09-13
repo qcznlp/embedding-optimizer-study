@@ -45,6 +45,10 @@ def test_real_roles_partition_every_test_without_overlap():
     assert "embed_optim.runtime --spec configs/formal_runtime.json" in command
     assert workflow["jobs"]["test"]["runs-on"] == "ubuntu-24.04"
     assert "--no-deps --require-hashes -r requirements-ci-flash-wheel.txt" in command
+    assert "--no-deps --require-hashes -r requirements-primary-replay.txt" in command
+    replay_lock = (ROOT / "requirements-primary-replay.txt").read_text()
+    assert "huggingface-hub==1.28.0" in replay_lock
+    assert "58a8bacb03072edfc38067065e9dc24bbb34805410fcd36a1632de0b329660bb" in replay_lock
     binary_lock = (ROOT / "requirements-ci-flash-wheel.txt").read_text()
     assert "/resolve/18c1ab7abc636d2542be6831591f31c171c7dcf6/" in binary_lock
     assert (

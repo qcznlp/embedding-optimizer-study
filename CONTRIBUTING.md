@@ -17,7 +17,9 @@ uv pip install --python .venv/bin/python --no-config --require-hashes --torch-ba
 export CUDA_HOME=/usr/local/cuda-12.9 FLASH_ATTENTION_FORCE_BUILD=TRUE
 export FLASH_ATTN_CUDA_ARCHS='80;90' MAX_JOBS=2 NVCC_THREADS=1
 uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt
+uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes -r requirements-primary-replay.txt
 .venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json
+uv run --no-sync python -m pytest -q tests/test_current_primary_source.py
 uv build
 uv run --no-sync embed-optim-audit-distribution
 uv run --no-sync python scripts/portable_evidence.py --audit-only
@@ -41,6 +43,11 @@ The same hashed lock supplies the original formal version overrides, including
 Torch 2.9.1+cu129 despite fast-plaid's 2.9.0 dependency declaration. An unhashed
 constraints override is not sufficient in require-hashes mode. This reproduces
 the existing recorded environment, not a change to its package pins.
+
+The additional primary-replay lock restores the exact Hub 1.28.0 recorded by
+all twelve actual primary sources; the historical base lock's Hub 1.29.0 does
+not match them. Both original locks and native source identities are preserved,
+not edited to hide this discrepancy. See [the precise boundary](docs/ci-runtime-binary.md#primary-source-runtime).
 
 The test output directory must be new and outside the checkout. The runner executes
 every test module exactly once across the current source and two authenticated

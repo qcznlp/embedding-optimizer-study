@@ -31,8 +31,11 @@ jobs:
         run: |
           uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock -r requirements-formal.lock
           uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes -r requirements-ci-flash-wheel.txt
+          uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes -r requirements-primary-replay.txt
           .venv/bin/python -c 'import torch; import flash_attn_2_cuda; assert torch.version.cuda == "12.9"; assert torch._C._GLIBCXX_USE_CXX11_ABI; assert all(callable(getattr(flash_attn_2_cuda, n)) for n in ("fwd", "varlen_fwd", "bwd", "varlen_bwd", "fwd_kvcache"))'
           .venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json
+      - name: Verify all twelve actual primary source identities
+        run: uv run --no-sync python -m pytest -q tests/test_current_primary_source.py
       - run: uv build
       - run: uv run --no-sync embed-optim-audit-distribution
       - name: Audit portable paper evidence closure

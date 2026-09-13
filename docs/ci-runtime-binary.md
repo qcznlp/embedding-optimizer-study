@@ -36,3 +36,21 @@ Other platforms or ABIs should build from `requirements-formal-flash.txt` using
 the original compiler route in CONTRIBUTING.md. This wheel is not a blanket
 new-host GPU launcher. Engineering artifacts do not change any scientific result
 or add implementation discussion to the manuscript.
+
+## Primary source runtime
+
+Hosted run 34765504737 successfully installed the genuine binary, passed the
+native runtime specification and distribution checks, and executed all 3,800
+tests: 3,799 passed, one failed, none skipped. Both historical source roles passed
+completely (733 analysis / 194 factorial). The sole current-role failure was the
+unchanged twelve-primary-source equality assertion: the historical formal lock
+installs `huggingface-hub==1.29.0`, but all twelve actual source receipts bind
+`1.28.0`. The live study environment is also 1.28.0. The native runtime spec does
+not cover this package; passing it was therefore not sufficient for source identity.
+
+`requirements-primary-replay.txt` is an explicit, hash-locked replay overlay for
+the genuine PyPI 1.28.0 artifacts. Apply it after the original formal base install.
+It reconstructs the recorded primary environment without rewriting either original
+lock, any source receipt, scientific code, checkpoint or test assertion. CI also
+runs the unchanged actual-source tests immediately after installation to fail fast.
+Full hosted acceptance remains pending until the replacement run completes.
