@@ -1,0 +1,100 @@
+# Current DenseOn experiment and delivery
+
+Snapshot: **2026-09-13**. The scientific, paper and reproducible-source deliverables
+are locally verified and publicly available; hosted CI repair remains pending.
+Read [AGENTS.md](AGENTS.md) before acting and
+[PROJECT_STATUS.md](PROJECT_STATUS.md) for findings and interpretation limits.
+
+The source payload is published on GitHub main at
+**803c70dcc3a2c195c5f56ee5fc0e3c633d645524**. Normal Git push succeeded; ten
+source/handoff/manuscript/inventory files were anonymously downloaded and match
+their local bytes. [Publication evidence](reports/engineering-archive/dense-v3-source-publication-v1/README.md).
+This status update follows that already-verified source payload.
+
+## Goal and scope
+
+A defensible **NAACL paper and reproducible source/model-analysis artifacts**
+about AdamW, Muon and NorMuon in DenseOn adaptation. Dense only; paper only.
+No new LateOn or blog work. Never touch gpu.py or its processes.
+
+## Verified completion
+
+| Work | Completed scope |
+| --- | --- |
+| Primary training | 12/12 full runs, same 500K queries, four rates per optimizer, 60 checkpoints |
+| Primary retrieval | 840/840 checkpoint-task units; 14 baseline tasks; all 12 validation selections |
+| Weight analysis | All 60 states, original/exact branches, all declared predictors and exploratory recipe controls |
+| Functional analysis | 61 states including pretrained; 9 primary and 27 rotation contrasts; predictions and controls complete |
+| Crossed continuation | 12/12 runs, 60 checkpoints/probes, 168 full-corpus task results and six inference tables |
+| Tracking | 24 finished runs; 5,172 ordered history rows / 15,516 scalars agree with native records |
+| Backups | All 120 scientific checkpoints backed up; required analysis groups anonymously downloaded and verified |
+| Manuscript | Reviewed complete-result paper; 158-word abstract, eight-page main, all 13 pages inspected |
+| Complete reproduction | Original full numerical graph and reviewed paper pass actual version-isolated execution; eight shared inputs match exactly |
+| Local source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips |
+| Hosted CI | Initial tests failed in run 34756580699; repair run 34758294285 exposed a missing installer override; corrected hashed-lock resolution passes locally, hosted verification pending |
+| Latest independent check | Run 34766616352 passed all 3800 cases without errors/failures/skips. Run 34768399864 confirms that Haswell-versus-SkylakeX BLAS dispatch changes 136 SVD diagnostic floats, not the functional result tables. A local forced-instruction-emulation probe matches exactly; complete emulated/hosted replay remains pending |
+| Distribution | Actual wheel/sdist build and unchanged full audit pass; style, portable evidence, credential checks and isolated CFF validation pass |
+| Recovery | Both declared genuine AdamW/Muon 313-to-391 GPU restores pass complete bitwise endpoints; scoped CPU/wheel add-on checks also pass |
+| GitHub | Complete source payload publicly published and anonymously read back |
+
+There are **no live scientific or recovery jobs**. Hosted regression verification
+is still being repaired; local passing results are not remote CI acceptance. All earlier failed
+attempts and unknown exits are preserved; do not restart completed work as missing.
+The detailed preceding handoffs are retained at the published commit above and
+in the engineering archives. CURRENT_PROGRESS.json is historical accounting,
+not a live heartbeat or the current scientific verdict.
+
+## Use the delivered work
+
+- [Reviewed paper and build instructions](paper/current/README.md)
+- [Complete numerical-to-paper reproduction](docs/versioned-paper-reproduction.md)
+- [Complete source-version test command](docs/source-version-testing.md)
+- [Checkpoint restoration](docs/checkpoint-restoration.md)
+- [Functional/calibration restoration](docs/functional-analysis-restoration.md)
+- [Continuation probes](docs/continuation-probe-restoration.md) and [outcomes](docs/continuation-outcomes-restoration.md)
+- [Scoped training recovery](docs/training-restoration.md)
+
+Default `make` / `make all` selects paper/current. `make release` requires an
+explicit accepted NUMERICAL_BUNDLE and new RELEASE_OUTPUT. Historical Make rules
+remain byte-identical in paper/legacy.Makefile, with explicit legacy targets.
+A passing source-version matrix is not admission of a changed fresh training
+worker or proof of another GPU/physical-host recovery case.
+
+## Remaining delivery verification and prior cleanup request
+
+Finish GitHub CI with the genuine hash-locked scientific runtime. The first
+source-build repair is being superseded by an authentic precompiled FlashAttention
+wheel: 36 positive artifact files were published to an immutable HF revision and
+all 201,001,025 bytes anonymously downloaded and verified. See
+[runtime binary provenance](docs/ci-runtime-binary.md). Complete hosted tests and
+numerical/paper execution remain pending; the original source locks are unchanged.
+The first
+hosted run used broader developer versions and exposed two producer-dependent
+synthetic fixtures. The repair changes CI and test fixtures, not training source,
+scientific results, frozen hashes or numerical tolerances. The reviewed PDF and
+83 other manifest-bound archived files are now public at commit
+`65c584ce11435dc84aec675a6ed733a9a5fc97d1`; its PDF was anonymously byte-verified.
+
+The historical Hugging Face withdrawal was safety-rejected: **9,629 paths /
+366,252,912,201 logical bytes** were not deleted. Do not retry, split or bypass
+that denial. Any further cleanup requires separate exact-scope direction and
+protection of current/shared artifacts. Current scientific backups remain intact.
+
+The old GitHub issue-write 403 concerns a separate API surface. Normal Git
+source publication succeeded; do not bypass or repeatedly retry that issue API.
+Neither access history justifies new experiments or repeated release checks.
+
+## Interpretation limits
+
+All-rate primary optimizer contrasts are inconclusive. Validation-selected
+NorMuon exceeds AdamW by +0.4374 nDCG@10 points (simultaneous 95% interval
+[+0.1463, +0.7285]); selected Muon is +0.3168 with its interval crossing zero.
+These are one-seed/grid-specific estimates, not independent seed replications.
+
+No tested weight or functional predictor passes all four exploratory recipe
+comparators. Native helpful participation is not rotation-stable. The fixed
+crossed continuation separates reached state from subsequent update rule:
+state +0.3222, reset operator -0.5264, interaction +0.2080 points. These marginal
+intervals and two fixed source histories do not establish universal superiority,
+basis-robust useful capacity or mediation. Keep implementation-error narrative
+out of every part of the manuscript.

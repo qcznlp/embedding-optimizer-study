@@ -31,8 +31,8 @@ No new LateOn or blog work. Never touch gpu.py or its processes.
 | Manuscript | Reviewed complete-result paper; 158-word abstract, eight-page main, all 13 pages inspected |
 | Complete reproduction | Original full numerical graph and reviewed paper pass actual version-isolated execution; eight shared inputs match exactly |
 | Local source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips |
-| Hosted CI | Initial tests failed in run 34756580699; repair run 34758294285 exposed a missing installer override; corrected hashed-lock resolution passes locally, hosted verification pending |
-| Latest independent check | Run 34766616352 passed all 3800 cases without errors/failures/skips. Run 34768399864 confirms that Haswell-versus-SkylakeX BLAS dispatch changes 136 SVD diagnostic floats, not the functional result tables. A local forced-instruction-emulation probe matches exactly; complete emulated/hosted replay remains pending |
+| Hosted CI | Run 34766616352 passed all 3800 cases; the latest run 34769598250 passed the exact emulated functional probe but failed before its full numerical child started. Full hosted acceptance remains pending |
+| Latest local check | Both manually configured and repository-built interpreters pass the complete forced-emulation numerical-to-reviewed-paper Make release, with unchanged comparisons and eight exact shared inputs; all3800 final regression cases also pass |
 | Distribution | Actual wheel/sdist build and unchanged full audit pass; style, portable evidence, credential checks and isolated CFF validation pass |
 | Recovery | Both declared genuine AdamW/Muon 313-to-391 GPU restores pass complete bitwise endpoints; scoped CPU/wheel add-on checks also pass |
 | GitHub | Complete source payload publicly published and anonymously read back |
@@ -62,16 +62,14 @@ worker or proof of another GPU/physical-host recovery case.
 
 ## Remaining delivery verification and prior cleanup request
 
-Finish GitHub CI with the genuine hash-locked scientific runtime. The first
-source-build repair is being superseded by an authentic precompiled FlashAttention
-wheel: 36 positive artifact files were published to an immutable HF revision and
-all 201,001,025 bytes anonymously downloaded and verified. See
-[runtime binary provenance](docs/ci-runtime-binary.md). Complete hosted tests and
-numerical/paper execution remain pending; the original source locks are unchanged.
-The first
-hosted run used broader developer versions and exposed two producer-dependent
-synthetic fixtures. The repair changes CI and test fixtures, not training source,
-scientific results, frozen hashes or numerical tolerances. The reviewed PDF and
+Finish all local verification before one final push; no PR or intermediate push.
+The authentic precompiled FlashAttention artifact and original primary dependency
+versions are already independently verified; do not repeat that build or upload.
+See [runtime binary provenance](docs/ci-runtime-binary.md). The remaining repair
+addresses exact CPU arithmetic and subprocess execution, not training or evaluation.
+Both local configured-interpreter full replays and final source-role regressions
+pass; hosted acceptance is tracked separately in [CPU replay](docs/cpu-numerical-replay.md).
+No scientific source, result, frozen hash or numerical tolerance changes. The reviewed PDF and
 83 other manifest-bound archived files are now public at commit
 `65c584ce11435dc84aec675a6ed733a9a5fc97d1`; its PDF was anonymously byte-verified.
 

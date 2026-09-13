@@ -1,0 +1,45 @@
+[
+  {
+    "name": "configure",
+    "command": [
+      "/tmp/ci-runtime-entry.puJcoeZd/runtime/Python-3.12.3/configure",
+      "--prefix=/tmp/ci-runtime-entry.puJcoeZd/runtime/install",
+      "--with-ensurepip=no"
+    ],
+    "cwd": "/tmp/ci-runtime-entry.puJcoeZd/runtime/Python-3.12.3",
+    "exit_code": 0,
+    "elapsed_seconds": 15.131841662339866
+  },
+  {
+    "name": "build",
+    "command": [
+      "make",
+      "-j16"
+    ],
+    "cwd": "/tmp/ci-runtime-entry.puJcoeZd/runtime/Python-3.12.3",
+    "exit_code": 0,
+    "elapsed_seconds": 17.38053287565708
+  },
+  {
+    "name": "install",
+    "command": [
+      "make",
+      "install"
+    ],
+    "cwd": "/tmp/ci-runtime-entry.puJcoeZd/runtime/Python-3.12.3",
+    "exit_code": 0,
+    "elapsed_seconds": 4.021802173927426
+  },
+  {
+    "name": "runtime",
+    "command": [
+      "/tmp/ci-runtime-entry.puJcoeZd/runtime/install/bin/python3.12",
+      "-B",
+      "-c",
+      "import _posixsubprocess, bz2, ctypes, json, sqlite3, ssl, sys, sysconfig; from pathlib import Path; assert sys.version_info[:3] == (3,12,3); assert sysconfig.get_config_var('HAVE_CLOSE_RANGE') == 0; assert Path(_posixsubprocess.__file__).is_relative_to(Path(sys.base_prefix)); print(json.dumps({'python':sys.version,'HAVE_CLOSE_RANGE':0,'subprocess_extension':_posixsubprocess.__file__}))"
+    ],
+    "cwd": "/tmp/ci-runtime-entry.puJcoeZd/runtime",
+    "exit_code": 0,
+    "elapsed_seconds": 0.04444554541260004
+  }
+]

@@ -1,0 +1,10 @@
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Get:1 http://archive.ubuntu.com/ubuntu noble/main amd64 libffi-dev amd64 3.4.6-1build1 [62.8 kB]
+Err:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libbz2-dev amd64 1.0.8-5.1build0.1
+  404  Not Found [IP: 185.125.190.81 80]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libsqlite3-dev amd64 3.45.1-1ubuntu2.7 [911 kB]
+Fetched 973 kB in 2s (624 kB/s)
+W: Download is performed unsandboxed as root as file '/tmp/ci-python-runtime.rXB7OKBE/libffi-dev_3.4.6-1build1_amd64.deb' couldn't be accessed by user '_apt'. - pkgAcquire::Run (13: Permission denied)
+E: Failed to fetch http://archive.ubuntu.com/ubuntu/pool/main/b/bzip2/libbz2-dev_1.0.8-5.1build0.1_amd64.deb  404  Not Found [IP: 185.125.190.81 80]

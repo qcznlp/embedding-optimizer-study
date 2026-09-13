@@ -1,0 +1,11 @@
+make: Entering directory '/root/embedding-optimizer-story-refactor/paper'
+mkdir -p "/tmp/ci-runtime-entry.puJcoeZd/"
+CUDA_VISIBLE_DEVICES='' /tmp/ci-sde-runtime.lJfWrfwu/sde-external-10.13.1-2026-07-28-lin/sde64 -skx -force_emulate skx -- /tmp/ci-runtime-entry.puJcoeZd/runtime/install/bin/python3.12 -m embed_optim.paper_reproduction \
+	--numerical-bundle "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed" \
+	--paper-dir "/root/embedding-optimizer-story-refactor/paper/current" --output "/tmp/ci-runtime-entry.puJcoeZd/complete-paper"
+{
+  "complete": true,
+  "pdf": "/tmp/ci-runtime-entry.puJcoeZd/complete-paper/reviewed/paper/build/main.pdf",
+  "repository_publication_complete": false
+}
+make: Leaving directory '/root/embedding-optimizer-story-refactor/paper'

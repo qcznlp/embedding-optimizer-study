@@ -115,10 +115,14 @@ physical second host. No additional experiment or recovery run is required for
 the delivered paper. Original failed attempts, unknown exits and source-role
 refusals remain preserved, not rewritten as successes.
 
-Hosted CI run 34756580699 failed: broad developer dependencies differed from the
-formal runtime, and two synthetic fixtures depended on a producer path or dirty
-checkout. The CI/runtime installation and fixture repair still need actual
-hosted verification. No scientific source, lock or numerical tolerance changes.
+Hosted run34766616352 passed all3800 cases after the dependency/fixture repairs.
+The latest run34769598250 passed the forced-emulation functional comparison but
+failed before its first full numerical child began. The local isolated configured
+CPython now passes the complete emulated numerical-to-reviewed-paper command;
+the separate repository-built interpreter also passes it (50140/5b497d/0), and
+all3800 final source-role cases pass without failure/error/skip (53881/82d308/0).
+Full hosted acceptance remains pending. No scientific source, lock or numerical
+tolerance changes, and no intermediate pushes under the latest owner direction.
 Commit `65c584ce11435dc84aec675a6ed733a9a5fc97d1` additionally publishes the
 reviewed PDF and 83 other unchanged manifest-bound archived members previously
 omitted by ignore rules; the reviewed PDF was anonymously byte-verified.
@@ -149,11 +153,17 @@ hosted CI repair remains pending. The separately requested historical HF erasure
 remains unresolved; it must not trigger additional
 training, repeated release checks or a retry of the denied deletion.
 
-Latest independent verification: run34766616352 passed every3,800 source-role test.
-Run34768399864 confirms the remaining exact-replay issue is CPU BLAS dispatch:
-functional tables agree exactly, while136 SVD diagnostic values differ at up to
-4.440892098500626e-15. Whole remote decisions match the local Haswell control.
-An actual local forced-Skylake instruction-emulation probe matches all tables and
-diagnostics and exits zero. Full emulated/hosted reconstruction is not yet accepted.
+The CPU diagnosis is separate from scientific findings: Haswell-versus-SkylakeX
+BLAS changes136 diagnostic floats by at most4.440892098500626e-15, while functional
+tables match exactly. Instruction emulation restores exact comparison. Selecting
+original CPython's existing per-FD closing implementation then preserves subprocess
+isolation and enables the complete local replay. The manual Make command exits0
+(21593/f5cf6c), recomputes the original primary/factorial graph, matches all eight
+shared paper inputs, and builds the unchanged reviewed manuscript. It is not a
+new training/encoding run or a hosted success claim.
+The separate repository-built-interpreter command also passes the full graph
+and reviewed paper. [Retained local acceptance evidence](reports/engineering-archive/dense-v3-ci-subprocess-runtime-v1/README.md)
+contains both original receipt groups, the complete final test matrix and the
+preceding hosted failure without changing their classifications.
 See [CPU runtime and unchanged gates](docs/cpu-numerical-replay.md) and
 [preserved diagnostic evidence](reports/engineering-archive/dense-v3-ci-cpu-emulation-v1/README.md).

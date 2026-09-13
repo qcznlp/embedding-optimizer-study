@@ -52,3 +52,58 @@ This is an engineering reproduction condition, not an optimizer finding. It does
 not change source locks, reference values, tolerances, training or the manuscript.
 Actual independent success is reported only from terminal hosted receipts, not
 from the existence of this workflow or a local emulator check.
+
+## Preserve subprocess isolation
+
+Run34769598250 actually passed the forced-emulation functional comparison on the
+hosted CPU, with exact tables, exact decisions and zero differences. Its full Make
+replay nevertheless failed before the first numerical child began: Intel's child
+launcher reported `PreparePindForFollowExecve` / `ENOENT`. The same failure is
+reproduced locally with a minimal Python subprocess and default `close_fds=True`.
+Keeping descriptors open avoids that failure, but is **not** the delivered remedy:
+the original replay's isolation behavior remains unchanged.
+
+CPython's [original subprocess implementation](https://github.com/python/cpython/blob/v3.12.3/Modules/_posixsubprocess.c)
+already has both bulk and per-descriptor closing paths. The isolated builder
+`scripts/build_ci_python.py` compiles original CPython3.12.3 with the configure
+cache setting `ac_cv_func_close_range=no`, selecting the existing per-descriptor
+path. There are no edits to CPython, the study's subprocess code or its comparisons.
+The builder authenticates the official complete source archive:
+
+```text
+https://www.python.org/ftp/python/3.12.3/Python-3.12.3.tar.xz
+SHA-256 56bfef1fdfc1221ce6720e43a661e3eb41785dd914ce99698d8c7896af4bdaa1
+```
+
+The interpreter is installed only into the new output directory. Its path-only
+dependency file reuses the already hash-verified scientific package directory;
+it contains no executable Python and changes no packages in that environment.
+The original Python license remains with the source. This is a narrowly scoped
+historical CPU replay runtime, not a recommended general-purpose Python service.
+
+CI runs `scripts/check_cpu_replay_fds.py` under SDE before the scientific checks.
+Two real subprocess cases require unwanted inheritable descriptors to be closed
+and only an explicitly selected descriptor to survive. The original `close_fds`
+and fresh-process behavior are preserved. Both cases have passed locally; the
+complete numerical-to-paper execution is a separate mandatory check, not implied
+by these smaller controls. No OS security setting, existing process or GPU is touched.
+
+The current-paper parent receives an explicit checkout `src`/repository
+`PYTHONPATH`. Merely adding the external package directory does not execute that
+directory's editable-install `.pth` hooks. The original numerical child still
+clears `PYTHONPATH` and loads its authenticated source closure; these two source
+roles are not merged. All three numerical thread limits are explicit as well.
+
+## Verified local completion
+
+Both the manual configured interpreter and the separate interpreter built by
+the repository script now pass the complete original numerical-to-reviewed-paper
+Make command, with observed terminal exits0. The repository-built entry recomputes
+the full original primary/factorial graph, verifies all eight shared inputs and
+builds the same reviewed document snapshot. Its genuine FD and exact functional
+checks also pass. All3800 final source-version tests pass with no failures, errors
+or skips. See [retained original receipts and preceding failures](../reports/engineering-archive/dense-v3-ci-subprocess-runtime-v1/README.md).
+
+These are completed local checks, not an assertion that a replacement hosted run
+has succeeded. All remaining final publication checks occur locally before the
+owner-requested single push. There is no new experiment or result change.

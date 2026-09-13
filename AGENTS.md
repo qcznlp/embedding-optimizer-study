@@ -16,6 +16,12 @@ this short handoff does not waive or replace a frozen contract.
 
 ## Goal and scientific scope
 
+Latest owner workflow direction: do not create GitHub PRs or make intermediate
+pushes. Finish the complete local process and relevant verification first, then
+publish the finished change set in one push. Do not use hosted CI as an iterative
+debugging loop. This supersedes older instructions to dispatch replacement CI
+immediately after each repair; it does not waive scientific or release checks.
+
 Deliver a defensible NAACL paper and reproducible repository/model-analysis artifacts
 for **DenseOn only**, comparing AdamW, Muon and NorMuon. No new LateOn or blog work.
 The latest direct owner authority is: “你有权做一切事情，目标是尽快完成任务”.
@@ -88,51 +94,39 @@ and all safety limits remain binding; do not repeat completed work as missing.
 
 ## Next action and boundaries
 
-No scientific or recovery job remains live. GitHub CI run 34756580699 failed:
-its broad developer dependencies did not match the formal runtime; two synthetic
-test fixtures depended on the producer path or an uncommitted checkout. The
-repair installs the genuine hash-locked runtime and makes those fixture
-conditions explicit, without changing scientific source, locks or assertions.
-Hosted success is pending, not implied by the local 3,800-test result. The
-first repair run 34758294285 failed before tests because the installer omitted
-the formal Torch override. Using requirements-formal.lock itself as the hashed
-override passes actual isolated dry-run resolution; hosted execution is pending.
-Do not use unhashed constraint overrides in require-hashes mode.
-The reviewed PDF and 83 other manifest-bound archived files were also published at
-65c584ce11435dc84aec675a6ed733a9a5fc97d1; the PDF was anonymously byte-verified.
-Finish the repaired hosted test and full numerical/paper workflow. Do not autonomously add
-experiments, restart old controllers or keep rerunning completed release checks.
+No scientific or recovery job remains live. Finish the local CI repair and its
+complete verification, then publish once under the owner's workflow above.
+Do not add experiments or restart completed controllers. The last verified public
+main is b0fa533fceee53906e7de36c7e3e255285be1745; the latest hosted run,
+34769598250, is terminal failure, not a live wait target.
 
-The slow source-compilation CI run 34758559097 is being superseded by the genuine
-hash-bound binary route in docs/ci-runtime-binary.md. Its local 85-unit build and
-fresh-process native import pass; all 36 published positive files (201,001,025 bytes)
-were anonymously downloaded and verified. No GPU execution or scientific change.
-Do not repeat that build/upload. Complete hosted tests and numerical/paper execution
-remain pending; check the current exact GitHub run and /tmp/dense-v3-flash-wheel.L7A0IiP0.
+The repaired genuine scientific runtime already passed all 3800 tests remotely
+in run34766616352. Earlier dependency/fixture failures, the cancelled source build,
+and the authentic binary/Hub1.28 repairs remain in the immutable CI engineering
+archives and docs/ci-runtime-binary.md. Do not rebuild or republish that verified
+FlashAttention artifact, rewrite original locks, or repeat solved installation work.
 
-Run 34765504737 then passed authentic runtime installation (38 seconds) and both
-historical roles, but one of 3800 tests failed: original formal Hub 1.29.0 differs
-from all twelve actual primary source receipts' Hub 1.28.0. The explicit hashed
-requirements-primary-replay.txt restores the recorded version. Real isolated
-packages reproduce failure at 1.29 and pass unchanged source checks at 1.28.
-All original locks/guards/results remain unchanged. Full replacement CI is pending.
+Run34768399864 confirmed that the hosted AVX2 CPU's Haswell BLAS produces136
+different SVD diagnostic floats, while functional result tables agree exactly.
+Run34769598250 then passed the original forced-SDE functional probe exactly, but
+its first full numerical child failed in SDE's follow-exec launcher. Local minimal
+controls reproduce the interaction with Python's default bulk FD closure.
+The isolated original-CPython build selects its existing per-FD closing path;
+close_fds=True, explicit pass_fds and all scientific isolation remain unchanged.
+No Python/study source patch or disabled FD isolation is used.
 
-Run 34766616352 then passed every one of the 3800 tests and early primary identity,
-but the actual full numerical child failed. Only its outer traceback was uploaded;
-do not invent an inner diagnosis. CI now retains the entire complete-paper output
-including failed child logs, and runs this full gate before the expensive matrix.
-No numerical source/guard/tolerance is changed. Both numerical and complete test
-gates remain mandatory. Inspect the next exact terminal artifact before deciding a fix.
+The manual configured interpreter now passes the complete original numerical
+graph and reviewed-paper Make release (21593/f5cf6c/0), including all eight shared
+inputs. The repository builder also completes, and its actual interpreter passes
+both real FD cases, the original functional probe and the complete Make replay
+(50140/5b497d/0). All3800 final source-role cases pass without failure/error/skip
+(53881/82d308/0). The retained evidence is in
+reports/engineering-archive/dense-v3-ci-subprocess-runtime-v1; final publication
+tracking is in /tmp/dense-v3-flash-wheel.L7A0IiP0/RUNNING.md.
+See docs/cpu-numerical-replay.md. Local passes are not a claim of hosted acceptance.
+The current document parent needs explicit checkout src/repository PYTHONPATH;
+the original numerical child still clears it and executes its separate closure.
 
-Run34768399864's retained passive diagnostic now confirms the CPU cause: AMD EPYC7763
-has AVX2 but no AVX512; NumPy OpenBLAS Haswell reproduces the exact same136 SVD
-diagnostic differences as the local Haswell control. Functional result tables match
-exactly, but the original full gate correctly fails. See docs/cpu-numerical-replay.md
-and the sealed dense-v3-ci-cpu-emulation-v1 evidence. The local forced-Skylake
-Intel SDE probe actually exits zero with exact tables and decisions. Prospective CI
-uses the official SHA-bound unmodified kit for that probe and the full Make release,
-then all3800 tests. Complete emulated/hosted acceptance remains pending; check
-/tmp/ci-sde-runtime.lJfWrfwu and the active /tmp/dense-v3-flash-wheel.L7A0IiP0/RUNNING.md.
 Never force SkylakeX natively on AVX2-only hardware, attach to existing processes,
 disable child following, modify host security settings, redistribute the SDE binary,
 or relax original numeric/source/document comparisons. Its licenses stay with the kit.

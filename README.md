@@ -43,10 +43,14 @@ visually inspected. The default build now selects this paper, and the complete
 Make release-artifact gate has passed. The conclusion above is generated from
 its authenticated numerical outputs. All 3,800 source-version tests pass locally;
 the source payload has been published and anonymously byte-verified. Independent
-hosted CI is still pending after dependency/fixture repairs. The original source-build
-run 34758559097 is being superseded by the [authenticated binary runtime](docs/ci-runtime-binary.md)
-workflow; see [CI runs](https://github.com/qcznlp/embedding-optimizer-study/actions).
-Public source availability is not a claim that hosted tests have passed.
+hosted full-workflow acceptance remains pending. All3800 tests passed in a hosted
+run; the subsequent exact CPU-replay repair now passes complete numerical-to-paper
+reconstruction locally. See [CPU replay conditions](docs/cpu-numerical-replay.md)
+and [CI runs](https://github.com/qcznlp/embedding-optimizer-study/actions).
+The final repair's complete local regression and reusable numerical-to-paper
+entry now pass; [actual evidence](reports/engineering-archive/dense-v3-ci-subprocess-runtime-v1/README.md)
+is retained before a single publication push. Public source availability is not
+a claim that the full hosted workflow has passed.
 
 The complete manuscript now has a [stable source/build entry](paper/current/README.md):
 
@@ -72,7 +76,7 @@ and [completed release transition](reports/engineering-archive/dense-v3-release-
 | Distribution portability | Original full audit passes; real relocated input read is unchanged; historical failures and all negative controls retained |
 | Primary training source | All 33 modules and 56 bindings match the actual training snapshot; all 12 run sources load in this checkout; [inspection instructions](docs/current-training-source.md) |
 | Local full source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips; [one-command test entry](docs/source-version-testing.md) |
-| Independent hosted CI | All 3800 tests and exact primary runtime now pass remotely; full numerical-to-paper child failed and is under diagnosis with complete failure-output retention |
+| Independent hosted CI | All 3800 tests passed remotely; the latest full numerical child failed. Complete local repair regression and reusable emulated replay now pass; hosted full-workflow acceptance remains pending |
 | Recovery and source delivery | Both genuine GPU restores pass exact endpoints; scoped recovery add-on and current default/release entries work; complete source payload published and anonymously verified |
 
 All scientific training/evaluation and the statistical, document, numerical/PDF

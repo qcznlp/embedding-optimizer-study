@@ -1,0 +1,26 @@
+make: Entering directory '/root/embedding-optimizer-story-refactor/paper'
+mkdir -p "/tmp/ci-sde-runtime.lJfWrfwu/"
+CUDA_VISIBLE_DEVICES='' /tmp/ci-sde-runtime.lJfWrfwu/sde-external-10.13.1-2026-07-28-lin/sde64 -skx -force_emulate skx -- /tmp/ci-numerical-runtime.AQg9TtWv/venv/bin/python -m embed_optim.paper_reproduction \
+	--numerical-bundle "/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed" \
+	--paper-dir "/root/embedding-optimizer-story-refactor/paper/current" --output "/tmp/ci-sde-runtime.lJfWrfwu/complete-paper-forced"
+/tmp/ci-numerical-runtime.AQg9TtWv/venv/lib/python3.12/site-packages/torch/cuda/__init__.py:63: FutureWarning: The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.
+  import pynvml  # type: ignore[import]
+E: PreparePindForFollowExecve: SYS_prepare_follow_execve failed with error: 2 (No such file or directory)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_reproduction.py", line 356, in <module>
+    main()
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_reproduction.py", line 342, in main
+    result = reproduce(args.numerical_bundle, args.paper_dir, args.output)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_reproduction.py", line 290, in reproduce
+    numerical_exit = execute_numerical(bundle, root / "numerical", root / "numerical.log")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_reproduction.py", line 222, in execute_numerical
+    need(code == 0, "Original numerical replay failed; outputs retained, no retry")
+  File "/root/embedding-optimizer-story-refactor/src/embed_optim/paper_reproduction.py", line 60, in need
+    raise ValueError(message)
+ValueError: Original numerical replay failed; outputs retained, no retry
+make: *** [Makefile:25: release] Error 1
+make: Leaving directory '/root/embedding-optimizer-story-refactor/paper'
