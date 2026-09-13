@@ -41,10 +41,23 @@ jobs:
       - name: Audit portable paper evidence closure
         run: uv run --no-sync python scripts/portable_evidence.py --audit-only
       - name: Reproduce complete numerical findings and reviewed paper
+        id: numerical
         run: >-
           make -C paper release PYTHON="$GITHUB_WORKSPACE/.venv/bin/python"
           NUMERICAL_BUNDLE="$GITHUB_WORKSPACE/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed"
           RELEASE_OUTPUT="$RUNNER_TEMP/complete-paper"
+      - name: Capture original functional diagnostics after replay failure
+        if: failure() && steps.numerical.outcome == 'failure'
+        env:
+          CUDA_VISIBLE_DEVICES: ""
+          PYTHONDONTWRITEBYTECODE: "1"
+          OMP_NUM_THREADS: "1"
+          OPENBLAS_NUM_THREADS: "1"
+          MKL_NUM_THREADS: "1"
+        run: |
+          mkdir -p "$RUNNER_TEMP/complete-paper/diagnostics"
+          lscpu > "$RUNNER_TEMP/complete-paper/diagnostics/cpu.txt"
+          .venv/bin/python -B reports/engineering-archive/dense-v3-ci-functional-diagnostic-v1/inspect_functional.py "$GITHUB_WORKSPACE/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed/primary" "$RUNNER_TEMP/complete-paper/diagnostics/functional.json" > "$RUNNER_TEMP/complete-paper/diagnostics/runtime.log" 2>&1
       - name: Run every test in its explicit source version
         run: uv run --no-sync python scripts/test_source_roles.py --output "$RUNNER_TEMP/source-role-tests"
       - run: uv run --no-sync ruff check src tests scripts

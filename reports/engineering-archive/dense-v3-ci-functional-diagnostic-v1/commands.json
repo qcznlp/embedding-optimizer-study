@@ -1,0 +1,92 @@
+[
+  {
+    "name": "create",
+    "argv": [
+      "uv",
+      "venv",
+      "--system-site-packages",
+      "--python",
+      "/usr/bin/python",
+      "/tmp/ci-numerical-runtime.AQg9TtWv/venv"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "formal-base",
+    "argv": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/ci-numerical-runtime.AQg9TtWv/venv/bin/python",
+      "--no-config",
+      "--require-hashes",
+      "--torch-backend",
+      "cu129",
+      "--overrides",
+      "/root/embedding-optimizer-story-refactor/requirements-formal.lock",
+      "-r",
+      "/root/embedding-optimizer-story-refactor/requirements-formal.lock"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "actual-primary-hub",
+    "argv": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/ci-numerical-runtime.AQg9TtWv/venv/bin/python",
+      "--no-config",
+      "--require-hashes",
+      "--no-deps",
+      "-r",
+      "/root/embedding-optimizer-story-refactor/requirements-primary-replay.txt"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "authentic-flash-binary",
+    "argv": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/ci-numerical-runtime.AQg9TtWv/venv/bin/python",
+      "--no-config",
+      "--require-hashes",
+      "--no-deps",
+      "--reinstall-package",
+      "flash-attn",
+      "-r",
+      "/root/embedding-optimizer-story-refactor/requirements-ci-flash-wheel.txt"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "runtime",
+    "argv": [
+      "/tmp/ci-numerical-runtime.AQg9TtWv/venv/bin/python",
+      "-B",
+      "-m",
+      "embed_optim.runtime",
+      "--spec",
+      "/root/embedding-optimizer-story-refactor/configs/formal_runtime.json"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "full-numerical-paper",
+    "argv": [
+      "make",
+      "-C",
+      "paper",
+      "release",
+      "PYTHON=/tmp/ci-numerical-runtime.AQg9TtWv/venv/bin/python",
+      "NUMERICAL_BUNDLE=/root/embedding-optimizer-story-refactor/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed",
+      "RELEASE_OUTPUT=/tmp/ci-numerical-runtime.AQg9TtWv/complete-paper"
+    ],
+    "returncode": 0
+  }
+]
