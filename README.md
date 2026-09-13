@@ -72,7 +72,7 @@ and [completed release transition](reports/engineering-archive/dense-v3-release-
 | Distribution portability | Original full audit passes; real relocated input read is unchanged; historical failures and all negative controls retained |
 | Primary training source | All 33 modules and 56 bindings match the actual training snapshot; all 12 run sources load in this checkout; [inspection instructions](docs/current-training-source.md) |
 | Local full source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips; [one-command test entry](docs/source-version-testing.md) |
-| Independent hosted CI | Runtime installation and 3799/3800 tests passed; exact primary Hub runtime mismatch identified and fixed through a hashed replay overlay; complete replacement verification pending |
+| Independent hosted CI | All 3800 tests and exact primary runtime now pass remotely; full numerical-to-paper child failed and is under diagnosis with complete failure-output retention |
 | Recovery and source delivery | Both genuine GPU restores pass exact endpoints; scoped recovery add-on and current default/release entries work; complete source payload published and anonymously verified |
 
 All scientific training/evaluation and the statistical, document, numerical/PDF

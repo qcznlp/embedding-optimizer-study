@@ -117,6 +117,13 @@ requirements-primary-replay.txt restores the recorded version. Real isolated
 packages reproduce failure at 1.29 and pass unchanged source checks at 1.28.
 All original locks/guards/results remain unchanged. Full replacement CI is pending.
 
+Run 34766616352 then passed every one of the 3800 tests and early primary identity,
+but the actual full numerical child failed. Only its outer traceback was uploaded;
+do not invent an inner diagnosis. CI now retains the entire complete-paper output
+including failed child logs, and runs this full gate before the expensive matrix.
+No numerical source/guard/tolerance is changed. Both numerical and complete test
+gates remain mandatory. Inspect the next exact terminal artifact before deciding a fix.
+
 One earlier requested cleanup is unresolved: the safety-denied historical HF
 withdrawal was never executed. Do not retry, split or bypass that denial. It
 requires separate exact-scope direction and current/shared-artifact protection,

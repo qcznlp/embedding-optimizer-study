@@ -38,6 +38,17 @@ def test_real_roles_partition_every_test_without_overlap():
         if step.get("name") == "Run every test in its explicit source version"
     )
     assert formal < suite
+    numerical = next(
+        i
+        for i, step in enumerate(steps)
+        if step.get("name") == "Reproduce complete numerical findings and reviewed paper"
+    )
+    assert formal < numerical < suite
+    retained = next(
+        step for step in steps if step.get("name") == "Retain actual test and document receipts"
+    )
+    assert retained["if"] == "always()"
+    assert "${{ runner.temp }}/complete-paper/\n" in retained["with"]["path"]
     command = steps[formal]["run"]
     assert "--require-hashes" in command and "--torch-backend cu129" in command
     assert "--overrides requirements-formal.lock" in command

@@ -40,13 +40,13 @@ jobs:
       - run: uv run --no-sync embed-optim-audit-distribution
       - name: Audit portable paper evidence closure
         run: uv run --no-sync python scripts/portable_evidence.py --audit-only
-      - name: Run every test in its explicit source version
-        run: uv run --no-sync python scripts/test_source_roles.py --output "$RUNNER_TEMP/source-role-tests"
       - name: Reproduce complete numerical findings and reviewed paper
         run: >-
           make -C paper release PYTHON="$GITHUB_WORKSPACE/.venv/bin/python"
           NUMERICAL_BUNDLE="$GITHUB_WORKSPACE/reports/engineering-archive/dense-v3-complete-replay-entry-v1/closed"
           RELEASE_OUTPUT="$RUNNER_TEMP/complete-paper"
+      - name: Run every test in its explicit source version
+        run: uv run --no-sync python scripts/test_source_roles.py --output "$RUNNER_TEMP/source-role-tests"
       - run: uv run --no-sync ruff check src tests scripts
       - run: uv run --no-sync ruff format --check src tests scripts
       - name: Retain actual test and document receipts
@@ -58,5 +58,4 @@ jobs:
             ${{ runner.temp }}/source-role-tests/*.json
             ${{ runner.temp }}/source-role-tests/*.xml
             ${{ runner.temp }}/source-role-tests/*.log
-            ${{ runner.temp }}/complete-paper/complete.json
-            ${{ runner.temp }}/complete-paper/reviewed/paper/build/main.pdf
+            ${{ runner.temp }}/complete-paper/
