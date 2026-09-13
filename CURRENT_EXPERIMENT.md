@@ -1,5 +1,12 @@
 # Current DenseOn experiment and delivery
 
+**Final closeout:** [FINAL_STATUS.md](FINAL_STATUS.md) supersedes the dated
+snapshot below. Complete hosted CI passed, and the owner-approved 9,629-file
+HF withdrawal is executed and independently verified. No scientific/recovery
+job remains live; do not repeat the old pending actions.
+
+## Historical pre-closeout snapshot
+
 Snapshot: **2026-09-13**. The scientific, paper and reproducible-source deliverables
 are locally verified and publicly available; hosted CI repair remains pending.
 Read [AGENTS.md](AGENTS.md) before acting and

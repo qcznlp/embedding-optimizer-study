@@ -1,4 +1,13 @@
-# Owner-directed Hugging Face withdrawal: awaiting exact-scope approval
+# Owner-directed Hugging Face withdrawal
+
+**Completed after explicit owner confirmation:** all 9,629 reviewed paths have
+been removed from the two current HF trees. The current v3 and other retained
+files, shared LFS objects and Git history are preserved. Read the
+[execution and anonymous verification receipts](completed-v3/README.md).
+Do not re-execute the plan. The prior denied attempt below remains historical
+evidence; it is not the status of the later authorized execution.
+
+## Historical pre-approval record
 
 The owner requested removal of results from the erroneous historical implementation.
 No Hugging Face file, card, branch, tag, commit or LFS object has been changed by

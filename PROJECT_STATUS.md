@@ -1,5 +1,12 @@
 # Project status and evidence
 
+**Final closeout:** [FINAL_STATUS.md](FINAL_STATUS.md) records the completed
+full hosted verification and owner-approved HF withdrawal, with their actual
+receipts. It supersedes the older pending delivery/cleanup descriptions below.
+The scientific results and interpretation limits in this evidence map are unchanged.
+
+## Historical pre-closeout snapshot
+
 Snapshot: **2026-09-13**. Scientific computation and both declared exact recovery
 checks are complete; the scoped recovery add-on and complete source payload are publicly
 delivered and remotely verified. Read [CURRENT_EXPERIMENT.md](CURRENT_EXPERIMENT.md)

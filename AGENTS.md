@@ -1,5 +1,16 @@
 # Agent handoff instructions
 
+## Final closeout — read this before historical status below
+
+[FINAL_STATUS.md](FINAL_STATUS.md) is the latest authoritative handoff. The full
+scientific-source CI passed at `b09b3349`; the owner subsequently approved the
+exact HF cleanup, and both deletion commits and anonymous preservation checks
+completed. There is no remaining approval request for that executed scope.
+No scientific/recovery job is live. Do not restart completed work, retry the
+deletion, or treat older pending paragraphs below as current next actions.
+All source, scientific, credential and `gpu.py` safety limits remain binding.
+The final status/receipt update changes no scientific or runtime source.
+
 ## Read first
 
 1. [CURRENT_EXPERIMENT.md](CURRENT_EXPERIMENT.md): current completion and remaining work.

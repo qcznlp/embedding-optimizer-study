@@ -1,5 +1,10 @@
 # DenseOn study completion gates
 
+**Final closeout:** [the final requirement/evidence map](../FINAL_STATUS.md)
+supersedes the earlier hosted-CI and HF-cleanup pending states below. Both are
+now verified complete. No scientific/source contract or historical gate was
+relaxed; the final status publication contains only documentation and receipts.
+
 ## Current v3 completion — 2026-09-13
 
 The scientific matrix is complete. Use [current status](../CURRENT_EXPERIMENT.md)

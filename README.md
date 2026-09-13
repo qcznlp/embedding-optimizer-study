@@ -5,6 +5,12 @@ b0db47a48f969d825446668b5b17bfc27a359fc1. See THIRD_PARTY_NOTICES.md.
 
 # Optimizers, weight trajectories, and dense retrieval
 
+**Delivery complete:** [final status and agent handoff](FINAL_STATUS.md).
+The full scientific-source CI passed; all 24 runs, 120 checkpoints, analyses
+and the reviewed paper are delivered. The owner-approved old HF files have
+also been removed from the current trees, with valid backups and history
+preserved. Dated pending notes farther below are historical snapshots.
+
 How do AdamW, Muon and NorMuon change a pretrained retriever's weights, and
 which changes matter for retrieval? This DenseOn study connects **weight
 trajectories, functional representation utility and held-out retrieval**.
