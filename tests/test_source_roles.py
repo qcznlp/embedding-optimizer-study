@@ -43,7 +43,16 @@ def test_real_roles_partition_every_test_without_overlap():
     assert "--overrides requirements-formal.lock" in command
     assert "--dry-run" not in command and "import flash_attn_2_cuda" in command
     assert "embed_optim.runtime --spec configs/formal_runtime.json" in command
-    assert steps[formal]["env"]["FLASH_ATTENTION_FORCE_BUILD"] == "TRUE"
+    assert workflow["jobs"]["test"]["runs-on"] == "ubuntu-24.04"
+    assert "--no-deps --require-hashes -r requirements-ci-flash-wheel.txt" in command
+    binary_lock = (ROOT / "requirements-ci-flash-wheel.txt").read_text()
+    assert "/resolve/18c1ab7abc636d2542be6831591f31c171c7dcf6/" in binary_lock
+    assert (
+        "--hash=sha256:9feca56918f1603358f32ce0c7ab06d221e6123b8b1072566880479f3b1aa1ba"
+        in binary_lock
+    )
+    assert "_GLIBCXX_USE_CXX11_ABI" in command and "varlen_bwd" in command
+    assert steps[formal]["env"]["CUDA_VISIBLE_DEVICES"] == ""
     assert "FLASH_ATTENTION_SKIP_CUDA_BUILD" not in steps[formal]["env"]
     assert "uv run --no-sync" in steps[suite]["run"]
     assert all(step.get("continue-on-error", False) is False for step in steps)

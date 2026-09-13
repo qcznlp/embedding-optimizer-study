@@ -103,6 +103,13 @@ The reviewed PDF and 83 other manifest-bound archived files were also published 
 Finish the repaired hosted test and full numerical/paper workflow. Do not autonomously add
 experiments, restart old controllers or keep rerunning completed release checks.
 
+The slow source-compilation CI run 34758559097 is being superseded by the genuine
+hash-bound binary route in docs/ci-runtime-binary.md. Its local 85-unit build and
+fresh-process native import pass; all 36 published positive files (201,001,025 bytes)
+were anonymously downloaded and verified. No GPU execution or scientific change.
+Do not repeat that build/upload. Complete hosted tests and numerical/paper execution
+remain pending; check the current exact GitHub run and /tmp/dense-v3-flash-wheel.L7A0IiP0.
+
 One earlier requested cleanup is unresolved: the safety-denied historical HF
 withdrawal was never executed. Do not retry, split or bypass that denial. It
 requires separate exact-scope direction and current/shared-artifact protection,

@@ -62,6 +62,12 @@ worker or proof of another GPU/physical-host recovery case.
 ## Remaining delivery verification and prior cleanup request
 
 Finish GitHub CI with the genuine hash-locked scientific runtime. The first
+source-build repair is being superseded by an authentic precompiled FlashAttention
+wheel: 36 positive artifact files were published to an immutable HF revision and
+all 201,001,025 bytes anonymously downloaded and verified. See
+[runtime binary provenance](docs/ci-runtime-binary.md). Complete hosted tests and
+numerical/paper execution remain pending; the original source locks are unchanged.
+The first
 hosted run used broader developer versions and exposed two producer-dependent
 synthetic fixtures. The repair changes CI and test fixtures, not training source,
 scientific results, frozen hashes or numerical tolerances. The reviewed PDF and

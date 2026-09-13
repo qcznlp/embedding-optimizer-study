@@ -1,0 +1,1720 @@
+﻿2026-09-13T12:59:09.7005425Z Current runner version: '2.337.0'
+2026-09-13T12:59:09.7030648Z ##[group]Runner Image Provisioner
+2026-09-13T12:59:09.7031635Z Hosted Compute Agent
+2026-09-13T12:59:09.7032255Z Version: 20260828.587
+2026-09-13T12:59:09.7033293Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-09-13T12:59:09.7034189Z Build Date: 2026-08-28T16:44:25Z
+2026-09-13T12:59:09.7034907Z Worker ID: {bb64039e-bdcf-4baf-a2eb-fe0e91ff296f}
+2026-09-13T12:59:09.7036073Z Azure Region: westcentralus
+2026-09-13T12:59:09.7036708Z ##[endgroup]
+2026-09-13T12:59:09.7038238Z ##[group]Operating System
+2026-09-13T12:59:09.7039003Z Ubuntu
+2026-09-13T12:59:09.7039547Z 24.04.5
+2026-09-13T12:59:09.7040116Z LTS
+2026-09-13T12:59:09.7040674Z ##[endgroup]
+2026-09-13T12:59:09.7041247Z ##[group]Runner Image
+2026-09-13T12:59:09.7041960Z Image: ubuntu-24.04
+2026-09-13T12:59:09.7042564Z Version: 20260907.300.1
+2026-09-13T12:59:09.7043932Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+2026-09-13T12:59:09.7045706Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+2026-09-13T12:59:09.7046757Z ##[endgroup]
+2026-09-13T12:59:09.7048003Z ##[group]GITHUB_TOKEN Permissions
+2026-09-13T12:59:09.7050032Z Contents: read
+2026-09-13T12:59:09.7050650Z Metadata: read
+2026-09-13T12:59:09.7051347Z Packages: read
+2026-09-13T12:59:09.7051946Z ##[endgroup]
+2026-09-13T12:59:09.7054008Z Secret source: Actions
+2026-09-13T12:59:09.7055258Z Cache mode: write
+2026-09-13T12:59:09.7056007Z Prepare workflow directory
+2026-09-13T12:59:09.7434443Z Prepare all required actions
+2026-09-13T12:59:09.7481260Z Getting action download info
+2026-09-13T12:59:10.0444076Z Download action repository 'actions/checkout@v7.0.1' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-09-13T12:59:10.1601832Z Download action repository 'astral-sh/setup-uv@v10.0.1' (SHA:20cfd1bf945f4377ade1205e4dbc17946fc9a30d)
+2026-09-13T12:59:10.9889167Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-09-13T12:59:11.2548533Z Complete job name: test
+2026-09-13T12:59:11.3395380Z ##[group]Run actions/checkout@v7.0.1
+2026-09-13T12:59:11.3396349Z with:
+2026-09-13T12:59:11.3396776Z   fetch-depth: 0
+2026-09-13T12:59:11.3397326Z   repository: qcznlp/embedding-optimizer-study
+2026-09-13T12:59:11.3402103Z   token: ***
+2026-09-13T12:59:11.3402560Z   ssh-strict: true
+2026-09-13T12:59:11.3403019Z   ssh-user: git
+2026-09-13T12:59:11.3403483Z   persist-credentials: true
+2026-09-13T12:59:11.3404004Z   clean: true
+2026-09-13T12:59:11.3404464Z   sparse-checkout-cone-mode: true
+2026-09-13T12:59:11.3405183Z   fetch-tags: false
+2026-09-13T12:59:11.3405652Z   show-progress: true
+2026-09-13T12:59:11.3406139Z   lfs: false
+2026-09-13T12:59:11.3406578Z   submodules: false
+2026-09-13T12:59:11.3407057Z   set-safe-directory: true
+2026-09-13T12:59:11.3407600Z   allow-unsafe-pr-checkout: false
+2026-09-13T12:59:11.3408375Z ##[endgroup]
+2026-09-13T12:59:11.4418746Z Syncing repository: qcznlp/embedding-optimizer-study
+2026-09-13T12:59:11.4421682Z ##[group]Getting Git version info
+2026-09-13T12:59:11.4423433Z Working directory is '/home/runner/work/embedding-optimizer-study/embedding-optimizer-study'
+2026-09-13T12:59:11.4426001Z [command]/usr/bin/git version
+2026-09-13T12:59:11.4475258Z git version 2.55.0
+2026-09-13T12:59:11.4495554Z ##[endgroup]
+2026-09-13T12:59:11.4506183Z Temporarily overriding HOME='/home/runner/work/_temp/b608beab-47b5-4ad6-8977-fe643ecc1c9c' before making global git config changes
+2026-09-13T12:59:11.4509058Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-13T12:59:11.4511887Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/embedding-optimizer-study/embedding-optimizer-study
+2026-09-13T12:59:11.4563197Z Deleting the contents of '/home/runner/work/embedding-optimizer-study/embedding-optimizer-study'
+2026-09-13T12:59:11.4566611Z ##[group]Determining repository object format
+2026-09-13T12:59:11.4568552Z ##[endgroup]
+2026-09-13T12:59:11.4570447Z ##[group]Initializing the repository
+2026-09-13T12:59:11.4572950Z [command]/usr/bin/git init /home/runner/work/embedding-optimizer-study/embedding-optimizer-study
+2026-09-13T12:59:11.4680459Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-09-13T12:59:11.4683075Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-09-13T12:59:11.4685251Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-09-13T12:59:11.4686904Z hint: call:
+2026-09-13T12:59:11.4687821Z hint:
+2026-09-13T12:59:11.4688908Z hint: 	git config --global init.defaultBranch <name>
+2026-09-13T12:59:11.4690219Z hint:
+2026-09-13T12:59:11.4691465Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-09-13T12:59:11.4693539Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-09-13T12:59:11.4695322Z hint:
+2026-09-13T12:59:11.4696308Z hint: 	git branch -m <name>
+2026-09-13T12:59:11.4697228Z hint:
+2026-09-13T12:59:11.4698246Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-09-13T12:59:11.4702106Z Initialized empty Git repository in /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git/
+2026-09-13T12:59:11.4706767Z [command]/usr/bin/git remote add origin https://github.com/qcznlp/embedding-optimizer-study
+2026-09-13T12:59:11.4742642Z ##[endgroup]
+2026-09-13T12:59:11.4743937Z ##[group]Disabling automatic garbage collection
+2026-09-13T12:59:11.4750984Z [command]/usr/bin/git config --local gc.auto 0
+2026-09-13T12:59:11.4778458Z ##[endgroup]
+2026-09-13T12:59:11.4779607Z ##[group]Setting up auth
+2026-09-13T12:59:11.4780501Z Removing SSH command configuration
+2026-09-13T12:59:11.4785498Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-13T12:59:11.4819436Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-13T12:59:11.5194094Z Removing HTTP extra header
+2026-09-13T12:59:11.5195880Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-13T12:59:11.5234493Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-13T12:59:11.5483070Z Removing includeIf entries pointing to credentials config files
+2026-09-13T12:59:11.5488639Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-13T12:59:11.5532647Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-13T12:59:11.5773483Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-09-13T12:59:11.5815677Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git.path /home/runner/work/_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T12:59:11.5849601Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T12:59:11.5887408Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T12:59:11.5923047Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T12:59:11.5955211Z ##[endgroup]
+2026-09-13T12:59:11.5956050Z ##[group]Fetching the repository
+2026-09-13T12:59:11.5962173Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-09-13T12:59:18.5239073Z From https://github.com/qcznlp/embedding-optimizer-study
+2026-09-13T12:59:18.5240850Z  * [new branch]        agent/audit-run-identity -> origin/agent/audit-run-identity
+2026-09-13T12:59:18.5242078Z  * [new branch]        agent/audit-training-dynamics -> origin/agent/audit-training-dynamics
+2026-09-13T12:59:18.5243340Z  * [new branch]        agent/checkpoint-artifact-audit -> origin/agent/checkpoint-artifact-audit
+2026-09-13T12:59:18.5244493Z  * [new branch]        agent/ci-build-wheel -> origin/agent/ci-build-wheel
+2026-09-13T12:59:18.5245797Z  * [new branch]        agent/corrected-execution-sensitivity -> origin/agent/corrected-execution-sensitivity
+2026-09-13T12:59:18.5247002Z  * [new branch]        agent/corrected-retrieval-bridge -> origin/agent/corrected-retrieval-bridge
+2026-09-13T12:59:18.5248377Z  * [new branch]        agent/dense-no-packing-retrain -> origin/agent/dense-no-packing-retrain
+2026-09-13T12:59:18.5249492Z  * [new branch]        agent/document-optimizer-routing -> origin/agent/document-optimizer-routing
+2026-09-13T12:59:18.5250658Z  * [new branch]        agent/document-third-muon-recovery -> origin/agent/document-third-muon-recovery
+2026-09-13T12:59:18.5251727Z  * [new branch]        agent/finalize-public-handoff -> origin/agent/finalize-public-handoff
+2026-09-13T12:59:18.5252699Z  * [new branch]        agent/handoff-live-status -> origin/agent/handoff-live-status
+2026-09-13T12:59:18.5253714Z  * [new branch]        agent/package-evaluation-workers -> origin/agent/package-evaluation-workers
+2026-09-13T12:59:18.5254770Z  * [new branch]        agent/package-study-metadata -> origin/agent/package-study-metadata
+2026-09-13T12:59:18.5256084Z  * [new branch]        agent/posthoc-task-stability -> origin/agent/posthoc-task-stability
+2026-09-13T12:59:18.5257215Z  * [new branch]        agent/shortlist-corpus-story -> origin/agent/shortlist-corpus-story
+2026-09-13T12:59:18.5258597Z  * [new branch]        agent/upgrade-ci-actions -> origin/agent/upgrade-ci-actions
+2026-09-13T12:59:18.5259903Z  * [new branch]        analysis/state-operator-completion -> origin/analysis/state-operator-completion
+2026-09-13T12:59:18.5260705Z  * [new branch]        codex/checkpoint-1563-handoff -> origin/codex/checkpoint-1563-handoff
+2026-09-13T12:59:18.5261361Z  * [new branch]        codex/state-operator-factorial -> origin/codex/state-operator-factorial
+2026-09-13T12:59:18.5261976Z  * [new branch]        feat/muon-embedding-study -> origin/feat/muon-embedding-study
+2026-09-13T12:59:18.5262468Z  * [new branch]        main                 -> origin/main
+2026-09-13T12:59:18.5263037Z  * [new branch]        ops/publication-narrative-receipt -> origin/ops/publication-narrative-receipt
+2026-09-13T12:59:18.5263720Z  * [new branch]        paper/corrected-layout-fixture -> origin/paper/corrected-layout-fixture
+2026-09-13T12:59:18.5264446Z  * [new branch]        paper/corrected-outcome-propagation -> origin/paper/corrected-outcome-propagation
+2026-09-13T12:59:18.5266153Z [command]/usr/bin/git branch --list --remote origin/main
+2026-09-13T12:59:18.5287086Z   origin/main
+2026-09-13T12:59:18.5295578Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-09-13T12:59:18.5325211Z 1fe41cf77ec79228ec12d12990c327e9100b188b
+2026-09-13T12:59:18.5329586Z ##[endgroup]
+2026-09-13T12:59:18.5330413Z ##[group]Determining the checkout info
+2026-09-13T12:59:18.5331189Z ##[endgroup]
+2026-09-13T12:59:18.5334434Z [command]/usr/bin/git sparse-checkout disable
+2026-09-13T12:59:18.5387373Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-09-13T12:59:18.5421396Z ##[group]Checking out the ref
+2026-09-13T12:59:18.5425499Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-09-13T12:59:19.8148318Z Updating files:  12% (1901/15333)
+2026-09-13T12:59:19.8263391Z Updating files:  13% (1994/15333)
+2026-09-13T12:59:19.8379334Z Updating files:  14% (2147/15333)
+2026-09-13T12:59:19.8439534Z Updating files:  15% (2300/15333)
+2026-09-13T12:59:19.9865440Z Updating files:  16% (2454/15333)
+2026-09-13T12:59:20.0197985Z Updating files:  17% (2607/15333)
+2026-09-13T12:59:20.0786746Z Updating files:  18% (2760/15333)
+2026-09-13T12:59:20.2310766Z Updating files:  19% (2914/15333)
+2026-09-13T12:59:20.2774145Z Updating files:  20% (3067/15333)
+2026-09-13T12:59:20.2841682Z Updating files:  21% (3220/15333)
+2026-09-13T12:59:20.3802503Z Updating files:  22% (3374/15333)
+2026-09-13T12:59:20.4277205Z Updating files:  23% (3527/15333)
+2026-09-13T12:59:20.4360042Z Updating files:  24% (3680/15333)
+2026-09-13T12:59:20.4428762Z Updating files:  25% (3834/15333)
+2026-09-13T12:59:20.4508351Z Updating files:  26% (3987/15333)
+2026-09-13T12:59:20.4622072Z Updating files:  27% (4140/15333)
+2026-09-13T12:59:20.4878362Z Updating files:  28% (4294/15333)
+2026-09-13T12:59:20.5434235Z Updating files:  29% (4447/15333)
+2026-09-13T12:59:20.5567644Z Updating files:  30% (4600/15333)
+2026-09-13T12:59:20.5632822Z Updating files:  31% (4754/15333)
+2026-09-13T12:59:20.5713371Z Updating files:  31% (4822/15333)
+2026-09-13T12:59:20.5870811Z Updating files:  32% (4907/15333)
+2026-09-13T12:59:20.5951099Z Updating files:  33% (5060/15333)
+2026-09-13T12:59:20.6014558Z Updating files:  34% (5214/15333)
+2026-09-13T12:59:20.6077165Z Updating files:  35% (5367/15333)
+2026-09-13T12:59:20.6133700Z Updating files:  36% (5520/15333)
+2026-09-13T12:59:20.6258468Z Updating files:  37% (5674/15333)
+2026-09-13T12:59:20.6389627Z Updating files:  38% (5827/15333)
+2026-09-13T12:59:20.6529795Z Updating files:  39% (5980/15333)
+2026-09-13T12:59:20.6662282Z Updating files:  40% (6134/15333)
+2026-09-13T12:59:20.6838283Z Updating files:  41% (6287/15333)
+2026-09-13T12:59:20.6991907Z Updating files:  42% (6440/15333)
+2026-09-13T12:59:20.7466120Z Updating files:  43% (6594/15333)
+2026-09-13T12:59:20.7666908Z Updating files:  44% (6747/15333)
+2026-09-13T12:59:20.9024591Z Updating files:  45% (6900/15333)
+2026-09-13T12:59:20.9096272Z Updating files:  46% (7054/15333)
+2026-09-13T12:59:20.9147838Z Updating files:  47% (7207/15333)
+2026-09-13T12:59:20.9199566Z Updating files:  48% (7360/15333)
+2026-09-13T12:59:20.9300058Z Updating files:  49% (7514/15333)
+2026-09-13T12:59:20.9682452Z Updating files:  50% (7667/15333)
+2026-09-13T12:59:20.9853916Z Updating files:  51% (7820/15333)
+2026-09-13T12:59:21.0349106Z Updating files:  52% (7974/15333)
+2026-09-13T12:59:21.1482130Z Updating files:  53% (8127/15333)
+2026-09-13T12:59:21.2509076Z Updating files:  54% (8280/15333)
+2026-09-13T12:59:21.3321471Z Updating files:  55% (8434/15333)
+2026-09-13T12:59:21.3988415Z Updating files:  56% (8587/15333)
+2026-09-13T12:59:21.4100140Z Updating files:  57% (8740/15333)
+2026-09-13T12:59:21.4847389Z Updating files:  58% (8894/15333)
+2026-09-13T12:59:21.5585190Z Updating files:  59% (9047/15333)
+2026-09-13T12:59:21.5632683Z Updating files:  60% (9200/15333)
+2026-09-13T12:59:21.5854510Z Updating files:  60% (9236/15333)
+2026-09-13T12:59:21.6315518Z Updating files:  61% (9354/15333)
+2026-09-13T12:59:21.6369120Z Updating files:  62% (9507/15333)
+2026-09-13T12:59:21.6829831Z Updating files:  63% (9660/15333)
+2026-09-13T12:59:21.6894166Z Updating files:  64% (9814/15333)
+2026-09-13T12:59:21.6953631Z Updating files:  65% (9967/15333)
+2026-09-13T12:59:21.7073462Z Updating files:  66% (10120/15333)
+2026-09-13T12:59:21.7167903Z Updating files:  67% (10274/15333)
+2026-09-13T12:59:21.7799449Z Updating files:  68% (10427/15333)
+2026-09-13T12:59:21.8173201Z Updating files:  69% (10580/15333)
+2026-09-13T12:59:21.8393273Z Updating files:  70% (10734/15333)
+2026-09-13T12:59:21.8854521Z Updating files:  71% (10887/15333)
+2026-09-13T12:59:21.9177565Z Updating files:  72% (11040/15333)
+2026-09-13T12:59:21.9348177Z Updating files:  73% (11194/15333)
+2026-09-13T12:59:22.0224324Z Updating files:  74% (11347/15333)
+2026-09-13T12:59:22.0639519Z Updating files:  75% (11500/15333)
+2026-09-13T12:59:22.0815921Z Updating files:  76% (11654/15333)
+2026-09-13T12:59:22.0995433Z Updating files:  77% (11807/15333)
+2026-09-13T12:59:22.1119059Z Updating files:  78% (11960/15333)
+2026-09-13T12:59:22.1226448Z Updating files:  79% (12114/15333)
+2026-09-13T12:59:22.1331132Z Updating files:  80% (12267/15333)
+2026-09-13T12:59:22.1430442Z Updating files:  81% (12420/15333)
+2026-09-13T12:59:22.1527820Z Updating files:  82% (12574/15333)
+2026-09-13T12:59:22.1628722Z Updating files:  83% (12727/15333)
+2026-09-13T12:59:22.1724955Z Updating files:  84% (12880/15333)
+2026-09-13T12:59:22.1819783Z Updating files:  85% (13034/15333)
+2026-09-13T12:59:22.1917156Z Updating files:  86% (13187/15333)
+2026-09-13T12:59:22.2026019Z Updating files:  87% (13340/15333)
+2026-09-13T12:59:22.2122398Z Updating files:  88% (13494/15333)
+2026-09-13T12:59:22.2212487Z Updating files:  89% (13647/15333)
+2026-09-13T12:59:22.2302368Z Updating files:  90% (13800/15333)
+2026-09-13T12:59:22.2387500Z Updating files:  91% (13954/15333)
+2026-09-13T12:59:22.2532535Z Updating files:  92% (14107/15333)
+2026-09-13T12:59:22.2783065Z Updating files:  93% (14260/15333)
+2026-09-13T12:59:22.2928382Z Updating files:  94% (14414/15333)
+2026-09-13T12:59:22.4074638Z Updating files:  95% (14567/15333)
+2026-09-13T12:59:22.4199842Z Updating files:  96% (14720/15333)
+2026-09-13T12:59:22.4366960Z Updating files:  97% (14874/15333)
+2026-09-13T12:59:22.4525432Z Updating files:  98% (15027/15333)
+2026-09-13T12:59:22.4662534Z Updating files:  99% (15180/15333)
+2026-09-13T12:59:22.4662920Z Updating files: 100% (15333/15333)
+2026-09-13T12:59:22.4663210Z Updating files: 100% (15333/15333), done.
+2026-09-13T12:59:22.6032799Z Switched to a new branch 'main'
+2026-09-13T12:59:22.6056209Z branch 'main' set up to track 'origin/main'.
+2026-09-13T12:59:22.6116265Z ##[endgroup]
+2026-09-13T12:59:22.6514806Z [command]/usr/bin/git log -1 --format=%H
+2026-09-13T12:59:22.6552472Z 1fe41cf77ec79228ec12d12990c327e9100b188b
+2026-09-13T12:59:22.6825672Z ##[group]Run astral-sh/setup-uv@v10.0.1
+2026-09-13T12:59:22.6825983Z with:
+2026-09-13T12:59:22.6826195Z   python-version: 3.12
+2026-09-13T12:59:22.6826425Z   enable-cache: true
+2026-09-13T12:59:22.6826657Z   activate-environment: false
+2026-09-13T12:59:22.6826913Z   no-project: false
+2026-09-13T12:59:22.6827317Z   working-directory: /home/runner/work/embedding-optimizer-study/embedding-optimizer-study
+2026-09-13T12:59:22.6830080Z   github-token: ***
+2026-09-13T12:59:22.6830642Z   cache-dependency-glob: **/*requirements*.txt
+**/*requirements*.in
+**/*constraints*.txt
+**/*constraints*.in
+**/pyproject.toml
+**/uv.lock
+**/*.py.lock
+
+2026-09-13T12:59:22.6831243Z   restore-cache: true
+2026-09-13T12:59:22.6831463Z   save-cache: true
+2026-09-13T12:59:22.6831684Z   prune-cache: false
+2026-09-13T12:59:22.6831904Z   cache-python: false
+2026-09-13T12:59:22.6832136Z   ignore-nothing-to-cache: false
+2026-09-13T12:59:22.6832408Z   ignore-empty-workdir: false
+2026-09-13T12:59:22.6832714Z   download-from-astral-mirror: true
+2026-09-13T12:59:22.6832994Z   add-problem-matchers: true
+2026-09-13T12:59:22.6833236Z   quiet: false
+2026-09-13T12:59:22.6833457Z   resolution-strategy: highest
+2026-09-13T12:59:22.6833706Z ##[endgroup]
+2026-09-13T12:59:23.0047716Z Trying to find version for uv in: /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/uv.toml
+2026-09-13T12:59:23.0049275Z Could not find file: /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/uv.toml
+2026-09-13T12:59:23.0050872Z Trying to find version for uv in: /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/pyproject.toml
+2026-09-13T12:59:23.0082829Z Could not determine uv version from uv.toml or pyproject.toml. Falling back to latest.
+2026-09-13T12:59:23.0084438Z Fetching manifest data from https://raw.githubusercontent.com/astral-sh/versions/main/v1/uv.ndjson ...
+2026-09-13T12:59:23.1091143Z Downloading uv from "https://releases.astral.sh/github/uv/releases/download/0.12.13/uv-x86_64-unknown-linux-gnu.tar.gz" ...
+2026-09-13T12:59:23.4589908Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/081fbec1-bba9-407d-8b4b-1c6dd6e7fdc3 -f /home/runner/work/_temp/9d8dea28-155b-4cfb-83d8-9cdeadadeec8
+2026-09-13T12:59:23.9964865Z Added /home/runner/.local/bin to the path
+2026-09-13T12:59:23.9968692Z Added /opt/hostedtoolcache/uv/0.12.13/x86_64 to the path
+2026-09-13T12:59:23.9970278Z Set UV_PYTHON_INSTALL_DIR to /home/runner/work/_temp/uv-python-dir
+2026-09-13T12:59:23.9970979Z Added /home/runner/work/_temp/uv-python-dir to the path
+2026-09-13T12:59:23.9971755Z Set UV_PYTHON to 3.12
+2026-09-13T12:59:24.0000330Z Set UV_CACHE_DIR to /home/runner/work/_temp/setup-uv-cache
+2026-09-13T12:59:24.0000941Z Successfully installed uv version 0.12.13
+2026-09-13T12:59:24.0005413Z Searching files using cache dependency glob: /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/**/*requirements*.txt,/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/**/*requirements*.in,/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/**/*constraints*.txt,/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/**/*constraints*.in,/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/**/pyproject.toml,/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/**/uv.lock,/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/**/*.py.lock
+2026-09-13T12:59:24.0299621Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.0455459Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/pyproject.toml
+2026-09-13T12:59:24.3634302Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-current-paper-entry-v1/actual/before/pyproject.toml
+2026-09-13T12:59:24.3731569Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-current-paper-entry-v1/source-current/pyproject.toml
+2026-09-13T12:59:24.4419046Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-distribution-recovery-surface-v1/baseline/pyproject.toml
+2026-09-13T12:59:24.4430309Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-distribution-recovery-surface-v1/expanded/pyproject.toml
+2026-09-13T12:59:24.5437303Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-calibration-v1/actual/source-first/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.5454937Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-calibration-v1/actual/source-first/requirements-formal-flash.txt
+2026-09-13T12:59:24.5516908Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-calibration-v1/actual/source-second/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.5535683Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-calibration-v1/actual/source-second/requirements-formal-flash.txt
+2026-09-13T12:59:24.5595919Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-calibration-v1/actual/source-third/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.5610072Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-calibration-v1/actual/source-third/requirements-formal-flash.txt
+2026-09-13T12:59:24.5697009Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-factory-v1/actual/source-first/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.5711035Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-factory-v1/actual/source-first/requirements-formal-flash.txt
+2026-09-13T12:59:24.6622802Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-fifth/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.6636876Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-fifth/requirements-formal-flash.txt
+2026-09-13T12:59:24.6703959Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-first/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.6720034Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-first/requirements-formal-flash.txt
+2026-09-13T12:59:24.6790274Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-fourth/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.6809696Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-fourth/requirements-formal-flash.txt
+2026-09-13T12:59:24.6867137Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-second/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.6880137Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-second/requirements-formal-flash.txt
+2026-09-13T12:59:24.6949131Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-third/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.6964172Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-run-contract-v1/actual/source-third/requirements-formal-flash.txt
+2026-09-13T12:59:24.7148517Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-first/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.7166145Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-first/requirements-formal-flash.txt
+2026-09-13T12:59:24.7220555Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-gradient/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.7236989Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-gradient/requirements-formal-flash.txt
+2026-09-13T12:59:24.7299483Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-second/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.7317019Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-second/requirements-formal-flash.txt
+2026-09-13T12:59:24.7379235Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-third/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.7396459Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-trainer-integration-v2/actual/source-third/requirements-formal-flash.txt
+2026-09-13T12:59:24.7551972Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:24.7567272Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-factorial-worker-v1/actual/source-final/requirements-formal-flash.txt
+2026-09-13T12:59:24.9860355Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-numerical-source-integration-v1/after/pyproject.toml
+2026-09-13T12:59:24.9883863Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-numerical-source-integration-v1/before/pyproject.toml
+2026-09-13T12:59:25.0356150Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-portable-factorial-checkpoint-v1/after/pyproject.toml
+2026-09-13T12:59:25.0379431Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-portable-factorial-checkpoint-v1/before/pyproject.toml
+2026-09-13T12:59:25.0417040Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-portable-handoff-v1/after/pyproject.toml
+2026-09-13T12:59:25.0425991Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-portable-handoff-v1/before/pyproject.toml
+2026-09-13T12:59:25.0477420Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-portable-input-roles-v1/after/pyproject.toml
+2026-09-13T12:59:25.0565673Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-portable-restore-v1/after/pyproject.toml
+2026-09-13T12:59:25.0575741Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-portable-restore-v1/before/pyproject.toml
+2026-09-13T12:59:25.0731784Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-primary-launch-v1/assembled-source/configs/formal_runtime_constraints.txt
+2026-09-13T12:59:25.0748263Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-primary-launch-v1/assembled-source/requirements-formal-flash.txt
+2026-09-13T12:59:25.1921775Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-release-transition-v1/actual/before/pyproject.toml
+2026-09-13T12:59:25.2468680Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/reports/engineering-archive/dense-v3-versioned-paper-reproduction-v1/source/pyproject.toml
+2026-09-13T12:59:25.3487645Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/requirements-formal-flash.txt
+2026-09-13T12:59:25.7214704Z /home/runner/work/embedding-optimizer-study/embedding-optimizer-study/uv.lock
+2026-09-13T12:59:25.7232793Z Found 49 files to hash.
+2026-09-13T12:59:25.7304283Z Trying to restore cache from GitHub Actions cache with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.12-12cc3a526960571176e9042ac3aec8b835a06dd8b3fb327f0810b58942a8753c
+2026-09-13T12:59:25.8962588Z No GitHub Actions cache found for key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-3.12-12cc3a526960571176e9042ac3aec8b835a06dd8b3fb327f0810b58942a8753c
+2026-09-13T12:59:26.0139267Z ##[group]Run uv sync --extra dev --extra eval --extra analysis
+2026-09-13T12:59:26.0139843Z [36;1muv sync --extra dev --extra eval --extra analysis[0m
+2026-09-13T12:59:26.0186488Z shell: /usr/bin/bash -e {0}
+2026-09-13T12:59:26.0186757Z env:
+2026-09-13T12:59:26.0187051Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-09-13T12:59:26.0187402Z   UV_PYTHON: 3.12
+2026-09-13T12:59:26.0187661Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-13T12:59:26.0187966Z ##[endgroup]
+2026-09-13T12:59:26.1060443Z Using CPython 3.12.3 interpreter at: /usr/bin/python3.12
+2026-09-13T12:59:26.1061532Z Creating virtual environment at: .venv
+2026-09-13T12:59:26.1113481Z Resolved 135 packages in 1ms
+2026-09-13T12:59:26.1488597Z    Building embedding-optimizer-study @ file:///home/runner/work/embedding-optimizer-study/embedding-optimizer-study
+2026-09-13T12:59:26.2308382Z Downloading hf-xet (4.3MiB)
+2026-09-13T12:59:26.2558892Z Downloading setuptools (1.0MiB)
+2026-09-13T12:59:26.2564341Z Downloading pygments (1.2MiB)
+2026-09-13T12:59:26.2564975Z Downloading pandas (10.5MiB)
+2026-09-13T12:59:26.2787958Z Downloading scipy (33.7MiB)
+2026-09-13T12:59:26.2789940Z Downloading tokenizers (3.1MiB)
+2026-09-13T12:59:26.2791020Z Downloading matplotlib (9.6MiB)
+2026-09-13T12:59:26.2792425Z Downloading nvidia-cuda-nvrtc-cu12 (84.0MiB)
+2026-09-13T12:59:26.2793960Z Downloading ruff (10.5MiB)
+2026-09-13T12:59:26.2795525Z Downloading pyarrow (45.4MiB)
+2026-09-13T12:59:26.2797731Z Downloading kiwisolver (1.4MiB)
+2026-09-13T12:59:26.2799219Z Downloading networkx (2.0MiB)
+2026-09-13T12:59:26.2801910Z Downloading pydantic-core (2.0MiB)
+2026-09-13T12:59:26.2803346Z Downloading sympy (6.0MiB)
+2026-09-13T12:59:26.2804724Z Downloading numpy (15.9MiB)
+2026-09-13T12:59:26.2806413Z Downloading numkong (10.0MiB)
+2026-09-13T12:59:26.2807860Z Downloading pillow (6.6MiB)
+2026-09-13T12:59:26.2809289Z Downloading mteb (5.9MiB)
+2026-09-13T12:59:26.2811047Z Downloading fonttools (4.8MiB)
+2026-09-13T12:59:26.2812732Z Downloading polars-runtime-32 (54.6MiB)
+2026-09-13T12:59:26.2814383Z Downloading fast-plaid (2.0MiB)
+2026-09-13T12:59:26.2815940Z Downloading usearch (2.3MiB)
+2026-09-13T12:59:26.2817803Z Downloading aiohttp (1.7MiB)
+2026-09-13T12:59:26.2819601Z Downloading wandb (28.3MiB)
+2026-09-13T12:59:26.2821328Z Downloading nvidia-cufile-cu12 (1.1MiB)
+2026-09-13T12:59:26.2822950Z Downloading nvidia-nvjitlink-cu12 (37.4MiB)
+2026-09-13T12:59:26.2824610Z Downloading nvidia-cusparse-cu12 (274.9MiB)
+2026-09-13T12:59:26.2826399Z Downloading triton (162.6MiB)
+2026-09-13T12:59:26.2828089Z Downloading nvidia-cusolver-cu12 (255.1MiB)
+2026-09-13T12:59:26.2829777Z Downloading nvidia-cudnn-cu12 (674.0MiB)
+2026-09-13T12:59:26.2831457Z Downloading transformers (10.2MiB)
+2026-09-13T12:59:26.2833170Z Downloading nvidia-nvshmem-cu12 (118.9MiB)
+2026-09-13T12:59:26.2834891Z Downloading nvidia-cublas-cu12 (566.8MiB)
+2026-09-13T12:59:26.2839553Z Downloading nvidia-nccl-cu12 (307.4MiB)
+2026-09-13T12:59:26.2842342Z Downloading torch (858.1MiB)
+2026-09-13T12:59:26.2844776Z Downloading scikit-learn (8.7MiB)
+2026-09-13T12:59:26.2847871Z Downloading nvidia-cufft-cu12 (184.2MiB)
+2026-09-13T12:59:26.2850270Z Downloading nvidia-curand-cu12 (60.7MiB)
+2026-09-13T12:59:26.2852778Z Downloading nvidia-cusparselt-cu12 (273.9MiB)
+2026-09-13T12:59:26.2855347Z Downloading nvidia-cuda-cupti-cu12 (9.8MiB)
+2026-09-13T12:59:26.9486070Z  Downloaded nvidia-cufile-cu12
+2026-09-13T12:59:26.9520765Z  Downloaded pygments
+2026-09-13T12:59:26.9565869Z  Downloaded setuptools
+2026-09-13T12:59:27.0392700Z  Downloaded kiwisolver
+2026-09-13T12:59:27.1118656Z  Downloaded aiohttp
+2026-09-13T12:59:27.1859418Z  Downloaded networkx
+2026-09-13T12:59:27.1985477Z  Downloaded fast-plaid
+2026-09-13T12:59:27.1999220Z  Downloaded pydantic-core
+2026-09-13T12:59:27.2437862Z    Building docopt==0.6.2
+2026-09-13T12:59:27.2679646Z  Downloaded usearch
+2026-09-13T12:59:27.4263701Z  Downloaded tokenizers
+2026-09-13T12:59:27.5745334Z  Downloaded hf-xet
+2026-09-13T12:59:27.6722541Z  Downloaded fonttools
+2026-09-13T12:59:27.8198528Z  Downloaded mteb
+2026-09-13T12:59:27.8540036Z  Downloaded sympy
+2026-09-13T12:59:27.9429907Z  Downloaded pillow
+2026-09-13T12:59:28.2756671Z  Downloaded scikit-learn
+2026-09-13T12:59:28.4119832Z  Downloaded matplotlib
+2026-09-13T12:59:28.4740016Z  Downloaded numkong
+2026-09-13T12:59:28.4742548Z  Downloaded nvidia-cuda-cupti-cu12
+2026-09-13T12:59:28.5042361Z  Downloaded transformers
+2026-09-13T12:59:28.6018998Z  Downloaded pandas
+2026-09-13T12:59:28.6140470Z  Downloaded ruff
+2026-09-13T12:59:28.6896171Z       Built docopt==0.6.2
+2026-09-13T12:59:29.2143954Z  Downloaded numpy
+2026-09-13T12:59:29.4960091Z       Built embedding-optimizer-study @ file:///home/runner/work/embedding-optimizer-study/embedding-optimizer-study
+2026-09-13T12:59:30.2749378Z  Downloaded wandb
+2026-09-13T12:59:30.7728713Z  Downloaded scipy
+2026-09-13T12:59:30.9820300Z  Downloaded nvidia-nvjitlink-cu12
+2026-09-13T12:59:31.5749551Z  Downloaded pyarrow
+2026-09-13T12:59:32.1039466Z  Downloaded polars-runtime-32
+2026-09-13T12:59:32.4620123Z  Downloaded nvidia-curand-cu12
+2026-09-13T12:59:33.6943127Z  Downloaded nvidia-cuda-nvrtc-cu12
+2026-09-13T12:59:35.3772249Z  Downloaded nvidia-nvshmem-cu12
+2026-09-13T12:59:37.2853734Z  Downloaded triton
+2026-09-13T12:59:38.1310019Z  Downloaded nvidia-cufft-cu12
+2026-09-13T12:59:40.4726515Z  Downloaded nvidia-cusolver-cu12
+2026-09-13T12:59:40.9986360Z  Downloaded nvidia-cusparselt-cu12
+2026-09-13T12:59:41.0279571Z  Downloaded nvidia-cusparse-cu12
+2026-09-13T12:59:41.6000316Z  Downloaded nvidia-nccl-cu12
+2026-09-13T12:59:45.2458208Z  Downloaded nvidia-cublas-cu12
+2026-09-13T12:59:46.5530049Z  Downloaded nvidia-cudnn-cu12
+2026-09-13T12:59:48.8328294Z  Downloaded torch
+2026-09-13T12:59:48.8330535Z Prepared 118 packages in 22.71s
+2026-09-13T12:59:49.1694926Z Installed 118 packages in 336ms
+2026-09-13T12:59:49.1695931Z  + accelerate==1.14.0
+2026-09-13T12:59:49.1696374Z  + aiohappyeyeballs==2.7.1
+2026-09-13T12:59:49.1696759Z  + aiohttp==3.14.3
+2026-09-13T12:59:49.1697354Z  + aiosignal==1.4.0
+2026-09-13T12:59:49.1697747Z  + annotated-doc==0.0.5
+2026-09-13T12:59:49.1698150Z  + annotated-types==0.8.0
+2026-09-13T12:59:49.1698536Z  + anyio==4.14.2
+2026-09-13T12:59:49.1698921Z  + attrs==26.1.0
+2026-09-13T12:59:49.1699346Z  + certifi==2026.7.22
+2026-09-13T12:59:49.1699819Z  + cffconvert==2.0.0
+2026-09-13T12:59:49.1700180Z  + charset-normalizer==3.5.1
+2026-09-13T12:59:49.1700555Z  + click==8.4.2
+2026-09-13T12:59:49.1700952Z  + contourpy==1.3.3
+2026-09-13T12:59:49.1701289Z  + coverage==7.15.4
+2026-09-13T12:59:49.1701665Z  + cycler==0.12.1
+2026-09-13T12:59:49.1702246Z  + datasets==4.8.5
+2026-09-13T12:59:49.1702683Z  + dill==0.4.1
+2026-09-13T12:59:49.1702998Z  + docopt==0.6.2
+2026-09-13T12:59:49.1704103Z  + embedding-optimizer-study==0.1.0 (from file:///home/runner/work/embedding-optimizer-study/embedding-optimizer-study)
+2026-09-13T12:59:49.1704973Z  + fast-plaid==1.6.0.290
+2026-09-13T12:59:49.1705569Z  + fastkmeans==0.5.0
+2026-09-13T12:59:49.1705892Z  + filelock==3.32.3
+2026-09-13T12:59:49.1706218Z  + fonttools==4.63.0
+2026-09-13T12:59:49.1706535Z  + frozenlist==1.8.0
+2026-09-13T12:59:49.1706866Z  + fsspec==2026.2.0
+2026-09-13T12:59:49.1707175Z  + h11==0.16.0
+2026-09-13T12:59:49.1707466Z  + hf-xet==1.6.0
+2026-09-13T12:59:49.1707771Z  + httpcore==1.0.9
+2026-09-13T12:59:49.1708079Z  + httpx==0.28.1
+2026-09-13T12:59:49.1708402Z  + huggingface-hub==1.27.0
+2026-09-13T12:59:49.1708761Z  + idna==3.18
+2026-09-13T12:59:49.1709064Z  + iniconfig==2.3.0
+2026-09-13T12:59:49.1709402Z  + jinja2==3.1.6
+2026-09-13T12:59:49.1709705Z  + joblib==1.5.3
+2026-09-13T12:59:49.1710134Z  + jsonschema==3.2.0
+2026-09-13T12:59:49.1710486Z  + kiwisolver==1.5.0
+2026-09-13T12:59:49.1710994Z  + late-interaction-kernels==0.4.5
+2026-09-13T12:59:49.1711406Z  + markdown-it-py==4.2.0
+2026-09-13T12:59:49.1711767Z  + markupsafe==3.0.3
+2026-09-13T12:59:49.1712096Z  + matplotlib==3.11.1
+2026-09-13T12:59:49.1712421Z  + mdurl==0.1.2
+2026-09-13T12:59:49.1712851Z  + mpmath==1.3.0
+2026-09-13T12:59:49.1713181Z  + mteb==2.19.3
+2026-09-13T12:59:49.1713916Z  + multidict==6.7.1
+2026-09-13T12:59:49.1714246Z  + multiprocess==0.70.19
+2026-09-13T12:59:49.1714586Z  + narwhals==2.24.0
+2026-09-13T12:59:49.1714903Z  + networkx==3.6.1
+2026-09-13T12:59:49.1715514Z  + ninja==1.11.1.4
+2026-09-13T12:59:49.1715903Z  + numkong==7.8.0
+2026-09-13T12:59:49.1716334Z  + numpy==2.5.2
+2026-09-13T12:59:49.1716779Z  + nvidia-cublas-cu12==12.8.4.1
+2026-09-13T12:59:49.1717193Z  + nvidia-cuda-cupti-cu12==12.8.90
+2026-09-13T12:59:49.1717631Z  + nvidia-cuda-nvrtc-cu12==12.8.93
+2026-09-13T12:59:49.1718047Z  + nvidia-cuda-runtime-cu12==12.8.90
+2026-09-13T12:59:49.1718469Z  + nvidia-cudnn-cu12==9.10.2.21
+2026-09-13T12:59:49.1719058Z  + nvidia-cufft-cu12==11.3.3.83
+2026-09-13T12:59:49.1719438Z  + nvidia-cufile-cu12==1.13.1.3
+2026-09-13T12:59:49.1719817Z  + nvidia-curand-cu12==10.3.9.90
+2026-09-13T12:59:49.1720305Z  + nvidia-cusolver-cu12==11.7.3.90
+2026-09-13T12:59:49.1720782Z  + nvidia-cusparse-cu12==12.5.8.93
+2026-09-13T12:59:49.1721231Z  + nvidia-cusparselt-cu12==0.7.1
+2026-09-13T12:59:49.1721678Z  + nvidia-nccl-cu12==2.27.5
+2026-09-13T12:59:49.1722098Z  + nvidia-nvjitlink-cu12==12.8.93
+2026-09-13T12:59:49.1722525Z  + nvidia-nvshmem-cu12==3.3.20
+2026-09-13T12:59:49.1723159Z  + nvidia-nvtx-cu12==12.8.90
+2026-09-13T12:59:49.1723596Z  + opentelemetry-api==1.44.0
+2026-09-13T12:59:49.1723975Z  + packaging==26.3
+2026-09-13T12:59:49.1724310Z  + pandas==3.0.5
+2026-09-13T12:59:49.1724634Z  + pillow==12.3.0
+2026-09-13T12:59:49.1724970Z  + platformdirs==4.11.3
+2026-09-13T12:59:49.1725522Z  + pluggy==1.6.0
+2026-09-13T12:59:49.1725844Z  + polars==1.43.2
+2026-09-13T12:59:49.1726195Z  + polars-runtime-32==1.43.2
+2026-09-13T12:59:49.1726589Z  + propcache==0.5.2
+2026-09-13T12:59:49.1726941Z  + protobuf==7.35.1
+2026-09-13T12:59:49.1727274Z  + psutil==7.2.2
+2026-09-13T12:59:49.1727601Z  + pyarrow==23.0.1
+2026-09-13T12:59:49.1727932Z  + pydantic==2.13.4
+2026-09-13T12:59:49.1728270Z  + pydantic-core==2.46.4
+2026-09-13T12:59:49.1728685Z  + pygments==2.20.0
+2026-09-13T12:59:49.1729021Z  + pykwalify==1.8.0
+2026-09-13T12:59:49.1729350Z  + pylate==1.6.0
+2026-09-13T12:59:49.1729680Z  + pyparsing==3.3.2
+2026-09-13T12:59:49.1730032Z  + pyrsistent==0.20.0
+2026-09-13T12:59:49.1730366Z  + pytest==9.1.1
+2026-09-13T12:59:49.1730716Z  + pytest-cov==7.1.0
+2026-09-13T12:59:49.1731254Z  + python-dateutil==2.9.0.post0
+2026-09-13T12:59:49.1731659Z  + pytrec-eval-terrier==0.5.10
+2026-09-13T12:59:49.1732039Z  + pyyaml==6.0.3
+2026-09-13T12:59:49.1732413Z  + regex==2026.7.19
+2026-09-13T12:59:49.1732827Z  + requests==2.34.2
+2026-09-13T12:59:49.1733142Z  + rich==15.0.0
+2026-09-13T12:59:49.1733559Z  + ruamel-yaml==0.19.1
+2026-09-13T12:59:49.1733943Z  + ruff==0.16.3
+2026-09-13T12:59:49.1734323Z  + safetensors==0.8.0
+2026-09-13T12:59:49.1734717Z  + scikit-learn==1.9.0
+2026-09-13T12:59:49.1735222Z  + scipy==1.18.0
+2026-09-13T12:59:49.1735689Z  + sentence-transformers==5.7.0
+2026-09-13T12:59:49.1736080Z  + sentry-sdk==2.68.0
+2026-09-13T12:59:49.1736488Z  + setuptools==81.0.0
+2026-09-13T12:59:49.1736860Z  + shellingham==1.5.4
+2026-09-13T12:59:49.1737324Z  + six==1.17.0
+2026-09-13T12:59:49.1737732Z  + sympy==1.14.0
+2026-09-13T12:59:49.1738156Z  + threadpoolctl==3.6.0
+2026-09-13T12:59:49.1738504Z  + tokenizers==0.22.2
+2026-09-13T12:59:49.1738825Z  + torch==2.9.0
+2026-09-13T12:59:49.1739342Z  + tqdm==4.70.0
+2026-09-13T12:59:49.1739647Z  + transformers==5.3.0
+2026-09-13T12:59:49.1740048Z  + triton==3.5.0
+2026-09-13T12:59:49.1740496Z  + typer==0.27.1
+2026-09-13T12:59:49.1740904Z  + typing-extensions==4.16.0
+2026-09-13T12:59:49.1741297Z  + typing-inspection==0.4.4
+2026-09-13T12:59:49.1741652Z  + ujson==5.12.0
+2026-09-13T12:59:49.1741989Z  + urllib3==2.7.0
+2026-09-13T12:59:49.1742385Z  + usearch==2.26.0
+2026-09-13T12:59:49.1742857Z  + wandb==0.28.2
+2026-09-13T12:59:49.1743157Z  + xxhash==4.0.0
+2026-09-13T12:59:49.1743507Z  + yarl==1.24.5
+2026-09-13T12:59:49.2006636Z ##[group]Run sudo apt-get update && sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended poppler-utils
+2026-09-13T12:59:49.2007526Z [36;1msudo apt-get update && sudo apt-get install -y latexmk texlive-latex-extra texlive-fonts-recommended poppler-utils[0m
+2026-09-13T12:59:49.2047568Z shell: /usr/bin/bash -e {0}
+2026-09-13T12:59:49.2047824Z env:
+2026-09-13T12:59:49.2048107Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-09-13T12:59:49.2048453Z   UV_PYTHON: 3.12
+2026-09-13T12:59:49.2048711Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-13T12:59:49.2049008Z ##[endgroup]
+2026-09-13T12:59:49.2926468Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-09-13T12:59:49.3243423Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-09-13T12:59:49.3244877Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-09-13T12:59:49.3286112Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-09-13T12:59:49.3379577Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-09-13T12:59:49.3448341Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-09-13T12:59:49.4183642Z Get:7 https://dl.google.com/linux/chrome-stable/deb stable InRelease [2548 B]
+2026-09-13T12:59:49.4650711Z Get:8 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [414 kB]
+2026-09-13T12:59:49.4807546Z Get:9 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [463 kB]
+2026-09-13T12:59:49.5185977Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1263 kB]
+2026-09-13T12:59:49.5287441Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [292 kB]
+2026-09-13T12:59:49.5323823Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Components [181 kB]
+2026-09-13T12:59:49.5340667Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1690 kB]
+2026-09-13T12:59:49.5446147Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [388 kB]
+2026-09-13T12:59:49.5506105Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1544 kB]
+2026-09-13T12:59:49.5568611Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [354 kB]
+2026-09-13T12:59:49.5601684Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+2026-09-13T12:59:49.5868237Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5772 B]
+2026-09-13T12:59:49.5881400Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [12.6 kB]
+2026-09-13T12:59:49.6866896Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1006 kB]
+2026-09-13T12:59:49.6926965Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [213 kB]
+2026-09-13T12:59:49.6961010Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Components [46.4 kB]
+2026-09-13T12:59:49.6975170Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1206 kB]
+2026-09-13T12:59:49.7048590Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Components [76.3 kB]
+2026-09-13T12:59:49.7069138Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1445 kB]
+2026-09-13T12:59:49.7151675Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [336 kB]
+2026-09-13T12:59:49.7525342Z Get:27 https://dl.google.com/linux/chrome-stable/deb stable/main amd64 Packages [1408 B]
+2026-09-13T12:59:54.4596251Z Fetched 11.3 MB in 1s (8464 kB/s)
+2026-09-13T12:59:55.2425996Z Reading package lists...
+2026-09-13T12:59:55.2753407Z Reading package lists...
+2026-09-13T12:59:55.4763463Z Building dependency tree...
+2026-09-13T12:59:55.4771964Z Reading state information...
+2026-09-13T12:59:55.6375017Z The following additional packages will be installed:
+2026-09-13T12:59:55.6375991Z   ca-certificates-java cups-bsd cups-client cups-common default-jre
+2026-09-13T12:59:55.6376724Z   default-jre-headless dvisvgm fonts-droid-fallback fonts-lmodern
+2026-09-13T12:59:55.6377445Z   fonts-noto-mono fonts-texgyre fonts-texgyre-math fonts-urw-base35
+2026-09-13T12:59:55.6378099Z   ghostscript gv libapache-pom-java libatk-wrapper-java
+2026-09-13T12:59:55.6378882Z   libatk-wrapper-java-jni libbit-vector-perl libcarp-clan-perl
+2026-09-13T12:59:55.6379591Z   libcommons-logging-java libcommons-parent-java libcrypt-rc4-perl
+2026-09-13T12:59:55.6380357Z   libdate-calc-perl libdate-calc-xs-perl libdate-manip-perl
+2026-09-13T12:59:55.6381099Z   libdigest-perl-md5-perl libfontbox-java libgif7 libgs-common libgs10
+2026-09-13T12:59:55.6382343Z   libgs10-common libgumbo2 libidn12 libijs-0.35 libio-stringy-perl
+2026-09-13T12:59:55.6383047Z   libjbig2dec0 libjcode-pm-perl libkpathsea6 libmotif-common libmujs3
+2026-09-13T12:59:55.6383808Z   libole-storage-lite-perl libpaper-utils libpaper1 libparse-recdescent-perl
+2026-09-13T12:59:55.6385681Z   libpcsclite1 libpdfbox-java libpoppler134 libpotrace0 libptexenc1
+2026-09-13T12:59:55.6387908Z   libspreadsheet-parseexcel-perl libspreadsheet-writeexcel-perl libsynctex2
+2026-09-13T12:59:55.6388828Z   libteckit0 libtexlua53-5 libunicode-map-perl libwoff1 libxcb-shape0 libxm4
+2026-09-13T12:59:55.6389648Z   libxv1 libxxf86dga1 libzzip-0-13t64 lmodern mupdf-tools openjdk-21-jre
+2026-09-13T12:59:55.6390472Z   openjdk-21-jre-headless poppler-data preview-latex-style t1utils tex-gyre
+2026-09-13T12:59:55.6391324Z   texlive-base texlive-binaries texlive-latex-base texlive-latex-recommended
+2026-09-13T12:59:55.6392079Z   texlive-pictures texlive-plain-generic tipa x11-utils xaw3dg
+2026-09-13T12:59:55.6392655Z   xfonts-encodings xfonts-utils xpdf
+2026-09-13T12:59:55.6399764Z Suggested packages:
+2026-09-13T12:59:55.6400328Z   cups inetutils-inetd | inet-superserver update-inetd smbclient fonts-noto
+2026-09-13T12:59:55.6401101Z   fonts-freefont-otf | fonts-freefont-ttf libavalon-framework-java
+2026-09-13T12:59:55.6401773Z   libexcalibur-logkit-java liblog4j1.2-java pcscd libwww-perl libnss-mdns
+2026-09-13T12:59:55.6402517Z   fonts-ipafont-gothic fonts-ipafont-mincho fonts-wqy-microhei
+2026-09-13T12:59:55.6403278Z   | fonts-wqy-zenhei fonts-indic fonts-japanese-mincho | fonts-ipafont-mincho
+2026-09-13T12:59:55.6404037Z   fonts-japanese-gothic | fonts-ipafont-gothic fonts-arphic-ukai
+2026-09-13T12:59:55.6404532Z   fonts-arphic-uming fonts-nanum perl-tk xzdec texlive-binaries-sse2 hintview
+2026-09-13T12:59:55.6405284Z   texlive-fonts-recommended-doc texlive-latex-base-doc wp2latex icc-profiles
+2026-09-13T12:59:55.6405877Z   libfile-which-perl texlive-latex-extra-doc texlive-science
+2026-09-13T12:59:55.6406360Z   texlive-latex-recommended-doc texlive-luatex texlive-pstricks dot2tex prerex
+2026-09-13T12:59:55.6406815Z   texlive-pictures-doc vprerex tipa-doc mesa-utils
+2026-09-13T12:59:55.6407130Z Recommended packages:
+2026-09-13T12:59:55.6407360Z   luit
+2026-09-13T12:59:55.6944448Z The following NEW packages will be installed:
+2026-09-13T12:59:55.6944939Z   ca-certificates-java cups-bsd cups-client cups-common default-jre
+2026-09-13T12:59:55.6945679Z   default-jre-headless dvisvgm fonts-droid-fallback fonts-lmodern
+2026-09-13T12:59:55.6946276Z   fonts-noto-mono fonts-texgyre fonts-texgyre-math fonts-urw-base35
+2026-09-13T12:59:55.6947039Z   ghostscript gv latexmk libapache-pom-java libatk-wrapper-java
+2026-09-13T12:59:55.6947680Z   libatk-wrapper-java-jni libbit-vector-perl libcarp-clan-perl
+2026-09-13T12:59:55.6948325Z   libcommons-logging-java libcommons-parent-java libcrypt-rc4-perl
+2026-09-13T12:59:55.6948922Z   libdate-calc-perl libdate-calc-xs-perl libdate-manip-perl
+2026-09-13T12:59:55.6949462Z   libdigest-perl-md5-perl libfontbox-java libgif7 libgs-common libgs10
+2026-09-13T12:59:55.6949951Z   libgs10-common libgumbo2 libidn12 libijs-0.35 libio-stringy-perl
+2026-09-13T12:59:55.6950839Z   libjbig2dec0 libjcode-pm-perl libkpathsea6 libmotif-common libmujs3
+2026-09-13T12:59:55.6951390Z   libole-storage-lite-perl libpaper-utils libpaper1 libparse-recdescent-perl
+2026-09-13T12:59:55.6952197Z   libpcsclite1 libpdfbox-java libpoppler134 libpotrace0 libptexenc1
+2026-09-13T12:59:55.6952733Z   libspreadsheet-parseexcel-perl libspreadsheet-writeexcel-perl libsynctex2
+2026-09-13T12:59:55.6953269Z   libteckit0 libtexlua53-5 libunicode-map-perl libwoff1 libxcb-shape0 libxm4
+2026-09-13T12:59:55.6954301Z   libxv1 libxxf86dga1 libzzip-0-13t64 lmodern mupdf-tools openjdk-21-jre
+2026-09-13T12:59:55.6955651Z   openjdk-21-jre-headless poppler-data poppler-utils preview-latex-style
+2026-09-13T12:59:55.6956592Z   t1utils tex-gyre texlive-base texlive-binaries texlive-fonts-recommended
+2026-09-13T12:59:55.6957562Z   texlive-latex-base texlive-latex-extra texlive-latex-recommended
+2026-09-13T12:59:55.6958776Z   texlive-pictures texlive-plain-generic tipa x11-utils xaw3dg
+2026-09-13T12:59:55.6959509Z   xfonts-encodings xfonts-utils xpdf
+2026-09-13T12:59:55.7169157Z 0 upgraded, 86 newly installed, 0 to remove and 50 not upgraded.
+2026-09-13T12:59:55.7169691Z Need to get 276 MB of archives.
+2026-09-13T12:59:55.7170051Z After this operation, 873 MB of additional disk space will be used.
+2026-09-13T12:59:55.7170578Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-09-13T12:59:55.7819449Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-droid-fallback all 1:6.0.1r16-1.1build1 [1805 kB]
+2026-09-13T12:59:55.8514228Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libmotif-common all 2.3.8-3.1build1 [10.1 kB]
+2026-09-13T12:59:55.8981437Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libxm4 amd64 2.3.8-3.1build1 [1091 kB]
+2026-09-13T12:59:55.9605927Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 poppler-data all 0.4.12-1 [2060 kB]
+2026-09-13T12:59:56.0303772Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 ca-certificates-java all 20240118 [11.6 kB]
+2026-09-13T12:59:56.1406593Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 cups-common all 2.4.7-1.2ubuntu7.14 [264 kB]
+2026-09-13T12:59:56.2626637Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 cups-client amd64 2.4.7-1.2ubuntu7.14 [154 kB]
+2026-09-13T12:59:56.3482287Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpcsclite1 amd64 2.0.3-1build1 [21.4 kB]
+2026-09-13T12:59:56.4919176Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 openjdk-21-jre-headless amd64 21.0.12+8-1~24.04 [46.5 MB]
+2026-09-13T12:59:57.2170240Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 default-jre-headless amd64 2:1.21-75+exp1 [3094 B]
+2026-09-13T12:59:57.2640947Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgif7 amd64 5.2.2-1ubuntu1.2 [35.6 kB]
+2026-09-13T12:59:57.3121407Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 openjdk-21-jre amd64 21.0.12+8-1~24.04 [233 kB]
+2026-09-13T12:59:57.3631482Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 default-jre amd64 2:1.21-75+exp1 [922 B]
+2026-09-13T12:59:57.4106057Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-encodings all 1:1.0.5-0ubuntu2 [578 kB]
+2026-09-13T12:59:57.4663177Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 xfonts-utils amd64 1:7.7+6build3 [94.4 kB]
+2026-09-13T12:59:57.5138806Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-urw-base35 all 20200910-8 [11.0 MB]
+2026-09-13T12:59:57.7191336Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgs-common all 10.02.1~dfsg1-0ubuntu7.8 [176 kB]
+2026-09-13T12:59:57.7672739Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgs10-common all 10.02.1~dfsg1-0ubuntu7.8 [488 kB]
+2026-09-13T12:59:57.8204607Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libidn12 amd64 1.42-1ubuntu0.1 [56.1 kB]
+2026-09-13T12:59:57.8682372Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libijs-0.35 amd64 0.35-15.1build1 [15.3 kB]
+2026-09-13T12:59:57.9155446Z Get:22 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libjbig2dec0 amd64 0.20-1ubuntu0.24.04.1 [65.2 kB]
+2026-09-13T12:59:57.9632921Z Get:23 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpaper1 amd64 1.1.29build1 [13.4 kB]
+2026-09-13T12:59:58.0103324Z Get:24 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libgs10 amd64 10.02.1~dfsg1-0ubuntu7.8 [3897 kB]
+2026-09-13T12:59:58.1170961Z Get:25 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libkpathsea6 amd64 2023.20230311.66589-9build3 [63.0 kB]
+2026-09-13T12:59:58.1642312Z Get:26 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libpotrace0 amd64 1.16-2build1 [17.7 kB]
+2026-09-13T12:59:58.2112364Z Get:27 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libwoff1 amd64 1.0.2-2build1 [45.3 kB]
+2026-09-13T12:59:58.2584115Z Get:28 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 dvisvgm amd64 3.2.1+ds-1build1 [1042 kB]
+2026-09-13T12:59:58.3189633Z Get:29 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-lmodern all 2.005-1 [4799 kB]
+2026-09-13T12:59:58.4347297Z Get:30 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 fonts-noto-mono all 20201225-2 [435 kB]
+2026-09-13T12:59:58.4858771Z Get:31 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-texgyre all 20180621-6 [8350 kB]
+2026-09-13T12:59:58.6563901Z Get:32 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 fonts-texgyre-math all 20180621-6 [2373 kB]
+2026-09-13T12:59:58.7366091Z Get:33 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 ghostscript amd64 10.02.1~dfsg1-0ubuntu7.8 [43.4 kB]
+2026-09-13T12:59:58.7840518Z Get:34 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xaw3dg amd64 1.5+F-1.1build2 [148 kB]
+2026-09-13T12:59:58.8318396Z Get:35 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 gv amd64 1:3.7.4-2build2 [212 kB]
+2026-09-13T12:59:58.8805203Z Get:36 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libpaper-utils amd64 1.1.29build1 [8650 B]
+2026-09-13T12:59:58.9278524Z Get:37 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libptexenc1 amd64 2023.20230311.66589-9build3 [40.4 kB]
+2026-09-13T12:59:58.9749440Z Get:38 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libsynctex2 amd64 2023.20230311.66589-9build3 [59.6 kB]
+2026-09-13T12:59:59.0228210Z Get:39 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libtexlua53-5 amd64 2023.20230311.66589-9build3 [123 kB]
+2026-09-13T12:59:59.0705647Z Get:40 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 t1utils amd64 1.41-4build3 [61.3 kB]
+2026-09-13T12:59:59.1175923Z Get:41 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libteckit0 amd64 2.5.12+ds1-1 [411 kB]
+2026-09-13T12:59:59.1694488Z Get:42 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libzzip-0-13t64 amd64 0.13.72+dfsg.1-1.2build1 [28.1 kB]
+2026-09-13T12:59:59.2189532Z Get:43 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-binaries amd64 2023.20230311.66589-9build3 [8529 kB]
+2026-09-13T12:59:59.4038315Z Get:44 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-base all 2023.20240207-1 [21.7 MB]
+2026-09-13T12:59:59.8555886Z Get:45 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-latex-base all 2023.20240207-1 [1238 kB]
+2026-09-13T12:59:59.9249415Z Get:46 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 latexmk all 1:4.83-1 [203 kB]
+2026-09-13T12:59:59.9750109Z Get:47 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libapache-pom-java all 29-2 [5284 B]
+2026-09-13T13:00:00.0218132Z Get:48 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxcb-shape0 amd64 1.15-1ubuntu2 [6100 B]
+2026-09-13T13:00:00.0690774Z Get:49 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxv1 amd64 2:1.0.11-1.1build1 [10.7 kB]
+2026-09-13T13:00:00.1160782Z Get:50 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libxxf86dga1 amd64 2:1.1.5-1build1 [11.6 kB]
+2026-09-13T13:00:00.1630395Z Get:51 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 x11-utils amd64 7.7+6build2 [189 kB]
+2026-09-13T13:00:00.2113609Z Get:52 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libatk-wrapper-java all 0.40.0-3build2 [54.3 kB]
+2026-09-13T13:00:00.2586065Z Get:53 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libatk-wrapper-java-jni amd64 0.40.0-3build2 [46.4 kB]
+2026-09-13T13:00:00.3059224Z Get:54 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libcarp-clan-perl all 6.08-2 [11.9 kB]
+2026-09-13T13:00:00.3526456Z Get:55 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libbit-vector-perl amd64 7.4-3build1 [139 kB]
+2026-09-13T13:00:00.4011228Z Get:56 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libcommons-parent-java all 56-1 [10.7 kB]
+2026-09-13T13:00:00.4482532Z Get:57 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libcommons-logging-java all 1.3.0-1ubuntu1 [63.8 kB]
+2026-09-13T13:00:00.4963204Z Get:58 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libcrypt-rc4-perl all 2.02-5 [7064 B]
+2026-09-13T13:00:00.5433545Z Get:59 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libdate-calc-perl all 6.4-2 [187 kB]
+2026-09-13T13:00:00.5922194Z Get:60 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libdate-calc-xs-perl amd64 6.4-2build4 [46.8 kB]
+2026-09-13T13:00:00.6391322Z Get:61 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libdate-manip-perl all 6.95-1 [923 kB]
+2026-09-13T13:00:00.7018089Z Get:62 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libdigest-perl-md5-perl all 1.9-5 [11.1 kB]
+2026-09-13T13:00:00.7489292Z Get:63 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libgumbo2 amd64 0.12.0+dfsg-2build1 [126 kB]
+2026-09-13T13:00:00.7964716Z Get:64 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libio-stringy-perl all 2.111-3 [55.8 kB]
+2026-09-13T13:00:00.8436719Z Get:65 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libjcode-pm-perl amd64 2.06-1.1build1 [26.8 kB]
+2026-09-13T13:00:00.8908928Z Get:66 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libmujs3 amd64 1.3.3-3build2 [134 kB]
+2026-09-13T13:00:00.9402458Z Get:67 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libole-storage-lite-perl all 0.22-1 [21.6 kB]
+2026-09-13T13:00:00.9880041Z Get:68 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libparse-recdescent-perl all 1.967015+dfsg-4 [139 kB]
+2026-09-13T13:00:01.0365872Z Get:69 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 libpoppler134 amd64 24.02.0-1ubuntu9.9 [1118 kB]
+2026-09-13T13:00:01.0980867Z Get:70 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libspreadsheet-writeexcel-perl all 2.40-4 [497 kB]
+2026-09-13T13:00:01.1513924Z Get:71 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libunicode-map-perl amd64 0.112-13build4 [203 kB]
+2026-09-13T13:00:01.1998084Z Get:72 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libspreadsheet-parseexcel-perl all 0.6600-1 [144 kB]
+2026-09-13T13:00:01.2479555Z Get:73 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 lmodern all 2.005-1 [9542 kB]
+2026-09-13T13:00:01.4376661Z Get:74 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 mupdf-tools amd64 1.23.10+ds1-1build3 [49.3 MB]
+2026-09-13T13:00:02.2233837Z Get:75 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 poppler-utils amd64 24.02.0-1ubuntu9.9 [212 kB]
+2026-09-13T13:00:02.2721736Z Get:76 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 preview-latex-style all 13.2-1 [347 kB]
+2026-09-13T13:00:02.3227874Z Get:77 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 tex-gyre all 20180621-6 [6396 kB]
+2026-09-13T13:00:02.4611278Z Get:78 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-fonts-recommended all 2023.20240207-1 [4973 kB]
+2026-09-13T13:00:02.5791378Z Get:79 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libfontbox-java all 1:1.8.16-5 [208 kB]
+2026-09-13T13:00:02.6271650Z Get:80 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libpdfbox-java all 1:1.8.16-5 [5521 kB]
+2026-09-13T13:00:02.7680573Z Get:81 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-latex-recommended all 2023.20240207-1 [8826 kB]
+2026-09-13T13:00:02.9576595Z Get:82 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-pictures all 2023.20240207-1 [16.7 MB]
+2026-09-13T13:00:03.2566210Z Get:83 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-latex-extra all 2023.20240207-1 [19.2 MB]
+2026-09-13T13:00:03.5949471Z Get:84 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 texlive-plain-generic all 2023.20240207-1 [29.0 MB]
+2026-09-13T13:00:04.0747695Z Get:85 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 tipa all 2:1.3-21 [2967 kB]
+2026-09-13T13:00:04.1652932Z Get:86 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 xpdf amd64 3.04+git20240202-1build3 [125 kB]
+2026-09-13T13:00:04.2142402Z Get:87 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 cups-bsd amd64 2.4.7-1.2ubuntu7.14 [42.2 kB]
+2026-09-13T13:00:04.5516805Z Preconfiguring packages ...
+2026-09-13T13:00:04.6374563Z Fetched 276 MB in 9s (32.5 MB/s)
+2026-09-13T13:00:04.6605757Z Selecting previously unselected package fonts-droid-fallback.
+2026-09-13T13:00:04.6884305Z (Reading database ... 
+2026-09-13T13:00:04.6884776Z (Reading database ... 5%
+2026-09-13T13:00:04.6885439Z (Reading database ... 10%
+2026-09-13T13:00:04.6885909Z (Reading database ... 15%
+2026-09-13T13:00:04.6886287Z (Reading database ... 20%
+2026-09-13T13:00:04.6886624Z (Reading database ... 25%
+2026-09-13T13:00:04.6886857Z (Reading database ... 30%
+2026-09-13T13:00:04.6887224Z (Reading database ... 35%
+2026-09-13T13:00:04.6887589Z (Reading database ... 40%
+2026-09-13T13:00:04.6887934Z (Reading database ... 45%
+2026-09-13T13:00:04.6888292Z (Reading database ... 50%
+2026-09-13T13:00:04.6922547Z (Reading database ... 55%
+2026-09-13T13:00:04.8064708Z (Reading database ... 60%
+2026-09-13T13:00:05.0035541Z (Reading database ... 65%
+2026-09-13T13:00:05.1529319Z (Reading database ... 70%
+2026-09-13T13:00:05.3490824Z (Reading database ... 75%
+2026-09-13T13:00:05.5703951Z (Reading database ... 80%
+2026-09-13T13:00:05.7441567Z (Reading database ... 85%
+2026-09-13T13:00:05.9942819Z (Reading database ... 90%
+2026-09-13T13:00:06.1694374Z (Reading database ... 95%
+2026-09-13T13:00:06.1694720Z (Reading database ... 100%
+2026-09-13T13:00:06.1695327Z (Reading database ... 201818 files and directories currently installed.)
+2026-09-13T13:00:06.1740319Z Preparing to unpack .../00-fonts-droid-fallback_1%3a6.0.1r16-1.1build1_all.deb ...
+2026-09-13T13:00:06.1965178Z Unpacking fonts-droid-fallback (1:6.0.1r16-1.1build1) ...
+2026-09-13T13:00:06.3371015Z Selecting previously unselected package libmotif-common.
+2026-09-13T13:00:06.3501366Z Preparing to unpack .../01-libmotif-common_2.3.8-3.1build1_all.deb ...
+2026-09-13T13:00:06.3507036Z Unpacking libmotif-common (2.3.8-3.1build1) ...
+2026-09-13T13:00:06.3914425Z Selecting previously unselected package libxm4:amd64.
+2026-09-13T13:00:06.4042227Z Preparing to unpack .../02-libxm4_2.3.8-3.1build1_amd64.deb ...
+2026-09-13T13:00:06.4093296Z Unpacking libxm4:amd64 (2.3.8-3.1build1) ...
+2026-09-13T13:00:06.4408442Z Selecting previously unselected package poppler-data.
+2026-09-13T13:00:06.4534791Z Preparing to unpack .../03-poppler-data_0.4.12-1_all.deb ...
+2026-09-13T13:00:06.4541838Z Unpacking poppler-data (0.4.12-1) ...
+2026-09-13T13:00:06.5714860Z Selecting previously unselected package ca-certificates-java.
+2026-09-13T13:00:06.5845442Z Preparing to unpack .../04-ca-certificates-java_20240118_all.deb ...
+2026-09-13T13:00:06.5873484Z Unpacking ca-certificates-java (20240118) ...
+2026-09-13T13:00:06.6132058Z Selecting previously unselected package cups-common.
+2026-09-13T13:00:06.6269976Z Preparing to unpack .../05-cups-common_2.4.7-1.2ubuntu7.14_all.deb ...
+2026-09-13T13:00:06.6276690Z Unpacking cups-common (2.4.7-1.2ubuntu7.14) ...
+2026-09-13T13:00:06.6626162Z Selecting previously unselected package cups-client.
+2026-09-13T13:00:06.6756907Z Preparing to unpack .../06-cups-client_2.4.7-1.2ubuntu7.14_amd64.deb ...
+2026-09-13T13:00:06.6763420Z Unpacking cups-client (2.4.7-1.2ubuntu7.14) ...
+2026-09-13T13:00:06.7462987Z Selecting previously unselected package libpcsclite1:amd64.
+2026-09-13T13:00:06.7592249Z Preparing to unpack .../07-libpcsclite1_2.0.3-1build1_amd64.deb ...
+2026-09-13T13:00:06.7599113Z Unpacking libpcsclite1:amd64 (2.0.3-1build1) ...
+2026-09-13T13:00:06.7803093Z Selecting previously unselected package openjdk-21-jre-headless:amd64.
+2026-09-13T13:00:06.7930238Z Preparing to unpack .../08-openjdk-21-jre-headless_21.0.12+8-1~24.04_amd64.deb ...
+2026-09-13T13:00:06.7937684Z Unpacking openjdk-21-jre-headless:amd64 (21.0.12+8-1~24.04) ...
+2026-09-13T13:00:07.4891757Z Selecting previously unselected package default-jre-headless.
+2026-09-13T13:00:07.5023562Z Preparing to unpack .../09-default-jre-headless_2%3a1.21-75+exp1_amd64.deb ...
+2026-09-13T13:00:07.5030314Z Unpacking default-jre-headless (2:1.21-75+exp1) ...
+2026-09-13T13:00:07.5218831Z Selecting previously unselected package libgif7:amd64.
+2026-09-13T13:00:07.5345481Z Preparing to unpack .../10-libgif7_5.2.2-1ubuntu1.2_amd64.deb ...
+2026-09-13T13:00:07.5352064Z Unpacking libgif7:amd64 (5.2.2-1ubuntu1.2) ...
+2026-09-13T13:00:07.5545878Z Selecting previously unselected package openjdk-21-jre:amd64.
+2026-09-13T13:00:07.5673244Z Preparing to unpack .../11-openjdk-21-jre_21.0.12+8-1~24.04_amd64.deb ...
+2026-09-13T13:00:07.5681637Z Unpacking openjdk-21-jre:amd64 (21.0.12+8-1~24.04) ...
+2026-09-13T13:00:07.6174029Z Selecting previously unselected package default-jre.
+2026-09-13T13:00:07.6303128Z Preparing to unpack .../12-default-jre_2%3a1.21-75+exp1_amd64.deb ...
+2026-09-13T13:00:07.6309380Z Unpacking default-jre (2:1.21-75+exp1) ...
+2026-09-13T13:00:07.6487454Z Selecting previously unselected package xfonts-encodings.
+2026-09-13T13:00:07.6611513Z Preparing to unpack .../13-xfonts-encodings_1%3a1.0.5-0ubuntu2_all.deb ...
+2026-09-13T13:00:07.6618901Z Unpacking xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-09-13T13:00:07.6899216Z Selecting previously unselected package xfonts-utils.
+2026-09-13T13:00:07.7023693Z Preparing to unpack .../14-xfonts-utils_1%3a7.7+6build3_amd64.deb ...
+2026-09-13T13:00:07.7029788Z Unpacking xfonts-utils (1:7.7+6build3) ...
+2026-09-13T13:00:07.7491104Z Selecting previously unselected package fonts-urw-base35.
+2026-09-13T13:00:07.7619419Z Preparing to unpack .../15-fonts-urw-base35_20200910-8_all.deb ...
+2026-09-13T13:00:07.8292625Z Unpacking fonts-urw-base35 (20200910-8) ...
+2026-09-13T13:00:07.9229497Z Selecting previously unselected package libgs-common.
+2026-09-13T13:00:07.9361193Z Preparing to unpack .../16-libgs-common_10.02.1~dfsg1-0ubuntu7.8_all.deb ...
+2026-09-13T13:00:07.9367033Z Unpacking libgs-common (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:07.9591242Z Selecting previously unselected package libgs10-common.
+2026-09-13T13:00:07.9718622Z Preparing to unpack .../17-libgs10-common_10.02.1~dfsg1-0ubuntu7.8_all.deb ...
+2026-09-13T13:00:07.9724681Z Unpacking libgs10-common (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:08.0377610Z Selecting previously unselected package libidn12:amd64.
+2026-09-13T13:00:08.0508309Z Preparing to unpack .../18-libidn12_1.42-1ubuntu0.1_amd64.deb ...
+2026-09-13T13:00:08.0514247Z Unpacking libidn12:amd64 (1.42-1ubuntu0.1) ...
+2026-09-13T13:00:08.0719178Z Selecting previously unselected package libijs-0.35:amd64.
+2026-09-13T13:00:08.0845515Z Preparing to unpack .../19-libijs-0.35_0.35-15.1build1_amd64.deb ...
+2026-09-13T13:00:08.0852564Z Unpacking libijs-0.35:amd64 (0.35-15.1build1) ...
+2026-09-13T13:00:08.1053344Z Selecting previously unselected package libjbig2dec0:amd64.
+2026-09-13T13:00:08.1179373Z Preparing to unpack .../20-libjbig2dec0_0.20-1ubuntu0.24.04.1_amd64.deb ...
+2026-09-13T13:00:08.1186243Z Unpacking libjbig2dec0:amd64 (0.20-1ubuntu0.24.04.1) ...
+2026-09-13T13:00:08.1399025Z Selecting previously unselected package libpaper1:amd64.
+2026-09-13T13:00:08.1527127Z Preparing to unpack .../21-libpaper1_1.1.29build1_amd64.deb ...
+2026-09-13T13:00:08.1534734Z Unpacking libpaper1:amd64 (1.1.29build1) ...
+2026-09-13T13:00:08.1741373Z Selecting previously unselected package libgs10:amd64.
+2026-09-13T13:00:08.1870451Z Preparing to unpack .../22-libgs10_10.02.1~dfsg1-0ubuntu7.8_amd64.deb ...
+2026-09-13T13:00:08.1876982Z Unpacking libgs10:amd64 (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:08.2857490Z Selecting previously unselected package libkpathsea6:amd64.
+2026-09-13T13:00:08.2988633Z Preparing to unpack .../23-libkpathsea6_2023.20230311.66589-9build3_amd64.deb ...
+2026-09-13T13:00:08.2996950Z Unpacking libkpathsea6:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:08.3210249Z Selecting previously unselected package libpotrace0:amd64.
+2026-09-13T13:00:08.3340929Z Preparing to unpack .../24-libpotrace0_1.16-2build1_amd64.deb ...
+2026-09-13T13:00:08.3347212Z Unpacking libpotrace0:amd64 (1.16-2build1) ...
+2026-09-13T13:00:08.3542270Z Selecting previously unselected package libwoff1:amd64.
+2026-09-13T13:00:08.3669754Z Preparing to unpack .../25-libwoff1_1.0.2-2build1_amd64.deb ...
+2026-09-13T13:00:08.3677257Z Unpacking libwoff1:amd64 (1.0.2-2build1) ...
+2026-09-13T13:00:08.3878742Z Selecting previously unselected package dvisvgm.
+2026-09-13T13:00:08.4007458Z Preparing to unpack .../26-dvisvgm_3.2.1+ds-1build1_amd64.deb ...
+2026-09-13T13:00:08.4014773Z Unpacking dvisvgm (3.2.1+ds-1build1) ...
+2026-09-13T13:00:08.4298972Z Selecting previously unselected package fonts-lmodern.
+2026-09-13T13:00:08.4427485Z Preparing to unpack .../27-fonts-lmodern_2.005-1_all.deb ...
+2026-09-13T13:00:08.4435418Z Unpacking fonts-lmodern (2.005-1) ...
+2026-09-13T13:00:08.5157295Z Selecting previously unselected package fonts-noto-mono.
+2026-09-13T13:00:08.5289255Z Preparing to unpack .../28-fonts-noto-mono_20201225-2_all.deb ...
+2026-09-13T13:00:08.5296109Z Unpacking fonts-noto-mono (20201225-2) ...
+2026-09-13T13:00:08.5552316Z Selecting previously unselected package fonts-texgyre.
+2026-09-13T13:00:08.5681019Z Preparing to unpack .../29-fonts-texgyre_20180621-6_all.deb ...
+2026-09-13T13:00:08.5688559Z Unpacking fonts-texgyre (20180621-6) ...
+2026-09-13T13:00:08.6445978Z Selecting previously unselected package fonts-texgyre-math.
+2026-09-13T13:00:08.6577743Z Preparing to unpack .../30-fonts-texgyre-math_20180621-6_all.deb ...
+2026-09-13T13:00:08.6585361Z Unpacking fonts-texgyre-math (20180621-6) ...
+2026-09-13T13:00:08.7086720Z Selecting previously unselected package ghostscript.
+2026-09-13T13:00:08.7219372Z Preparing to unpack .../31-ghostscript_10.02.1~dfsg1-0ubuntu7.8_amd64.deb ...
+2026-09-13T13:00:08.7226030Z Unpacking ghostscript (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:08.7734025Z Selecting previously unselected package xaw3dg:amd64.
+2026-09-13T13:00:08.7863373Z Preparing to unpack .../32-xaw3dg_1.5+F-1.1build2_amd64.deb ...
+2026-09-13T13:00:08.7870337Z Unpacking xaw3dg:amd64 (1.5+F-1.1build2) ...
+2026-09-13T13:00:08.8132020Z Selecting previously unselected package gv.
+2026-09-13T13:00:08.8259315Z Preparing to unpack .../33-gv_1%3a3.7.4-2build2_amd64.deb ...
+2026-09-13T13:00:08.8266268Z Unpacking gv (1:3.7.4-2build2) ...
+2026-09-13T13:00:08.8516846Z Selecting previously unselected package libpaper-utils.
+2026-09-13T13:00:08.8642560Z Preparing to unpack .../34-libpaper-utils_1.1.29build1_amd64.deb ...
+2026-09-13T13:00:08.8648500Z Unpacking libpaper-utils (1.1.29build1) ...
+2026-09-13T13:00:08.8844917Z Selecting previously unselected package libptexenc1:amd64.
+2026-09-13T13:00:08.8971266Z Preparing to unpack .../35-libptexenc1_2023.20230311.66589-9build3_amd64.deb ...
+2026-09-13T13:00:08.8978085Z Unpacking libptexenc1:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:08.9177744Z Selecting previously unselected package libsynctex2:amd64.
+2026-09-13T13:00:08.9302573Z Preparing to unpack .../36-libsynctex2_2023.20230311.66589-9build3_amd64.deb ...
+2026-09-13T13:00:08.9309757Z Unpacking libsynctex2:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:08.9514218Z Selecting previously unselected package libtexlua53-5:amd64.
+2026-09-13T13:00:08.9638135Z Preparing to unpack .../37-libtexlua53-5_2023.20230311.66589-9build3_amd64.deb ...
+2026-09-13T13:00:08.9646396Z Unpacking libtexlua53-5:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:08.9849092Z Selecting previously unselected package t1utils.
+2026-09-13T13:00:08.9975996Z Preparing to unpack .../38-t1utils_1.41-4build3_amd64.deb ...
+2026-09-13T13:00:08.9982347Z Unpacking t1utils (1.41-4build3) ...
+2026-09-13T13:00:09.0209579Z Selecting previously unselected package libteckit0:amd64.
+2026-09-13T13:00:09.0334431Z Preparing to unpack .../39-libteckit0_2.5.12+ds1-1_amd64.deb ...
+2026-09-13T13:00:09.0345932Z Unpacking libteckit0:amd64 (2.5.12+ds1-1) ...
+2026-09-13T13:00:09.0631854Z Selecting previously unselected package libzzip-0-13t64:amd64.
+2026-09-13T13:00:09.0760927Z Preparing to unpack .../40-libzzip-0-13t64_0.13.72+dfsg.1-1.2build1_amd64.deb ...
+2026-09-13T13:00:09.0768964Z Unpacking libzzip-0-13t64:amd64 (0.13.72+dfsg.1-1.2build1) ...
+2026-09-13T13:00:09.0994634Z Selecting previously unselected package texlive-binaries.
+2026-09-13T13:00:09.1120564Z Preparing to unpack .../41-texlive-binaries_2023.20230311.66589-9build3_amd64.deb ...
+2026-09-13T13:00:09.1223860Z Unpacking texlive-binaries (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:09.2965512Z Selecting previously unselected package texlive-base.
+2026-09-13T13:00:09.3097965Z Preparing to unpack .../42-texlive-base_2023.20240207-1_all.deb ...
+2026-09-13T13:00:09.3104914Z Unpacking texlive-base (2023.20240207-1) ...
+2026-09-13T13:00:10.6117058Z Selecting previously unselected package texlive-latex-base.
+2026-09-13T13:00:10.6263550Z Preparing to unpack .../43-texlive-latex-base_2023.20240207-1_all.deb ...
+2026-09-13T13:00:10.6271203Z Unpacking texlive-latex-base (2023.20240207-1) ...
+2026-09-13T13:00:10.9979256Z Selecting previously unselected package latexmk.
+2026-09-13T13:00:11.0123167Z Preparing to unpack .../44-latexmk_1%3a4.83-1_all.deb ...
+2026-09-13T13:00:11.0130387Z Unpacking latexmk (1:4.83-1) ...
+2026-09-13T13:00:11.0404847Z Selecting previously unselected package libapache-pom-java.
+2026-09-13T13:00:11.0530857Z Preparing to unpack .../45-libapache-pom-java_29-2_all.deb ...
+2026-09-13T13:00:11.0538448Z Unpacking libapache-pom-java (29-2) ...
+2026-09-13T13:00:11.0846873Z Selecting previously unselected package libxcb-shape0:amd64.
+2026-09-13T13:00:11.0979148Z Preparing to unpack .../46-libxcb-shape0_1.15-1ubuntu2_amd64.deb ...
+2026-09-13T13:00:11.0986797Z Unpacking libxcb-shape0:amd64 (1.15-1ubuntu2) ...
+2026-09-13T13:00:11.1186981Z Selecting previously unselected package libxv1:amd64.
+2026-09-13T13:00:11.1314365Z Preparing to unpack .../47-libxv1_2%3a1.0.11-1.1build1_amd64.deb ...
+2026-09-13T13:00:11.1321400Z Unpacking libxv1:amd64 (2:1.0.11-1.1build1) ...
+2026-09-13T13:00:11.1517255Z Selecting previously unselected package libxxf86dga1:amd64.
+2026-09-13T13:00:11.1646282Z Preparing to unpack .../48-libxxf86dga1_2%3a1.1.5-1build1_amd64.deb ...
+2026-09-13T13:00:11.1653352Z Unpacking libxxf86dga1:amd64 (2:1.1.5-1build1) ...
+2026-09-13T13:00:11.1851878Z Selecting previously unselected package x11-utils.
+2026-09-13T13:00:11.1979627Z Preparing to unpack .../49-x11-utils_7.7+6build2_amd64.deb ...
+2026-09-13T13:00:11.1987742Z Unpacking x11-utils (7.7+6build2) ...
+2026-09-13T13:00:11.2290140Z Selecting previously unselected package libatk-wrapper-java.
+2026-09-13T13:00:11.2419390Z Preparing to unpack .../50-libatk-wrapper-java_0.40.0-3build2_all.deb ...
+2026-09-13T13:00:11.2425492Z Unpacking libatk-wrapper-java (0.40.0-3build2) ...
+2026-09-13T13:00:11.2661612Z Selecting previously unselected package libatk-wrapper-java-jni:amd64.
+2026-09-13T13:00:11.2790164Z Preparing to unpack .../51-libatk-wrapper-java-jni_0.40.0-3build2_amd64.deb ...
+2026-09-13T13:00:11.2797069Z Unpacking libatk-wrapper-java-jni:amd64 (0.40.0-3build2) ...
+2026-09-13T13:00:11.3000753Z Selecting previously unselected package libcarp-clan-perl.
+2026-09-13T13:00:11.3127456Z Preparing to unpack .../52-libcarp-clan-perl_6.08-2_all.deb ...
+2026-09-13T13:00:11.3133899Z Unpacking libcarp-clan-perl (6.08-2) ...
+2026-09-13T13:00:11.3354418Z Selecting previously unselected package libbit-vector-perl:amd64.
+2026-09-13T13:00:11.3485971Z Preparing to unpack .../53-libbit-vector-perl_7.4-3build1_amd64.deb ...
+2026-09-13T13:00:11.3492152Z Unpacking libbit-vector-perl:amd64 (7.4-3build1) ...
+2026-09-13T13:00:11.3740372Z Selecting previously unselected package libcommons-parent-java.
+2026-09-13T13:00:11.3868093Z Preparing to unpack .../54-libcommons-parent-java_56-1_all.deb ...
+2026-09-13T13:00:11.3874248Z Unpacking libcommons-parent-java (56-1) ...
+2026-09-13T13:00:11.4076732Z Selecting previously unselected package libcommons-logging-java.
+2026-09-13T13:00:11.4205950Z Preparing to unpack .../55-libcommons-logging-java_1.3.0-1ubuntu1_all.deb ...
+2026-09-13T13:00:11.4213108Z Unpacking libcommons-logging-java (1.3.0-1ubuntu1) ...
+2026-09-13T13:00:11.4422144Z Selecting previously unselected package libcrypt-rc4-perl.
+2026-09-13T13:00:11.4549403Z Preparing to unpack .../56-libcrypt-rc4-perl_2.02-5_all.deb ...
+2026-09-13T13:00:11.4555719Z Unpacking libcrypt-rc4-perl (2.02-5) ...
+2026-09-13T13:00:11.4750665Z Selecting previously unselected package libdate-calc-perl.
+2026-09-13T13:00:11.4877863Z Preparing to unpack .../57-libdate-calc-perl_6.4-2_all.deb ...
+2026-09-13T13:00:11.4904280Z Unpacking libdate-calc-perl (6.4-2) ...
+2026-09-13T13:00:11.5144914Z Selecting previously unselected package libdate-calc-xs-perl:amd64.
+2026-09-13T13:00:11.5276263Z Preparing to unpack .../58-libdate-calc-xs-perl_6.4-2build4_amd64.deb ...
+2026-09-13T13:00:11.5283256Z Unpacking libdate-calc-xs-perl:amd64 (6.4-2build4) ...
+2026-09-13T13:00:11.5498550Z Selecting previously unselected package libdate-manip-perl.
+2026-09-13T13:00:11.5626305Z Preparing to unpack .../59-libdate-manip-perl_6.95-1_all.deb ...
+2026-09-13T13:00:11.5632785Z Unpacking libdate-manip-perl (6.95-1) ...
+2026-09-13T13:00:11.7551729Z Selecting previously unselected package libdigest-perl-md5-perl.
+2026-09-13T13:00:11.7691384Z Preparing to unpack .../60-libdigest-perl-md5-perl_1.9-5_all.deb ...
+2026-09-13T13:00:11.7698494Z Unpacking libdigest-perl-md5-perl (1.9-5) ...
+2026-09-13T13:00:11.7908001Z Selecting previously unselected package libgumbo2:amd64.
+2026-09-13T13:00:11.8037217Z Preparing to unpack .../61-libgumbo2_0.12.0+dfsg-2build1_amd64.deb ...
+2026-09-13T13:00:11.8045394Z Unpacking libgumbo2:amd64 (0.12.0+dfsg-2build1) ...
+2026-09-13T13:00:11.8259305Z Selecting previously unselected package libio-stringy-perl.
+2026-09-13T13:00:11.8391622Z Preparing to unpack .../62-libio-stringy-perl_2.111-3_all.deb ...
+2026-09-13T13:00:11.8400009Z Unpacking libio-stringy-perl (2.111-3) ...
+2026-09-13T13:00:11.8649604Z Selecting previously unselected package libjcode-pm-perl.
+2026-09-13T13:00:11.8781789Z Preparing to unpack .../63-libjcode-pm-perl_2.06-1.1build1_amd64.deb ...
+2026-09-13T13:00:11.8790654Z Unpacking libjcode-pm-perl (2.06-1.1build1) ...
+2026-09-13T13:00:11.8998051Z Selecting previously unselected package libmujs3:amd64.
+2026-09-13T13:00:11.9128714Z Preparing to unpack .../64-libmujs3_1.3.3-3build2_amd64.deb ...
+2026-09-13T13:00:11.9135946Z Unpacking libmujs3:amd64 (1.3.3-3build2) ...
+2026-09-13T13:00:11.9351912Z Selecting previously unselected package libole-storage-lite-perl.
+2026-09-13T13:00:11.9483916Z Preparing to unpack .../65-libole-storage-lite-perl_0.22-1_all.deb ...
+2026-09-13T13:00:11.9490224Z Unpacking libole-storage-lite-perl (0.22-1) ...
+2026-09-13T13:00:11.9703520Z Selecting previously unselected package libparse-recdescent-perl.
+2026-09-13T13:00:11.9833060Z Preparing to unpack .../66-libparse-recdescent-perl_1.967015+dfsg-4_all.deb ...
+2026-09-13T13:00:11.9839100Z Unpacking libparse-recdescent-perl (1.967015+dfsg-4) ...
+2026-09-13T13:00:12.0151184Z Selecting previously unselected package libpoppler134:amd64.
+2026-09-13T13:00:12.0284543Z Preparing to unpack .../67-libpoppler134_24.02.0-1ubuntu9.9_amd64.deb ...
+2026-09-13T13:00:12.0296749Z Unpacking libpoppler134:amd64 (24.02.0-1ubuntu9.9) ...
+2026-09-13T13:00:12.0624781Z Selecting previously unselected package libspreadsheet-writeexcel-perl.
+2026-09-13T13:00:12.0757700Z Preparing to unpack .../68-libspreadsheet-writeexcel-perl_2.40-4_all.deb ...
+2026-09-13T13:00:12.0763984Z Unpacking libspreadsheet-writeexcel-perl (2.40-4) ...
+2026-09-13T13:00:12.1275548Z Selecting previously unselected package libunicode-map-perl.
+2026-09-13T13:00:12.1411247Z Preparing to unpack .../69-libunicode-map-perl_0.112-13build4_amd64.deb ...
+2026-09-13T13:00:12.1418088Z Unpacking libunicode-map-perl (0.112-13build4) ...
+2026-09-13T13:00:12.1798204Z Selecting previously unselected package libspreadsheet-parseexcel-perl.
+2026-09-13T13:00:12.1931980Z Preparing to unpack .../70-libspreadsheet-parseexcel-perl_0.6600-1_all.deb ...
+2026-09-13T13:00:12.1939459Z Unpacking libspreadsheet-parseexcel-perl (0.6600-1) ...
+2026-09-13T13:00:12.2261071Z Selecting previously unselected package lmodern.
+2026-09-13T13:00:12.2396255Z Preparing to unpack .../71-lmodern_2.005-1_all.deb ...
+2026-09-13T13:00:12.2403925Z Unpacking lmodern (2.005-1) ...
+2026-09-13T13:00:12.4956984Z Selecting previously unselected package mupdf-tools.
+2026-09-13T13:00:12.5098131Z Preparing to unpack .../72-mupdf-tools_1.23.10+ds1-1build3_amd64.deb ...
+2026-09-13T13:00:12.5106248Z Unpacking mupdf-tools (1.23.10+ds1-1build3) ...
+2026-09-13T13:00:12.8888327Z Selecting previously unselected package poppler-utils.
+2026-09-13T13:00:12.9025311Z Preparing to unpack .../73-poppler-utils_24.02.0-1ubuntu9.9_amd64.deb ...
+2026-09-13T13:00:12.9031622Z Unpacking poppler-utils (24.02.0-1ubuntu9.9) ...
+2026-09-13T13:00:12.9301391Z Selecting previously unselected package preview-latex-style.
+2026-09-13T13:00:12.9435586Z Preparing to unpack .../74-preview-latex-style_13.2-1_all.deb ...
+2026-09-13T13:00:12.9443155Z Unpacking preview-latex-style (13.2-1) ...
+2026-09-13T13:00:12.9698347Z Selecting previously unselected package tex-gyre.
+2026-09-13T13:00:12.9831823Z Preparing to unpack .../75-tex-gyre_20180621-6_all.deb ...
+2026-09-13T13:00:12.9839152Z Unpacking tex-gyre (20180621-6) ...
+2026-09-13T13:00:13.1833044Z Selecting previously unselected package texlive-fonts-recommended.
+2026-09-13T13:00:13.1973790Z Preparing to unpack .../76-texlive-fonts-recommended_2023.20240207-1_all.deb ...
+2026-09-13T13:00:13.1982913Z Unpacking texlive-fonts-recommended (2023.20240207-1) ...
+2026-09-13T13:00:13.7107797Z Selecting previously unselected package libfontbox-java.
+2026-09-13T13:00:13.7255991Z Preparing to unpack .../77-libfontbox-java_1%3a1.8.16-5_all.deb ...
+2026-09-13T13:00:13.7262764Z Unpacking libfontbox-java (1:1.8.16-5) ...
+2026-09-13T13:00:13.7474808Z Selecting previously unselected package libpdfbox-java.
+2026-09-13T13:00:13.7607246Z Preparing to unpack .../78-libpdfbox-java_1%3a1.8.16-5_all.deb ...
+2026-09-13T13:00:13.7615578Z Unpacking libpdfbox-java (1:1.8.16-5) ...
+2026-09-13T13:00:13.8010998Z Selecting previously unselected package texlive-latex-recommended.
+2026-09-13T13:00:13.8149028Z Preparing to unpack .../79-texlive-latex-recommended_2023.20240207-1_all.deb ...
+2026-09-13T13:00:13.8157189Z Unpacking texlive-latex-recommended (2023.20240207-1) ...
+2026-09-13T13:00:14.5631559Z Selecting previously unselected package texlive-pictures.
+2026-09-13T13:00:14.5780040Z Preparing to unpack .../80-texlive-pictures_2023.20240207-1_all.deb ...
+2026-09-13T13:00:14.5897728Z Unpacking texlive-pictures (2023.20240207-1) ...
+2026-09-13T13:00:15.6737109Z Selecting previously unselected package texlive-latex-extra.
+2026-09-13T13:00:15.6900077Z Preparing to unpack .../81-texlive-latex-extra_2023.20240207-1_all.deb ...
+2026-09-13T13:00:15.6907098Z Unpacking texlive-latex-extra (2023.20240207-1) ...
+2026-09-13T13:00:17.0852154Z Selecting previously unselected package texlive-plain-generic.
+2026-09-13T13:00:17.1030828Z Preparing to unpack .../82-texlive-plain-generic_2023.20240207-1_all.deb ...
+2026-09-13T13:00:17.1037869Z Unpacking texlive-plain-generic (2023.20240207-1) ...
+2026-09-13T13:00:19.7865938Z Selecting previously unselected package tipa.
+2026-09-13T13:00:19.8080114Z Preparing to unpack .../83-tipa_2%3a1.3-21_all.deb ...
+2026-09-13T13:00:19.8151160Z Unpacking tipa (2:1.3-21) ...
+2026-09-13T13:00:20.0499758Z Selecting previously unselected package xpdf.
+2026-09-13T13:00:20.0658075Z Preparing to unpack .../84-xpdf_3.04+git20240202-1build3_amd64.deb ...
+2026-09-13T13:00:20.0701452Z Unpacking xpdf (3.04+git20240202-1build3) ...
+2026-09-13T13:00:20.0962888Z Selecting previously unselected package cups-bsd.
+2026-09-13T13:00:20.1118696Z Preparing to unpack .../85-cups-bsd_2.4.7-1.2ubuntu7.14_amd64.deb ...
+2026-09-13T13:00:20.1125809Z Unpacking cups-bsd (2.4.7-1.2ubuntu7.14) ...
+2026-09-13T13:00:20.1600197Z Setting up libjcode-pm-perl (2.06-1.1build1) ...
+2026-09-13T13:00:20.1630098Z Setting up libpaper1:amd64 (1.1.29build1) ...
+2026-09-13T13:00:20.3324600Z 
+2026-09-13T13:00:20.3325325Z Creating config file /etc/papersize with new version
+2026-09-13T13:00:20.3885800Z Setting up fonts-noto-mono (20201225-2) ...
+2026-09-13T13:00:20.3916328Z Setting up fonts-texgyre-math (20180621-6) ...
+2026-09-13T13:00:20.3941959Z Setting up libwoff1:amd64 (1.0.2-2build1) ...
+2026-09-13T13:00:20.3960539Z Setting up libmujs3:amd64 (1.3.3-3build2) ...
+2026-09-13T13:00:20.3977152Z Setting up libpoppler134:amd64 (24.02.0-1ubuntu9.9) ...
+2026-09-13T13:00:20.3992558Z Setting up libio-stringy-perl (2.111-3) ...
+2026-09-13T13:00:20.4009023Z Setting up libijs-0.35:amd64 (0.35-15.1build1) ...
+2026-09-13T13:00:20.4025804Z Setting up cups-common (2.4.7-1.2ubuntu7.14) ...
+2026-09-13T13:00:20.4053310Z Setting up preview-latex-style (13.2-1) ...
+2026-09-13T13:00:20.4091231Z Setting up libgs-common (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:20.4108616Z Setting up libfontbox-java (1:1.8.16-5) ...
+2026-09-13T13:00:20.4126654Z Setting up libxcb-shape0:amd64 (1.15-1ubuntu2) ...
+2026-09-13T13:00:20.4143538Z Setting up libxxf86dga1:amd64 (2:1.1.5-1build1) ...
+2026-09-13T13:00:20.4161373Z Setting up libpaper-utils (1.1.29build1) ...
+2026-09-13T13:00:20.4177799Z Setting up libmotif-common (2.3.8-3.1build1) ...
+2026-09-13T13:00:20.4198780Z Setting up cups-client (2.4.7-1.2ubuntu7.14) ...
+2026-09-13T13:00:20.4976055Z info: Selecting GID from range 100 to 999 ...
+2026-09-13T13:00:20.5005373Z info: Adding group `lpadmin' (GID 119) ...
+2026-09-13T13:00:20.5145852Z Setting up poppler-data (0.4.12-1) ...
+2026-09-13T13:00:20.5237223Z Setting up libdigest-perl-md5-perl (1.9-5) ...
+2026-09-13T13:00:20.5254591Z Setting up libunicode-map-perl (0.112-13build4) ...
+2026-09-13T13:00:20.5271555Z Setting up libzzip-0-13t64:amd64 (0.13.72+dfsg.1-1.2build1) ...
+2026-09-13T13:00:20.5288775Z Setting up libjbig2dec0:amd64 (0.20-1ubuntu0.24.04.1) ...
+2026-09-13T13:00:20.5305223Z Setting up libgumbo2:amd64 (0.12.0+dfsg-2build1) ...
+2026-09-13T13:00:20.5321821Z Setting up libteckit0:amd64 (2.5.12+ds1-1) ...
+2026-09-13T13:00:20.5339059Z Setting up libapache-pom-java (29-2) ...
+2026-09-13T13:00:20.5356980Z Setting up xfonts-encodings (1:1.0.5-0ubuntu2) ...
+2026-09-13T13:00:20.5374940Z Setting up t1utils (1.41-4build3) ...
+2026-09-13T13:00:20.5391464Z Setting up libtexlua53-5:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:20.5408525Z Setting up libcrypt-rc4-perl (2.02-5) ...
+2026-09-13T13:00:20.5424197Z Setting up libxv1:amd64 (2:1.0.11-1.1build1) ...
+2026-09-13T13:00:20.5464728Z Setting up libidn12:amd64 (1.42-1ubuntu0.1) ...
+2026-09-13T13:00:20.5481239Z Setting up libpcsclite1:amd64 (2.0.3-1build1) ...
+2026-09-13T13:00:20.5499658Z Setting up fonts-texgyre (20180621-6) ...
+2026-09-13T13:00:20.5523608Z Setting up xaw3dg:amd64 (1.5+F-1.1build2) ...
+2026-09-13T13:00:20.5540374Z Setting up libkpathsea6:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:20.5558126Z Setting up libole-storage-lite-perl (0.22-1) ...
+2026-09-13T13:00:20.5574730Z Setting up libgif7:amd64 (5.2.2-1ubuntu1.2) ...
+2026-09-13T13:00:20.5591194Z Setting up libparse-recdescent-perl (1.967015+dfsg-4) ...
+2026-09-13T13:00:20.5608676Z Setting up x11-utils (7.7+6build2) ...
+2026-09-13T13:00:20.5690576Z Setting up fonts-lmodern (2.005-1) ...
+2026-09-13T13:00:20.5712253Z Setting up libcarp-clan-perl (6.08-2) ...
+2026-09-13T13:00:20.5732042Z Setting up fonts-droid-fallback (1:6.0.1r16-1.1build1) ...
+2026-09-13T13:00:20.5948102Z Setting up poppler-utils (24.02.0-1ubuntu9.9) ...
+2026-09-13T13:00:20.5967963Z Setting up libatk-wrapper-java (0.40.0-3build2) ...
+2026-09-13T13:00:20.5984166Z Setting up ca-certificates-java (20240118) ...
+2026-09-13T13:00:22.3570373Z Adding debian:ACCVRAIZ1.pem
+2026-09-13T13:00:22.3599524Z Adding debian:AC_RAIZ_FNMT-RCM.pem
+2026-09-13T13:00:22.4136417Z Adding debian:AC_RAIZ_FNMT-RCM_SERVIDORES_SEGUROS.pem
+2026-09-13T13:00:22.4163985Z Adding debian:ANF_Secure_Server_Root_CA.pem
+2026-09-13T13:00:22.4190435Z Adding debian:Actalis_Authentication_Root_CA.pem
+2026-09-13T13:00:22.4207210Z Adding debian:Amazon_Root_CA_1.pem
+2026-09-13T13:00:22.4231687Z Adding debian:Amazon_Root_CA_2.pem
+2026-09-13T13:00:22.4243389Z Adding debian:Amazon_Root_CA_3.pem
+2026-09-13T13:00:22.4255524Z Adding debian:Amazon_Root_CA_4.pem
+2026-09-13T13:00:22.4273343Z Adding debian:Atos_TrustedRoot_2011.pem
+2026-09-13T13:00:22.4286051Z Adding debian:Atos_TrustedRoot_Root_CA_ECC_TLS_2021.pem
+2026-09-13T13:00:22.4313133Z Adding debian:Atos_TrustedRoot_Root_CA_RSA_TLS_2021.pem
+2026-09-13T13:00:22.4342405Z Adding debian:Autoridad_de_Certificacion_Firmaprofesional_CIF_A62634068.pem
+2026-09-13T13:00:22.4367127Z Adding debian:BJCA_Global_Root_CA1.pem
+2026-09-13T13:00:22.4379454Z Adding debian:BJCA_Global_Root_CA2.pem
+2026-09-13T13:00:22.4563648Z Adding debian:Buypass_Class_2_Root_CA.pem
+2026-09-13T13:00:22.4587919Z Adding debian:Buypass_Class_3_Root_CA.pem
+2026-09-13T13:00:22.4612485Z Adding debian:CA_Disig_Root_R2.pem
+2026-09-13T13:00:22.4637906Z Adding debian:CFCA_EV_ROOT.pem
+2026-09-13T13:00:22.4652508Z Adding debian:COMODO_ECC_Certification_Authority.pem
+2026-09-13T13:00:22.4678399Z Adding debian:COMODO_RSA_Certification_Authority.pem
+2026-09-13T13:00:22.4690353Z Adding debian:Certainly_Root_E1.pem
+2026-09-13T13:00:22.4718882Z Adding debian:Certainly_Root_R1.pem
+2026-09-13T13:00:22.4749921Z Adding debian:Certigna_Root_CA.pem
+2026-09-13T13:00:22.4763255Z Adding debian:Certum_EC-384_CA.pem
+2026-09-13T13:00:22.4781583Z Adding debian:Certum_Trusted_Network_CA.pem
+2026-09-13T13:00:22.4806941Z Adding debian:Certum_Trusted_Network_CA_2.pem
+2026-09-13T13:00:22.4831754Z Adding debian:Certum_Trusted_Root_CA.pem
+2026-09-13T13:00:22.4847184Z Adding debian:D-TRUST_BR_Root_CA_1_2020.pem
+2026-09-13T13:00:22.4872874Z Adding debian:D-TRUST_BR_Root_CA_2_2023.pem
+2026-09-13T13:00:22.4888943Z Adding debian:D-TRUST_EV_Root_CA_1_2020.pem
+2026-09-13T13:00:22.4915537Z Adding debian:D-TRUST_EV_Root_CA_2_2023.pem
+2026-09-13T13:00:22.4935724Z Adding debian:D-TRUST_Root_Class_3_CA_2_2009.pem
+2026-09-13T13:00:22.4957675Z Adding debian:D-TRUST_Root_Class_3_CA_2_EV_2009.pem
+2026-09-13T13:00:22.4975657Z Adding debian:DigiCert_Assured_ID_Root_G2.pem
+2026-09-13T13:00:22.4988731Z Adding debian:DigiCert_Assured_ID_Root_G3.pem
+2026-09-13T13:00:22.5006815Z Adding debian:DigiCert_Global_Root_G2.pem
+2026-09-13T13:00:22.5019834Z Adding debian:DigiCert_Global_Root_G3.pem
+2026-09-13T13:00:22.5031562Z Adding debian:DigiCert_TLS_ECC_P384_Root_G5.pem
+2026-09-13T13:00:22.5054774Z Adding debian:DigiCert_TLS_RSA4096_Root_G5.pem
+2026-09-13T13:00:22.5080400Z Adding debian:DigiCert_Trusted_Root_G4.pem
+2026-09-13T13:00:22.5106841Z Adding debian:Entrust_Root_Certification_Authority.pem
+2026-09-13T13:00:22.5129967Z Adding debian:GDCA_TrustAUTH_R5_ROOT.pem
+2026-09-13T13:00:22.5152134Z Adding debian:GTS_Root_R1.pem
+2026-09-13T13:00:22.5162754Z Adding debian:GTS_Root_R3.pem
+2026-09-13T13:00:22.5172985Z Adding debian:GTS_Root_R4.pem
+2026-09-13T13:00:22.5182733Z Adding debian:GlobalSign_ECC_Root_CA_-_R4.pem
+2026-09-13T13:00:22.5193652Z Adding debian:GlobalSign_ECC_Root_CA_-_R5.pem
+2026-09-13T13:00:22.5209155Z Adding debian:GlobalSign_Root_CA_-_R3.pem
+2026-09-13T13:00:22.5231110Z Adding debian:GlobalSign_Root_CA_-_R6.pem
+2026-09-13T13:00:22.5241778Z Adding debian:GlobalSign_Root_E46.pem
+2026-09-13T13:00:22.5263054Z Adding debian:GlobalSign_Root_R46.pem
+2026-09-13T13:00:22.5279777Z Adding debian:Go_Daddy_Root_Certificate_Authority_-_G2.pem
+2026-09-13T13:00:22.5290841Z Adding debian:HARICA_TLS_ECC_Root_CA_2021.pem
+2026-09-13T13:00:22.5312959Z Adding debian:HARICA_TLS_RSA_Root_CA_2021.pem
+2026-09-13T13:00:22.5327135Z Adding debian:Hellenic_Academic_and_Research_Institutions_ECC_RootCA_2015.pem
+2026-09-13T13:00:22.5352502Z Adding debian:Hellenic_Academic_and_Research_Institutions_RootCA_2015.pem
+2026-09-13T13:00:22.5374369Z Adding debian:HiPKI_Root_CA_-_G1.pem
+2026-09-13T13:00:22.5397421Z Adding debian:Hongkong_Post_Root_CA_3.pem
+2026-09-13T13:00:22.5418993Z Adding debian:ISRG_Root_X1.pem
+2026-09-13T13:00:22.5429627Z Adding debian:ISRG_Root_X2.pem
+2026-09-13T13:00:22.5451489Z Adding debian:IdenTrust_Commercial_Root_CA_1.pem
+2026-09-13T13:00:22.5473594Z Adding debian:IdenTrust_Public_Sector_Root_CA_1.pem
+2026-09-13T13:00:22.5497817Z Adding debian:Izenpe.com.pem
+2026-09-13T13:00:22.5516193Z Adding debian:Microsec_e-Szigno_Root_CA_2009.pem
+2026-09-13T13:00:22.5527358Z Adding debian:Microsoft_ECC_Root_Certificate_Authority_2017.pem
+2026-09-13T13:00:22.5551169Z Adding debian:Microsoft_RSA_Root_Certificate_Authority_2017.pem
+2026-09-13T13:00:22.5575303Z Adding debian:NAVER_Global_Root_Certification_Authority.pem
+2026-09-13T13:00:22.5604566Z Adding debian:NetLock_Arany_=Class_Gold=_Főtanúsítvány.pem
+2026-09-13T13:00:22.5624052Z Adding debian:OISTE_Server_Root_ECC_G1.pem
+2026-09-13T13:00:22.5638613Z Adding debian:OISTE_Server_Root_RSA_G1.pem
+2026-09-13T13:00:22.5654468Z Adding debian:OISTE_WISeKey_Global_Root_GB_CA.pem
+2026-09-13T13:00:22.5666845Z Adding debian:OISTE_WISeKey_Global_Root_GC_CA.pem
+2026-09-13T13:00:22.5689676Z Adding debian:QuoVadis_Root_CA_1_G3.pem
+2026-09-13T13:00:22.5712085Z Adding debian:QuoVadis_Root_CA_2_G3.pem
+2026-09-13T13:00:22.5733889Z Adding debian:QuoVadis_Root_CA_3_G3.pem
+2026-09-13T13:00:22.5747027Z Adding debian:SSL.com_EV_Root_Certification_Authority_ECC.pem
+2026-09-13T13:00:22.5770409Z Adding debian:SSL.com_EV_Root_Certification_Authority_RSA_R2.pem
+2026-09-13T13:00:22.5782211Z Adding debian:SSL.com_Root_Certification_Authority_ECC.pem
+2026-09-13T13:00:22.5809367Z Adding debian:SSL.com_Root_Certification_Authority_RSA.pem
+2026-09-13T13:00:22.5821441Z Adding debian:SSL.com_TLS_ECC_Root_CA_2022.pem
+2026-09-13T13:00:22.5843639Z Adding debian:SSL.com_TLS_RSA_Root_CA_2022.pem
+2026-09-13T13:00:22.5859743Z Adding debian:SZAFIR_ROOT_CA2.pem
+2026-09-13T13:00:22.5870913Z Adding debian:Sectigo_Public_Server_Authentication_Root_E46.pem
+2026-09-13T13:00:22.5893705Z Adding debian:Sectigo_Public_Server_Authentication_Root_R46.pem
+2026-09-13T13:00:22.5909330Z Adding debian:SecureSign_Root_CA12.pem
+2026-09-13T13:00:22.5932147Z Adding debian:SecureSign_Root_CA14.pem
+2026-09-13T13:00:22.5943636Z Adding debian:SecureSign_Root_CA15.pem
+2026-09-13T13:00:22.5954201Z Adding debian:Security_Communication_ECC_RootCA1.pem
+2026-09-13T13:00:22.5970643Z Adding debian:Security_Communication_RootCA2.pem
+2026-09-13T13:00:22.5987176Z Adding debian:Starfield_Root_Certificate_Authority_-_G2.pem
+2026-09-13T13:00:22.6004207Z Adding debian:Starfield_Services_Root_Certificate_Authority_-_G2.pem
+2026-09-13T13:00:22.6028895Z Adding debian:SwissSign_RSA_TLS_Root_CA_2022_-_1.pem
+2026-09-13T13:00:22.6044235Z Adding debian:T-TeleSec_GlobalRoot_Class_2.pem
+2026-09-13T13:00:22.6065361Z Adding debian:T-TeleSec_GlobalRoot_Class_3.pem
+2026-09-13T13:00:22.6083803Z Adding debian:TUBITAK_Kamu_SM_SSL_Kok_Sertifikasi_-_Surum_1.pem
+2026-09-13T13:00:22.6104983Z Adding debian:TWCA_CYBER_Root_CA.pem
+2026-09-13T13:00:22.6127199Z Adding debian:TWCA_Global_Root_CA.pem
+2026-09-13T13:00:22.6141872Z Adding debian:TWCA_Root_Certification_Authority.pem
+2026-09-13T13:00:22.6153049Z Adding debian:Telekom_Security_TLS_ECC_Root_2020.pem
+2026-09-13T13:00:22.6182225Z Adding debian:Telekom_Security_TLS_RSA_Root_2023.pem
+2026-09-13T13:00:22.6223845Z Adding debian:Telia_Root_CA_v2.pem
+2026-09-13T13:00:22.6231626Z Adding debian:TrustAsia_Global_Root_CA_G3.pem
+2026-09-13T13:00:22.6242354Z Adding debian:TrustAsia_Global_Root_CA_G4.pem
+2026-09-13T13:00:22.6271358Z Adding debian:TrustAsia_TLS_ECC_Root_CA.pem
+2026-09-13T13:00:22.6281093Z Adding debian:TrustAsia_TLS_RSA_Root_CA.pem
+2026-09-13T13:00:22.6302250Z Adding debian:TunTrust_Root_CA.pem
+2026-09-13T13:00:22.6323941Z Adding debian:UCA_Extended_Validation_Root.pem
+2026-09-13T13:00:22.6344075Z Adding debian:UCA_Global_G2_Root.pem
+2026-09-13T13:00:22.6355620Z Adding debian:USERTrust_ECC_Certification_Authority.pem
+2026-09-13T13:00:22.6377671Z Adding debian:USERTrust_RSA_Certification_Authority.pem
+2026-09-13T13:00:22.6397555Z Adding debian:certSIGN_Root_CA_G2.pem
+2026-09-13T13:00:22.6408044Z Adding debian:e-Szigno_Root_CA_2017.pem
+2026-09-13T13:00:22.6421204Z Adding debian:e-Szigno_TLS_Root_CA_2023.pem
+2026-09-13T13:00:22.6442407Z Adding debian:ePKI_Root_Certification_Authority.pem
+2026-09-13T13:00:22.6452033Z Adding debian:emSign_ECC_Root_CA_-_C3.pem
+2026-09-13T13:00:22.6461833Z Adding debian:emSign_ECC_Root_CA_-_G3.pem
+2026-09-13T13:00:22.6475701Z Adding debian:emSign_Root_CA_-_C1.pem
+2026-09-13T13:00:22.6490013Z Adding debian:emSign_Root_CA_-_G1.pem
+2026-09-13T13:00:22.6499158Z Adding debian:vTrus_ECC_Root_CA.pem
+2026-09-13T13:00:22.6519364Z Adding debian:vTrus_Root_CA.pem
+2026-09-13T13:00:22.7354907Z done.
+2026-09-13T13:00:22.7384576Z Setting up libdate-manip-perl (6.95-1) ...
+2026-09-13T13:00:22.7400974Z Setting up libxm4:amd64 (2.3.8-3.1build1) ...
+2026-09-13T13:00:22.7418352Z Setting up libsynctex2:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:22.7435545Z Setting up libpotrace0:amd64 (1.16-2build1) ...
+2026-09-13T13:00:22.7452002Z Setting up libpdfbox-java (1:1.8.16-5) ...
+2026-09-13T13:00:22.7469234Z Setting up openjdk-21-jre-headless:amd64 (21.0.12+8-1~24.04) ...
+2026-09-13T13:00:22.8090786Z Setting up cups-bsd (2.4.7-1.2ubuntu7.14) ...
+2026-09-13T13:00:22.9001580Z Setting up libcommons-parent-java (56-1) ...
+2026-09-13T13:00:22.9018034Z Setting up libcommons-logging-java (1.3.0-1ubuntu1) ...
+2026-09-13T13:00:22.9034844Z Setting up xfonts-utils (1:7.7+6build3) ...
+2026-09-13T13:00:22.9075014Z Setting up mupdf-tools (1.23.10+ds1-1build3) ...
+2026-09-13T13:00:22.9092220Z Setting up libspreadsheet-writeexcel-perl (2.40-4) ...
+2026-09-13T13:00:22.9109488Z Setting up libatk-wrapper-java-jni:amd64 (0.40.0-3build2) ...
+2026-09-13T13:00:22.9125902Z Setting up libbit-vector-perl:amd64 (7.4-3build1) ...
+2026-09-13T13:00:22.9141460Z Setting up libptexenc1:amd64 (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:22.9158012Z Setting up libspreadsheet-parseexcel-perl (0.6600-1) ...
+2026-09-13T13:00:22.9173465Z Setting up texlive-binaries (2023.20230311.66589-9build3) ...
+2026-09-13T13:00:22.9236222Z update-alternatives: using /usr/bin/xdvi-xaw to provide /usr/bin/xdvi.bin (xdvi.bin) in auto mode
+2026-09-13T13:00:22.9284373Z update-alternatives: using /usr/bin/bibtex.original to provide /usr/bin/bibtex (bibtex) in auto mode
+2026-09-13T13:00:22.9323343Z Setting up lmodern (2.005-1) ...
+2026-09-13T13:00:23.1017115Z Setting up xpdf (3.04+git20240202-1build3) ...
+2026-09-13T13:00:23.1043739Z Setting up texlive-base (2023.20240207-1) ...
+2026-09-13T13:00:23.8290849Z tl-paper: setting paper size for dvips to a4: /var/lib/texmf/dvips/config/config-paper.ps
+2026-09-13T13:00:24.0326397Z tl-paper: setting paper size for dvipdfmx to a4: /var/lib/texmf/dvipdfmx/dvipdfmx-paper.cfg
+2026-09-13T13:00:24.2375562Z tl-paper: setting paper size for xdvi to a4: /var/lib/texmf/xdvi/XDvi-paper
+2026-09-13T13:00:24.4425768Z tl-paper: setting paper size for pdftex to a4: /var/lib/texmf/tex/generic/tex-ini-files/pdftexconfig.tex
+2026-09-13T13:00:24.9192578Z Setting up tex-gyre (20180621-6) ...
+2026-09-13T13:00:25.0720087Z Setting up libdate-calc-perl (6.4-2) ...
+2026-09-13T13:00:25.0735597Z Setting up libdate-calc-xs-perl:amd64 (6.4-2build4) ...
+2026-09-13T13:00:25.0753599Z Setting up texlive-plain-generic (2023.20240207-1) ...
+2026-09-13T13:00:25.0789618Z Setting up fonts-urw-base35 (20200910-8) ...
+2026-09-13T13:00:25.3205992Z Setting up texlive-latex-base (2023.20240207-1) ...
+2026-09-13T13:00:25.3263912Z Setting up texlive-latex-recommended (2023.20240207-1) ...
+2026-09-13T13:00:25.3296373Z Setting up texlive-pictures (2023.20240207-1) ...
+2026-09-13T13:00:25.3342714Z Setting up texlive-fonts-recommended (2023.20240207-1) ...
+2026-09-13T13:00:25.3389759Z Setting up tipa (2:1.3-21) ...
+2026-09-13T13:00:25.3470451Z Setting up libgs10-common (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:25.3486338Z Setting up latexmk (1:4.83-1) ...
+2026-09-13T13:00:25.3512609Z Setting up texlive-latex-extra (2023.20240207-1) ...
+2026-09-13T13:00:25.3575420Z Setting up libgs10:amd64 (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:25.3593166Z Setting up dvisvgm (3.2.1+ds-1build1) ...
+2026-09-13T13:00:25.3610538Z Setting up ghostscript (10.02.1~dfsg1-0ubuntu7.8) ...
+2026-09-13T13:00:25.3671802Z Setting up gv (1:3.7.4-2build2) ...
+2026-09-13T13:00:25.3807710Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-09-13T13:00:25.3827963Z Not building database; man-db/auto-update is not 'true'.
+2026-09-13T13:00:25.3842202Z Processing triggers for tex-common (6.18) ...
+2026-09-13T13:00:25.5881365Z Running mktexlsr. This may take some time... done.
+2026-09-13T13:00:26.0684488Z Running updmap-sys. This may take some time... done.
+2026-09-13T13:00:26.0942622Z Running mktexlsr /var/lib/texmf ... done.
+2026-09-13T13:00:26.1734156Z Building format(s) --all.
+2026-09-13T13:01:10.1851307Z 	This may take some time... done.
+2026-09-13T13:01:10.1937349Z Processing triggers for install-info (7.1-3build2) ...
+2026-09-13T13:01:10.4475848Z Processing triggers for fontconfig (2.15.0-1.1ubuntu2) ...
+2026-09-13T13:01:10.8573880Z Processing triggers for hicolor-icon-theme (0.17-2) ...
+2026-09-13T13:01:11.0352311Z Processing triggers for libc-bin (2.39-0ubuntu8.8) ...
+2026-09-13T13:01:11.1126870Z Processing triggers for ca-certificates-java (20240118) ...
+2026-09-13T13:01:11.1531420Z done.
+2026-09-13T13:01:11.1578314Z Setting up openjdk-21-jre:amd64 (21.0.12+8-1~24.04) ...
+2026-09-13T13:01:11.1627751Z Setting up default-jre-headless (2:1.21-75+exp1) ...
+2026-09-13T13:01:11.1657494Z Setting up default-jre (2:1.21-75+exp1) ...
+2026-09-13T13:01:11.7796432Z 
+2026-09-13T13:01:11.7797117Z Running kernel seems to be up-to-date.
+2026-09-13T13:01:11.7797483Z 
+2026-09-13T13:01:11.7797654Z No services need to be restarted.
+2026-09-13T13:01:11.7797927Z 
+2026-09-13T13:01:11.7798049Z No containers need to be restarted.
+2026-09-13T13:01:11.7798238Z 
+2026-09-13T13:01:11.7798366Z No user sessions are running outdated binaries.
+2026-09-13T13:01:11.7798585Z 
+2026-09-13T13:01:11.7798782Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-09-13T13:01:12.6543337Z ##[group]Run uv run cffconvert --validate --infile CITATION.cff
+2026-09-13T13:01:12.6543812Z [36;1muv run cffconvert --validate --infile CITATION.cff[0m
+2026-09-13T13:01:12.6586846Z shell: /usr/bin/bash -e {0}
+2026-09-13T13:01:12.6587105Z env:
+2026-09-13T13:01:12.6587391Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-09-13T13:01:12.6587740Z   UV_PYTHON: 3.12
+2026-09-13T13:01:12.6588001Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-13T13:01:12.6588304Z ##[endgroup]
+2026-09-13T13:01:13.3288038Z Citation metadata are valid according to schema version 1.2.0.
+2026-09-13T13:01:13.3649808Z ##[group]Run uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock --dry-run -r requirements-formal.lock
+2026-09-13T13:01:13.3651028Z [36;1muv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock --dry-run -r requirements-formal.lock[0m
+2026-09-13T13:01:13.3652145Z [36;1muv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn --dry-run -r requirements-formal-flash.txt[0m
+2026-09-13T13:01:13.3694190Z shell: /usr/bin/bash -e {0}
+2026-09-13T13:01:13.3694453Z env:
+2026-09-13T13:01:13.3694747Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-09-13T13:01:13.3695359Z   UV_PYTHON: 3.12
+2026-09-13T13:01:13.3695627Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-13T13:01:13.3695929Z ##[endgroup]
+2026-09-13T13:01:14.4688211Z Resolved 113 packages in 1.03s
+2026-09-13T13:01:14.4714899Z Would download 41 packages
+2026-09-13T13:01:14.4715492Z Would uninstall 39 packages
+2026-09-13T13:01:14.4715898Z Would install 42 packages
+2026-09-13T13:01:14.4739194Z  - accelerate==1.14.0
+2026-09-13T13:01:14.4739643Z  + accelerate==1.13.0
+2026-09-13T13:01:14.4740011Z  - click==8.4.2
+2026-09-13T13:01:14.4740324Z  + click==8.5.0
+2026-09-13T13:01:14.4740664Z  - coverage==7.15.4
+2026-09-13T13:01:14.4741108Z  + coverage==7.16.0
+2026-09-13T13:01:14.4741655Z  - datasets==4.8.5
+2026-09-13T13:01:14.4742026Z  + datasets==4.8.4
+2026-09-13T13:01:14.4742686Z  - filelock==3.32.3
+2026-09-13T13:01:14.4743043Z  + filelock==3.32.4
+2026-09-13T13:01:14.4743402Z  + gitdb==4.0.12
+2026-09-13T13:01:14.4743885Z  + gitpython==3.1.61
+2026-09-13T13:01:14.4744373Z  - huggingface-hub==1.27.0
+2026-09-13T13:01:14.4744769Z  + huggingface-hub==1.29.0
+2026-09-13T13:01:14.4745233Z  - idna==3.18
+2026-09-13T13:01:14.4745723Z  + idna==3.19
+2026-09-13T13:01:14.4746252Z  - kiwisolver==1.5.0
+2026-09-13T13:01:14.4746707Z  + kiwisolver==1.5.1
+2026-09-13T13:01:14.4747069Z  - mteb==2.19.3
+2026-09-13T13:01:14.4747514Z  + mteb==2.18.16
+2026-09-13T13:01:14.4748051Z  - narwhals==2.24.0
+2026-09-13T13:01:14.4748425Z  + narwhals==2.25.0
+2026-09-13T13:01:14.4748868Z  - numkong==7.8.0
+2026-09-13T13:01:14.4749313Z  + numkong==7.8.1
+2026-09-13T13:01:14.4749859Z  - nvidia-cublas-cu12==12.8.4.1
+2026-09-13T13:01:14.4750355Z  + nvidia-cublas-cu12==12.9.1.4
+2026-09-13T13:01:14.4750836Z  - nvidia-cuda-cupti-cu12==12.8.90
+2026-09-13T13:01:14.4751322Z  + nvidia-cuda-cupti-cu12==12.9.79
+2026-09-13T13:01:14.4751782Z  - nvidia-cuda-nvrtc-cu12==12.8.93
+2026-09-13T13:01:14.4752198Z  + nvidia-cuda-nvrtc-cu12==12.9.86
+2026-09-13T13:01:14.4752630Z  - nvidia-cuda-runtime-cu12==12.8.90
+2026-09-13T13:01:14.4753087Z  + nvidia-cuda-runtime-cu12==12.9.79
+2026-09-13T13:01:14.4753596Z  - nvidia-cufft-cu12==11.3.3.83
+2026-09-13T13:01:14.4754129Z  + nvidia-cufft-cu12==11.4.1.4
+2026-09-13T13:01:14.4754637Z  - nvidia-cufile-cu12==1.13.1.3
+2026-09-13T13:01:14.4755365Z  + nvidia-cufile-cu12==1.14.1.1
+2026-09-13T13:01:14.4755875Z  - nvidia-curand-cu12==10.3.9.90
+2026-09-13T13:01:14.4756431Z  + nvidia-curand-cu12==10.3.10.19
+2026-09-13T13:01:14.4756918Z  - nvidia-cusolver-cu12==11.7.3.90
+2026-09-13T13:01:14.4757414Z  + nvidia-cusolver-cu12==11.7.5.82
+2026-09-13T13:01:14.4757915Z  - nvidia-cusparse-cu12==12.5.8.93
+2026-09-13T13:01:14.4758354Z  + nvidia-cusparse-cu12==12.5.10.65
+2026-09-13T13:01:14.4758884Z  - nvidia-nvjitlink-cu12==12.8.93
+2026-09-13T13:01:14.4759305Z  + nvidia-nvjitlink-cu12==12.9.86
+2026-09-13T13:01:14.4759712Z  - nvidia-nvtx-cu12==12.8.90
+2026-09-13T13:01:14.4760185Z  + nvidia-nvtx-cu12==12.9.79
+2026-09-13T13:01:14.4760646Z  - platformdirs==4.11.3
+2026-09-13T13:01:14.4761238Z  + platformdirs==4.11.5
+2026-09-13T13:01:14.4761621Z  - polars==1.43.2
+2026-09-13T13:01:14.4762066Z  + polars==1.44.1
+2026-09-13T13:01:14.4762489Z  - polars-runtime-32==1.43.2
+2026-09-13T13:01:14.4762974Z  + polars-runtime-32==1.44.1
+2026-09-13T13:01:14.4763727Z  - protobuf==7.35.1
+2026-09-13T13:01:14.4764056Z  + protobuf==7.36.0
+2026-09-13T13:01:14.4764397Z  - pydantic==2.13.4
+2026-09-13T13:01:14.4774786Z  + pydantic==2.13.5
+2026-09-13T13:01:14.4775433Z  - pydantic-core==2.46.4
+2026-09-13T13:01:14.4775774Z  + pydantic-core==2.46.5
+2026-09-13T13:01:14.4776099Z  - pygments==2.20.0
+2026-09-13T13:01:14.4776384Z  + pygments==2.21.0
+2026-09-13T13:01:14.4776648Z  - regex==2026.7.19
+2026-09-13T13:01:14.4776910Z  + regex==2026.8.31
+2026-09-13T13:01:14.4777172Z  - ruff==0.16.3
+2026-09-13T13:01:14.4777445Z  + ruff==0.16.5
+2026-09-13T13:01:14.4777733Z  - scipy==1.18.0
+2026-09-13T13:01:14.4778034Z  + scipy==1.18.1
+2026-09-13T13:01:14.4778335Z  - sentry-sdk==2.68.0
+2026-09-13T13:01:14.4778694Z  + sentry-sdk==2.68.1
+2026-09-13T13:01:14.4779054Z  - setuptools==81.0.0
+2026-09-13T13:01:14.4779348Z  + setuptools==84.0.0
+2026-09-13T13:01:14.4779640Z  + smmap==5.0.3
+2026-09-13T13:01:14.4779922Z  - torch==2.9.0
+2026-09-13T13:01:14.4780217Z  + torch==2.9.1+cu129
+2026-09-13T13:01:14.4780537Z  - triton==3.5.0
+2026-09-13T13:01:14.4780827Z  + triton==3.5.1
+2026-09-13T13:01:14.4781102Z  - typer==0.27.1
+2026-09-13T13:01:14.4781404Z  + typer==0.27.2
+2026-09-13T13:01:14.4781674Z  - wandb==0.28.2
+2026-09-13T13:01:14.4782011Z  + wandb==0.26.1
+2026-09-13T13:01:14.4782293Z  - xxhash==4.0.0
+2026-09-13T13:01:14.4782562Z  + xxhash==4.0.1
+2026-09-13T13:01:14.5923891Z Resolved 1 package in 100ms
+2026-09-13T13:01:14.5924354Z Would download 1 package
+2026-09-13T13:01:14.5924751Z Would install 1 package
+2026-09-13T13:01:14.5925483Z  + flash-attn==2.7.4.post1
+2026-09-13T13:01:14.5980051Z ##[group]Run curl --fail --location --output "$RUNNER_TEMP/cuda-keyring.deb" https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+2026-09-13T13:01:14.5982309Z [36;1mcurl --fail --location --output "$RUNNER_TEMP/cuda-keyring.deb" https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb[0m
+2026-09-13T13:01:14.5983600Z [36;1msudo dpkg -i "$RUNNER_TEMP/cuda-keyring.deb"[0m
+2026-09-13T13:01:14.5984083Z [36;1msudo apt-get update[0m
+2026-09-13T13:01:14.5984725Z [36;1msudo apt-get install -y --no-install-recommends cuda-nvcc-12-9 cuda-cudart-dev-12-9[0m
+2026-09-13T13:01:14.6043160Z shell: /usr/bin/bash -e {0}
+2026-09-13T13:01:14.6043579Z env:
+2026-09-13T13:01:14.6044023Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-09-13T13:01:14.6044578Z   UV_PYTHON: 3.12
+2026-09-13T13:01:14.6044994Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-13T13:01:14.6045792Z ##[endgroup]
+2026-09-13T13:01:14.6199666Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-09-13T13:01:14.6200532Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-09-13T13:01:14.6201345Z 
+2026-09-13T13:01:14.7404078Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-09-13T13:01:14.7404815Z 100  4328  100  4328    0     0  35897      0 --:--:-- --:--:-- --:--:-- 35768
+2026-09-13T13:01:14.7405617Z 100  4328  100  4328    0     0  35874      0 --:--:-- --:--:-- --:--:-- 35768
+2026-09-13T13:01:14.7687024Z Selecting previously unselected package cuda-keyring.
+2026-09-13T13:01:14.8595794Z (Reading database ... 241038 files and directories currently installed.)
+2026-09-13T13:01:14.8644514Z Preparing to unpack .../work/_temp/cuda-keyring.deb ...
+2026-09-13T13:01:14.8652781Z Unpacking cuda-keyring (1.1-1) ...
+2026-09-13T13:01:14.8794532Z Setting up cuda-keyring (1.1-1) ...
+2026-09-13T13:01:15.0265679Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-09-13T13:01:15.0663620Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-09-13T13:01:15.0677833Z Hit:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+2026-09-13T13:01:15.0686569Z Hit:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-09-13T13:01:15.0697736Z Hit:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-09-13T13:01:15.0708124Z Hit:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-09-13T13:01:15.1478632Z Hit:7 https://dl.google.com/linux/chrome-stable/deb stable InRelease
+2026-09-13T13:01:15.1490600Z Get:8 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  InRelease [1578 B]
+2026-09-13T13:01:15.4569917Z Get:9 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  Packages [1847 kB]
+2026-09-13T13:01:17.5370232Z Fetched 1849 kB in 1s (2756 kB/s)
+2026-09-13T13:01:18.3331009Z Reading package lists...
+2026-09-13T13:01:18.3655362Z Reading package lists...
+2026-09-13T13:01:18.5601802Z Building dependency tree...
+2026-09-13T13:01:18.5609870Z Reading state information...
+2026-09-13T13:01:18.7175565Z The following additional packages will be installed:
+2026-09-13T13:01:18.7176419Z   build-essential cuda-cccl-12-9 cuda-crt-12-9 cuda-cudart-12-9
+2026-09-13T13:01:18.7177203Z   cuda-driver-dev-12-9 cuda-nvvm-12-9 cuda-toolkit-12-9-config-common
+2026-09-13T13:01:18.7184319Z   cuda-toolkit-12-config-common cuda-toolkit-config-common
+2026-09-13T13:01:18.7390379Z The following NEW packages will be installed:
+2026-09-13T13:01:18.7391178Z   build-essential cuda-cccl-12-9 cuda-crt-12-9 cuda-cudart-12-9
+2026-09-13T13:01:18.7392030Z   cuda-cudart-dev-12-9 cuda-driver-dev-12-9 cuda-nvcc-12-9 cuda-nvvm-12-9
+2026-09-13T13:01:18.7392963Z   cuda-toolkit-12-9-config-common cuda-toolkit-12-config-common
+2026-09-13T13:01:18.7397188Z   cuda-toolkit-config-common
+2026-09-13T13:01:18.7625554Z 0 upgraded, 11 newly installed, 0 to remove and 50 not upgraded.
+2026-09-13T13:01:18.7626196Z Need to get 84.5 MB of archives.
+2026-09-13T13:01:18.7626948Z After this operation, 358 MB of additional disk space will be used.
+2026-09-13T13:01:18.7627608Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-09-13T13:01:18.8268461Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 build-essential amd64 12.10ubuntu1 [4928 B]
+2026-09-13T13:01:19.1167132Z Get:3 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-cccl-12-9 12.9.27-1 [1040 kB]
+2026-09-13T13:01:19.2594576Z Get:4 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-toolkit-config-common 13.4.49-1 [17.4 kB]
+2026-09-13T13:01:19.2781586Z Get:5 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-toolkit-12-config-common 12.9.79-1 [16.6 kB]
+2026-09-13T13:01:19.2969777Z Get:6 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-toolkit-12-9-config-common 12.9.79-1 [16.6 kB]
+2026-09-13T13:01:19.3172389Z Get:7 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-cudart-12-9 12.9.79-1 [173 kB]
+2026-09-13T13:01:19.6669164Z Get:8 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-driver-dev-12-9 12.9.79-1 [29.3 kB]
+2026-09-13T13:01:19.8834757Z Get:9 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-cudart-dev-12-9 12.9.79-1 [1415 kB]
+2026-09-13T13:01:20.1611857Z Get:10 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-crt-12-9 12.9.86-1 [82.1 kB]
+2026-09-13T13:01:20.3773915Z Get:11 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-nvvm-12-9 12.9.86-1 [43.1 MB]
+2026-09-13T13:01:20.8940271Z Get:12 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64  cuda-nvcc-12-9 12.9.86-1 [38.6 MB]
+2026-09-13T13:01:21.4076969Z Fetched 84.5 MB in 2s (35.3 MB/s)
+2026-09-13T13:01:21.4275774Z Selecting previously unselected package build-essential.
+2026-09-13T13:01:21.4345429Z (Reading database ... 
+2026-09-13T13:01:21.4345890Z (Reading database ... 5%
+2026-09-13T13:01:21.4346297Z (Reading database ... 10%
+2026-09-13T13:01:21.4346680Z (Reading database ... 15%
+2026-09-13T13:01:21.4347056Z (Reading database ... 20%
+2026-09-13T13:01:21.4347416Z (Reading database ... 25%
+2026-09-13T13:01:21.4347776Z (Reading database ... 30%
+2026-09-13T13:01:21.4348145Z (Reading database ... 35%
+2026-09-13T13:01:21.4348498Z (Reading database ... 40%
+2026-09-13T13:01:21.4349401Z (Reading database ... 45%
+2026-09-13T13:01:21.4349854Z (Reading database ... 50%
+2026-09-13T13:01:21.4374519Z (Reading database ... 55%
+2026-09-13T13:01:21.4495387Z (Reading database ... 60%
+2026-09-13T13:01:21.4518804Z (Reading database ... 65%
+2026-09-13T13:01:21.4557724Z (Reading database ... 70%
+2026-09-13T13:01:21.4591494Z (Reading database ... 75%
+2026-09-13T13:01:21.4731457Z (Reading database ... 80%
+2026-09-13T13:01:21.4768993Z (Reading database ... 85%
+2026-09-13T13:01:21.5001489Z (Reading database ... 90%
+2026-09-13T13:01:21.5217629Z (Reading database ... 95%
+2026-09-13T13:01:21.5218000Z (Reading database ... 100%
+2026-09-13T13:01:21.5218361Z (Reading database ... 241043 files and directories currently installed.)
+2026-09-13T13:01:21.5266718Z Preparing to unpack .../00-build-essential_12.10ubuntu1_amd64.deb ...
+2026-09-13T13:01:21.5273527Z Unpacking build-essential (12.10ubuntu1) ...
+2026-09-13T13:01:21.5501781Z Selecting previously unselected package cuda-cccl-12-9.
+2026-09-13T13:01:21.5648885Z Preparing to unpack .../01-cuda-cccl-12-9_12.9.27-1_amd64.deb ...
+2026-09-13T13:01:21.5655280Z Unpacking cuda-cccl-12-9 (12.9.27-1) ...
+2026-09-13T13:01:21.8675671Z Selecting previously unselected package cuda-toolkit-config-common.
+2026-09-13T13:01:21.8840400Z Preparing to unpack .../02-cuda-toolkit-config-common_13.4.49-1_all.deb ...
+2026-09-13T13:01:21.8846633Z Unpacking cuda-toolkit-config-common (13.4.49-1) ...
+2026-09-13T13:01:21.9068224Z Selecting previously unselected package cuda-toolkit-12-config-common.
+2026-09-13T13:01:21.9218232Z Preparing to unpack .../03-cuda-toolkit-12-config-common_12.9.79-1_all.deb ...
+2026-09-13T13:01:21.9225424Z Unpacking cuda-toolkit-12-config-common (12.9.79-1) ...
+2026-09-13T13:01:21.9442886Z Selecting previously unselected package cuda-toolkit-12-9-config-common.
+2026-09-13T13:01:21.9589154Z Preparing to unpack .../04-cuda-toolkit-12-9-config-common_12.9.79-1_all.deb ...
+2026-09-13T13:01:21.9595792Z Unpacking cuda-toolkit-12-9-config-common (12.9.79-1) ...
+2026-09-13T13:01:21.9805323Z Selecting previously unselected package cuda-cudart-12-9.
+2026-09-13T13:01:21.9953710Z Preparing to unpack .../05-cuda-cudart-12-9_12.9.79-1_amd64.deb ...
+2026-09-13T13:01:21.9960118Z Unpacking cuda-cudart-12-9 (12.9.79-1) ...
+2026-09-13T13:01:22.0276926Z Selecting previously unselected package cuda-driver-dev-12-9.
+2026-09-13T13:01:22.0427901Z Preparing to unpack .../06-cuda-driver-dev-12-9_12.9.79-1_amd64.deb ...
+2026-09-13T13:01:22.0433528Z Unpacking cuda-driver-dev-12-9 (12.9.79-1) ...
+2026-09-13T13:01:22.0660278Z Selecting previously unselected package cuda-cudart-dev-12-9.
+2026-09-13T13:01:22.0810738Z Preparing to unpack .../07-cuda-cudart-dev-12-9_12.9.79-1_amd64.deb ...
+2026-09-13T13:01:22.0817438Z Unpacking cuda-cudart-dev-12-9 (12.9.79-1) ...
+2026-09-13T13:01:22.1964421Z Selecting previously unselected package cuda-crt-12-9.
+2026-09-13T13:01:22.2121496Z Preparing to unpack .../08-cuda-crt-12-9_12.9.86-1_amd64.deb ...
+2026-09-13T13:01:22.2128747Z Unpacking cuda-crt-12-9 (12.9.86-1) ...
+2026-09-13T13:01:22.2409781Z Selecting previously unselected package cuda-nvvm-12-9.
+2026-09-13T13:01:22.2560086Z Preparing to unpack .../09-cuda-nvvm-12-9_12.9.86-1_amd64.deb ...
+2026-09-13T13:01:22.2567210Z Unpacking cuda-nvvm-12-9 (12.9.86-1) ...
+2026-09-13T13:01:23.3468999Z Selecting previously unselected package cuda-nvcc-12-9.
+2026-09-13T13:01:23.3627780Z Preparing to unpack .../10-cuda-nvcc-12-9_12.9.86-1_amd64.deb ...
+2026-09-13T13:01:23.3633604Z Unpacking cuda-nvcc-12-9 (12.9.86-1) ...
+2026-09-13T13:01:24.4465497Z Setting up cuda-toolkit-config-common (13.4.49-1) ...
+2026-09-13T13:01:24.4534283Z Setting up cuda-toolkit-12-9-config-common (12.9.79-1) ...
+2026-09-13T13:01:24.4553598Z Setting alternatives
+2026-09-13T13:01:24.4596892Z update-alternatives: using /usr/local/cuda-12.9 to provide /usr/local/cuda (cuda) in auto mode
+2026-09-13T13:01:24.4645249Z update-alternatives: using /usr/local/cuda-12.9 to provide /usr/local/cuda-12 (cuda-12) in auto mode
+2026-09-13T13:01:24.4688699Z Setting up cuda-driver-dev-12-9 (12.9.79-1) ...
+2026-09-13T13:01:24.4705407Z Setting up build-essential (12.10ubuntu1) ...
+2026-09-13T13:01:24.4721214Z Setting up cuda-cccl-12-9 (12.9.27-1) ...
+2026-09-13T13:01:24.4737919Z Setting up cuda-toolkit-12-config-common (12.9.79-1) ...
+2026-09-13T13:01:24.4800163Z Setting up cuda-nvvm-12-9 (12.9.86-1) ...
+2026-09-13T13:01:24.4816415Z Setting up cuda-cudart-12-9 (12.9.79-1) ...
+2026-09-13T13:01:24.4834489Z Setting up cuda-cudart-dev-12-9 (12.9.79-1) ...
+2026-09-13T13:01:24.4851832Z Setting up cuda-crt-12-9 (12.9.86-1) ...
+2026-09-13T13:01:24.4867932Z Setting up cuda-nvcc-12-9 (12.9.86-1) ...
+2026-09-13T13:01:24.4886743Z Processing triggers for libc-bin (2.39-0ubuntu8.8) ...
+2026-09-13T13:01:25.0481055Z 
+2026-09-13T13:01:25.0481650Z Running kernel seems to be up-to-date.
+2026-09-13T13:01:25.0481957Z 
+2026-09-13T13:01:25.0482072Z No services need to be restarted.
+2026-09-13T13:01:25.0482264Z 
+2026-09-13T13:01:25.0482374Z No containers need to be restarted.
+2026-09-13T13:01:25.0482571Z 
+2026-09-13T13:01:25.0482701Z No user sessions are running outdated binaries.
+2026-09-13T13:01:25.0482917Z 
+2026-09-13T13:01:25.0483126Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-09-13T13:01:26.0359361Z ##[group]Run uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock -r requirements-formal.lock
+2026-09-13T13:01:26.0360520Z [36;1muv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock -r requirements-formal.lock[0m
+2026-09-13T13:01:26.0361762Z [36;1muv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt[0m
+2026-09-13T13:01:26.0362629Z [36;1m.venv/bin/python -c 'import torch; import flash_attn_2_cuda; assert torch.version.cuda == "12.9"'[0m
+2026-09-13T13:01:26.0363231Z [36;1m.venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json[0m
+2026-09-13T13:01:26.0404892Z shell: /usr/bin/bash -e {0}
+2026-09-13T13:01:26.0405353Z env:
+2026-09-13T13:01:26.0405693Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-09-13T13:01:26.0406052Z   UV_PYTHON: 3.12
+2026-09-13T13:01:26.0406321Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-13T13:01:26.0406650Z   CUDA_HOME: /usr/local/cuda-12.9
+2026-09-13T13:01:26.0406920Z   FLASH_ATTENTION_FORCE_BUILD: TRUE
+2026-09-13T13:01:26.0407190Z   FLASH_ATTN_CUDA_ARCHS: 80;90
+2026-09-13T13:01:26.0407463Z   MAX_JOBS: 2
+2026-09-13T13:01:26.0407667Z   NVCC_THREADS: 1
+2026-09-13T13:01:26.0407874Z ##[endgroup]
+2026-09-13T13:01:26.0745615Z Resolved 113 packages in 17ms
+2026-09-13T13:01:26.1892544Z Downloading triton (162.6MiB)
+2026-09-13T13:01:26.2102810Z Downloading scipy (33.7MiB)
+2026-09-13T13:01:26.2105231Z Downloading pydantic-core (2.0MiB)
+2026-09-13T13:01:26.2271136Z Downloading torch (1.2GiB)
+2026-09-13T13:01:26.2312577Z Downloading pygments (1.2MiB)
+2026-09-13T13:01:26.2313339Z Downloading kiwisolver (1.4MiB)
+2026-09-13T13:01:26.2317356Z Downloading nvidia-cufile-cu12 (1.2MiB)
+2026-09-13T13:01:26.2318613Z Downloading ruff (9.8MiB)
+2026-09-13T13:01:26.2321609Z Downloading nvidia-cublas-cu12 (554.3MiB)
+2026-09-13T13:01:26.2322849Z Downloading polars-runtime-32 (55.8MiB)
+2026-09-13T13:01:26.2324475Z Downloading nvidia-curand-cu12 (65.1MiB)
+2026-09-13T13:01:26.2326004Z Downloading nvidia-cuda-cupti-cu12 (10.3MiB)
+2026-09-13T13:01:26.2329559Z Downloading nvidia-cuda-runtime-cu12 (3.3MiB)
+2026-09-13T13:01:26.2332143Z Downloading nvidia-cusparse-cu12 (349.5MiB)
+2026-09-13T13:01:26.2333817Z Downloading wandb (25.9MiB)
+2026-09-13T13:01:26.2336777Z Downloading nvidia-cufft-cu12 (191.6MiB)
+2026-09-13T13:01:26.2338488Z Downloading nvidia-cuda-nvrtc-cu12 (85.4MiB)
+2026-09-13T13:01:26.2342061Z Downloading numkong (10.0MiB)
+2026-09-13T13:01:26.2344609Z Downloading nvidia-cusolver-cu12 (322.5MiB)
+2026-09-13T13:01:26.2355934Z Downloading nvidia-nvjitlink-cu12 (37.9MiB)
+2026-09-13T13:01:26.2407014Z Downloading mteb (5.8MiB)
+2026-09-13T13:01:26.5570337Z  Downloaded nvidia-cufile-cu12
+2026-09-13T13:01:26.5577116Z  Downloaded pygments
+2026-09-13T13:01:26.5981412Z  Downloaded kiwisolver
+2026-09-13T13:01:26.6462218Z  Downloaded pydantic-core
+2026-09-13T13:01:26.7961531Z  Downloaded nvidia-cuda-runtime-cu12
+2026-09-13T13:01:27.1553193Z  Downloaded mteb
+2026-09-13T13:01:27.3347907Z  Downloaded ruff
+2026-09-13T13:01:27.3686674Z  Downloaded nvidia-cuda-cupti-cu12
+2026-09-13T13:01:27.3997879Z  Downloaded numkong
+2026-09-13T13:01:28.2626053Z  Downloaded wandb
+2026-09-13T13:01:28.6296552Z  Downloaded scipy
+2026-09-13T13:01:28.8404041Z  Downloaded nvidia-nvjitlink-cu12
+2026-09-13T13:01:29.3903850Z  Downloaded triton
+2026-09-13T13:01:29.5406290Z  Downloaded polars-runtime-32
+2026-09-13T13:01:29.8196295Z  Downloaded nvidia-curand-cu12
+2026-09-13T13:01:30.3059288Z  Downloaded nvidia-cuda-nvrtc-cu12
+2026-09-13T13:01:32.3126603Z  Downloaded nvidia-cufft-cu12
+2026-09-13T13:01:34.2784125Z  Downloaded nvidia-cusolver-cu12
+2026-09-13T13:01:34.5816815Z  Downloaded nvidia-cusparse-cu12
+2026-09-13T13:01:37.0356728Z  Downloaded nvidia-cublas-cu12
+2026-09-13T13:01:42.7861732Z  Downloaded torch
+2026-09-13T13:01:42.7864933Z Prepared 41 packages in 16.70s
+2026-09-13T13:01:43.1532520Z Uninstalled 39 packages in 366ms
+2026-09-13T13:01:43.4298712Z Installed 42 packages in 276ms
+2026-09-13T13:01:43.4303350Z  - accelerate==1.14.0
+2026-09-13T13:01:43.4303734Z  + accelerate==1.13.0
+2026-09-13T13:01:43.4304078Z  - click==8.4.2
+2026-09-13T13:01:43.4304667Z  + click==8.5.0
+2026-09-13T13:01:43.4304973Z  - coverage==7.15.4
+2026-09-13T13:01:43.4305603Z  + coverage==7.16.0
+2026-09-13T13:01:43.4305912Z  - datasets==4.8.5
+2026-09-13T13:01:43.4306280Z  + datasets==4.8.4
+2026-09-13T13:01:43.4306756Z  - filelock==3.32.3
+2026-09-13T13:01:43.4307231Z  + filelock==3.32.4
+2026-09-13T13:01:43.4307722Z  + gitdb==4.0.12
+2026-09-13T13:01:43.4308210Z  + gitpython==3.1.61
+2026-09-13T13:01:43.4308697Z  - huggingface-hub==1.27.0
+2026-09-13T13:01:43.4309157Z  + huggingface-hub==1.29.0
+2026-09-13T13:01:43.4309572Z  - idna==3.18
+2026-09-13T13:01:43.4309874Z  + idna==3.19
+2026-09-13T13:01:43.4310343Z  - kiwisolver==1.5.0
+2026-09-13T13:01:43.4310726Z  + kiwisolver==1.5.1
+2026-09-13T13:01:43.4311239Z  - mteb==2.19.3
+2026-09-13T13:01:43.4311559Z  + mteb==2.18.16
+2026-09-13T13:01:43.4312084Z  - narwhals==2.24.0
+2026-09-13T13:01:43.4312545Z  + narwhals==2.25.0
+2026-09-13T13:01:43.4312990Z  - numkong==7.8.0
+2026-09-13T13:01:43.4313430Z  + numkong==7.8.1
+2026-09-13T13:01:43.4313964Z  - nvidia-cublas-cu12==12.8.4.1
+2026-09-13T13:01:43.4314455Z  + nvidia-cublas-cu12==12.9.1.4
+2026-09-13T13:01:43.4314935Z  - nvidia-cuda-cupti-cu12==12.8.90
+2026-09-13T13:01:43.4315498Z  + nvidia-cuda-cupti-cu12==12.9.79
+2026-09-13T13:01:43.4315984Z  - nvidia-cuda-nvrtc-cu12==12.8.93
+2026-09-13T13:01:43.4316381Z  + nvidia-cuda-nvrtc-cu12==12.9.86
+2026-09-13T13:01:43.4316811Z  - nvidia-cuda-runtime-cu12==12.8.90
+2026-09-13T13:01:43.4317322Z  + nvidia-cuda-runtime-cu12==12.9.79
+2026-09-13T13:01:43.4317828Z  - nvidia-cufft-cu12==11.3.3.83
+2026-09-13T13:01:43.4318340Z  + nvidia-cufft-cu12==11.4.1.4
+2026-09-13T13:01:43.4318780Z  - nvidia-cufile-cu12==1.13.1.3
+2026-09-13T13:01:43.4319288Z  + nvidia-cufile-cu12==1.14.1.1
+2026-09-13T13:01:43.4319788Z  - nvidia-curand-cu12==10.3.9.90
+2026-09-13T13:01:43.4320312Z  + nvidia-curand-cu12==10.3.10.19
+2026-09-13T13:01:43.4320812Z  - nvidia-cusolver-cu12==11.7.3.90
+2026-09-13T13:01:43.4321312Z  + nvidia-cusolver-cu12==11.7.5.82
+2026-09-13T13:01:43.4321833Z  - nvidia-cusparse-cu12==12.5.8.93
+2026-09-13T13:01:43.4322343Z  + nvidia-cusparse-cu12==12.5.10.65
+2026-09-13T13:01:43.4322853Z  - nvidia-nvjitlink-cu12==12.8.93
+2026-09-13T13:01:43.4323260Z  + nvidia-nvjitlink-cu12==12.9.86
+2026-09-13T13:01:43.4323647Z  - nvidia-nvtx-cu12==12.8.90
+2026-09-13T13:01:43.4324152Z  + nvidia-nvtx-cu12==12.9.79
+2026-09-13T13:01:43.4324600Z  - platformdirs==4.11.3
+2026-09-13T13:01:43.4325013Z  + platformdirs==4.11.5
+2026-09-13T13:01:43.4325546Z  - polars==1.43.2
+2026-09-13T13:01:43.4326055Z  + polars==1.44.1
+2026-09-13T13:01:43.4326519Z  - polars-runtime-32==1.43.2
+2026-09-13T13:01:43.4326958Z  + polars-runtime-32==1.44.1
+2026-09-13T13:01:43.4327368Z  - protobuf==7.35.1
+2026-09-13T13:01:43.4327796Z  + protobuf==7.36.0
+2026-09-13T13:01:43.4328363Z  - pydantic==2.13.4
+2026-09-13T13:01:43.4328770Z  + pydantic==2.13.5
+2026-09-13T13:01:43.4329163Z  - pydantic-core==2.46.4
+2026-09-13T13:01:43.4329695Z  + pydantic-core==2.46.5
+2026-09-13T13:01:43.4330096Z  - pygments==2.20.0
+2026-09-13T13:01:43.4330590Z  + pygments==2.21.0
+2026-09-13T13:01:43.4330967Z  - regex==2026.7.19
+2026-09-13T13:01:43.4331499Z  + regex==2026.8.31
+2026-09-13T13:01:43.4331885Z  - ruff==0.16.3
+2026-09-13T13:01:43.4332448Z  + ruff==0.16.5
+2026-09-13T13:01:43.4332837Z  - scipy==1.18.0
+2026-09-13T13:01:43.4333291Z  + scipy==1.18.1
+2026-09-13T13:01:43.4333772Z  - sentry-sdk==2.68.0
+2026-09-13T13:01:43.4334176Z  + sentry-sdk==2.68.1
+2026-09-13T13:01:43.4334620Z  - setuptools==81.0.0
+2026-09-13T13:01:43.4335215Z  + setuptools==84.0.0
+2026-09-13T13:01:43.4335651Z  + smmap==5.0.3
+2026-09-13T13:01:43.4336027Z  - torch==2.9.0
+2026-09-13T13:01:43.4336611Z  + torch==2.9.1+cu129
+2026-09-13T13:01:43.4337010Z  - triton==3.5.0
+2026-09-13T13:01:43.4337716Z  + triton==3.5.1
+2026-09-13T13:01:43.4338026Z  - typer==0.27.1
+2026-09-13T13:01:43.4338347Z  + typer==0.27.2
+2026-09-13T13:01:43.4338828Z  - wandb==0.28.2
+2026-09-13T13:01:43.4339210Z  + wandb==0.26.1
+2026-09-13T13:01:43.4339726Z  - xxhash==4.0.0
+2026-09-13T13:01:43.4340083Z  + xxhash==4.0.1
+2026-09-13T13:01:43.4526592Z Resolved 1 package in 1ms
+2026-09-13T13:01:44.3010689Z    Building flash-attn==2.7.4.post1
+2026-09-13T15:21:39.2989263Z ##[error]The operation was canceled.
+2026-09-13T15:21:39.3161868Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-09-13T15:21:39.3163965Z ##[group]Run actions/upload-artifact@v4
+2026-09-13T15:21:39.3164394Z with:
+2026-09-13T15:21:39.3164715Z   name: verification-receipts
+2026-09-13T15:21:39.3166644Z   path: /home/runner/work/_temp/source-role-tests/*.json
+/home/runner/work/_temp/source-role-tests/*.xml
+/home/runner/work/_temp/source-role-tests/*.log
+/home/runner/work/_temp/complete-paper/complete.json
+/home/runner/work/_temp/complete-paper/reviewed/paper/build/main.pdf
+
+2026-09-13T15:21:39.3168360Z   if-no-files-found: warn
+2026-09-13T15:21:39.3168753Z   compression-level: 6
+2026-09-13T15:21:39.3169087Z   overwrite: false
+2026-09-13T15:21:39.3169482Z   include-hidden-files: false
+2026-09-13T15:21:39.3169848Z env:
+2026-09-13T15:21:39.3170246Z   UV_PYTHON_INSTALL_DIR: /home/runner/work/_temp/uv-python-dir
+2026-09-13T15:21:39.3170759Z   UV_PYTHON: 3.12
+2026-09-13T15:21:39.3171150Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache
+2026-09-13T15:21:39.3171618Z ##[endgroup]
+2026-09-13T15:21:39.7096463Z (node:8207) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-09-13T15:21:39.7126232Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-09-13T15:21:39.7208245Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-09-13T15:21:39.7240836Z The least common ancestor is /home/runner/work/_temp. This will be the root directory of the artifact
+2026-09-13T15:21:39.7260694Z ##[warning]No files were found with the provided path: /home/runner/work/_temp/source-role-tests/*.json
+/home/runner/work/_temp/source-role-tests/*.xml
+/home/runner/work/_temp/source-role-tests/*.log
+/home/runner/work/_temp/complete-paper/complete.json
+/home/runner/work/_temp/complete-paper/reviewed/paper/build/main.pdf. No artifacts will be uploaded.
+2026-09-13T15:21:39.7552767Z Post job cleanup.
+2026-09-13T15:21:39.9246464Z [command]/usr/bin/git version
+2026-09-13T15:21:39.9247226Z git version 2.55.0
+2026-09-13T15:21:39.9257584Z Temporarily overriding HOME='/home/runner/work/_temp/7fa59f11-23a5-4f6c-b153-b5f565c62fc6' before making global git config changes
+2026-09-13T15:21:39.9258738Z Adding repository directory to the temporary git global config as a safe directory
+2026-09-13T15:21:39.9259749Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/embedding-optimizer-study/embedding-optimizer-study
+2026-09-13T15:21:39.9261041Z Removing SSH command configuration
+2026-09-13T15:21:39.9261716Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-09-13T15:21:39.9263276Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-09-13T15:21:40.0534639Z Removing HTTP extra header
+2026-09-13T15:21:40.0535754Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-09-13T15:21:40.0538149Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-09-13T15:21:40.0981288Z Removing includeIf entries pointing to credentials config files
+2026-09-13T15:21:40.0982153Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-09-13T15:21:40.0985623Z includeif.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git.path
+2026-09-13T15:21:40.0987038Z includeif.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git/worktrees/*.path
+2026-09-13T15:21:40.0987813Z includeif.gitdir:/github/workspace/.git.path
+2026-09-13T15:21:40.0988574Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-13T15:21:40.0991287Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git.path
+2026-09-13T15:21:40.0992309Z /home/runner/work/_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T15:21:40.0996846Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-f6288d48\-d2e7\-47f6\-913e\-e41ee2955a5c\.config
+2026-09-13T15:21:40.1005928Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git/worktrees/*.path
+2026-09-13T15:21:40.1037832Z /home/runner/work/_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T15:21:40.1047069Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/embedding-optimizer-study/embedding-optimizer-study/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-f6288d48\-d2e7\-47f6\-913e\-e41ee2955a5c\.config
+2026-09-13T15:21:40.1090319Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-09-13T15:21:40.1122553Z /github/runner_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T15:21:40.1130479Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-f6288d48\-d2e7\-47f6\-913e\-e41ee2955a5c\.config
+2026-09-13T15:21:40.1169440Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-09-13T15:21:40.1200256Z /github/runner_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config
+2026-09-13T15:21:40.1207856Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-f6288d48\-d2e7\-47f6\-913e\-e41ee2955a5c\.config
+2026-09-13T15:21:40.1251109Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-09-13T15:21:40.1533413Z Removing credentials config '/home/runner/work/_temp/git-credentials-f6288d48-d2e7-47f6-913e-e41ee2955a5c.config'
+2026-09-13T15:21:40.1702621Z Cleaning up orphan processes
+2026-09-13T15:21:40.1939101Z Terminate orphan process: pid (5830) (uv)
+2026-09-13T15:21:40.1967725Z Terminate orphan process: pid (5838) (python)
+2026-09-13T15:21:40.1989177Z Terminate orphan process: pid (5848) (ninja)
+2026-09-13T15:21:40.2085378Z Terminate orphan process: pid (8149) (sh)
+2026-09-13T15:21:40.2107909Z Terminate orphan process: pid (8150) (nvcc)
+2026-09-13T15:21:40.2137616Z Terminate orphan process: pid (8183) (sh)
+2026-09-13T15:21:40.2162137Z Terminate orphan process: pid (8184) (nvcc)
+2026-09-13T15:21:40.2204818Z Terminate orphan process: pid (8198) (sh)
+2026-09-13T15:21:40.2257821Z Terminate orphan process: pid (8199) (cicc)
+2026-09-13T15:21:40.2293475Z Terminate orphan process: pid (8200) (sh)
+2026-09-13T15:21:40.2330927Z Terminate orphan process: pid (8201) (ptxas)
+2026-09-13T15:21:40.2341277Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

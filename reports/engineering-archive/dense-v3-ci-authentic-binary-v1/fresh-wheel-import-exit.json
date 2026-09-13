@@ -1,0 +1,11 @@
+{
+  "returncode": 0,
+  "argv": [
+    "/usr/bin/python",
+    "-B",
+    "-c",
+    "import importlib.metadata as m\nimport json\nimport platform\nfrom pathlib import Path\nimport sys\nimport sysconfig\nimport torch\nimport flash_attn\nimport flash_attn_2_cuda\nfrom embed_optim.runtime import verify_runtime_spec\nprefix = Path(sys.argv[1]).resolve()\nassert Path(flash_attn.__file__).resolve().is_relative_to(prefix)\nassert Path(flash_attn_2_cuda.__file__).resolve().is_relative_to(prefix)\nassert Path(m.distribution(\"flash-attn\").locate_file(\"flash_attn\")).resolve() == prefix / \"flash_attn\"\nassert flash_attn.__version__ == \"2.7.4.post1\"\nassert torch.version.cuda == \"12.9\"\nexports = [\"fwd\", \"varlen_fwd\", \"bwd\", \"varlen_bwd\", \"fwd_kvcache\"]\nassert all(callable(getattr(flash_attn_2_cuda, name)) for name in exports)\nprint(json.dumps({\"runtime\": verify_runtime_spec(sys.argv[2]), \"imports\": {\"flash_attn\": flash_attn.__file__, \"flash_attn_2_cuda\": flash_attn_2_cuda.__file__, \"torch\": torch.__file__}, \"native_exports\": exports, \"torch_cxx11_abi\": bool(torch._C._GLIBCXX_USE_CXX11_ABI), \"libc\": platform.libc_ver(), \"machine\": platform.machine(), \"soabi\": sysconfig.get_config_var(\"SOABI\"), \"gpu_kernels_executed\": False}, sort_keys=True))\n",
+    "/tmp/dense-v3-flash-wheel.L7A0IiP0/wheel-import-root",
+    "/root/embedding-optimizer-story-refactor/configs/formal_runtime.json"
+  ]
+}

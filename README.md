@@ -41,8 +41,12 @@ This reviewed local candidate contains the complete results, revised story and
 closest references: eight-page main text, 158-word abstract, all 13 pages
 visually inspected. The default build now selects this paper, and the complete
 Make release-artifact gate has passed. The conclusion above is generated from
-its authenticated numerical outputs. All 3,800 source-version tests now pass;
-the source payload has been published and verified remotely.
+its authenticated numerical outputs. All 3,800 source-version tests pass locally;
+the source payload has been published and anonymously byte-verified. Independent
+hosted CI is still pending after dependency/fixture repairs. The original source-build
+run 34758559097 is being superseded by the [authenticated binary runtime](docs/ci-runtime-binary.md)
+workflow; see [CI runs](https://github.com/qcznlp/embedding-optimizer-study/actions).
+Public source availability is not a claim that hosted tests have passed.
 
 The complete manuscript now has a [stable source/build entry](paper/current/README.md):
 
@@ -67,11 +71,12 @@ and [completed release transition](reports/engineering-archive/dense-v3-release-
 | Complete numerical-to-reviewed-paper command | Version-isolated installed-wheel execution passes, joining all eight shared inputs; 194 integration tests pass; [run instructions](docs/versioned-paper-reproduction.md) |
 | Distribution portability | Original full audit passes; real relocated input read is unchanged; historical failures and all negative controls retained |
 | Primary training source | All 33 modules and 56 bindings match the actual training snapshot; all 12 run sources load in this checkout; [inspection instructions](docs/current-training-source.md) |
-| Full source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips; [one-command test entry](docs/source-version-testing.md) |
+| Local full source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips; [one-command test entry](docs/source-version-testing.md) |
+| Independent hosted CI | Authenticated runtime binary published and anonymously verified; replacement full tests and numerical/paper reconstruction pending |
 | Recovery and source delivery | Both genuine GPU restores pass exact endpoints; scoped recovery add-on and current default/release entries work; complete source payload published and anonymously verified |
 
 All scientific training/evaluation and the statistical, document, numerical/PDF
-reconstruction and result-backup pipelines have finished. Full source-version
+reconstruction and result-backup pipelines have finished locally. Local full source-version
 regression and distribution checks pass, and source publication is verified. No scientific training/evaluation is
 running. Both bounded [warm-reducer restoration checks](reports/engineering-archive/dense-v3-warm-reducer-recovery-v1/README.md)
 now pass bitwise endpoint equality and are terminal. Do not restart completed work.
@@ -203,10 +208,11 @@ contains both primary and continuation findings; its prose revision, complete
 visual review and document reconstruction have passed. The original full
 [distribution audit now passes](reports/engineering-archive/dense-v3-portable-input-roles-v1/README.md).
 The current default and complete release-artifact Make targets now pass using
-the original strict numerical/document components. The full mixed-source test
-baseline still has historical source-binding failures; the original factorial
-test role passes, and the other source roles are being integrated. Final source
-publication requires those complete checks, not relabelled historical contracts.
+the original strict numerical/document components. The original mixed-source
+test attempt remains a recorded failure; all 3,800 cases now pass locally in
+their explicit source roles. Independent hosted CI remains pending and uses an
+[authenticated runtime binary](docs/ci-runtime-binary.md) to accelerate installation
+without changing the scientific runtime or test gates.
 No engineering-error narrative belongs in the manuscript.
 
 The [former homepage](reports/engineering-archive/dense-v3-reader-first-readme-v1/before/README.md)

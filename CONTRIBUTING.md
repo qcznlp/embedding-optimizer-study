@@ -14,6 +14,8 @@ From the repository root:
 uv sync --extra dev --extra eval --extra analysis
 uv run cffconvert --validate --infile CITATION.cff
 uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock -r requirements-formal.lock
+export CUDA_HOME=/usr/local/cuda-12.9 FLASH_ATTENTION_FORCE_BUILD=TRUE
+export FLASH_ATTN_CUDA_ARCHS='80;90' MAX_JOBS=2 NVCC_THREADS=1
 uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt
 .venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json
 uv build
@@ -25,8 +27,13 @@ uv run --no-sync ruff format --check src tests scripts
 ```
 
 Use a separate environment with the CUDA 12.9 compiler available for the genuine
-FlashAttention build; no GPU is needed for these CPU regressions. CI installs
-the compiler packages explicitly. Do not install placeholder package metadata or
+FlashAttention build; no GPU is needed for these CPU regressions. For the exact
+Ubuntu 24.04 / CPython 3.12 / Torch 2.9.1+cu129 ABI, CI instead installs the
+[authentic source-built binary](docs/ci-runtime-binary.md) with
+`uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes -r requirements-ci-flash-wheel.txt`.
+This replaces only the FlashAttention build command, not the formal base install
+or native checks. Other platforms retain the source route.
+Do not install placeholder package metadata or
 skip the CUDA extension build. After the formal pins are installed,
 `uv run --no-sync` prevents the broader development lock from replacing them.
 Never change the live study environment to prepare contributor checks.

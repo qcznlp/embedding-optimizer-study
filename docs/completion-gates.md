@@ -3,8 +3,12 @@
 ## Current v3 completion — 2026-09-13
 
 The scientific matrix is complete. Use [current status](../CURRENT_EXPERIMENT.md)
-and [agent instructions](../AGENTS.md) for verified delivery and the unresolved
-historical HF cleanup. No scientific/recovery jobs remain live.
+and [agent instructions](../AGENTS.md) for verified delivery, pending independent
+hosted CI and the unresolved historical HF cleanup. No scientific/recovery jobs remain live.
+The locally passing source-role matrix and numerical/document rebuild do not
+establish hosted CI success. The slow source-build run 34758559097 is being
+superseded by the [authenticated binary runtime](ci-runtime-binary.md) workflow.
+Its replacement still requires actual complete hosted tests and paper reconstruction.
 **Do not run the historical controllers below.** Their
 older namespaces, waiting conditions and missing-result statements are retained
 provenance, not instructions to repeat experiments or restart stopped processes.

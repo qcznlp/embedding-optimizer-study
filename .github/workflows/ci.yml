@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7.0.1
         with:
@@ -25,23 +25,13 @@ jobs:
         run: |
           uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock --dry-run -r requirements-formal.lock
           uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn --dry-run -r requirements-formal-flash.txt
-      - name: Install CUDA compiler for the genuine pinned FlashAttention build
-        run: |
-          curl --fail --location --output "$RUNNER_TEMP/cuda-keyring.deb" https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
-          sudo dpkg -i "$RUNNER_TEMP/cuda-keyring.deb"
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends cuda-nvcc-12-9 cuda-cudart-dev-12-9
       - name: Install the actual hash-locked scientific runtime
         env:
-          CUDA_HOME: /usr/local/cuda-12.9
-          FLASH_ATTENTION_FORCE_BUILD: "TRUE"
-          FLASH_ATTN_CUDA_ARCHS: "80;90"
-          MAX_JOBS: "2"
-          NVCC_THREADS: "1"
+          CUDA_VISIBLE_DEVICES: ""
         run: |
           uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock -r requirements-formal.lock
-          uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt
-          .venv/bin/python -c 'import torch; import flash_attn_2_cuda; assert torch.version.cuda == "12.9"'
+          uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes -r requirements-ci-flash-wheel.txt
+          .venv/bin/python -c 'import torch; import flash_attn_2_cuda; assert torch.version.cuda == "12.9"; assert torch._C._GLIBCXX_USE_CXX11_ABI; assert all(callable(getattr(flash_attn_2_cuda, n)) for n in ("fwd", "varlen_fwd", "bwd", "varlen_bwd", "fwd_kvcache"))'
           .venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json
       - run: uv build
       - run: uv run --no-sync embed-optim-audit-distribution
