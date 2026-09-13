@@ -40,7 +40,6 @@ def test_real_roles_partition_every_test_without_overlap():
     assert formal < suite
     command = steps[formal]["run"]
     assert "--require-hashes" in command and "--torch-backend cu129" in command
-    assert "--overrides requirements-formal.lock" in command
     assert "--dry-run" not in command and "import flash_attn_2_cuda" in command
     assert "embed_optim.runtime --spec configs/formal_runtime.json" in command
     assert steps[formal]["env"]["FLASH_ATTENTION_FORCE_BUILD"] == "TRUE"

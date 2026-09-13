@@ -23,7 +23,7 @@ jobs:
         run: uv run cffconvert --validate --infile CITATION.cff
       - name: Audit formal CUDA 12.9 reconstruction locks
         run: |
-          uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock --dry-run -r requirements-formal.lock
+          uv pip sync --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --dry-run requirements-formal.lock
           uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn --dry-run -r requirements-formal-flash.txt
       - name: Install CUDA compiler for the genuine pinned FlashAttention build
         run: |
@@ -39,7 +39,7 @@ jobs:
           MAX_JOBS: "2"
           NVCC_THREADS: "1"
         run: |
-          uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock -r requirements-formal.lock
+          uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 -r requirements-formal.lock
           uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt
           .venv/bin/python -c 'import torch; import flash_attn_2_cuda; assert torch.version.cuda == "12.9"'
           .venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json

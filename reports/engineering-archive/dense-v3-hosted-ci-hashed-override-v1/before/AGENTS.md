@@ -94,11 +94,7 @@ test fixtures depended on the producer path or an uncommitted checkout. The
 repair installs the genuine hash-locked runtime and makes those fixture
 conditions explicit, without changing scientific source, locks or assertions.
 Hosted success is pending, not implied by the local 3,800-test result. The
-first repair run 34758294285 failed before tests because the installer omitted
-the formal Torch override. Using requirements-formal.lock itself as the hashed
-override passes actual isolated dry-run resolution; hosted execution is pending.
-Do not use unhashed constraint overrides in require-hashes mode.
-The reviewed PDF and 83 other manifest-bound archived files were also published at
+reviewed PDF and 83 other manifest-bound archived files were also published at
 65c584ce11435dc84aec675a6ed733a9a5fc97d1; the PDF was anonymously byte-verified.
 Finish the repaired hosted test and full numerical/paper workflow. Do not autonomously add
 experiments, restart old controllers or keep rerunning completed release checks.

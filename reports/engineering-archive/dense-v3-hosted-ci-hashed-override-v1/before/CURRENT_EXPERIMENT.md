@@ -31,7 +31,7 @@ No new LateOn or blog work. Never touch gpu.py or its processes.
 | Manuscript | Reviewed complete-result paper; 158-word abstract, eight-page main, all 13 pages inspected |
 | Complete reproduction | Original full numerical graph and reviewed paper pass actual version-isolated execution; eight shared inputs match exactly |
 | Local source-version tests | 3,800 passes: current 2,873, original analysis 733, original factorial 194; no failures/errors/skips |
-| Hosted CI | Initial tests failed in run 34756580699; repair run 34758294285 exposed a missing installer override; corrected hashed-lock resolution passes locally, hosted verification pending |
+| Hosted CI | Run 34756580699 failed; formal-runtime and synthetic-fixture fixes await actual hosted verification |
 | Distribution | Actual wheel/sdist build and unchanged full audit pass; style, portable evidence, credential checks and isolated CFF validation pass |
 | Recovery | Both declared genuine AdamW/Muon 313-to-391 GPU restores pass complete bitwise endpoints; scoped CPU/wheel add-on checks also pass |
 | GitHub | Complete source payload publicly published and anonymously read back |

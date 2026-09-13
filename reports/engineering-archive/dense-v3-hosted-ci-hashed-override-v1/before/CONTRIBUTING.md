@@ -13,7 +13,7 @@ From the repository root:
 ```bash
 uv sync --extra dev --extra eval --extra analysis
 uv run cffconvert --validate --infile CITATION.cff
-uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 --overrides requirements-formal.lock -r requirements-formal.lock
+uv pip install --python .venv/bin/python --no-config --require-hashes --torch-backend cu129 -r requirements-formal.lock
 uv pip install --python .venv/bin/python --no-config --no-deps --require-hashes --no-build-isolation-package flash-attn -r requirements-formal-flash.txt
 .venv/bin/python -m embed_optim.runtime --spec configs/formal_runtime.json
 uv build
@@ -30,10 +30,6 @@ the compiler packages explicitly. Do not install placeholder package metadata or
 skip the CUDA extension build. After the formal pins are installed,
 `uv run --no-sync` prevents the broader development lock from replacing them.
 Never change the live study environment to prepare contributor checks.
-The same hashed lock supplies the original formal version overrides, including
-Torch 2.9.1+cu129 despite fast-plaid's 2.9.0 dependency declaration. An unhashed
-constraints override is not sufficient in require-hashes mode. This reproduces
-the existing recorded environment, not a change to its package pins.
 
 The test output directory must be new and outside the checkout. The runner executes
 every test module exactly once across the current source and two authenticated
